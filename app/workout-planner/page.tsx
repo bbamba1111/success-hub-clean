@@ -55,24 +55,20 @@ export default function WorkoutPlannerPage() {
   })
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("dashboardVisited", "true")
-      const saved = localStorage.getItem("workouts")
-      if (saved) {
-        try {
-          setWorkouts(JSON.parse(saved))
-        } catch (e) {
-          console.error("Error loading workouts:", e)
-        }
+    localStorage.setItem("dashboardVisited", "true")
+    const saved = localStorage.getItem("workouts")
+    if (saved) {
+      try {
+        setWorkouts(JSON.parse(saved))
+      } catch (e) {
+        console.error("Error loading workouts:", e)
       }
     }
   }, [])
 
   const saveWorkouts = (updatedWorkouts: WorkoutEntry[]) => {
     setWorkouts(updatedWorkouts)
-    if (typeof window !== "undefined") {
-      localStorage.setItem("workouts", JSON.stringify(updatedWorkouts))
-    }
+    localStorage.setItem("workouts", JSON.stringify(updatedWorkouts))
   }
 
   const addWorkout = () => {
