@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft } from "lucide-react"
 import WorkLifeBalanceAudit from "@/components/work-life-balance-audit"
 
 export default function AuditPage() {

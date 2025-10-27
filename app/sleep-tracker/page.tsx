@@ -1,19 +1,20 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
+import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Moon, Plus, Trash2, Home } from 'lucide-react'
+import { Textarea } from "@/components/ui/textarea"
+import { Badge } from "@/components/ui/badge"
+import { Calendar, Moon, Clock, TrendingUp, Target, Plus, Trash2, Home } from "lucide-react"
 
 interface SleepEntry {
   id: string
   date: string
   bedtime: string
   wakeTime: string
-  quality: string
+  quality: "Poor" | "Fair" | "Good" | "Excellent"
   notes: string
 }
 
@@ -23,250 +24,280 @@ export default function SleepTrackerPage() {
     date: new Date().toISOString().split("T")[0],
     bedtime: "22:00",
     wakeTime: "06:00",
-    quality: "",
+    quality: "Good" as const,
     notes: "",
   })
 
   useEffect(() => {
+    // Mark dashboard as visited
     localStorage.setItem("dashboardVisited", "true")
-    const saved = localStorage.getItem("sleepEntries")
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved)
-        const validEntries = parsed.filter((entry: SleepEntry) => entry.bedtime && entry.wakeTime && entry.date)
-        setSleepEntries(validEntries)
-      } catch (e) {
-        console.error("Error loading sleep entries:", e)
-      }
+
+    // Load sleep entries from localStorage
+    const savedEntries = localStorage.getItem("sleepEntries")
+    if (savedEntries) {
+      setSleepEntries(JSON.parse(savedEntries))
     }
   }, [])
 
-  const saveEntries = (updatedEntries: SleepEntry[]) => {
-    setSleepEntries(updatedEntries)
-    localStorage.setItem("sleepEntries", JSON.stringify(updatedEntries))
-  }
+  const calculateDuration = (bedtime: string, wakeTime: string) => {
+    const [bedHour, bedMin] = bedtime.split(":").map(Number)
+    const [wakeHour, wakeMin] = wakeTime.split(":").map(Number)
 
-  const calculateDuration = (bedtime: string, wakeTime: string): { hours: number; minutes: number } => {
-    if (!bedtime || !wakeTime) {
-      return { hours: 0, minutes: 0 }
+    const bedMinutes = bedHour * 60 + bedMin
+    let wakeMinutes = wakeHour * 60 + wakeMin
+
+    // Handle crossing midnight
+    if (wakeMinutes < bedMinutes) {
+      wakeMinutes += 24 * 60
     }
 
-    try {
-      const [bedHour, bedMin] = bedtime.split(":").map(Number)
-      const [wakeHour, wakeMin] = wakeTime.split(":").map(Number)
+    const totalMinutes = wakeMinutes - bedMinutes
+    const hours = Math.floor(totalMinutes / 60)
+    const minutes = totalMinutes % 60
 
-      let totalMinutes = wakeHour * 60 + wakeMin - (bedHour * 60 + bedMin)
-
-      if (totalMinutes < 0) {
-        totalMinutes += 24 * 60
-      }
-
-      return {
-        hours: Math.floor(totalMinutes / 60),
-        minutes: totalMinutes % 60,
-      }
-    } catch (e) {
-      console.error("Error calculating duration:", e)
-      return { hours: 0, minutes: 0 }
-    }
+    return { hours, minutes, totalMinutes }
   }
 
   const addEntry = () => {
-    if (!newEntry.quality) {
-      alert("Please select sleep quality")
-      return
-    }
-
     const entry: SleepEntry = {
       id: Date.now().toString(),
       ...newEntry,
     }
 
-    saveEntries([...sleepEntries, entry])
+    const updatedEntries = [...sleepEntries, entry]
+    setSleepEntries(updatedEntries)
+    localStorage.setItem("sleepEntries", JSON.stringify(updatedEntries))
+
+    // Reset form
     setNewEntry({
       date: new Date().toISOString().split("T")[0],
       bedtime: "22:00",
       wakeTime: "06:00",
-      quality: "",
+      quality: "Good",
       notes: "",
     })
   }
 
   const deleteEntry = (id: string) => {
-    saveEntries(sleepEntries.filter((e) => e.id !== id))
+    const updatedEntries = sleepEntries.filter((e) => e.id !== id)
+    setSleepEntries(updatedEntries)
+    localStorage.setItem("sleepEntries", JSON.stringify(updatedEntries))
   }
 
   const getWeeklyStats = () => {
-    const oneWeekAgo = new Date()
-    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
+    const now = new Date()
+    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
 
-    const recentEntries = sleepEntries.filter((e) => new Date(e.date) >= oneWeekAgo)
+    const weeklyEntries = sleepEntries.filter((e) => {
+      const entryDate = new Date(e.date)
+      return entryDate >= weekAgo && entryDate <= now
+    })
 
-    const totalMinutes = recentEntries.reduce((sum, entry) => {
-      const duration = calculateDuration(entry.bedtime, entry.wakeTime)
-      return sum + (duration.hours * 60 + duration.minutes)
+    const totalMinutes = weeklyEntries.reduce((sum, e) => {
+      const { totalMinutes } = calculateDuration(e.bedtime, e.wakeTime)
+      return sum + totalMinutes
     }, 0)
 
-    const avgMinutes = recentEntries.length > 0 ? Math.round(totalMinutes / recentEntries.length) : 0
-
     return {
-      count: recentEntries.length,
-      avgHours: Math.floor(avgMinutes / 60),
-      avgMinutes: avgMinutes % 60,
+      count: weeklyEntries.length,
+      averageHours: weeklyEntries.length > 0 ? totalMinutes / weeklyEntries.length / 60 : 0,
+    }
+  }
+
+  const getQualityColor = (quality: string) => {
+    switch (quality) {
+      case "Excellent":
+        return "bg-green-100 text-green-800 border-green-200"
+      case "Good":
+        return "bg-blue-100 text-blue-800 border-blue-200"
+      case "Fair":
+        return "bg-yellow-100 text-yellow-800 border-yellow-200"
+      case "Poor":
+        return "bg-red-100 text-red-800 border-red-200"
+      default:
+        return "bg-gray-100 text-gray-800 border-gray-200"
     }
   }
 
   const stats = getWeeklyStats()
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white py-12 px-6">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white py-12">
+      <div className="max-w-6xl mx-auto px-6">
+        {/* Header */}
         <div className="text-center mb-12">
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="w-16 h-16 bg-gradient-to-br from-[#E26C73] to-[#7FB069] rounded-full flex items-center justify-center">
+              <Moon className="h-8 w-8 text-white" />
+            </div>
+          </div>
           <h1 className="text-4xl font-bold text-[#E26C73] mb-4">Sleep Tracker</h1>
-          <p className="text-lg text-gray-600">Monitor your power down & unplug routine</p>
+          <p className="text-lg text-gray-600">Monitor your sleep patterns and quality</p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 mb-8">
+        {/* Weekly Stats */}
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
           <Card className="border-2 border-[#E26C73]/30">
-            <CardHeader>
-              <CardTitle className="text-[#E26C73]">This Week</CardTitle>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-gray-600 flex items-center gap-2">
+                <Target className="h-4 w-4" />
+                Nights Tracked
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-gray-900">{stats.count} nights</div>
-              <div className="text-gray-600 mt-2">
-                Avg: {stats.avgHours}h {stats.avgMinutes}m per night
-              </div>
+              <div className="text-3xl font-bold text-[#E26C73]">{stats.count}</div>
+              <p className="text-sm text-gray-500 mt-1">This week</p>
             </CardContent>
           </Card>
 
           <Card className="border-2 border-[#E26C73]/30">
-            <CardHeader>
-              <CardTitle className="text-[#E26C73]">Sleep Goal</CardTitle>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-gray-600 flex items-center gap-2">
+                <Clock className="h-4 w-4" />
+                Average Sleep
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-gray-900">7-8 hours</div>
-              <div className="text-gray-600 mt-2">
-                {stats.avgHours >= 7 && stats.avgHours <= 9 ? "On track! 🌙" : "Keep improving"}
-              </div>
+              <div className="text-3xl font-bold text-[#E26C73]">{stats.averageHours.toFixed(1)}h</div>
+              <p className="text-sm text-gray-500 mt-1">Per night</p>
+            </CardContent>
+          </Card>
+
+          <Card className="border-2 border-[#E26C73]/30">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-gray-600 flex items-center gap-2">
+                <TrendingUp className="h-4 w-4" />
+                Sleep Goal
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-[#E26C73]">7-9h</div>
+              <p className="text-sm text-gray-500 mt-1">Recommended</p>
             </CardContent>
           </Card>
         </div>
 
+        {/* Add Sleep Entry Form */}
         <Card className="mb-8 border-2 border-[#E26C73]/30">
           <CardHeader>
-            <CardTitle className="text-[#E26C73]">Log Sleep Entry</CardTitle>
+            <CardTitle className="text-[#E26C73] flex items-center gap-2">
+              <Plus className="h-5 w-5" />
+              Log Sleep Entry
+            </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid md:grid-cols-3 gap-4">
-              <div>
+          <CardContent>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="space-y-2">
                 <Label htmlFor="date">Date</Label>
                 <Input
                   id="date"
                   type="date"
                   value={newEntry.date}
                   onChange={(e) => setNewEntry({ ...newEntry, date: e.target.value })}
-                  className="mt-1"
                 />
               </div>
 
-              <div>
+              <div className="space-y-2">
+                <Label htmlFor="quality">Sleep Quality</Label>
+                <select
+                  id="quality"
+                  value={newEntry.quality}
+                  onChange={(e) => setNewEntry({ ...newEntry, quality: e.target.value as any })}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#E26C73] focus:border-transparent"
+                >
+                  <option value="Poor">Poor</option>
+                  <option value="Fair">Fair</option>
+                  <option value="Good">Good</option>
+                  <option value="Excellent">Excellent</option>
+                </select>
+              </div>
+
+              <div className="space-y-2">
                 <Label htmlFor="bedtime">Bedtime</Label>
                 <Input
                   id="bedtime"
                   type="time"
                   value={newEntry.bedtime}
                   onChange={(e) => setNewEntry({ ...newEntry, bedtime: e.target.value })}
-                  className="mt-1"
                 />
               </div>
 
-              <div>
+              <div className="space-y-2">
                 <Label htmlFor="wakeTime">Wake Time</Label>
                 <Input
                   id="wakeTime"
                   type="time"
                   value={newEntry.wakeTime}
                   onChange={(e) => setNewEntry({ ...newEntry, wakeTime: e.target.value })}
-                  className="mt-1"
                 />
+              </div>
+
+              <div className="space-y-2 md:col-span-2">
+                <Label htmlFor="notes">Notes (optional)</Label>
+                <Textarea
+                  id="notes"
+                  placeholder="How did you sleep? Any observations?"
+                  value={newEntry.notes}
+                  onChange={(e) => setNewEntry({ ...newEntry, notes: e.target.value })}
+                  rows={3}
+                />
+              </div>
+
+              <div className="md:col-span-2 p-4 bg-[#E26C73]/5 rounded-lg">
+                <p className="text-sm text-gray-700">
+                  <strong>Estimated Sleep Duration:</strong> {(() => {
+                    const { hours, minutes } = calculateDuration(newEntry.bedtime, newEntry.wakeTime)
+                    return `${hours}h ${minutes}m`
+                  })()}
+                </p>
               </div>
             </div>
 
-            <div>
-              <Label htmlFor="quality">Sleep Quality</Label>
-              <select
-                id="quality"
-                value={newEntry.quality}
-                onChange={(e) => setNewEntry({ ...newEntry, quality: e.target.value })}
-                className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#E26C73] focus:border-transparent"
-              >
-                <option value="">Select quality</option>
-                <option value="Excellent">Excellent</option>
-                <option value="Good">Good</option>
-                <option value="Fair">Fair</option>
-                <option value="Poor">Poor</option>
-              </select>
-            </div>
-
-            <div>
-              <Label htmlFor="notes">Notes (optional)</Label>
-              <Input
-                id="notes"
-                type="text"
-                placeholder="How do you feel? Any dreams or disruptions?"
-                value={newEntry.notes}
-                onChange={(e) => setNewEntry({ ...newEntry, notes: e.target.value })}
-                className="mt-1"
-              />
-            </div>
-
-            <Button onClick={addEntry} className="w-full bg-[#E26C73] hover:bg-[#D55A60] text-white">
+            <Button onClick={addEntry} className="w-full mt-6 bg-[#E26C73] hover:bg-[#D55A60] text-white">
               <Plus className="mr-2 h-4 w-4" />
               Add Sleep Entry
             </Button>
           </CardContent>
         </Card>
 
-        <Card className="border-2 border-[#E26C73]/30">
+        {/* Sleep History */}
+        <Card className="mb-8 border-2 border-[#E26C73]/30">
           <CardHeader>
-            <CardTitle className="text-[#E26C73]">Sleep History</CardTitle>
+            <CardTitle className="text-[#E26C73] flex items-center gap-2">
+              <Calendar className="h-5 w-5" />
+              Sleep History
+            </CardTitle>
           </CardHeader>
           <CardContent>
             {sleepEntries.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                <Moon className="mx-auto h-12 w-12 mb-4 opacity-50" />
-                <p>No sleep entries logged yet. Add your first entry above!</p>
-              </div>
+              <p className="text-gray-500 text-center py-8">No sleep entries yet. Add your first entry above!</p>
             ) : (
               <div className="space-y-4">
                 {sleepEntries
                   .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
                   .map((entry) => {
-                    const duration = calculateDuration(entry.bedtime, entry.wakeTime)
+                    const { hours, minutes } = calculateDuration(entry.bedtime, entry.wakeTime)
                     return (
                       <div
                         key={entry.id}
-                        className="flex items-center justify-between p-4 bg-[#E26C73]/5 rounded-lg border border-[#E26C73]/20"
+                        className="flex items-start justify-between p-4 bg-gradient-to-br from-[#E26C73]/5 to-transparent rounded-lg border border-[#E26C73]/20"
                       >
-                        <div className="flex-1">
+                        <div className="flex-grow">
                           <div className="flex items-center gap-3 mb-2">
-                            <span className="font-semibold text-gray-900">{entry.quality}</span>
-                            <span className="text-sm text-gray-600">
-                              {duration.hours}h {duration.minutes}m
+                            <Badge className={getQualityColor(entry.quality)}>{entry.quality}</Badge>
+                            <span className="text-sm text-gray-600 flex items-center gap-1">
+                              <Calendar className="h-3 w-3" />
+                              {new Date(entry.date).toLocaleDateString()}
                             </span>
-                          </div>
-                          <div className="text-sm text-gray-600">
-                            {new Date(entry.date).toLocaleDateString("en-US", {
-                              weekday: "short",
-                              year: "numeric",
-                              month: "short",
-                              day: "numeric",
-                            })}
+                            <span className="text-sm text-gray-600 flex items-center gap-1">
+                              <Clock className="h-3 w-3" />
+                              {hours}h {minutes}m
+                            </span>
                           </div>
                           <div className="text-sm text-gray-600">
                             {entry.bedtime} → {entry.wakeTime}
                           </div>
-                          {entry.notes && <div className="text-sm text-gray-600 mt-1 italic">{entry.notes}</div>}
+                          {entry.notes && <p className="text-sm text-gray-700 mt-2">{entry.notes}</p>}
                         </div>
                         <Button
                           variant="ghost"
@@ -284,13 +315,16 @@ export default function SleepTrackerPage() {
           </CardContent>
         </Card>
 
-        <div className="mt-8 text-center">
-          <Link href="/">
-            <Button className="bg-[#E26C73] hover:bg-[#D55A60] text-white px-8 py-3">
-              <Home className="mr-2 h-5 w-5" />
-              Back to Home
-            </Button>
-          </Link>
+        {/* Back to Home Button */}
+        <div className="flex justify-center">
+          <Button
+            onClick={() => (window.location.href = "/")}
+            variant="outline"
+            className="border-[#E26C73] text-[#E26C73] hover:bg-[#E26C73] hover:text-white"
+          >
+            <Home className="mr-2 h-4 w-4" />
+            Back to Home
+          </Button>
         </div>
       </div>
     </div>

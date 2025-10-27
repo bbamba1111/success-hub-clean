@@ -1,12 +1,13 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
+import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Calendar, Plus, Trash2, Home } from 'lucide-react'
+import { Textarea } from "@/components/ui/textarea"
+import { Badge } from "@/components/ui/badge"
+import { Calendar, Dumbbell, Clock, TrendingUp, Target, Plus, Trash2, Home } from "lucide-react"
 
 interface WorkoutEntry {
   id: string
@@ -16,7 +17,7 @@ interface WorkoutEntry {
   notes: string
 }
 
-const workoutTypes = [
+const WORKOUT_TYPES = [
   "Radio Taiso",
   "Yoga",
   "Pilates",
@@ -55,34 +56,29 @@ export default function WorkoutPlannerPage() {
   })
 
   useEffect(() => {
+    // Mark dashboard as visited
     localStorage.setItem("dashboardVisited", "true")
-    const saved = localStorage.getItem("workouts")
-    if (saved) {
-      try {
-        setWorkouts(JSON.parse(saved))
-      } catch (e) {
-        console.error("Error loading workouts:", e)
-      }
+
+    // Load workouts from localStorage
+    const savedWorkouts = localStorage.getItem("workouts")
+    if (savedWorkouts) {
+      setWorkouts(JSON.parse(savedWorkouts))
     }
   }, [])
 
-  const saveWorkouts = (updatedWorkouts: WorkoutEntry[]) => {
-    setWorkouts(updatedWorkouts)
-    localStorage.setItem("workouts", JSON.stringify(updatedWorkouts))
-  }
-
   const addWorkout = () => {
-    if (!newWorkout.type) {
-      alert("Please select a workout type")
-      return
-    }
+    if (!newWorkout.type) return
 
     const workout: WorkoutEntry = {
       id: Date.now().toString(),
       ...newWorkout,
     }
 
-    saveWorkouts([...workouts, workout])
+    const updatedWorkouts = [...workouts, workout]
+    setWorkouts(updatedWorkouts)
+    localStorage.setItem("workouts", JSON.stringify(updatedWorkouts))
+
+    // Reset form
     setNewWorkout({
       date: new Date().toISOString().split("T")[0],
       type: "",
@@ -92,132 +88,165 @@ export default function WorkoutPlannerPage() {
   }
 
   const deleteWorkout = (id: string) => {
-    saveWorkouts(workouts.filter((w) => w.id !== id))
+    const updatedWorkouts = workouts.filter((w) => w.id !== id)
+    setWorkouts(updatedWorkouts)
+    localStorage.setItem("workouts", JSON.stringify(updatedWorkouts))
   }
 
   const getWeeklyStats = () => {
-    const oneWeekAgo = new Date()
-    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
+    const now = new Date()
+    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
 
-    const recentWorkouts = workouts.filter((w) => new Date(w.date) >= oneWeekAgo)
+    const weeklyWorkouts = workouts.filter((w) => {
+      const workoutDate = new Date(w.date)
+      return workoutDate >= weekAgo && workoutDate <= now
+    })
 
     return {
-      count: recentWorkouts.length,
-      totalMinutes: recentWorkouts.reduce((sum, w) => sum + w.duration, 0),
+      count: weeklyWorkouts.length,
+      totalMinutes: weeklyWorkouts.reduce((sum, w) => sum + w.duration, 0),
     }
   }
 
   const stats = getWeeklyStats()
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white py-12 px-6">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white py-12">
+      <div className="max-w-6xl mx-auto px-6">
+        {/* Header */}
         <div className="text-center mb-12">
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="w-16 h-16 bg-gradient-to-br from-[#7FB069] to-[#E26C73] rounded-full flex items-center justify-center">
+              <Dumbbell className="h-8 w-8 text-white" />
+            </div>
+          </div>
           <h1 className="text-4xl font-bold text-[#7FB069] mb-4">Workout Planner</h1>
-          <p className="text-lg text-gray-600">Track your 30-minute workday workout windows</p>
+          <p className="text-lg text-gray-600">Track your 30-minute workday workout sessions</p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 mb-8">
+        {/* Weekly Stats */}
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
           <Card className="border-2 border-[#7FB069]/30">
-            <CardHeader>
-              <CardTitle className="text-[#7FB069]">This Week</CardTitle>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-gray-600 flex items-center gap-2">
+                <Target className="h-4 w-4" />
+                Weekly Workouts
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-gray-900">{stats.count} workouts</div>
-              <div className="text-gray-600 mt-2">{stats.totalMinutes} minutes total</div>
+              <div className="text-3xl font-bold text-[#7FB069]">{stats.count}</div>
+              <p className="text-sm text-gray-500 mt-1">This week</p>
             </CardContent>
           </Card>
 
           <Card className="border-2 border-[#7FB069]/30">
-            <CardHeader>
-              <CardTitle className="text-[#7FB069]">Weekly Goal</CardTitle>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-gray-600 flex items-center gap-2">
+                <Clock className="h-4 w-4" />
+                Total Minutes
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-gray-900">{Math.min(stats.count, 4)}/4 days</div>
-              <div className="text-gray-600 mt-2">
-                {stats.count >= 4 ? "Goal achieved! 🎉" : `${4 - stats.count} more to go`}
+              <div className="text-3xl font-bold text-[#7FB069]">{stats.totalMinutes}</div>
+              <p className="text-sm text-gray-500 mt-1">This week</p>
+            </CardContent>
+          </Card>
+
+          <Card className="border-2 border-[#7FB069]/30">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-gray-600 flex items-center gap-2">
+                <TrendingUp className="h-4 w-4" />
+                Average Duration
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-[#7FB069]">
+                {stats.count > 0 ? Math.round(stats.totalMinutes / stats.count) : 0}
               </div>
+              <p className="text-sm text-gray-500 mt-1">Minutes per workout</p>
             </CardContent>
           </Card>
         </div>
 
+        {/* Add Workout Form */}
         <Card className="mb-8 border-2 border-[#7FB069]/30">
           <CardHeader>
-            <CardTitle className="text-[#7FB069]">Log New Workout</CardTitle>
+            <CardTitle className="text-[#7FB069] flex items-center gap-2">
+              <Plus className="h-5 w-5" />
+              Add New Workout
+            </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
+          <CardContent>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="space-y-2">
                 <Label htmlFor="date">Date</Label>
                 <Input
                   id="date"
                   type="date"
                   value={newWorkout.date}
                   onChange={(e) => setNewWorkout({ ...newWorkout, date: e.target.value })}
-                  className="mt-1"
                 />
               </div>
 
-              <div>
+              <div className="space-y-2">
                 <Label htmlFor="type">Workout Type</Label>
                 <select
                   id="type"
                   value={newWorkout.type}
                   onChange={(e) => setNewWorkout({ ...newWorkout, type: e.target.value })}
-                  className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#7FB069] focus:border-transparent"
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#7FB069] focus:border-transparent"
+                  required
                 >
                   <option value="">Select workout type</option>
-                  {workoutTypes.map((type) => (
+                  {WORKOUT_TYPES.map((type) => (
                     <option key={type} value={type}>
                       {type}
                     </option>
                   ))}
                 </select>
               </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="duration">Duration (minutes)</Label>
+                <Input
+                  id="duration"
+                  type="number"
+                  min="1"
+                  value={newWorkout.duration}
+                  onChange={(e) => setNewWorkout({ ...newWorkout, duration: Number.parseInt(e.target.value) || 30 })}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="notes">Notes (optional)</Label>
+                <Textarea
+                  id="notes"
+                  placeholder="How did you feel? Any observations?"
+                  value={newWorkout.notes}
+                  onChange={(e) => setNewWorkout({ ...newWorkout, notes: e.target.value })}
+                  rows={3}
+                />
+              </div>
             </div>
 
-            <div>
-              <Label htmlFor="duration">Duration (minutes)</Label>
-              <Input
-                id="duration"
-                type="number"
-                min="1"
-                max="120"
-                value={newWorkout.duration}
-                onChange={(e) => setNewWorkout({ ...newWorkout, duration: Number.parseInt(e.target.value) || 0 })}
-                className="mt-1"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="notes">Notes (optional)</Label>
-              <Input
-                id="notes"
-                type="text"
-                placeholder="How did you feel? Any achievements?"
-                value={newWorkout.notes}
-                onChange={(e) => setNewWorkout({ ...newWorkout, notes: e.target.value })}
-                className="mt-1"
-              />
-            </div>
-
-            <Button onClick={addWorkout} className="w-full bg-[#7FB069] hover:bg-[#6FA055] text-white">
+            <Button onClick={addWorkout} className="w-full mt-6 bg-[#7FB069] hover:bg-[#6FA055] text-white">
               <Plus className="mr-2 h-4 w-4" />
               Add Workout
             </Button>
           </CardContent>
         </Card>
 
-        <Card className="border-2 border-[#7FB069]/30">
+        {/* Workout History */}
+        <Card className="mb-8 border-2 border-[#7FB069]/30">
           <CardHeader>
-            <CardTitle className="text-[#7FB069]">Workout History</CardTitle>
+            <CardTitle className="text-[#7FB069] flex items-center gap-2">
+              <Calendar className="h-5 w-5" />
+              Workout History
+            </CardTitle>
           </CardHeader>
           <CardContent>
             {workouts.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                <Calendar className="mx-auto h-12 w-12 mb-4 opacity-50" />
-                <p>No workouts logged yet. Add your first workout above!</p>
-              </div>
+              <p className="text-gray-500 text-center py-8">No workouts logged yet. Add your first workout above!</p>
             ) : (
               <div className="space-y-4">
                 {workouts
@@ -225,22 +254,21 @@ export default function WorkoutPlannerPage() {
                   .map((workout) => (
                     <div
                       key={workout.id}
-                      className="flex items-center justify-between p-4 bg-[#7FB069]/5 rounded-lg border border-[#7FB069]/20"
+                      className="flex items-start justify-between p-4 bg-gradient-to-br from-[#7FB069]/5 to-transparent rounded-lg border border-[#7FB069]/20"
                     >
-                      <div className="flex-1">
+                      <div className="flex-grow">
                         <div className="flex items-center gap-3 mb-2">
-                          <span className="font-semibold text-gray-900">{workout.type}</span>
-                          <span className="text-sm text-gray-600">{workout.duration} min</span>
+                          <Badge className="bg-[#7FB069] text-white">{workout.type}</Badge>
+                          <span className="text-sm text-gray-600 flex items-center gap-1">
+                            <Calendar className="h-3 w-3" />
+                            {new Date(workout.date).toLocaleDateString()}
+                          </span>
+                          <span className="text-sm text-gray-600 flex items-center gap-1">
+                            <Clock className="h-3 w-3" />
+                            {workout.duration} min
+                          </span>
                         </div>
-                        <div className="text-sm text-gray-600">
-                          {new Date(workout.date).toLocaleDateString("en-US", {
-                            weekday: "short",
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          })}
-                        </div>
-                        {workout.notes && <div className="text-sm text-gray-600 mt-1 italic">{workout.notes}</div>}
+                        {workout.notes && <p className="text-sm text-gray-700 mt-2">{workout.notes}</p>}
                       </div>
                       <Button
                         variant="ghost"
@@ -257,13 +285,16 @@ export default function WorkoutPlannerPage() {
           </CardContent>
         </Card>
 
-        <div className="mt-8 text-center">
-          <Link href="/">
-            <Button className="bg-[#7FB069] hover:bg-[#6FA055] text-white px-8 py-3">
-              <Home className="mr-2 h-5 w-5" />
-              Back to Home
-            </Button>
-          </Link>
+        {/* Back to Home Button */}
+        <div className="flex justify-center">
+          <Button
+            onClick={() => (window.location.href = "/")}
+            variant="outline"
+            className="border-[#7FB069] text-[#7FB069] hover:bg-[#7FB069] hover:text-white"
+          >
+            <Home className="mr-2 h-4 w-4" />
+            Back to Home
+          </Button>
         </div>
       </div>
     </div>

@@ -3,74 +3,125 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Label } from "@/components/ui/label"
 import { Progress } from "@/components/ui/progress"
-import Link from "next/link"
-import { CheckCircle, ArrowRight } from 'lucide-react'
+import { Badge } from "@/components/ui/badge"
+import { ArrowRight, RotateCcw } from "lucide-react"
+import { saveAuditResults } from "@/utils/audit-storage"
+import { useRouter } from "next/navigation"
 
-interface Question {
-  id: string
-  category: string
-  text: string
-}
-
-interface AuditResults {
-  results: Array<{
-    category: string
-    score: number
-    total: number
-    percentage: number
-  }>
-  overallScore: number
-  date: string
-}
-
-const questions: Question[] = [
-  { id: "spiritual", category: "spiritual", text: "I regularly engage in spiritual practices (prayer, meditation, reflection)" },
-  { id: "mental", category: "mental", text: "I take time for mental wellness and manage stress effectively" },
-  { id: "physicalMovement", category: "physicalMovement", text: "I engage in regular physical activity and movement" },
-  { id: "physicalNourishment", category: "physicalNourishment", text: "I eat nutritious meals and maintain healthy eating habits" },
-  { id: "physicalSleep", category: "physicalSleep", text: "I get adequate, quality sleep consistently" },
-  { id: "emotional", category: "emotional", text: "I am aware of and manage my emotions effectively" },
-  { id: "personal", category: "personal", text: "I dedicate time to personal interests and self-development" },
-  { id: "intellectual", category: "intellectual", text: "I engage in learning and intellectual growth" },
-  { id: "professional", category: "professional", text: "I maintain healthy work boundaries and find satisfaction in my work" },
-  { id: "financial", category: "financial", text: "I feel secure about my financial situation and planning" },
-  { id: "environmental", category: "environmental", text: "My living and working spaces support my wellbeing" },
-  { id: "relational", category: "relational", text: "I nurture meaningful relationships with family and close ones" },
-  { id: "social", category: "social", text: "I maintain satisfying social connections and friendships" },
-  { id: "recreational", category: "recreational", text: "I regularly engage in fun and recreational activities" },
-  { id: "charitable", category: "charitable", text: "I contribute to my community through giving or volunteering" },
-]
-
-export const categoryLabels: Record<string, string> = {
-  spiritual: "Spiritual Wellness",
-  mental: "Mental Wellness", 
+export const categoryLabels = {
+  spiritual: "Spiritual Well-being",
+  mental: "Mental Health",
   physicalMovement: "Physical Movement",
   physicalNourishment: "Physical Nourishment",
-  physicalSleep: "Sleep Quality",
-  emotional: "Emotional Wellness",
-  personal: "Personal Development",
-  intellectual: "Intellectual Growth",
-  professional: "Professional Balance",
-  financial: "Financial Wellness",
+  physicalSleep: "Physical Sleep",
+  emotional: "Emotional Health",
+  personal: "Personal Growth",
+  intellectual: "Intellectual Development",
+  professional: "Professional Life",
+  financial: "Financial Health",
   environmental: "Environmental Wellness",
-  relational: "Family Relationships",
+  relational: "Relationships",
   social: "Social Connections",
   recreational: "Recreation & Fun",
-  charitable: "Community Contribution",
+  charitable: "Charitable Giving",
 }
+
+const questions = [
+  {
+    id: 1,
+    category: "spiritual",
+    question:
+      "In the past 30 days, how often have you connected to your spiritual life through prayer, study, fellowship, praise, music, meditation, nature, etc...?",
+  },
+  {
+    id: 2,
+    category: "mental",
+    question:
+      "In the past 30 days, how often have you effectively managed stress, made clear decisions, and maintained good mental health?",
+  },
+  {
+    id: 3,
+    category: "physicalMovement",
+    question: "In the past 30 days, how often have you engaged in intentional movement or exercise?",
+  },
+  {
+    id: 4,
+    category: "physicalNourishment",
+    question: "In the past 30 days, how often have you nourished your body with adequate hydration and healthy meals?",
+  },
+  {
+    id: 5,
+    category: "physicalSleep",
+    question: "In the past 30 days, how often have you gone to bed on time and gotten 8 hours of restorative sleep?",
+  },
+  {
+    id: 6,
+    category: "emotional",
+    question: "In the past 30 days, how often have you felt happy, balanced, peaceful, and joyful emotionally?",
+  },
+  {
+    id: 7,
+    category: "personal",
+    question: "In the past 30 days, how often have you made time for self-care and personal growth activities?",
+  },
+  {
+    id: 8,
+    category: "intellectual",
+    question: "In the past 30 days, how often have you engaged in learning something new or a skill-building activity?",
+  },
+  {
+    id: 9,
+    category: "professional",
+    question:
+      "In the past 30 days, how often have you shared your expertise through partnerships, collaboration, public speaking or publishing and/or expanded your professional visibility through media, podcast interviews or publicity?",
+  },
+  {
+    id: 10,
+    category: "financial",
+    question:
+      "In the past 30 days, how often have you focused intentionally on income/revenue generation, financial planning, retirement planning, business valuation and/or exit planning?",
+  },
+  {
+    id: 11,
+    category: "environmental",
+    question:
+      "In the past 30 days, how often have you made effort to create beauty, balance, or order in your home or office environment?",
+  },
+  {
+    id: 12,
+    category: "relational",
+    question:
+      "In the past 30 days, how often have you been attentive and present with your loved ones and in your closest relationships?",
+  },
+  {
+    id: 13,
+    category: "social",
+    question:
+      "In the past 30 days, how often have you engaged with your friends or supportive, like-minded individuals?",
+  },
+  {
+    id: 14,
+    category: "recreational",
+    question: "In the past 30 days, how often have you created space for joy, creativity, vacation, travel or play?",
+  },
+  {
+    id: 15,
+    category: "charitable",
+    question:
+      "In the past 30 days, how often have you contributed to supporting or inspiring others through donating, charity, volunteering or other philanthropic endeavors?",
+  },
+]
 
 export default function WorkLifeBalanceAudit() {
   const [currentQuestion, setCurrentQuestion] = useState(0)
-  const [answers, setAnswers] = useState<Record<string, number>>({})
-  const [showResults, setShowResults] = useState(false)
-  const [results, setResults] = useState<AuditResults | null>(null)
+  const [answers, setAnswers] = useState<Record<number, number>>({})
+  const [isComplete, setIsComplete] = useState(false)
+  const [results, setResults] = useState<any>(null)
+  const router = useRouter()
 
-  const handleAnswer = (value: number) => {
-    const newAnswers = { ...answers, [questions[currentQuestion].id]: value }
+  const handleAnswer = (questionId: number, score: number) => {
+    const newAnswers = { ...answers, [questionId]: score }
     setAnswers(newAnswers)
 
     if (currentQuestion < questions.length - 1) {
@@ -80,149 +131,216 @@ export default function WorkLifeBalanceAudit() {
     }
   }
 
-  const calculateResults = (finalAnswers: Record<string, number>) => {
-    const categoryScores: Record<string, { score: number; total: number }> = {}
+  const calculateResults = (finalAnswers: Record<number, number>) => {
+    const categoryScores: Record<string, number[]> = {}
 
+    // Group scores by category
     questions.forEach((question) => {
       const score = finalAnswers[question.id] || 0
       if (!categoryScores[question.category]) {
-        categoryScores[question.category] = { score: 0, total: 0 }
+        categoryScores[question.category] = []
       }
-      categoryScores[question.category].score += score
-      categoryScores[question.category].total += 5
+      categoryScores[question.category].push(score)
     })
 
-    const categoryResults = Object.entries(categoryScores).map(([category, { score, total }]) => ({
-      category,
-      score,
-      total,
-      percentage: Math.round((score / total) * 100),
-    }))
+    // Calculate average for each category
+    const categoryResults = Object.entries(categoryScores).map(([category, scores]) => {
+      const average = scores.reduce((sum, score) => sum + score, 0) / scores.length
+      const percentage = (average / 5) * 100
+      return {
+        category,
+        percentage: Math.round(percentage),
+        label: categoryLabels[category as keyof typeof categoryLabels],
+      }
+    })
 
-    const totalScore = categoryResults.reduce((sum, cat) => sum + cat.score, 0)
-    const totalPossible = categoryResults.reduce((sum, cat) => sum + cat.total, 0)
-    const overallScore = Math.round((totalScore / totalPossible) * 100)
+    // Calculate overall score
+    const overallScore = Math.round(
+      categoryResults.reduce((sum, result) => sum + result.percentage, 0) / categoryResults.length,
+    )
 
-    const auditResults: AuditResults = {
-      results: categoryResults,
+    const auditResults = {
       overallScore,
-      date: new Date().toISOString(),
+      results: categoryResults,
+      timestamp: Date.now(),
     }
 
     setResults(auditResults)
-    localStorage.setItem("auditResults", JSON.stringify(auditResults))
-    setShowResults(true)
+    setIsComplete(true)
+
+    // Save to localStorage
+    saveAuditResults(auditResults)
   }
 
-  const progress = ((currentQuestion + (answers[questions[currentQuestion]?.id] ? 1 : 0)) / questions.length) * 100
+  const restartAudit = () => {
+    setCurrentQuestion(0)
+    setAnswers({})
+    setIsComplete(false)
+    setResults(null)
+  }
 
-  if (showResults && results) {
+  const goToResults = () => {
+    router.push("/my-results")
+  }
+
+  const progress = ((currentQuestion + 1) / questions.length) * 100
+
+  if (isComplete && results) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white p-6">
+      <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white p-4">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-8">
+          {/* Header */}
+          <div className="text-center mb-8 pt-8">
             <div className="flex justify-center mb-6">
-              <div className="w-20 h-20 bg-gradient-to-br from-[#7FB069] to-[#E26C73] rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg">
-                M
-              </div>
+              <img
+                src="/images/logo.png"
+                alt="Make Time For More Logo"
+                width={80}
+                height={80}
+                className="rounded-full shadow-lg"
+              />
             </div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Your Work-Life Balance Audit Results</h1>
-            <p className="text-xl text-gray-600">Overall Score: {results.overallScore}%</p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">Audit Complete!</h1>
+            <p className="text-lg text-gray-600">Your work-life balance assessment is ready</p>
           </div>
 
-          <Card className="mb-8 border-2 border-[#7FB069]">
-            <CardHeader>
-              <CardTitle className="text-2xl text-[#7FB069]">Your Life Balance Overview</CardTitle>
+          {/* Results Summary Card */}
+          <Card className="bg-white shadow-lg border-2 border-[#7FB069]/20 mb-8">
+            <CardHeader className="text-center bg-gradient-to-r from-[#7FB069]/10 to-[#E26C73]/10">
+              <CardTitle className="text-2xl font-bold text-gray-900">Your Overall Score</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {results.results
-                  .sort((a, b) => a.percentage - b.percentage)
-                  .map((result) => (
-                    <div key={result.category}>
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="font-medium text-gray-900">{categoryLabels[result.category]}</span>
-                        <span className="text-sm font-semibold text-gray-600">{result.percentage}%</span>
-                      </div>
-                      <Progress value={result.percentage} className="h-2" />
-                    </div>
-                  ))}
+            <CardContent className="p-8">
+              <div className="text-center mb-8">
+                <div className="text-6xl font-bold text-[#7FB069] mb-4">{results.overallScore}%</div>
+                <Badge variant="secondary" className="bg-[#7FB069]/20 text-[#7FB069] text-lg px-4 py-2 font-semibold">
+                  {results.overallScore >= 80
+                    ? "Excellent Balance"
+                    : results.overallScore >= 70
+                      ? "Good Balance"
+                      : results.overallScore >= 60
+                        ? "Fair Balance"
+                        : "Needs Attention"}
+                </Badge>
+              </div>
+
+              <div className="text-center mb-8">
+                <p className="text-lg text-gray-700 mb-4">
+                  {results.overallScore >= 80
+                    ? "🎉 Congratulations on your excellent work-life balance!"
+                    : results.overallScore >= 70
+                      ? "🌱 You're on the right track! Your foundation is solid - let's elevate it to the next level together."
+                      : "💡 Great awareness! Recognizing these areas is the first step toward transformation. You're exactly where you need to be to create meaningful change."}
+                </p>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button
+                  onClick={goToResults}
+                  size="lg"
+                  className="bg-[#7FB069] hover:bg-[#6FA055] text-white px-8 py-3"
+                >
+                  View Detailed Results
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+                <Button
+                  onClick={restartAudit}
+                  variant="outline"
+                  size="lg"
+                  className="border-[#E26C73] text-[#E26C73] hover:bg-[#E26C73] hover:text-white px-8 py-3 bg-transparent"
+                >
+                  <RotateCcw className="mr-2 h-4 w-4" />
+                  Retake Audit
+                </Button>
               </div>
             </CardContent>
           </Card>
-
-          <div className="flex flex-col gap-4">
-            <Link href="/focus-areas">
-              <Button size="lg" className="w-full bg-[#7FB069] hover:bg-[#E26C73] text-white">
-                Choose Your Focus Areas
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-            <Link href="/">
-              <Button size="lg" variant="outline" className="w-full">
-                Back to Home
-              </Button>
-            </Link>
-          </div>
         </div>
       </div>
     )
   }
 
+  const currentQ = questions[currentQuestion]
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white p-6">
-      <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-8">
+    <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white p-4">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-8 pt-8">
           <div className="flex justify-center mb-6">
-            <div className="w-20 h-20 bg-gradient-to-br from-[#7FB069] to-[#E26C73] rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg">
-              M
-            </div>
+            <img
+              src="/images/logo.png"
+              alt="Make Time For More Logo"
+              width={80}
+              height={80}
+              className="rounded-full shadow-lg"
+            />
           </div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Work-Life Balance Audit</h1>
-          <p className="text-lg text-gray-600 mb-6">
-            Question {currentQuestion + 1} of {questions.length}
-          </p>
-          <Progress value={progress} className="h-3 mb-4" />
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">Work-Life Balance Audit</h1>
+          <p className="text-lg text-gray-600">Discover your current balance across 15 key life areas</p>
         </div>
 
-        <Card className="border-2 border-[#7FB069]">
+        {/* Progress Bar */}
+        <div className="mb-8">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-sm font-medium text-gray-700">
+              Question {currentQuestion + 1} of {questions.length}
+            </span>
+            <span className="text-sm font-medium text-[#7FB069]">{Math.round(progress)}% Complete</span>
+          </div>
+          <Progress value={progress} className="h-3" />
+        </div>
+
+        {/* Question Card */}
+        <Card className="bg-white shadow-lg border-2 border-[#7FB069]/20 mb-8">
           <CardHeader>
-            <Badge className="w-fit mb-4 bg-[#7FB069]">{categoryLabels[questions[currentQuestion].category]}</Badge>
-            <CardTitle className="text-2xl">{questions[currentQuestion].text}</CardTitle>
+            <div className="flex items-center gap-3 mb-4">
+              <Badge variant="secondary" className="bg-[#7FB069]/20 text-[#7FB069] text-xl font-bold px-4 py-2">
+                {categoryLabels[currentQ.category as keyof typeof categoryLabels]}
+              </Badge>
+            </div>
+            <CardTitle className="text-xl font-semibold text-gray-900 leading-relaxed">{currentQ.question}</CardTitle>
           </CardHeader>
           <CardContent>
-            <RadioGroup onValueChange={(value) => handleAnswer(Number.parseInt(value))}>
-              <div className="space-y-4">
+            <div className="space-y-3">
+              <p className="text-gray-600 mb-6">On a scale from 1 to 5 (1 being never and 5 being always)</p>
+
+              {/* Answer Options */}
+              <div className="grid gap-3">
                 {[
-                  { value: 5, label: "Strongly Agree", color: "bg-[#7FB069]" },
-                  { value: 4, label: "Agree", color: "bg-[#7FB069]/70" },
-                  { value: 3, label: "Neutral", color: "bg-gray-400" },
-                  { value: 2, label: "Disagree", color: "bg-[#E26C73]/70" },
-                  { value: 1, label: "Strongly Disagree", color: "bg-[#E26C73]" },
+                  { value: 5, label: "Always", color: "bg-[#2D5016] hover:bg-[#3A6B1E]" },
+                  { value: 4, label: "Often", color: "bg-[#4A7C2C] hover:bg-[#5A8F3A]" },
+                  { value: 3, label: "Sometimes", color: "bg-[#7FB069] hover:bg-[#8FC279]" },
+                  { value: 2, label: "Rarely", color: "bg-[#A8D08D] hover:bg-[#B8E09D]" },
+                  { value: 1, label: "Never", color: "bg-[#8FBE73] hover:bg-[#9FCE83]" },
                 ].map((option) => (
-                  <div
+                  <Button
                     key={option.value}
-                    className="flex items-center space-x-3 p-4 rounded-lg border-2 border-gray-200 hover:border-[#7FB069] transition-all cursor-pointer"
-                    onClick={() => handleAnswer(option.value)}
+                    onClick={() => handleAnswer(currentQ.id, option.value)}
+                    className={`${option.color} text-white font-medium py-4 text-left justify-start transition-all duration-200 hover:scale-105`}
+                    size="lg"
                   >
-                    <RadioGroupItem value={option.value.toString()} id={`option-${option.value}`} />
-                    <Label
-                      htmlFor={`option-${option.value}`}
-                      className="flex-1 cursor-pointer text-lg font-medium"
-                    >
-                      {option.label}
-                    </Label>
-                    <div className={`w-12 h-3 rounded ${option.color}`} />
-                  </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                        <span className="font-bold">{option.value}</span>
+                      </div>
+                      <span>{option.label}</span>
+                    </div>
+                  </Button>
                 ))}
               </div>
-            </RadioGroup>
+            </div>
           </CardContent>
         </Card>
 
+        {/* Navigation */}
         {currentQuestion > 0 && (
-          <div className="mt-6 text-center">
-            <Button variant="outline" onClick={() => setCurrentQuestion(currentQuestion - 1)}>
+          <div className="text-center">
+            <Button
+              onClick={() => setCurrentQuestion(currentQuestion - 1)}
+              variant="outline"
+              className="border-gray-300 text-gray-600 hover:bg-gray-50"
+            >
               Previous Question
             </Button>
           </div>

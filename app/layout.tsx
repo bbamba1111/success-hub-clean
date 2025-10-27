@@ -1,9 +1,11 @@
+import type React from "react"
 import type { Metadata } from "next"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "Make Time For More - Success Hub",
-  description: "Your Work-Life Balance Success Hub",
+  title: "Success Hub - Make Time For More",
+  description: "Your work-life balance success hub",
+    generator: 'v0.app'
 }
 
 export default function RootLayout({

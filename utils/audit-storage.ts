@@ -1,39 +1,50 @@
-export interface AuditResult {
+interface AuditResult {
   category: string
-  score: number
-  total: number
   percentage: number
+  label: string
 }
 
-export interface AuditData {
-  results: AuditResult[]
+interface AuditData {
   overallScore: number
-  date: string
+  results: AuditResult[]
+  timestamp: number
 }
 
 export function saveAuditResults(data: AuditData): void {
-  if (typeof window !== 'undefined') {
-    localStorage.setItem('auditResults', JSON.stringify(data))
+  try {
+    console.log("Saving audit results:", data)
+    localStorage.setItem("workLifeBalanceAuditResults", JSON.stringify(data))
+    console.log("Audit results saved successfully")
+  } catch (error) {
+    console.error("Error saving audit results:", error)
   }
 }
 
 export function getAuditResults(): AuditData | null {
-  if (typeof window !== 'undefined') {
-    const saved = localStorage.getItem('auditResults')
-    if (saved) {
-      try {
-        return JSON.parse(saved)
-      } catch (e) {
-        console.error('Error parsing audit results:', e)
-        return null
-      }
+  try {
+    console.log("Retrieving audit results from localStorage...")
+    const data = localStorage.getItem("workLifeBalanceAuditResults")
+    console.log("Raw localStorage data:", data)
+
+    if (!data) {
+      console.log("No audit results found in localStorage")
+      return null
     }
+
+    const parsedData = JSON.parse(data) as AuditData
+    console.log("Parsed audit data:", parsedData)
+    return parsedData
+  } catch (error) {
+    console.error("Error retrieving audit results:", error)
+    return null
   }
-  return null
 }
 
 export function clearAuditResults(): void {
-  if (typeof window !== 'undefined') {
-    localStorage.removeItem('auditResults')
+  try {
+    localStorage.removeItem("workLifeBalanceAuditResults")
+    console.log("Audit results cleared")
+  } catch (error) {
+    console.error("Error clearing audit results:", error)
   }
 }

@@ -5,7 +5,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowRight, Clock, Target, TrendingUp, Calendar, Zap, Moon, CheckCircle, Star } from 'lucide-react'
+import { ArrowRight, Clock, Target, TrendingUp, Calendar, Zap, Moon, CheckCircle, Star, Download } from "lucide-react"
 import CherryBlossomCountdown from "@/components/cherry-blossom-countdown"
 import WorkLifeBalanceSchedule from "@/components/work-life-balance-schedule"
 
@@ -13,6 +13,7 @@ export default function HomePage() {
   const [dashboardVisited, setDashboardVisited] = useState(false)
 
   useEffect(() => {
+    // Check if user has visited dashboard from planner/tracker
     const visited = localStorage.getItem("dashboardVisited")
     if (visited === "true") {
       setDashboardVisited(true)
@@ -32,11 +33,16 @@ export default function HomePage() {
       <div className="relative overflow-hidden bg-white">
         <div className="max-w-7xl mx-auto px-6 py-16">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left Content */}
             <div className="space-y-8">
               <div className="flex justify-center mb-6">
-                <div className="w-20 h-20 bg-gradient-to-br from-[#7FB069] to-[#E26C73] rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg">
-                  M
-                </div>
+                <img
+                  src="/images/logo.png"
+                  alt="Make Time For More Logo"
+                  width={104}
+                  height={104}
+                  className="rounded-full shadow-lg"
+                />
               </div>
 
               <div className="space-y-6">
@@ -65,6 +71,7 @@ export default function HomePage() {
               </div>
             </div>
 
+            {/* Right Image */}
             <div className="relative">
               <div className="rounded-2xl overflow-hidden shadow-2xl">
                 <img
@@ -78,13 +85,18 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Step 1 - Onboarding Section */}
+      {/* Onboarding Section - Complete Onboarding */}
       <div className="bg-gradient-to-br from-[#F5F1E8] to-white py-20">
         <div className="max-w-6xl mx-auto px-6">
+          {/* Step 1 Badge and Header */}
           <div className="flex items-center justify-center gap-3 mb-8">
-            <div className="w-20 h-20 bg-gradient-to-br from-[#7FB069] to-[#E26C73] rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg">
-              M
-            </div>
+            <img
+              src="/images/logo.png"
+              alt="Make Time For More Logo"
+              width={80}
+              height={80}
+              className="rounded-full shadow-lg"
+            />
             <Badge variant="secondary" className="bg-gradient-to-r from-[#7FB069] to-[#E26C73] text-white border-0">
               Step 1
             </Badge>
@@ -99,14 +111,19 @@ export default function HomePage() {
             </p>
           </div>
 
+          {/* Three Steps Grid */}
           <div className="grid lg:grid-cols-3 gap-6 mb-8">
             {/* Step 1.1 - Audit Card */}
             <Card className="bg-[#7FB069] border-0 text-white overflow-hidden">
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center text-white text-xl font-bold shadow-lg">
-                    M
-                  </div>
+                  <img
+                    src="/images/logo.png"
+                    alt="Make Time For More Logo"
+                    width={48}
+                    height={48}
+                    className="rounded-full shadow-lg"
+                  />
                   <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">
                     Step 1.1
                   </Badge>
@@ -175,9 +192,13 @@ export default function HomePage() {
             <Card className="bg-[#E26C73] border-0 text-white overflow-hidden">
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center text-white text-xl font-bold shadow-lg">
-                    M
-                  </div>
+                  <img
+                    src="/images/logo.png"
+                    alt="Make Time For More Logo"
+                    width={48}
+                    height={48}
+                    className="rounded-full shadow-lg"
+                  />
                   <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">
                     Step 1.2
                   </Badge>
@@ -248,9 +269,13 @@ export default function HomePage() {
             <Card className="bg-gradient-to-br from-[#7FB069] to-[#E26C73] border-0 text-white overflow-hidden">
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center text-white text-xl font-bold shadow-lg">
-                    M
-                  </div>
+                  <img
+                    src="/images/logo.png"
+                    alt="Make Time For More Logo"
+                    width={48}
+                    height={48}
+                    className="rounded-full shadow-lg"
+                  />
                   <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">
                     Step 1.3
                   </Badge>
@@ -288,25 +313,21 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                <div className="mt-6">
-                  <a
-                    href="https://docs.google.com/document/d/1IZ5qefGnMQpYJP8wMgQS3tVY6sj56CHcCpRBkOGpGjU/edit?tab=t.0"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block"
-                  >
-                    <Button
-                      size="lg"
-                      className="w-full bg-white text-[#7FB069] hover:bg-gray-50 border-2 border-white font-semibold"
-                    >
-                      Download The Checklist
-                    </Button>
-                  </a>
-                </div>
+                <a
+                  href="/images/prepare-for-experience-checklist.png"
+                  download="Make-Time-For-More-Preparation-Checklist.png"
+                  className="block mt-6"
+                >
+                  <Button className="w-full bg-white hover:bg-gray-50 text-[#7FB069] border-2 border-white font-semibold">
+                    <Download className="mr-2 h-4 w-4" />
+                    Download The Preparation Checklist
+                  </Button>
+                </a>
               </CardContent>
             </Card>
           </div>
 
+          {/* Important Note */}
           <div className="bg-white p-6 rounded-2xl shadow-lg border border-[#E26C73]">
             <p className="text-xl font-bold text-[#E26C73] text-center">
               Completing Onboarding is Mandatory to Make The Sunday Shift™ and Start Co-Working
@@ -319,15 +340,21 @@ export default function HomePage() {
       <div className="relative overflow-hidden py-20">
         <div className="absolute inset-0 bg-gradient-to-r from-[#7FB069]/10 to-[#E26C73]/10" />
         <div className="relative max-w-6xl mx-auto px-6">
+          {/* Step 2 Badge at Top */}
           <div className="flex items-center justify-center gap-3 mb-8">
-            <div className="w-20 h-20 bg-gradient-to-br from-[#7FB069] to-[#E26C73] rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg">
-              M
-            </div>
+            <img
+              src="/images/logo.png"
+              alt="Make Time For More Logo"
+              width={80}
+              height={80}
+              className="rounded-full shadow-lg"
+            />
             <Badge variant="secondary" className="bg-gradient-to-r from-[#7FB069] to-[#E26C73] text-white border-0">
               Step 2
             </Badge>
           </div>
 
+          {/* Header Text Above Image */}
           <div className="text-center mb-8">
             <h3 className="text-3xl font-bold bg-gradient-to-r from-[#7FB069] to-[#E26C73] bg-clip-text text-transparent mb-4">
               Make The Sunday Shift
@@ -337,14 +364,16 @@ export default function HomePage() {
             </p>
           </div>
 
+          {/* Cherry Blossom Countdown Component */}
           <div className="text-center mb-12">
             <CherryBlossomCountdown />
           </div>
 
+          {/* Content Grid */}
           <div className="flex justify-center">
             <div className="space-y-4 flex flex-col max-w-4xl w-full">
               <div className="grid md:grid-cols-2 gap-4">
-                <div className="flex items-center justify-center gap-3 text-gray-700 bg-white/80 p-3 rounded-lg shadow-sm">
+                <div className="flex items-center gap-3 text-gray-700 bg-white/80 p-3 rounded-lg shadow-sm">
                   <Clock className="w-5 h-5 text-[#7FB069] flex-shrink-0" />
                   <span className="font-semibold text-lg">Join Us Live: Sunday @ 1:00–2:00 PM ET</span>
                 </div>
@@ -355,10 +384,10 @@ export default function HomePage() {
                   rel="noopener noreferrer"
                   className="block"
                 >
-                  <div className="w-full h-full bg-white/80 hover:bg-white p-3 rounded-lg shadow-sm transition-all cursor-pointer flex items-center justify-center gap-2">
-                    <span className="text-2xl">🌸</span>
-                    <span className="font-semibold text-lg text-[#7FB069]">Click Here to Make The Sunday Shift™</span>
-                  </div>
+                  <Button className="w-full h-full bg-white hover:bg-gray-50 text-[#7FB069] border-2 border-[#7FB069] font-semibold py-3">
+                    Join The Sunday Shift
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
                 </a>
               </div>
             </div>
@@ -369,21 +398,28 @@ export default function HomePage() {
       {/* Step 3 - Co-Working Non-Negotiables Section */}
       <div className="bg-white py-20">
         <div className="max-w-6xl mx-auto px-6">
+          {/* Step 3 Badge at Top */}
           <div className="flex items-center justify-center gap-3 mb-8">
-            <div className="w-20 h-20 bg-gradient-to-br from-[#7FB069] to-[#E26C73] rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg">
-              M
-            </div>
+            <img
+              src="/images/logo.png"
+              alt="Make Time For More Logo"
+              width={80}
+              height={80}
+              className="rounded-full shadow-lg"
+            />
             <Badge variant="secondary" className="bg-[#7FB069] text-white border-0">
               Step 3
             </Badge>
           </div>
 
+          {/* Header Text Above Image */}
           <div className="text-center mb-12">
             <h3 className="text-3xl font-bold text-[#7FB069] mb-4">
               Break The Hustle Habit — Co-Work Your Non-Negotiables™
             </h3>
           </div>
 
+          {/* New Co-Working Women Image */}
           <div className="text-center mb-8">
             <div className="max-w-6xl mx-auto">
               <img
@@ -394,6 +430,7 @@ export default function HomePage() {
             </div>
           </div>
 
+          {/* Green Banner */}
           <div className="max-w-6xl mx-auto mb-8 -mt-4">
             <div className="bg-[#7FB069] text-white p-4 rounded-b-2xl shadow-lg text-center">
               <p className="text-lg lg:text-2xl font-medium leading-relaxed">
@@ -402,6 +439,7 @@ export default function HomePage() {
             </div>
           </div>
 
+          {/* Interactive Schedule Component */}
           <div className="rounded-2xl overflow-hidden mt-4">
             <WorkLifeBalanceSchedule />
           </div>
@@ -413,9 +451,13 @@ export default function HomePage() {
         <div className="text-center mb-12">
           <div className="max-w-2xl mx-auto mb-6">
             <div className="flex items-center justify-center gap-3 mb-8">
-              <div className="w-20 h-20 bg-gradient-to-br from-[#7FB069] to-[#E26C73] rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg">
-                M
-              </div>
+              <img
+                src="/images/logo.png"
+                alt="Make Time For More Logo"
+                width={80}
+                height={80}
+                className="rounded-full shadow-lg"
+              />
             </div>
             <img
               src="/images/cherry-blossom-suite-new.png"
@@ -850,9 +892,13 @@ export default function HomePage() {
           <div className="text-center mb-12">
             <div className="max-w-2xl mx-auto">
               <div className="flex items-center justify-center gap-3 mb-8">
-                <div className="w-20 h-20 bg-gradient-to-br from-[#7FB069] to-[#E26C73] rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg">
-                  M
-                </div>
+                <img
+                  src="/images/logo.png"
+                  alt="Make Time For More Logo"
+                  width={80}
+                  height={80}
+                  className="rounded-full shadow-lg"
+                />
               </div>
               <h2 className="text-3xl font-bold text-[#E26C73] mb-6">Join Our Facebook Community</h2>
               <p className="text-lg text-gray-600 mb-8">
@@ -887,9 +933,13 @@ export default function HomePage() {
       <div className="bg-white py-20">
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex items-center justify-center gap-3 mb-8">
-            <div className="w-20 h-20 bg-gradient-to-br from-[#7FB069] to-[#E26C73] rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg">
-              M
-            </div>
+            <img
+              src="/images/logo.png"
+              alt="Make Time For More Logo"
+              width={80}
+              height={80}
+              className="rounded-full shadow-lg"
+            />
             <Badge variant="secondary" className="bg-gradient-to-r from-[#E26C73] to-[#7FB069] text-white border-0">
               Week 4
             </Badge>
@@ -1007,9 +1057,13 @@ export default function HomePage() {
               {/* Green & Pink Gradient Header with Logo */}
               <div className="bg-gradient-to-r from-[#7FB069] to-[#E26C73] text-white py-12 px-6 rounded-t-2xl text-center mb-0">
                 <div className="flex items-center justify-center gap-3 mb-6">
-                  <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg">
-                    M
-                  </div>
+                  <img
+                    src="/images/logo.png"
+                    alt="Make Time For More Logo"
+                    width={80}
+                    height={80}
+                    className="rounded-full shadow-lg"
+                  />
                 </div>
                 <h2 className="text-3xl lg:text-4xl font-bold mb-4">Ready For More? Choose Your Next Level</h2>
                 <p className="text-xl text-white/90">
