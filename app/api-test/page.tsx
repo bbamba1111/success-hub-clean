@@ -180,7 +180,7 @@ export default function ApiTestPage() {
               </p>
               <div className="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm">
                 <div># OpenAI API Key (Required)</div>
-                <div>OPENAI_API_KEY=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</div>
+                <div>OPENAI_API_KEY=your_openai_api_key_here</div>
               </div>
             </div>
 

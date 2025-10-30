@@ -35,7 +35,7 @@
     "next": "14.2.5",
     "openai": "latest",
     "react": "latest",
-    "react-dom": "^18",
+    "react-dom": "18.3.1",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "ws": "latest",

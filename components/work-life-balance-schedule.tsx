@@ -234,19 +234,19 @@ function WorkLifeBalanceSchedule() {
                     : "bg-gray-50 border-l-3 border-gray-300"
                 }`}
               >
-                <div className="min-w-[150px] font-bold text-lg">{item.time}</div>
+                <div className="min-w-[100px] md:min-w-[150px] font-bold text-base md:text-lg">{item.time}</div>
 
-                <div className="flex-1 text-center px-4">
-                  <span className="text-lg font-medium">{item.activity}</span>
+                <div className="flex-1 text-center px-2 md:px-4">
+                  <span className="text-base md:text-lg font-medium">{item.activity}</span>
                 </div>
 
-                <div className="min-w-[280px] flex items-center justify-end gap-3">
+                <div className="min-w-[140px] md:min-w-[280px] flex items-center justify-end gap-1 md:gap-3">
                   {isActive && (
-                    <span className="text-[#E26C73] text-lg font-semibold italic animate-pulse whitespace-nowrap">
+                    <span className="text-[#E26C73] text-sm md:text-lg font-semibold italic animate-pulse whitespace-nowrap">
                       We're Here...
                     </span>
                   )}
-                  <Button asChild className={buttonClass}>
+                  <Button asChild className={`${buttonClass} text-sm md:text-base px-3 md:px-4`}>
                     <a href={item.joinLink} target="_blank" rel="noopener noreferrer">
                       {item.buttonText}
                     </a>
