@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Button } from "@/components/ui/button"
 
 interface ScheduleActivity {
   id: string
@@ -212,46 +211,49 @@ function WorkLifeBalanceSchedule() {
       </div>
 
       {/* Schedule Section */}
-      <div className="p-5 max-w-4xl mx-auto">
-        <div className="text-2xl font-bold mb-5 text-[#7FB069] text-center">
+      <div className="p-3 md:p-4 max-w-3xl mx-auto">
+        <div className="text-xl md:text-2xl font-bold mb-4 text-[#7FB069] text-center">
           Our 9-to-5 & Night Time Non-Negotiables Co-Working Schedule
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           {scheduleItems.map((item) => {
             const isActive = currentActivity === item.id
-            const buttonClass =
-              item.buttonStyle === "pink"
-                ? "bg-gradient-to-r from-[#E26C73] to-[#F4A6AB] hover:from-[#d15b61] hover:to-[#e89599] text-white"
-                : "bg-[#7FB069] hover:bg-[#6fa058] text-white"
 
             return (
               <div
                 key={item.id}
-                className={`flex items-center justify-between p-4 rounded-lg transition-all duration-300 ${
+                className={`flex items-center justify-between gap-0.5 md:gap-1 p-2 md:p-3 rounded-lg transition-all duration-300 ${
                   isActive
                     ? "bg-green-50 border-l-4 border-[#7FB069] shadow-md"
                     : "bg-gray-50 border-l-3 border-gray-300"
                 }`}
               >
-                <div className="min-w-[100px] md:min-w-[150px] font-bold text-base md:text-lg">{item.time}</div>
-
-                <div className="flex-1 text-center px-2 md:px-4">
-                  <span className="text-base md:text-lg font-medium">{item.activity}</span>
+                <div className="min-w-[28px] md:min-w-[49px] font-bold text-base md:text-lg flex-shrink-0">
+                  {item.time}
                 </div>
 
-                <div className="min-w-[140px] md:min-w-[280px] flex items-center justify-end gap-1 md:gap-3">
+                <div className="flex-1 flex flex-col items-center justify-center max-w-[68px] md:max-w-[135px]">
+                  <div className="text-base md:text-lg font-medium text-center whitespace-nowrap">{item.activity}</div>
                   {isActive && (
-                    <span className="text-[#E26C73] text-sm md:text-lg font-semibold italic animate-pulse whitespace-nowrap">
+                    <div className="text-[#E26C73] text-base md:text-lg font-semibold italic animate-pulse mt-0.5">
                       We're Here...
-                    </span>
+                    </div>
                   )}
-                  <Button asChild className={`${buttonClass} text-sm md:text-base px-3 md:px-4`}>
-                    <a href={item.joinLink} target="_blank" rel="noopener noreferrer">
-                      {item.buttonText}
-                    </a>
-                  </Button>
                 </div>
+
+                <a
+                  href={item.joinLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`min-w-[41px] md:min-w-[56px] px-3 py-1.5 md:px-4 md:py-2 rounded text-white text-xs md:text-sm font-semibold transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg flex-shrink-0 text-center ${
+                    item.buttonStyle === "green"
+                      ? "bg-[#7FB069]/80 hover:bg-[#7FB069]/90"
+                      : "bg-[#E26C73]/80 hover:bg-[#E26C73]/90"
+                  }`}
+                >
+                  {item.buttonText}
+                </a>
               </div>
             )
           })}
