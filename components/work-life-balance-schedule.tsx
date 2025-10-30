@@ -228,22 +228,24 @@ function WorkLifeBalanceSchedule() {
             return (
               <div
                 key={item.id}
-                className={`flex items-center p-4 rounded-lg transition-all duration-300 ${
+                className={`flex items-center justify-between p-4 rounded-lg transition-all duration-300 ${
                   isActive
                     ? "bg-green-50 border-l-4 border-[#7FB069] shadow-md"
                     : "bg-gray-50 border-l-3 border-gray-300"
                 }`}
               >
                 <div className="min-w-[150px] font-bold text-lg">{item.time}</div>
-                <div className="flex-1 text-center flex items-center justify-center gap-2">
+
+                <div className="flex-1 text-center px-4">
                   <span className="text-lg font-medium">{item.activity}</span>
+                </div>
+
+                <div className="min-w-[280px] flex items-center justify-end gap-3">
                   {isActive && (
-                    <span className="text-[#E26C73] text-sm italic font-light animate-pulse whitespace-nowrap">
-                      In Session
+                    <span className="text-[#E26C73] text-lg font-semibold italic animate-pulse whitespace-nowrap">
+                      We're Here...
                     </span>
                   )}
-                </div>
-                <div className="min-w-[130px] flex justify-end">
                   <Button asChild className={buttonClass}>
                     <a href={item.joinLink} target="_blank" rel="noopener noreferrer">
                       {item.buttonText}

@@ -231,7 +231,7 @@ export default function CherryBlossomCountdown() {
         className="relative w-full h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden mb-5 rounded-2xl shadow-2xl"
       >
         <img
-          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1akick-P2UP8ICvs4G1iTkVYmy5CEDFsMtTIB.png"
+          src="/images/design-mode/1akick.png"
           alt="Women enjoying tea under cherry blossoms"
           className="w-full h-full object-cover"
         />

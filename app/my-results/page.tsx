@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import SimpleChatModal from "@/components/simple-chat-modal"
 import {
   ArrowLeft,
   RotateCcw,
@@ -23,7 +24,6 @@ import {
   Gamepad2,
   Users2,
   Gift,
-  ExternalLink,
   Copy,
   Check,
 } from "lucide-react"
@@ -82,6 +82,9 @@ export default function MyResultsPage() {
   const [auditData, setAuditData] = useState<AuditData | null>(null)
   const [userName, setUserName] = useState("")
   const [copied, setCopied] = useState(false)
+  const [isChatOpen, setIsChatOpen] = useState(false)
+  const [chatContext, setChatContext] = useState("")
+  const [chatTitle, setChatTitle] = useState("")
 
   useEffect(() => {
     const data = getAuditResults()
@@ -157,6 +160,12 @@ Please provide personalized insights and recommendations based on these results.
     } catch (err) {
       console.error("Failed to copy text: ", err)
     }
+  }
+
+  const openChat = (context: string, title: string) => {
+    setChatContext(context)
+    setChatTitle(title)
+    setIsChatOpen(true)
   }
 
   return (
@@ -502,7 +511,10 @@ Please provide personalized insights and recommendations based on these results.
         {/* Cherry Blossom Audit Review Section */}
         <div className="mb-12">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Get Deeper Insights with Cherry Blossom AI</h2>
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <img src="/images/logo.png" alt="Cherry Blossom Logo" className="w-12 h-12 rounded-full" />
+              <h2 className="text-2xl font-bold text-gray-900">Get Deeper Insights with Cherry Blossom AI</h2>
+            </div>
             <p className="text-gray-600 mb-6">
               Share your audit results with Cherry Blossom AI for personalized insights and recommendations
             </p>
@@ -614,38 +626,15 @@ Please provide personalized insights and recommendations based on these results.
                     <div className="w-6 h-6 bg-[#E26C73] text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
                       3
                     </div>
-                    <p className="text-gray-700">
-                      Create a free OpenAI account at{" "}
-                      <a
-                        href="https://openai.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-[#E26C73] hover:underline font-medium"
-                      >
-                        openai.com
-                      </a>{" "}
-                      (required to access Cherry Blossom)
-                    </p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-[#E26C73] text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
-                      4
-                    </div>
                     <p className="text-gray-700">Paste your results and get personalized insights</p>
                   </div>
                 </div>
 
                 <div className="flex justify-center pt-4">
                   <Button
-                    onClick={() =>
-                      window.open(
-                        "https://chatgpt.com/g/g-68d2da76c4d881919bf0ff4131ac8ca8-your-work-life-balance-audit-review-2-0",
-                        "_blank",
-                      )
-                    }
+                    onClick={() => openChat("audit-review", "Review Your Audit with Cherry Blossom")}
                     className="bg-gradient-to-r from-[#E26C73] to-[#7FB069] hover:from-[#D55A60] hover:to-[#6FA055] text-white px-8 py-3"
                   >
-                    <ExternalLink className="w-4 h-4 mr-2" />
                     Review Your Audit with Cherry Blossom
                   </Button>
                 </div>
@@ -654,6 +643,13 @@ Please provide personalized insights and recommendations based on these results.
           </Card>
         </div>
       </div>
+
+      <SimpleChatModal
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+        context={chatContext}
+        title={chatTitle}
+      />
     </div>
   )
 }

@@ -25,7 +25,7 @@ interface CherryBlossomChatProps {
 export default function CherryBlossomChat({
   isOpen,
   onClose,
-  title = "Cherry Blossom AI Assistant",
+  title = "Chat & Plan with Cherry Blossom",
 }: CherryBlossomChatProps) {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")

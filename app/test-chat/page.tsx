@@ -42,7 +42,7 @@ export default function TestChatPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 to-green-50 p-8">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">🌸 Test Cherry Blossom Chat</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-8">🌸 Chat & Plan with Cherry Blossom</h1>
 
         <div className="bg-white rounded-lg shadow-lg p-6 space-y-4">
           <div>

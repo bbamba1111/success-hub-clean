@@ -104,6 +104,27 @@ export default function SleepTrackerPage() {
     }
   }
 
+  const encouragingMessages = [
+    "Good for you!",
+    "Great job!",
+    "Awesome YOU!",
+    "You're crushing it!",
+    "Keep it up!",
+    "Sleep champion!",
+    "Well done!",
+    "You're amazing!",
+    "Fantastic work!",
+    "Sleep goals achieved!",
+  ]
+
+  const getEncouragingMessage = () => {
+    return encouragingMessages[Math.floor(Math.random() * encouragingMessages.length)]
+  }
+
+  const shouldShowEncouragement = (hours: number, quality: string) => {
+    return hours >= 8 && hours <= 9 && (quality === "Good" || quality === "Excellent")
+  }
+
   const getQualityColor = (quality: string) => {
     switch (quality) {
       case "Excellent":
@@ -132,47 +153,47 @@ export default function SleepTrackerPage() {
             </div>
           </div>
           <h1 className="text-4xl font-bold text-[#E26C73] mb-4">Sleep Tracker</h1>
-          <p className="text-lg text-gray-600">Monitor your sleep patterns and quality</p>
+          <p className="text-2xl text-gray-600">Monitor your sleep patterns and quality</p>
         </div>
 
         {/* Weekly Stats */}
         <div className="grid md:grid-cols-3 gap-6 mb-8">
           <Card className="border-2 border-[#E26C73]/30">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600 flex items-center gap-2">
+              <CardTitle className="text-xl font-medium text-gray-600 flex items-center gap-2">
                 <Target className="h-4 w-4" />
                 Nights Tracked
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-[#E26C73]">{stats.count}</div>
-              <p className="text-sm text-gray-500 mt-1">This week</p>
+              <p className="text-xl text-gray-500 mt-1">This week</p>
             </CardContent>
           </Card>
 
           <Card className="border-2 border-[#E26C73]/30">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600 flex items-center gap-2">
+              <CardTitle className="text-xl font-medium text-gray-600 flex items-center gap-2">
                 <Clock className="h-4 w-4" />
                 Average Sleep
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-[#E26C73]">{stats.averageHours.toFixed(1)}h</div>
-              <p className="text-sm text-gray-500 mt-1">Per night</p>
+              <p className="text-xl text-gray-500 mt-1">Per night</p>
             </CardContent>
           </Card>
 
           <Card className="border-2 border-[#E26C73]/30">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600 flex items-center gap-2">
+              <CardTitle className="text-xl font-medium text-gray-600 flex items-center gap-2">
                 <TrendingUp className="h-4 w-4" />
                 Sleep Goal
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-[#E26C73]">7-9h</div>
-              <p className="text-sm text-gray-500 mt-1">Recommended</p>
+              <p className="text-xl text-gray-500 mt-1">Recommended</p>
             </CardContent>
           </Card>
         </div>
@@ -188,7 +209,9 @@ export default function SleepTrackerPage() {
           <CardContent>
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="date">Date</Label>
+                <Label htmlFor="date" className="text-xl">
+                  Date
+                </Label>
                 <Input
                   id="date"
                   type="date"
@@ -198,12 +221,14 @@ export default function SleepTrackerPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="quality">Sleep Quality</Label>
+                <Label htmlFor="quality" className="text-xl">
+                  Sleep Quality
+                </Label>
                 <select
                   id="quality"
                   value={newEntry.quality}
                   onChange={(e) => setNewEntry({ ...newEntry, quality: e.target.value as any })}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#E26C73] focus:border-transparent"
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#E26C73] focus:border-transparent text-xl"
                 >
                   <option value="Poor">Poor</option>
                   <option value="Fair">Fair</option>
@@ -213,7 +238,9 @@ export default function SleepTrackerPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="bedtime">Bedtime</Label>
+                <Label htmlFor="bedtime" className="text-xl">
+                  Bedtime
+                </Label>
                 <Input
                   id="bedtime"
                   type="time"
@@ -223,7 +250,9 @@ export default function SleepTrackerPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="wakeTime">Wake Time</Label>
+                <Label htmlFor="wakeTime" className="text-xl">
+                  Wake Time
+                </Label>
                 <Input
                   id="wakeTime"
                   type="time"
@@ -233,18 +262,21 @@ export default function SleepTrackerPage() {
               </div>
 
               <div className="space-y-2 md:col-span-2">
-                <Label htmlFor="notes">Notes (optional)</Label>
+                <Label htmlFor="notes" className="text-xl">
+                  Notes (optional)
+                </Label>
                 <Textarea
                   id="notes"
                   placeholder="How did you sleep? Any observations?"
                   value={newEntry.notes}
                   onChange={(e) => setNewEntry({ ...newEntry, notes: e.target.value })}
                   rows={3}
+                  className="text-xl"
                 />
               </div>
 
               <div className="md:col-span-2 p-4 bg-[#E26C73]/5 rounded-lg">
-                <p className="text-sm text-gray-700">
+                <p className="text-xl text-gray-700">
                   <strong>Estimated Sleep Duration:</strong> {(() => {
                     const { hours, minutes } = calculateDuration(newEntry.bedtime, newEntry.wakeTime)
                     return `${hours}h ${minutes}m`
@@ -253,7 +285,7 @@ export default function SleepTrackerPage() {
               </div>
             </div>
 
-            <Button onClick={addEntry} className="w-full mt-6 bg-[#E26C73] hover:bg-[#D55A60] text-white">
+            <Button onClick={addEntry} className="w-full mt-6 bg-[#E26C73] hover:bg-[#D55A60] text-white text-xl py-6">
               <Plus className="mr-2 h-4 w-4" />
               Add Sleep Entry
             </Button>
@@ -270,34 +302,43 @@ export default function SleepTrackerPage() {
           </CardHeader>
           <CardContent>
             {sleepEntries.length === 0 ? (
-              <p className="text-gray-500 text-center py-8">No sleep entries yet. Add your first entry above!</p>
+              <p className="text-gray-500 text-center py-8 text-xl">
+                No sleep entries yet. Add your first entry above!
+              </p>
             ) : (
               <div className="space-y-4">
                 {sleepEntries
                   .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
                   .map((entry) => {
                     const { hours, minutes } = calculateDuration(entry.bedtime, entry.wakeTime)
+                    const showEncouragement = shouldShowEncouragement(hours, entry.quality)
+
                     return (
                       <div
                         key={entry.id}
                         className="flex items-start justify-between p-4 bg-gradient-to-br from-[#E26C73]/5 to-transparent rounded-lg border border-[#E26C73]/20"
                       >
                         <div className="flex-grow">
-                          <div className="flex items-center gap-3 mb-2">
+                          <div className="flex items-center gap-3 mb-2 flex-wrap">
                             <Badge className={getQualityColor(entry.quality)}>{entry.quality}</Badge>
-                            <span className="text-sm text-gray-600 flex items-center gap-1">
+                            <span className="text-xl text-gray-600 flex items-center gap-1">
                               <Calendar className="h-3 w-3" />
                               {new Date(entry.date).toLocaleDateString()}
                             </span>
-                            <span className="text-sm text-gray-600 flex items-center gap-1">
+                            <span className="text-xl text-gray-600 flex items-center gap-1">
                               <Clock className="h-3 w-3" />
                               {hours}h {minutes}m
                             </span>
+                            {showEncouragement && (
+                              <span className="text-xl font-semibold text-[#E26C73] flex items-center gap-1">
+                                🌸 {getEncouragingMessage()}
+                              </span>
+                            )}
                           </div>
-                          <div className="text-sm text-gray-600">
+                          <div className="text-xl text-gray-600">
                             {entry.bedtime} → {entry.wakeTime}
                           </div>
-                          {entry.notes && <p className="text-sm text-gray-700 mt-2">{entry.notes}</p>}
+                          {entry.notes && <p className="text-xl text-gray-700 mt-2">{entry.notes}</p>}
                         </div>
                         <Button
                           variant="ghost"

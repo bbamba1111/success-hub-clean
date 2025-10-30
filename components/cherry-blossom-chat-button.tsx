@@ -50,3 +50,5 @@ export default function CherryBlossomChatButton({
     </>
   )
 }
+
+export { CherryBlossomChatButton }

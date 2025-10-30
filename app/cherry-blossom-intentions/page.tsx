@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import SimpleChatModal from "@/components/simple-chat-modal"
 import {
   Target,
   Heart,
@@ -25,9 +26,7 @@ import {
   Users2,
   Gift,
   Copy,
-  Info,
   Edit,
-  ExternalLink,
 } from "lucide-react"
 import Link from "next/link"
 import { getAuditResults } from "@/utils/audit-storage"
@@ -85,6 +84,7 @@ export default function CherryBlossomIntentions() {
   const [selectedFocusAreas, setSelectedFocusAreas] = useState<string[]>([])
   const [userName, setUserName] = useState("")
   const [copied, setCopied] = useState(false)
+  const [isChatOpen, setIsChatOpen] = useState(false)
 
   useEffect(() => {
     // Load audit data
@@ -181,11 +181,8 @@ Please help me create specific, actionable intentions using the GIV•EN™ Fram
     }
   }
 
-  const openCherryBlossomGPT = () => {
-    window.open(
-      "https://chatgpt.com/g/g-67ec80061e1c819192bc80c37a7ee320-set-your-desired-work-lifestyle-intention",
-      "_blank",
-    )
+  const openIntentionChat = () => {
+    setIsChatOpen(true)
   }
 
   return (
@@ -324,36 +321,14 @@ Please help me create specific, actionable intentions using the GIV•EN™ Fram
                   <div className="w-6 h-6 bg-white border-2 border-gray-300 text-black rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
                     3
                   </div>
-                  <p className="text-gray-700">Create a free OpenAI account if you don't have one</p>
+                  <p className="text-gray-700">Paste your prompt and get guided intention setting</p>
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="w-6 h-6 bg-white border-2 border-gray-300 text-black rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
                     4
                   </div>
-                  <p className="text-gray-700">Paste your prompt and get guided intention setting</p>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-white border-2 border-gray-300 text-black rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
-                    5
-                  </div>
                   <p className="text-gray-700">Create your personalized 28-day transformation plan</p>
                 </div>
-              </div>
-
-              {/* OpenAI Notice - Light pink and green gradient */}
-              <div className="flex items-start gap-3 p-4 bg-gradient-to-r from-pink-50 to-green-50 border border-pink-200 rounded-lg mb-6">
-                <Info className="w-5 h-5 text-pink-600 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-gray-800">
-                  A free OpenAI account is required. Sign up at{" "}
-                  <a
-                    href="https://chat.openai.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-pink-600 hover:text-pink-800 underline"
-                  >
-                    chat.openai.com
-                  </a>
-                </p>
               </div>
 
               {/* Intention Prompt Section */}
@@ -424,7 +399,7 @@ Please help me create specific, actionable intentions using the GIV•EN™ Fram
         {selectedAreas.length > 0 && (
           <div className="mt-8 mb-8">
             <Button
-              onClick={openCherryBlossomGPT}
+              onClick={openIntentionChat}
               className="w-full bg-gradient-to-r from-[#E26C73] to-[#7FB069] hover:from-[#D55A60] hover:to-[#6FA055] text-white py-4 text-lg font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
             >
               <img
@@ -435,11 +410,18 @@ Please help me create specific, actionable intentions using the GIV•EN™ Fram
                 className="rounded-full shadow-lg mr-3"
               />
               Set Your 28-Day Intentions
-              <ExternalLink className="w-5 h-5 ml-2" />
             </Button>
           </div>
         )}
       </div>
+
+      {/* SimpleChatModal Component */}
+      <SimpleChatModal
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+        context="intention-setting"
+        title="Set Your 28-Day Intentions"
+      />
     </div>
   )
 }

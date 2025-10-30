@@ -13,7 +13,7 @@ interface WorkoutEntry {
   id: string
   date: string
   type: string
-  duration: number
+  duration: number | string
   notes: string
 }
 
@@ -45,6 +45,21 @@ const WORKOUT_TYPES = [
   "Rock Climbing",
   "Other",
 ]
+
+const ENCOURAGING_MESSAGES = [
+  "You're crushing it!",
+  "Way to go!",
+  "Keep up the amazing work!",
+  "You're unstoppable!",
+  "Fantastic effort!",
+  "You're a rockstar!",
+  "Incredible dedication!",
+  "You're on fire!",
+]
+
+const getRandomMessage = () => {
+  return ENCOURAGING_MESSAGES[Math.floor(Math.random() * ENCOURAGING_MESSAGES.length)]
+}
 
 export default function WorkoutPlannerPage() {
   const [workouts, setWorkouts] = useState<WorkoutEntry[]>([])
@@ -104,7 +119,7 @@ export default function WorkoutPlannerPage() {
 
     return {
       count: weeklyWorkouts.length,
-      totalMinutes: weeklyWorkouts.reduce((sum, w) => sum + w.duration, 0),
+      totalMinutes: weeklyWorkouts.reduce((sum, w) => sum + (typeof w.duration === "number" ? w.duration : 0), 0),
     }
   }
 
@@ -121,40 +136,40 @@ export default function WorkoutPlannerPage() {
             </div>
           </div>
           <h1 className="text-4xl font-bold text-[#7FB069] mb-4">Workout Planner</h1>
-          <p className="text-lg text-gray-600">Track your 30-minute workday workout sessions</p>
+          <p className="text-xl text-gray-600">Track your 30-minute workday workout sessions</p>
         </div>
 
         {/* Weekly Stats */}
         <div className="grid md:grid-cols-3 gap-6 mb-8">
           <Card className="border-2 border-[#7FB069]/30">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600 flex items-center gap-2">
+              <CardTitle className="text-xl font-medium text-gray-600 flex items-center gap-2">
                 <Target className="h-4 w-4" />
                 Weekly Workouts
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-[#7FB069]">{stats.count}</div>
-              <p className="text-sm text-gray-500 mt-1">This week</p>
+              <p className="text-xl text-gray-500 mt-1">This week</p>
             </CardContent>
           </Card>
 
           <Card className="border-2 border-[#7FB069]/30">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600 flex items-center gap-2">
+              <CardTitle className="text-xl font-medium text-gray-600 flex items-center gap-2">
                 <Clock className="h-4 w-4" />
                 Total Minutes
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-[#7FB069]">{stats.totalMinutes}</div>
-              <p className="text-sm text-gray-500 mt-1">This week</p>
+              <p className="text-xl text-gray-500 mt-1">This week</p>
             </CardContent>
           </Card>
 
           <Card className="border-2 border-[#7FB069]/30">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600 flex items-center gap-2">
+              <CardTitle className="text-xl font-medium text-gray-600 flex items-center gap-2">
                 <TrendingUp className="h-4 w-4" />
                 Average Duration
               </CardTitle>
@@ -163,7 +178,7 @@ export default function WorkoutPlannerPage() {
               <div className="text-3xl font-bold text-[#7FB069]">
                 {stats.count > 0 ? Math.round(stats.totalMinutes / stats.count) : 0}
               </div>
-              <p className="text-sm text-gray-500 mt-1">Minutes per workout</p>
+              <p className="text-xl text-gray-500 mt-1">Minutes per workout</p>
             </CardContent>
           </Card>
         </div>
@@ -179,22 +194,27 @@ export default function WorkoutPlannerPage() {
           <CardContent>
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="date">Date</Label>
+                <Label htmlFor="date" className="text-xl">
+                  Date
+                </Label>
                 <Input
                   id="date"
                   type="date"
                   value={newWorkout.date}
                   onChange={(e) => setNewWorkout({ ...newWorkout, date: e.target.value })}
+                  className="text-xl"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="type">Workout Type</Label>
+                <Label htmlFor="type" className="text-xl">
+                  Workout Type
+                </Label>
                 <select
                   id="type"
                   value={newWorkout.type}
                   onChange={(e) => setNewWorkout({ ...newWorkout, type: e.target.value })}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#7FB069] focus:border-transparent"
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#7FB069] focus:border-transparent text-xl"
                   required
                 >
                   <option value="">Select workout type</option>
@@ -207,30 +227,50 @@ export default function WorkoutPlannerPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="duration">Duration (minutes)</Label>
+                <Label htmlFor="duration" className="text-xl">
+                  Duration (minutes)
+                </Label>
                 <Input
                   id="duration"
                   type="number"
                   min="1"
                   value={newWorkout.duration}
-                  onChange={(e) => setNewWorkout({ ...newWorkout, duration: Number.parseInt(e.target.value) || 30 })}
+                  onChange={(e) => {
+                    const value = e.target.value
+                    setNewWorkout({
+                      ...newWorkout,
+                      duration: value === "" ? ("" as any) : Number.parseInt(value) || 0,
+                    })
+                  }}
+                  onBlur={(e) => {
+                    if (e.target.value === "" || Number.parseInt(e.target.value) < 1) {
+                      setNewWorkout({ ...newWorkout, duration: 30 })
+                    }
+                  }}
+                  className="text-xl"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="notes">Notes (optional)</Label>
+                <Label htmlFor="notes" className="text-xl">
+                  Notes (optional)
+                </Label>
                 <Textarea
                   id="notes"
                   placeholder="How did you feel? Any observations?"
                   value={newWorkout.notes}
                   onChange={(e) => setNewWorkout({ ...newWorkout, notes: e.target.value })}
                   rows={3}
+                  className="text-xl"
                 />
               </div>
             </div>
 
-            <Button onClick={addWorkout} className="w-full mt-6 bg-[#7FB069] hover:bg-[#6FA055] text-white">
-              <Plus className="mr-2 h-4 w-4" />
+            <Button
+              onClick={addWorkout}
+              className="w-full mt-6 bg-[#7FB069] hover:bg-[#6FA055] text-white text-xl py-6"
+            >
+              <Plus className="mr-2 h-5 w-5" />
               Add Workout
             </Button>
           </CardContent>
@@ -246,7 +286,9 @@ export default function WorkoutPlannerPage() {
           </CardHeader>
           <CardContent>
             {workouts.length === 0 ? (
-              <p className="text-gray-500 text-center py-8">No workouts logged yet. Add your first workout above!</p>
+              <p className="text-xl text-gray-500 text-center py-8">
+                No workouts logged yet. Add your first workout above!
+              </p>
             ) : (
               <div className="space-y-4">
                 {workouts
@@ -258,17 +300,22 @@ export default function WorkoutPlannerPage() {
                     >
                       <div className="flex-grow">
                         <div className="flex items-center gap-3 mb-2">
-                          <Badge className="bg-[#7FB069] text-white">{workout.type}</Badge>
-                          <span className="text-sm text-gray-600 flex items-center gap-1">
-                            <Calendar className="h-3 w-3" />
+                          <Badge className="bg-[#7FB069] text-white text-xl px-3 py-1">{workout.type}</Badge>
+                          <span className="text-xl text-gray-600 flex items-center gap-1">
+                            <Calendar className="h-4 w-4" />
                             {new Date(workout.date).toLocaleDateString()}
                           </span>
-                          <span className="text-sm text-gray-600 flex items-center gap-1">
-                            <Clock className="h-3 w-3" />
-                            {workout.duration} min
+                          <span className="text-xl text-gray-600 flex items-center gap-1">
+                            <Clock className="h-4 w-4" />
+                            {typeof workout.duration === "number" ? workout.duration : 0} min
                           </span>
                         </div>
-                        {workout.notes && <p className="text-sm text-gray-700 mt-2">{workout.notes}</p>}
+                        {workout.notes && <p className="text-xl text-gray-700 mt-2">{workout.notes}</p>}
+                        <div className="mt-3 flex items-center gap-2">
+                          <span className="text-2xl">🌸</span>
+                          <span className="text-2xl">🙌</span>
+                          <span className="text-xl font-semibold text-[#E26C73] italic">{getRandomMessage()}</span>
+                        </div>
                       </div>
                       <Button
                         variant="ghost"
@@ -290,9 +337,9 @@ export default function WorkoutPlannerPage() {
           <Button
             onClick={() => (window.location.href = "/")}
             variant="outline"
-            className="border-[#7FB069] text-[#7FB069] hover:bg-[#7FB069] hover:text-white"
+            className="border-[#7FB069] text-[#7FB069] hover:bg-[#7FB069] hover:text-white text-xl py-6 px-8"
           >
-            <Home className="mr-2 h-4 w-4" />
+            <Home className="mr-2 h-5 w-5" />
             Back to Home
           </Button>
         </div>

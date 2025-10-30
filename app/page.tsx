@@ -8,9 +8,13 @@ import { Badge } from "@/components/ui/badge"
 import { ArrowRight, Clock, Target, TrendingUp, Calendar, Zap, Moon, CheckCircle, Star, Download } from "lucide-react"
 import CherryBlossomCountdown from "@/components/cherry-blossom-countdown"
 import WorkLifeBalanceSchedule from "@/components/work-life-balance-schedule"
+import { SimpleChatModal } from "@/components/simple-chat-modal"
 
 export default function HomePage() {
   const [dashboardVisited, setDashboardVisited] = useState(false)
+  const [isChatOpen, setIsChatOpen] = useState(false)
+  const [chatContext, setChatContext] = useState<string>("")
+  const [chatTitle, setChatTitle] = useState("")
 
   useEffect(() => {
     // Check if user has visited dashboard from planner/tracker
@@ -25,6 +29,12 @@ export default function HomePage() {
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "start" })
     }
+  }
+
+  const openChat = (context: string, title: string) => {
+    setChatContext(context)
+    setChatTitle(title)
+    setIsChatOpen(true)
   }
 
   return (
@@ -102,10 +112,92 @@ export default function HomePage() {
             </Badge>
           </div>
 
-          <div className="text-center mb-12">
+          <div className="text-center mb-6">
             <h2 className="text-3xl font-bold text-[#7FB069] mb-4">
-              Complete Onboarding: Your First 3-Steps to Balance, Freedom & Success...
+              Complete Onboarding: Your First 3-Steps to Balance, Freedom & Success
             </h2>
+            <p
+              className="text-[39px] text-gray-700 mt-6"
+              style={{ fontFamily: "'Great Vibes', cursive", fontWeight: 400 }}
+            >
+              Live with Thought Leader Barbara
+            </p>
+          </div>
+
+          {/* Live Onboarding Schedule - Compact Rectangular Banner */}
+          <div className="bg-gradient-to-r from-[#F9F6F1] via-[#FAF7F2] to-[#F9F6F1] rounded-2xl overflow-hidden shadow-xl mb-12 border border-gray-200">
+            <div className="grid md:grid-cols-[320px,1fr] gap-0">
+              {/* Left: Barbara's Image with Shadow */}
+              <div className="relative h-full min-h-[280px] bg-[#F9F6F1] flex items-center justify-center py-6 px-8">
+                <div className="relative flex items-center justify-center">
+                  {/* Barbara's image - increased by 20% with shadow */}
+                  <img
+                    src="/images/barbara-cherry-garden.jpg"
+                    alt="Barbara"
+                    className="w-[270px] h-[270px] rounded-full object-cover shadow-2xl"
+                  />
+                </div>
+              </div>
+
+              {/* Right: Onboarding Info */}
+              <div className="py-6 px-8 flex flex-col justify-center bg-white">
+                {/* Header */}
+                <div className="mb-6 text-center">
+                  <p className="text-sm text-gray-600 font-medium">Choose the option that fits your rhythm:</p>
+                </div>
+
+                {/* Stacked Options */}
+                <div className="space-y-4 max-w-xl mx-auto">
+                  {/* Option 1 */}
+                  <div className="space-y-3">
+                    <div className="text-center">
+                      <p className="text-lg text-gray-800 mb-3">
+                        <span className="font-semibold">Take The Audit:</span> Monday OR Wednesday | 7:00 - 8:30 PM ET
+                      </p>
+                    </div>
+                    <a
+                      href="https://join.butter.us/make-time-for-more/audit"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block"
+                    >
+                      <Button className="w-full bg-[#7FB069]/80 hover:bg-[#7FB069] text-white rounded-lg text-base font-bold py-3">
+                        Enter Audit Onboarding
+                      </Button>
+                    </a>
+                  </div>
+
+                  {/* Option 2 */}
+                  <div className="space-y-3">
+                    <div className="text-center">
+                      <p className="text-lg text-gray-800 mb-3">
+                        <span className="font-semibold">Set Your Intention:</span> Tuesday OR Thursday | 7:00 - 8:30 PM
+                        ET
+                      </p>
+                    </div>
+                    <a
+                      href="https://join.butter.us/make-time-for-more/onboarding"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block"
+                    >
+                      <Button className="w-full bg-[#E26C73]/80 hover:bg-[#E26C73] text-white rounded-lg text-base font-bold py-3">
+                        Enter Intention Onboarding
+                      </Button>
+                    </a>
+                  </div>
+                </div>
+
+                {/* Footer Note */}
+                <p className="text-[15px] text-gray-600 italic text-center mt-6">
+                  No reminders will be sent — this is your monthly alignment assignment.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Description Text - Moved Here */}
+          <div className="text-center mb-8">
             <p className="text-lg text-gray-600">
               Complete these three essential steps to prepare for your transformation journey
             </p>
@@ -151,39 +243,17 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                <div className="mt-6 mb-4">
-                  <a
-                    href="https://join.butter.us/make-time-for-more/audit"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block"
-                  >
-                    <Button className="w-full bg-white hover:bg-gray-50 text-[#7FB069] border-2 border-white font-semibold">
-                      Join The Work-Life Balance Audit
-                    </Button>
-                  </a>
-                </div>
+                <div className="h-9"></div>
 
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-3 mt-3">
                   <Link href="/audit" className="block">
-                    <Button size="lg" className="w-full bg-white text-[#7FB069] hover:bg-gray-50 font-semibold">
+                    <Button
+                      size="lg"
+                      className="w-full bg-transparent border-2 border-white text-white hover:bg-white/10 font-semibold"
+                    >
                       Take The Work-Life Balance Audit
                     </Button>
                   </Link>
-                  <a
-                    href="https://chatgpt.com/g/g-68d2da76c4d881919bf0ff4131ac8ca8-your-work-life-balance-audit-review-2-0"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block"
-                  >
-                    <Button
-                      size="lg"
-                      variant="outline"
-                      className="w-full border-white text-white hover:bg-white hover:text-[#7FB069] bg-transparent"
-                    >
-                      Review Your Audit with Cherry Blossom
-                    </Button>
-                  </a>
                 </div>
               </CardContent>
             </Card>
@@ -228,39 +298,15 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                <div className="mt-6 mb-4">
-                  <a
-                    href="https://join.butter.us/make-time-for-more/onboarding"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block"
-                  >
-                    <Button className="w-full bg-white hover:bg-gray-50 text-[#E26C73] border-2 border-white font-semibold">
-                      Join The Intention Setting Circle
-                    </Button>
-                  </a>
-                </div>
-
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-3 mt-3">
                   <Link href="/focus-areas" className="block">
-                    <Button size="lg" className="w-full bg-white text-[#E26C73] hover:bg-gray-50 font-semibold">
+                    <Button
+                      size="lg"
+                      className="w-full bg-transparent border-2 border-white text-white hover:bg-white/10 font-semibold"
+                    >
                       Choose Your 1-3 Priority Focus Areas
                     </Button>
                   </Link>
-                  <a
-                    href="https://chatgpt.com/g/g-67ec80061e1c819192bc80c37a7ee320-set-your-desired-work-lifestyle-intention"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block"
-                  >
-                    <Button
-                      size="lg"
-                      variant="outline"
-                      className="w-full border-white text-white hover:bg-white hover:text-[#E26C73] bg-transparent"
-                    >
-                      Set Your 28-Day Intention
-                    </Button>
-                  </a>
                 </div>
               </CardContent>
             </Card>
@@ -314,13 +360,14 @@ export default function HomePage() {
                 </div>
 
                 <a
-                  href="/images/prepare-for-experience-checklist.png"
-                  download="Make-Time-For-More-Preparation-Checklist.png"
-                  className="block mt-6"
+                  href="https://docs.google.com/document/d/1IZ5qefGnMQpYJP8wMgQS3tVY6sj56CHcCpRBkOGpGjU/edit?usp=sharing"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block mt-3"
                 >
-                  <Button className="w-full bg-white hover:bg-gray-50 text-[#7FB069] border-2 border-white font-semibold">
+                  <Button className="w-full bg-transparent border-2 border-white text-white hover:bg-white/10 font-semibold">
                     <Download className="mr-2 h-4 w-4" />
-                    Download The Preparation Checklist
+                    Open The Preparation Checklist
                   </Button>
                 </a>
               </CardContent>
@@ -356,7 +403,7 @@ export default function HomePage() {
 
           {/* Header Text Above Image */}
           <div className="text-center mb-8">
-            <h3 className="text-3xl font-bold bg-gradient-to-r from-[#7FB069] to-[#E26C73] bg-clip-text text-transparent mb-4">
+            <h3 className="text-4xl font-bold bg-gradient-to-r from-[#7FB069] to-[#E26C73] bg-clip-text text-transparent mb-4">
               Make The Sunday Shift
             </h3>
             <p className="text-xl text-gray-700 font-medium">
@@ -369,9 +416,9 @@ export default function HomePage() {
             <CherryBlossomCountdown />
           </div>
 
-          {/* Content Grid */}
+          {/* Content Grid with rounded corners and shadow */}
           <div className="flex justify-center">
-            <div className="space-y-4 flex flex-col max-w-4xl w-full">
+            <div className="space-y-4 flex flex-col max-w-4xl w-full bg-white/80 rounded-2xl shadow-xl p-6">
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="flex items-center gap-3 text-gray-700 bg-white/80 p-3 rounded-lg shadow-sm">
                   <Clock className="w-5 h-5 text-[#7FB069] flex-shrink-0" />
@@ -379,13 +426,13 @@ export default function HomePage() {
                 </div>
 
                 <a
-                  href="https://join.butter.us/make-time-for-more/sunday-kickoff"
+                  href="https://join.butter.us/make-time-for-more/sunday-shift"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block"
                 >
-                  <Button className="w-full h-full bg-white hover:bg-gray-50 text-[#7FB069] border-2 border-[#7FB069] font-semibold py-3">
-                    Join The Sunday Shift
+                  <Button className="w-full h-full bg-white hover:bg-gray-50 text-[#7FB069] border-2 border-[#7FB069] font-semibold py-3 text-lg">
+                    Enter Here to Make The Sunday Shift
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </a>
@@ -423,7 +470,7 @@ export default function HomePage() {
           <div className="text-center mb-8">
             <div className="max-w-6xl mx-auto">
               <img
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/00000000000001step4-uUx2recPmERxCFDO1uIksPX0CAf4mO.png"
+                src="/images/design-mode/00000000000001step4.png"
                 alt="Diverse professional women in co-working environments with cherry blossoms"
                 className="w-full h-auto object-cover rounded-2xl shadow-2xl"
               />
@@ -503,18 +550,12 @@ export default function HomePage() {
                 />
               </div>
 
-              <div className="space-y-3">
-                <a
-                  href="https://chatgpt.com/g/g-67edfb8de70c8191926d0d3c6e60404f-plan-your-morning-given-routine"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block"
-                >
-                  <Button className="w-full bg-[#E26C73] hover:bg-[#D55A60] text-white font-semibold">
-                    Plan Your Morning Routine
-                  </Button>
-                </a>
-              </div>
+              <Button
+                onClick={() => openChat("morning-routine", "Morning GIV•EN™ Routine")}
+                className="w-full bg-[#E26C73] hover:bg-[#D55A60] text-white font-semibold"
+              >
+                Plan Your Morning Routine
+              </Button>
             </CardContent>
           </Card>
 
@@ -545,18 +586,12 @@ export default function HomePage() {
                 />
               </div>
 
-              <div className="space-y-3">
-                <a
-                  href="https://chatgpt.com/g/g-67f1a8b481048191965df81cdea2326a-30-minute-workday-workout-window"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block"
-                >
-                  <Button className="w-full bg-[#7FB069] hover:bg-[#6FA055] text-white font-semibold">
-                    Plan Your 30-Minute Workout Window
-                  </Button>
-                </a>
-              </div>
+              <Button
+                onClick={() => openChat("workout-window", "30-Minute Workday Workout Window")}
+                className="w-full bg-[#7FB069] hover:bg-[#6FA055] text-white font-semibold"
+              >
+                Plan Your Workout Window
+              </Button>
             </CardContent>
           </Card>
 
@@ -590,16 +625,12 @@ export default function HomePage() {
                 />
               </div>
 
-              <a
-                href="https://chatgpt.com/g/g-67eecba908348191b9a9b349bb8c6f08-plan-your-extended-healthy-hybrid-lunch-break"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block"
+              <Button
+                onClick={() => openChat("lunch-break", "Extended Healthy Hybrid Lunch Break")}
+                className="w-full bg-[#E26C73] hover:bg-[#D55A60] text-white font-semibold"
               >
-                <Button className="w-full bg-[#E26C73] hover:bg-[#D55A60] text-white font-semibold">
-                  Plan Your Extended Lunch Break
-                </Button>
-              </a>
+                Plan Your Lunch Break
+              </Button>
             </CardContent>
           </Card>
 
@@ -631,18 +662,12 @@ export default function HomePage() {
                 />
               </div>
 
-              <div className="space-y-3">
-                <a
-                  href="https://chatgpt.com/g/g-67ef467e4b288191ba2767b54574825c-plan-your-4-hour-focused-ceo-workday"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block"
-                >
-                  <Button className="w-full bg-[#7FB069] hover:bg-[#6FA055] text-white font-semibold">
-                    Plan Your 4-Hour CEO Workday
-                  </Button>
-                </a>
-              </div>
+              <Button
+                onClick={() => openChat("ceo-workday", "4-Hour Focused CEO Workday")}
+                className="w-full bg-[#7FB069] hover:bg-[#6FA055] text-white font-semibold"
+              >
+                Plan Your CEO Workday
+              </Button>
             </CardContent>
           </Card>
 
@@ -673,16 +698,12 @@ export default function HomePage() {
                 />
               </div>
 
-              <a
-                href="https://chatgpt.com/g/g-67f1b6ff90a48191b608dea34209591f-plan-enjoy-quality-of-lifestyle-experiences"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block"
+              <Button
+                onClick={() => openChat("lifestyle-experiences", "Quality of Lifestyle Experiences")}
+                className="w-full bg-[#E26C73] hover:bg-[#D55A60] text-white font-semibold"
               >
-                <Button className="w-full bg-[#E26C73] hover:bg-[#D55A60] text-white font-semibold">
-                  Plan & Enjoy Quality Lifestyle Experiences
-                </Button>
-              </a>
+                Plan Your Lifestyle Experiences
+              </Button>
             </CardContent>
           </Card>
 
@@ -714,18 +735,12 @@ export default function HomePage() {
                 />
               </div>
 
-              <div className="space-y-3">
-                <a
-                  href="https://chatgpt.com/g/g-67f1cf8ddcec819182f60ca639d3a6ab-plan-your-digital-detox"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block"
-                >
-                  <Button className="w-full bg-[#7FB069] hover:bg-[#6FA055] text-white font-semibold">
-                    Plan Your Digital Detox
-                  </Button>
-                </a>
-              </div>
+              <Button
+                onClick={() => openChat("digital-detox", "Power Down & Unplug Digital Detox")}
+                className="w-full bg-[#E26C73] hover:bg-[#D55A60] text-white font-semibold"
+              >
+                Plan Your Digital Detox
+              </Button>
             </CardContent>
           </Card>
         </div>
@@ -930,7 +945,7 @@ export default function HomePage() {
       </div>
 
       {/* Rest, Recover & Recharge Section */}
-      <div className="bg-white py-20">
+      <div className="bg-gradient-to-br from-[#7FB069]/10 to-[#7FB069]/5 pt-20 pb-8">
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex items-center justify-center gap-3 mb-8">
             <img
@@ -963,6 +978,16 @@ export default function HomePage() {
                 className="w-full h-auto object-cover rounded-2xl shadow-2xl"
               />
             </div>
+          </div>
+
+          <div className="max-w-4xl mx-auto mb-8">
+            <Button
+              onClick={() => openChat("vacation-testimonial", "Plan Your Sabbatical or 1-Week Break")}
+              size="lg"
+              className="w-full bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-bold px-12 py-6 text-xl shadow-xl hover:shadow-2xl transition-all transform hover:scale-105"
+            >
+              Plan Your Sabbatical or 1-Week Break
+            </Button>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-8 mb-20">
@@ -1052,7 +1077,7 @@ export default function HomePage() {
           </div>
 
           {/* Ready For More - Pricing Section */}
-          <div className="bg-gradient-to-br from-[#F5F1E8] to-white py-20 rounded-2xl">
+          <div className="py-20 rounded-2xl">
             <div className="max-w-7xl mx-auto px-6">
               {/* Green & Pink Gradient Header with Logo */}
               <div className="bg-gradient-to-r from-[#7FB069] to-[#E26C73] text-white py-12 px-6 rounded-t-2xl text-center mb-0">
@@ -1296,6 +1321,62 @@ export default function HomePage() {
           </div>
         </div>
       </div>
+
+      {/* Book Thought Leader Barbara section */}
+      {/* Book Thought Leader Barbara Section */}
+      <div className="bg-gradient-to-r from-[#7FB069]/10 to-[#E26C73]/10 py-8 pb-24">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <div className="max-w-3xl mx-auto">
+              <div className="flex items-center justify-center gap-3 mb-8">
+                <img
+                  src="/images/logo.png"
+                  alt="Make Time For More Logo"
+                  width={80}
+                  height={80}
+                  className="rounded-full shadow-lg"
+                />
+              </div>
+              <h2
+                className="text-4xl text-[#E26C73] mb-8"
+                style={{ fontFamily: "'Great Vibes', cursive", fontWeight: 400 }}
+              >
+                Book Thought Leader Barbara
+              </h2>
+              <div className="flex justify-center mb-8">
+                <img
+                  src="/images/barbara-cherry-garden.jpg"
+                  alt="Barbara"
+                  className="w-64 h-64 rounded-full object-cover shadow-2xl"
+                />
+              </div>
+              <p className="text-lg text-gray-700 leading-relaxed mb-6">
+                To learn more about Barbara's availability for speaking engagements and interviews, or to schedule
+                private coaching sessions or VIP DAYs, email Barbara:{" "}
+                <a
+                  href="mailto:coachbarbara@maketimeformore.com"
+                  className="text-[#7FB069] hover:text-[#6FA055] font-semibold underline"
+                >
+                  coachbarbara@maketimeformore.com
+                </a>
+              </p>
+              <p className="text-base text-gray-600 italic">
+                Put <span className="font-bold">SPEAKING</span>, <span className="font-bold">INTERVIEW</span>,{" "}
+                <span className="font-bold">COACHING</span>, <span className="font-bold">VIP DAY</span> in the subject
+                line in all caps.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <SimpleChatModal
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+        context={chatContext}
+        title={chatTitle}
+      />
+
+      {/* Removed FloatingChatButton component */}
     </div>
   )
 }
