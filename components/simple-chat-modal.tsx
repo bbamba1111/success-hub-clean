@@ -69,6 +69,33 @@ export function SimpleChatModal({ isOpen, onClose, context, title }: SimpleChatM
     if (isOpen) {
       setMessages([])
       setInput("")
+
+      // Send automatic welcome message
+      const sendWelcomeMessage = async () => {
+        setIsLoading(true)
+        try {
+          const response = await fetch("/api/cherry-blossom-chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              message: "WELCOME_MESSAGE", // Special trigger for welcome
+              messages: [],
+              context,
+            }),
+          })
+
+          const data = await response.json()
+          if (data.message) {
+            setMessages([{ role: "assistant", content: data.message }])
+          }
+        } catch (error) {
+          console.error("[v0] Welcome message error:", error)
+        } finally {
+          setIsLoading(false)
+        }
+      }
+
+      sendWelcomeMessage()
     }
   }, [isOpen, context])
 
@@ -149,12 +176,6 @@ export function SimpleChatModal({ isOpen, onClose, context, title }: SimpleChatM
         </CardHeader>
 
         <CardContent className="flex-1 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-[#7FB069]/5 to-white">
-          {messages.length === 0 && (
-            <div className="text-center text-gray-500 py-8">
-              <p>Start a conversation about {context}</p>
-            </div>
-          )}
-
           {messages.map((message, index) => (
             <div key={index} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
               <div
