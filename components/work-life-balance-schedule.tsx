@@ -223,18 +223,18 @@ function WorkLifeBalanceSchedule() {
             return (
               <div
                 key={item.id}
-                className={`flex items-center justify-between gap-0.5 md:gap-1 p-2 md:p-3 rounded-lg transition-all duration-300 ${
+                className={`flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-1 p-3 md:p-3 rounded-lg transition-all duration-300 ${
                   isActive
                     ? "bg-green-50 border-l-4 border-[#7FB069] shadow-md"
                     : "bg-gray-50 border-l-3 border-gray-300"
                 }`}
               >
-                <div className="min-w-[28px] md:min-w-[49px] font-bold text-base md:text-lg flex-shrink-0">
-                  {item.time}
-                </div>
+                <div className="font-bold text-base md:text-lg">{item.time}</div>
 
-                <div className="flex-1 flex flex-col items-center justify-center max-w-[68px] md:max-w-[135px]">
-                  <div className="text-base md:text-lg font-medium text-center whitespace-nowrap">{item.activity}</div>
+                <div className="flex-1 md:flex md:flex-col md:items-center md:justify-center">
+                  <div className="text-base md:text-lg font-medium md:text-center md:whitespace-nowrap">
+                    {item.activity}
+                  </div>
                   {isActive && (
                     <div className="text-[#E26C73] text-base md:text-lg font-semibold italic animate-pulse mt-0.5">
                       We're Here...
@@ -246,7 +246,7 @@ function WorkLifeBalanceSchedule() {
                   href={item.joinLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`min-w-[41px] md:min-w-[56px] px-3 py-1.5 md:px-4 md:py-2 rounded text-white text-xs md:text-sm font-semibold transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg flex-shrink-0 text-center ${
+                  className={`w-full md:w-auto md:min-w-[56px] px-4 py-2 rounded text-white text-sm font-semibold transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg text-center ${
                     item.buttonStyle === "green"
                       ? "bg-[#7FB069]/80 hover:bg-[#7FB069]/90"
                       : "bg-[#E26C73]/80 hover:bg-[#E26C73]/90"
