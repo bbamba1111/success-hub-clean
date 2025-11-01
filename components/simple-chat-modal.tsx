@@ -131,16 +131,24 @@ export function SimpleChatModal({ isOpen, onClose, context, title }: SimpleChatM
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <Card className="w-full max-w-2xl max-h-[80vh] flex flex-col">
-        <CardHeader className="border-b">
+        <CardHeader className="border-b border-[#E26C73]/20 bg-gradient-to-r from-[#E26C73]/20 to-[#7FB069]/20">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-xl">{title}</CardTitle>
-            <Button variant="ghost" size="icon" onClick={onClose}>
+            <div className="flex items-center gap-3">
+              <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-md">
+                <img src="/images/logo.png" alt="Cherry Blossom" className="w-full h-full object-cover" />
+              </div>
+              <CardTitle className="text-xl flex items-center gap-2">
+                {title}
+                <span className="text-[#E26C73]">🌸</span>
+              </CardTitle>
+            </div>
+            <Button variant="ghost" size="icon" onClick={onClose} className="hover:bg-white/50">
               <X className="h-4 w-4" />
             </Button>
           </div>
         </CardHeader>
 
-        <CardContent className="flex-1 overflow-y-auto p-4 space-y-4">
+        <CardContent className="flex-1 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-[#7FB069]/5 to-white">
           {messages.length === 0 && (
             <div className="text-center text-gray-500 py-8">
               <p>Start a conversation about {context}</p>
@@ -150,8 +158,10 @@ export function SimpleChatModal({ isOpen, onClose, context, title }: SimpleChatM
           {messages.map((message, index) => (
             <div key={index} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
               <div
-                className={`max-w-[80%] rounded-lg p-3 ${
-                  message.role === "user" ? "bg-[#E26C73] text-white" : "bg-gray-100 text-gray-900"
+                className={`max-w-[80%] rounded-lg p-3 shadow-sm ${
+                  message.role === "user"
+                    ? "bg-gradient-to-r from-[#7FB069]/80 to-[#E26C73]/80 text-white"
+                    : "bg-white border border-[#E26C73]/20 text-gray-900"
                 }`}
               >
                 {formatMessage(message.content)}
@@ -161,8 +171,8 @@ export function SimpleChatModal({ isOpen, onClose, context, title }: SimpleChatM
 
           {isLoading && (
             <div className="flex justify-start">
-              <div className="bg-gray-100 rounded-lg p-3">
-                <Loader2 className="h-4 w-4 animate-spin" />
+              <div className="bg-white border border-[#E26C73]/20 rounded-lg p-3 shadow-sm">
+                <Loader2 className="h-4 w-4 animate-spin text-[#E26C73]" />
               </div>
             </div>
           )}
@@ -170,7 +180,7 @@ export function SimpleChatModal({ isOpen, onClose, context, title }: SimpleChatM
           <div ref={messagesEndRef} />
         </CardContent>
 
-        <div className="border-t p-4">
+        <div className="border-t border-[#E26C73]/20 p-4 bg-white">
           <div className="flex gap-2">
             <Textarea
               value={input}
@@ -182,13 +192,13 @@ export function SimpleChatModal({ isOpen, onClose, context, title }: SimpleChatM
                 }
               }}
               placeholder="Type your message..."
-              className="flex-1 min-h-[60px]"
+              className="flex-1 min-h-[60px] border-[#E26C73]/30 focus:border-[#7FB069]/50"
               disabled={isLoading}
             />
             <Button
               onClick={sendMessage}
               disabled={isLoading || !input.trim()}
-              className="bg-[#E26C73] hover:bg-[#D55A60]"
+              className="bg-gradient-to-r from-[#7FB069]/80 to-[#E26C73]/80 hover:from-[#7FB069] hover:to-[#E26C73] shadow-md"
             >
               <Send className="h-4 w-4" />
             </Button>

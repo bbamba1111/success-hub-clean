@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { X, Send, Copy, Trash2, MessageCircle, Sparkles } from "lucide-react"
+import { X, Send, Copy, Trash2, MessageCircle } from "lucide-react"
 
 interface Message {
   id: string
@@ -129,25 +129,38 @@ export default function CherryBlossomChat({
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <Card className="w-full max-w-4xl h-[80vh] flex flex-col bg-white shadow-2xl">
-        <CardHeader className="flex-shrink-0 bg-gradient-to-r from-[#E26C73]/10 to-[#7FB069]/10 border-b">
+        <CardHeader className="flex-shrink-0 bg-gradient-to-r from-[#E26C73]/20 to-[#7FB069]/20 border-b border-[#E26C73]/20">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-[#E26C73] to-[#7FB069] rounded-full flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-white" />
+              <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-md">
+                <img src="/images/logo.png" alt="Cherry Blossom" className="w-full h-full object-cover" />
               </div>
               <div>
-                <CardTitle className="text-lg font-bold text-gray-900">{title}</CardTitle>
-                <Badge variant="secondary" className="mt-1 bg-[#7FB069]/20 text-[#7FB069]">
+                <CardTitle className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                  {title}
+                  <span className="text-[#E26C73]">🌸</span>
+                </CardTitle>
+                <Badge variant="secondary" className="mt-1 bg-[#7FB069]/30 text-[#7FB069] border-[#7FB069]/20">
                   <MessageCircle className="w-3 h-3 mr-1" />
                   Available 24/7
                 </Badge>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={clearChat} className="text-gray-600 bg-transparent">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={clearChat}
+                className="text-gray-600 bg-white/50 hover:bg-white border-[#E26C73]/20"
+              >
                 <Trash2 className="w-4 h-4" />
               </Button>
-              <Button variant="outline" size="sm" onClick={onClose} className="text-gray-600 bg-transparent">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onClose}
+                className="text-gray-600 bg-white/50 hover:bg-white border-[#E26C73]/20"
+              >
                 <X className="w-4 h-4" />
               </Button>
             </div>
@@ -156,14 +169,14 @@ export default function CherryBlossomChat({
 
         <CardContent className="flex-1 overflow-hidden p-0">
           <div className="h-full flex flex-col">
-            <div className="flex-1 overflow-y-auto p-6 space-y-4">
+            <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gradient-to-b from-[#7FB069]/5 to-white">
               {messages.map((message) => (
                 <div key={message.id} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
                   <div
-                    className={`max-w-[80%] rounded-lg p-4 ${
+                    className={`max-w-[80%] rounded-lg p-4 shadow-sm ${
                       message.role === "user"
-                        ? "bg-gradient-to-r from-[#7FB069] to-[#E26C73] text-white"
-                        : "bg-gray-100 text-gray-900"
+                        ? "bg-gradient-to-r from-[#7FB069]/80 to-[#E26C73]/80 text-white"
+                        : "bg-white border border-[#E26C73]/20 text-gray-900"
                     }`}
                   >
                     <div className="whitespace-pre-wrap">{message.content}</div>
@@ -189,15 +202,15 @@ export default function CherryBlossomChat({
               ))}
               {isLoading && (
                 <div className="flex justify-start">
-                  <div className="bg-gray-100 rounded-lg p-4 max-w-[80%]">
+                  <div className="bg-white border border-[#E26C73]/20 rounded-lg p-4 max-w-[80%] shadow-sm">
                     <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                      <div className="w-2 h-2 bg-[#E26C73]/60 rounded-full animate-bounce"></div>
                       <div
-                        className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                        className="w-2 h-2 bg-[#7FB069]/60 rounded-full animate-bounce"
                         style={{ animationDelay: "0.1s" }}
                       ></div>
                       <div
-                        className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                        className="w-2 h-2 bg-[#E26C73]/60 rounded-full animate-bounce"
                         style={{ animationDelay: "0.2s" }}
                       ></div>
                     </div>
@@ -207,19 +220,19 @@ export default function CherryBlossomChat({
               <div ref={messagesEndRef} />
             </div>
 
-            <div className="flex-shrink-0 border-t p-4">
+            <div className="flex-shrink-0 border-t border-[#E26C73]/20 p-4 bg-white">
               <form onSubmit={handleSubmit} className="flex gap-2">
                 <Input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Ask Cherry Blossom anything about work-life balance..."
                   disabled={isLoading}
-                  className="flex-1"
+                  className="flex-1 border-[#E26C73]/30 focus:border-[#7FB069]/50"
                 />
                 <Button
                   type="submit"
                   disabled={isLoading || !input.trim()}
-                  className="bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white"
+                  className="bg-gradient-to-r from-[#7FB069]/80 to-[#E26C73]/80 hover:from-[#7FB069] hover:to-[#E26C73] text-white shadow-md"
                 >
                   <Send className="w-4 h-4" />
                 </Button>

@@ -363,6 +363,157 @@ Please help me create specific, actionable intentions using the GIV•EN™ Fram
           </Card>
         )}
 
+        {/* Prepare for the Experience Checklist homework section */}
+        {selectedAreas.length > 0 && (
+          <Card className="mb-8 bg-gradient-to-r from-[#7FB069]/10 to-[#E26C73]/10 border-[#7FB069]/30 rounded-2xl">
+            <CardContent className="p-8">
+              <div className="flex items-center gap-3 mb-6">
+                <img
+                  src="/images/logo.png"
+                  alt="Make Time For More Logo"
+                  width={48}
+                  height={48}
+                  className="rounded-full shadow-lg"
+                />
+                <div>
+                  <h2 className="text-2xl font-bold text-[#7FB069]">Homework: Prepare for Your Experience</h2>
+                  <p className="text-gray-600">Get ready for your Sunday Shift and Monday co-working session</p>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-lg p-6 mb-6">
+                <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                  Before You Start Your 28-Day Transformation
+                </h3>
+                <p className="text-gray-700 mb-6">
+                  This is your sacred prep time. Complete this checklist to clear space, time, and energy before your
+                  cycle begins.
+                </p>
+
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
+                    <div className="w-6 h-6 bg-[#7FB069] text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
+                      ✓
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-1">Clear Physical Space 🧹</h4>
+                      <p className="text-sm text-gray-600">Organize your workspace and living areas</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
+                    <div className="w-6 h-6 bg-[#7FB069] text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
+                      ✓
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-1">Block Calendar 📅</h4>
+                      <p className="text-sm text-gray-600">
+                        Schedule your 6 Non-Negotiable activities for the next 28 days
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
+                    <div className="w-6 h-6 bg-[#7FB069] text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
+                      ✓
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-1">Notify Family/Team 💬</h4>
+                      <p className="text-sm text-gray-600">
+                        Communicate your new schedule and boundaries to those around you
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
+                    <div className="w-6 h-6 bg-[#7FB069] text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
+                      ✓
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-1">Delegate or Delay 🔁</h4>
+                      <p className="text-sm text-gray-600">
+                        Identify tasks to delegate or postpone during your transformation
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
+                    <div className="w-6 h-6 bg-[#7FB069] text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
+                      ✓
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-1">Prepare Your Spirit 🧘🏾‍♀️</h4>
+                      <p className="text-sm text-gray-600">Set your mental and spiritual intention for this journey</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
+                    <div className="w-6 h-6 bg-[#7FB069] text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
+                      ✓
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-1">Environment Refresh 🏡</h4>
+                      <p className="text-sm text-gray-600">Optional: Plan a stay-cation or refresh your environment</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-6 p-4 bg-[#7FB069]/10 rounded-lg border border-[#7FB069]/30">
+                  <h4 className="font-semibold text-[#7FB069] mb-2">Choose Your Start Type:</h4>
+                  <ul className="space-y-2 text-sm text-gray-700">
+                    <li className="flex items-center gap-2">
+                      <span className="text-[#7FB069]">•</span>
+                      <span>
+                        <strong>Monday Only:</strong> Start with just the co-working schedule
+                      </span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-[#7FB069]">•</span>
+                      <span>
+                        <strong>7-Day Reset:</strong> Full week immersion
+                      </span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-[#7FB069]">•</span>
+                      <span>
+                        <strong>14-Day Momentum:</strong> Two weeks to build habits
+                      </span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-[#7FB069]">•</span>
+                      <span>
+                        <strong>21-Day Habit Cycle:</strong> Full habit formation period
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="mt-6 p-4 bg-[#E26C73]/10 rounded-lg border border-[#E26C73]/30">
+                  <p className="text-sm text-gray-700 italic mb-2">
+                    <strong>Affirmation:</strong> "I make room for what I desire."
+                  </p>
+                  <p className="text-sm text-gray-600 italic">
+                    <strong>Quote:</strong> "Let yourself be silently drawn by the strange pull of what you really
+                    love." — Rumi
+                  </p>
+                </div>
+              </div>
+
+              <div className="text-center">
+                <p className="text-gray-700 mb-4">
+                  Complete this checklist before your Sunday Shift to ensure you're fully prepared to start co-working
+                  on Monday!
+                </p>
+                <Link href="/">
+                  <Button className="bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white px-8 py-3">
+                    Return to Success Hub
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Back Navigation */}
         {selectedAreas.length > 0 && (
           <div className="mt-8 mb-4">
