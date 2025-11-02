@@ -160,7 +160,16 @@ Overall Score: ${auditData.overallScore}%
 My ${selectedAreas.length} selected focus areas that I want to focus on:
 ${focusAreasText}
 
-Please help me create specific, actionable intentions using the GIV•EN™ Framework (Gratitude, Invite Your Creator Into Your Day to Co-create, Visualization, Embodiment, Nurturing) for each of these focus areas to transform my work-life balance over the next 28 days.`
+I'm ready to begin the 6-Step Intention Setting Process! Please guide me step-by-step through:
+
+Step 1: Begin with Gratitude
+Step 2: Set my 1st Intention (from my low-scoring areas)
+Step 3: Set my 2nd Intention (from my low-scoring areas)
+Step 4: Set my 3rd Intention (from my low-scoring areas)
+Step 5: Envision the Collective Good (my ripple effect)
+Step 6: Combine & Align with Divine Will
+
+Let's create my sacred 28-Day Desired Work-Lifestyle Intention together!`
   }
 
   const copyToClipboard = async () => {
