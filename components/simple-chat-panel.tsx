@@ -59,7 +59,7 @@ export function SimpleChatPanel({
       "audit-review": "Hello! Let's review your Work-Life Balance Audit results. What stood out to you most?",
       "intention-setting":
         "Hi! Let's set your 28-Day Intention. What area of your life needs the most attention right now?",
-      sabbatical:
+      "sabbatical-planning":
         "Welcome! Let's plan your 1-Week Sabbatical or Break. What would true rest and recovery look like for you?",
     }
     return greetings[ctx] || "Hello! How can I help you today?"

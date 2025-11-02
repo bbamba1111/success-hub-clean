@@ -980,9 +980,10 @@ export default function HomePage() {
             </div>
           </div>
 
+          {/* The Button for Sabbatical Planning was updated here */}
           <div className="max-w-4xl mx-auto mb-8">
             <Button
-              onClick={() => openChat("vacation-testimonial", "Plan Your Sabbatical or 1-Week Break")}
+              onClick={() => openChat("sabbatical-planning", "Plan Your Sabbatical or 1-Week Break")}
               size="lg"
               className="w-full bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-bold px-12 py-6 text-xl shadow-xl hover:shadow-2xl transition-all transform hover:scale-105"
             >
