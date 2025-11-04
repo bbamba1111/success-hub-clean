@@ -1,6 +1,13 @@
 import type React from "react"
 import type { Metadata } from "next"
+import { Great_Vibes } from "next/font/google"
 import "./globals.css"
+
+const greatVibes = Great_Vibes({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-great-vibes",
+})
 
 export const metadata: Metadata = {
   title: "Success Hub - Make Time For More",
@@ -15,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className={greatVibes.variable}>{children}</body>
     </html>
   )
 }

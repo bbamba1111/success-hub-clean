@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
-import { Moon, Clock } from "lucide-react"
+import { Moon, Clock, Sparkles } from "lucide-react"
 import { getBusinessHoursStatus, type BusinessHoursStatus } from "@/lib/utils/business-hours"
 
 export function HubClosedBanner() {
@@ -23,25 +23,41 @@ export function HubClosedBanner() {
   if (!status || status.isOpen) return null
 
   return (
-    <Card className="border-2 border-[#E26C73] bg-gradient-to-r from-[#E26C73]/10 to-[#7FB069]/10">
-      <CardContent className="p-8 text-center">
-        <div className="flex justify-center mb-4">
-          <div className="w-16 h-16 bg-gradient-to-br from-[#E26C73] to-[#7FB069] rounded-full flex items-center justify-center">
-            <Moon className="h-8 w-8 text-white" />
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-md">
+      <Card className="border-4 border-[#E26C73] bg-white shadow-2xl max-w-2xl mx-4">
+        <CardContent className="p-12 text-center">
+          <div className="flex justify-center mb-6">
+            <div className="w-24 h-24 bg-gradient-to-br from-[#E26C73] to-[#7FB069] rounded-full flex items-center justify-center shadow-lg">
+              <Moon className="h-12 w-12 text-white" />
+            </div>
           </div>
-        </div>
 
-        <h2 className="text-2xl font-bold text-gray-900 mb-3">The Success Hub is Closed for the Night</h2>
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">The Success Hub Is Closed For The Night</h2>
 
-        <p className="text-lg text-gray-700 mb-4">From 11:00 PM ET to 7:00 AM ET. We'll Open at 7 AM ET</p>
+          <p className="text-xl text-gray-700 mb-2">From 11:00 PM ET to 7:00 AM ET.</p>
+          <p className="text-xl text-gray-700 mb-6">We'll Open At 7 AM ET During Work-Life Balance Business Hours</p>
 
-        <div className="flex items-center justify-center gap-2 text-[#7FB069] font-semibold">
-          <Clock className="h-5 w-5" />
-          <span>
-            Opens in {status.hoursUntilChange}h {status.minutesUntilChange}m
-          </span>
-        </div>
-      </CardContent>
-    </Card>
+          <div className="bg-gradient-to-r from-[#7FB069]/10 to-[#E26C73]/10 rounded-lg p-6 mb-6">
+            <div className="flex items-center justify-center gap-3 text-[#7FB069] font-bold text-2xl">
+              <Clock className="h-8 w-8" />
+              <span>
+                Opens in {status.hoursUntilChange}h {status.minutesUntilChange}m
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-center gap-3 mt-8">
+            <Sparkles className="h-8 w-8 text-yellow-400 fill-yellow-400 animate-pulse" />
+            <p
+              className="text-gray-700"
+              style={{ fontFamily: "'Great Vibes', cursive", fontSize: "28px", fontWeight: 400, lineHeight: 1.2 }}
+            >
+              Now Go Get Some Sleep~~ Rest Well
+            </p>
+            <Sparkles className="h-8 w-8 text-yellow-400 fill-yellow-400 animate-pulse" />
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   )
 }
