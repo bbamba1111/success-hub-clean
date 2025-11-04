@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { X, Send, Loader2 } from "lucide-react"
 import { Textarea } from "@/components/ui/textarea"
 import type { JSX } from "react/jsx-runtime"
+import { isWithinBusinessHours } from "@/lib/utils/business-hours"
 
 interface SimpleChatModalProps {
   isOpen: boolean
@@ -67,6 +68,12 @@ export function SimpleChatModal({ isOpen, onClose, context, title }: SimpleChatM
 
   useEffect(() => {
     if (isOpen) {
+      if (!isWithinBusinessHours()) {
+        alert("The Success Hub is closed for the night (11 PM - 7 AM ET). We'll see you tomorrow!")
+        onClose()
+        return
+      }
+
       setMessages([])
       setInput("")
 

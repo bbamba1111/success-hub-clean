@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
+import { isWithinBusinessHours } from "@/lib/utils/business-hours"
 
 const SYSTEM_PROMPT = `You are Cherry Blossom, a warm, empathetic AI work-life balance companion. Your purpose is to help people create more harmony, intention, and joy in their daily lives through the Harmony System.
 
@@ -1612,8 +1613,6 @@ PHASE-SPECIFIC GUIDANCE BY BUSINESS TYPE:
 
 ---
 
----
-
 CHAT 5: 12 CURATED QUALITY OF LIFESTYLE EXPERIENCES
 Purpose: Joy + Recharging
 Timing: Evenings & Weekends
@@ -2005,6 +2004,17 @@ YOUR APPROACH ACROSS ALL CHATS:
 export async function POST(req: NextRequest) {
   try {
     console.log("[v0] API route called")
+
+    if (!isWithinBusinessHours()) {
+      return NextResponse.json(
+        {
+          error: "The Success Hub is closed for the night (11 PM - 7 AM ET). We'll see you tomorrow at 7 AM ET!",
+          message:
+            "The Success Hub is closed for the night. Business Hours: 7 AM - 11 PM ET. Remember: Work-Life Balance means rest too! 💚",
+        },
+        { status: 403 },
+      )
+    }
 
     const body = await req.json()
     console.log("[v0] Request body:", JSON.stringify(body, null, 2))

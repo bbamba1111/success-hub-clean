@@ -9,6 +9,7 @@ import { ArrowRight, Clock, Target, TrendingUp, Calendar, Zap, Moon, CheckCircle
 import CherryBlossomCountdown from "@/components/cherry-blossom-countdown"
 import WorkLifeBalanceSchedule from "@/components/work-life-balance-schedule"
 import { SimpleChatModal } from "@/components/simple-chat-modal"
+import { HubClosedBanner } from "@/components/hub-closed-banner"
 
 export default function HomePage() {
   const [dashboardVisited, setDashboardVisited] = useState(false)
@@ -39,6 +40,10 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white">
+      <div className="max-w-7xl mx-auto px-6 pt-6">
+        <HubClosedBanner />
+      </div>
+
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-white">
         <div className="max-w-7xl mx-auto px-6 py-16">

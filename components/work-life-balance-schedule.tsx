@@ -110,7 +110,6 @@ function WorkLifeBalanceSchedule() {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [currentActivity, setCurrentActivity] = useState<string | null>(null)
 
-  // Carousel functionality
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % activities.length)
@@ -119,7 +118,6 @@ function WorkLifeBalanceSchedule() {
     return () => clearInterval(interval)
   }, [])
 
-  // Schedule highlighting based on current time
   useEffect(() => {
     const updateCurrentActivity = () => {
       const now = new Date()
