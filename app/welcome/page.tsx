@@ -17,59 +17,20 @@ export default function WelcomePage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isSettingPassword, setIsSettingPassword] = useState(false)
   const [userEmail, setUserEmail] = useState("")
+  const [userId, setUserId] = useState("")
+  const [hasToken, setHasToken] = useState(false)
   const [retryCount, setRetryCount] = useState(0)
   const router = useRouter()
   const searchParams = useSearchParams()
-  const token = searchParams.get("token")
   const emailParam = searchParams.get("email")
 
   useEffect(() => {
-    async function verifyAndLogin() {
-      if (token) {
-        await verifyTokenAndLogin()
-      } else if (emailParam) {
-        await verifyEmailAndLogin()
-      } else {
-        setError("Invalid or missing authentication parameters")
+    async function verifyUser() {
+      if (!emailParam) {
+        setError("Email parameter is missing")
         setIsLoading(false)
+        return
       }
-    }
-
-    async function verifyTokenAndLogin() {
-      if (!token) return
-
-      try {
-        const response = await fetch("/api/auth/verify-token", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token }),
-        })
-
-        const data = await response.json()
-
-        if (!response.ok) {
-          throw new Error(data.error || "Failed to verify token")
-        }
-
-        const supabase = createClient()
-        const { error: signInError } = await supabase.auth.signInWithPassword({
-          email: data.email,
-          password: data.tempPassword,
-        })
-
-        if (signInError) throw signInError
-
-        setUserEmail(data.email)
-        setIsLoading(false)
-      } catch (err) {
-        console.error("[v0] Token verification error:", err)
-        setError(err instanceof Error ? err.message : "Failed to verify token")
-        setIsLoading(false)
-      }
-    }
-
-    async function verifyEmailAndLogin() {
-      if (!emailParam) return
 
       try {
         const response = await fetch("/api/auth/verify-email", {
@@ -91,15 +52,25 @@ export default function WelcomePage() {
           throw new Error(data.error || "Failed to verify email")
         }
 
-        const supabase = createClient()
-        const { error: signInError } = await supabase.auth.signInWithPassword({
-          email: data.email,
-          password: data.tempPassword,
-        })
+        if (data.tempPassword) {
+          // User has token, try auto-login
+          const supabase = createClient()
+          const { error: signInError } = await supabase.auth.signInWithPassword({
+            email: data.email,
+            password: data.tempPassword,
+          })
 
-        if (signInError) throw signInError
+          if (signInError) {
+            console.error("[v0] Auto-login failed:", signInError)
+            // Auto-login failed, but we can still let them set password
+            setHasToken(false)
+          } else {
+            setHasToken(true)
+          }
+        }
 
         setUserEmail(data.email)
+        setUserId(data.userId)
         setIsLoading(false)
       } catch (err) {
         console.error("[v0] Email verification error:", err)
@@ -108,8 +79,8 @@ export default function WelcomePage() {
       }
     }
 
-    verifyAndLogin()
-  }, [token, emailParam, retryCount])
+    verifyUser()
+  }, [emailParam, retryCount])
 
   const handleSetPassword = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -131,11 +102,34 @@ export default function WelcomePage() {
     try {
       const supabase = createClient()
 
-      const { error: updateError } = await supabase.auth.updateUser({
-        password: password,
-      })
+      if (!hasToken) {
+        // Use admin endpoint to set password for user
+        const response = await fetch("/api/auth/set-password", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: userEmail, password }),
+        })
 
-      if (updateError) throw updateError
+        const data = await response.json()
+        if (!response.ok) {
+          throw new Error(data.error || "Failed to set password")
+        }
+
+        // Now login with new password
+        const { error: loginError } = await supabase.auth.signInWithPassword({
+          email: userEmail,
+          password: password,
+        })
+
+        if (loginError) throw loginError
+      } else {
+        // Already logged in, just update password
+        const { error: updateError } = await supabase.auth.updateUser({
+          password: password,
+        })
+
+        if (updateError) throw updateError
+      }
 
       const {
         data: { user },

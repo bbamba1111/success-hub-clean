@@ -23,15 +23,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "User not found. Please contact support." }, { status: 404 })
     }
 
-    // Check if token is still valid
+    // Check if token is still valid (if it exists)
     if (profile.token_expires_at && new Date(profile.token_expires_at) < new Date()) {
       return NextResponse.json({ error: "Onboarding link expired. Please contact support." }, { status: 400 })
     }
 
-    // Return user data for auto-login
     return NextResponse.json({
       email: profile.email,
-      tempPassword: profile.onboarding_token,
+      userId: profile.id,
+      tempPassword: profile.onboarding_token || null,
       name: profile.name,
     })
   } catch (error) {
