@@ -20,6 +20,7 @@ export default function WelcomePage() {
   const [userId, setUserId] = useState("")
   const [hasToken, setHasToken] = useState(false)
   const [retryCount, setRetryCount] = useState(0)
+  const [showRetryButton, setShowRetryButton] = useState(false)
   const router = useRouter()
   const searchParams = useSearchParams()
   const emailParam = searchParams.get("email")
@@ -33,6 +34,7 @@ export default function WelcomePage() {
       }
 
       try {
+        console.log(`[v0] Verifying user, attempt ${retryCount + 1}`)
         const response = await fetch("/api/auth/verify-email", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -42,18 +44,18 @@ export default function WelcomePage() {
         const data = await response.json()
 
         if (!response.ok) {
-          if (response.status === 404 && retryCount < 5) {
-            console.log(`[v0] User not found, retrying in 2 seconds (attempt ${retryCount + 1}/5)`)
+          if (response.status === 404 && retryCount < 10) {
+            console.log(`[v0] User not found, retrying in 2 seconds (attempt ${retryCount + 1}/10)`)
             setTimeout(() => {
               setRetryCount(retryCount + 1)
             }, 2000)
             return
           }
+          setShowRetryButton(true)
           throw new Error(data.error || "Failed to verify email")
         }
 
         if (data.tempPassword) {
-          // User has token, try auto-login
           const supabase = createClient()
           const { error: signInError } = await supabase.auth.signInWithPassword({
             email: data.email,
@@ -62,7 +64,6 @@ export default function WelcomePage() {
 
           if (signInError) {
             console.error("[v0] Auto-login failed:", signInError)
-            // Auto-login failed, but we can still let them set password
             setHasToken(false)
           } else {
             setHasToken(true)
@@ -81,6 +82,13 @@ export default function WelcomePage() {
 
     verifyUser()
   }, [emailParam, retryCount])
+
+  const handleRetry = () => {
+    setError(null)
+    setIsLoading(true)
+    setShowRetryButton(false)
+    setRetryCount(0)
+  }
 
   const handleSetPassword = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -109,7 +117,6 @@ export default function WelcomePage() {
           throw new Error(result.error)
         }
 
-        // Now login with new password
         const { error: loginError } = await supabase.auth.signInWithPassword({
           email: userEmail,
           password: password,
@@ -117,7 +124,6 @@ export default function WelcomePage() {
 
         if (loginError) throw loginError
       } else {
-        // Already logged in, just update password
         const { error: updateError } = await supabase.auth.updateUser({
           password: password,
         })
@@ -148,11 +154,19 @@ export default function WelcomePage() {
           <CardContent className="pt-6">
             <div className="flex flex-col items-center gap-4">
               <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#7FB069] border-t-transparent" />
-              <p className="text-center text-gray-600">
-                {retryCount > 0 ? "Almost there, setting up your account..." : "Setting up your account..."}
+              <p className="text-center text-gray-600 font-medium">
+                {retryCount === 0 && "Setting up your account..."}
+                {retryCount > 0 && retryCount <= 3 && "Creating your Success Hub account..."}
+                {retryCount > 3 && retryCount <= 7 && "Almost there, finalizing your account..."}
+                {retryCount > 7 && "Just a few more seconds..."}
               </p>
-              {retryCount > 2 && (
-                <p className="text-xs text-center text-gray-500">This is taking longer than usual, please wait...</p>
+              <p className="text-xs text-center text-gray-500 max-w-xs">
+                We're creating your account and preparing your Success Hub. This usually takes just a few seconds.
+              </p>
+              {retryCount > 5 && (
+                <p className="text-xs text-center text-amber-600 font-medium">
+                  Taking longer than usual, but we're still working on it...
+                </p>
               )}
             </div>
           </CardContent>
@@ -166,13 +180,26 @@ export default function WelcomePage() {
       <div className="flex min-h-screen w-full items-center justify-center p-6 bg-gradient-to-br from-[#F5F1E8] to-white">
         <Card className="w-full max-w-md border-2 border-red-200">
           <CardHeader>
-            <CardTitle className="text-red-600">Error</CardTitle>
-            <CardDescription>{error}</CardDescription>
+            <CardTitle className="text-red-600">Account Setup Delayed</CardTitle>
+            <CardDescription className="text-gray-600">
+              Your account is still being created. This can take up to 30 seconds after purchase.
+            </CardDescription>
           </CardHeader>
-          <CardContent>
-            <Button onClick={() => router.push("/auth/login")} className="w-full bg-[#7FB069] hover:bg-[#6FA055]">
-              Go to Login
+          <CardContent className="space-y-3">
+            <div className="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 rounded-lg text-sm">
+              {error}
+            </div>
+            {showRetryButton && (
+              <Button onClick={handleRetry} className="w-full bg-[#7FB069] hover:bg-[#6FA055] text-white">
+                Try Again
+              </Button>
+            )}
+            <Button onClick={() => router.push("/auth/login")} variant="outline" className="w-full">
+              Go to Login Instead
             </Button>
+            <p className="text-xs text-center text-gray-500">
+              If you continue to have issues, please wait 1 minute and try logging in with your email.
+            </p>
           </CardContent>
         </Card>
       </div>
