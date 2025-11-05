@@ -17,6 +17,7 @@ export default function WelcomePage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isSettingPassword, setIsSettingPassword] = useState(false)
   const [userEmail, setUserEmail] = useState("")
+  const [retryCount, setRetryCount] = useState(0)
   const router = useRouter()
   const searchParams = useSearchParams()
   const token = searchParams.get("token")
@@ -80,6 +81,13 @@ export default function WelcomePage() {
         const data = await response.json()
 
         if (!response.ok) {
+          if (response.status === 404 && retryCount < 5) {
+            console.log(`[v0] User not found, retrying in 2 seconds (attempt ${retryCount + 1}/5)`)
+            setTimeout(() => {
+              setRetryCount(retryCount + 1)
+            }, 2000)
+            return
+          }
           throw new Error(data.error || "Failed to verify email")
         }
 
@@ -101,7 +109,7 @@ export default function WelcomePage() {
     }
 
     verifyAndLogin()
-  }, [token, emailParam])
+  }, [token, emailParam, retryCount])
 
   const handleSetPassword = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -152,7 +160,12 @@ export default function WelcomePage() {
           <CardContent className="pt-6">
             <div className="flex flex-col items-center gap-4">
               <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#7FB069] border-t-transparent" />
-              <p className="text-center text-gray-600">Setting up your account...</p>
+              <p className="text-center text-gray-600">
+                {retryCount > 0 ? "Almost there, setting up your account..." : "Setting up your account..."}
+              </p>
+              {retryCount > 2 && (
+                <p className="text-xs text-center text-gray-500">This is taking longer than usual, please wait...</p>
+              )}
             </div>
           </CardContent>
         </Card>
