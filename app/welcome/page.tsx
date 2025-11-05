@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-
+import { setUserPassword } from "./actions"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -103,16 +103,10 @@ export default function WelcomePage() {
       const supabase = createClient()
 
       if (!hasToken) {
-        // Use admin endpoint to set password for user
-        const response = await fetch("/api/auth/set-password", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: userEmail, password }),
-        })
+        const result = await setUserPassword(userEmail, password)
 
-        const data = await response.json()
-        if (!response.ok) {
-          throw new Error(data.error || "Failed to set password")
+        if (result.error) {
+          throw new Error(result.error)
         }
 
         // Now login with new password
@@ -129,13 +123,13 @@ export default function WelcomePage() {
         })
 
         if (updateError) throw updateError
-      }
 
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      if (user) {
-        await supabase.from("user_profiles").update({ password_set: true }).eq("id", user.id)
+        const {
+          data: { user },
+        } = await supabase.auth.getUser()
+        if (user) {
+          await supabase.from("user_profiles").update({ password_set: true }).eq("id", user.id)
+        }
       }
 
       router.push("/hub")
