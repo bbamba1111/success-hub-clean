@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { NextResponse } from "next/server"
 import crypto from "crypto"
 
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
       membershipTier = "21_day"
     }
 
-    const supabase = await createClient()
+    const supabase = createAdminClient()
 
     // Check if user already exists
     const { data: existingProfile } = await supabase.from("user_profiles").select("*").eq("email", email).single()
@@ -69,7 +69,7 @@ export async function POST(request: Request) {
 
     if (authError || !authData.user) {
       console.error("[v0] Error creating auth user:", authError)
-      return NextResponse.json({ error: "Failed to create user" }, { status: 500 })
+      return NextResponse.json({ error: "Failed to create user", details: authError?.message }, { status: 500 })
     }
 
     // Create user profile
@@ -88,8 +88,10 @@ export async function POST(request: Request) {
 
     if (profileError) {
       console.error("[v0] Error creating user profile:", profileError)
-      return NextResponse.json({ error: "Failed to create profile" }, { status: 500 })
+      return NextResponse.json({ error: "Failed to create profile", details: profileError.message }, { status: 500 })
     }
+
+    console.log("[v0] User created successfully:", email)
 
     return NextResponse.json({
       success: true,
