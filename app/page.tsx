@@ -62,9 +62,7 @@ export default function HomePage() {
 
               <div className="space-y-6">
                 <h1 className="text-3xl lg:text-3xl font-bold text-gray-900 leading-tight">
-                  Make Time For More<sup className="text-lg">™</sup> Monthly
-                  <br />
-                  Success Hub
+                  Make Time For More<sup className="text-lg">™</sup> Monthly -- the Work-Life Balance Success Hub
                 </h1>
                 <p className="text-lg text-gray-600 leading-relaxed">
                   Take The Audit, Set Your 28-Day Intention, and access Cherry Blossom your AI Powered Work-Life Balance

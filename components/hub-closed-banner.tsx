@@ -32,7 +32,9 @@ export function HubClosedBanner() {
             </div>
           </div>
 
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">The Success Hub Is Closed For The Night</h2>
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            Make Time For More Monthly -- the Work-Life Balance Success Hub Is Closed For The Night
+          </h2>
 
           <p className="text-xl text-gray-700 mb-2">From 11:00 PM ET to 7:00 AM ET.</p>
           <p className="text-xl text-gray-700 mb-6">We'll Open At 7 AM ET During Work-Life Balance Business Hours</p>

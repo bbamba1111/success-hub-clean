@@ -31,16 +31,17 @@ export async function updateSession(request: NextRequest) {
   })
 
   // IMPORTANT: Do not run code between createServerClient and supabase.auth.getUser()
-  // This can cause random logout issues
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // Protect all routes except home page, auth pages, and public assets
+  // Protect all routes except home page, auth pages, welcome page, API routes, and public assets
   if (
     !user &&
     request.nextUrl.pathname !== "/" &&
     !request.nextUrl.pathname.startsWith("/auth") &&
+    !request.nextUrl.pathname.startsWith("/welcome") &&
+    !request.nextUrl.pathname.startsWith("/api") &&
     !request.nextUrl.pathname.startsWith("/_next") &&
     !request.nextUrl.pathname.startsWith("/images")
   ) {
