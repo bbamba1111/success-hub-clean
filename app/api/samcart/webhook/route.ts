@@ -2,6 +2,14 @@ import { createAdminClient } from "@/lib/supabase/admin"
 import { NextResponse } from "next/server"
 import crypto from "crypto"
 
+export async function GET() {
+  return NextResponse.json({
+    status: "ok",
+    message: "SamCart webhook endpoint is ready",
+    timestamp: new Date().toISOString(),
+  })
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json()
