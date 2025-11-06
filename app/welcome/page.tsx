@@ -24,17 +24,32 @@ export default function WelcomePage() {
   const searchParams = useSearchParams()
   const emailParam = searchParams.get("email")
   const productParam = searchParams.get("product")
+  const firstNameParam = searchParams.get("first_name")
+
+  const isValidEmail = (email: string | null): boolean => {
+    if (!email) return false
+    if (email.includes("{{") || email.includes("}}") || email.includes("[") || email.includes("]")) {
+      return false
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
 
   useEffect(() => {
-    if (emailParam) {
-      setUserEmail(emailParam)
+    if (isValidEmail(emailParam)) {
+      setUserEmail(emailParam!)
       setEmailFromUrl(true)
-      fetchUserData(emailParam)
+      fetchUserData(emailParam!)
     }
-    if (productParam) {
+
+    if (firstNameParam && !firstNameParam.includes("{{") && !firstNameParam.includes("[")) {
+      setUserName(firstNameParam)
+    }
+
+    if (productParam && !productParam.includes("{{") && !productParam.includes("[")) {
       setProductName(productParam)
     }
-  }, [emailParam, productParam])
+  }, [emailParam, productParam, firstNameParam])
 
   const fetchUserData = async (email: string) => {
     setIsLoadingUserData(true)
@@ -47,7 +62,7 @@ export default function WelcomePage() {
 
       if (response.ok) {
         const data = await response.json()
-        if (data.firstName) {
+        if (data.firstName && !userName) {
           setUserName(data.firstName)
         }
         if (data.productName) {
@@ -76,7 +91,6 @@ export default function WelcomePage() {
           return true
         }
 
-        // Wait 2 seconds before next retry
         if (i < maxRetries - 1) {
           await new Promise((resolve) => setTimeout(resolve, 2000))
         }
@@ -161,7 +175,6 @@ export default function WelcomePage() {
 
           <Card className="border-2 border-[#7FB069]/20">
             <CardHeader className="text-center">
-              <div className="text-5xl mb-2">🎉</div>
               <CardTitle className="text-3xl text-[#7FB069]">
                 {userName ? `Welcome, ${userName}!` : userEmail ? `Welcome!` : "Welcome!"}
               </CardTitle>
