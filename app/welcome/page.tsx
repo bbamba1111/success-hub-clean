@@ -16,23 +16,50 @@ export default function WelcomePage() {
   const [error, setError] = useState<string | null>(null)
   const [isSettingPassword, setIsSettingPassword] = useState(false)
   const [userEmail, setUserEmail] = useState("")
-  const [productName, setProductName] = useState("coaching program")
+  const [userName, setUserName] = useState("")
+  const [productName, setProductName] = useState("")
+  const [emailFromUrl, setEmailFromUrl] = useState(false)
+  const [isLoadingUserData, setIsLoadingUserData] = useState(false)
   const router = useRouter()
   const searchParams = useSearchParams()
   const emailParam = searchParams.get("email")
   const productParam = searchParams.get("product")
 
   useEffect(() => {
-    if (!emailParam) {
-      setError("Email parameter is missing")
-      return
+    if (emailParam) {
+      setUserEmail(emailParam)
+      setEmailFromUrl(true)
+      fetchUserData(emailParam)
     }
-
-    setUserEmail(emailParam)
     if (productParam) {
       setProductName(productParam)
     }
   }, [emailParam, productParam])
+
+  const fetchUserData = async (email: string) => {
+    setIsLoadingUserData(true)
+    try {
+      const response = await fetch("/api/auth/verify-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        if (data.firstName) {
+          setUserName(data.firstName)
+        }
+        if (data.productName) {
+          setProductName(data.productName)
+        }
+      }
+    } catch (err) {
+      console.error("[v0] Error fetching user data:", err)
+    } finally {
+      setIsLoadingUserData(false)
+    }
+  }
 
   const waitForAccountCreation = async (email: string, maxRetries = 15): Promise<boolean> => {
     for (let i = 0; i < maxRetries; i++) {
@@ -64,6 +91,12 @@ export default function WelcomePage() {
     e.preventDefault()
     setIsSettingPassword(true)
     setError(null)
+
+    if (!userEmail || !userEmail.includes("@")) {
+      setError("Please enter a valid email address")
+      setIsSettingPassword(false)
+      return
+    }
 
     if (password !== confirmPassword) {
       setError("Passwords do not match")
@@ -112,27 +145,9 @@ export default function WelcomePage() {
     }
   }
 
-  if (!userEmail) {
-    return (
-      <div className="flex min-h-screen w-full items-center justify-center p-6 bg-gradient-to-br from-[#F5F1E8] to-white">
-        <Card className="w-full max-w-md border-2 border-red-200">
-          <CardHeader>
-            <CardTitle className="text-red-600">Email Missing</CardTitle>
-            <CardDescription>The email parameter is missing from the URL.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button onClick={() => router.push("/auth/login")} variant="outline" className="w-full">
-              Go to Login
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
-
   return (
     <div className="flex min-h-screen w-full items-center justify-center p-6 bg-gradient-to-br from-[#F5F1E8] to-white">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-2xl">
         <div className="flex flex-col gap-6">
           <div className="flex justify-center mb-4">
             <img
@@ -146,31 +161,57 @@ export default function WelcomePage() {
 
           <Card className="border-2 border-[#7FB069]/20">
             <CardHeader className="text-center">
-              <div className="text-4xl mb-2">🎉</div>
-              <CardTitle className="text-2xl text-[#7FB069]">Welcome, {userEmail.split("@")[0]}!</CardTitle>
-              <CardDescription>
-                Your <span className="font-semibold">{productName}</span> is being set up.
+              <div className="text-5xl mb-2">🎉</div>
+              <CardTitle className="text-3xl text-[#7FB069]">
+                {userName ? `Welcome, ${userName}!` : userEmail ? `Welcome!` : "Welcome!"}
+              </CardTitle>
+              <CardDescription className="text-lg">
+                {productName ? (
+                  <>
+                    Your <span className="font-semibold">{productName}</span> is being set up.
+                  </>
+                ) : (
+                  "Your account is being set up."
+                )}
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <div className="mb-6 p-5 bg-blue-50 rounded-lg border border-blue-200">
                 <div className="flex items-center mb-2">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"></div>
-                  <span className="text-sm text-blue-800 font-medium">Account setup in progress...</span>
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600 mr-2"></div>
+                  <span className="text-base text-blue-800 font-medium">Account setup in progress...</span>
                 </div>
-                <p className="text-xs text-blue-600">
-                  This typically takes 1-2 minutes. Create your password now while we work!
+                <p className="text-sm text-blue-600">
+                  {emailFromUrl
+                    ? "This typically takes 1-2 minutes. Create your password now while we work!"
+                    : "Please enter your email and create a password to complete your account setup."}
                 </p>
               </div>
 
               <form onSubmit={handleSetPassword}>
                 <div className="flex flex-col gap-4">
                   <div className="grid gap-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" value={userEmail} disabled className="bg-gray-50" />
+                    <Label htmlFor="email" className="text-base">
+                      Email {!emailFromUrl && <span className="text-red-500">*</span>}
+                    </Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={userEmail}
+                      onChange={(e) => setUserEmail(e.target.value)}
+                      disabled={emailFromUrl}
+                      className={emailFromUrl ? "bg-gray-50 text-base" : "text-base"}
+                      placeholder="Enter your email address"
+                      required
+                    />
+                    {!emailFromUrl && (
+                      <p className="text-sm text-gray-600 font-medium">Enter the email you used for your purchase</p>
+                    )}
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="password">Create Password</Label>
+                    <Label htmlFor="password" className="text-base">
+                      Create Password <span className="text-red-500">*</span>
+                    </Label>
                     <Input
                       id="password"
                       type="password"
@@ -178,10 +219,13 @@ export default function WelcomePage() {
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
+                      className="text-base"
                     />
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="confirm-password">Confirm Password</Label>
+                    <Label htmlFor="confirm-password" className="text-base">
+                      Confirm Password <span className="text-red-500">*</span>
+                    </Label>
                     <Input
                       id="confirm-password"
                       type="password"
@@ -189,16 +233,17 @@ export default function WelcomePage() {
                       required
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="text-base"
                     />
                   </div>
                   {error && (
-                    <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                    <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-base">
                       {error}
                     </div>
                   )}
                   <Button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-semibold"
+                    className="w-full bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-semibold text-base"
                     disabled={isSettingPassword}
                   >
                     {isSettingPassword ? (
@@ -210,7 +255,7 @@ export default function WelcomePage() {
                       "Create My Account"
                     )}
                   </Button>
-                  <p className="text-xs text-center text-gray-500">You'll use this password to log in next time</p>
+                  <p className="text-sm text-center text-gray-500">You'll use this password to log in next time</p>
                 </div>
               </form>
             </CardContent>

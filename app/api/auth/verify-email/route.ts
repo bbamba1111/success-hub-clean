@@ -33,6 +33,8 @@ export async function POST(request: Request) {
       userId: profile.id,
       tempPassword: profile.onboarding_token || null,
       name: profile.name,
+      firstName: profile.first_name,
+      productName: profile.product_name,
     })
   } catch (error) {
     console.error("[v0] Verify email error:", error)
