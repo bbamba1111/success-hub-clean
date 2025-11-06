@@ -1,29 +1,33 @@
 "use client"
 
 import type React from "react"
-import { setUserPassword } from "./actions"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
+import { CheckCircle2, Loader2 } from "lucide-react"
 
 export default function WelcomePage() {
-  const [password, setPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
+  const [signupPassword, setSignupPassword] = useState("")
+  const [signupConfirmPassword, setSignupConfirmPassword] = useState("")
+  const [loginPassword, setLoginPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
-  const [isSettingPassword, setIsSettingPassword] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [userEmail, setUserEmail] = useState("")
   const [userName, setUserName] = useState("")
   const [productName, setProductName] = useState("")
-  const [emailFromUrl, setEmailFromUrl] = useState(false)
-  const [isLoadingUserData, setIsLoadingUserData] = useState(false)
+  const [activeTab, setActiveTab] = useState<"signup" | "login">("signup")
+  const [accountStatus, setAccountStatus] = useState<"processing" | "ready">("processing")
+  const [timeElapsed, setTimeElapsed] = useState(0)
+
   const router = useRouter()
   const searchParams = useSearchParams()
   const emailParam = searchParams.get("email")
-  const productParam = searchParams.get("product")
+  const productParam = searchParams.get("product") || searchParams.get("product_name")
   const firstNameParam = searchParams.get("first_name")
 
   const isValidEmail = (email: string | null): boolean => {
@@ -38,8 +42,7 @@ export default function WelcomePage() {
   useEffect(() => {
     if (isValidEmail(emailParam)) {
       setUserEmail(emailParam!)
-      setEmailFromUrl(true)
-      fetchUserData(emailParam!)
+      checkAccountExists(emailParam!)
     }
 
     if (firstNameParam && !firstNameParam.includes("{{") && !firstNameParam.includes("[")) {
@@ -51,8 +54,23 @@ export default function WelcomePage() {
     }
   }, [emailParam, productParam, firstNameParam])
 
-  const fetchUserData = async (email: string) => {
-    setIsLoadingUserData(true)
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeElapsed((prev) => {
+        const newTime = prev + 1
+        // After 120 seconds (2 minutes), switch to login tab and mark account as ready
+        if (newTime >= 120 && accountStatus === "processing") {
+          setAccountStatus("ready")
+          setActiveTab("login")
+        }
+        return newTime
+      })
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [accountStatus])
+
+  const checkAccountExists = async (email: string) => {
     try {
       const response = await fetch("/api/auth/verify-email", {
         method: "POST",
@@ -62,107 +80,121 @@ export default function WelcomePage() {
 
       if (response.ok) {
         const data = await response.json()
+        setAccountStatus("ready")
+        setActiveTab("login")
         if (data.firstName && !userName) {
           setUserName(data.firstName)
         }
-        if (data.productName) {
+        if (data.productName && !productName) {
           setProductName(data.productName)
         }
       }
     } catch (err) {
-      console.error("[v0] Error fetching user data:", err)
-    } finally {
-      setIsLoadingUserData(false)
+      console.error("[v0] Error checking account:", err)
     }
   }
 
-  const waitForAccountCreation = async (email: string, maxRetries = 15): Promise<boolean> => {
-    for (let i = 0; i < maxRetries; i++) {
-      try {
-        console.log(`[v0] Checking if account exists, attempt ${i + 1}/${maxRetries}`)
-        const response = await fetch("/api/auth/verify-email", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        })
-
-        if (response.ok) {
-          console.log("[v0] Account found!")
-          return true
-        }
-
-        if (i < maxRetries - 1) {
-          await new Promise((resolve) => setTimeout(resolve, 2000))
-        }
-      } catch (err) {
-        console.error("[v0] Error checking account:", err)
-      }
-    }
-    return false
-  }
-
-  const handleSetPassword = async (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsSettingPassword(true)
+    setIsLoading(true)
     setError(null)
 
     if (!userEmail || !userEmail.includes("@")) {
       setError("Please enter a valid email address")
-      setIsSettingPassword(false)
+      setIsLoading(false)
       return
     }
 
-    if (password !== confirmPassword) {
+    if (signupPassword !== signupConfirmPassword) {
       setError("Passwords do not match")
-      setIsSettingPassword(false)
+      setIsLoading(false)
       return
     }
 
-    if (password.length < 6) {
+    if (signupPassword.length < 6) {
       setError("Password must be at least 6 characters")
-      setIsSettingPassword(false)
+      setIsLoading(false)
       return
     }
 
     try {
-      console.log("[v0] Waiting for account creation...")
-      const accountExists = await waitForAccountCreation(userEmail)
+      // Call signup API
+      const response = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: userEmail,
+          password: signupPassword,
+          firstName: userName,
+          product: productName,
+          fromSamCart: true,
+        }),
+      })
 
-      if (!accountExists) {
-        throw new Error(
-          "Account creation is taking longer than expected. Please try logging in with your email in 1-2 minutes.",
-        )
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to create account")
       }
 
-      console.log("[v0] Setting password...")
-      const result = await setUserPassword(userEmail, password)
-
-      if (result.error) {
-        throw new Error(result.error)
-      }
-
+      // Log in after successful signup
       const supabase = createClient()
       const { error: loginError } = await supabase.auth.signInWithPassword({
         email: userEmail,
-        password: password,
+        password: signupPassword,
       })
 
       if (loginError) throw loginError
 
-      console.log("[v0] Login successful, redirecting to hub...")
       router.push("/hub")
     } catch (err) {
-      console.error("[v0] Password set error:", err)
-      setError(err instanceof Error ? err.message : "Failed to set password")
+      console.error("[v0] Signup error:", err)
+      setError(err instanceof Error ? err.message : "Failed to create account")
     } finally {
-      setIsSettingPassword(false)
+      setIsLoading(false)
+    }
+  }
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+    setError(null)
+
+    if (!userEmail || !userEmail.includes("@")) {
+      setError("Please enter a valid email address")
+      setIsLoading(false)
+      return
+    }
+
+    if (loginPassword.length < 6) {
+      setError("Password must be at least 6 characters")
+      setIsLoading(false)
+      return
+    }
+
+    try {
+      const supabase = createClient()
+      const { error: loginError } = await supabase.auth.signInWithPassword({
+        email: userEmail,
+        password: loginPassword,
+      })
+
+      if (loginError) throw loginError
+
+      router.push("/hub")
+    } catch (err) {
+      console.error("[v0] Login error:", err)
+      setError(err instanceof Error ? err.message : "Invalid email or password")
+    } finally {
+      setIsLoading(false)
     }
   }
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center p-6 bg-gradient-to-br from-[#F5F1E8] to-white">
+    <div className="flex min-h-screen w-full items-center justify-center p-6 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       <div className="w-full max-w-2xl">
         <div className="flex flex-col gap-6">
+          {/* Logo */}
           <div className="flex justify-center mb-4">
             <img
               src="/images/logo.png"
@@ -173,104 +205,191 @@ export default function WelcomePage() {
             />
           </div>
 
-          <Card className="border-2 border-[#7FB069]/20">
-            <CardHeader className="text-center">
-              <CardTitle className="text-3xl text-[#7FB069]">
+          <Card className="border-2 border-blue-200 shadow-xl">
+            <CardHeader className="text-center pb-4">
+              <CardTitle className="text-3xl text-blue-900">
                 {userName ? `Welcome, ${userName}!` : userEmail ? `Welcome!` : "Welcome!"}
               </CardTitle>
-              <CardDescription className="text-lg">
+              <CardDescription className="text-lg text-gray-600">
                 {productName ? (
                   <>
-                    Your <span className="font-semibold">{productName}</span> is being set up.
+                    Thank you for purchasing <span className="font-semibold text-blue-700">{productName}</span>
                   </>
                 ) : (
-                  "Your account is being set up."
+                  "Thank you for your purchase!"
                 )}
               </CardDescription>
             </CardHeader>
+
             <CardContent>
-              <div className="mb-6 p-5 bg-blue-50 rounded-lg border border-blue-200">
+              {/* Status Indicator */}
+              <div
+                className={`mb-6 p-5 rounded-lg border ${
+                  accountStatus === "ready" ? "bg-green-50 border-green-200" : "bg-blue-50 border-blue-200"
+                }`}
+              >
                 <div className="flex items-center mb-2">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600 mr-2"></div>
-                  <span className="text-base text-blue-800 font-medium">Account setup in progress...</span>
+                  {accountStatus === "processing" ? (
+                    <>
+                      <Loader2 className="h-5 w-5 text-blue-600 mr-2 animate-spin" />
+                      <span className="text-base text-blue-800 font-medium">Account setup in progress...</span>
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 className="h-5 w-5 text-green-600 mr-2" />
+                      <span className="text-base text-green-800 font-medium">Account ready!</span>
+                    </>
+                  )}
                 </div>
-                <p className="text-sm text-blue-600">
-                  {emailFromUrl
-                    ? "This typically takes 1-2 minutes. Create your password now while we work!"
-                    : "Please enter your email and create a password to complete your account setup."}
+                <p className="text-sm text-gray-600">
+                  {accountStatus === "processing"
+                    ? `Processing your order... (${Math.floor(timeElapsed / 60)}:${String(timeElapsed % 60).padStart(2, "0")})`
+                    : "Your account has been created. Please log in below."}
                 </p>
               </div>
 
-              <form onSubmit={handleSetPassword}>
-                <div className="flex flex-col gap-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="email" className="text-base">
-                      Email {!emailFromUrl && <span className="text-red-500">*</span>}
-                    </Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={userEmail}
-                      onChange={(e) => setUserEmail(e.target.value)}
-                      disabled={emailFromUrl}
-                      className={emailFromUrl ? "bg-gray-50 text-base" : "text-base"}
-                      placeholder="Enter your email address"
-                      required
-                    />
-                    {!emailFromUrl && (
-                      <p className="text-sm text-gray-600 font-medium">Enter the email you used for your purchase</p>
-                    )}
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="password" className="text-base">
-                      Create Password <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="password"
-                      type="password"
-                      placeholder="At least 6 characters"
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="text-base"
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="confirm-password" className="text-base">
-                      Confirm Password <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="confirm-password"
-                      type="password"
-                      placeholder="Re-enter your password"
-                      required
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="text-base"
-                    />
-                  </div>
-                  {error && (
-                    <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-base">
-                      {error}
-                    </div>
-                  )}
-                  <Button
-                    type="submit"
-                    className="w-full bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-semibold text-base"
-                    disabled={isSettingPassword}
-                  >
-                    {isSettingPassword ? (
-                      <div className="flex items-center justify-center">
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                        {isSettingPassword && "Creating Your Account..."}
+              {/* Tabs for Signup/Login */}
+              <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "signup" | "login")}>
+                <TabsList className="grid w-full grid-cols-2 mb-6">
+                  <TabsTrigger value="signup" className="text-base">
+                    Create Account
+                  </TabsTrigger>
+                  <TabsTrigger value="login" className="text-base">
+                    Login
+                  </TabsTrigger>
+                </TabsList>
+
+                {/* Signup Tab */}
+                <TabsContent value="signup">
+                  <form onSubmit={handleSignup}>
+                    <div className="flex flex-col gap-4">
+                      <div className="grid gap-2">
+                        <Label htmlFor="signup-email" className="text-base">
+                          Email
+                        </Label>
+                        <Input
+                          id="signup-email"
+                          type="email"
+                          value={userEmail}
+                          onChange={(e) => setUserEmail(e.target.value)}
+                          disabled={isValidEmail(emailParam)}
+                          className="bg-gray-50 text-base"
+                          placeholder="your@email.com"
+                          required
+                        />
                       </div>
-                    ) : (
-                      "Create My Account"
-                    )}
-                  </Button>
-                  <p className="text-sm text-center text-gray-500">You'll use this password to log in next time</p>
-                </div>
-              </form>
+                      <div className="grid gap-2">
+                        <Label htmlFor="signup-password" className="text-base">
+                          Create Password
+                        </Label>
+                        <Input
+                          id="signup-password"
+                          type="password"
+                          placeholder="At least 6 characters"
+                          required
+                          value={signupPassword}
+                          onChange={(e) => setSignupPassword(e.target.value)}
+                          className="text-base"
+                        />
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="signup-confirm-password" className="text-base">
+                          Confirm Password
+                        </Label>
+                        <Input
+                          id="signup-confirm-password"
+                          type="password"
+                          placeholder="Re-enter your password"
+                          required
+                          value={signupConfirmPassword}
+                          onChange={(e) => setSignupConfirmPassword(e.target.value)}
+                          className="text-base"
+                        />
+                      </div>
+                      {error && (
+                        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-base">
+                          {error}
+                        </div>
+                      )}
+                      <Button
+                        type="submit"
+                        className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-base"
+                        disabled={isLoading}
+                      >
+                        {isLoading ? (
+                          <div className="flex items-center justify-center">
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            Creating Account...
+                          </div>
+                        ) : (
+                          "Create My Account"
+                        )}
+                      </Button>
+                    </div>
+                  </form>
+                </TabsContent>
+
+                {/* Login Tab */}
+                <TabsContent value="login">
+                  <form onSubmit={handleLogin}>
+                    <div className="flex flex-col gap-4">
+                      <div className="grid gap-2">
+                        <Label htmlFor="login-email" className="text-base">
+                          Email
+                        </Label>
+                        <Input
+                          id="login-email"
+                          type="email"
+                          value={userEmail}
+                          onChange={(e) => setUserEmail(e.target.value)}
+                          disabled={isValidEmail(emailParam)}
+                          className="bg-gray-50 text-base"
+                          placeholder="your@email.com"
+                          required
+                        />
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="login-password" className="text-base">
+                          Password
+                        </Label>
+                        <Input
+                          id="login-password"
+                          type="password"
+                          placeholder="Enter your password"
+                          required
+                          value={loginPassword}
+                          onChange={(e) => setLoginPassword(e.target.value)}
+                          className="text-base"
+                        />
+                      </div>
+                      {error && (
+                        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-base">
+                          {error}
+                        </div>
+                      )}
+                      <Button
+                        type="submit"
+                        className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-base"
+                        disabled={isLoading}
+                      >
+                        {isLoading ? (
+                          <div className="flex items-center justify-center">
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            Logging In...
+                          </div>
+                        ) : (
+                          "Log In"
+                        )}
+                      </Button>
+                      <p className="text-sm text-center text-gray-500">
+                        <a href="/auth/forgot-password" className="text-blue-600 hover:underline">
+                          Forgot your password?
+                        </a>
+                      </p>
+                    </div>
+                  </form>
+                </TabsContent>
+              </Tabs>
             </CardContent>
           </Card>
         </div>
