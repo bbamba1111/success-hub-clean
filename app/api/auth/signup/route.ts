@@ -50,21 +50,35 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Failed to create account" }, { status: 500 })
     }
 
-    // Create user profile
+    // Create user profile with correct column names from database schema
     const { error: profileError } = await adminClient.from("user_profiles").insert({
       id: authData.user.id,
       email: email,
-      first_name: firstName || email.split("@")[0],
-      product_name: product || "coaching program",
+      name: firstName || email.split("@")[0], // Use 'name' instead of 'first_name'
       membership_tier: "monday_only",
       password_set: true,
+      joined_date: new Date().toISOString(),
+      created_at: new Date().toISOString(),
     })
 
     if (profileError) {
-      console.error("[v0] Profile creation error:", profileError)
+      console.error("[v0] Profile creation error:", {
+        error: profileError,
+        message: profileError.message,
+        details: profileError.details,
+        hint: profileError.hint,
+        code: profileError.code,
+      })
       // Clean up auth user if profile creation fails
       await adminClient.auth.admin.deleteUser(authData.user.id)
-      return NextResponse.json({ error: "Failed to create user profile" }, { status: 500 })
+      return NextResponse.json(
+        {
+          error: "Failed to create user profile",
+          details: profileError.message,
+          hint: profileError.hint,
+        },
+        { status: 500 },
+      )
     }
 
     return NextResponse.json({ success: true, message: "Account created successfully" })
