@@ -8,19 +8,19 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
-import { CheckCircle2, Loader2 } from "lucide-react"
+import { CheckCircle2, Eye, EyeOff, X } from "lucide-react"
 import Link from "next/link"
 
 export default function WelcomePage() {
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [userEmail, setUserEmail] = useState("")
   const [userName, setUserName] = useState("")
   const [productName, setProductName] = useState("")
-  const [accountExists, setAccountExists] = useState(false)
-  const [timeElapsed, setTimeElapsed] = useState(0)
 
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -37,10 +37,14 @@ export default function WelcomePage() {
     return emailRegex.test(email)
   }
 
+  const passwordsMatch = confirmPassword.length > 0 && password === confirmPassword
+  const passwordsDontMatch = confirmPassword.length > 0 && password !== confirmPassword
+  const passwordMeetsRequirements = password.length >= 6
+  const canSubmit = passwordsMatch && passwordMeetsRequirements && userEmail.includes("@")
+
   useEffect(() => {
     if (isValidEmail(emailParam)) {
       setUserEmail(emailParam!)
-      checkAccountExists(emailParam!)
     }
 
     if (firstNameParam && !firstNameParam.includes("{{") && !firstNameParam.includes("[")) {
@@ -51,43 +55,6 @@ export default function WelcomePage() {
       setProductName(productParam)
     }
   }, [emailParam, productParam, firstNameParam])
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeElapsed((prev) => {
-        const newTime = prev + 1
-        if (newTime >= 120 && accountExists) {
-          router.push(`/auth/login?email=${encodeURIComponent(userEmail)}`)
-        }
-        return newTime
-      })
-    }, 1000)
-
-    return () => clearInterval(timer)
-  }, [accountExists, userEmail, router])
-
-  const checkAccountExists = async (email: string) => {
-    try {
-      const response = await fetch("/api/auth/verify-email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      })
-
-      if (response.ok) {
-        const data = await response.json()
-        setAccountExists(true)
-        if (data.firstName && !userName) {
-          setUserName(data.firstName)
-        }
-        if (data.productName && !productName) {
-          setProductName(data.productName)
-        }
-      }
-    } catch (err) {
-      console.error("[v0] Error checking account:", err)
-    }
-  }
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -120,7 +87,7 @@ export default function WelcomePage() {
           email: userEmail,
           password: password,
           firstName: userName,
-          product: productName,
+          product: productName || "Make Time For More Experience",
           fromSamCart: true,
         }),
       })
@@ -148,59 +115,8 @@ export default function WelcomePage() {
     }
   }
 
-  if (accountExists) {
-    return (
-      <div className="flex min-h-screen w-full items-center justify-center p-6 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-        <div className="w-full max-w-2xl">
-          <div className="flex flex-col gap-6">
-            <div className="flex justify-center mb-4">
-              <img
-                src="/images/logo.png"
-                alt="Make Time For More Logo"
-                width={80}
-                height={80}
-                className="rounded-full shadow-lg"
-              />
-            </div>
-
-            <Card className="border-2 border-green-200 shadow-xl">
-              <CardHeader className="text-center pb-4">
-                <CardTitle className="text-3xl text-green-900">
-                  {userName ? `Welcome Back, ${userName}!` : "Welcome Back!"}
-                </CardTitle>
-                <CardDescription className="text-lg text-gray-600">Your account is ready</CardDescription>
-              </CardHeader>
-
-              <CardContent>
-                <div className="mb-6 p-5 rounded-lg border bg-green-50 border-green-200">
-                  <div className="flex items-center mb-2">
-                    <CheckCircle2 className="h-5 w-5 text-green-600 mr-2" />
-                    <span className="text-base text-green-800 font-medium">Account ready!</span>
-                  </div>
-                  <p className="text-sm text-gray-600">
-                    Your account has been created successfully. Please log in to access your Success Hub.
-                  </p>
-                </div>
-
-                <Link href={`/auth/login${userEmail ? `?email=${encodeURIComponent(userEmail)}` : ""}`}>
-                  <Button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-base">
-                    Go to Login Page
-                  </Button>
-                </Link>
-
-                <p className="text-sm text-center text-gray-500 mt-4">
-                  You'll be automatically redirected in {120 - timeElapsed} seconds
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   return (
-    <div className="flex min-h-screen w-full items-center justify-center p-6 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+    <div className="flex min-h-screen w-full items-center justify-center p-6 bg-gradient-to-br from-[#F5F1E8] to-white">
       <div className="w-full max-w-2xl">
         <div className="flex flex-col gap-6">
           <div className="flex justify-center mb-4">
@@ -213,31 +129,24 @@ export default function WelcomePage() {
             />
           </div>
 
-          <Card className="border-2 border-blue-200 shadow-xl">
+          <Card className="border-2 border-[#7FB069]/20 shadow-xl">
             <CardHeader className="text-center pb-4">
-              <CardTitle className="text-3xl text-blue-900">
-                {userName ? `Welcome, ${userName}!` : userEmail ? `Welcome!` : "Welcome!"}
+              <CardTitle className="text-3xl text-[#7FB069]">
+                {userName ? `Welcome, ${userName}!` : "Welcome!"}
               </CardTitle>
               <CardDescription className="text-lg text-gray-600">
                 {productName ? (
                   <>
-                    Thank you for purchasing <span className="font-semibold text-blue-700">{productName}</span>
+                    Complete your <span className="font-semibold text-[#7FB069]">{productName}</span> account setup
+                    below
                   </>
                 ) : (
-                  "Thank you for your purchase!"
+                  "Complete your account setup below"
                 )}
               </CardDescription>
             </CardHeader>
 
             <CardContent>
-              <div className="mb-6 p-5 rounded-lg border bg-blue-50 border-blue-200">
-                <div className="flex items-center mb-2">
-                  <Loader2 className="h-5 w-5 text-blue-600 mr-2 animate-spin" />
-                  <span className="text-base text-blue-800 font-medium">Setting up your account...</span>
-                </div>
-                <p className="text-sm text-gray-600">Create your password below to complete your account setup.</p>
-              </div>
-
               <form onSubmit={handleSignup}>
                 <div className="flex flex-col gap-4">
                   <div className="grid gap-2">
@@ -258,47 +167,115 @@ export default function WelcomePage() {
                       <p className="text-sm text-gray-500">Enter the email you used for your purchase</p>
                     )}
                   </div>
+
+                  {userName && (
+                    <div className="grid gap-2">
+                      <Label htmlFor="firstName" className="text-base">
+                        First Name
+                      </Label>
+                      <Input id="firstName" type="text" value={userName} disabled className="bg-gray-50 text-base" />
+                    </div>
+                  )}
+
+                  {productName && (
+                    <div className="grid gap-2">
+                      <Label htmlFor="product" className="text-base">
+                        Product
+                      </Label>
+                      <Input id="product" type="text" value={productName} disabled className="bg-gray-50 text-base" />
+                    </div>
+                  )}
+
                   <div className="grid gap-2">
                     <Label htmlFor="password" className="text-base">
                       Create Password
                     </Label>
-                    <Input
-                      id="password"
-                      type="password"
-                      placeholder="At least 6 characters"
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="text-base"
-                    />
+                    <div className="relative">
+                      <Input
+                        id="password"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="At least 6 characters"
+                        required
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="text-base pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                      >
+                        {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                      </button>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      {passwordMeetsRequirements ? (
+                        <span className="text-green-600 flex items-center gap-1">
+                          <CheckCircle2 className="h-4 w-4" /> At least 6 characters
+                        </span>
+                      ) : (
+                        <span className="text-gray-500">At least 6 characters required</span>
+                      )}
+                    </div>
                   </div>
+
                   <div className="grid gap-2">
                     <Label htmlFor="confirm-password" className="text-base">
                       Confirm Password
                     </Label>
-                    <Input
-                      id="confirm-password"
-                      type="password"
-                      placeholder="Re-enter your password"
-                      required
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="text-base"
-                    />
+                    <div className="relative">
+                      <Input
+                        id="confirm-password"
+                        type={showConfirmPassword ? "text" : "password"}
+                        placeholder="Re-enter your password"
+                        required
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        className={`text-base pr-10 ${
+                          passwordsMatch
+                            ? "border-green-500 focus-visible:ring-green-500"
+                            : passwordsDontMatch
+                              ? "border-red-500 focus-visible:ring-red-500"
+                              : ""
+                        }`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                      >
+                        {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                      </button>
+                    </div>
+                    {confirmPassword.length > 0 && (
+                      <div className="flex items-center gap-2 text-sm">
+                        {passwordsMatch ? (
+                          <span className="text-green-600 flex items-center gap-1 font-medium">
+                            <CheckCircle2 className="h-4 w-4" /> Passwords match
+                          </span>
+                        ) : (
+                          <span className="text-red-600 flex items-center gap-1 font-medium">
+                            <X className="h-4 w-4" /> Passwords don't match
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </div>
+
                   {error && (
                     <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-base">
                       {error}
                     </div>
                   )}
+
                   <Button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-base"
-                    disabled={isLoading}
+                    className="w-full bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-semibold text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={isLoading || !canSubmit}
                   >
                     {isLoading ? (
                       <div className="flex items-center justify-center">
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        <div className="h-4 w-4 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin" />
                         Creating Account...
                       </div>
                     ) : (
@@ -310,7 +287,7 @@ export default function WelcomePage() {
                     Already have an account?{" "}
                     <Link
                       href={`/auth/login${userEmail ? `?email=${encodeURIComponent(userEmail)}` : ""}`}
-                      className="text-blue-600 hover:underline font-medium"
+                      className="text-[#7FB069] hover:text-[#6FA055] hover:underline font-medium"
                     >
                       Log in here
                     </Link>
