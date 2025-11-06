@@ -4,6 +4,9 @@ import { useEffect, useState } from "react"
 import { SimpleChatModal } from "@/components/simple-chat-modal"
 import { HubClosedBanner } from "@/components/hub-closed-banner"
 import { AuthModal } from "@/components/auth-modal"
+import { createClient } from "@/lib/supabase/client"
+import { LogOut } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 interface HubPageClientProps {
   isAuthenticated: boolean
@@ -22,6 +25,13 @@ export function HubPageClient({ isAuthenticated }: HubPageClientProps) {
       setDashboardVisited(true)
     }
   }, [])
+
+  const handleLogout = async () => {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    setShowAuthModal(true)
+    window.location.reload()
+  }
 
   const scrollToWellnessDashboard = () => {
     const element = document.getElementById("wellness-dashboard")
@@ -47,6 +57,8 @@ export function HubPageClient({ isAuthenticated }: HubPageClientProps) {
               dashboardVisited={dashboardVisited}
               scrollToWellnessDashboard={scrollToWellnessDashboard}
               openChat={openChat}
+              onLogout={handleLogout}
+              showLogout={false}
             />
           </div>
           {/* Auth modal */}
@@ -60,6 +72,8 @@ export function HubPageClient({ isAuthenticated }: HubPageClientProps) {
           dashboardVisited={dashboardVisited}
           scrollToWellnessDashboard={scrollToWellnessDashboard}
           openChat={openChat}
+          onLogout={handleLogout}
+          showLogout={true}
         />
       )}
 
@@ -77,11 +91,33 @@ interface HomePageContentProps {
   dashboardVisited: boolean
   scrollToWellnessDashboard: () => void
   openChat: (context: string, title: string) => void
+  onLogout: () => void
+  showLogout: boolean
 }
 
-function HomePageContent({ dashboardVisited, scrollToWellnessDashboard, openChat }: HomePageContentProps) {
+function HomePageContent({
+  dashboardVisited,
+  scrollToWellnessDashboard,
+  openChat,
+  onLogout,
+  showLogout,
+}: HomePageContentProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white">
+      {showLogout && (
+        <div className="fixed top-4 right-4 z-50">
+          <Button
+            onClick={onLogout}
+            variant="outline"
+            size="sm"
+            className="bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg border-[#7FB069]/20"
+          >
+            <LogOut className="w-4 h-4 mr-2" />
+            Logout
+          </Button>
+        </div>
+      )}
+
       <div className="max-w-7xl mx-auto px-6 pt-6">
         <HubClosedBanner />
       </div>
@@ -138,7 +174,7 @@ function HomePageContent({ dashboardVisited, scrollToWellnessDashboard, openChat
         </div>
       </div>
 
-      {/* Rest of the content remains the same - using existing code comment to skip */}
+      {/* Rest of the content remains the same */}
     </div>
   )
 }
