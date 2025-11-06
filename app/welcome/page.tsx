@@ -14,80 +14,50 @@ export default function WelcomePage() {
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
   const [isSettingPassword, setIsSettingPassword] = useState(false)
   const [userEmail, setUserEmail] = useState("")
-  const [userId, setUserId] = useState("")
-  const [hasToken, setHasToken] = useState(false)
-  const [retryCount, setRetryCount] = useState(0)
-  const [showRetryButton, setShowRetryButton] = useState(false)
+  const [productName, setProductName] = useState("coaching program")
   const router = useRouter()
   const searchParams = useSearchParams()
   const emailParam = searchParams.get("email")
+  const productParam = searchParams.get("product")
 
   useEffect(() => {
-    async function verifyUser() {
-      if (!emailParam) {
-        setError("Email parameter is missing")
-        setIsLoading(false)
-        return
-      }
+    if (!emailParam) {
+      setError("Email parameter is missing")
+      return
+    }
 
+    setUserEmail(emailParam)
+    if (productParam) {
+      setProductName(productParam)
+    }
+  }, [emailParam, productParam])
+
+  const waitForAccountCreation = async (email: string, maxRetries = 15): Promise<boolean> => {
+    for (let i = 0; i < maxRetries; i++) {
       try {
-        console.log(`[v0] Verifying user, attempt ${retryCount + 1}`)
+        console.log(`[v0] Checking if account exists, attempt ${i + 1}/${maxRetries}`)
         const response = await fetch("/api/auth/verify-email", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: emailParam }),
+          body: JSON.stringify({ email }),
         })
 
-        const data = await response.json()
-
-        if (!response.ok) {
-          if (response.status === 404 && retryCount < 10) {
-            console.log(`[v0] User not found, retrying in 2 seconds (attempt ${retryCount + 1}/10)`)
-            setTimeout(() => {
-              setRetryCount(retryCount + 1)
-            }, 2000)
-            return
-          }
-          setShowRetryButton(true)
-          throw new Error(data.error || "Failed to verify email")
+        if (response.ok) {
+          console.log("[v0] Account found!")
+          return true
         }
 
-        if (data.tempPassword) {
-          const supabase = createClient()
-          const { error: signInError } = await supabase.auth.signInWithPassword({
-            email: data.email,
-            password: data.tempPassword,
-          })
-
-          if (signInError) {
-            console.error("[v0] Auto-login failed:", signInError)
-            setHasToken(false)
-          } else {
-            setHasToken(true)
-          }
+        // Wait 2 seconds before next retry
+        if (i < maxRetries - 1) {
+          await new Promise((resolve) => setTimeout(resolve, 2000))
         }
-
-        setUserEmail(data.email)
-        setUserId(data.userId)
-        setIsLoading(false)
       } catch (err) {
-        console.error("[v0] Email verification error:", err)
-        setError(err instanceof Error ? err.message : "Failed to verify email. Please try logging in.")
-        setIsLoading(false)
+        console.error("[v0] Error checking account:", err)
       }
     }
-
-    verifyUser()
-  }, [emailParam, retryCount])
-
-  const handleRetry = () => {
-    setError(null)
-    setIsLoading(true)
-    setShowRetryButton(false)
-    setRetryCount(0)
+    return false
   }
 
   const handleSetPassword = async (e: React.FormEvent) => {
@@ -108,36 +78,31 @@ export default function WelcomePage() {
     }
 
     try {
-      const supabase = createClient()
+      console.log("[v0] Waiting for account creation...")
+      const accountExists = await waitForAccountCreation(userEmail)
 
-      if (!hasToken) {
-        const result = await setUserPassword(userEmail, password)
-
-        if (result.error) {
-          throw new Error(result.error)
-        }
-
-        const { error: loginError } = await supabase.auth.signInWithPassword({
-          email: userEmail,
-          password: password,
-        })
-
-        if (loginError) throw loginError
-      } else {
-        const { error: updateError } = await supabase.auth.updateUser({
-          password: password,
-        })
-
-        if (updateError) throw updateError
-
-        const {
-          data: { user },
-        } = await supabase.auth.getUser()
-        if (user) {
-          await supabase.from("user_profiles").update({ password_set: true }).eq("id", user.id)
-        }
+      if (!accountExists) {
+        throw new Error(
+          "Account creation is taking longer than expected. Please try logging in with your email in 1-2 minutes.",
+        )
       }
 
+      console.log("[v0] Setting password...")
+      const result = await setUserPassword(userEmail, password)
+
+      if (result.error) {
+        throw new Error(result.error)
+      }
+
+      const supabase = createClient()
+      const { error: loginError } = await supabase.auth.signInWithPassword({
+        email: userEmail,
+        password: password,
+      })
+
+      if (loginError) throw loginError
+
+      console.log("[v0] Login successful, redirecting to hub...")
       router.push("/hub")
     } catch (err) {
       console.error("[v0] Password set error:", err)
@@ -147,59 +112,18 @@ export default function WelcomePage() {
     }
   }
 
-  if (isLoading) {
-    return (
-      <div className="flex min-h-screen w-full items-center justify-center p-6 bg-gradient-to-br from-[#F5F1E8] to-white">
-        <Card className="w-full max-w-md border-2 border-[#7FB069]/20">
-          <CardContent className="pt-6">
-            <div className="flex flex-col items-center gap-4">
-              <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#7FB069] border-t-transparent" />
-              <p className="text-center text-gray-600 font-medium">
-                {retryCount === 0 && "Setting up your account..."}
-                {retryCount > 0 && retryCount <= 3 && "Creating your Success Hub account..."}
-                {retryCount > 3 && retryCount <= 7 && "Almost there, finalizing your account..."}
-                {retryCount > 7 && "Just a few more seconds..."}
-              </p>
-              <p className="text-xs text-center text-gray-500 max-w-xs">
-                We're creating your account and preparing your Success Hub. This usually takes just a few seconds.
-              </p>
-              {retryCount > 5 && (
-                <p className="text-xs text-center text-amber-600 font-medium">
-                  Taking longer than usual, but we're still working on it...
-                </p>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
-
-  if (error && !userEmail) {
+  if (!userEmail) {
     return (
       <div className="flex min-h-screen w-full items-center justify-center p-6 bg-gradient-to-br from-[#F5F1E8] to-white">
         <Card className="w-full max-w-md border-2 border-red-200">
           <CardHeader>
-            <CardTitle className="text-red-600">Account Setup Delayed</CardTitle>
-            <CardDescription className="text-gray-600">
-              Your account is still being created. This can take up to 30 seconds after purchase.
-            </CardDescription>
+            <CardTitle className="text-red-600">Email Missing</CardTitle>
+            <CardDescription>The email parameter is missing from the URL.</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 rounded-lg text-sm">
-              {error}
-            </div>
-            {showRetryButton && (
-              <Button onClick={handleRetry} className="w-full bg-[#7FB069] hover:bg-[#6FA055] text-white">
-                Try Again
-              </Button>
-            )}
+          <CardContent>
             <Button onClick={() => router.push("/auth/login")} variant="outline" className="w-full">
-              Go to Login Instead
+              Go to Login
             </Button>
-            <p className="text-xs text-center text-gray-500">
-              If you continue to have issues, please wait 1 minute and try logging in with your email.
-            </p>
           </CardContent>
         </Card>
       </div>
@@ -222,10 +146,23 @@ export default function WelcomePage() {
 
           <Card className="border-2 border-[#7FB069]/20">
             <CardHeader className="text-center">
-              <CardTitle className="text-2xl text-[#7FB069]">Welcome to Your Success Hub!</CardTitle>
-              <CardDescription>Set your password to secure your account</CardDescription>
+              <div className="text-4xl mb-2">🎉</div>
+              <CardTitle className="text-2xl text-[#7FB069]">Welcome, {userEmail.split("@")[0]}!</CardTitle>
+              <CardDescription>
+                Your <span className="font-semibold">{productName}</span> is being set up.
+              </CardDescription>
             </CardHeader>
             <CardContent>
+              <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <div className="flex items-center mb-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"></div>
+                  <span className="text-sm text-blue-800 font-medium">Account setup in progress...</span>
+                </div>
+                <p className="text-xs text-blue-600">
+                  This typically takes 1-2 minutes. Create your password now while we work!
+                </p>
+              </div>
+
               <form onSubmit={handleSetPassword}>
                 <div className="flex flex-col gap-4">
                   <div className="grid gap-2">
@@ -264,7 +201,14 @@ export default function WelcomePage() {
                     className="w-full bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-semibold"
                     disabled={isSettingPassword}
                   >
-                    {isSettingPassword ? "Setting Password..." : "Set Password & Continue"}
+                    {isSettingPassword ? (
+                      <div className="flex items-center justify-center">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        {isSettingPassword && "Creating Your Account..."}
+                      </div>
+                    ) : (
+                      "Create My Account"
+                    )}
                   </Button>
                   <p className="text-xs text-center text-gray-500">You'll use this password to log in next time</p>
                 </div>
