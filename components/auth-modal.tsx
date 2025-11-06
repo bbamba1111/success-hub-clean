@@ -17,13 +17,14 @@ interface AuthModalProps {
 }
 
 export function AuthModal({ onSuccess }: AuthModalProps) {
-  const [activeTab, setActiveTab] = useState<"signup" | "login">("signup")
+  const [activeTab, setActiveTab] = useState<"signup" | "login" | "reset">("signup")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
@@ -36,6 +37,7 @@ export function AuthModal({ onSuccess }: AuthModalProps) {
     e.preventDefault()
     setIsLoading(true)
     setError(null)
+    setSuccess(null)
 
     try {
       const response = await fetch("/api/auth/signup", {
@@ -68,6 +70,8 @@ export function AuthModal({ onSuccess }: AuthModalProps) {
       router.refresh()
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to create account")
+      setPassword("")
+      setConfirmPassword("")
     } finally {
       setIsLoading(false)
     }
@@ -77,6 +81,7 @@ export function AuthModal({ onSuccess }: AuthModalProps) {
     e.preventDefault()
     setIsLoading(true)
     setError(null)
+    setSuccess(null)
 
     try {
       const supabase = createClient()
@@ -91,6 +96,35 @@ export function AuthModal({ onSuccess }: AuthModalProps) {
       router.refresh()
     } catch (err) {
       setError(err instanceof Error ? err.message : "Invalid login credentials")
+      setPassword("")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+    setError(null)
+    setSuccess(null)
+
+    try {
+      const response = await fetch("/api/auth/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to send reset email")
+      }
+
+      setSuccess("Password reset email sent! Check your inbox.")
+      setEmail("")
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to send reset email")
     } finally {
       setIsLoading(false)
     }
@@ -98,10 +132,8 @@ export function AuthModal({ onSuccess }: AuthModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
-      {/* Backdrop */}
       <div className="absolute inset-0 bg-black/50" />
 
-      {/* Modal */}
       <div className="relative w-full max-w-md">
         <div className="flex justify-center mb-4">
           <img
@@ -116,10 +148,12 @@ export function AuthModal({ onSuccess }: AuthModalProps) {
         <Card className="border-2 border-[#7FB069]/20 shadow-2xl">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl text-[#7FB069]">Welcome to Success Hub</CardTitle>
-            <CardDescription>Create an account or log in to access your dashboard</CardDescription>
+            <CardDescription>
+              {activeTab === "reset" ? "Reset your password" : "Create an account or log in to access your dashboard"}
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "signup" | "login")}>
+            <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "signup" | "login" | "reset")}>
               <TabsList className="grid w-full grid-cols-2 mb-4">
                 <TabsTrigger value="signup">Sign Up</TabsTrigger>
                 <TabsTrigger value="login">Log In</TabsTrigger>
@@ -264,6 +298,64 @@ export function AuthModal({ onSuccess }: AuthModalProps) {
                     >
                       {isLoading ? "Logging in..." : "Log In"}
                     </Button>
+
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab("reset")}
+                      className="text-sm text-[#7FB069] hover:underline text-center"
+                    >
+                      Forgot your password?
+                    </button>
+                  </div>
+                </form>
+              </TabsContent>
+
+              <TabsContent value="reset">
+                <form onSubmit={handleResetPassword}>
+                  <div className="flex flex-col gap-4">
+                    <p className="text-sm text-gray-600">
+                      Enter your email address and we'll send you a link to reset your password.
+                    </p>
+
+                    <div className="grid gap-2">
+                      <Label htmlFor="reset-email">Email</Label>
+                      <Input
+                        id="reset-email"
+                        type="email"
+                        placeholder="your@email.com"
+                        required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                    </div>
+
+                    {error && (
+                      <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                        {error}
+                      </div>
+                    )}
+
+                    {success && (
+                      <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">
+                        {success}
+                      </div>
+                    )}
+
+                    <Button
+                      type="submit"
+                      className="w-full bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-semibold"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? "Sending..." : "Send Reset Link"}
+                    </Button>
+
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab("login")}
+                      className="text-sm text-[#7FB069] hover:underline text-center"
+                    >
+                      Back to login
+                    </button>
                   </div>
                 </form>
               </TabsContent>
