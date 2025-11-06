@@ -5,6 +5,8 @@ export async function POST(request: Request) {
   try {
     const { email, password, firstName, product, fromSamCart } = await request.json()
 
+    console.log("[v0] Signup request received:", { email, firstName, product, fromSamCart })
+
     if (!email || !password) {
       return NextResponse.json({ error: "Email and password are required" }, { status: 400 })
     }
@@ -15,12 +17,15 @@ export async function POST(request: Request) {
 
     const adminClient = createAdminClient()
 
-    // Check if user already exists
+    console.log("[v0] Admin client created successfully")
+
     const { data: existingProfile } = await adminClient
       .from("user_profiles")
       .select("id, email")
       .eq("email", email)
-      .single()
+      .maybeSingle()
+
+    console.log("[v0] Existing profile check:", existingProfile ? "User exists" : "New user")
 
     if (existingProfile) {
       // User exists, just update their password
@@ -39,6 +44,7 @@ export async function POST(request: Request) {
     }
 
     // Create new user if they don't exist
+    console.log("[v0] Creating new auth user...")
     const { data: authData, error: authError } = await adminClient.auth.admin.createUser({
       email,
       password,
@@ -50,24 +56,30 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Failed to create account" }, { status: 500 })
     }
 
-    // Create user profile with correct column names from database schema
-    const { error: profileError } = await adminClient.from("user_profiles").insert({
+    console.log("[v0] Auth user created successfully:", authData.user.id)
+
+    const profileData = {
       id: authData.user.id,
       email: email,
-      name: firstName || email.split("@")[0], // Use 'name' instead of 'first_name'
+      name: firstName || email.split("@")[0],
       membership_tier: "monday_only",
       password_set: true,
       joined_date: new Date().toISOString(),
       created_at: new Date().toISOString(),
-    })
+    }
+    console.log("[v0] Attempting to insert profile with data:", profileData)
+
+    // Create user profile with correct column names from database schema
+    const { error: profileError } = await adminClient.from("user_profiles").insert(profileData)
 
     if (profileError) {
-      console.error("[v0] Profile creation error:", {
+      console.error("[v0] Profile creation error - Full details:", {
         error: profileError,
         message: profileError.message,
         details: profileError.details,
         hint: profileError.hint,
         code: profileError.code,
+        stack: (profileError as any).stack,
       })
       // Clean up auth user if profile creation fails
       await adminClient.auth.admin.deleteUser(authData.user.id)
@@ -76,11 +88,13 @@ export async function POST(request: Request) {
           error: "Failed to create user profile",
           details: profileError.message,
           hint: profileError.hint,
+          code: profileError.code,
         },
         { status: 500 },
       )
     }
 
+    console.log("[v0] Profile created successfully")
     return NextResponse.json({ success: true, message: "Account created successfully" })
   } catch (error) {
     console.error("[v0] Signup error:", error)
