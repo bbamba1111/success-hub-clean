@@ -27,6 +27,7 @@
     "@radix-ui/react-switch": "^1.1.2",
     "@radix-ui/react-tabs": "latest",
     "@radix-ui/react-toast": "^1.2.4",
+    "@react-email/render": "latest",
     "@supabase/ssr": "latest",
     "@supabase/supabase-js": "latest",
     "ai": "latest",
@@ -39,6 +40,7 @@
     "openai": "^4.73.0",
     "react": "latest",
     "react-dom": "19.2.0",
+    "resend": "latest",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "zod": "latest"
