@@ -1,13 +1,12 @@
 "use client"
 
 import type React from "react"
-import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
+import { useState, useEffect } from "react"
 import { Eye, EyeOff, CheckCircle2, X } from "lucide-react"
 
 export default function ResetPasswordPage() {
@@ -17,11 +16,48 @@ export default function ResetPasswordPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [tokenValid, setTokenValid] = useState<boolean | null>(null)
+  const [userId, setUserId] = useState<string | null>(null)
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const token = searchParams.get("token")
 
   const passwordsMatch = confirmPassword.length > 0 && password === confirmPassword
   const passwordsDontMatch = confirmPassword.length > 0 && password !== confirmPassword
   const passwordMeetsRequirements = password.length >= 6
+
+  useEffect(() => {
+    const validateToken = async () => {
+      if (!token) {
+        setTokenValid(false)
+        setError("Invalid or missing reset token")
+        return
+      }
+
+      try {
+        const response = await fetch("/api/auth/verify-token", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token }),
+        })
+
+        const data = await response.json()
+
+        if (data.valid && data.userId) {
+          setTokenValid(true)
+          setUserId(data.userId)
+        } else {
+          setTokenValid(false)
+          setError("This reset link has expired or is invalid")
+        }
+      } catch (err) {
+        setTokenValid(false)
+        setError("Failed to validate reset token")
+      }
+    }
+
+    validateToken()
+  }, [token])
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -40,22 +76,63 @@ export default function ResetPasswordPage() {
       return
     }
 
-    try {
-      const supabase = createClient()
+    if (!userId || !token) {
+      setError("Invalid reset session")
+      setIsLoading(false)
+      return
+    }
 
-      const { error } = await supabase.auth.updateUser({
-        password: password,
+    try {
+      const response = await fetch("/api/auth/update-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, password }),
       })
 
-      if (error) throw error
+      const data = await response.json()
 
-      // Redirect to login
-      router.push("/auth/login")
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to update password")
+      }
+
+      router.push("/auth/login?reset=success")
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred")
     } finally {
       setIsLoading(false)
     }
+  }
+
+  if (tokenValid === null) {
+    return (
+      <div className="flex min-h-screen w-full items-center justify-center p-6 bg-gradient-to-br from-[#F5F1E8] to-white">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#7FB069] mx-auto mb-4"></div>
+          <p className="text-gray-600">Validating reset link...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (tokenValid === false) {
+    return (
+      <div className="flex min-h-screen w-full items-center justify-center p-6 bg-gradient-to-br from-[#F5F1E8] to-white">
+        <Card className="border-2 border-red-200 max-w-md">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl text-red-600">Invalid Reset Link</CardTitle>
+            <CardDescription>{error}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button
+              onClick={() => router.push("/auth/forgot-password")}
+              className="w-full bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-semibold"
+            >
+              Request New Reset Link
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   return (

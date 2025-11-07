@@ -36,15 +36,7 @@ export async function POST(request: Request) {
       created_at: new Date().toISOString(),
     })
 
-    // Generate password reset link (Supabase will handle the token exchange)
-    const { data: linkData, error: linkError } = await adminClient.auth.admin.generateLink({
-      type: "recovery",
-      email: email,
-    })
-
-    if (linkError || !linkData) {
-      return NextResponse.json({ error: "Failed to generate reset link" }, { status: 500 })
-    }
+    const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/auth/reset-password?token=${token}`
 
     // Send reset email via Resend
     const resend = new Resend(process.env.RESEND_API_KEY)
@@ -69,10 +61,10 @@ export async function POST(request: Request) {
               <p style="font-size: 16px; color: #333;">We received a request to reset your password for your Make Time For More Success Hub account.</p>
               <p style="font-size: 16px; color: #333;">Click the button below to reset your password:</p>
               <div style="text-align: center; margin: 30px 0;">
-                <a href="${linkData.properties.action_link}" style="background: linear-gradient(135deg, #7FB069 0%, #E26C73 100%); color: white; padding: 15px 40px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block; font-size: 16px;">Reset Password</a>
+                <a href="${resetUrl}" style="background: linear-gradient(135deg, #7FB069 0%, #E26C73 100%); color: white; padding: 15px 40px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block; font-size: 16px;">Reset Password</a>
               </div>
               <p style="font-size: 14px; color: #666;">Or copy and paste this link into your browser:</p>
-              <p style="font-size: 14px; color: #7FB069; word-break: break-all;">${linkData.properties.action_link}</p>
+              <p style="font-size: 14px; color: #7FB069; word-break: break-all;">${resetUrl}</p>
               <p style="font-size: 14px; color: #666; margin-top: 30px;">This link will expire in 1 hour.</p>
               <p style="font-size: 14px; color: #999; margin-top: 20px;">If you didn't request a password reset, you can safely ignore this email.</p>
               <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
