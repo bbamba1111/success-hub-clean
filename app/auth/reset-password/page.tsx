@@ -5,11 +5,12 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useRouter, useSearchParams } from "next/navigation"
-import { useState, Suspense } from "react"
+import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
 import { Eye, EyeOff } from "lucide-react"
+import { createClient } from "@/lib/supabase/client"
 
-function ResetPasswordForm() {
+export default function ResetPasswordPage() {
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
@@ -17,20 +18,53 @@ function ResetPasswordForm() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [success, setSuccess] = useState(false)
+  const [hasSession, setHasSession] = useState<boolean | null>(null)
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const token = searchParams.get("token")
+  const supabase = createClient()
+
+  useEffect(() => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("[v0] Auth state changed:", event, !!session)
+
+      if (event === "PASSWORD_RECOVERY") {
+        console.log("[v0] Password recovery session detected")
+        setHasSession(true)
+      } else if (session) {
+        console.log("[v0] Session found")
+        setHasSession(true)
+      }
+    })
+
+    const checkSession = async () => {
+      await new Promise((resolve) => setTimeout(resolve, 500))
+
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.getSession()
+
+      console.log("[v0] Session check result:", !!session, error)
+
+      if (session) {
+        setHasSession(true)
+      } else if (hasSession === null) {
+        setHasSession(false)
+      }
+    }
+
+    checkSession()
+
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [supabase.auth])
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     setError(null)
-
-    if (!token) {
-      setError("Invalid reset link")
-      setIsLoading(false)
-      return
-    }
 
     if (password !== confirmPassword) {
       setError("Passwords do not match")
@@ -45,16 +79,12 @@ function ResetPasswordForm() {
     }
 
     try {
-      const response = await fetch("/api/auth/update-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, password }),
+      const { error: updateError } = await supabase.auth.updateUser({
+        password: password,
       })
 
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to reset password")
+      if (updateError) {
+        throw new Error(updateError.message)
       }
 
       setSuccess(true)
@@ -68,14 +98,37 @@ function ResetPasswordForm() {
     }
   }
 
-  if (!token) {
+  if (hasSession === null) {
+    return (
+      <div className="flex min-h-screen w-full items-center justify-center p-6 bg-gradient-to-br from-[#F5F1E8] to-white">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl">Loading...</CardTitle>
+            <CardDescription>Verifying reset link...</CardDescription>
+          </CardHeader>
+        </Card>
+      </div>
+    )
+  }
+
+  if (hasSession === false) {
     return (
       <div className="flex min-h-screen w-full items-center justify-center p-6 bg-gradient-to-br from-[#F5F1E8] to-white">
         <Card className="w-full max-w-md border-2 border-red-200">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl text-red-600">Invalid Reset Link</CardTitle>
-            <CardDescription>Please request a new password reset link.</CardDescription>
+            <CardTitle className="text-2xl text-red-600">Invalid or Expired Reset Link</CardTitle>
+            <CardDescription>
+              Please click the reset link from your email again, or request a new password reset.
+            </CardDescription>
           </CardHeader>
+          <CardContent>
+            <Button
+              onClick={() => router.push("/")}
+              className="w-full bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-semibold"
+            >
+              Back to Home
+            </Button>
+          </CardContent>
         </Card>
       </div>
     )
@@ -177,13 +230,5 @@ function ResetPasswordForm() {
         </div>
       </div>
     </div>
-  )
-}
-
-export default function ResetPasswordPage() {
-  return (
-    <Suspense fallback={<div className="flex min-h-screen items-center justify-center">Loading...</div>}>
-      <ResetPasswordForm />
-    </Suspense>
   )
 }

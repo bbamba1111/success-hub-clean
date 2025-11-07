@@ -116,21 +116,30 @@ export function AuthModal({ onSuccess }: AuthModalProps) {
         body: JSON.stringify({ email }),
       })
 
-      let data
-      try {
-        data = await response.json()
-      } catch (parseError) {
-        console.error("[v0] Failed to parse response:", parseError)
-        throw new Error("Invalid server response")
+      // Check if response is ok before trying to parse
+      if (!response.ok) {
+        // Try to get error message
+        const text = await response.text()
+        let errorMessage = "Failed to send reset email"
+
+        try {
+          const errorData = JSON.parse(text)
+          errorMessage = errorData.error || errorMessage
+        } catch {
+          // Response wasn't JSON, use default message
+          console.error("[v0] Non-JSON error response:", text)
+        }
+
+        throw new Error(errorMessage)
       }
 
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to send reset email")
-      }
+      // Parse successful response
+      const data = await response.json()
 
       setSuccess(data.message || "Password reset email sent! Check your inbox & SPAM")
       setEmail("")
     } catch (err) {
+      console.error("[v0] Reset password error:", err)
       setError(err instanceof Error ? err.message : "Failed to send reset email")
     } finally {
       setIsLoading(false)
