@@ -44,57 +44,67 @@ export async function POST(request: Request) {
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
           </head>
-          <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #F5F1E8;">
-            <!-- Updated branding to match Make Time For More style -->
-            <div style="background: linear-gradient(135deg, #7FB069 0%, #E26C73 100%); padding: 40px 30px; text-align: center; border-radius: 12px 12px 0 0;">
-              <div style="background: white; width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                <img src="https://success-hub-clean.vercel.app/images/logo.png" alt="Make Time For More" style="width: 60px; height: 60px; border-radius: 50%;" />
-              </div>
-              <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 600;">Reset Your Password</h1>
-            </div>
-            
-            <div style="background: #ffffff; padding: 40px; border: 2px solid #7FB069; border-top: none; border-radius: 0 0 12px 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-              <p style="font-size: 16px; margin-bottom: 20px; color: #333;">Hello,</p>
-              
-              <p style="font-size: 16px; margin-bottom: 20px; color: #555;">
-                We received a request to reset your password for your <strong>Make Time For More Success Hub</strong> account.
-              </p>
-              
-              <p style="font-size: 16px; margin-bottom: 30px; color: #555;">
-                Click the button below to create a new password:
-              </p>
-              
-              <div style="text-align: center; margin: 35px 0;">
-                <a href="${data.properties.action_link}" 
-                   style="background: linear-gradient(135deg, #7FB069 0%, #E26C73 100%); color: white; padding: 16px 48px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; display: inline-block; box-shadow: 0 4px 8px rgba(127, 176, 105, 0.3);">
-                  Reset My Password
-                </a>
-              </div>
-              
-              <div style="background: #FFF8E7; border-left: 4px solid #E26C73; padding: 16px; margin: 30px 0; border-radius: 4px;">
-                <p style="font-size: 14px; color: #666; margin: 0;">
-                  <strong>Security Notice:</strong> This link will expire in 1 hour. If you didn't request this reset, you can safely ignore this email.
-                </p>
-              </div>
-              
-              <hr style="border: none; border-top: 1px solid #E8E8E8; margin: 30px 0;">
-              
-              <div style="text-align: center;">
-                <p style="font-size: 14px; color: #7FB069; font-weight: 600; margin-bottom: 8px;">
-                  Make Time For More Success Hub
-                </p>
-                <p style="font-size: 12px; color: #999; margin: 4px 0;">
-                  Your partner in achieving work-life balance
-                </p>
-                <p style="font-size: 12px; margin: 12px 0;">
-                  <a href="https://maketimeformore.com" style="color: #7FB069; text-decoration: none; font-weight: 500;">maketimeformore.com</a>
-                </p>
-              </div>
-            </div>
-            
-            <p style="text-align: center; font-size: 11px; color: #999; margin-top: 20px;">
-              This is an automated email. Please do not reply to this message.
-            </p>
+          <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+            <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; padding: 20px;">
+              <tr>
+                <td align="center">
+                  <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden;">
+                    <!-- Gradient Header Banner -->
+                    <tr>
+                      <td style="background: linear-gradient(135deg, #7FB069 0%, #E26C73 100%); padding: 40px 20px; text-align: center;">
+                        <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 600;">Reset Your Password</h1>
+                      </td>
+                    </tr>
+                    
+                    <!-- Email Content -->
+                    <tr>
+                      <td style="padding: 40px 30px;">
+                        <p style="font-size: 16px; color: #333333; margin: 0 0 20px;">Hello,</p>
+                        
+                        <p style="font-size: 16px; color: #333333; margin: 0 0 20px;">
+                          We received a request to reset your password for your Make Time For More Success Hub account.
+                        </p>
+                        
+                        <p style="font-size: 16px; color: #333333; margin: 0 0 30px;">
+                          Click the button below to reset your password:
+                        </p>
+                        
+                        <!-- Reset Button -->
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                          <tr>
+                            <td align="center" style="padding: 20px 0;">
+                              <a href="${data.properties.action_link}" 
+                                 style="background: linear-gradient(135deg, #7FB069 0%, #E26C73 100%); color: #ffffff; padding: 14px 40px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px; display: inline-block;">
+                                Reset Password
+                              </a>
+                            </td>
+                          </tr>
+                        </table>
+                        
+                        <p style="font-size: 14px; color: #666666; margin: 30px 0 0; padding-top: 20px; border-top: 1px solid #eeeeee;">
+                          This link will expire in 1 hour. If you didn't request this password reset, you can safely ignore this email.
+                        </p>
+                        
+                        <p style="font-size: 14px; color: #666666; margin: 20px 0 0;">
+                          Best regards,<br>
+                          <strong style="color: #7FB069;">Make Time For More Team</strong>
+                        </p>
+                      </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                      <td style="background-color: #f8f8f8; padding: 20px; text-align: center;">
+                        <p style="font-size: 12px; color: #999999; margin: 0;">
+                          Make Time For More Success Hub<br>
+                          <a href="https://maketimeformore.com" style="color: #7FB069; text-decoration: none;">maketimeformore.com</a>
+                        </p>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
           </body>
         </html>
       `,
