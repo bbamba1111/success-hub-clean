@@ -13,7 +13,6 @@ interface HubPageClientProps {
 }
 
 export function HubPageClient({ isAuthenticated }: HubPageClientProps) {
-  const [showAuthModal, setShowAuthModal] = useState(!isAuthenticated)
   const [dashboardVisited, setDashboardVisited] = useState(false)
   const [isChatOpen, setIsChatOpen] = useState(false)
   const [chatContext, setChatContext] = useState<string>("")
@@ -29,8 +28,7 @@ export function HubPageClient({ isAuthenticated }: HubPageClientProps) {
   const handleLogout = async () => {
     const supabase = createClient()
     await supabase.auth.signOut()
-    setShowAuthModal(true)
-    window.location.reload()
+    window.location.href = "/"
   }
 
   const scrollToWellnessDashboard = () => {
@@ -48,34 +46,31 @@ export function HubPageClient({ isAuthenticated }: HubPageClientProps) {
 
   return (
     <>
-      {/* Show auth modal overlay if not authenticated */}
-      {showAuthModal && (
-        <>
-          {/* Blurred content */}
-          <div className="blur-sm pointer-events-none select-none">
-            <HomePageContent
-              dashboardVisited={dashboardVisited}
-              scrollToWellnessDashboard={scrollToWellnessDashboard}
-              openChat={openChat}
-              onLogout={handleLogout}
-              showLogout={false}
-            />
-          </div>
-          {/* Auth modal */}
-          <AuthModal onSuccess={() => setShowAuthModal(false)} />
-        </>
+      {isAuthenticated && (
+        <div className="fixed top-4 right-4 z-50">
+          <Button
+            onClick={handleLogout}
+            variant="outline"
+            size="sm"
+            className="bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg border-[#7FB069]/20"
+          >
+            <LogOut className="w-4 h-4 mr-2" />
+            Logout
+          </Button>
+        </div>
       )}
 
-      {/* Show normal content if authenticated */}
-      {!showAuthModal && (
-        <HomePageContent
-          dashboardVisited={dashboardVisited}
-          scrollToWellnessDashboard={scrollToWellnessDashboard}
-          openChat={openChat}
-          onLogout={handleLogout}
-          showLogout={true}
-        />
-      )}
+      <div className="max-w-7xl mx-auto px-6 pt-6">
+        <HubClosedBanner />
+      </div>
+
+      <HomePageContent
+        dashboardVisited={dashboardVisited}
+        scrollToWellnessDashboard={scrollToWellnessDashboard}
+        openChat={openChat}
+      />
+
+      {!isAuthenticated && <AuthModal onSuccess={() => window.location.reload()} />}
 
       <SimpleChatModal
         isOpen={isChatOpen}
@@ -91,37 +86,11 @@ interface HomePageContentProps {
   dashboardVisited: boolean
   scrollToWellnessDashboard: () => void
   openChat: (context: string, title: string) => void
-  onLogout: () => void
-  showLogout: boolean
 }
 
-function HomePageContent({
-  dashboardVisited,
-  scrollToWellnessDashboard,
-  openChat,
-  onLogout,
-  showLogout,
-}: HomePageContentProps) {
+function HomePageContent({ dashboardVisited, scrollToWellnessDashboard, openChat }: HomePageContentProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white">
-      {showLogout && (
-        <div className="fixed top-4 right-4 z-50">
-          <Button
-            onClick={onLogout}
-            variant="outline"
-            size="sm"
-            className="bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg border-[#7FB069]/20"
-          >
-            <LogOut className="w-4 h-4 mr-2" />
-            Logout
-          </Button>
-        </div>
-      )}
-
-      <div className="max-w-7xl mx-auto px-6 pt-6">
-        <HubClosedBanner />
-      </div>
-
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-white">
         <div className="max-w-7xl mx-auto px-6 py-16">
@@ -173,8 +142,6 @@ function HomePageContent({
           </div>
         </div>
       </div>
-
-      {/* Rest of the content remains the same */}
     </div>
   )
 }
