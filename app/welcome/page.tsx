@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -79,35 +78,25 @@ export default function WelcomePage() {
     }
 
     try {
-      const response = await fetch("/api/auth/signup", {
+      const response = await fetch("/api/auth/send-confirmation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: userEmail,
           password: password,
-          firstName: userName,
-          product: productName || "Make Time For More Experience",
-          fromSamCart: true,
+          name: userName || userEmail.split("@")[0],
+          membershipTier: productName || "Make Time For More Experience",
         }),
       })
 
       const data = await response.json()
 
       if (!response.ok) {
-        setPassword("")
-        setConfirmPassword("")
-        throw new Error(data.details || data.error || "Failed to create account")
+        throw new Error(data.error || "Failed to create account")
       }
 
-      const supabase = createClient()
-      const { error: loginError } = await supabase.auth.signInWithPassword({
-        email: userEmail,
-        password: password,
-      })
-
-      if (loginError) throw loginError
-
-      window.location.href = "/"
+      // Show success message
+      window.location.href = `/auth/signup-success?email=${encodeURIComponent(userEmail)}`
     } catch (err) {
       console.error("[v0] Signup error:", err)
       setPassword("")
