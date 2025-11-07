@@ -18,7 +18,6 @@ export function HubPageClient({ isAuthenticated }: HubPageClientProps) {
   const [isChatOpen, setIsChatOpen] = useState(false)
   const [chatContext, setChatContext] = useState<string>("")
   const [chatTitle, setChatTitle] = useState("")
-  const [hasMembership, setHasMembership] = useState<boolean | null>(null)
 
   useEffect(() => {
     const visited = localStorage.getItem("dashboardVisited")
@@ -26,50 +25,6 @@ export function HubPageClient({ isAuthenticated }: HubPageClientProps) {
       setDashboardVisited(true)
     }
   }, [])
-
-  useEffect(() => {
-    const checkMembership = async () => {
-      if (!isAuthenticated) {
-        setHasMembership(false)
-        return
-      }
-
-      try {
-        const supabase = createClient()
-        const {
-          data: { user },
-        } = await supabase.auth.getUser()
-
-        if (!user) {
-          setHasMembership(false)
-          return
-        }
-
-        const { data: profile, error } = await supabase
-          .from("user_profiles")
-          .select("membership_tier")
-          .eq("id", user.id)
-          .single()
-
-        if (error) {
-          console.error("[v0] Error fetching profile:", error)
-          // If there's an error, assume they have membership to not block access
-          setHasMembership(true)
-          return
-        }
-
-        // User has membership if membership_tier exists and is not null
-        const hasValidMembership = !!profile?.membership_tier
-        setHasMembership(hasValidMembership)
-      } catch (error) {
-        console.error("[v0] Membership check error:", error)
-        // On error, assume they have membership to not block access
-        setHasMembership(true)
-      }
-    }
-
-    checkMembership()
-  }, [isAuthenticated])
 
   const handleLogout = async () => {
     const supabase = createClient()
@@ -104,7 +59,6 @@ export function HubPageClient({ isAuthenticated }: HubPageClientProps) {
               openChat={openChat}
               onLogout={handleLogout}
               showLogout={false}
-              hasMembership={hasMembership}
             />
           </div>
           {/* Auth modal */}
@@ -120,7 +74,6 @@ export function HubPageClient({ isAuthenticated }: HubPageClientProps) {
           openChat={openChat}
           onLogout={handleLogout}
           showLogout={true}
-          hasMembership={hasMembership}
         />
       )}
 
@@ -140,7 +93,6 @@ interface HomePageContentProps {
   openChat: (context: string, title: string) => void
   onLogout: () => void
   showLogout: boolean
-  hasMembership: boolean | null
 }
 
 function HomePageContent({
@@ -149,7 +101,6 @@ function HomePageContent({
   openChat,
   onLogout,
   showLogout,
-  hasMembership,
 }: HomePageContentProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white">
@@ -168,7 +119,7 @@ function HomePageContent({
       )}
 
       <div className="max-w-7xl mx-auto px-6 pt-6">
-        <HubClosedBanner hasMembership={hasMembership} />
+        <HubClosedBanner />
       </div>
 
       {/* Hero Section */}

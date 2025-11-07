@@ -2,15 +2,10 @@
 
 import { useEffect, useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
-import { Clock, Sparkles } from "lucide-react"
+import { Clock } from "lucide-react"
 import { getBusinessHoursStatus, type BusinessHoursStatus } from "@/lib/utils/business-hours"
-import { Button } from "@/components/ui/button"
 
-interface HubClosedBannerProps {
-  hasMembership: boolean | null
-}
-
-export function HubClosedBanner({ hasMembership }: HubClosedBannerProps) {
+export function HubClosedBanner() {
   const [status, setStatus] = useState<BusinessHoursStatus | null>(null)
 
   useEffect(() => {
@@ -25,79 +20,10 @@ export function HubClosedBanner({ hasMembership }: HubClosedBannerProps) {
     return () => clearInterval(interval)
   }, [])
 
-  console.log("[v0] HubClosedBanner rendering, hasMembership:", hasMembership)
-
-  if (hasMembership === false) {
-    console.log("[v0] Showing members-only overlay (no membership)")
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-md overflow-hidden">
-        <Card className="border-4 border-[#E26C73] bg-white shadow-2xl max-w-2xl mx-4">
-          <CardContent className="p-12 text-center">
-            <div className="flex justify-center mb-6">
-              <img
-                src="/images/logo.png"
-                alt="Make Time For More Logo"
-                width={96}
-                height={96}
-                className="rounded-full shadow-lg"
-              />
-            </div>
-
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <Sparkles className="h-8 w-8 text-[#7FB069]" />
-              <h2 className="text-3xl font-bold text-gray-900">Members-Only Success Hub</h2>
-              <Sparkles className="h-8 w-8 text-[#E26C73]" />
-            </div>
-
-            <p className="text-xl text-gray-700 mb-8">
-              This is an exclusive space for Make Time For More members to access their personalized success tools and
-              community.
-            </p>
-
-            <div className="bg-gradient-to-r from-[#7FB069]/10 to-[#E26C73]/10 rounded-lg p-6 mb-8">
-              <h3 className="font-bold text-lg text-gray-900 mb-4">What's Inside:</h3>
-              <ul className="text-left space-y-2 text-gray-700">
-                <li className="flex items-start gap-2">
-                  <span className="text-[#7FB069] font-bold">✓</span>
-                  <span>Cherry Blossom AI - Your Personal Work-Life Balance Co-Guide</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-[#7FB069] font-bold">✓</span>
-                  <span>28-Day Intention Setting & Tracking</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-[#7FB069] font-bold">✓</span>
-                  <span>Non-Negotiable Co-Working Sessions</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-[#7FB069] font-bold">✓</span>
-                  <span>Wellness Dashboard & Progress Tracking</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-[#7FB069] font-bold">✓</span>
-                  <span>Community Connections & Support</span>
-                </li>
-              </ul>
-            </div>
-
-            <Button
-              onClick={() => (window.location.href = "https://maketimeformore.com")}
-              className="bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D15B62] text-white font-bold text-lg px-8 py-6 rounded-full shadow-lg"
-            >
-              Learn More & Join Today
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
-
-  if (!status || status.isOpen || hasMembership !== true) {
-    console.log("[v0] Banner not showing (open hours or loading or no membership)")
+  if (!status || status.isOpen) {
     return null
   }
 
-  console.log("[v0] Showing business hours banner (closed)")
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-md">
       <Card className="border-4 border-[#E26C73] bg-white shadow-2xl max-w-2xl mx-4">
