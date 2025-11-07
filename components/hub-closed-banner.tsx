@@ -92,8 +92,8 @@ export function HubClosedBanner({ hasMembership }: HubClosedBannerProps) {
     )
   }
 
-  if (!status || status.isOpen || hasMembership === null) {
-    console.log("[v0] Banner not showing (open hours or loading)")
+  if (!status || status.isOpen || hasMembership !== true) {
+    console.log("[v0] Banner not showing (open hours or loading or no membership)")
     return null
   }
 

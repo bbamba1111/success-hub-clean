@@ -30,33 +30,42 @@ export function HubPageClient({ isAuthenticated }: HubPageClientProps) {
   useEffect(() => {
     const checkMembership = async () => {
       if (!isAuthenticated) {
-        setHasMembership(null)
-        return
-      }
-
-      const supabase = createClient()
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-
-      if (!user) {
         setHasMembership(false)
         return
       }
 
-      const { data: profile } = await supabase
-        .from("user_profiles")
-        .select("membership_tier")
-        .eq("id", user.id)
-        .single()
+      try {
+        const supabase = createClient()
+        const {
+          data: { user },
+        } = await supabase.auth.getUser()
 
-      // User has membership if membership_tier exists and is not null
-      const hasValidMembership = profile?.membership_tier && profile.membership_tier !== null
-      setHasMembership(hasValidMembership)
-      console.log("[v0] Membership check:", {
-        membership_tier: profile?.membership_tier,
-        hasMembership: hasValidMembership,
-      })
+        if (!user) {
+          setHasMembership(false)
+          return
+        }
+
+        const { data: profile, error } = await supabase
+          .from("user_profiles")
+          .select("membership_tier")
+          .eq("id", user.id)
+          .single()
+
+        if (error) {
+          console.error("[v0] Error fetching profile:", error)
+          // If there's an error, assume they have membership to not block access
+          setHasMembership(true)
+          return
+        }
+
+        // User has membership if membership_tier exists and is not null
+        const hasValidMembership = !!profile?.membership_tier
+        setHasMembership(hasValidMembership)
+      } catch (error) {
+        console.error("[v0] Membership check error:", error)
+        // On error, assume they have membership to not block access
+        setHasMembership(true)
+      }
     }
 
     checkMembership()
