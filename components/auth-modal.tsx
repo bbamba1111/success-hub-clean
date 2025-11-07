@@ -110,12 +110,17 @@ export function AuthModal({ onSuccess }: AuthModalProps) {
     setSuccess(null)
 
     try {
-      const supabase = createClient()
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth/reset-password`,
+      const response = await fetch("/api/auth/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
       })
 
-      if (error) throw error
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to send reset email")
+      }
 
       setSuccess("Password reset email sent! Check your inbox & SPAM")
       setEmail("")

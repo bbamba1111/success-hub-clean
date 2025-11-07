@@ -1,13 +1,12 @@
 "use client"
 
 import type React from "react"
-import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useRouter } from "next/navigation"
-import { useState, useEffect, Suspense } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
+import { useState, Suspense } from "react"
 import { Eye, EyeOff } from "lucide-react"
 
 function ResetPasswordForm() {
@@ -19,22 +18,19 @@ function ResetPasswordForm() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [success, setSuccess] = useState(false)
   const router = useRouter()
-
-  useEffect(() => {
-    const supabase = createClient()
-
-    // Check if we have a valid session after Supabase processes the URL
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) {
-        setError("Invalid or expired reset link. Please request a new password reset.")
-      }
-    })
-  }, [])
+  const searchParams = useSearchParams()
+  const token = searchParams.get("token")
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     setError(null)
+
+    if (!token) {
+      setError("Invalid reset link")
+      setIsLoading(false)
+      return
+    }
 
     if (password !== confirmPassword) {
       setError("Passwords do not match")
@@ -49,13 +45,17 @@ function ResetPasswordForm() {
     }
 
     try {
-      const supabase = createClient()
-
-      const { error } = await supabase.auth.updateUser({
-        password: password,
+      const response = await fetch("/api/auth/update-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, password }),
       })
 
-      if (error) throw error
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to reset password")
+      }
 
       setSuccess(true)
       setTimeout(() => {
@@ -66,6 +66,19 @@ function ResetPasswordForm() {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  if (!token) {
+    return (
+      <div className="flex min-h-screen w-full items-center justify-center p-6 bg-gradient-to-br from-[#F5F1E8] to-white">
+        <Card className="w-full max-w-md border-2 border-red-200">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl text-red-600">Invalid Reset Link</CardTitle>
+            <CardDescription>Please request a new password reset link.</CardDescription>
+          </CardHeader>
+        </Card>
+      </div>
+    )
   }
 
   if (success) {
