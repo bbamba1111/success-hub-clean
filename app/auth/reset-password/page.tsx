@@ -18,63 +18,21 @@ function ResetPasswordForm() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [success, setSuccess] = useState(false)
-  const [sessionReady, setSessionReady] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
-    const checkSession = async () => {
-      const supabase = createClient()
-
-      // Supabase automatically extracts the session from the URL hash (#access_token=...)
-      const {
-        data: { session },
-        error: sessionError,
-      } = await supabase.auth.getSession()
-
-      console.log("[v0] Checking auth session:", { hasSession: !!session, error: sessionError })
-
-      if (sessionError) {
-        console.error("[v0] Session error:", sessionError)
-        setError("Invalid or expired reset link. Please request a new one.")
-        return
-      }
-
-      if (!session) {
-        setError("Auth session missing! Please click the reset link from your email again.")
-        return
-      }
-
-      // Session is valid, ready to reset password
-      setSessionReady(true)
-    }
-
-    checkSession()
-
-    // Listen for auth state changes
     const supabase = createClient()
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log("[v0] Auth state changed:", event, "has session:", !!session)
-      if (event === "PASSWORD_RECOVERY") {
-        setSessionReady(true)
-        setError(null)
+
+    // Check if we have a valid session after Supabase processes the URL
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        setError("Invalid or expired reset link. Please request a new password reset.")
       }
     })
-
-    return () => {
-      subscription.unsubscribe()
-    }
   }, [])
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault()
-
-    if (!sessionReady) {
-      setError("Please click the reset link from your email first.")
-      return
-    }
-
     setIsLoading(true)
     setError(null)
 
@@ -93,23 +51,17 @@ function ResetPasswordForm() {
     try {
       const supabase = createClient()
 
-      console.log("[v0] Attempting to update password...")
       const { error } = await supabase.auth.updateUser({
         password: password,
       })
 
-      if (error) {
-        console.error("[v0] Password update error:", error)
-        throw error
-      }
+      if (error) throw error
 
-      console.log("[v0] Password updated successfully")
       setSuccess(true)
       setTimeout(() => {
         router.push("/")
       }, 2000)
     } catch (error: unknown) {
-      console.error("[v0] Password update exception:", error)
       setError(error instanceof Error ? error.message : "An error occurred. Please try again.")
     } finally {
       setIsLoading(false)
@@ -133,7 +85,6 @@ function ResetPasswordForm() {
     <div className="flex min-h-screen w-full items-center justify-center p-6 bg-gradient-to-br from-[#F5F1E8] to-white">
       <div className="w-full max-w-md">
         <div className="flex flex-col gap-6">
-          {/* Logo */}
           <div className="flex justify-center mb-4">
             <img
               src="/images/logo.png"
@@ -202,7 +153,7 @@ function ResetPasswordForm() {
                   <Button
                     type="submit"
                     className="w-full bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-semibold"
-                    disabled={isLoading || !sessionReady}
+                    disabled={isLoading}
                   >
                     {isLoading ? "Resetting..." : "Reset Password"}
                   </Button>
