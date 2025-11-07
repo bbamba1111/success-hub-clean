@@ -122,7 +122,7 @@ export function AuthModal({ onSuccess }: AuthModalProps) {
         throw new Error(data.error || "Failed to send reset email")
       }
 
-      setSuccess("Password reset email sent! Check your inbox.")
+      setSuccess("Password reset email sent! Check your inbox & SPAM")
       setEmail("")
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to send reset email")
