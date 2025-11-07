@@ -249,7 +249,7 @@ export default function MakeTimeForMoreMondaysPage() {
         </p>
 
         <Button size="lg" className="bg-pink-600 hover:bg-pink-700 text-white px-8 py-4 text-lg">
-          Enroll Today $497/Month
+          Enroll Today $197/Month
         </Button>
       </div>
 
@@ -283,7 +283,7 @@ export default function MakeTimeForMoreMondaysPage() {
           <Card className="max-w-4xl mx-auto mb-12">
             <CardContent className="p-8">
               <h3 className="text-2xl font-bold text-center mb-6">
-                You didn't leave Your High-Stress Role to Recreate Burnout In Your Business —
+                You Didn't Leave Your High-Stress Role to Recreate Burnout In Your Business —
               </h3>
               <p className="text-lg text-center mb-6">
                 You left for work-life balance, time-freedom and success on your terms. But, somewhere along the way,
@@ -650,7 +650,7 @@ export default function MakeTimeForMoreMondaysPage() {
             </p>
 
             <Button size="lg" className="bg-pink-600 hover:bg-pink-700 text-white px-8 py-4 text-lg">
-              Enroll Today $497/Month
+              Enroll Today $197/Month
             </Button>
           </div>
         </div>
@@ -976,7 +976,7 @@ export default function MakeTimeForMoreMondaysPage() {
           <Card className="max-w-md mx-auto">
             <CardContent className="p-8 text-center">
               <h3 className="text-2xl font-bold mb-4">3-Day Monthly Disrupt The Hustle MEMBERSHIP</h3>
-              <div className="text-3xl font-bold text-pink-600 mb-6">$497/Month</div>
+              <div className="text-3xl font-bold text-pink-600 mb-6">$200/Month</div>
               <p className="text-lg mb-6">
                 Perfect for the Woman (or Man) who need a weekly reprieve from hustle culture
               </p>

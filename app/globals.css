@@ -263,16 +263,3 @@
   left: 50%;
   transform: translate(-50%, -50%);
 }
-
-/* Added elegant star twinkling animation */
-@keyframes twinkle {
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1) rotate(0deg);
-  }
-  50% {
-    opacity: 0.4;
-    transform: scale(0.85) rotate(180deg);
-  }
-}

@@ -21,7 +21,6 @@ export default function SignupPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  // Pre-fill email and name from SamCart URL parameters
   useEffect(() => {
     const emailParam = searchParams.get("email")
     const nameParam = searchParams.get("name")
@@ -30,7 +29,6 @@ export default function SignupPage() {
     if (emailParam) setEmail(emailParam)
     if (nameParam) setName(nameParam)
 
-    // Store tier in sessionStorage to use after signup
     if (tierParam) {
       sessionStorage.setItem("membership_tier", tierParam)
     }
@@ -57,7 +55,7 @@ export default function SignupPage() {
     try {
       const membershipTier = sessionStorage.getItem("membership_tier") || "basic"
 
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -71,11 +69,20 @@ export default function SignupPage() {
 
       if (error) throw error
 
-      // Clear stored tier
-      sessionStorage.removeItem("membership_tier")
+      if (data?.user) {
+        const confirmResponse = await fetch("/api/auth/send-confirmation", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        })
 
-      // Redirect to success page
-      router.push("/auth/signup-success")
+        if (!confirmResponse.ok) {
+          console.error("[v0] Failed to send confirmation email")
+        }
+
+        sessionStorage.removeItem("membership_tier")
+        router.push("/auth/signup-success")
+      }
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred")
     } finally {

@@ -1,5 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { CheckCircle } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { CheckCircle, Mail } from "lucide-react"
+import Link from "next/link"
 
 export default function SignupSuccessPage() {
   return (
@@ -24,17 +26,30 @@ export default function SignupSuccessPage() {
                   <CheckCircle className="w-10 h-10 text-white" />
                 </div>
               </div>
-              <CardTitle className="text-2xl text-[#7FB069]">Check Your Email!</CardTitle>
-              <CardDescription>We've sent you a confirmation link</CardDescription>
+              <CardTitle className="text-2xl text-[#7FB069]">Account Created Successfully!</CardTitle>
+              <CardDescription>Welcome to Make Time For More Success Hub</CardDescription>
             </CardHeader>
-            <CardContent className="text-center space-y-4">
-              <p className="text-gray-700 leading-relaxed">Thank you for joining Make Time For More Success Hub!</p>
-              <p className="text-gray-700 leading-relaxed">
-                Please check your email and click the confirmation link to activate your account.
-              </p>
-              <p className="text-sm text-gray-600 italic">
-                Once confirmed, you can login and start your work-life balance journey.
-              </p>
+            <CardContent className="text-center space-y-6">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-3">
+                <div className="flex items-center justify-center gap-2 text-blue-700">
+                  <Mail className="w-5 h-5" />
+                  <p className="font-semibold">Check Your Email & SPAM</p>
+                </div>
+                <p className="text-sm text-blue-600">
+                  We've sent a confirmation link to your email. Please check your inbox and SPAM folder.
+                </p>
+              </div>
+
+              <div className="border-t border-gray-200 pt-4">
+                <p className="text-sm text-gray-600 mb-4">Didn't receive the email? You can try logging in directly:</p>
+                <Link href="/auth/login">
+                  <Button className="w-full bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-semibold">
+                    Go to Login
+                  </Button>
+                </Link>
+              </div>
+
+              <p className="text-xs text-gray-500 italic">If you continue to have issues, please contact support.</p>
             </CardContent>
           </Card>
         </div>
