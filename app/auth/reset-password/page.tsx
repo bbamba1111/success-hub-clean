@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { useState, useEffect, Suspense } from "react"
 import { Eye, EyeOff } from "lucide-react"
 
@@ -18,42 +18,63 @@ function ResetPasswordForm() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [success, setSuccess] = useState(false)
+  const [sessionReady, setSessionReady] = useState(false)
   const router = useRouter()
-  const searchParams = useSearchParams()
 
   useEffect(() => {
-    const verifyToken = async () => {
-      const token = searchParams.get("token")
-      const type = searchParams.get("type")
+    const checkSession = async () => {
+      const supabase = createClient()
 
-      console.log("[v0] Reset password page loaded, token present:", !!token, "type:", type)
+      // Supabase automatically extracts the session from the URL hash (#access_token=...)
+      const {
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession()
 
-      if (token && type === "recovery") {
-        try {
-          const supabase = createClient()
-          const { error } = await supabase.auth.verifyOtp({
-            token_hash: token,
-            type: "recovery",
-          })
+      console.log("[v0] Checking auth session:", { hasSession: !!session, error: sessionError })
 
-          if (error) {
-            console.error("[v0] Token verification error:", error)
-            setError("Invalid or expired reset link. Please request a new one.")
-          } else {
-            console.log("[v0] Token verified successfully, session established")
-          }
-        } catch (err) {
-          console.error("[v0] Token verification exception:", err)
-          setError("Failed to verify reset link")
-        }
+      if (sessionError) {
+        console.error("[v0] Session error:", sessionError)
+        setError("Invalid or expired reset link. Please request a new one.")
+        return
       }
+
+      if (!session) {
+        setError("Auth session missing! Please click the reset link from your email again.")
+        return
+      }
+
+      // Session is valid, ready to reset password
+      setSessionReady(true)
     }
 
-    verifyToken()
-  }, [searchParams])
+    checkSession()
+
+    // Listen for auth state changes
+    const supabase = createClient()
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("[v0] Auth state changed:", event, "has session:", !!session)
+      if (event === "PASSWORD_RECOVERY") {
+        setSessionReady(true)
+        setError(null)
+      }
+    })
+
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [])
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (!sessionReady) {
+      setError("Please click the reset link from your email first.")
+      return
+    }
+
     setIsLoading(true)
     setError(null)
 
@@ -72,19 +93,24 @@ function ResetPasswordForm() {
     try {
       const supabase = createClient()
 
+      console.log("[v0] Attempting to update password...")
       const { error } = await supabase.auth.updateUser({
         password: password,
       })
 
-      if (error) throw error
+      if (error) {
+        console.error("[v0] Password update error:", error)
+        throw error
+      }
 
+      console.log("[v0] Password updated successfully")
       setSuccess(true)
       setTimeout(() => {
         router.push("/")
       }, 2000)
     } catch (error: unknown) {
-      console.error("[v0] Password update error:", error)
-      setError(error instanceof Error ? error.message : "An error occurred")
+      console.error("[v0] Password update exception:", error)
+      setError(error instanceof Error ? error.message : "An error occurred. Please try again.")
     } finally {
       setIsLoading(false)
     }
@@ -176,7 +202,7 @@ function ResetPasswordForm() {
                   <Button
                     type="submit"
                     className="w-full bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-semibold"
-                    disabled={isLoading}
+                    disabled={isLoading || !sessionReady}
                   >
                     {isLoading ? "Resetting..." : "Reset Password"}
                   </Button>
