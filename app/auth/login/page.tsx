@@ -1,48 +1,38 @@
 "use client"
 
 import type React from "react"
-
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import { useState } from "react"
+import { Eye, EyeOff } from "lucide-react"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("[v0] Login form submitted", { email })
-
+    const supabase = createClient()
     setIsLoading(true)
     setError(null)
 
     try {
-      console.log("[v0] Creating Supabase client")
-      const supabase = createClient()
-
-      console.log("[v0] Attempting to sign in")
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
 
-      console.log("[v0] Sign in response:", { data, error })
-
       if (error) throw error
 
-      console.log("[v0] Login successful, redirecting to hub")
-      window.location.href = "/hub"
+      window.location.href = "/"
     } catch (error: unknown) {
-      console.error("[v0] Login error:", error)
       setError(error instanceof Error ? error.message : "An error occurred")
     } finally {
       setIsLoading(false)
@@ -93,13 +83,23 @@ export default function LoginPage() {
                         Forgot password?
                       </Link>
                     </div>
-                    <Input
-                      id="password"
-                      type="password"
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
+                    <div className="relative">
+                      <Input
+                        id="password"
+                        type={showPassword ? "text" : "password"}
+                        required
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-[#7FB069] transition-colors"
+                      >
+                        {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                      </button>
+                    </div>
                   </div>
                   {error && (
                     <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
@@ -113,12 +113,12 @@ export default function LoginPage() {
                   >
                     {isLoading ? "Logging in..." : "Login"}
                   </Button>
-                </div>
-                <div className="mt-4 text-center text-sm text-gray-600">
-                  Don't have an account?{" "}
-                  <Link href="/auth/signup" className="text-[#7FB069] hover:text-[#6FA055] font-semibold underline">
-                    Sign up
-                  </Link>
+                  <div className="mt-2 text-center text-sm text-gray-600">
+                    Don't have an account?{" "}
+                    <Link href="/auth/signup" className="text-[#7FB069] hover:text-[#6FA055] font-semibold underline">
+                      Sign up
+                    </Link>
+                  </div>
                 </div>
               </form>
             </CardContent>

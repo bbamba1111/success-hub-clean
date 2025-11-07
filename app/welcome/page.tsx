@@ -1,200 +1,304 @@
 "use client"
 
+import type React from "react"
+import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { CheckCircle, ArrowRight } from "lucide-react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { useSearchParams } from "next/navigation"
+import { useEffect, useState } from "react"
+import { CheckCircle2, Eye, EyeOff, X } from "lucide-react"
 import Link from "next/link"
 
 export default function WelcomePage() {
+  const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [userEmail, setUserEmail] = useState("")
+  const [userName, setUserName] = useState("")
+  const [productName, setProductName] = useState("")
+
+  const searchParams = useSearchParams()
+  const emailParam = searchParams.get("email")
+  const productParam = searchParams.get("product") || searchParams.get("product_name")
+  const firstNameParam = searchParams.get("first_name")
+
+  const isValidEmail = (email: string | null): boolean => {
+    if (!email) return false
+    if (email.includes("{{") || email.includes("}}") || email.includes("[") || email.includes("]")) {
+      return false
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
+
+  const passwordsMatch = confirmPassword.length > 0 && password === confirmPassword
+  const passwordsDontMatch = confirmPassword.length > 0 && password !== confirmPassword
+  const passwordMeetsRequirements = password.length >= 6
+  const canSubmit = passwordsMatch && passwordMeetsRequirements && userEmail.includes("@")
+
+  useEffect(() => {
+    if (isValidEmail(emailParam)) {
+      setUserEmail(emailParam!)
+    }
+
+    if (firstNameParam && !firstNameParam.includes("{{") && !firstNameParam.includes("[")) {
+      setUserName(firstNameParam)
+    }
+
+    if (productParam && !productParam.includes("{{") && !productParam.includes("[")) {
+      setProductName(productParam)
+    }
+  }, [emailParam, productParam, firstNameParam])
+
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+    setError(null)
+
+    if (!userEmail || !userEmail.includes("@")) {
+      setError("Please enter a valid email address")
+      setIsLoading(false)
+      return
+    }
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match")
+      setIsLoading(false)
+      return
+    }
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters")
+      setIsLoading(false)
+      return
+    }
+
+    try {
+      const response = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: userEmail,
+          password: password,
+          firstName: userName,
+          product: productName || "Make Time For More Experience",
+          fromSamCart: true,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        setPassword("")
+        setConfirmPassword("")
+        throw new Error(data.details || data.error || "Failed to create account")
+      }
+
+      const supabase = createClient()
+      const { error: loginError } = await supabase.auth.signInWithPassword({
+        email: userEmail,
+        password: password,
+      })
+
+      if (loginError) throw loginError
+
+      window.location.href = "/"
+    } catch (err) {
+      console.error("[v0] Signup error:", err)
+      setPassword("")
+      setConfirmPassword("")
+      setError(err instanceof Error ? err.message : "Failed to create account")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white">
-      {/* Hero Section */}
-      <div className="relative overflow-hidden bg-white">
-        <div className="max-w-7xl mx-auto px-6 py-20">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left Content */}
-            <div className="space-y-8">
-              <div className="flex justify-center lg:justify-start mb-6">
-                <img
-                  src="/images/logo.png"
-                  alt="Make Time For More Logo"
-                  width={120}
-                  height={120}
-                  className="rounded-full shadow-lg"
-                />
-              </div>
+    <div className="flex min-h-screen w-full items-center justify-center p-5 bg-gradient-to-br from-[#F5F1E8] to-white">
+      <div className="w-full max-w-xl">
+        <div className="flex flex-col gap-5">
+          <div className="flex justify-center mb-3">
+            <img
+              src="/images/logo.png"
+              alt="Make Time For More Logo"
+              width={68}
+              height={68}
+              className="rounded-full shadow-lg"
+            />
+          </div>
 
-              <div className="space-y-6">
-                <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
-                  Welcome to Make Time For More<sup className="text-2xl">™</sup>
-                </h1>
-                <p className="text-xl text-gray-600 leading-relaxed">
-                  The Work-Life Balance Success Hub for ambitious women who refuse to choose between success and
-                  wellbeing
-                </p>
-              </div>
+          <Card className="border-2 border-[#7FB069]/20 shadow-xl">
+            <CardHeader className="text-center pb-3">
+              <CardTitle className="text-2xl text-[#7FB069]">
+                {userName ? `Welcome, ${userName}!` : "Welcome!"}
+              </CardTitle>
+              <CardDescription className="text-base text-gray-600">
+                {productName ? (
+                  <>
+                    Complete your <span className="font-semibold text-[#7FB069]">{productName}</span> account setup
+                    below
+                  </>
+                ) : (
+                  "Complete your account setup below"
+                )}
+              </CardDescription>
+            </CardHeader>
 
-              {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link href="/auth/signup" className="flex-1">
+            <CardContent>
+              <form onSubmit={handleSignup}>
+                <div className="flex flex-col gap-3">
+                  <div className="grid gap-2">
+                    <Label htmlFor="email" className="text-sm">
+                      Email {!isValidEmail(emailParam) && <span className="text-red-500">*</span>}
+                    </Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={userEmail}
+                      onChange={(e) => setUserEmail(e.target.value)}
+                      disabled={isValidEmail(emailParam)}
+                      className={isValidEmail(emailParam) ? "bg-gray-50 text-sm" : "text-sm"}
+                      placeholder="your@email.com"
+                      required
+                    />
+                    {!isValidEmail(emailParam) && (
+                      <p className="text-xs text-gray-500">Enter the email you used for your purchase</p>
+                    )}
+                  </div>
+
+                  {userName && (
+                    <div className="grid gap-2">
+                      <Label htmlFor="firstName" className="text-sm">
+                        First Name
+                      </Label>
+                      <Input id="firstName" type="text" value={userName} disabled className="bg-gray-50 text-sm" />
+                    </div>
+                  )}
+
+                  {productName && (
+                    <div className="grid gap-2">
+                      <Label htmlFor="product" className="text-sm">
+                        Product
+                      </Label>
+                      <Input id="product" type="text" value={productName} disabled className="bg-gray-50 text-sm" />
+                    </div>
+                  )}
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="password" className="text-sm">
+                      Create Password
+                    </Label>
+                    <div className="relative">
+                      <Input
+                        id="password"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="At least 6 characters"
+                        required
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="text-sm pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-[#7FB069] transition-colors"
+                      >
+                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs">
+                      {passwordMeetsRequirements ? (
+                        <span className="text-green-600 flex items-center gap-1">
+                          <CheckCircle2 className="h-3 w-3" /> At least 6 characters
+                        </span>
+                      ) : (
+                        <span className="text-gray-500">At least 6 characters required</span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="confirm-password" className="text-sm">
+                      Confirm Password
+                    </Label>
+                    <div className="relative">
+                      <Input
+                        id="confirm-password"
+                        type={showConfirmPassword ? "text" : "password"}
+                        placeholder="Re-enter your password"
+                        required
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        className={`text-sm pr-10 ${
+                          passwordsMatch
+                            ? "border-green-500 focus-visible:ring-green-500"
+                            : passwordsDontMatch
+                              ? "border-red-500 focus-visible:ring-red-500"
+                              : ""
+                        }`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-[#7FB069] transition-colors"
+                      >
+                        {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
+                    </div>
+                    {confirmPassword.length > 0 && (
+                      <div className="flex items-center gap-2 text-xs">
+                        {passwordsMatch ? (
+                          <span className="text-green-600 flex items-center gap-1 font-medium">
+                            <CheckCircle2 className="h-3 w-3" /> Passwords match
+                          </span>
+                        ) : (
+                          <span className="text-red-600 flex items-center gap-1 font-medium">
+                            <X className="h-3 w-3" /> Passwords don't match
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {error && (
+                    <div className="bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded-lg text-sm">
+                      {error}
+                    </div>
+                  )}
+
                   <Button
-                    size="lg"
-                    className="w-full bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-semibold text-lg py-6"
+                    type="submit"
+                    className="w-full bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={isLoading || !canSubmit}
                   >
-                    Get Started
-                    <ArrowRight className="ml-2 h-5 w-5" />
+                    {isLoading ? (
+                      <div className="flex items-center justify-center">
+                        <div className="h-4 w-4 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        Creating Account...
+                      </div>
+                    ) : (
+                      "Create My Account"
+                    )}
                   </Button>
-                </Link>
-                <Link href="/auth/login" className="flex-1">
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="w-full border-2 border-[#7FB069] text-[#7FB069] hover:bg-[#7FB069]/10 font-semibold text-lg py-6 bg-transparent"
-                  >
-                    Login
-                  </Button>
-                </Link>
-              </div>
-            </div>
 
-            {/* Right Image */}
-            <div className="relative">
-              <div className="rounded-2xl overflow-hidden shadow-2xl">
-                <img
-                  src="/images/hero-women-tea-cherry-blossoms-new.png"
-                  alt="Diverse women enjoying tea together in cherry blossom garden"
-                  className="w-full h-auto object-cover"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* What You'll Get Section */}
-      <div className="bg-gradient-to-br from-[#F5F1E8] to-white py-20">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">What You'll Experience Inside</h2>
-            <p className="text-lg text-gray-600">Everything you need to transform your work-life balance</p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Feature 1 */}
-            <Card className="border-2 border-[#7FB069]/20 hover:border-[#7FB069] transition-all duration-300">
-              <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-[#7FB069] to-[#E26C73] rounded-full flex items-center justify-center mb-4">
-                  <CheckCircle className="h-6 w-6 text-white" />
+                  <p className="text-xs text-center text-gray-500 mt-2">
+                    Already have an account?{" "}
+                    <Link
+                      href={`/auth/login${userEmail ? `?email=${encodeURIComponent(userEmail)}` : ""}`}
+                      className="text-[#7FB069] hover:text-[#6FA055] hover:underline font-medium"
+                    >
+                      Log in here
+                    </Link>
+                  </p>
                 </div>
-                <CardTitle className="text-[#7FB069]">Work-Life Balance Audit</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-700">
-                  Discover exactly where you stand across 15 key life areas and get personalized insights
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Feature 2 */}
-            <Card className="border-2 border-[#E26C73]/20 hover:border-[#E26C73] transition-all duration-300">
-              <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-[#E26C73] to-[#7FB069] rounded-full flex items-center justify-center mb-4">
-                  <CheckCircle className="h-6 w-6 text-white" />
-                </div>
-                <CardTitle className="text-[#E26C73]">28-Day Transformation Cycles</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-700">
-                  Set powerful intentions and create your personalized 28-day transformation plan
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Feature 3 */}
-            <Card className="border-2 border-[#7FB069]/20 hover:border-[#7FB069] transition-all duration-300">
-              <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-[#7FB069] to-[#E26C73] rounded-full flex items-center justify-center mb-4">
-                  <CheckCircle className="h-6 w-6 text-white" />
-                </div>
-                <CardTitle className="text-[#7FB069]">Cherry Blossom AI Co-Guides</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-700">
-                  6 AI-powered co-guides for morning routines, workouts, lunch breaks, and more
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Feature 4 */}
-            <Card className="border-2 border-[#E26C73]/20 hover:border-[#E26C73] transition-all duration-300">
-              <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-[#E26C73] to-[#7FB069] rounded-full flex items-center justify-center mb-4">
-                  <CheckCircle className="h-6 w-6 text-white" />
-                </div>
-                <CardTitle className="text-[#E26C73]">Live Co-Working Sessions</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-700">
-                  Join Barbara and the community for non-negotiable co-working 4 days a week
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Feature 5 */}
-            <Card className="border-2 border-[#7FB069]/20 hover:border-[#7FB069] transition-all duration-300">
-              <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-[#7FB069] to-[#E26C73] rounded-full flex items-center justify-center mb-4">
-                  <CheckCircle className="h-6 w-6 text-white" />
-                </div>
-                <CardTitle className="text-[#7FB069]">Wellness Tracking</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-700">Monitor workout habits, sleep quality, and daily wellness practices</p>
-              </CardContent>
-            </Card>
-
-            {/* Feature 6 */}
-            <Card className="border-2 border-[#E26C73]/20 hover:border-[#E26C73] transition-all duration-300">
-              <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-[#E26C73] to-[#7FB069] rounded-full flex items-center justify-center mb-4">
-                  <CheckCircle className="h-6 w-6 text-white" />
-                </div>
-                <CardTitle className="text-[#E26C73]">Community Support</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-700">Connect with like-minded women on their work-life balance journey</p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </div>
-
-      {/* CTA Section */}
-      <div className="bg-white py-20">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">Ready to Make Time For More?</h2>
-          <p className="text-xl text-gray-600 mb-8">
-            Join women who are transforming their relationship with work and life
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
-            <Link href="/auth/signup" className="flex-1">
-              <Button
-                size="lg"
-                className="w-full bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-semibold text-lg py-6"
-              >
-                Create Account
-              </Button>
-            </Link>
-            <Link href="/auth/login" className="flex-1">
-              <Button
-                size="lg"
-                variant="outline"
-                className="w-full border-2 border-[#7FB069] text-[#7FB069] hover:bg-[#7FB069]/10 font-semibold text-lg py-6 bg-transparent"
-              >
-                Login
-              </Button>
-            </Link>
-          </div>
+              </form>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
