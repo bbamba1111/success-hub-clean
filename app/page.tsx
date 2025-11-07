@@ -61,9 +61,16 @@ export default function HomePage() {
               </div>
 
               <div className="space-y-6">
-                <h1 className="text-3xl lg:text-3xl font-bold text-gray-900 leading-tight">
-                  Make Time For More<sup className="text-lg">™</sup> Monthly -- the Work-Life Balance Success Hub
-                </h1>
+                <div className="space-y-2">
+                  <h1 className="text-3xl lg:text-3xl font-bold text-gray-900 leading-tight">
+                    Make Time For More<sup className="text-lg">™</sup> Monthly
+                  </h1>
+                  <p className="text-lg text-gray-600 font-normal">
+                    Installing The Work-Life Balance Business Model & SOP
+                  </p>
+                </div>
+                {/* </CHANGE> */}
+
                 <p className="text-lg text-gray-600 leading-relaxed">
                   Take The Audit, Set Your 28-Day Intention, and access Cherry Blossom your AI Powered Work-Life Balance
                   Co-Guide. Experience non-negotiable co-working, community connections, wellness tracking, personalized
@@ -1108,11 +1115,12 @@ export default function HomePage() {
                   </h3>
 
                   <p className="text-lg text-gray-800 leading-relaxed">
-                    Inside Make Time For More™, you aren't just learning about work-life balance.{" "}
-                    <span className="font-bold">You're installing it</span> — step by step, layer by layer — until it
-                    becomes your new <span className="font-bold">Sustainable Operating Procedure (SOP)</span> for life,
-                    business, and leadership.
+                    You're either choosing a 1-off — 7-Day, 14-Day or 21-Day Experience + 1 Week Break — or you are
+                    installing it — step by step, layer by layer — until it becomes your new Work-Life Balance Business
+                    Model & Sustainable Operating Procedure (SOP) for life, business, and leadership over a 3-month
+                    period.
                   </p>
+                  {/* </CHANGE> */}
 
                   <p className="text-lg text-gray-800 leading-relaxed">
                     You choose your Experience or the Installation level based on the rhythm you're ready to adopt:
