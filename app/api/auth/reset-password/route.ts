@@ -19,20 +19,34 @@ export async function POST(request: Request) {
 
     if (userError) {
       console.error("[v0] Error listing users:", userError)
-      // Don't reveal if user exists
-      return NextResponse.json({ message: "If an account exists, a reset email will be sent." })
+      // Don't reveal if user exists for security
+      return NextResponse.json(
+        {
+          success: true,
+          message: "If an account exists, a reset email will be sent.",
+        },
+        { status: 200 },
+      )
     }
 
     const user = userData.users.find((u) => u.email === email)
 
     if (!user) {
-      // Don't reveal if user doesn't exist
-      return NextResponse.json({ message: "If an account exists, a reset email will be sent." })
+      // Don't reveal if user doesn't exist for security
+      return NextResponse.json(
+        {
+          success: true,
+          message: "If an account exists, a reset email will be sent.",
+        },
+        { status: 200 },
+      )
     }
 
+    // Generate secure token
     const token = randomBytes(32).toString("hex")
     const expiresAt = new Date(Date.now() + 60 * 60 * 1000) // 1 hour from now
 
+    // Store token in database
     const { error: tokenError } = await supabase.from("password_reset_tokens").insert({
       user_id: user.id,
       token,
@@ -47,6 +61,7 @@ export async function POST(request: Request) {
 
     const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://success-hub-clean.vercel.app"}/auth/reset-password?token=${token}`
 
+    // Send email via Resend
     const { error: emailError } = await resend.emails.send({
       from: "noreply@hub.maketimeformore.com",
       to: email,
@@ -97,9 +112,22 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Failed to send reset email" }, { status: 500 })
     }
 
-    return NextResponse.json({ message: "If an account exists, a reset email will be sent." })
+    console.log("[v0] Password reset email sent successfully")
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Password reset email sent! Check your inbox & SPAM",
+      },
+      { status: 200 },
+    )
   } catch (error) {
     console.error("[v0] Reset password error:", error)
-    return NextResponse.json({ error: "Failed to process request" }, { status: 500 })
+    return NextResponse.json(
+      {
+        error: "Failed to process request",
+      },
+      { status: 500 },
+    )
   }
 }

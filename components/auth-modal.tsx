@@ -116,13 +116,19 @@ export function AuthModal({ onSuccess }: AuthModalProps) {
         body: JSON.stringify({ email }),
       })
 
-      const data = await response.json()
+      let data
+      try {
+        data = await response.json()
+      } catch (parseError) {
+        console.error("[v0] Failed to parse response:", parseError)
+        throw new Error("Invalid server response")
+      }
 
       if (!response.ok) {
         throw new Error(data.error || "Failed to send reset email")
       }
 
-      setSuccess("Password reset email sent! Check your inbox & SPAM")
+      setSuccess(data.message || "Password reset email sent! Check your inbox & SPAM")
       setEmail("")
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to send reset email")
