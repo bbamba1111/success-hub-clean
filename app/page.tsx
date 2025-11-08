@@ -5,17 +5,37 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowRight, Clock, Target, TrendingUp, Calendar, Zap, Moon, CheckCircle, Star, Download } from "lucide-react"
+import {
+  ArrowRight,
+  Clock,
+  Target,
+  TrendingUp,
+  Calendar,
+  Zap,
+  Moon,
+  CheckCircle,
+  Star,
+  Download,
+  Brain,
+  Users,
+  Sparkles,
+} from "lucide-react"
 import CherryBlossomCountdown from "@/components/cherry-blossom-countdown"
 import WorkLifeBalanceSchedule from "@/components/work-life-balance-schedule"
 import { SimpleChatModal } from "@/components/simple-chat-modal"
 import { HubClosedBanner } from "@/components/hub-closed-banner"
+import { AIBusinessAudit } from "@/components/ai-business-audit"
+import { CoPilotTraining } from "@/components/co-pilot-training"
+import { CherryBlossomCoGuide } from "@/components/cherry-blossom-co-guide"
+import { createBrowserClient } from "@supabase/ssr"
 
 export default function HomePage() {
   const [dashboardVisited, setDashboardVisited] = useState(false)
   const [isChatOpen, setIsChatOpen] = useState(false)
   const [chatContext, setChatContext] = useState<string>("")
   const [chatTitle, setChatTitle] = useState("")
+  const [isCoGuideOpen, setIsCoGuideOpen] = useState(false)
+  const [userId, setUserId] = useState<string | undefined>()
 
   useEffect(() => {
     // Check if user has visited dashboard from planner/tracker
@@ -23,6 +43,23 @@ export default function HomePage() {
     if (visited === "true") {
       setDashboardVisited(true)
     }
+  }, [])
+
+  useEffect(() => {
+    // Get user ID from Supabase auth
+    const getUserId = async () => {
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      )
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      if (user) {
+        setUserId(user.id)
+      }
+    }
+    getUserId()
   }, [])
 
   const scrollToWellnessDashboard = () => {
@@ -500,6 +537,121 @@ export default function HomePage() {
           <div className="rounded-2xl overflow-hidden mt-4">
             <WorkLifeBalanceSchedule />
           </div>
+        </div>
+      </div>
+
+      {/* AI/Human Skills Development Section */}
+      <div className="bg-gradient-to-br from-[#E26C73]/10 to-[#7FB069]/10 py-20">
+        <div className="max-w-6xl mx-auto px-6">
+          {/* Section Header */}
+          <div className="flex items-center justify-center gap-3 mb-8">
+            <img
+              src="/images/logo.png"
+              alt="Make Time For More Logo"
+              width={80}
+              height={80}
+              className="rounded-full shadow-lg"
+            />
+          </div>
+
+          <div className="text-center mb-12">
+            <h3 className="text-3xl font-bold bg-gradient-to-r from-[#7FB069] to-[#E26C73] bg-clip-text text-transparent mb-4">
+              AI-First Business Model & Human Skills Development
+            </h3>
+            <p className="text-xl text-gray-700 font-medium max-w-4xl mx-auto">
+              Build Your AI-Powered Business While Developing Your Irreplaceable Human Skills
+            </p>
+          </div>
+
+          <div className="mb-12">
+            <AIBusinessAudit />
+          </div>
+
+          <div className="mb-12">
+            <CoPilotTraining />
+          </div>
+
+          <div className="mb-12">
+            <Card className="border-2 border-[#7FB069]/30 bg-gradient-to-br from-white to-[#7FB069]/5">
+              <CardHeader>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-[#7FB069] shadow-md">
+                    <img src="/images/logo.png" alt="Cherry Blossom Co-Guide" className="w-full h-full object-cover" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-2xl font-bold bg-gradient-to-r from-[#7FB069] to-[#E26C73] bg-clip-text text-transparent">
+                      Your Cherry Blossom Co-Guide
+                    </CardTitle>
+                    <p className="text-sm text-gray-600">AI Strategic Partner, Educator & Virtual Team Manager</p>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-gray-700 leading-relaxed">
+                  Your personal AI Co-Guide knows your values, goals, and zone of genius. It teaches business at YOUR
+                  comprehension level, manages your virtual executive team, and keeps you working just 4 hours/day while
+                  building a sustainable AI-powered business.
+                </p>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="flex items-start gap-3">
+                    <Brain className="w-5 h-5 text-[#7FB069] flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-1">Adaptive Learning</h4>
+                      <p className="text-sm text-gray-600">Teaches at your level (1st grade to PhD)</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <Users className="w-5 h-5 text-[#E26C73] flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-1">Virtual Team Manager</h4>
+                      <p className="text-sm text-gray-600">Coordinates your AI COO, CFO, CMO & more</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <Target className="w-5 h-5 text-[#7FB069] flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-1">Zone of Genius Focus</h4>
+                      <p className="text-sm text-gray-600">Keeps you in your brilliance, AI does the rest</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <TrendingUp className="w-5 h-5 text-[#E26C73] flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-1">Growth Tracking</h4>
+                      <p className="text-sm text-gray-600">Monitors work AND life progress</p>
+                    </div>
+                  </div>
+                </div>
+
+                <Button
+                  onClick={() => setIsCoGuideOpen(true)}
+                  size="lg"
+                  className="w-full bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-semibold shadow-lg"
+                >
+                  <Sparkles className="mr-2 h-5 w-5" />
+                  Open Your Cherry Blossom Co-Guide
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+          {/* </CHANGE> */}
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="p-6 bg-gradient-to-br from-[#7FB069]/10 to-white rounded-xl border-2 border-[#7FB069]/20">
+              <h4 className="text-xl font-bold text-[#7FB069] mb-3">AI Implementation</h4>
+              <p className="text-gray-600">Tools and guidance for building your AI-First business model</p>
+            </div>
+
+            <div className="p-6 bg-gradient-to-br from-[#E26C73]/10 to-white rounded-xl border-2 border-[#E26C73]/20">
+              <h4 className="text-xl font-bold text-[#E26C73] mb-3">Human Skills</h4>
+              <p className="text-gray-600">Develop strategic thinking, leadership, and creative vision</p>
+            </div>
+          </div>
+          {/* </CHANGE> */}
         </div>
       </div>
 
@@ -1120,7 +1272,6 @@ export default function HomePage() {
                     Model & Sustainable Operating Procedure (SOP) for life, business, and leadership over a 3-month
                     period.
                   </p>
-                  {/* </CHANGE> */}
 
                   <p className="text-lg text-gray-800 leading-relaxed">
                     You choose your Experience or the Installation level based on the rhythm you're ready to adopt:
@@ -1389,6 +1540,9 @@ export default function HomePage() {
       />
 
       {/* Removed FloatingChatButton component */}
+
+      <CherryBlossomCoGuide isOpen={isCoGuideOpen} onClose={() => setIsCoGuideOpen(false)} userId={userId} />
+      {/* </CHANGE> */}
     </div>
   )
 }
