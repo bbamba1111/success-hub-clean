@@ -28,6 +28,7 @@ import { AIBusinessAudit } from "@/components/ai-business-audit"
 import { CoPilotTraining } from "@/components/co-pilot-training"
 import { CherryBlossomCoGuide } from "@/components/cherry-blossom-co-guide"
 import { createBrowserClient } from "@supabase/ssr"
+import { WorkLifeBalanceCommunity } from "@/components/work-life-balance-community"
 
 export default function HomePage() {
   const [dashboardVisited, setDashboardVisited] = useState(false)
@@ -653,6 +654,11 @@ export default function HomePage() {
           </div>
           {/* </CHANGE> */}
         </div>
+      </div>
+
+      {/* Work-Life Balance Community Section */}
+      <div className="bg-white py-20">
+        <WorkLifeBalanceCommunity />
       </div>
 
       {/* Cherry Blossom AI Suite */}
