@@ -222,10 +222,9 @@ export function AIBusinessAudit() {
     lifeValuePriorities: [],
   })
 
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  )
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const supabase = supabaseUrl && supabaseAnonKey ? createBrowserClient(supabaseUrl, supabaseAnonKey) : null
 
   const handleNext = () => {
     if (step < 8) setStep(step + 1)
@@ -239,6 +238,12 @@ export function AIBusinessAudit() {
     setIsSubmitting(true)
 
     try {
+      if (!supabase) {
+        console.log("[v0] Supabase not configured, skipping save")
+        setIsComplete(true)
+        return
+      }
+
       const {
         data: { user },
       } = await supabase.auth.getUser()

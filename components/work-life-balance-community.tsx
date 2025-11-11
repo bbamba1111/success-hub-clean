@@ -71,13 +71,17 @@ export function WorkLifeBalanceCommunity() {
   const [userId, setUserId] = useState<string | null>(null)
   const { toast } = useToast()
 
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  )
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const supabase = supabaseUrl && supabaseAnonKey ? createBrowserClient(supabaseUrl, supabaseAnonKey) : null
 
   useEffect(() => {
     const initializeUser = async () => {
+      if (!supabase) {
+        console.log("[v0] Supabase not configured")
+        return
+      }
+
       const {
         data: { user },
       } = await supabase.auth.getUser()
@@ -90,6 +94,8 @@ export function WorkLifeBalanceCommunity() {
   }, [])
 
   const loadCommunityData = async (uid: string) => {
+    if (!supabase) return
+
     // Load community posts
     const { data: postsData } = await supabase
       .from("community_posts")
@@ -138,7 +144,7 @@ export function WorkLifeBalanceCommunity() {
   }
 
   const handleCreatePost = async () => {
-    if (!newPost.trim() || !userId) return
+    if (!newPost.trim() || !userId || !supabase) return
 
     const { data, error } = await supabase
       .from("community_posts")
@@ -167,7 +173,7 @@ export function WorkLifeBalanceCommunity() {
   }
 
   const handleCompleteActivity = async (eventId: string, activityType: string) => {
-    if (!userId) return
+    if (!userId || !supabase) return
 
     const today = new Date().toISOString().split("T")[0]
 

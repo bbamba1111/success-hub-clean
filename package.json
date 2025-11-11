@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@ai-sdk/openai": "latest",
+    "@ai-sdk/react": "latest",
     "@radix-ui/react-accordion": "^1.2.2",
     "@radix-ui/react-alert-dialog": "^1.1.4",
     "@radix-ui/react-avatar": "^1.1.2",
@@ -43,7 +44,7 @@
     "resend": "latest",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
-    "zod": "latest"
+    "zod": "4.1.12"
   },
   "devDependencies": {
     "@types/node": "^22",

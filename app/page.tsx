@@ -23,12 +23,13 @@ import {
 import CherryBlossomCountdown from "@/components/cherry-blossom-countdown"
 import WorkLifeBalanceSchedule from "@/components/work-life-balance-schedule"
 import { SimpleChatModal } from "@/components/simple-chat-modal"
-import { HubClosedBanner } from "@/components/hub-closed-banner"
 import { AIBusinessAudit } from "@/components/ai-business-audit"
 import { CoPilotTraining } from "@/components/co-pilot-training"
 import { CherryBlossomCoGuide } from "@/components/cherry-blossom-co-guide"
 import { createBrowserClient } from "@supabase/ssr"
 import { WorkLifeBalanceCommunity } from "@/components/work-life-balance-community"
+import { BarbaraChiefOfStaff } from "@/components/barbara-chief-of-staff"
+import { ClientCoGuideChat } from "@/components/client-co-guide-chat"
 
 export default function HomePage() {
   const [dashboardVisited, setDashboardVisited] = useState(false)
@@ -37,6 +38,7 @@ export default function HomePage() {
   const [chatTitle, setChatTitle] = useState("")
   const [isCoGuideOpen, setIsCoGuideOpen] = useState(false)
   const [userId, setUserId] = useState<string | undefined>()
+  const [isBarbaraStaffOpen, setIsBarbaraStaffOpen] = useState(false)
 
   useEffect(() => {
     // Check if user has visited dashboard from planner/tracker
@@ -49,10 +51,15 @@ export default function HomePage() {
   useEffect(() => {
     // Get user ID from Supabase auth
     const getUserId = async () => {
-      const supabase = createBrowserClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      )
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+      const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+      if (!supabaseUrl || !supabaseAnonKey) {
+        console.log("[v0] Supabase env vars not available, skipping user ID fetch")
+        return
+      }
+
+      const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey)
       const {
         data: { user },
       } = await supabase.auth.getUser()
@@ -78,10 +85,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white">
-      <div className="max-w-7xl mx-auto px-6 pt-6">
-        <HubClosedBanner />
-      </div>
-
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-white">
         <div className="max-w-7xl mx-auto px-6 py-16">
@@ -565,11 +568,148 @@ export default function HomePage() {
           </div>
 
           <div className="mb-12">
+            <Card className="border-2 border-purple-400 bg-gradient-to-br from-purple-50 to-pink-50">
+              <CardHeader>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-purple-600 shadow-md">
+                    <img src="/images/barbara-cherry-garden.jpg" alt="Barbara" className="w-full h-full object-cover" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                      Barbara's AI Chief of Staff
+                    </CardTitle>
+                    <p className="text-sm text-gray-600">Your Personal Business Operations Partner</p>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-gray-700 leading-relaxed">
+                  Your personal AI Chief of Staff knows your Make Time For More™ business inside and out. Delegate
+                  tasks, optimize your schedule, get strategic guidance, and manage your virtual executive team—all
+                  while staying in your 4-hour CEO workday.
+                </p>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="flex items-start gap-3">
+                    <Users className="w-5 h-5 text-purple-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-1">Virtual Team Management</h4>
+                      <p className="text-sm text-gray-600">Delegate to your AI COO, CFO, CMO, CTO</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <Calendar className="w-5 h-5 text-pink-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-1">Schedule Optimization</h4>
+                      <p className="text-sm text-gray-600">Stay in your 4-hour workday with smart planning</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <Target className="w-5 h-5 text-purple-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-1">Strategic Guidance</h4>
+                      <p className="text-sm text-gray-600">Top 0.1% thought leadership advice</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <TrendingUp className="w-5 h-5 text-pink-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-1">Business Metrics</h4>
+                      <p className="text-sm text-gray-600">Track revenue, clients, and time freedom</p>
+                    </div>
+                  </div>
+                </div>
+
+                <Button
+                  onClick={() => setIsBarbaraStaffOpen(!isBarbaraStaffOpen)}
+                  size="lg"
+                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold shadow-lg"
+                >
+                  <Sparkles className="mr-2 h-5 w-5" />
+                  {isBarbaraStaffOpen ? "Close" : "Open"} Your Chief of Staff
+                </Button>
+
+                {isBarbaraStaffOpen && (
+                  <div className="mt-6">
+                    <BarbaraChiefOfStaff />
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="mb-12">
             <AIBusinessAudit />
           </div>
 
           <div className="mb-12">
             <CoPilotTraining />
+          </div>
+
+          <div className="mb-12">
+            <Card className="border-2 border-[#7FB069]/30 bg-gradient-to-br from-white to-[#7FB069]/5">
+              <CardHeader>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-[#7FB069] shadow-md">
+                    <img src="/images/logo.png" alt="Cherry Blossom Co-Guide" className="w-full h-full object-cover" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-2xl font-bold bg-gradient-to-r from-[#7FB069] to-[#E26C73] bg-clip-text text-transparent">
+                      Your Cherry Blossom Co-Guide
+                    </CardTitle>
+                    <p className="text-sm text-gray-600">AI Partner for Your 4-Hour CEO Workday</p>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-gray-700 leading-relaxed">
+                  Your personalized Co-Guide knows Barbara's Make Time For More™ model AND your unique business. Get
+                  daily workday planning, learn business and life sciences at your level, practice 1-to-many marketing
+                  skills, and track your growth in work AND life.
+                </p>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="flex items-start gap-3">
+                    <Brain className="w-5 h-5 text-[#7FB069] flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-1">Adaptive Learning</h4>
+                      <p className="text-sm text-gray-600">Business & science education at your level</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <Calendar className="w-5 h-5 text-[#E26C73] flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-1">4-Pillar Workday Planning</h4>
+                      <p className="text-sm text-gray-600">AI, Zone of Genius, Visibility, Revenue</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <Users className="w-5 h-5 text-[#7FB069] flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-1">Virtual Team Manager</h4>
+                      <p className="text-sm text-gray-600">Your AI COO, CFO, CMO work for you</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <Target className="w-5 h-5 text-[#E26C73] flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-1">1-to-Many Skills Practice</h4>
+                      <p className="text-sm text-gray-600">Public speaking, interviews, partnerships</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-6">
+                  <ClientCoGuideChat />
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
           <div className="mb-12">
