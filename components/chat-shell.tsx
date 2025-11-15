@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Send, Loader2 } from "lucide-react"
+import { Send, Loader2 } from 'lucide-react'
 import type { ExecutiveConfig } from "@/lib/executives-config"
 
 interface ChatShellProps {
@@ -86,7 +86,7 @@ export default function ChatShell({ executive }: ChatShellProps) {
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault()
-                  handleSubmit(e)
+                  handleSubmit(e as any)
                 }
               }}
               placeholder={`Ask ${executive.name} anything...`}

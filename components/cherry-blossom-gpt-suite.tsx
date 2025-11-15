@@ -1,6 +1,6 @@
 "use client"
-import Button from "./Button" // Assuming Button is a component in the same directory
-import Badge from "./Badge" // Assuming Badge is a component in the same directory
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 
 const CherryBlossomGPTSuite = () => {
   const specialists = [
@@ -86,7 +86,7 @@ const CherryBlossomGPTSuite = () => {
     },
   ]
 
-  const handleSpecialistClick = (specialist) => {
+  const handleSpecialistClick = (specialist: any) => {
     console.log(`Clicked on ${specialist.name}`)
     // Implement specialist click logic here
   }
@@ -97,7 +97,7 @@ const CherryBlossomGPTSuite = () => {
         <div key={specialist.id} className="specialist-card">
           <div className="card-header">
             <img src={specialist.icon || "/placeholder.svg"} alt={specialist.name} className="specialist-icon" />
-            <Badge timeSlot={specialist.timeSlot} />
+            <Badge>{specialist.timeSlot}</Badge>
           </div>
           <h2 className="specialist-name">{specialist.name}</h2>
           <p className="specialist-description">{specialist.description}</p>
