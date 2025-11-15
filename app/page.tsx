@@ -5,21 +5,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import {
-  ArrowRight,
-  Clock,
-  Target,
-  TrendingUp,
-  Calendar,
-  Zap,
-  Moon,
-  CheckCircle,
-  Star,
-  Download,
-  Brain,
-  Users,
-  Sparkles,
-} from "lucide-react"
+import { ArrowRight, Clock, Target, TrendingUp, Calendar, Zap, Moon, CheckCircle, Star, Download, Brain, Users, Sparkles } from 'lucide-react'
 import CherryBlossomCountdown from "@/components/cherry-blossom-countdown"
 import WorkLifeBalanceSchedule from "@/components/work-life-balance-schedule"
 import { SimpleChatModal } from "@/components/simple-chat-modal"
@@ -567,220 +553,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="mb-12">
-            <Card className="border-2 border-purple-400 bg-gradient-to-br from-purple-50 to-pink-50">
-              <CardHeader>
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-purple-600 shadow-md">
-                    <img src="/images/barbara-cherry-garden.jpg" alt="Barbara" className="w-full h-full object-cover" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                      Barbara's AI Chief of Staff
-                    </CardTitle>
-                    <p className="text-sm text-gray-600">Your Personal Business Operations Partner</p>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-gray-700 leading-relaxed">
-                  Your personal AI Chief of Staff knows your Make Time For More™ business inside and out. Delegate
-                  tasks, optimize your schedule, get strategic guidance, and manage your virtual executive team—all
-                  while staying in your 4-hour CEO workday.
-                </p>
-
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="flex items-start gap-3">
-                    <Users className="w-5 h-5 text-purple-600 flex-shrink-0 mt-0.5" />
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-1">Virtual Team Management</h4>
-                      <p className="text-sm text-gray-600">Delegate to your AI COO, CFO, CMO, CTO</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <Calendar className="w-5 h-5 text-pink-600 flex-shrink-0 mt-0.5" />
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-1">Schedule Optimization</h4>
-                      <p className="text-sm text-gray-600">Stay in your 4-hour workday with smart planning</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <Target className="w-5 h-5 text-purple-600 flex-shrink-0 mt-0.5" />
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-1">Strategic Guidance</h4>
-                      <p className="text-sm text-gray-600">Top 0.1% thought leadership advice</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <TrendingUp className="w-5 h-5 text-pink-600 flex-shrink-0 mt-0.5" />
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-1">Business Metrics</h4>
-                      <p className="text-sm text-gray-600">Track revenue, clients, and time freedom</p>
-                    </div>
-                  </div>
-                </div>
-
-                <Button
-                  onClick={() => setIsBarbaraStaffOpen(!isBarbaraStaffOpen)}
-                  size="lg"
-                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold shadow-lg"
-                >
-                  <Sparkles className="mr-2 h-5 w-5" />
-                  {isBarbaraStaffOpen ? "Close" : "Open"} Your Chief of Staff
-                </Button>
-
-                {isBarbaraStaffOpen && (
-                  <div className="mt-6">
-                    <BarbaraChiefOfStaff />
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="mb-12">
-            <AIBusinessAudit />
-          </div>
-
-          <div className="mb-12">
-            <CoPilotTraining />
-          </div>
-
-          <div className="mb-12">
-            <Card className="border-2 border-[#7FB069]/30 bg-gradient-to-br from-white to-[#7FB069]/5">
-              <CardHeader>
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-[#7FB069] shadow-md">
-                    <img src="/images/logo.png" alt="Cherry Blossom Co-Guide" className="w-full h-full object-cover" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-2xl font-bold bg-gradient-to-r from-[#7FB069] to-[#E26C73] bg-clip-text text-transparent">
-                      Your Cherry Blossom Co-Guide
-                    </CardTitle>
-                    <p className="text-sm text-gray-600">AI Partner for Your 4-Hour CEO Workday</p>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-gray-700 leading-relaxed">
-                  Your personalized Co-Guide knows Barbara's Make Time For More™ model AND your unique business. Get
-                  daily workday planning, learn business and life sciences at your level, practice 1-to-many marketing
-                  skills, and track your growth in work AND life.
-                </p>
-
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="flex items-start gap-3">
-                    <Brain className="w-5 h-5 text-[#7FB069] flex-shrink-0 mt-0.5" />
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-1">Adaptive Learning</h4>
-                      <p className="text-sm text-gray-600">Business & science education at your level</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <Calendar className="w-5 h-5 text-[#E26C73] flex-shrink-0 mt-0.5" />
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-1">4-Pillar Workday Planning</h4>
-                      <p className="text-sm text-gray-600">AI, Zone of Genius, Visibility, Revenue</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <Users className="w-5 h-5 text-[#7FB069] flex-shrink-0 mt-0.5" />
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-1">Virtual Team Manager</h4>
-                      <p className="text-sm text-gray-600">Your AI COO, CFO, CMO work for you</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <Target className="w-5 h-5 text-[#E26C73] flex-shrink-0 mt-0.5" />
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-1">1-to-Many Skills Practice</h4>
-                      <p className="text-sm text-gray-600">Public speaking, interviews, partnerships</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-6">
-                  <ClientCoGuideChat />
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="mb-12">
-            <Card className="border-2 border-[#7FB069]/30 bg-gradient-to-br from-white to-[#7FB069]/5">
-              <CardHeader>
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-[#7FB069] shadow-md">
-                    <img src="/images/logo.png" alt="Cherry Blossom Co-Guide" className="w-full h-full object-cover" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-2xl font-bold bg-gradient-to-r from-[#7FB069] to-[#E26C73] bg-clip-text text-transparent">
-                      Your Cherry Blossom Co-Guide
-                    </CardTitle>
-                    <p className="text-sm text-gray-600">AI Strategic Partner, Educator & Virtual Team Manager</p>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-gray-700 leading-relaxed">
-                  Your personal AI Co-Guide knows your values, goals, and zone of genius. It teaches business at YOUR
-                  comprehension level, manages your virtual executive team, and keeps you working just 4 hours/day while
-                  building a sustainable AI-powered business.
-                </p>
-
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="flex items-start gap-3">
-                    <Brain className="w-5 h-5 text-[#7FB069] flex-shrink-0 mt-0.5" />
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-1">Adaptive Learning</h4>
-                      <p className="text-sm text-gray-600">Teaches at your level (1st grade to PhD)</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <Users className="w-5 h-5 text-[#E26C73] flex-shrink-0 mt-0.5" />
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-1">Virtual Team Manager</h4>
-                      <p className="text-sm text-gray-600">Coordinates your AI COO, CFO, CMO & more</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <Target className="w-5 h-5 text-[#7FB069] flex-shrink-0 mt-0.5" />
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-1">Zone of Genius Focus</h4>
-                      <p className="text-sm text-gray-600">Keeps you in your brilliance, AI does the rest</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <TrendingUp className="w-5 h-5 text-[#E26C73] flex-shrink-0 mt-0.5" />
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-1">Growth Tracking</h4>
-                      <p className="text-sm text-gray-600">Monitors work AND life progress</p>
-                    </div>
-                  </div>
-                </div>
-
-                <Button
-                  onClick={() => setIsCoGuideOpen(true)}
-                  size="lg"
-                  className="w-full bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-semibold shadow-lg"
-                >
-                  <Sparkles className="mr-2 h-5 w-5" />
-                  Open Your Cherry Blossom Co-Guide
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-          {/* </CHANGE> */}
-
+          {/* AI Implementation & Human Skills Grid */}
           <div className="grid md:grid-cols-2 gap-6">
             <div className="p-6 bg-gradient-to-br from-[#7FB069]/10 to-white rounded-xl border-2 border-[#7FB069]/20">
               <h4 className="text-xl font-bold text-[#7FB069] mb-3">AI Implementation</h4>
@@ -792,7 +565,6 @@ export default function HomePage() {
               <p className="text-gray-600">Develop strategic thinking, leadership, and creative vision</p>
             </div>
           </div>
-          {/* </CHANGE> */}
         </div>
       </div>
 
@@ -1055,7 +827,7 @@ export default function HomePage() {
       </div>
 
       {/* Wellness Tracking Dashboard */}
-      <div id="wellness-dashboard" className="max-w-6xl mx-auto px-6 py-16">
+      <div id="wellness-dashboard" className="max-w-6xl mx-auto px-16 py-16">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">Your Wellness Tracking Dashboard</h2>
           <p className="text-lg text-gray-600">Monitor and optimize your daily wellness habits</p>
