@@ -5,6 +5,9 @@ import Link from 'next/link'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Sparkles, ArrowLeft, MessageSquare, Trash2, Plus, Brain } from 'lucide-react'
+import { ExecutiveChatModal } from '@/components/executive-chat-modal'
+import { getExecutive } from '@/lib/executives-config'
+import type { ExecutiveConfig } from '@/lib/executives-config'
 
 interface Executive {
   name: string
@@ -35,6 +38,17 @@ export default function AIExecutiveTeamPage() {
   const [conversations] = useState<Array<{ id: string; name: string; role: string; date: string }>>([
     { id: '1', name: 'Human Zone of Genius Assessment', role: 'Cherry Blossom - CEO Workday', date: 'Nov 14, 2025' }
   ])
+
+  const [selectedExecutive, setSelectedExecutive] = useState<ExecutiveConfig | null>(null)
+  const [isExecutiveModalOpen, setIsExecutiveModalOpen] = useState(false)
+
+  const handleExecutiveClick = (executiveId: string) => {
+    const executive = getExecutive(executiveId)
+    if (executive) {
+      setSelectedExecutive(executive)
+      setIsExecutiveModalOpen(true)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -131,20 +145,30 @@ export default function AIExecutiveTeamPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-base leading-relaxed">{exec.description}</p>
-                  <Link href={`/executives/${exec.id}`}>
-                    <Button
-                      className="w-full bg-[#E26C73] hover:bg-[#D55A60]"
-                    >
-                      <Plus className="w-4 h-4 mr-2" />
-                      Start Conversation
-                    </Button>
-                  </Link>
+                  <Button
+                    onClick={() => handleExecutiveClick(exec.id)}
+                    className="w-full bg-[#E26C73] hover:bg-[#D55A60]"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Start Conversation
+                  </Button>
                 </CardContent>
               </Card>
             ))}
           </div>
         </section>
       </main>
+
+      {selectedExecutive && (
+        <ExecutiveChatModal
+          isOpen={isExecutiveModalOpen}
+          onClose={() => {
+            setIsExecutiveModalOpen(false)
+            setSelectedExecutive(null)
+          }}
+          executive={selectedExecutive}
+        />
+      )}
     </div>
   )
 }

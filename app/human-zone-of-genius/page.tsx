@@ -7,9 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ArrowLeft, Target, TrendingUp, Calendar, Sparkles } from 'lucide-react'
 import ChatShell from "@/components/chat-shell"
 import { getExecutive } from "@/lib/executives-config"
+import { ZoneOfGeniusChatModal } from "@/components/zone-of-genius-chat-modal"
 
 export default function HumanZoneOfGeniusPage() {
-  const [showChat, setShowChat] = useState(false)
+  const [showChatModal, setShowChatModal] = useState(false)
 
   const executive = getExecutive("zone-of-genius")
 
@@ -56,28 +57,6 @@ export default function HumanZoneOfGeniusPage() {
     }
   ]
 
-  if (showChat) {
-    if (!executive) {
-      return <div>Executive not found</div>
-    }
-
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-[#F9EFE3] to-[#FEFAF5]">
-        <div className="max-w-6xl mx-auto px-6 py-8">
-          <Button 
-            onClick={() => setShowChat(false)}
-            variant="ghost" 
-            className="mb-8 text-gray-600 hover:text-gray-900"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Zone of Genius
-          </Button>
-          <ChatShell executive={executive} />
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F9EFE3] to-[#FEFAF5]">
       <div className="max-w-6xl mx-auto px-6 py-8">
@@ -108,7 +87,7 @@ export default function HumanZoneOfGeniusPage() {
           </p>
 
           <Button 
-            onClick={() => setShowChat(true)}
+            onClick={() => setShowChatModal(true)}
             size="lg"
             className="bg-[#E26C73] hover:bg-[#D55A60] text-white font-semibold px-10 py-6 text-lg rounded-lg shadow-lg"
           >
@@ -268,7 +247,7 @@ export default function HumanZoneOfGeniusPage() {
 
           <div className="text-center mt-8">
             <Button 
-              onClick={() => setShowChat(true)}
+              onClick={() => setShowChatModal(true)}
               size="lg"
               className="bg-[#E26C73] hover:bg-[#D55A60] text-white font-semibold px-10 py-6 text-lg rounded-lg shadow-lg"
             >
@@ -334,6 +313,11 @@ export default function HumanZoneOfGeniusPage() {
           </div>
         </div>
       </div>
+
+      <ZoneOfGeniusChatModal 
+        isOpen={showChatModal}
+        onClose={() => setShowChatModal(false)}
+      />
     </div>
   )
 }

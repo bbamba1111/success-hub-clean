@@ -1,8 +1,13 @@
 "use client"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { CherryBlossomChatModal } from "@/components/cherry-blossom-chat-modal"
 
 const CherryBlossomGPTSuite = () => {
+  const [selectedSpecialist, setSelectedSpecialist] = useState<string | null>(null)
+  const [isChatModalOpen, setIsChatModalOpen] = useState(false)
+
   const specialists = [
     {
       id: "morning-routine",
@@ -87,29 +92,41 @@ const CherryBlossomGPTSuite = () => {
   ]
 
   const handleSpecialistClick = (specialist: any) => {
-    console.log(`Clicked on ${specialist.name}`)
-    // Implement specialist click logic here
+    setSelectedSpecialist(specialist.name)
+    setIsChatModalOpen(true)
   }
 
   return (
-    <div className="cherry-blossom-gpt-suite">
-      {specialists.map((specialist) => (
-        <div key={specialist.id} className="specialist-card">
-          <div className="card-header">
-            <img src={specialist.icon || "/placeholder.svg"} alt={specialist.name} className="specialist-icon" />
-            <Badge>{specialist.timeSlot}</Badge>
+    <>
+      <div className="cherry-blossom-gpt-suite">
+        {specialists.map((specialist) => (
+          <div key={specialist.id} className="specialist-card">
+            <div className="card-header">
+              <img src={specialist.icon || "/placeholder.svg"} alt={specialist.name} className="specialist-icon" />
+              <Badge>{specialist.timeSlot}</Badge>
+            </div>
+            <h2 className="specialist-name">{specialist.name}</h2>
+            <p className="specialist-description">{specialist.description}</p>
+            <Button
+              onClick={() => handleSpecialistClick(specialist)}
+              className="w-full bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-medium py-3 px-4 rounded-lg transition-all duration-300 whitespace-pre-line"
+            >
+              {specialist.buttonText}
+            </Button>
           </div>
-          <h2 className="specialist-name">{specialist.name}</h2>
-          <p className="specialist-description">{specialist.description}</p>
-          <Button
-            onClick={() => handleSpecialistClick(specialist)}
-            className="w-full bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-medium py-3 px-4 rounded-lg transition-all duration-300 whitespace-pre-line"
-          >
-            {specialist.buttonText}
-          </Button>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+
+      <CherryBlossomChatModal
+        isOpen={isChatModalOpen}
+        onClose={() => {
+          setIsChatModalOpen(false)
+          setSelectedSpecialist(null)
+        }}
+        conversationTitle={selectedSpecialist ? `${selectedSpecialist} Session` : "Cherry Blossom Coaching"}
+        executiveRole="Daily Non-Negotiables Coach"
+      />
+    </>
   )
 }
 
