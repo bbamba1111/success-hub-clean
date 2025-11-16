@@ -14,7 +14,6 @@ import { CoPilotTraining } from "@/components/co-pilot-training"
 import { CherryBlossomCoGuide } from "@/components/cherry-blossom-co-guide"
 import { createBrowserClient } from "@supabase/ssr"
 import { BarbaraChiefOfStaff } from "@/components/barbara-chief-of-staff"
-import { ClientCoGuideChat } from "@/components/client-co-guide-chat"
 
 export default function HomePage() {
   const [dashboardVisited, setDashboardVisited] = useState(false)
