@@ -4,11 +4,9 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Brain, Users, CheckCircle, Clock, TrendingUp, Zap } from 'lucide-react'
-import { ZoneOfGeniusChatModal } from "@/components/zone-of-genius-chat-modal"
 import Link from "next/link"
 
 export default function HumanZoneOfGeniusPage() {
-  const [isChatOpen, setIsChatOpen] = useState(false)
 
   return (
     <div className="min-h-screen">
@@ -32,14 +30,15 @@ export default function HumanZoneOfGeniusPage() {
             In the age of AI, your human skills are your greatest competitive advantage. Discover and develop your 8 irreplaceable human-only business skills.
           </p>
           
-          <Button 
-            onClick={() => setIsChatOpen(true)}
-            size="lg"
-            className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold px-8 py-6 text-xl"
-          >
-            <Brain className="mr-2 h-6 w-6" />
-            Start Your Zone of Genius Assessment
-          </Button>
+          <Link href="/human-zone-of-genius-assessment">
+            <Button 
+              size="lg"
+              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold px-8 py-6 text-xl"
+            >
+              <Brain className="mr-2 h-6 w-6" />
+              Start Your Zone of Genius Assessment
+            </Button>
+          </Link>
         </div>
       </div>
 
@@ -220,14 +219,15 @@ export default function HumanZoneOfGeniusPage() {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              onClick={() => setIsChatOpen(true)}
-              size="lg"
-              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold px-8 py-6 text-lg"
-            >
-              <Brain className="mr-2 h-5 w-5" />
-              Start Zone Assessment
-            </Button>
+            <Link href="/human-zone-of-genius-assessment">
+              <Button 
+                size="lg"
+                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold px-8 py-6 text-lg"
+              >
+                <Brain className="mr-2 h-5 w-5" />
+                Start Zone Assessment
+              </Button>
+            </Link>
             
             <Link href="/ai-executive-team">
               <Button 
@@ -323,10 +323,6 @@ export default function HumanZoneOfGeniusPage() {
         </div>
       </div>
 
-      <ZoneOfGeniusChatModal
-        isOpen={isChatOpen}
-        onClose={() => setIsChatOpen(false)}
-      />
     </div>
   )
 }
