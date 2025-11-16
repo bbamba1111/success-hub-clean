@@ -6,10 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ArrowLeft, Clock, Target, TrendingUp, Zap, Brain, Sparkles } from 'lucide-react'
-import { CherryBlossomChatModal } from "@/components/cherry-blossom-chat-modal"
 
 export default function FourHourWorkdayPage() {
-  const [isChatOpen, setIsChatOpen] = useState(false)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white">
@@ -264,21 +262,15 @@ export default function FourHourWorkdayPage() {
           </p>
           <Button
             size="lg"
-            onClick={() => setIsChatOpen(true)}
-            className="bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-semibold px-12 py-6 text-xl"
+            disabled
+            className="bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-semibold px-12 py-6 text-xl opacity-50 cursor-not-allowed"
           >
             <Clock className="mr-2 h-5 w-5" />
-            Plan My 4-Hour CEO Workday
+            Plan My 4-Hour CEO Workday (Coming Soon)
           </Button>
         </div>
       </div>
 
-      <CherryBlossomChatModal
-        isOpen={isChatOpen}
-        onClose={() => setIsChatOpen(false)}
-        context="ceo-workday"
-        title="4-Hour Focused CEO Workday Planner"
-      />
     </div>
   )
 }
