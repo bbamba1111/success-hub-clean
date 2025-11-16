@@ -11,13 +11,6 @@ import { CherryBlossomChatModal } from "@/components/cherry-blossom-chat-modal"
 export default function FourHourWorkdayPage() {
   const [isChatOpen, setIsChatOpen] = useState(false)
 
-  const executiveTeam = [
-    { name: "Optima Sage", role: "COO", icon: Target, color: "from-[#7FB069] to-[#E26C73]" },
-    { name: "Ledger Maven", role: "CFO", icon: TrendingUp, color: "from-[#E26C73] to-[#7FB069]" },
-    { name: "Brand Beacon", role: "CMO", icon: Sparkles, color: "from-[#7FB069] to-[#E26C73]" },
-    { name: "Growth Guru", role: "Sales Director", icon: Target, color: "from-[#E26C73] to-[#7FB069]" },
-  ]
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white">
       {/* Header */}
@@ -47,90 +40,23 @@ export default function FourHourWorkdayPage() {
       <div className="bg-gradient-to-br from-[#7FB069]/10 to-white py-16">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-12">
-            {/* Updated hero to match replit "Your Personal Team of Executive Coaches" */}
-            <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
-              Your Personal Team of Executive Coaches
+            <Badge className="mb-4 bg-gradient-to-r from-[#7FB069] to-[#E26C73] text-white border-0">
+              Core Non-Negotiable
+            </Badge>
+            <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+              4-Hour Focused CEO Workday
             </h1>
-            <p className="text-2xl text-gray-700 max-w-3xl mx-auto leading-relaxed mb-4">
-              21 AI-Powered Guides to Transform Your Business
-            </p>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Work ON your business with divine co-creation Monday-Thursday, 1:00-5:00 PM ET
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Why Choose Section */}
-      <div className="py-16 bg-white">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-12">
-            {/* Added section matching replit structure */}
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Why Top Coaches Choose 4-Hour CEO
-            </h2>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 mb-16">
-            <Card className="text-center p-8 border-2 border-gray-200 hover:border-[#7FB069] transition-all">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#7FB069] to-[#E26C73] flex items-center justify-center mx-auto mb-6">
-                <Clock className="h-8 w-8 text-white" />
-              </div>
-              <CardTitle className="text-2xl mb-4 text-gray-900">Work Less, Earn More</CardTitle>
-              <p className="text-lg text-gray-600">
-                Focus 4 hours on high-impact CEO work while AI handles 80% of operations
-              </p>
-            </Card>
-
-            <Card className="text-center p-8 border-2 border-gray-200 hover:border-[#E26C73] transition-all">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#E26C73] to-[#7FB069] flex items-center justify-center mx-auto mb-6">
-                <Brain className="h-8 w-8 text-white" />
-              </div>
-              <CardTitle className="text-2xl mb-4 text-gray-900">Focus on Your Genius</CardTitle>
-              <p className="text-lg text-gray-600">
-                Spend time on human-only skills: strategy, relationships, creativity
-              </p>
-            </Card>
-
-            <Card className="text-center p-8 border-2 border-gray-200 hover:border-[#7FB069] transition-all">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#7FB069] to-[#E26C73] flex items-center justify-center mx-auto mb-6">
-                <Sparkles className="h-8 w-8 text-white" />
-              </div>
-              <CardTitle className="text-2xl mb-4 text-gray-900">AI Executive Team</CardTitle>
-              <p className="text-lg text-gray-600">
-                21 specialized AI coaches guide you daily through every business function
-              </p>
-            </Card>
-          </div>
-        </div>
-      </div>
-
-      {/* Your Executive Team */}
-      <div className="py-16 bg-gradient-to-br from-[#E26C73]/10 to-white">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-12">
-            {/* Added executive team showcase section */}
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Your Executive Team
-            </h2>
-            <p className="text-xl text-gray-600 mb-8">
-              Meet your AI-powered leadership team available Mon-Thu 1-5 PM EST
+            <p className="text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
+              Work ON your business with divine co-creation and quantum focus. Monday-Thursday, 1:00-5:00 PM ET
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            {executiveTeam.map((exec, index) => {
-              const Icon = exec.icon
-              return (
-                <Card key={index} className="text-center p-6 border-2 border-gray-200 hover:shadow-xl transition-all">
-                  <div className={`w-20 h-20 rounded-full bg-gradient-to-br ${exec.color} flex items-center justify-center mx-auto mb-4`}>
-                    <Icon className="h-10 w-10 text-white" />
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{exec.name}</h3>
-                  <p className="text-lg text-[#E26C73] font-semibold">{exec.role}</p>
-                </Card>
-              )
-            })}
+          <div className="max-w-4xl mx-auto mb-12">
+            <img
+              src="/images/ceo-workday-focused.png"
+              alt="Professional woman working at desk"
+              className="w-full h-auto rounded-2xl shadow-2xl"
+            />
           </div>
         </div>
       </div>

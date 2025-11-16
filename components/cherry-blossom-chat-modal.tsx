@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Send, Loader2 } from 'lucide-react'
-import { useChat } from 'ai/react'
+import { useChat } from '@ai-sdk/react'
 
 interface Message {
   role: "user" | "assistant"
@@ -41,37 +41,18 @@ export function CherryBlossomChatModal({
   })
   
   const scrollAreaRef = useRef<HTMLDivElement>(null)
-  const [hasSentPrefill, setHasSentPrefill] = useState(false)
 
   useEffect(() => {
-    if (isOpen && prefillMessage && messages.length === 0 && !hasSentPrefill) {
-      setHasSentPrefill(true)
-      const syntheticEvent = new Event('submit', { bubbles: true, cancelable: true }) as any
-      syntheticEvent.preventDefault = () => {}
-      
-      const textarea = document.querySelector('textarea[placeholder="Type your message here..."]') as HTMLTextAreaElement
-      if (textarea) {
-        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value')?.set
-        nativeInputValueSetter?.call(textarea, prefillMessage)
-        
-        const event = new Event('input', { bubbles: true })
-        textarea.dispatchEvent(event)
-        
-        setTimeout(() => {
-          const form = document.querySelector('form[data-chat-form]') as HTMLFormElement
-          if (form) {
-            form.requestSubmit()
-          }
-        }, 200)
-      }
+    if (isOpen && prefillMessage && messages.length === 0) {
+      setInput(prefillMessage)
+      setTimeout(() => {
+        const form = document.querySelector('form[data-chat-form]') as HTMLFormElement
+        if (form) {
+          form.requestSubmit()
+        }
+      }, 100)
     }
-  }, [isOpen, prefillMessage, messages.length, hasSentPrefill])
-
-  useEffect(() => {
-    if (!isOpen) {
-      setHasSentPrefill(false)
-    }
-  }, [isOpen])
+  }, [isOpen, prefillMessage, messages.length, setInput])
 
   useEffect(() => {
     if (scrollAreaRef.current) {
@@ -159,7 +140,7 @@ export function CherryBlossomChatModal({
         <form onSubmit={handleSubmit} data-chat-form className="flex gap-2 pt-4 border-t">
           <Textarea
             value={input}
-            onChange={handleInputChange as any}
+            onChange={handleInputChange}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault()
@@ -172,7 +153,7 @@ export function CherryBlossomChatModal({
           />
           <Button
             type="submit"
-            disabled={isLoading || !input?.trim()}
+            disabled={isLoading || !input.trim()}
             size="lg"
             className="bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white"
           >

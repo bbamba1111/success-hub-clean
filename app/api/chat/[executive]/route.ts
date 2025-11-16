@@ -1,5 +1,5 @@
-import { openai } from "@ai-sdk/openai"
-import { streamText } from "ai"
+import { Configuration, OpenAIApi } from "openai-edge"
+import { OpenAIStream, StreamingTextResponse } from "ai"
 import { getExecutive } from "@/lib/executives-config"
 
 export const runtime = "edge"
@@ -15,11 +15,20 @@ export async function POST(
     return new Response("Executive not found", { status: 404 })
   }
 
-  const result = await streamText({
-    model: openai("gpt-4o-mini"),
-    system: executive.systemPrompt,
-    messages,
+  const config = new Configuration({
+    apiKey: process.env.OPENAI_API_KEY,
+  })
+  const openai = new OpenAIApi(config)
+
+  const response = await openai.createChatCompletion({
+    model: "gpt-4o-mini",
+    stream: true,
+    messages: [
+      { role: "system", content: executive.systemPrompt },
+      ...messages,
+    ],
   })
 
-  return result.toUIMessageStreamResponse()
+  const stream = OpenAIStream(response)
+  return new StreamingTextResponse(stream)
 }

@@ -2,8 +2,9 @@
 
 import type React from "react"
 
-import { useChat } from "ai/react"
-import { Send, Sparkles, CheckCircle2, Mic, MicOff, Volume2, VolumeX, Smartphone } from 'lucide-react'
+import { useChat } from "@ai-sdk/react"
+import { DefaultChatTransport } from "ai"
+import { Send, Sparkles, CheckCircle2, Mic, MicOff, Volume2, VolumeX, Smartphone } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -53,16 +54,17 @@ export function BarbaraChiefOfStaff() {
     }
   }, [])
 
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
-    api: "/api/chief-of-staff",
+  const { messages, sendMessage, status } = useChat({
+    transport: new DefaultChatTransport({ api: "/api/chief-of-staff" }),
   })
 
   useEffect(() => {
     if (voiceEnabled && messages.length > 0 && synthRef.current) {
       const lastMessage = messages[messages.length - 1]
       if (lastMessage.role === "assistant") {
-        const textToSpeak = lastMessage.content
-        if (textToSpeak) {
+        const textParts = lastMessage.parts.filter((part) => part.type === "text")
+        if (textParts.length > 0) {
+          const textToSpeak = textParts.map((part: any) => part.text).join(" ")
           const utterance = new SpeechSynthesisUtterance(textToSpeak)
           utterance.rate = 1.0
           utterance.pitch = 1.0
@@ -72,19 +74,19 @@ export function BarbaraChiefOfStaff() {
           utterance.onend = () => setIsSpeaking(false)
           utterance.onerror = () => setIsSpeaking(false)
 
-          synthRef.current.cancel()
+          synthRef.current.cancel() // Cancel any ongoing speech
           synthRef.current.speak(utterance)
         }
       }
     }
   }, [messages, voiceEnabled])
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!inputValue.trim() || isLoading) return
-    
+    if (!inputValue.trim() || status === "in_progress") return
+
+    sendMessage({ text: inputValue })
     setInputValue("")
-    handleSubmit(e)
   }
 
   const toggleListening = () => {
@@ -159,7 +161,7 @@ export function BarbaraChiefOfStaff() {
                       size="sm"
                       className="justify-start text-left h-auto py-2 px-3 text-xs sm:text-sm bg-transparent"
                       onClick={() => {
-                        setInputValue(action)
+                        sendMessage({ text: action })
                       }}
                     >
                       {action}
@@ -177,9 +179,34 @@ export function BarbaraChiefOfStaff() {
                       message.role === "user" ? "bg-purple-600 text-white" : "bg-muted"
                     }`}
                   >
-                    <p className="text-xs sm:text-sm whitespace-pre-wrap">
-                      {message.content}
-                    </p>
+                    {message.parts.map((part, index) => {
+                      if (part.type === "text") {
+                        return (
+                          <p key={index} className="text-xs sm:text-sm whitespace-pre-wrap">
+                            {part.text}
+                          </p>
+                        )
+                      }
+
+                      if (part.type.startsWith("tool-")) {
+                        if ("state" in part && part.state === "output-available") {
+                          return (
+                            <div
+                              key={index}
+                              className="mt-2 p-2 bg-green-50 rounded border border-green-200 text-green-900"
+                            >
+                              <div className="flex items-center gap-2 text-xs font-medium mb-1">
+                                <CheckCircle2 className="w-3 h-3" />
+                                Action Completed
+                              </div>
+                              <pre className="text-xs whitespace-pre-wrap">{JSON.stringify(part.output, null, 2)}</pre>
+                            </div>
+                          )
+                        }
+                      }
+
+                      return null
+                    })}
                   </div>
                 </div>
               ))}
@@ -188,11 +215,11 @@ export function BarbaraChiefOfStaff() {
         </ScrollArea>
 
         <div className="p-3 sm:p-4 border-t">
-          <form onSubmit={handleFormSubmit} className="flex gap-2">
+          <form onSubmit={handleSubmit} className="flex gap-2">
             <Button
               type="button"
               onClick={toggleListening}
-              disabled={isLoading}
+              disabled={status === "in_progress"}
               size="icon"
               variant={isListening ? "default" : "outline"}
               className={`shrink-0 ${isListening ? "bg-purple-600 animate-pulse" : ""}`}
@@ -203,10 +230,10 @@ export function BarbaraChiefOfStaff() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               placeholder="Type or tap mic to speak..."
-              disabled={isLoading || isListening}
+              disabled={status === "in_progress" || isListening}
               className="flex-1 text-sm"
             />
-            <Button type="submit" disabled={isLoading || !inputValue.trim()} size="icon">
+            <Button type="submit" disabled={status === "in_progress" || !inputValue.trim()} size="icon">
               <Send className="w-4 h-4" />
             </Button>
           </form>
