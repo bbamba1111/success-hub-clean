@@ -8,7 +8,6 @@ import { Badge } from "@/components/ui/badge"
 import { ArrowRight, Clock, Target, TrendingUp, Calendar, Zap, Moon, CheckCircle, Star, Download, Brain, Users, Sparkles } from 'lucide-react'
 import CherryBlossomCountdown from "@/components/cherry-blossom-countdown"
 import WorkLifeBalanceSchedule from "@/components/work-life-balance-schedule"
-import { SimpleChatModal } from "@/components/simple-chat-modal"
 import { AIBusinessAudit } from "@/components/ai-business-audit"
 import { CoPilotTraining } from "@/components/co-pilot-training"
 import { CherryBlossomCoGuide } from "@/components/cherry-blossom-co-guide"
@@ -17,9 +16,6 @@ import { BarbaraChiefOfStaff } from "@/components/barbara-chief-of-staff"
 
 export default function HomePage() {
   const [dashboardVisited, setDashboardVisited] = useState(false)
-  const [isChatOpen, setIsChatOpen] = useState(false)
-  const [chatContext, setChatContext] = useState<string>("")
-  const [chatTitle, setChatTitle] = useState("")
   const [isCoGuideOpen, setIsCoGuideOpen] = useState(false)
   const [userId, setUserId] = useState<string | undefined>()
   const [isBarbaraStaffOpen, setIsBarbaraStaffOpen] = useState(false)
@@ -59,12 +55,6 @@ export default function HomePage() {
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "start" })
     }
-  }
-
-  const openChat = (context: string, title: string) => {
-    setChatContext(context)
-    setChatTitle(title)
-    setIsChatOpen(true)
   }
 
   return (
@@ -781,7 +771,7 @@ export default function HomePage() {
               </div>
 
               <Button
-                onClick={() => openChat("morning-routine", "Morning GIV•EN™ Routine")}
+                onClick={() => {}}
                 className="w-full bg-[#E26C73] hover:bg-[#D55A60] text-white font-semibold"
               >
                 Plan Your Morning Routine
@@ -817,7 +807,7 @@ export default function HomePage() {
               </div>
 
               <Button
-                onClick={() => openChat("workout-window", "30-Minute Workday Workout Window")}
+                onClick={() => {}}
                 className="w-full bg-[#7FB069] hover:bg-[#6FA055] text-white font-semibold"
               >
                 Plan Your Workout Window
@@ -856,7 +846,7 @@ export default function HomePage() {
               </div>
 
               <Button
-                onClick={() => openChat("lunch-break", "Extended Healthy Hybrid Lunch Break")}
+                onClick={() => {}}
                 className="w-full bg-[#E26C73] hover:bg-[#D55A60] text-white font-semibold"
               >
                 Plan Your Lunch Break
@@ -893,7 +883,7 @@ export default function HomePage() {
               </div>
 
               <Button
-                onClick={() => openChat("ceo-workday", "4-Hour Focused CEO Workday")}
+                onClick={() => {}}
                 className="w-full bg-[#7FB069] hover:bg-[#6FA055] text-white font-semibold"
               >
                 Plan Your CEO Workday
@@ -929,7 +919,7 @@ export default function HomePage() {
               </div>
 
               <Button
-                onClick={() => openChat("lifestyle-experiences", "Quality of Lifestyle Experiences")}
+                onClick={() => {}}
                 className="w-full bg-[#E26C73] hover:bg-[#D55A60] text-white font-semibold"
               >
                 Plan Your Lifestyle Experiences
@@ -966,7 +956,7 @@ export default function HomePage() {
               </div>
 
               <Button
-                onClick={() => openChat("digital-detox", "Power Down & Unplug Digital Detox")}
+                onClick={() => {}}
                 className="w-full bg-[#E26C73] hover:bg-[#D55A60] text-white font-semibold"
               >
                 Plan Your Digital Detox
@@ -1213,7 +1203,7 @@ export default function HomePage() {
           {/* The Button for Sabbatical Planning was updated here */}
           <div className="max-w-4xl mx-auto mb-8">
             <Button
-              onClick={() => openChat("sabbatical-planning", "Plan Your Sabbatical or 1-Week Break")}
+              onClick={() => {}}
               size="lg"
               className="w-full bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-bold px-12 py-6 text-xl shadow-xl hover:shadow-2xl transition-all transform hover:scale-105"
             >
@@ -1600,14 +1590,6 @@ export default function HomePage() {
           </div>
         </div>
       </div>
-      <SimpleChatModal
-        isOpen={isChatOpen}
-        onClose={() => setIsChatOpen(false)}
-        context={chatContext}
-        title={chatTitle}
-      />
-
-      {/* Removed FloatingChatButton component */}
 
       <CherryBlossomCoGuide isOpen={isCoGuideOpen} onClose={() => setIsCoGuideOpen(false)} userId={userId} />
     </div>

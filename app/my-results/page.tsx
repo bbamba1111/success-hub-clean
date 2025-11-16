@@ -4,29 +4,7 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import SimpleChatModal from "@/components/simple-chat-modal"
-import {
-  ArrowLeft,
-  RotateCcw,
-  Target,
-  Heart,
-  Brain,
-  Dumbbell,
-  Apple,
-  Moon,
-  Smile,
-  User,
-  BookOpen,
-  Briefcase,
-  DollarSign,
-  TreePine,
-  Users,
-  Gamepad2,
-  Users2,
-  Gift,
-  Copy,
-  Check,
-} from "lucide-react"
+import { ArrowLeft, RotateCcw, Target, Heart, Brain, Dumbbell, Apple, Moon, Smile, User, BookOpen, Briefcase, DollarSign, TreePine, Users, Gamepad2, Users2, Gift, Copy, Check } from 'lucide-react'
 import Link from "next/link"
 import { getAuditResults } from "@/utils/audit-storage"
 
@@ -82,9 +60,6 @@ export default function MyResultsPage() {
   const [auditData, setAuditData] = useState<AuditData | null>(null)
   const [userName, setUserName] = useState("")
   const [copied, setCopied] = useState(false)
-  const [isChatOpen, setIsChatOpen] = useState(false)
-  const [chatContext, setChatContext] = useState("")
-  const [chatTitle, setChatTitle] = useState("")
 
   useEffect(() => {
     const data = getAuditResults()
@@ -162,10 +137,8 @@ Please provide personalized insights and recommendations based on these results.
     }
   }
 
-  const openChat = (context: string, title: string) => {
-    setChatContext(context)
-    setChatTitle(title)
-    setIsChatOpen(true)
+  const openChat = () => {
+    alert("Cherry Blossom audit review coming soon!")
   }
 
   return (
@@ -632,7 +605,7 @@ Please provide personalized insights and recommendations based on these results.
 
                 <div className="flex justify-center pt-4">
                   <Button
-                    onClick={() => openChat("audit-review", "Review Your Audit with Cherry Blossom")}
+                    onClick={openChat}
                     className="bg-gradient-to-r from-[#E26C73] to-[#7FB069] hover:from-[#D55A60] hover:to-[#6FA055] text-white px-8 py-3"
                   >
                     Review Your Audit with Cherry Blossom
@@ -644,12 +617,6 @@ Please provide personalized insights and recommendations based on these results.
         </div>
       </div>
 
-      <SimpleChatModal
-        isOpen={isChatOpen}
-        onClose={() => setIsChatOpen(false)}
-        context={chatContext}
-        title={chatTitle}
-      />
     </div>
   )
 }
