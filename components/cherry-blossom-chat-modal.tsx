@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Send, Loader2 } from 'lucide-react'
-import { useChat } from '@ai-sdk/react'
+import { useChat } from 'ai'
 
 interface Message {
   role: "user" | "assistant"

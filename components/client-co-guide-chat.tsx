@@ -2,9 +2,9 @@
 
 import type React from "react"
 
-import { useChat } from "@ai-sdk/react"
+import { useChat } from "ai"
 import { DefaultChatTransport } from "ai"
-import { Send, Sparkles, BookOpen, Target, Mic, MicOff, Volume2, VolumeX, Smartphone } from "lucide-react"
+import { Send, Sparkles, BookOpen, Target, Mic, MicOff, Volume2, VolumeX, Smartphone } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
