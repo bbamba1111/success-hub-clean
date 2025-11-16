@@ -99,10 +99,13 @@ importers:
         specifier: 14.2.5
         version: 14.2.5(@opentelemetry/api@1.9.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       openai:
-        specifier: 4.56.1
+        specifier: ^4.56.1
         version: 4.56.1(zod@3.23.8)
+      openai-edge:
+        specifier: latest
+        version: 1.2.3
       react:
-        specifier: 19.2.0
+        specifier: latest
         version: 19.2.0
       react-dom:
         specifier: 19.2.0
@@ -2346,6 +2349,11 @@ packages:
 
   once@1.4.0:
     resolution: {integrity: sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==}
+
+  openai-edge@1.2.3:
+    resolution: {integrity: sha512-CnEm2VbPSng1S9N/OFWmRmFC5Rm+pNID+7KYR6aIPJEnCXoH6CHzdBH6s+rLH+JGt0zuWmpC7NHMXED2dpZqPg==}
+    engines: {node: '>=18'}
+    deprecated: The official OpenAI SDK now supports edge runtimes, please use that instead.
 
   openai@4.56.1:
     resolution: {integrity: sha512-XMsxdjrWBYgbP6EsDIwbhkQEgeyL2C41te/QrJm8kdfho22exhTUJ/cFJSmCTToam/RSOC1BlOylHvD6i/bmsA==}
@@ -5308,6 +5316,8 @@ snapshots:
   once@1.4.0:
     dependencies:
       wrappy: 1.0.2
+
+  openai-edge@1.2.3: {}
 
   openai@4.56.1(zod@3.23.8):
     dependencies:

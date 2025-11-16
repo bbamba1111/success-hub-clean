@@ -7,7 +7,27 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Target, Heart, Brain, Dumbbell, Apple, Moon, Smile, User, BookOpen, Briefcase, DollarSign, TreePine, Users, Gamepad2, Users2, Gift, Copy, Edit } from 'lucide-react'
+import SimpleChatModal from "@/components/simple-chat-modal"
+import {
+  Target,
+  Heart,
+  Brain,
+  Dumbbell,
+  Apple,
+  Moon,
+  Smile,
+  User,
+  BookOpen,
+  Briefcase,
+  DollarSign,
+  TreePine,
+  Users,
+  Gamepad2,
+  Users2,
+  Gift,
+  Copy,
+  Edit,
+} from "lucide-react"
 import Link from "next/link"
 import { getAuditResults } from "@/utils/audit-storage"
 
@@ -64,6 +84,7 @@ export default function CherryBlossomIntentions() {
   const [selectedFocusAreas, setSelectedFocusAreas] = useState<string[]>([])
   const [userName, setUserName] = useState("")
   const [copied, setCopied] = useState(false)
+  const [isChatOpen, setIsChatOpen] = useState(false)
 
   useEffect(() => {
     // Load audit data
@@ -170,7 +191,7 @@ Let's create my sacred 28-Day Desired Work-Lifestyle Intention together!`
   }
 
   const openIntentionChat = () => {
-    alert("Intention setting chat coming soon!")
+    setIsChatOpen(true)
   }
 
   return (
@@ -553,6 +574,14 @@ Let's create my sacred 28-Day Desired Work-Lifestyle Intention together!`
           </div>
         )}
       </div>
+
+      {/* SimpleChatModal Component */}
+      <SimpleChatModal
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+        context="intention-setting"
+        title="Set Your 28-Day Intentions"
+      />
     </div>
   )
 }

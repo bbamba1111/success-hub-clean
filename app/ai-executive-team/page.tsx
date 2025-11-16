@@ -3,12 +3,30 @@
 import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { ExecutiveChatModal } from "@/components/executive-chat-modal"
+import { ZoneOfGeniusChatModal } from "@/components/zone-of-genius-chat-modal"
 import { executives, getExecutive } from "@/lib/executives-config"
 import type { ExecutiveConfig } from "@/lib/executives-config"
-import { MessageSquare, Brain, Users, Target, TrendingUp, Clock, Sparkles, User, Zap } from 'lucide-react'
+import { MessageSquare, Brain, Users, Target, TrendingUp, Clock } from 'lucide-react'
 import Link from 'next/link'
 
 export default function AIExecutiveTeamPage() {
+  const [selectedExecutive, setSelectedExecutive] = useState<ExecutiveConfig | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isZoneModalOpen, setIsZoneModalOpen] = useState(false)
+
+  const handleExecutiveClick = (executiveId: string) => {
+    if (executiveId === "zone-of-genius") {
+      setIsZoneModalOpen(true)
+    } else {
+      const executive = getExecutive(executiveId)
+      if (executive) {
+        setSelectedExecutive(executive)
+        setIsModalOpen(true)
+      }
+    }
+  }
+
   const regularExecutives = executives.filter(e => e.id !== "zone-of-genius")
 
   return (
@@ -30,8 +48,8 @@ export default function AIExecutiveTeamPage() {
             <Link href="/human-zone-of-genius">
               <Card className="hover:shadow-xl transition-all cursor-pointer h-full bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200">
                 <CardHeader>
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-400 to-pink-400 flex items-center justify-center shadow-lg mb-4 mx-auto">
-                    <Brain className="h-8 w-8 text-white" />
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-400 to-pink-400 flex items-center justify-center text-3xl shadow-lg mb-4 mx-auto">
+                    🧠
                   </div>
                   <CardTitle className="text-2xl text-center">Human Zone of Genius</CardTitle>
                   <CardDescription className="text-center text-base">
@@ -50,8 +68,8 @@ export default function AIExecutiveTeamPage() {
             {/* AI Executive Team Card */}
             <Card className="hover:shadow-xl transition-all h-full bg-gradient-to-br from-blue-50 to-green-50 border-2 border-blue-200">
               <CardHeader>
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-400 to-pink-400 flex items-center justify-center shadow-lg mb-4 mx-auto">
-                  <Users className="h-8 w-8 text-white" />
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-400 to-pink-400 flex items-center justify-center text-3xl shadow-lg mb-4 mx-auto">
+                  🤖
                 </div>
                 <CardTitle className="text-2xl text-center">15 AI Executives</CardTitle>
                 <CardDescription className="text-center text-base">
@@ -90,8 +108,8 @@ export default function AIExecutiveTeamPage() {
             {/* You - The 20% */}
             <Card className="bg-white hover:shadow-xl transition-all border-2 border-green-300">
               <CardHeader>
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-400 to-pink-400 flex items-center justify-center shadow-lg mb-4 mx-auto">
-                  <User className="h-8 w-8 text-white" />
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-400 to-pink-400 flex items-center justify-center text-3xl shadow-lg mb-4 mx-auto">
+                  👤
                 </div>
                 <CardTitle className="text-2xl text-center mb-2">You - The 20%</CardTitle>
                 <CardDescription className="text-center text-base font-semibold text-gray-700">
@@ -127,8 +145,8 @@ export default function AIExecutiveTeamPage() {
             {/* AI Team - The 80% */}
             <Card className="bg-white hover:shadow-xl transition-all border-2 border-pink-300">
               <CardHeader>
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-400 to-pink-400 flex items-center justify-center shadow-lg mb-4 mx-auto">
-                  <Sparkles className="h-8 w-8 text-white" />
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-400 to-pink-400 flex items-center justify-center text-3xl shadow-lg mb-4 mx-auto">
+                  🤖
                 </div>
                 <CardTitle className="text-2xl text-center mb-2">AI Team - The 80%</CardTitle>
                 <CardDescription className="text-center text-base font-semibold text-gray-700">
@@ -164,8 +182,8 @@ export default function AIExecutiveTeamPage() {
             {/* The Result */}
             <Card className="bg-white hover:shadow-xl transition-all border-2 border-purple-300">
               <CardHeader>
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-400 to-pink-400 flex items-center justify-center shadow-lg mb-4 mx-auto">
-                  <Zap className="h-8 w-8 text-white" />
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-400 to-pink-400 flex items-center justify-center text-3xl shadow-lg mb-4 mx-auto">
+                  ⚡
                 </div>
                 <CardTitle className="text-2xl text-center mb-2">The Result</CardTitle>
                 <CardDescription className="text-center text-base font-semibold text-gray-700">
@@ -215,9 +233,14 @@ export default function AIExecutiveTeamPage() {
             {regularExecutives.map((exec) => (
               <Card key={exec.id} className="hover:shadow-xl transition-all bg-white">
                 <CardHeader>
-                  <div className="mb-3">
-                    <CardTitle className="text-lg">{exec.name}</CardTitle>
-                    <CardDescription className="text-sm">{exec.role}</CardDescription>
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-400 to-pink-400 flex items-center justify-center text-2xl shadow-lg">
+                      {exec.icon}
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg">{exec.name}</CardTitle>
+                      <CardDescription className="text-sm">{exec.role}</CardDescription>
+                    </div>
                   </div>
                   <p className="text-sm text-gray-600 leading-relaxed">
                     {exec.description}
@@ -225,12 +248,12 @@ export default function AIExecutiveTeamPage() {
                 </CardHeader>
                 <CardContent>
                   <Button
-                    disabled
+                    onClick={() => handleExecutiveClick(exec.id)}
                     className="w-full"
                     variant="outline"
                   >
                     <MessageSquare className="mr-2 h-4 w-4" />
-                    Coming Soon
+                    Start Conversation
                   </Button>
                 </CardContent>
               </Card>
@@ -239,6 +262,21 @@ export default function AIExecutiveTeamPage() {
         </div>
       </div>
 
+      {selectedExecutive && (
+        <ExecutiveChatModal
+          isOpen={isModalOpen}
+          onClose={() => {
+            setIsModalOpen(false)
+            setSelectedExecutive(null)
+          }}
+          executive={selectedExecutive}
+        />
+      )}
+
+      <ZoneOfGeniusChatModal
+        isOpen={isZoneModalOpen}
+        onClose={() => setIsZoneModalOpen(false)}
+      />
     </div>
   )
 }
