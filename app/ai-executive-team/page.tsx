@@ -3,7 +3,6 @@
 import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { ExecutiveChatModal } from "@/components/executive-chat-modal"
 import { ZoneOfGeniusChatModal } from "@/components/zone-of-genius-chat-modal"
 import { executives, getExecutive } from "@/lib/executives-config"
 import type { ExecutiveConfig } from "@/lib/executives-config"
@@ -12,18 +11,13 @@ import Link from 'next/link'
 
 export default function AIExecutiveTeamPage() {
   const [selectedExecutive, setSelectedExecutive] = useState<ExecutiveConfig | null>(null)
-  const [isModalOpen, setIsModalOpen] = useState(false)
   const [isZoneModalOpen, setIsZoneModalOpen] = useState(false)
 
   const handleExecutiveClick = (executiveId: string) => {
     if (executiveId === "zone-of-genius") {
       setIsZoneModalOpen(true)
     } else {
-      const executive = getExecutive(executiveId)
-      if (executive) {
-        setSelectedExecutive(executive)
-        setIsModalOpen(true)
-      }
+      console.log("Executive chat coming soon:", executiveId)
     }
   }
 
@@ -251,9 +245,10 @@ export default function AIExecutiveTeamPage() {
                     onClick={() => handleExecutiveClick(exec.id)}
                     className="w-full"
                     variant="outline"
+                    disabled
                   >
                     <MessageSquare className="mr-2 h-4 w-4" />
-                    Start Conversation
+                    Coming Soon
                   </Button>
                 </CardContent>
               </Card>
@@ -261,17 +256,6 @@ export default function AIExecutiveTeamPage() {
           </div>
         </div>
       </div>
-
-      {selectedExecutive && (
-        <ExecutiveChatModal
-          isOpen={isModalOpen}
-          onClose={() => {
-            setIsModalOpen(false)
-            setSelectedExecutive(null)
-          }}
-          executive={selectedExecutive}
-        />
-      )}
 
       <ZoneOfGeniusChatModal
         isOpen={isZoneModalOpen}

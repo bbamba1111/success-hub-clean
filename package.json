@@ -38,7 +38,7 @@
     "date-fns": "latest",
     "lucide-react": "^0.454.0",
     "next": "14.2.5",
-    "openai": "^4.56.1",
+    "openai": "4.56.1",
     "openai-edge": "latest",
     "react": "latest",
     "react-dom": "19.2.0",
