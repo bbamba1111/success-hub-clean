@@ -39,7 +39,7 @@ export default function AIExecutiveTeamPage() {
 
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             {/* Human Zone of Genius Card */}
-            <Link href="/human-zone-of-genius">
+            <Link href="/human-zone-of-genius-team">
               <Card className="hover:shadow-xl transition-all cursor-pointer h-full bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200">
                 <CardHeader>
                   <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-400 to-pink-400 flex items-center justify-center text-3xl shadow-lg mb-4 mx-auto">
@@ -257,10 +257,13 @@ export default function AIExecutiveTeamPage() {
         </div>
       </div>
 
-      <ZoneOfGeniusChatModal
-        isOpen={isZoneModalOpen}
-        onClose={() => setIsZoneModalOpen(false)}
-      />
+      {selectedExecutive && (
+  <ExecutiveChatModal
+    executive={selectedExecutive}
+    isOpen={!!selectedExecutive}
+    onClose={() => setSelectedExecutive(null)}
+  />
+)}
     </div>
   )
 }
