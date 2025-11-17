@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { ZoneOfGeniusChatModal } from "@/components/zone-of-genius-chat-modal"
+import { ExecutiveChatModal } from "@/components/executive-chat-modal"
 import { executives, getExecutive } from "@/lib/executives-config"
 import type { ExecutiveConfig } from "@/lib/executives-config"
 import { MessageSquare, Brain, Users, Target, TrendingUp, Clock } from 'lucide-react'
