@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from 'react';
-import { useChat } from 'ai/rsc';
+import { useChat } from 'ai/react';
 import {
   Dialog,
   DialogContent,
