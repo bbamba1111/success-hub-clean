@@ -27,7 +27,7 @@ export function TopNavigation() {
               </Button>
             </Link>
             
-            <Link href="/human-zone-of-genius">
+            <Link href="/human-zone-of-genius-team">
               <Button variant="ghost" className="flex items-center gap-2">
                 <Brain className="h-4 w-4" />
                 Zone of Genius
