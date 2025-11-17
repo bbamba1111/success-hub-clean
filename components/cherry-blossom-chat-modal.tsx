@@ -6,13 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Send, Loader2 } from 'lucide-react'
-import { useChat } from 'ai'
-
-interface Message {
-  role: "user" | "assistant"
-  content: string
-  id: string
-}
+import { useChat } from 'ai/react'
 
 interface CherryBlossomChatModalProps {
   isOpen: boolean
@@ -33,17 +27,87 @@ export function CherryBlossomChatModal({
   isAuthenticated = true,
   isLoadingAuth = false
 }: CherryBlossomChatModalProps) {
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
-    api: '/api/human-zone-chat',
+  const [conversationId, setConversationId] = useState<string | null>(null)
+  const [isInitializing, setIsInitializing] = useState(false)
+  const scrollAreaRef = useRef<HTMLDivElement>(null)
+  const previousTitleRef = useRef<string>("")
+
+  const { messages, input, handleInputChange, handleSubmit, isLoading, setMessages, setInput } = useChat({
+    api: '/api/chat/cherry-blossom',
+    body: {
+      conversationId,
+      executiveRole
+    },
+    onFinish: async (message) => {
+      // Save AI response to database
+      if (conversationId) {
+        await fetch(`/api/conversations/${conversationId}/messages`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            role: 'assistant',
+            content: message.content
+          })
+        })
+      }
+    },
     onError: (error) => {
-      console.error("[v0] Chat error:", error)
+      console.error("Chat error:", error)
     }
   })
-  
-  const scrollAreaRef = useRef<HTMLDivElement>(null)
 
+  // Initialize conversation when modal opens OR when conversation title changes
   useEffect(() => {
-    if (isOpen && prefillMessage && messages.length === 0) {
+    const initConversation = async () => {
+      // Check if we need a new conversation (modal opened OR title changed)
+      const titleChanged = previousTitleRef.current !== conversationTitle
+      const needsNewConversation = isOpen && (!conversationId || titleChanged) && !isInitializing
+
+      if (needsNewConversation && isAuthenticated) {
+        setIsInitializing(true)
+        try {
+          // Create new conversation
+          const response = await fetch('/api/conversations', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              executive_role: executiveRole,
+              title: conversationTitle
+            })
+          })
+
+          if (response.ok) {
+            const conversation = await response.json()
+            setConversationId(conversation.id)
+            previousTitleRef.current = conversationTitle
+
+            // Load previous messages
+            const messagesResponse = await fetch(`/api/conversations/${conversation.id}/messages`)
+            if (messagesResponse.ok) {
+              const previousMessages = await messagesResponse.json()
+              if (previousMessages.length > 0) {
+                setMessages(previousMessages.map((msg: any) => ({
+                  id: msg.id,
+                  role: msg.role,
+                  content: msg.content
+                })))
+              }
+            }
+          }
+        } catch (error) {
+          console.error('Error initializing conversation:', error)
+        } finally {
+          setIsInitializing(false)
+        }
+      }
+    }
+
+    initConversation()
+  }, [isOpen, conversationId, executiveRole, conversationTitle, setMessages, isInitializing, isAuthenticated])
+
+  // Auto-submit prefill message
+  useEffect(() => {
+    if (isOpen && prefillMessage && messages.length === 0 && !isInitializing && conversationId) {
       setInput(prefillMessage)
       setTimeout(() => {
         const form = document.querySelector('form[data-chat-form]') as HTMLFormElement
@@ -52,14 +116,45 @@ export function CherryBlossomChatModal({
         }
       }, 100)
     }
-  }, [isOpen, prefillMessage, messages.length, setInput])
+  }, [isOpen, prefillMessage, messages.length, setInput, isInitializing, conversationId])
 
+  // Reset when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      setConversationId(null)
+      setMessages([])
+      previousTitleRef.current = ""
+    }
+  }, [isOpen, setMessages])
+
+  // Scroll to bottom when messages change
   useEffect(() => {
     if (scrollAreaRef.current) {
       scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
     }
   }, [messages])
 
+  // Save user message to database before sending to AI
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    
+    if (!input.trim() || !conversationId) return
+
+    // Save user message to database
+    await fetch(`/api/conversations/${conversationId}/messages`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        role: 'user',
+        content: input
+      })
+    })
+
+    // Let useChat handle the AI request
+    handleSubmit(e)
+  }
+
+  // Show login prompt if not authenticated
   if (!isAuthenticated && !isLoadingAuth) {
     return (
       <Dialog open={isOpen} onOpenChange={onClose}>
@@ -75,6 +170,7 @@ export function CherryBlossomChatModal({
             </p>
             <Button 
               size="lg"
+              onClick={() => window.location.href = '/api/auth/login'}
               className="bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white"
             >
               Sign In
@@ -97,7 +193,14 @@ export function CherryBlossomChatModal({
 
         <ScrollArea className="flex-1 pr-4" ref={scrollAreaRef}>
           <div className="space-y-4 py-4">
-            {messages.length === 0 && (
+            {isInitializing && (
+              <div className="text-center py-8">
+                <Loader2 className="h-8 w-8 animate-spin text-[#E26C73] mx-auto mb-4" />
+                <p className="text-gray-600">Loading conversation...</p>
+              </div>
+            )}
+
+            {!isInitializing && messages.length === 0 && (
               <div className="text-center py-8">
                 <img
                   src="/images/logo.png"
@@ -137,23 +240,23 @@ export function CherryBlossomChatModal({
           </div>
         </ScrollArea>
 
-        <form onSubmit={handleSubmit} data-chat-form className="flex gap-2 pt-4 border-t">
+        <form onSubmit={handleFormSubmit} data-chat-form className="flex gap-2 pt-4 border-t">
           <Textarea
             value={input}
             onChange={handleInputChange}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault()
-                handleSubmit(e)
+                handleFormSubmit(e as any)
               }
             }}
             placeholder="Type your message here..."
             className="min-h-[80px] text-lg"
-            disabled={isLoading}
+            disabled={isLoading || isInitializing}
           />
           <Button
             type="submit"
-            disabled={isLoading || !input.trim()}
+            disabled={isLoading || !input.trim() || isInitializing}
             size="lg"
             className="bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white"
           >
