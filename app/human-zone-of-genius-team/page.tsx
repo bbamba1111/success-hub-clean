@@ -4,8 +4,8 @@ import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ExecutiveChatModal } from "@/components/executive-chat-modal"
-import { executives } from "@/lib/executives-data"
-import type { Executive } from "@/lib/executives-data"
+import { executives } from "@/lib/executives-config"
+import type { Executive } from "@/lib/executives-config"
 import { 
   Brain, Users, Clock, Target, TrendingUp, Sparkles,
   BarChart3, DollarSign, Megaphone, Handshake, Star,
