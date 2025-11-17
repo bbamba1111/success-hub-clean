@@ -30,16 +30,11 @@ export function TopNavigation() {
             <Link href="/human-zone-of-genius-team">
               <Button variant="ghost" className="flex items-center gap-2">
                 <Brain className="h-4 w-4" />
-                Zone of Genius
+                4-Hour Focused CEO Workday
               </Button>
             </Link>
             
-            <Link href="/ai-executive-team">
-              <Button variant="ghost" className="flex items-center gap-2">
-                <Users className="h-4 w-4" />
-                AI Team
-              </Button>
-            </Link>
+            
           </div>
         </div>
       </div>
