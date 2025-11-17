@@ -1,273 +1,326 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Send, Loader2 } from 'lucide-react'
-import { useChat } from 'ai/react'
+import { useState, useEffect, useRef } from 'react';
+import { useChat } from 'ai/rsc';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Input } from '@/components/ui/input';
+import { Send, Loader2, X, LogIn } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
 
 interface CherryBlossomChatModalProps {
-  isOpen: boolean
-  onClose: () => void
-  prefillMessage?: string
-  conversationTitle?: string
-  executiveRole?: string
-  isAuthenticated?: boolean
-  isLoadingAuth?: boolean
+  isOpen: boolean;
+  onClose: () => void;
+  prefillMessage?: string;
+  conversationTitle?: string;
+  executiveRole?: string;
+  isAuthenticated: boolean;
+  isLoadingAuth: boolean;
 }
 
-export function CherryBlossomChatModal({
+export default function CherryBlossomChatModal({
   isOpen,
   onClose,
-  prefillMessage = "",
-  conversationTitle = "Cherry Blossom Coaching Session",
-  executiveRole = "Work-Life Balance Coach",
-  isAuthenticated = true,
-  isLoadingAuth = false
+  prefillMessage,
+  conversationTitle,
+  executiveRole = 'Cherry Blossom Co-Guide',
+  isAuthenticated,
+  isLoadingAuth,
 }: CherryBlossomChatModalProps) {
-  const [conversationId, setConversationId] = useState<string | null>(null)
-  const [isInitializing, setIsInitializing] = useState(false)
-  const scrollAreaRef = useRef<HTMLDivElement>(null)
-  const previousTitleRef = useRef<string>("")
+  const [conversationId, setConversationId] = useState<string | null>(null);
+  const [isLoadingConversation, setIsLoadingConversation] = useState(true);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const prefillRef = useRef<string | undefined>(prefillMessage);
+  const titleRef = useRef<string | undefined>(conversationTitle);
+  const supabase = createClient();
 
   const { messages, input, handleInputChange, handleSubmit, isLoading, setMessages, setInput } = useChat({
     api: '/api/chat/cherry-blossom',
     body: {
       conversationId,
-      executiveRole
+      executiveRole,
     },
     onFinish: async (message) => {
-      // Save AI response to database
-      if (conversationId) {
-        await fetch(`/api/conversations/${conversationId}/messages`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            role: 'assistant',
-            content: message.content
-          })
-        })
+      if (conversationId && isAuthenticated) {
+        await supabase.from('messages').insert({
+          conversation_id: conversationId,
+          role: 'assistant',
+          content: message.content,
+        });
       }
     },
-    onError: (error) => {
-      console.error("Chat error:", error)
-    }
-  })
+  });
 
-  // Initialize conversation when modal opens OR when conversation title changes
   useEffect(() => {
-    const initConversation = async () => {
-      // Check if we need a new conversation (modal opened OR title changed)
-      const titleChanged = previousTitleRef.current !== conversationTitle
-      const needsNewConversation = isOpen && (!conversationId || titleChanged) && !isInitializing
+    const prefillChanged = prefillMessage !== prefillRef.current;
+    const titleChanged = conversationTitle !== titleRef.current;
 
-      if (needsNewConversation && isAuthenticated) {
-        setIsInitializing(true)
-        try {
-          // Create new conversation
-          const response = await fetch('/api/conversations', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              executive_role: executiveRole,
-              title: conversationTitle
-            })
-          })
-
-          if (response.ok) {
-            const conversation = await response.json()
-            setConversationId(conversation.id)
-            previousTitleRef.current = conversationTitle
-
-            // Load previous messages
-            const messagesResponse = await fetch(`/api/conversations/${conversation.id}/messages`)
-            if (messagesResponse.ok) {
-              const previousMessages = await messagesResponse.json()
-              if (previousMessages.length > 0) {
-                setMessages(previousMessages.map((msg: any) => ({
-                  id: msg.id,
-                  role: msg.role,
-                  content: msg.content
-                })))
-              }
-            }
-          }
-        } catch (error) {
-          console.error('Error initializing conversation:', error)
-        } finally {
-          setIsInitializing(false)
-        }
-      }
+    if (isOpen && isAuthenticated && (prefillChanged || titleChanged)) {
+      prefillRef.current = prefillMessage;
+      titleRef.current = conversationTitle;
+      createNewConversation();
+    } else if (isOpen && isAuthenticated) {
+      loadOrCreateConversation();
     }
+  }, [isOpen, isAuthenticated, prefillMessage, conversationTitle, executiveRole]);
 
-    initConversation()
-  }, [isOpen, conversationId, executiveRole, conversationTitle, setMessages, isInitializing, isAuthenticated])
-
-  // Auto-submit prefill message
   useEffect(() => {
-    if (isOpen && prefillMessage && messages.length === 0 && !isInitializing && conversationId) {
-      setInput(prefillMessage)
-      setTimeout(() => {
-        const form = document.querySelector('form[data-chat-form]') as HTMLFormElement
-        if (form) {
-          form.requestSubmit()
-        }
-      }, 100)
-    }
-  }, [isOpen, prefillMessage, messages.length, setInput, isInitializing, conversationId])
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
-  // Reset when modal closes
-  useEffect(() => {
-    if (!isOpen) {
-      setConversationId(null)
-      setMessages([])
-      previousTitleRef.current = ""
-    }
-  }, [isOpen, setMessages])
-
-  // Scroll to bottom when messages change
-  useEffect(() => {
-    if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
-    }
-  }, [messages])
-
-  // Save user message to database before sending to AI
-  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const createNewConversation = async () => {
+    setIsLoadingConversation(true);
     
-    if (!input.trim() || !conversationId) return
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setIsLoadingConversation(false);
+        return;
+      }
 
-    // Save user message to database
-    await fetch(`/api/conversations/${conversationId}/messages`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+      const { data: newConv } = await supabase
+        .from('conversations')
+        .insert({
+          user_id: user.id,
+          title: conversationTitle || 'Cherry Blossom Chat',
+          executive_role: executiveRole,
+        })
+        .select()
+        .single();
+
+      setConversationId(newConv.id);
+      setMessages([]);
+
+      if (prefillMessage) {
+        setInput(prefillMessage);
+      }
+    } catch (error) {
+      console.error('Error creating conversation:', error);
+    } finally {
+      setIsLoadingConversation(false);
+    }
+  };
+
+  const loadOrCreateConversation = async () => {
+    setIsLoadingConversation(true);
+    
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setIsLoadingConversation(false);
+        return;
+      }
+
+      const { data: existingConversations } = await supabase
+        .from('conversations')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('executive_role', executiveRole)
+        .eq('title', conversationTitle || 'Cherry Blossom Chat')
+        .order('updated_at', { ascending: false })
+        .limit(1);
+
+      let convId: string;
+
+      if (existingConversations && existingConversations.length > 0) {
+        convId = existingConversations[0].id;
+      } else {
+        const { data: newConv } = await supabase
+          .from('conversations')
+          .insert({
+            user_id: user.id,
+            title: conversationTitle || 'Cherry Blossom Chat',
+            executive_role: executiveRole,
+          })
+          .select()
+          .single();
+
+        convId = newConv.id;
+      }
+
+      setConversationId(convId);
+
+      const { data: existingMessages } = await supabase
+        .from('messages')
+        .select('*')
+        .eq('conversation_id', convId)
+        .order('created_at', { ascending: true });
+
+      if (existingMessages && existingMessages.length > 0) {
+        const formattedMessages = existingMessages.map((msg: any) => ({
+          id: msg.id,
+          role: msg.role,
+          content: msg.content,
+        }));
+        setMessages(formattedMessages);
+      } else if (prefillMessage) {
+        setInput(prefillMessage);
+      }
+    } catch (error) {
+      console.error('Error loading conversation:', error);
+    } finally {
+      setIsLoadingConversation(false);
+    }
+  };
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    
+    if (!conversationId || !input.trim() || !isAuthenticated) return;
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      await supabase.from('messages').insert({
+        conversation_id: conversationId,
         role: 'user',
-        content: input
-      })
-    })
+        content: input,
+      });
 
-    // Let useChat handle the AI request
-    handleSubmit(e)
-  }
+      await supabase
+        .from('conversations')
+        .update({ updated_at: new Date().toISOString() })
+        .eq('id', conversationId);
+    }
 
-  // Show login prompt if not authenticated
-  if (!isAuthenticated && !isLoadingAuth) {
-    return (
-      <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-[#E26C73]">
-              Sign In Required
-            </DialogTitle>
-          </DialogHeader>
-          <div className="text-center py-8">
-            <p className="text-lg text-gray-700 mb-6">
-              Please sign in to start your coaching session with Cherry Blossom
-            </p>
-            <Button 
-              size="lg"
-              onClick={() => window.location.href = '/api/auth/login'}
-              className="bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white"
-            >
-              Sign In
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-    )
-  }
+    handleSubmit(e);
+  };
+
+  const handleLogin = () => {
+    window.location.href = '/api/auth/login';
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl h-[80vh] flex flex-col">
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-[#E26C73] to-[#7FB069] bg-clip-text text-transparent">
-            {conversationTitle}
-          </DialogTitle>
-          <p className="text-sm text-gray-600">with Cherry Blossom, your {executiveRole}</p>
+      <DialogContent className="max-w-3xl h-[600px] flex flex-col p-0">
+        <DialogHeader className="px-6 pt-6 pb-4 border-b bg-gradient-to-r from-[#F9EFE3] to-background">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="text-4xl">🌸</span>
+              <div>
+                <DialogTitle className="text-2xl bg-gradient-to-r from-[#E26C73] to-[#5D9D61] bg-clip-text text-transparent">
+                  {conversationTitle || 'Cherry Blossom Co-Guide'}
+                </DialogTitle>
+                <DialogDescription className="text-lg mt-1">
+                  Your AI Work-Life Balance Partner
+                </DialogDescription>
+              </div>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onClose}
+              data-testid="button-close-modal"
+            >
+              <X className="w-5 h-5" />
+            </Button>
+          </div>
         </DialogHeader>
 
-        <ScrollArea className="flex-1 pr-4" ref={scrollAreaRef}>
-          <div className="space-y-4 py-4">
-            {isInitializing && (
-              <div className="text-center py-8">
-                <Loader2 className="h-8 w-8 animate-spin text-[#E26C73] mx-auto mb-4" />
-                <p className="text-gray-600">Loading conversation...</p>
-              </div>
-            )}
-
-            {!isInitializing && messages.length === 0 && (
-              <div className="text-center py-8">
-                <img
-                  src="/images/logo.png"
-                  alt="Cherry Blossom"
-                  className="w-20 h-20 rounded-full mx-auto mb-4 shadow-lg"
-                />
-                <p className="text-gray-600 text-lg">
-                  Hello! I'm Cherry Blossom, your {executiveRole}. How can I support you today?
-                </p>
-              </div>
-            )}
-
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+        {!isAuthenticated && !isLoadingAuth ? (
+          <div className="flex-1 flex items-center justify-center px-6">
+            <div className="text-center max-w-md space-y-6">
+              <div className="text-6xl mb-4">🌸</div>
+              <h3 className="text-2xl font-semibold">Login Required</h3>
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                Sign in to start your personalized work-life balance journey with Cherry Blossom.
+                Your conversations will be saved securely for your return.
+              </p>
+              <Button
+                size="lg"
+                onClick={handleLogin}
+                className="text-lg px-8"
+                data-testid="button-login"
               >
-                <div
-                  className={`max-w-[80%] rounded-lg p-4 ${
-                    message.role === "user"
-                      ? "bg-gradient-to-r from-[#7FB069] to-[#E26C73] text-white"
-                      : "bg-gray-100 text-gray-900"
-                  }`}
-                >
-                  <p className="text-lg leading-relaxed whitespace-pre-wrap">{message.content}</p>
-                </div>
-              </div>
-            ))}
-
-            {isLoading && (
-              <div className="flex justify-start">
-                <div className="bg-gray-100 rounded-lg p-4">
-                  <Loader2 className="h-5 w-5 animate-spin text-[#E26C73]" />
-                </div>
-              </div>
-            )}
+                <LogIn className="w-5 h-5 mr-2" />
+                Log In to Continue
+              </Button>
+            </div>
           </div>
-        </ScrollArea>
+        ) : (
+          <>
+            <ScrollArea className="flex-1 px-6">
+              {isLoadingConversation || isLoadingAuth ? (
+                <div className="flex items-center justify-center h-full">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                </div>
+              ) : (
+                <div className="space-y-4 py-4">
+                  {messages.length === 0 ? (
+                    <div className="text-center text-muted-foreground py-12">
+                      <span className="text-6xl mb-4 block">🌸</span>
+                      <p className="text-xl mb-2">Welcome to your Cherry Blossom journey</p>
+                      <p className="text-lg">
+                        Share your work-life balance goals and I'll guide you every step of the way.
+                      </p>
+                    </div>
+                  ) : (
+                    messages.map((message) => (
+                      <div
+                        key={message.id}
+                        className={`flex ${
+                          message.role === 'user' ? 'justify-end' : 'justify-start'
+                        }`}
+                      >
+                        <div
+                          className={`max-w-[80%] rounded-lg px-4 py-3 ${
+                            message.role === 'user'
+                              ? 'bg-gradient-to-r from-[#5D9D61] to-[#E26C73] text-white'
+                              : 'bg-gradient-to-br from-[#F9EFE3] to-muted'
+                          }`}
+                        >
+                          <p className="text-lg leading-relaxed whitespace-pre-wrap">
+                            {message.content}
+                          </p>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                  {isLoading && (
+                    <div className="flex justify-start">
+                      <div className="bg-gradient-to-br from-[#F9EFE3] to-muted rounded-lg px-4 py-3">
+                        <Loader2 className="w-5 h-5 animate-spin text-primary" />
+                      </div>
+                    </div>
+                  )}
+                  <div ref={messagesEndRef} />
+                </div>
+              )}
+            </ScrollArea>
 
-        <form onSubmit={handleFormSubmit} data-chat-form className="flex gap-2 pt-4 border-t">
-          <Textarea
-            value={input}
-            onChange={handleInputChange}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault()
-                handleFormSubmit(e as any)
-              }
-            }}
-            placeholder="Type your message here..."
-            className="min-h-[80px] text-lg"
-            disabled={isLoading || isInitializing}
-          />
-          <Button
-            type="submit"
-            disabled={isLoading || !input.trim() || isInitializing}
-            size="lg"
-            className="bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white"
-          >
-            {isLoading ? (
-              <Loader2 className="h-5 w-5 animate-spin" />
-            ) : (
-              <Send className="h-5 w-5" />
-            )}
-          </Button>
-        </form>
+            <div className="px-6 py-4 border-t">
+              <form onSubmit={onSubmit} className="flex gap-2">
+                <Input
+                  value={input}
+                  onChange={handleInputChange}
+                  placeholder="Share your thoughts..."
+                  disabled={isLoading || isLoadingConversation || isLoadingAuth}
+                  className="flex-1 text-lg"
+                  data-testid="input-message"
+                />
+                <Button
+                  type="submit"
+                  disabled={isLoading || isLoadingConversation || isLoadingAuth || !input.trim()}
+                  size="lg"
+                  data-testid="button-send"
+                >
+                  {isLoading ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <Send className="w-5 h-5" />
+                  )}
+                </Button>
+              </form>
+            </div>
+          </>
+        )}
       </DialogContent>
     </Dialog>
-  )
+  );
 }
