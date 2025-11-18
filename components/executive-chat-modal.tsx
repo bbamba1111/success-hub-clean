@@ -165,8 +165,8 @@ export function ExecutiveChatModal({
   };
 
   const handleLogin = () => {
-    window.location.href = '/api/auth/login';
-  };
+  window.location.href = '/auth/login';  
+};
 
   if (isCheckingAuth) {
     return (
