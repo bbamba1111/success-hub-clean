@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from 'react';
-import { useChat } from 'ai';
+import { useChat } from '@ai-sdk/react';
 import {
   Dialog,
   DialogContent,
@@ -141,7 +141,6 @@ export default function CherryBlossomChatModal({
           })
           .select()
           .single();
-
         convId = newConv.id;
       }
 
@@ -153,14 +152,15 @@ export default function CherryBlossomChatModal({
         .eq('conversation_id', convId)
         .order('created_at', { ascending: true });
 
-      if (existingMessages && existingMessages.length > 0) {
-        const formattedMessages = existingMessages.map((msg: any) => ({
+      if (existingMessages) {
+        setMessages(existingMessages.map((msg: any) => ({
           id: msg.id,
           role: msg.role,
           content: msg.content,
-        }));
-        setMessages(formattedMessages);
-      } else if (prefillMessage) {
+        })));
+      }
+
+      if (prefillMessage && existingMessages?.length === 0) {
         setInput(prefillMessage);
       }
     } catch (error) {
@@ -173,105 +173,97 @@ export default function CherryBlossomChatModal({
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-    if (!conversationId || !input.trim() || !isAuthenticated) return;
+    if (!input.trim() || !conversationId || !isAuthenticated) return;
 
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
-      await supabase.from('messages').insert({
-        conversation_id: conversationId,
-        role: 'user',
-        content: input,
-      });
-
-      await supabase
-        .from('conversations')
-        .update({ updated_at: new Date().toISOString() })
-        .eq('id', conversationId);
-    }
+    await supabase.from('messages').insert({
+      conversation_id: conversationId,
+      role: 'user',
+      content: input,
+    });
 
     handleSubmit(e);
   };
 
-  const handleLogin = () => {
-    window.location.href = '/api/auth/login';
+  const handleClose = () => {
+    setMessages([]);
+    setInput('');
+    setConversationId(null);
+    onClose();
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl h-[600px] flex flex-col p-0">
-        <DialogHeader className="px-6 pt-6 pb-4 border-b bg-gradient-to-r from-[#F9EFE3] to-background">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <span className="text-4xl">🌸</span>
-              <div>
-                <DialogTitle className="text-2xl bg-gradient-to-r from-[#E26C73] to-[#5D9D61] bg-clip-text text-transparent">
-                  {conversationTitle || 'Cherry Blossom Co-Guide'}
-                </DialogTitle>
-                <DialogDescription className="text-lg mt-1">
-                  Your AI Work-Life Balance Partner
-                </DialogDescription>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
+      <DialogContent className="max-w-4xl h-[80vh] flex flex-col p-0">
+        {!isAuthenticated ? (
+          <div className="flex flex-col items-center justify-center h-full p-8 space-y-6">
+            <div className="text-center space-y-4">
+              <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-[#E26C73] to-[#F9EFE3] flex items-center justify-center">
+                <LogIn className="w-10 h-10 text-white" />
               </div>
-            </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onClose}
-              data-testid="button-close-modal"
-            >
-              <X className="w-5 h-5" />
-            </Button>
-          </div>
-        </DialogHeader>
-
-        {!isAuthenticated && !isLoadingAuth ? (
-          <div className="flex-1 flex items-center justify-center px-6">
-            <div className="text-center max-w-md space-y-6">
-              <div className="text-6xl mb-4">🌸</div>
-              <h3 className="text-2xl font-semibold">Login Required</h3>
-              <p className="text-lg text-muted-foreground leading-relaxed">
-                Sign in to start your personalized work-life balance journey with Cherry Blossom.
-                Your conversations will be saved securely for your return.
+              <h3 className="text-2xl font-semibold">Log In to Continue</h3>
+              <p className="text-lg text-muted-foreground max-w-md">
+                Access your Cherry Blossom Co-Guide conversations and build your personalized work-life balance journey.
               </p>
-              <Button
-                size="lg"
-                onClick={handleLogin}
-                className="text-lg px-8"
-                data-testid="button-login"
-              >
-                <LogIn className="w-5 h-5 mr-2" />
-                Log In to Continue
-              </Button>
             </div>
+            <Button 
+              size="lg"
+              className="text-lg px-8"
+              onClick={() => window.location.href = '/auth/login'}
+              data-testid="button-login"
+            >
+              <LogIn className="w-5 h-5 mr-2" />
+              Log In to Continue
+            </Button>
           </div>
         ) : (
           <>
-            <ScrollArea className="flex-1 px-6">
+            <DialogHeader className="px-6 py-4 border-b">
+              <div className="flex items-center justify-between">
+                <div>
+                  <DialogTitle className="text-2xl font-bold">
+                    {conversationTitle || 'Cherry Blossom Co-Guide'}
+                  </DialogTitle>
+                  <DialogDescription className="text-base mt-1">
+                    {executiveRole}
+                  </DialogDescription>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleClose}
+                  data-testid="button-close"
+                >
+                  <X className="w-5 h-5" />
+                </Button>
+              </div>
+            </DialogHeader>
+
+            <ScrollArea className="flex-1 px-6 py-4">
               {isLoadingConversation || isLoadingAuth ? (
                 <div className="flex items-center justify-center h-full">
                   <Loader2 className="w-8 h-8 animate-spin text-primary" />
                 </div>
               ) : (
-                <div className="space-y-4 py-4">
+                <div className="space-y-4">
                   {messages.length === 0 ? (
-                    <div className="text-center text-muted-foreground py-12">
-                      <span className="text-6xl mb-4 block">🌸</span>
-                      <p className="text-xl mb-2">Welcome to your Cherry Blossom journey</p>
-                      <p className="text-lg">
-                        Share your work-life balance goals and I'll guide you every step of the way.
+                    <div className="text-center py-12 space-y-4">
+                      <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-[#E26C73] to-[#F9EFE3] flex items-center justify-center">
+                        <span className="text-3xl">🌸</span>
+                      </div>
+                      <p className="text-lg text-muted-foreground max-w-md mx-auto">
+                        Welcome! Share your thoughts and let's begin your journey toward work-life harmony.
                       </p>
                     </div>
                   ) : (
                     messages.map((message) => (
                       <div
                         key={message.id}
-                        className={`flex ${
-                          message.role === 'user' ? 'justify-end' : 'justify-start'
-                        }`}
+                        className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                       >
                         <div
                           className={`max-w-[80%] rounded-lg px-4 py-3 ${
                             message.role === 'user'
-                              ? 'bg-gradient-to-r from-[#5D9D61] to-[#E26C73] text-white'
+                              ? 'bg-[#5D9D61] text-white'
                               : 'bg-gradient-to-br from-[#F9EFE3] to-muted'
                           }`}
                         >
