@@ -1,5 +1,7 @@
 "use client"
 
+export const dynamic = 'force-dynamic'
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -405,15 +407,17 @@ export default function HumanZoneOfGeniusTeam() {
       />
 
       {selectedExecutive && (
-        <ExecutiveChatModal
-          isOpen={!!selectedExecutive}
-          onClose={() => setSelectedExecutive(null)}
-          executiveId={selectedExecutive.id}
-          executiveName={selectedExecutive.name}
-          executiveRole={selectedExecutive.role}
-          executiveIcon={selectedExecutive.icon}
-        />
-      )}
+  <ExecutiveChatModal
+    isOpen={!!selectedExecutive}
+    onClose={() => setSelectedExecutive(null)}
+    executiveId={selectedExecutive.id}
+    executiveName={selectedExecutive.name}
+    executiveRole={selectedExecutive.role}
+    executiveIcon={selectedExecutive.icon}
+    isAuthenticated={isAuthenticated}
+    isLoadingAuth={isLoadingAuth}
+  />
+)}
     </div>
   );
 }
