@@ -35,12 +35,14 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // Protect all routes except home page, auth pages, welcome page, API routes, and public assets
+    // Protect all routes except home page, auth pages, welcome page, API routes, and public assets
   if (
     !user &&
     request.nextUrl.pathname !== "/" &&
     !request.nextUrl.pathname.startsWith("/auth") &&
     !request.nextUrl.pathname.startsWith("/welcome") &&
+    !request.nextUrl.pathname.startsWith("/human-zone-of-genius-team") &&
+    !request.nextUrl.pathname.startsWith("/ai-executive-team") &&
     !request.nextUrl.pathname.startsWith("/api") &&
     !request.nextUrl.pathname.startsWith("/_next") &&
     !request.nextUrl.pathname.startsWith("/images")
