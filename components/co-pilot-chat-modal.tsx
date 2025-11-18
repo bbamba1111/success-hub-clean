@@ -12,24 +12,22 @@ import {
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
-import { Send, Loader2, X, Sparkles, LogIn } from 'lucide-react';
+import { Send, Loader2, X, LogIn, Sparkles } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 
 interface CoPilotChatModalProps {
   isOpen: boolean;
   onClose: () => void;
-  isAuthenticated: boolean;
-  isLoadingAuth: boolean;
 }
 
 export function CoPilotChatModal({
   isOpen,
   onClose,
-  isAuthenticated,
-  isLoadingAuth,
 }: CoPilotChatModalProps) {
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [isLoadingConversation, setIsLoadingConversation] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const supabase = createClient();
 
@@ -39,7 +37,7 @@ export function CoPilotChatModal({
       conversationId,
     },
     onFinish: async (message) => {
-      if (conversationId && isAuthenticated) {
+      if (conversationId) {
         await supabase.from('messages').insert({
           conversation_id: conversationId,
           role: 'assistant',
@@ -50,6 +48,12 @@ export function CoPilotChatModal({
   });
 
   useEffect(() => {
+    if (isOpen) {
+      checkAuth();
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
     if (isOpen && isAuthenticated) {
       loadOrCreateConversation();
     }
@@ -58,6 +62,19 @@ export function CoPilotChatModal({
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  const checkAuth = async () => {
+    setIsCheckingAuth(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      setIsAuthenticated(!!user);
+    } catch (error) {
+      console.error('Auth check error:', error);
+      setIsAuthenticated(false);
+    } finally {
+      setIsCheckingAuth(false);
+    }
+  };
 
   const loadOrCreateConversation = async () => {
     setIsLoadingConversation(true);
@@ -73,7 +90,7 @@ export function CoPilotChatModal({
         .from('conversations')
         .select('*')
         .eq('user_id', user.id)
-        .eq('executive_role', 'Co-Pilot')
+        .eq('executive_role', 'Co-Pilot Master Coach')
         .order('updated_at', { ascending: false })
         .limit(1);
 
@@ -86,8 +103,8 @@ export function CoPilotChatModal({
           .from('conversations')
           .insert({
             user_id: user.id,
-            title: 'Co-Pilot Command Center',
-            executive_role: 'Co-Pilot',
+            title: 'Co-Pilot Master Coach',
+            executive_role: 'Co-Pilot Master Coach',
           })
           .select()
           .single();
@@ -121,7 +138,7 @@ export function CoPilotChatModal({
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-    if (!conversationId || !input.trim() || !isAuthenticated) return;
+    if (!conversationId || !input.trim()) return;
 
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
@@ -141,22 +158,64 @@ export function CoPilotChatModal({
   };
 
   const handleLogin = () => {
-    window.location.href = '/api/auth/login';
+    window.location.href = '/auth/login';
   };
+
+  if (isCheckingAuth) {
+    return (
+      <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent className="max-w-3xl h-[600px] flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-primary to-accent">
+                <Sparkles className="w-8 h-8 text-primary-foreground" />
+              </div>
+              <div>
+                <DialogTitle className="text-2xl">Co-Pilot Master Coach</DialogTitle>
+                <DialogDescription className="text-lg mt-1">
+                  Strategic AI Orchestrator with Complete Team Memory
+                </DialogDescription>
+              </div>
+            </div>
+          </DialogHeader>
+
+          <div className="text-center py-12">
+            <LogIn className="w-16 h-16 mx-auto mb-6 text-primary" />
+            <h3 className="text-2xl font-bold mb-4">Login Required</h3>
+            <p className="text-lg text-muted-foreground mb-8 max-w-md mx-auto">
+              Sign in to access your Co-Pilot Master Coach. I'll synthesize insights from all your AI executive conversations and provide strategic guidance.
+            </p>
+            <Button size="lg" onClick={handleLogin} className="text-lg px-8">
+              <LogIn className="w-5 h-5 mr-2" />
+              Log In to Continue
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    );
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl h-[700px] flex flex-col p-0">
+      <DialogContent className="max-w-3xl h-[600px] flex flex-col p-0">
         <DialogHeader className="px-6 pt-6 pb-4 border-b bg-gradient-to-r from-primary/10 to-accent/10">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-                <Sparkles className="w-6 h-6 text-primary-foreground" />
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-primary to-accent shadow-lg">
+                <Sparkles className="w-8 h-8 text-primary-foreground" />
               </div>
               <div>
-                <DialogTitle className="text-3xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                  Co-Pilot Master Coach
-                </DialogTitle>
+                <DialogTitle className="text-2xl">Co-Pilot Master Coach</DialogTitle>
                 <DialogDescription className="text-lg mt-1">
                   Strategic AI Orchestrator with Complete Team Memory
                 </DialogDescription>
@@ -173,115 +232,80 @@ export function CoPilotChatModal({
           </div>
         </DialogHeader>
 
-        {!isAuthenticated && !isLoadingAuth ? (
-          <div className="flex-1 flex items-center justify-center px-6">
-            <div className="text-center max-w-md space-y-6">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center mx-auto mb-4">
-                <Sparkles className="w-10 h-10 text-primary-foreground" />
-              </div>
-              <h3 className="text-2xl font-semibold">Login Required</h3>
-              <p className="text-lg text-muted-foreground leading-relaxed">
-                Sign in to access your Co-Pilot Master Coach. I'll synthesize insights from
-                all your AI executive conversations and provide strategic guidance.
-              </p>
-              <Button
-                size="lg"
-                onClick={handleLogin}
-                className="text-lg px-8"
-                data-testid="button-login-copilot"
-              >
-                <LogIn className="w-5 h-5 mr-2" />
-                Log In to Continue
-              </Button>
+        <ScrollArea className="flex-1 px-6">
+          {isLoadingConversation ? (
+            <div className="flex items-center justify-center h-full">
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
             </div>
-          </div>
-        ) : (
-          <>
-            <ScrollArea className="flex-1 px-6">
-              {isLoadingConversation || isLoadingAuth ? (
-                <div className="flex items-center justify-center h-full">
-                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          ) : (
+            <div className="space-y-4 py-4">
+              {messages.length === 0 ? (
+                <div className="text-center text-muted-foreground py-12">
+                  <Sparkles className="w-16 h-16 mx-auto mb-4 text-primary" />
+                  <p className="text-xl mb-2">Your Strategic Command Center</p>
+                  <p className="text-lg max-w-md mx-auto">
+                    I have complete access to all your conversations across all 25 AI executives. 
+                    Ask me to synthesize insights, identify patterns, or provide strategic guidance.
+                  </p>
                 </div>
               ) : (
-                <div className="space-y-4 py-4">
-                  {messages.length === 0 ? (
-                    <div className="text-center text-muted-foreground py-12">
-                      <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center mx-auto mb-6">
-                        <Sparkles className="w-10 h-10 text-primary-foreground" />
-                      </div>
-                      <p className="text-xl mb-4">Welcome to Co-Pilot Command Center</p>
-                      <div className="text-lg max-w-2xl mx-auto space-y-3 text-left">
-                        <p>I have complete access to all your conversations across all 25 AI executives.</p>
-                        <p className="font-semibold">Ask me to:</p>
-                        <ul className="list-disc pl-6 space-y-2">
-                          <li>Summarize your progress across all executives</li>
-                          <li>Identify your top 3 priorities this week</li>
-                          <li>Connect insights from different business areas</li>
-                          <li>Spot gaps in your business strategy</li>
-                          <li>Coordinate tasks across your AI team</li>
-                        </ul>
-                      </div>
+                messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`flex ${
+                      message.role === 'user' ? 'justify-end' : 'justify-start'
+                    }`}
+                  >
+                    <div
+                      className={`max-w-[80%] rounded-lg px-4 py-3 ${
+                        message.role === 'user'
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-muted'
+                      }`}
+                    >
+                      <p className="text-lg leading-relaxed whitespace-pre-wrap">
+                        {message.content}
+                      </p>
                     </div>
-                  ) : (
-                    messages.map((message) => (
-                      <div
-                        key={message.id}
-                        className={`flex ${
-                          message.role === 'user' ? 'justify-end' : 'justify-start'
-                        }`}
-                      >
-                        <div
-                          className={`max-w-[85%] rounded-lg px-4 py-3 ${
-                            message.role === 'user'
-                              ? 'bg-gradient-to-r from-[#5D9D61] to-[#E26C73] text-white'
-                              : 'bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20'
-                          }`}
-                        >
-                          <p className="text-lg leading-relaxed whitespace-pre-wrap">
-                            {message.content}
-                          </p>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                  {isLoading && (
-                    <div className="flex justify-start">
-                      <div className="bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20 rounded-lg px-4 py-3">
-                        <Loader2 className="w-5 h-5 animate-spin text-primary" />
-                      </div>
-                    </div>
-                  )}
-                  <div ref={messagesEndRef} />
+                  </div>
+                ))
+              )}
+              {isLoading && (
+                <div className="flex justify-start">
+                  <div className="bg-muted rounded-lg px-4 py-3">
+                    <Loader2 className="w-5 h-5 animate-spin text-primary" />
+                  </div>
                 </div>
               )}
-            </ScrollArea>
-
-            <div className="px-6 py-4 border-t bg-muted/30">
-              <form onSubmit={onSubmit} className="flex gap-2">
-                <Input
-                  value={input}
-                  onChange={handleInputChange}
-                  placeholder="Ask Co-Pilot to synthesize insights, prioritize tasks, or coordinate your AI team..."
-                  disabled={isLoading || isLoadingConversation || isLoadingAuth}
-                  className="flex-1 text-lg"
-                  data-testid="input-copilot-message"
-                />
-                <Button
-                  type="submit"
-                  disabled={isLoading || isLoadingConversation || isLoadingAuth || !input.trim()}
-                  size="lg"
-                  data-testid="button-send-copilot"
-                >
-                  {isLoading ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : (
-                    <Send className="w-5 h-5" />
-                  )}
-                </Button>
-              </form>
+              <div ref={messagesEndRef} />
             </div>
-          </>
-        )}
+          )}
+        </ScrollArea>
+
+        <div className="px-6 py-4 border-t">
+          <form onSubmit={onSubmit} className="flex gap-2">
+            <Input
+              value={input}
+              onChange={handleInputChange}
+              placeholder="Ask Co-Pilot for strategic guidance..."
+              disabled={isLoading || isLoadingConversation}
+              className="flex-1 text-lg"
+              data-testid="input-copilot-message"
+            />
+            <Button
+              type="submit"
+              disabled={isLoading || isLoadingConversation || !input.trim()}
+              size="lg"
+              data-testid="button-copilot-send"
+            >
+              {isLoading ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <Send className="w-5 h-5" />
+              )}
+            </Button>
+          </form>
+        </div>
       </DialogContent>
     </Dialog>
   );
