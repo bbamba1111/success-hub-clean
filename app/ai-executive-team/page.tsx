@@ -8,8 +8,10 @@ import { executives, getExecutive } from "@/lib/executives-config"
 import type { ExecutiveConfig } from "@/lib/executives-config"
 import { MessageSquare, Brain, Users, Target, TrendingUp, Clock } from 'lucide-react'
 import Link from 'next/link'
+import { useAuth } from "@/hooks/useAuth"
 
 export default function AIExecutiveTeamPage() {
+  const { isAuthenticated, isLoading: isLoadingAuth } = useAuth()
   const [selectedExecutive, setSelectedExecutive] = useState<ExecutiveConfig | null>(null)
   const [isZoneModalOpen, setIsZoneModalOpen] = useState(false)
 
@@ -258,12 +260,17 @@ export default function AIExecutiveTeamPage() {
       </div>
 
       {selectedExecutive && (
-  <ExecutiveChatModal
-    executive={selectedExecutive}
-    isOpen={!!selectedExecutive}
-    onClose={() => setSelectedExecutive(null)}
-  />
-)}
+        <ExecutiveChatModal
+          isOpen={!!selectedExecutive}
+          onClose={() => setSelectedExecutive(null)}
+          executiveId={selectedExecutive.id}
+          executiveName={selectedExecutive.name}
+          executiveRole={selectedExecutive.role}
+          executiveIcon={selectedExecutive.icon}
+          isAuthenticated={isAuthenticated}
+          isLoadingAuth={isLoadingAuth}
+        />
+      )}
     </div>
   )
 }
