@@ -22,8 +22,6 @@ interface ExecutiveChatModalProps {
   executiveName: string;
   executiveRole: string;
   executiveIcon: string;
-  isAuthenticated: boolean;
-  isLoadingAuth: boolean;
 }
 
 export function ExecutiveChatModal({
@@ -33,11 +31,11 @@ export function ExecutiveChatModal({
   executiveName,
   executiveRole,
   executiveIcon,
-  isAuthenticated,
-  isLoadingAuth,
 }: ExecutiveChatModalProps) {
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [isLoadingConversation, setIsLoadingConversation] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const supabase = createClient();
 
@@ -48,7 +46,7 @@ export function ExecutiveChatModal({
       executiveRole,
     },
     onFinish: async (message) => {
-      if (conversationId && isAuthenticated) {
+      if (conversationId) {
         await supabase.from('messages').insert({
           conversation_id: conversationId,
           role: 'assistant',
@@ -59,14 +57,31 @@ export function ExecutiveChatModal({
   });
 
   useEffect(() => {
+    checkAuth();
+  }, [isOpen]);
+
+  useEffect(() => {
     if (isOpen && isAuthenticated) {
       loadOrCreateConversation();
     }
-  }, [isOpen, isAuthenticated, executiveRole]);
+  }, [isOpen, executiveRole, isAuthenticated]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  const checkAuth = async () => {
+    setIsCheckingAuth(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      setIsAuthenticated(!!user);
+    } catch (error) {
+      console.error('Auth check error:', error);
+      setIsAuthenticated(false);
+    } finally {
+      setIsCheckingAuth(false);
+    }
+  };
 
   const loadOrCreateConversation = async () => {
     setIsLoadingConversation(true);
@@ -130,7 +145,7 @@ export function ExecutiveChatModal({
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-    if (!conversationId || !input.trim() || !isAuthenticated) return;
+    if (!input.trim() || !conversationId) return;
 
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
@@ -152,6 +167,48 @@ export function ExecutiveChatModal({
   const handleLogin = () => {
     window.location.href = '/api/auth/login';
   };
+
+  if (isCheckingAuth) {
+    return (
+      <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent className="max-w-3xl h-[600px] flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <div className="flex items-center gap-3 mb-4">
+              <span className="text-4xl">{executiveIcon}</span>
+              <div>
+                <DialogTitle className="text-2xl">{executiveName}</DialogTitle>
+                <DialogDescription className="text-lg mt-1">
+                  {executiveRole}
+                </DialogDescription>
+              </div>
+            </div>
+          </DialogHeader>
+
+          <div className="text-center py-12">
+            <LogIn className="w-16 h-16 mx-auto mb-6 text-primary" />
+            <h3 className="text-2xl font-bold mb-4">Login Required</h3>
+            <p className="text-lg text-muted-foreground mb-8 max-w-md mx-auto">
+              Please log in to start a coaching conversation with {executiveName}
+            </p>
+            <Button size="lg" onClick={handleLogin} className="text-lg px-8">
+              <LogIn className="w-5 h-5 mr-2" />
+              Log In to Continue
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    );
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -178,100 +235,76 @@ export function ExecutiveChatModal({
           </div>
         </DialogHeader>
 
-        {!isAuthenticated && !isLoadingAuth ? (
-          <div className="flex-1 flex items-center justify-center px-6">
-            <div className="text-center max-w-md space-y-6">
-              <div className="text-6xl mb-4">{executiveIcon}</div>
-              <h3 className="text-2xl font-semibold">Login Required</h3>
-              <p className="text-lg text-muted-foreground leading-relaxed">
-                Sign in to start your personalized coaching journey with {executiveName}.
-                Your conversations will be saved securely for your return.
-              </p>
-              <Button
-                size="lg"
-                onClick={handleLogin}
-                className="text-lg px-8"
-                data-testid="button-login"
-              >
-                <LogIn className="w-5 h-5 mr-2" />
-                Log In to Continue
-              </Button>
+        <ScrollArea className="flex-1 px-6">
+          {isLoadingConversation ? (
+            <div className="flex items-center justify-center h-full">
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
             </div>
-          </div>
-        ) : (
-          <>
-            <ScrollArea className="flex-1 px-6">
-              {isLoadingConversation || isLoadingAuth ? (
-                <div className="flex items-center justify-center h-full">
-                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          ) : (
+            <div className="space-y-4 py-4">
+              {messages.length === 0 ? (
+                <div className="text-center text-muted-foreground py-12">
+                  <p className="text-xl mb-2">Start a conversation with {executiveName}</p>
+                  <p className="text-lg">Ask for guidance, delegate tasks, or request deliverables.</p>
                 </div>
               ) : (
-                <div className="space-y-4 py-4">
-                  {messages.length === 0 ? (
-                    <div className="text-center text-muted-foreground py-12">
-                      <p className="text-xl mb-2">Start a conversation with {executiveName}</p>
-                      <p className="text-lg">Ask for guidance, delegate tasks, or request deliverables.</p>
+                messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`flex ${
+                      message.role === 'user' ? 'justify-end' : 'justify-start'
+                    }`}
+                  >
+                    <div
+                      className={`max-w-[80%] rounded-lg px-4 py-3 ${
+                        message.role === 'user'
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-muted'
+                      }`}
+                    >
+                      <p className="text-lg leading-relaxed whitespace-pre-wrap">
+                        {message.content}
+                      </p>
                     </div>
-                  ) : (
-                    messages.map((message) => (
-                      <div
-                        key={message.id}
-                        className={`flex ${
-                          message.role === 'user' ? 'justify-end' : 'justify-start'
-                        }`}
-                      >
-                        <div
-                          className={`max-w-[80%] rounded-lg px-4 py-3 ${
-                            message.role === 'user'
-                              ? 'bg-gradient-to-r from-[#5D9D61] to-[#E26C73] text-white'
-                              : 'bg-muted'
-                          }`}
-                        >
-                          <p className="text-lg leading-relaxed whitespace-pre-wrap">
-                            {message.content}
-                          </p>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                  {isLoading && (
-                    <div className="flex justify-start">
-                      <div className="bg-muted rounded-lg px-4 py-3">
-                        <Loader2 className="w-5 h-5 animate-spin text-primary" />
-                      </div>
-                    </div>
-                  )}
-                  <div ref={messagesEndRef} />
+                  </div>
+                ))
+              )}
+              {isLoading && (
+                <div className="flex justify-start">
+                  <div className="bg-muted rounded-lg px-4 py-3">
+                    <Loader2 className="w-5 h-5 animate-spin text-primary" />
+                  </div>
                 </div>
               )}
-            </ScrollArea>
-
-            <div className="px-6 py-4 border-t">
-              <form onSubmit={onSubmit} className="flex gap-2">
-                <Input
-                  value={input}
-                  onChange={handleInputChange}
-                  placeholder={`Message ${executiveName}...`}
-                  disabled={isLoading || isLoadingConversation || isLoadingAuth}
-                  className="flex-1 text-lg"
-                  data-testid="input-message"
-                />
-                <Button
-                  type="submit"
-                  disabled={isLoading || isLoadingConversation || isLoadingAuth || !input.trim()}
-                  size="lg"
-                  data-testid="button-send"
-                >
-                  {isLoading ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : (
-                    <Send className="w-5 h-5" />
-                  )}
-                </Button>
-              </form>
+              <div ref={messagesEndRef} />
             </div>
-          </>
-        )}
+          )}
+        </ScrollArea>
+
+        <div className="px-6 py-4 border-t">
+          <form onSubmit={onSubmit} className="flex gap-2">
+            <Input
+              value={input}
+              onChange={handleInputChange}
+              placeholder={`Message ${executiveName}...`}
+              disabled={isLoading || isLoadingConversation}
+              className="flex-1 text-lg"
+              data-testid="input-message"
+            />
+            <Button
+              type="submit"
+              disabled={isLoading || isLoadingConversation || !input.trim()}
+              size="lg"
+              data-testid="button-send"
+            >
+              {isLoading ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <Send className="w-5 h-5" />
+              )}
+            </Button>
+          </form>
+        </div>
       </DialogContent>
     </Dialog>
   );
