@@ -893,12 +893,13 @@ export default function HomePage() {
                 />
               </div>
 
-              <Button
-                onClick={() => openChat("ceo-workday", "4-Hour Focused CEO Workday")}
-                className="w-full bg-[#7FB069] hover:bg-[#6FA055] text-white font-semibold"
-              >
-                Plan Your CEO Workday
-              </Button>
+              <Link href="/human-zone-of-genius-team">
+                <Button
+                  className="w-full bg-[#7FB069] hover:bg-[#6FA055] text-white font-semibold"
+                >
+                  Plan Your CEO Workday
+                </Button>
+              </Link>
             </CardContent>
           </Card>
 
