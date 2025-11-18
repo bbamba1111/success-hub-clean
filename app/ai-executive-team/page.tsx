@@ -1,17 +1,12 @@
 "use client"
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import Link from "next/link";
-import { 
-  Sparkles, Brain, ArrowLeft, Target, TrendingUp, Calendar, 
-  Clock, Zap, Heart, MessageCircle, Lightbulb, Users, Award, Shield
-} from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
-import CherryBlossomChatModal from "@/components/cherry-blossom-chat-modal";
-import { CoPilotChatModal } from "@/components/co-pilot-chat-modal";
-import { ExecutiveChatModal } from "@/components/executive-chat-modal";
+import { useState } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { ExecutiveChatModal } from "@/components/executive-chat-modal"
+import { MessageSquare, Brain, Users } from 'lucide-react'
+import Link from 'next/link'
+import { useAuth } from "@/hooks/useAuth"
 
 const executives = [
   { id: "optima-sage", name: "Optima Sage", role: "COO", icon: "🎯", description: "Streamlines operations and optimizes processes for maximum efficiency." },
@@ -29,170 +24,78 @@ const executives = [
   { id: "visual-narrator", name: "Visual Narrator", role: "Video Content Creator", icon: "🎬", description: "Creates compelling marketing videos." },
   { id: "social-pulse", name: "Social Pulse", role: "Social Media Executive", icon: "📱", description: "Develops social media strategies and content." },
   { id: "design-artisan", name: "Design Artisan", role: "Graphic Designer", icon: "🎨", description: "Creates professional visual branding and design assets." },
-  { id: "co-pilot", name: "AI Co-Pilot", role: "Personal Executive Assistant", icon: "✨", description: "Your personal AI assistant for daily guidance and support." },
-];
-
-const workdayPillars = [
-  { icon: Clock, title: "1:00-5:00 PM Focus", description: "Mon-Thu focused workday for maximum leverage" },
-  { icon: Target, title: "80/20 Pareto Principle", description: "20% of work that generates 80% of results" },
-  { icon: Brain, title: "Human-Only Skills", description: "8 high-value skills only you can do" },
-  { icon: Zap, title: "AI Delegation", description: "AI handles 80% of administrative tasks" }
-];
-
-const humanSkills = [
-  { icon: Heart, title: "Authentic Client Relationships", description: "Deep empathy, emotional intelligence, and genuine human connection that builds trust and long-term client relationships AI cannot replicate." },
-  { icon: Lightbulb, title: "Visionary Leadership", description: "Setting strategic direction, defining your unique methodology, and making high-level business decisions that shape your company's future." },
-  { icon: MessageCircle, title: "High-Value Sales Conversations", description: "Discovery calls, enrollment conversations, and relationship-based selling where your intuition and human presence close premium clients." },
-  { icon: Users, title: "Content Thought Leadership", description: "Your unique voice, perspective, and insights that position you as the authority. AI drafts, but your authentic experience makes it powerful." },
-  { icon: Award, title: "Coaching/Consulting Delivery", description: "Facilitating transformation, asking powerful questions, holding space, and guiding clients through breakthroughs only you can deliver." },
-  { icon: Brain, title: "Intuitive Problem-Solving", description: "Reading between the lines, sensing what's not being said, and innovating custom solutions based on pattern recognition and experience." },
-  { icon: Shield, title: "Ethical Decision-Making", description: "Values-based leadership, cultural sensitivity, and navigating complex ethical situations that require human judgment and integrity." },
-  { icon: Sparkles, title: "Personal Brand Storytelling", description: "Sharing your journey, vulnerabilities, and transformation story that creates emotional resonance and attracts ideal clients to you." },
 ];
 
 export default function AIExecutiveTeamPage() {
-  const { isAuthenticated, isLoading: isLoadingAuth } = useAuth();
-  const [isAssessmentChatOpen, setIsAssessmentChatOpen] = useState(false);
-  const [isCoPilotOpen, setIsCoPilotOpen] = useState(false);
-  const [selectedExecutive, setSelectedExecutive] = useState<typeof executives[0] | null>(null);
-
-  const assessmentPrefillMessage = "I want to design my personalized 4-Hour Focused CEO Workday (1:00-5:00 PM). Can you guide me through a comprehensive assessment to create my customized coaching/consulting business journey based on my zone of genius, entrepreneurial status, and work-life goals?";
+  const { isAuthenticated, isLoading: isLoadingAuth } = useAuth()
+  const [selectedExecutive, setSelectedExecutive] = useState<typeof executives[0] | null>(null)
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <Link href="/">
-            <Button variant="ghost" size="sm" data-testid="button-back">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Dashboard
-            </Button>
-          </Link>
-        </div>
-      </header>
-
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-accent/10" />
-        
-        <div className="relative max-w-5xl mx-auto px-6 py-20 text-center">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-primary to-accent mb-6">
-            <Sparkles className="w-10 h-10 text-primary-foreground" />
-          </div>
-          
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
-            Human Zone Of Genius Team
-          </h1>
-          
-          <p className="text-xl md:text-2xl text-muted-foreground mb-4 max-w-3xl mx-auto leading-relaxed">
-            Your dedicated command center above the AI Executive Team
-          </p>
-          
-          <p className="text-lg text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed">
-            In the AI Age, this is where you identify the 20% of high-value work that only YOU can do—the work that generates 80% of your results.
-          </p>
-
-          <Button
-            size="lg"
-            className="text-lg px-8 py-6"
-            onClick={() => setIsAssessmentChatOpen(true)}
-            data-testid="button-start-assessment"
-          >
-            <Brain className="w-6 h-6 mr-3" />
-            Start Your Zone of Genius Assessment
-          </Button>
-        </div>
-      </section>
-
-      <section className="py-16 px-6">
-        <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen">
+      <div className="bg-white py-16">
+        <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4">The 4-Hour CEO Workday Framework</h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Transform how you work by focusing on high-leverage activities while AI handles the rest
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              The 4-Hour Focused CEO Workday
+            </h1>
+            <p className="text-xl text-gray-700 max-w-3xl mx-auto mb-8">
+              Build your AI-powered business while developing your irreplaceable human skills. Work Mon-Thu, 1-5 PM EST focusing on the 20% that creates 80% of your results.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-            {workdayPillars.map((pillar, index) => (
-              <Card key={index} className="border-2 hover:border-primary transition-colors">
+          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-12">
+            <Link href="/human-zone-of-genius-team">
+              <Card className="hover:shadow-xl transition-all cursor-pointer h-full bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200">
                 <CardHeader>
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                    <pillar.icon className="w-6 h-6 text-primary" />
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-400 to-pink-400 flex items-center justify-center text-3xl shadow-lg mb-4 mx-auto">
+                    🧠
                   </div>
-                  <CardTitle className="text-lg">{pillar.title}</CardTitle>
-                  <CardDescription className="text-base">{pillar.description}</CardDescription>
+                  <CardTitle className="text-2xl text-center">Human Zone of Genius</CardTitle>
+                  <CardDescription className="text-center text-base">
+                    Discover and develop your 8 irreplaceable human-only business skills using the 80/20 Pareto Principle
+                  </CardDescription>
                 </CardHeader>
+                <CardContent>
+                  <Button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
+                    <Brain className="mr-2 h-5 w-5" />
+                    Explore Your Zone
+                  </Button>
+                </CardContent>
               </Card>
-            ))}
-          </div>
+            </Link>
 
-          <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold mb-4">Your 8 Human-Only Business Skills</h3>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-8">
-              These are the irreplaceable skills that only you can bring to your business—the foundation of your Zone of Genius
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            {humanSkills.map((skill, index) => (
-              <Card key={index} className="border-l-4 border-l-accent">
-                <CardHeader>
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0 mt-1">
-                      <skill.icon className="w-5 h-5 text-accent" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-lg mb-2">{skill.title}</CardTitle>
-                      <CardDescription className="text-base leading-relaxed">
-                        {skill.description}
-                      </CardDescription>
-                    </div>
-                  </div>
-                </CardHeader>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-16 px-6 bg-gradient-to-br from-primary/10 via-background to-accent/10">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Your Command Center Above the AI Team
-          </h2>
-          
-          <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-            The AI Executive Team serves YOU. They guide you through starting, growing, and scaling your coaching or consulting business. They keep you in your Zone of Genius, handling operational tasks unless you choose to take on a specific role. Daily, they educate you on business progress and tell you the exact next-best-move for forward momentum toward 6, 7, 8 figure+ revenue.
-          </p>
-
-          <div className="grid md:grid-cols-2 gap-6 text-left">
-            <Card className="border-primary/30 border-2">
+            <Card className="hover:shadow-xl transition-all h-full bg-gradient-to-br from-blue-50 to-green-50 border-2 border-blue-200">
               <CardHeader>
-                <CardTitle className="text-xl">You (Human CEO) - The 20%</CardTitle>
-                <CardDescription className="text-lg leading-relaxed">
-                  Your 8 Human-Only Business Skills: authentic relationships, visionary leadership, high-value sales, thought leadership, coaching delivery, intuitive problem-solving, ethical decisions, and personal storytelling. This is where you create 80% of results.
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-400 to-pink-400 flex items-center justify-center text-3xl shadow-lg mb-4 mx-auto">
+                  🤖
+                </div>
+                <CardTitle className="text-2xl text-center">15 AI Executives</CardTitle>
+                <CardDescription className="text-center text-base">
+                  Build your AI-powered executive team to handle 80% of business operations automatically
                 </CardDescription>
               </CardHeader>
-            </Card>
-
-            <Card className="border-accent/30 border-2">
-              <CardHeader>
-                <CardTitle className="text-xl">AI Executive Team - The 80%</CardTitle>
-                <CardDescription className="text-lg leading-relaxed">
-                  They serve you by handling: administrative tasks, content drafts, research, scheduling, inquiries, bookkeeping, transcription, proposals, social media, and operational execution. They educate you on daily business progress and guide your next moves.
-                </CardDescription>
-              </CardHeader>
+              <CardContent>
+                <Button 
+                  className="w-full bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600"
+                  onClick={() => {
+                    document.getElementById('executive-team')?.scrollIntoView({ behavior: 'smooth' })
+                  }}
+                >
+                  <Users className="mr-2 h-5 w-5" />
+                  Meet Your Team
+                </Button>
+              </CardContent>
             </Card>
           </div>
         </div>
-      </section>
+      </div>
 
-      <section className="py-20 px-6">
+      <div id="executive-team" className="py-20 px-6">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-4">
-            Your 16 AI Executive Team
+            Your 15 AI Executive Team
           </h2>
-          <p className="text-xl text-center text-muted-foreground mb-12 max-w-3xl mx-auto">
+          <p className="text-xl text-center text-gray-600 mb-12 max-w-3xl mx-auto">
             Specialized AI executives ready to guide you through every aspect of your business
           </p>
           
@@ -200,20 +103,14 @@ export default function AIExecutiveTeamPage() {
             {executives.map((exec) => (
               <Card 
                 key={exec.id} 
-                className="border-2 border-muted hover:border-primary transition-all cursor-pointer hover-elevate"
-                onClick={() => {
-                  if (exec.id === "co-pilot") {
-                    setIsCoPilotOpen(true);
-                  } else {
-                    setSelectedExecutive(exec);
-                  }
-                }}
+                className="border-2 border-gray-200 hover:border-purple-300 transition-all cursor-pointer hover:shadow-lg"
+                onClick={() => setSelectedExecutive(exec)}
                 data-testid={`card-executive-${exec.id}`}
               >
                 <CardHeader>
                   <div className="text-5xl mb-3 text-center">{exec.icon}</div>
                   <CardTitle className="text-lg text-center">{exec.name}</CardTitle>
-                  <CardDescription className="text-base font-semibold text-primary text-center">
+                  <CardDescription className="text-base font-semibold text-purple-600 text-center">
                     {exec.role}
                   </CardDescription>
                   <CardDescription className="text-base leading-relaxed text-center pt-2">
@@ -225,7 +122,7 @@ export default function AIExecutiveTeamPage() {
                     className="w-full"
                     data-testid={`button-chat-${exec.id}`}
                   >
-                    <MessageCircle className="w-4 h-4 mr-2" />
+                    <MessageSquare className="w-4 h-4 mr-2" />
                     Start Coaching
                   </Button>
                 </CardContent>
@@ -233,24 +130,7 @@ export default function AIExecutiveTeamPage() {
             ))}
           </div>
         </div>
-      </section>
-
-      <CherryBlossomChatModal
-        isOpen={isAssessmentChatOpen}
-        onClose={() => setIsAssessmentChatOpen(false)}
-        prefillMessage={assessmentPrefillMessage}
-        conversationTitle="Human Zone of Genius Assessment"
-        executiveRole="Cherry Blossom - CEO Workday"
-        isAuthenticated={isAuthenticated}
-        isLoadingAuth={isLoadingAuth}
-      />
-
-      <CoPilotChatModal
-        isOpen={isCoPilotOpen}
-        onClose={() => setIsCoPilotOpen(false)}
-        isAuthenticated={isAuthenticated}
-        isLoadingAuth={isLoadingAuth}
-      />
+      </div>
 
       {selectedExecutive && (
         <ExecutiveChatModal
@@ -265,5 +145,5 @@ export default function AIExecutiveTeamPage() {
         />
       )}
     </div>
-  );
+  )
 }
