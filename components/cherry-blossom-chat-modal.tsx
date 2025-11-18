@@ -21,8 +21,6 @@ interface CherryBlossomChatModalProps {
   prefillMessage?: string;
   conversationTitle?: string;
   executiveRole?: string;
-  isAuthenticated: boolean;
-  isLoadingAuth: boolean;
 }
 
 export default function CherryBlossomChatModal({
@@ -31,11 +29,11 @@ export default function CherryBlossomChatModal({
   prefillMessage,
   conversationTitle,
   executiveRole = 'Cherry Blossom Co-Guide',
-  isAuthenticated,
-  isLoadingAuth,
 }: CherryBlossomChatModalProps) {
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [isLoadingConversation, setIsLoadingConversation] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const prefillRef = useRef<string | undefined>(prefillMessage);
   const titleRef = useRef<string | undefined>(conversationTitle);
@@ -48,7 +46,7 @@ export default function CherryBlossomChatModal({
       executiveRole,
     },
     onFinish: async (message) => {
-      if (conversationId && isAuthenticated) {
+      if (conversationId) {
         await supabase.from('messages').insert({
           conversation_id: conversationId,
           role: 'assistant',
@@ -57,6 +55,12 @@ export default function CherryBlossomChatModal({
       }
     },
   });
+
+  useEffect(() => {
+    if (isOpen) {
+      checkAuth();
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     const prefillChanged = prefillMessage !== prefillRef.current;
@@ -75,6 +79,19 @@ export default function CherryBlossomChatModal({
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  const checkAuth = async () => {
+    setIsCheckingAuth(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      setIsAuthenticated(!!user);
+    } catch (error) {
+      console.error('Auth check error:', error);
+      setIsAuthenticated(false);
+    } finally {
+      setIsCheckingAuth(false);
+    }
+  };
+
   const createNewConversation = async () => {
     setIsLoadingConversation(true);
     
@@ -82,6 +99,9 @@ export default function CherryBlossomChatModal({
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         setIsLoadingConversation(false);
+        if (prefillMessage) {
+          setInput(prefillMessage);
+        }
         return;
       }
 
@@ -141,6 +161,7 @@ export default function CherryBlossomChatModal({
           })
           .select()
           .single();
+
         convId = newConv.id;
       }
 
@@ -152,15 +173,14 @@ export default function CherryBlossomChatModal({
         .eq('conversation_id', convId)
         .order('created_at', { ascending: true });
 
-      if (existingMessages) {
-        setMessages(existingMessages.map((msg: any) => ({
+      if (existingMessages && existingMessages.length > 0) {
+        const formattedMessages = existingMessages.map((msg: any) => ({
           id: msg.id,
           role: msg.role,
           content: msg.content,
-        })));
-      }
-
-      if (prefillMessage && existingMessages?.length === 0) {
+        }));
+        setMessages(formattedMessages);
+      } else if (prefillMessage) {
         setInput(prefillMessage);
       }
     } catch (error) {
@@ -173,145 +193,158 @@ export default function CherryBlossomChatModal({
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-    if (!input.trim() || !conversationId || !isAuthenticated) return;
+    if (!input.trim() || !conversationId) return;
 
-    await supabase.from('messages').insert({
-      conversation_id: conversationId,
-      role: 'user',
-      content: input,
-    });
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      await supabase.from('messages').insert({
+        conversation_id: conversationId,
+        role: 'user',
+        content: input,
+      });
+
+      await supabase
+        .from('conversations')
+        .update({ updated_at: new Date().toISOString() })
+        .eq('id', conversationId);
+    }
 
     handleSubmit(e);
   };
 
-  const handleClose = () => {
-    setMessages([]);
-    setInput('');
-    setConversationId(null);
-    onClose();
+  const handleLogin = () => {
+    window.location.href = '/auth/login';
   };
 
-  return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-4xl h-[80vh] flex flex-col p-0">
-        {!isAuthenticated ? (
-          <div className="flex flex-col items-center justify-center h-full p-8 space-y-6">
-            <div className="text-center space-y-4">
-              <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-[#E26C73] to-[#F9EFE3] flex items-center justify-center">
-                <LogIn className="w-10 h-10 text-white" />
-              </div>
-              <h3 className="text-2xl font-semibold">Log In to Continue</h3>
-              <p className="text-lg text-muted-foreground max-w-md">
-                Access your Cherry Blossom Co-Guide conversations and build your personalized work-life balance journey.
-              </p>
-            </div>
-            <Button 
-              size="lg"
-              className="text-lg px-8"
-              onClick={() => window.location.href = '/auth/login'}
-              data-testid="button-login"
-            >
+  if (isCheckingAuth) {
+    return (
+      <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent className="max-w-3xl h-[600px] flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle className="text-2xl">Cherry Blossom Co-Guide</DialogTitle>
+            <DialogDescription className="text-lg mt-1">
+              Work-Life Balance & Lifestyle Design
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="text-center py-12">
+            <LogIn className="w-16 h-16 mx-auto mb-6 text-primary" />
+            <h3 className="text-2xl font-bold mb-4">Log In to Continue</h3>
+            <p className="text-lg text-muted-foreground mb-8 max-w-md mx-auto">
+              Access your Cherry Blossom Co-Guide conversations and build your personalized work-life balance journey.
+            </p>
+            <Button size="lg" onClick={handleLogin} className="text-lg px-8">
               <LogIn className="w-5 h-5 mr-2" />
               Log In to Continue
             </Button>
           </div>
-        ) : (
-          <>
-            <DialogHeader className="px-6 py-4 border-b">
-              <div className="flex items-center justify-between">
-                <div>
-                  <DialogTitle className="text-2xl font-bold">
-                    {conversationTitle || 'Cherry Blossom Co-Guide'}
-                  </DialogTitle>
-                  <DialogDescription className="text-base mt-1">
-                    {executiveRole}
-                  </DialogDescription>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={handleClose}
-                  data-testid="button-close"
-                >
-                  <X className="w-5 h-5" />
-                </Button>
-              </div>
-            </DialogHeader>
+        </DialogContent>
+      </Dialog>
+    );
+  }
 
-            <ScrollArea className="flex-1 px-6 py-4">
-              {isLoadingConversation || isLoadingAuth ? (
-                <div className="flex items-center justify-center h-full">
-                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-3xl h-[600px] flex flex-col p-0">
+        <DialogHeader className="px-6 pt-6 pb-4 border-b">
+          <div className="flex items-center justify-between">
+            <div>
+              <DialogTitle className="text-2xl">Cherry Blossom Co-Guide</DialogTitle>
+              <DialogDescription className="text-lg mt-1">
+                {conversationTitle || 'Work-Life Balance & Lifestyle Design'}
+              </DialogDescription>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onClose}
+              data-testid="button-close-cherry"
+            >
+              <X className="w-5 h-5" />
+            </Button>
+          </div>
+        </DialogHeader>
+
+        <ScrollArea className="flex-1 px-6">
+          {isLoadingConversation ? (
+            <div className="flex items-center justify-center h-full">
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            </div>
+          ) : (
+            <div className="space-y-4 py-4">
+              {messages.length === 0 ? (
+                <div className="text-center text-muted-foreground py-12">
+                  <p className="text-xl mb-2">Start your Cherry Blossom conversation</p>
+                  <p className="text-lg">Share your work-life balance goals and let's create your personalized journey.</p>
                 </div>
               ) : (
-                <div className="space-y-4">
-                  {messages.length === 0 ? (
-                    <div className="text-center py-12 space-y-4">
-                      <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-[#E26C73] to-[#F9EFE3] flex items-center justify-center">
-                        <span className="text-3xl">🌸</span>
-                      </div>
-                      <p className="text-lg text-muted-foreground max-w-md mx-auto">
-                        Welcome! Share your thoughts and let's begin your journey toward work-life harmony.
+                messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`flex ${
+                      message.role === 'user' ? 'justify-end' : 'justify-start'
+                    }`}
+                  >
+                    <div
+                      className={`max-w-[80%] rounded-lg px-4 py-3 ${
+                        message.role === 'user'
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-muted'
+                      }`}
+                    >
+                      <p className="text-lg leading-relaxed whitespace-pre-wrap">
+                        {message.content}
                       </p>
                     </div>
-                  ) : (
-                    messages.map((message) => (
-                      <div
-                        key={message.id}
-                        className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                      >
-                        <div
-                          className={`max-w-[80%] rounded-lg px-4 py-3 ${
-                            message.role === 'user'
-                              ? 'bg-[#5D9D61] text-white'
-                              : 'bg-gradient-to-br from-[#F9EFE3] to-muted'
-                          }`}
-                        >
-                          <p className="text-lg leading-relaxed whitespace-pre-wrap">
-                            {message.content}
-                          </p>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                  {isLoading && (
-                    <div className="flex justify-start">
-                      <div className="bg-gradient-to-br from-[#F9EFE3] to-muted rounded-lg px-4 py-3">
-                        <Loader2 className="w-5 h-5 animate-spin text-primary" />
-                      </div>
-                    </div>
-                  )}
-                  <div ref={messagesEndRef} />
+                  </div>
+                ))
+              )}
+              {isLoading && (
+                <div className="flex justify-start">
+                  <div className="bg-muted rounded-lg px-4 py-3">
+                    <Loader2 className="w-5 h-5 animate-spin text-primary" />
+                  </div>
                 </div>
               )}
-            </ScrollArea>
-
-            <div className="px-6 py-4 border-t">
-              <form onSubmit={onSubmit} className="flex gap-2">
-                <Input
-                  value={input}
-                  onChange={handleInputChange}
-                  placeholder="Share your thoughts..."
-                  disabled={isLoading || isLoadingConversation || isLoadingAuth}
-                  className="flex-1 text-lg"
-                  data-testid="input-message"
-                />
-                <Button
-                  type="submit"
-                  disabled={isLoading || isLoadingConversation || isLoadingAuth || !input.trim()}
-                  size="lg"
-                  data-testid="button-send"
-                >
-                  {isLoading ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : (
-                    <Send className="w-5 h-5" />
-                  )}
-                </Button>
-              </form>
+              <div ref={messagesEndRef} />
             </div>
-          </>
-        )}
+          )}
+        </ScrollArea>
+
+        <div className="px-6 py-4 border-t">
+          <form onSubmit={onSubmit} className="flex gap-2">
+            <Input
+              value={input}
+              onChange={handleInputChange}
+              placeholder="Message Cherry Blossom..."
+              disabled={isLoading || isLoadingConversation}
+              className="flex-1 text-lg"
+              data-testid="input-cherry-message"
+            />
+            <Button
+              type="submit"
+              disabled={isLoading || isLoadingConversation || !input.trim()}
+              size="lg"
+              data-testid="button-cherry-send"
+            >
+              {isLoading ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <Send className="w-5 h-5" />
+              )}
+            </Button>
+          </form>
+        </div>
       </DialogContent>
     </Dialog>
   );
