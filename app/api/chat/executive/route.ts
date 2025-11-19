@@ -41,7 +41,7 @@ export async function POST(req: Request) {
       ],
     });
 
-    return result.toDataStreamResponse();
+    return result.toAIStreamResponse();
   } catch (error) {
     console.error("Executive chat error:", error);
     return new Response(JSON.stringify({ 
