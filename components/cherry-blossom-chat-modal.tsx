@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'ai/react';
 import { useChat } from 'ai/react';
 import {
   Dialog,
