@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect, useRef } from 'react';
-import { useChat } from 'ai/react';
 import {
   Dialog,
   DialogContent,
@@ -25,6 +24,11 @@ interface ExecutiveChatModalProps {
   executiveIcon: string;
 }
 
+interface Message {
+  role: "user" | "assistant";
+  content: string;
+}
+
 export function ExecutiveChatModal({
   isOpen,
   onClose,
@@ -33,36 +37,15 @@ export function ExecutiveChatModal({
   executiveRole,
   executiveIcon,
 }: ExecutiveChatModalProps) {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [isLoadingConversation, setIsLoadingConversation] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
-  const [accessToken, setAccessToken] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const supabase = createClient();
-
-  const { messages, input, handleInputChange, handleSubmit, isLoading, setMessages, error } = useChat({
-    api: '/api/chat/executive',
-    headers: accessToken ? {
-      'Authorization': `Bearer ${accessToken}`,
-    } : {},
-    body: {
-      conversationId,
-      executiveRole,
-    },
-    onFinish: async (message) => {
-      if (conversationId) {
-        await supabase.from('messages').insert({
-          conversation_id: conversationId,
-          role: 'assistant',
-          content: message.content,
-        });
-      }
-    },
-    onError: (error) => {
-      console.error('Chat error:', error);
-    },
-  });
 
   useEffect(() => {
     checkAuth();
@@ -76,7 +59,7 @@ export function ExecutiveChatModal({
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  }, [messages, isLoading]);
 
   const checkAuth = async () => {
     setIsCheckingAuth(true);
@@ -84,11 +67,9 @@ export function ExecutiveChatModal({
       const { data: { session } } = await supabase.auth.getSession();
       const user = session?.user;
       setIsAuthenticated(!!user);
-      setAccessToken(session?.access_token || null);
     } catch (error) {
       console.error('Auth check error:', error);
       setIsAuthenticated(false);
-      setAccessToken(null);
     } finally {
       setIsCheckingAuth(false);
     }
@@ -96,7 +77,7 @@ export function ExecutiveChatModal({
 
   const loadOrCreateConversation = async () => {
     setIsLoadingConversation(true);
-    
+
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
@@ -140,7 +121,6 @@ export function ExecutiveChatModal({
 
       if (existingMessages && existingMessages.length > 0) {
         const formattedMessages = existingMessages.map((msg: any) => ({
-          id: msg.id,
           role: msg.role,
           content: msg.content,
         }));
@@ -153,26 +133,87 @@ export function ExecutiveChatModal({
     }
   };
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    
-    if (!input.trim() || !conversationId || !accessToken) return;
+  const sendMessage = async () => {
+    if (!input.trim() || isLoading || !conversationId) return;
 
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
-      await supabase.from('messages').insert({
-        conversation_id: conversationId,
-        role: 'user',
-        content: input,
+    const userMessage: Message = { role: "user", content: input };
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
+    setIsLoading(true);
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.from('messages').insert({
+          conversation_id: conversationId,
+          role: 'user',
+          content: input,
+        });
+
+        await supabase
+          .from('conversations')
+          .update({ updated_at: new Date().toISOString() })
+          .eq('id', conversationId);
+      }
+
+      const response = await fetch("/api/chat/executive", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: messages.map((m) => ({ role: m.role, content: m.content })),
+          executiveRole,
+        }),
       });
 
-      await supabase
-        .from('conversations')
-        .update({ updated_at: new Date().toISOString() })
-        .eq('id', conversationId);
-    }
+      console.log("[Executive] Response status:", response.status);
 
-    handleSubmit(e);
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        const text = await response.text();
+        console.error("[Executive] Non-JSON response:", text);
+        throw new Error("Server returned non-JSON response");
+      }
+
+      const data = await response.json();
+      console.log("[Executive] Response data:", data);
+
+      if (data.message) {
+        const assistantMessage: Message = { role: "assistant", content: data.message };
+        setMessages((prev) => [...prev, assistantMessage]);
+
+        if (user) {
+          await supabase.from('messages').insert({
+            conversation_id: conversationId,
+            role: 'assistant',
+            content: data.message,
+          });
+        }
+      } else if (data.error) {
+        console.error("[Executive] API error:", data.error);
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: `Error: ${data.error}` },
+        ]);
+      } else {
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: "Sorry, I couldn't process that request." },
+        ]);
+      }
+    } catch (error) {
+      console.error("[Executive] Chat error:", error);
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: "Sorry, there was an error." },
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    sendMessage();
   };
 
   return (
@@ -233,9 +274,9 @@ export function ExecutiveChatModal({
                   <p className="text-lg">Ask for guidance, delegate tasks, or request deliverables.</p>
                 </div>
               ) : (
-                messages.map((message) => (
+                messages.map((message, index) => (
                   <div
-                    key={message.id}
+                    key={index}
                     className={`flex ${
                       message.role === 'user' ? 'justify-end' : 'justify-start'
                     }`}
@@ -261,14 +302,6 @@ export function ExecutiveChatModal({
                   </div>
                 </div>
               )}
-              {error && (
-                <div className="flex justify-center">
-                  <div className="bg-destructive/10 text-destructive rounded-lg px-4 py-3 text-center">
-                    <p className="text-lg">Error: {error.message}</p>
-                    <p className="text-sm mt-1">Please try again or refresh the page.</p>
-                  </div>
-                </div>
-              )}
               <div ref={messagesEndRef} />
             </div>
           )}
@@ -279,7 +312,7 @@ export function ExecutiveChatModal({
             <form onSubmit={onSubmit} className="flex gap-2">
               <Input
                 value={input}
-                onChange={handleInputChange}
+                onChange={(e) => setInput(e.target.value)}
                 placeholder={`Message ${executiveName}...`}
                 disabled={isLoading || !conversationId}
                 className="flex-1 text-lg"
