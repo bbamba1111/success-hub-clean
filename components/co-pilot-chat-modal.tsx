@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from 'ai/react';
+import { useState, useEffect, useRef } from 'react';
 import { useChat } from '@ai-sdk/react';
 import {
   Dialog,
