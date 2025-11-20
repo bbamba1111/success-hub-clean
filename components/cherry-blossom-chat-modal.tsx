@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect, useRef } from 'react';
-import { useChat } from 'ai/react';
 import {
   Dialog,
   DialogContent,
@@ -23,6 +22,11 @@ interface CherryBlossomChatModalProps {
   executiveRole?: string;
 }
 
+interface Message {
+  role: "user" | "assistant";
+  content: string;
+}
+
 export default function CherryBlossomChatModal({
   isOpen,
   onClose,
@@ -30,6 +34,9 @@ export default function CherryBlossomChatModal({
   conversationTitle,
   executiveRole = 'Cherry Blossom Co-Guide',
 }: CherryBlossomChatModalProps) {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [isLoadingConversation, setIsLoadingConversation] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -38,23 +45,6 @@ export default function CherryBlossomChatModal({
   const prefillRef = useRef<string | undefined>(prefillMessage);
   const titleRef = useRef<string | undefined>(conversationTitle);
   const supabase = createClient();
-
-  const { messages, input, handleInputChange, handleSubmit, isLoading, setMessages, setInput } = useChat({
-    api: '/api/chat/cherry-blossom',
-    body: {
-      conversationId,
-      executiveRole,
-    },
-    onFinish: async (message) => {
-      if (conversationId) {
-        await supabase.from('messages').insert({
-          conversation_id: conversationId,
-          role: 'assistant',
-          content: message.content,
-        });
-      }
-    },
-  });
 
   useEffect(() => {
     if (isOpen) {
@@ -77,7 +67,7 @@ export default function CherryBlossomChatModal({
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  }, [messages, isLoading]);
 
   const checkAuth = async () => {
     setIsCheckingAuth(true);
@@ -94,7 +84,7 @@ export default function CherryBlossomChatModal({
 
   const createNewConversation = async () => {
     setIsLoadingConversation(true);
-    
+
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
@@ -115,22 +105,25 @@ export default function CherryBlossomChatModal({
         .select()
         .single();
 
-      setConversationId(newConv.id);
+      const convId = newConv.id;
+      setConversationId(convId);
       setMessages([]);
 
       if (prefillMessage) {
         setInput(prefillMessage);
       }
+
+      // Send welcome message for new conversations
+      sendWelcomeMessage(convId);
     } catch (error) {
       console.error('Error creating conversation:', error);
-    } finally {
       setIsLoadingConversation(false);
     }
   };
 
   const loadOrCreateConversation = async () => {
     setIsLoadingConversation(true);
-    
+
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
@@ -148,6 +141,7 @@ export default function CherryBlossomChatModal({
         .limit(1);
 
       let convId: string;
+      let isNewConversation = false;
 
       if (existingConversations && existingConversations.length > 0) {
         convId = existingConversations[0].id;
@@ -163,6 +157,7 @@ export default function CherryBlossomChatModal({
           .single();
 
         convId = newConv.id;
+        isNewConversation = true;
       }
 
       setConversationId(convId);
@@ -175,41 +170,147 @@ export default function CherryBlossomChatModal({
 
       if (existingMessages && existingMessages.length > 0) {
         const formattedMessages = existingMessages.map((msg: any) => ({
-          id: msg.id,
           role: msg.role,
           content: msg.content,
         }));
         setMessages(formattedMessages);
-      } else if (prefillMessage) {
-        setInput(prefillMessage);
+        setIsLoadingConversation(false);
+      } else if (isNewConversation) {
+        // Send welcome message for new conversations
+        if (prefillMessage) {
+          setInput(prefillMessage);
+        }
+        sendWelcomeMessage(convId);
+      } else {
+        if (prefillMessage) {
+          setInput(prefillMessage);
+        }
+        setIsLoadingConversation(false);
       }
     } catch (error) {
       console.error('Error loading conversation:', error);
-    } finally {
       setIsLoadingConversation(false);
+    }
+  };
+
+  const sendWelcomeMessage = async (convId: string) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/chat/cherry-blossom", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          executiveRole,
+          isWelcome: true,
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (data.message) {
+        const welcomeMessage: Message = { role: "assistant", content: data.message };
+        setMessages([welcomeMessage]);
+
+        // Save welcome message to Supabase
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          await supabase.from('messages').insert({
+            conversation_id: convId,
+            role: 'assistant',
+            content: data.message,
+          });
+        }
+      }
+    } catch (error) {
+      console.error("[Cherry Blossom] Welcome message error:", error);
+    } finally {
+      setIsLoading(false);
+      setIsLoadingConversation(false);
+    }
+  };
+
+  const sendMessage = async () => {
+    if (!input.trim() || isLoading || !conversationId) return;
+
+    const userMessage: Message = { role: "user", content: input };
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
+    setIsLoading(true);
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.from('messages').insert({
+          conversation_id: conversationId,
+          role: 'user',
+          content: input,
+        });
+
+        await supabase
+          .from('conversations')
+          .update({ updated_at: new Date().toISOString() })
+          .eq('id', conversationId);
+      }
+
+      const response = await fetch("/api/chat/cherry-blossom", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: messages.map((m) => ({ role: m.role, content: m.content })),
+          executiveRole,
+          isWelcome: false,
+        }),
+      });
+
+      console.log("[Cherry Blossom] Response status:", response.status);
+
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        const text = await response.text();
+        console.error("[Cherry Blossom] Non-JSON response:", text);
+        throw new Error("Server returned non-JSON response");
+      }
+
+      const data = await response.json();
+      console.log("[Cherry Blossom] Response data:", data);
+
+      if (data.message) {
+        const assistantMessage: Message = { role: "assistant", content: data.message };
+        setMessages((prev) => [...prev, assistantMessage]);
+
+        if (user) {
+          await supabase.from('messages').insert({
+            conversation_id: conversationId,
+            role: 'assistant',
+            content: data.message,
+          });
+        }
+      } else if (data.error) {
+        console.error("[Cherry Blossom] API error:", data.error);
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: `Error: ${data.error}` },
+        ]);
+      } else {
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: "Sorry, I couldn't process that request." },
+        ]);
+      }
+    } catch (error) {
+      console.error("[Cherry Blossom] Chat error:", error);
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: "Sorry, there was an error." },
+      ]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
-    if (!input.trim() || !conversationId) return;
-
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
-      await supabase.from('messages').insert({
-        conversation_id: conversationId,
-        role: 'user',
-        content: input,
-      });
-
-      await supabase
-        .from('conversations')
-        .update({ updated_at: new Date().toISOString() })
-        .eq('id', conversationId);
-    }
-
-    handleSubmit(e);
+    sendMessage();
   };
 
   const handleLogin = () => {
@@ -282,33 +383,26 @@ export default function CherryBlossomChatModal({
             </div>
           ) : (
             <div className="space-y-4 py-4">
-              {messages.length === 0 ? (
-                <div className="text-center text-muted-foreground py-12">
-                  <p className="text-xl mb-2">Start your Cherry Blossom conversation</p>
-                  <p className="text-lg">Share your work-life balance goals and let's create your personalized journey.</p>
-                </div>
-              ) : (
-                messages.map((message) => (
+              {messages.map((message, index) => (
+                <div
+                  key={index}
+                  className={`flex ${
+                    message.role === 'user' ? 'justify-end' : 'justify-start'
+                  }`}
+                >
                   <div
-                    key={message.id}
-                    className={`flex ${
-                      message.role === 'user' ? 'justify-end' : 'justify-start'
+                    className={`max-w-[80%] rounded-lg px-4 py-3 ${
+                      message.role === 'user'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted'
                     }`}
                   >
-                    <div
-                      className={`max-w-[80%] rounded-lg px-4 py-3 ${
-                        message.role === 'user'
-                          ? 'bg-primary text-primary-foreground'
-                          : 'bg-muted'
-                      }`}
-                    >
-                      <p className="text-lg leading-relaxed whitespace-pre-wrap">
-                        {message.content}
-                      </p>
-                    </div>
+                    <p className="text-lg leading-relaxed whitespace-pre-wrap">
+                      {message.content}
+                    </p>
                   </div>
-                ))
-              )}
+                </div>
+              ))}
               {isLoading && (
                 <div className="flex justify-start">
                   <div className="bg-muted rounded-lg px-4 py-3">
@@ -325,7 +419,7 @@ export default function CherryBlossomChatModal({
           <form onSubmit={onSubmit} className="flex gap-2">
             <Input
               value={input}
-              onChange={handleInputChange}
+              onChange={(e) => setInput(e.target.value)}
               placeholder="Message Cherry Blossom..."
               disabled={isLoading || isLoadingConversation}
               className="flex-1 text-lg"
