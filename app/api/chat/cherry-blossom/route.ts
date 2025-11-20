@@ -34,28 +34,41 @@ You teach the Pareto Principle (80/20 rule), distinguishing the 8 human-only ski
 
 You provide daily next-best-move guidance for needle-moving business actions during Monday-Thursday 1:00-5:00 PM EST sessions. All language is gender-neutral.`
 
-const ZONE_OF_GENIUS_INTRODUCTION = `Hello! I'm your Human Zone of Genius co-guide, positioned as your strategic leadership office above the AI Executive Team. I'm here to help you develop your business during your 4-Hour CEO Workday (Monday-Thursday, 1:00-5:00 PM).
+const ZONE_OF_GENIUS_INTRODUCTION = `Hello! I'm your Human Zone of Genius co-guide, positioned as your strategic leadership office above the AI Executive Team.
 
-Let me start by conducting a comprehensive 12-step assessment to understand your current situation and create your personalized 3-phase journey (Foundation → Momentum → Mastery).
+I'm here to help you develop your business during your 4-Hour CEO Workday (Monday-Thursday, 1:00-5:00 PM).
 
-**The 12-Step Business Assessment:**
+Let me start by conducting a comprehensive 12-step assessment to understand your current situation and create your personalized 3-phase journey (Foundation, Momentum, Mastery).
 
-1. **Entrepreneurial Status** - Where are you in your business journey?
-2. **Passions** - What lights you up and energizes you?
-3. **Skills** - What are your unique talents and expertise?
-4. **Zone of Genius** - What do you do better than almost anyone?
-5. **Niche** - Who is your ideal client and what transformation do you provide?
-6. **Business Size** - Current revenue, clients, and team structure?
-7. **AI Readiness** - How comfortable are you with AI tools?
-8. **Delegation** - What are you ready to hand off to AI?
-9. **Work Schedule** - What does your current workweek look like?
-10. **Desired Lifestyle** - What's your ideal work-life balance?
-11. **Goals** - What are your 90-day, 1-year, and 3-year goals?
-12. **Revenue Targets** - What income level are you aiming for?
+The 12-Step Business Assessment:
+
+1. Entrepreneurial Status — Where are you in your business journey?
+
+2. Passions — What lights you up and energizes you?
+
+3. Skills — What are your unique talents and expertise?
+
+4. Zone of Genius — What do you do better than almost anyone?
+
+5. Niche — Who is your ideal client and what transformation do you provide?
+
+6. Business Size — Current revenue, clients, and team structure?
+
+7. AI Readiness — How comfortable are you with AI tools?
+
+8. Delegation — What are you ready to hand off to AI?
+
+9. Work Schedule — What does your current workweek look like?
+
+10. Desired Lifestyle — What's your ideal work-life balance?
+
+11. Goals — What are your 90-day, 1-year, and 3-year goals?
+
+12. Revenue Targets — What income level are you aiming for?
 
 Once we complete this assessment, I'll design your customized journey and provide daily guidance on the 8 human-only skills that will generate 80% of your business results.
 
-Shall we begin with question 1: **Where are you currently in your business journey?** (Just starting, building momentum, scaling, or transforming?)`
+Shall we begin with question 1: Where are you currently in your business journey? (Just starting, building momentum, scaling, or transforming?)`
 
 export async function POST(req: NextRequest) {
   try {
@@ -71,7 +84,6 @@ export async function POST(req: NextRequest) {
 
     console.log("[Zone of Genius] Request received, isWelcome:", isWelcome)
 
-    // If this is a welcome message request, return the introduction
     if (isWelcome) {
       console.log("[Zone of Genius] Sending welcome introduction")
       return NextResponse.json({ message: ZONE_OF_GENIUS_INTRODUCTION })
