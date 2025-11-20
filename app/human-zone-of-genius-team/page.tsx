@@ -1,5 +1,7 @@
 "use client"
 
+// Copy this to: app/human-zone-of-genius-team/page.tsx in your GitHub repo
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -68,10 +70,9 @@ export default function HumanZoneOfGeniusTeam() {
         </div>
       </header>
 
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-accent/10" />
-        
-        <div className="relative max-w-5xl mx-auto px-6 py-20 text-center">
+      {/* 1. HERO - Soft White */}
+      <section className="relative overflow-hidden bg-white">
+        <div className="max-w-5xl mx-auto px-6 py-20 text-center">
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-primary to-accent mb-6">
             <Sparkles className="w-10 h-10 text-primary-foreground" />
           </div>
@@ -100,7 +101,8 @@ export default function HumanZoneOfGeniusTeam() {
         </div>
       </section>
 
-      <section className="py-16 px-6 bg-muted/30">
+      {/* 2. 4 WORKDAY PILLARS - Soft Peachy Tan */}
+      <section className="py-16 px-6 bg-[#FDF9F5]">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-4">
             4 Workday Pillars
@@ -127,9 +129,10 @@ export default function HumanZoneOfGeniusTeam() {
         </div>
       </section>
 
-      <section className="py-16 px-6 bg-gradient-to-br from-primary via-accent to-primary">
+      {/* 3. CO-PILOT - Soft Sage Green */}
+      <section className="py-16 px-6 bg-[#F0F7F1]">
         <div className="max-w-5xl mx-auto">
-          <Card className="bg-background/95 backdrop-blur-sm border-0 shadow-2xl">
+          <Card className="bg-white border-0 shadow-2xl">
             <CardHeader className="text-center pb-4">
               <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-primary to-accent mx-auto mb-6 shadow-xl">
                 <Sparkles className="w-10 h-10 text-primary-foreground" />
@@ -164,7 +167,8 @@ export default function HumanZoneOfGeniusTeam() {
         </div>
       </section>
 
-      <section className="py-16 px-6">
+      {/* 4. 8 HUMAN-ONLY SKILLS - Soft Coral Pink */}
+      <section className="py-16 px-6 bg-[#FCF2F3]">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-4">
             Your 8 Human-Only Business Skills
@@ -191,7 +195,8 @@ export default function HumanZoneOfGeniusTeam() {
         </div>
       </section>
 
-      <section className="py-16 px-6 bg-muted/30">
+      {/* 5. AI EXECUTIVE TEAM SERVES YOU - Soft White */}
+      <section className="py-16 px-6 bg-white">
         <div className="max-w-6xl mx-auto text-center">
           <h2 className="text-4xl font-bold mb-6">
             The AI Executive Team Serves You
@@ -222,7 +227,8 @@ export default function HumanZoneOfGeniusTeam() {
         </div>
       </section>
 
-      <section className="py-20 px-6">
+      {/* 6. YOUR 16 AI EXECUTIVE TEAM - Soft Peachy Tan */}
+      <section className="py-20 px-6 bg-[#FDF9F5]">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-4">
             Your 16 AI Executive Team
