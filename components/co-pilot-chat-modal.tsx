@@ -17,6 +17,8 @@ import { createClient } from '@/lib/supabase/client';
 interface CoPilotChatModalProps {
   isOpen: boolean;
   onClose: () => void;
+  isAuthenticated: boolean;
+  isLoadingAuth: boolean;
 }
 
 interface Message {
@@ -27,22 +29,16 @@ interface Message {
 export function CoPilotChatModal({
   isOpen,
   onClose,
+  isAuthenticated,
+  isLoadingAuth,
 }: CoPilotChatModalProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [isLoadingConversation, setIsLoadingConversation] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const supabase = createClient();
-
-  useEffect(() => {
-    if (isOpen) {
-      checkAuth();
-    }
-  }, [isOpen]);
 
   useEffect(() => {
     if (isOpen && isAuthenticated) {
@@ -53,19 +49,6 @@ export function CoPilotChatModal({
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading]);
-
-  const checkAuth = async () => {
-    setIsCheckingAuth(true);
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      setIsAuthenticated(!!user);
-    } catch (error) {
-      console.error('Auth check error:', error);
-      setIsAuthenticated(false);
-    } finally {
-      setIsCheckingAuth(false);
-    }
-  };
 
   const loadOrCreateConversation = async () => {
     setIsLoadingConversation(true);
@@ -81,7 +64,7 @@ export function CoPilotChatModal({
         .from('conversations')
         .select('*')
         .eq('user_id', user.id)
-        .eq('executive_role', 'Co-Pilot Master Coach')
+        .eq('executive_role', 'Co-Pilot')
         .order('updated_at', { ascending: false })
         .limit(1);
 
@@ -95,8 +78,8 @@ export function CoPilotChatModal({
           .from('conversations')
           .insert({
             user_id: user.id,
-            title: 'Co-Pilot Master Coach',
-            executive_role: 'Co-Pilot Master Coach',
+            title: 'Co-Pilot Command Center',
+            executive_role: 'Co-Pilot',
           })
           .select()
           .single();
@@ -119,13 +102,15 @@ export function CoPilotChatModal({
           content: msg.content,
         }));
         setMessages(formattedMessages);
+        setIsLoadingConversation(false);
       } else if (isNewConversation) {
         // Send welcome message for new conversations
         sendWelcomeMessage(convId);
+      } else {
+        setIsLoadingConversation(false);
       }
     } catch (error) {
       console.error('Error loading conversation:', error);
-    } finally {
       setIsLoadingConversation(false);
     }
   };
@@ -161,6 +146,7 @@ export function CoPilotChatModal({
       console.error("[Co-Pilot] Welcome message error:", error);
     } finally {
       setIsLoading(false);
+      setIsLoadingConversation(false);
     }
   };
 
@@ -251,10 +237,10 @@ export function CoPilotChatModal({
     window.location.href = '/auth/login';
   };
 
-  if (isCheckingAuth) {
+  if (isLoadingAuth) {
     return (
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="max-w-3xl h-[600px] flex items-center justify-center">
+        <DialogContent className="max-w-4xl h-[700px] flex items-center justify-center">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </DialogContent>
       </Dialog>
@@ -264,11 +250,11 @@ export function CoPilotChatModal({
   if (!isAuthenticated) {
     return (
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="max-w-3xl">
-          <DialogHeader>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-primary to-accent">
-                <Sparkles className="w-8 h-8 text-primary-foreground" />
+        <DialogContent className="max-w-4xl">
+          <DialogHeader className="bg-gradient-to-r from-primary/10 to-accent/10 -m-6 p-6 mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                <Sparkles className="w-6 h-6 text-primary-foreground" />
               </div>
               <div>
                 <DialogTitle className="text-2xl">Co-Pilot Master Coach</DialogTitle>
@@ -281,7 +267,7 @@ export function CoPilotChatModal({
 
           <div className="text-center py-12">
             <LogIn className="w-16 h-16 mx-auto mb-6 text-primary" />
-            <h3 className="text-2xl font-bold mb-4">Login Required</h3>
+            <h3 className="text-2xl font-bold mb-4">Log In to Continue</h3>
             <p className="text-lg text-muted-foreground mb-8 max-w-md mx-auto">
               Sign in to access your Co-Pilot Master Coach. I'll synthesize insights from all your AI executive conversations and provide strategic guidance.
             </p>
@@ -297,12 +283,12 @@ export function CoPilotChatModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl h-[600px] flex flex-col p-0">
+      <DialogContent className="max-w-4xl h-[700px] flex flex-col p-0">
         <DialogHeader className="px-6 pt-6 pb-4 border-b bg-gradient-to-r from-primary/10 to-accent/10">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-primary to-accent shadow-lg">
-                <Sparkles className="w-8 h-8 text-primary-foreground" />
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                <Sparkles className="w-6 h-6 text-primary-foreground" />
               </div>
               <div>
                 <DialogTitle className="text-2xl">Co-Pilot Master Coach</DialogTitle>
@@ -337,9 +323,9 @@ export function CoPilotChatModal({
                   }`}
                 >
                   <div
-                    className={`max-w-[80%] rounded-lg px-4 py-3 ${
+                    className={`max-w-[85%] rounded-lg px-4 py-3 ${
                       message.role === 'user'
-                        ? 'bg-primary text-primary-foreground'
+                        ? 'bg-gradient-to-r from-[#5D9D61] to-[#E26C73] text-white'
                         : 'bg-muted'
                     }`}
                   >
@@ -366,7 +352,7 @@ export function CoPilotChatModal({
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask Co-Pilot for strategic guidance..."
+              placeholder="Ask Co-Pilot to synthesize insights across your AI team..."
               disabled={isLoading || isLoadingConversation}
               className="flex-1 text-lg"
               data-testid="input-copilot-message"
@@ -374,7 +360,7 @@ export function CoPilotChatModal({
             <Button
               type="submit"
               disabled={isLoading || isLoadingConversation || !input.trim()}
-              size="lg"
+              className="bg-gradient-to-r from-[#5D9D61] to-[#E26C73] text-white hover:opacity-90"
               data-testid="button-copilot-send"
             >
               {isLoading ? (
