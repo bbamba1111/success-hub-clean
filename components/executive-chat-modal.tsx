@@ -1,3 +1,4 @@
+// components/executive-chat-modal.tsx
 "use client"
 
 import { useState, useEffect, useRef } from 'react';
@@ -94,6 +95,7 @@ export function ExecutiveChatModal({
         .limit(1);
 
       let convId: string;
+      let isNewConversation = false;
 
       if (existingConversations && existingConversations.length > 0) {
         convId = existingConversations[0].id;
@@ -109,6 +111,7 @@ export function ExecutiveChatModal({
           .single();
 
         convId = newConv.id;
+        isNewConversation = true;
       }
 
       setConversationId(convId);
@@ -125,11 +128,49 @@ export function ExecutiveChatModal({
           content: msg.content,
         }));
         setMessages(formattedMessages);
+      } else if (isNewConversation) {
+        // Send welcome message for new conversations
+        sendWelcomeMessage(convId);
       }
     } catch (error) {
       console.error('Error loading conversation:', error);
     } finally {
       setIsLoadingConversation(false);
+    }
+  };
+
+  const sendWelcomeMessage = async (convId: string) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/chat/executive", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          executiveRole,
+          isWelcome: true,
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (data.message) {
+        const welcomeMessage: Message = { role: "assistant", content: data.message };
+        setMessages([welcomeMessage]);
+
+        // Save welcome message to Supabase
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          await supabase.from('messages').insert({
+            conversation_id: convId,
+            role: 'assistant',
+            content: data.message,
+          });
+        }
+      }
+    } catch (error) {
+      console.error("[Executive] Welcome message error:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -162,6 +203,7 @@ export function ExecutiveChatModal({
         body: JSON.stringify({
           messages: messages.map((m) => ({ role: m.role, content: m.content })),
           executiveRole,
+          isWelcome: false,
         }),
       });
 
@@ -268,33 +310,26 @@ export function ExecutiveChatModal({
             </div>
           ) : (
             <div className="space-y-4 py-4">
-              {messages.length === 0 ? (
-                <div className="text-center text-muted-foreground py-12">
-                  <p className="text-xl mb-2">Start a conversation with {executiveName}</p>
-                  <p className="text-lg">Ask for guidance, delegate tasks, or request deliverables.</p>
-                </div>
-              ) : (
-                messages.map((message, index) => (
+              {messages.map((message, index) => (
+                <div
+                  key={index}
+                  className={`flex ${
+                    message.role === 'user' ? 'justify-end' : 'justify-start'
+                  }`}
+                >
                   <div
-                    key={index}
-                    className={`flex ${
-                      message.role === 'user' ? 'justify-end' : 'justify-start'
+                    className={`max-w-[80%] rounded-lg px-4 py-3 ${
+                      message.role === 'user'
+                        ? 'bg-gradient-to-r from-[#5D9D61] to-[#E26C73] text-white'
+                        : 'bg-muted'
                     }`}
                   >
-                    <div
-                      className={`max-w-[80%] rounded-lg px-4 py-3 ${
-                        message.role === 'user'
-                          ? 'bg-gradient-to-r from-[#5D9D61] to-[#E26C73] text-white'
-                          : 'bg-muted'
-                      }`}
-                    >
-                      <p className="text-lg leading-relaxed whitespace-pre-wrap">
-                        {message.content}
-                      </p>
-                    </div>
+                    <p className="text-lg leading-relaxed whitespace-pre-wrap">
+                      {message.content}
+                    </p>
                   </div>
-                ))
-              )}
+                </div>
+              ))}
               {isLoading && (
                 <div className="flex justify-start">
                   <div className="bg-muted rounded-lg px-4 py-3">
