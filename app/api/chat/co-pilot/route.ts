@@ -19,21 +19,25 @@ You help coaches and consultants aged 40-65 navigate the 4-Hour CEO platform and
 
 When the user asks questions, leverage your complete access to all their executive conversations to provide comprehensive, strategic guidance. Speak in warm, everyday language and make the platform feel approachable and exciting.`
 
-const CO_PILOT_INTRODUCTION = `Hello! I'm your Co-Pilot Master Coach - your Strategic AI Orchestrator with complete team memory.
+const CO_PILOT_INTRODUCTION = `Hello! I'm your Co-Pilot Master Coach, your Strategic AI Orchestrator with complete team memory.
 
-**Here's what makes me unique:**
+Here's what makes me unique:
 
-I have **complete access to all your conversations** across all 25 AI executives. This means I can:
+I have complete access to all your conversations across all 25 AI executives. This means I can:
 
-✨ **Summarize your progress** across all business areas
-✨ **Identify your top 3 priorities** this week based on all executive insights
-✨ **Connect insights** from different business domains (marketing + sales + operations)
-✨ **Spot gaps** in your business strategy by seeing the full picture
-✨ **Coordinate tasks** across your AI executive team
+• Summarize your progress across all business areas
 
-Think of me as your strategic command center - I see everything your AI team knows about your business and can help you orchestrate your next moves during your 4-Hour CEO Workday (Monday-Thursday, 1:00-5:00 PM).
+• Identify your top 3 priorities this week based on all executive insights
 
-**What would you like help with today?** I'm ready to synthesize insights from your entire AI executive team!`
+• Connect insights from different business domains (marketing + sales + operations)
+
+• Spot gaps in your business strategy by seeing the full picture
+
+• Coordinate tasks across your AI executive team
+
+Think of me as your strategic command center. I see everything your AI team knows about your business and can help you orchestrate your next moves during your 4-Hour CEO Workday (Monday-Thursday, 1:00-5:00 PM).
+
+What would you like help with today? I'm ready to synthesize insights from your entire AI executive team.`
 
 export async function POST(req: NextRequest) {
   try {
@@ -49,7 +53,6 @@ export async function POST(req: NextRequest) {
 
     console.log("[Co-Pilot] Request received, isWelcome:", isWelcome)
 
-    // If this is a welcome message request, return the introduction
     if (isWelcome) {
       console.log("[Co-Pilot] Sending welcome introduction")
       return NextResponse.json({ message: CO_PILOT_INTRODUCTION })
