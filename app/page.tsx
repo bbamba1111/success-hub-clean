@@ -975,7 +975,7 @@ export default function HomePage() {
                   className="bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-semibold px-8 py-4 text-lg"
                 >
                   Join Our Facebook Group
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  <ArrowRight className="ml-2 h-4 w-5" />
                 </Button>
               </a>
             </div>
