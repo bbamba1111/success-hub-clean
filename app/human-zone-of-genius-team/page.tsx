@@ -73,11 +73,11 @@ export default function HumanZoneOfGeniusTeam() {
       {/* 1. HERO - Soft White */}
       <section className="relative overflow-hidden bg-white">
         <div className="max-w-5xl mx-auto px-6 py-20 text-center">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-primary to-accent mb-6">
-            <Sparkles className="w-10 h-10 text-primary-foreground" />
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-[#5D9D61]/20 via-[#E26C73]/20 to-[#5D9D61]/20 mb-6">
+            <Sparkles className="w-10 h-10 text-[#5D9D61]" />
           </div>
           
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight text-[#5D9D61]">
             Human Zone Of Genius Team
           </h1>
           
@@ -91,7 +91,7 @@ export default function HumanZoneOfGeniusTeam() {
 
           <Button
             size="lg"
-            className="text-lg px-8 py-6"
+            className="text-lg px-8 py-6 bg-[#E26C73] hover:bg-[#E26C73]/90 text-white"
             onClick={() => setIsAssessmentChatOpen(true)}
             data-testid="button-start-assessment"
           >
@@ -104,7 +104,7 @@ export default function HumanZoneOfGeniusTeam() {
       {/* 2. 4 WORKDAY PILLARS - Soft Peachy Tan */}
       <section className="py-16 px-6 bg-[#FDF9F5]">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-4">
+          <h2 className="text-4xl font-bold text-center mb-4 text-[#E26C73]">
             4 Workday Pillars
           </h2>
           <p className="text-xl text-center text-muted-foreground mb-12 max-w-3xl mx-auto">
@@ -113,10 +113,10 @@ export default function HumanZoneOfGeniusTeam() {
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {workdayPillars.map((pillar, index) => (
-              <Card key={index} className="border-2">
+              <Card key={index} className="border-2 border-[#E26C73]/30">
                 <CardHeader>
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-primary to-accent mb-4">
-                    <pillar.icon className="w-8 h-8 text-primary-foreground" />
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-[#E26C73]/20 to-[#5D9D61]/20 mb-4">
+                    <pillar.icon className="w-8 h-8 text-[#E26C73]" />
                   </div>
                   <CardTitle className="text-xl">{pillar.title}</CardTitle>
                   <CardDescription className="text-lg leading-relaxed">
@@ -132,12 +132,12 @@ export default function HumanZoneOfGeniusTeam() {
       {/* 3. CO-PILOT - Soft Sage Green */}
       <section className="py-16 px-6 bg-[#F0F7F1]">
         <div className="max-w-5xl mx-auto">
-          <Card className="bg-white border-0 shadow-2xl">
+          <Card className="bg-white border-2 border-[#5D9D61]/30 shadow-2xl">
             <CardHeader className="text-center pb-4">
-              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-primary to-accent mx-auto mb-6 shadow-xl">
-                <Sparkles className="w-10 h-10 text-primary-foreground" />
+              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-[#5D9D61]/20 via-[#E26C73]/20 to-[#5D9D61]/20 mx-auto mb-6 shadow-xl">
+                <Sparkles className="w-10 h-10 text-[#5D9D61]" />
               </div>
-              <CardTitle className="text-4xl font-bold mb-3 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              <CardTitle className="text-4xl font-bold mb-3 text-[#5D9D61]">
                 Co-Pilot Master Coach
               </CardTitle>
               <CardDescription className="text-xl font-medium">
@@ -155,7 +155,7 @@ export default function HumanZoneOfGeniusTeam() {
                 <Button 
                   size="lg" 
                   onClick={() => setIsCoPilotOpen(true)}
-                  className="text-xl px-12 py-6"
+                  className="text-xl px-12 py-6 bg-[#5D9D61] hover:bg-[#5D9D61]/90 text-white"
                   data-testid="button-launch-copilot"
                 >
                   <Sparkles className="w-6 h-6 mr-3" />
@@ -170,7 +170,7 @@ export default function HumanZoneOfGeniusTeam() {
       {/* 4. 8 HUMAN-ONLY SKILLS - Soft Coral Pink */}
       <section className="py-16 px-6 bg-[#FCF2F3]">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-4">
+          <h2 className="text-4xl font-bold text-center mb-4 text-[#5D9D61]">
             Your 8 Human-Only Business Skills
           </h2>
           <p className="text-xl text-center text-muted-foreground mb-12 max-w-3xl mx-auto">
@@ -179,9 +179,9 @@ export default function HumanZoneOfGeniusTeam() {
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {humanSkills.map((skill, index) => (
-              <Card key={index} className="border-l-4 border-l-primary">
+              <Card key={index} className="border-l-4 border-l-[#E26C73]">
                 <CardHeader>
-                  <skill.icon className="w-10 h-10 mb-3 text-primary" />
+                  <skill.icon className="w-10 h-10 mb-3 text-[#E26C73]" />
                   <CardTitle className="text-lg mb-2">
                     {index + 1}. {skill.title}
                   </CardTitle>
@@ -198,7 +198,7 @@ export default function HumanZoneOfGeniusTeam() {
       {/* 5. AI EXECUTIVE TEAM SERVES YOU - Soft White */}
       <section className="py-16 px-6 bg-white">
         <div className="max-w-6xl mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-6">
+          <h2 className="text-4xl font-bold mb-6 text-[#E26C73]">
             The AI Executive Team Serves You
           </h2>
           <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
@@ -206,18 +206,18 @@ export default function HumanZoneOfGeniusTeam() {
           </p>
 
           <div className="grid md:grid-cols-2 gap-6 text-left">
-            <Card className="border-primary/30 border-2">
+            <Card className="border-2 border-[#5D9D61]/30">
               <CardHeader>
-                <CardTitle className="text-xl">You (Human CEO) - The 20%</CardTitle>
+                <CardTitle className="text-xl text-[#5D9D61]">You (Human CEO) - The 20%</CardTitle>
                 <CardDescription className="text-lg leading-relaxed">
                   Your 8 Human-Only Business Skills: authentic relationships, visionary leadership, high-value sales, thought leadership, coaching delivery, intuitive problem-solving, ethical decisions, and personal storytelling. This is where you create 80% of results.
                 </CardDescription>
               </CardHeader>
             </Card>
 
-            <Card className="border-accent/30 border-2">
+            <Card className="border-2 border-[#E26C73]/30">
               <CardHeader>
-                <CardTitle className="text-xl">AI Executive Team - The 80%</CardTitle>
+                <CardTitle className="text-xl text-[#E26C73]">AI Executive Team - The 80%</CardTitle>
                 <CardDescription className="text-lg leading-relaxed">
                   They serve you by handling: administrative tasks, content drafts, research, scheduling, inquiries, bookkeeping, transcription, proposals, social media, and operational execution. They educate you on daily business progress and guide your next moves.
                 </CardDescription>
@@ -230,7 +230,7 @@ export default function HumanZoneOfGeniusTeam() {
       {/* 6. YOUR 16 AI EXECUTIVE TEAM - Soft Peachy Tan */}
       <section className="py-20 px-6 bg-[#FDF9F5]">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-4">
+          <h2 className="text-4xl font-bold text-center mb-4 text-[#5D9D61]">
             Your 16 AI Executive Team
           </h2>
           <p className="text-xl text-center text-muted-foreground mb-12 max-w-3xl mx-auto">
@@ -241,14 +241,14 @@ export default function HumanZoneOfGeniusTeam() {
             {executives.map((exec) => (
               <Card 
                 key={exec.id} 
-                className="border-2 border-muted hover:border-primary transition-all cursor-pointer hover-elevate"
+                className="border-2 border-[#5D9D61]/30 hover:border-[#E26C73] transition-all cursor-pointer hover-elevate"
                 onClick={() => setSelectedExecutive(exec)}
                 data-testid={`card-executive-${exec.id}`}
               >
                 <CardHeader>
                   <div className="text-5xl mb-3 text-center">{exec.icon}</div>
                   <CardTitle className="text-lg text-center">{exec.name}</CardTitle>
-                  <CardDescription className="text-base font-semibold text-primary text-center">
+                  <CardDescription className="text-base font-semibold text-[#5D9D61] text-center">
                     {exec.role}
                   </CardDescription>
                   <CardDescription className="text-base leading-relaxed text-center pt-2">
@@ -257,7 +257,7 @@ export default function HumanZoneOfGeniusTeam() {
                 </CardHeader>
                 <CardContent>
                   <Button 
-                    className="w-full"
+                    className="w-full bg-[#E26C73] hover:bg-[#E26C73]/90 text-white"
                     data-testid={`button-chat-${exec.id}`}
                   >
                     <MessageCircle className="w-4 h-4 mr-2" />
