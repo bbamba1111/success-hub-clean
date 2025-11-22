@@ -1,15 +1,10 @@
 "use client"
 
-// Copy this to: app/human-zone-of-genius-team/page.tsx in your GitHub repo
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
-import { 
-  Sparkles, Brain, ArrowLeft, Target, TrendingUp, Calendar, 
-  Clock, Zap, Heart, MessageCircle, Lightbulb, Users, Award, Shield
-} from "lucide-react";
+import { Sparkles, Brain, ArrowLeft, Target, TrendingUp, Calendar, Clock, Zap, Heart, MessageCircle, Lightbulb, Users, Award, Shield } from 'lucide-react';
 import CherryBlossomChatModal from "@/components/cherry-blossom-chat-modal";
 import { CoPilotChatModal } from "@/components/co-pilot-chat-modal";
 import { ExecutiveChatModal } from "@/components/executive-chat-modal";
@@ -51,11 +46,11 @@ const humanSkills = [
 ];
 
 export default function HumanZoneOfGeniusTeam() {
-  const [isAssessmentChatOpen, setIsAssessmentChatOpen] = useState(false);
+  const [isHumanZoneChatOpen, setIsHumanZoneChatOpen] = useState(false);
   const [isCoPilotOpen, setIsCoPilotOpen] = useState(false);
   const [selectedExecutive, setSelectedExecutive] = useState<typeof executives[0] | null>(null);
 
-  const assessmentPrefillMessage = "I want to design my personalized 4-Hour Focused CEO Workday (1:00-5:00 PM). Can you guide me through a comprehensive assessment to create my customized coaching/consulting business journey based on my zone of genius, entrepreneurial status, and work-life goals?";
+  const humanZonePrefillMessage = "Hi Cherry Blossom! I want to discover my Human Zone of Genius and design my personalized 4-Hour Focused CEO Workday. Can you help me identify which of the 8 human-only business skills are my natural strengths?";
 
   return (
     <div className="min-h-screen bg-background">
@@ -92,11 +87,11 @@ export default function HumanZoneOfGeniusTeam() {
           <Button
             size="lg"
             className="text-lg px-8 py-6 bg-[#E26C73] hover:bg-[#E26C73]/90 text-white"
-            onClick={() => setIsAssessmentChatOpen(true)}
-            data-testid="button-start-assessment"
+            onClick={() => setIsHumanZoneChatOpen(true)}
+            data-testid="button-discover-human-zone"
           >
             <Brain className="w-5 h-5 mr-2" />
-            Start Your Zone of Genius Assessment
+            Discover Your Human Zone of Genius
           </Button>
         </div>
       </section>
@@ -271,11 +266,11 @@ export default function HumanZoneOfGeniusTeam() {
       </section>
 
       <CherryBlossomChatModal
-        isOpen={isAssessmentChatOpen}
-        onClose={() => setIsAssessmentChatOpen(false)}
-        prefillMessage={assessmentPrefillMessage}
-        conversationTitle="Human Zone of Genius Assessment"
-        executiveRole="Cherry Blossom - CEO Workday"
+        isOpen={isHumanZoneChatOpen}
+        onClose={() => setIsHumanZoneChatOpen(false)}
+        prefillMessage={humanZonePrefillMessage}
+        conversationTitle="Human Zone of Genius Discovery"
+        executiveRole="Cherry Blossom - Human Zone Guide"
       />
 
       <CoPilotChatModal
