@@ -1,5 +1,9 @@
+// app/api/chat/cherry-blossom/route.ts
 import { type NextRequest, NextResponse } from "next/server"
 import { isWithinBusinessHours } from "@/lib/utils/business-hours"
+
+export const runtime = "edge"
+
 
 const FOUR_HOUR_WORKDAY_PROMPT = `You are The 4-Hour CEO Workday Guide, a strategic AI & Human Augmentation specialist who helps coaches and consultants aged 40-65 maximize productivity during their focused 4-hour work sessions (Monday-Thursday, 1:00-5:00 PM EST).
 
