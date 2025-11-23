@@ -1,6 +1,8 @@
 import React from 'react'
 
 export function renderMarkdown(text: string): React.ReactNode {
+  console.log("[v0] Rendering markdown for text:", text.substring(0, 100))
+  
   const lines = text.split('\n')
   const elements: React.ReactNode[] = []
   let listItems: string[] = []
@@ -10,17 +12,17 @@ export function renderMarkdown(text: string): React.ReactNode {
     if (listItems.length > 0) {
       if (listType === 'bullet') {
         elements.push(
-          <ul key={elements.length} className="list-disc list-inside space-y-1 my-3 ml-4">
+          <ul key={elements.length} className="list-disc list-inside space-y-2 my-3 ml-4">
             {listItems.map((item, i) => (
-              <li key={i} className="text-foreground">{processInlineMarkdown(item)}</li>
+              <li key={i} className="text-foreground leading-relaxed">{processInline(item)}</li>
             ))}
           </ul>
         )
       } else if (listType === 'number') {
         elements.push(
-          <ol key={elements.length} className="list-decimal list-inside space-y-1 my-3 ml-4">
+          <ol key={elements.length} className="list-decimal list-inside space-y-2 my-3 ml-4">
             {listItems.map((item, i) => (
-              <li key={i} className="text-foreground">{processInlineMarkdown(item)}</li>
+              <li key={i} className="text-foreground leading-relaxed">{processInline(item)}</li>
             ))}
           </ol>
         )
@@ -30,32 +32,32 @@ export function renderMarkdown(text: string): React.ReactNode {
     }
   }
 
-  lines.forEach((line, index) => {
+  lines.forEach((line) => {
     // Headers
     if (line.startsWith('### ')) {
       flushList()
       elements.push(
         <h3 key={elements.length} className="text-lg font-bold mt-4 mb-2 text-[#5D9D61]">
-          {processInlineMarkdown(line.slice(4))}
+          {processInline(line.slice(4))}
         </h3>
       )
     } else if (line.startsWith('## ')) {
       flushList()
       elements.push(
         <h2 key={elements.length} className="text-xl font-bold mt-4 mb-2 text-[#5D9D61]">
-          {processInlineMarkdown(line.slice(3))}
+          {processInline(line.slice(3))}
         </h2>
       )
     } else if (line.startsWith('# ')) {
       flushList()
       elements.push(
         <h1 key={elements.length} className="text-2xl font-bold mt-4 mb-3 text-[#E26C73]">
-          {processInlineMarkdown(line.slice(2))}
+          {processInline(line.slice(2))}
         </h1>
       )
     }
-    // Bullet lists
-    else if (line.match(/^[-*]\s+/)) {
+    // Bullet lists (- or *)
+    else if (/^[-*]\s/.test(line)) {
       const content = line.replace(/^[-*]\s+/, '')
       if (listType !== 'bullet') {
         flushList()
@@ -64,7 +66,7 @@ export function renderMarkdown(text: string): React.ReactNode {
       listItems.push(content)
     }
     // Numbered lists
-    else if (line.match(/^\d+\.\s+/)) {
+    else if (/^\d+\.\s/.test(line)) {
       const content = line.replace(/^\d+\.\s+/, '')
       if (listType !== 'number') {
         flushList()
@@ -75,14 +77,14 @@ export function renderMarkdown(text: string): React.ReactNode {
     // Empty lines
     else if (line.trim() === '') {
       flushList()
-      elements.push(<br key={elements.length} />)
+      elements.push(<div key={elements.length} className="h-2" />)
     }
     // Regular paragraphs
     else {
       flushList()
       elements.push(
         <p key={elements.length} className="mb-2 text-foreground leading-relaxed">
-          {processInlineMarkdown(line)}
+          {processInline(line)}
         </p>
       )
     }
@@ -92,66 +94,46 @@ export function renderMarkdown(text: string): React.ReactNode {
   return <div className="space-y-1">{elements}</div>
 }
 
-function processInlineMarkdown(text: string): React.ReactNode {
+function processInline(text: string): React.ReactNode {
   const parts: React.ReactNode[] = []
-  let currentText = text
+  let remaining = text
   let key = 0
 
-  // Process bold (**text** or __text__)
-  const boldRegex = /(\*\*|__)(.*?)\1/g
-  let lastIndex = 0
-  let match
-
-  while ((match = boldRegex.exec(currentText)) !== null) {
-    // Add text before match
-    if (match.index > lastIndex) {
-      const beforeText = currentText.slice(lastIndex, match.index)
-      parts.push(processItalics(beforeText, key++))
-    }
-    // Add bold text
-    parts.push(
-      <strong key={key++} className="font-bold text-[#5D9D61]">
-        {match[2]}
-      </strong>
-    )
-    lastIndex = match.index + match[0].length
-  }
-
-  // Add remaining text
-  if (lastIndex < currentText.length) {
-    parts.push(processItalics(currentText.slice(lastIndex), key++))
-  }
-
-  return parts.length > 0 ? parts : currentText
-}
-
-function processItalics(text: string, baseKey: number): React.ReactNode {
-  const parts: React.ReactNode[] = []
-  const italicRegex = /(\*|_)(.*?)\1/g
-  let lastIndex = 0
-  let match
-  let key = 0
-
-  while ((match = italicRegex.exec(text)) !== null) {
-    // Add text before match
-    if (match.index > lastIndex) {
+  while (remaining.length > 0) {
+    // Bold: **text** or __text__
+    const boldMatch = remaining.match(/^(.*?)(\*\*|__)(.+?)\2/)
+    if (boldMatch) {
+      if (boldMatch[1]) {
+        parts.push(<span key={key++}>{boldMatch[1]}</span>)
+      }
       parts.push(
-        <span key={`${baseKey}-${key++}`}>{text.slice(lastIndex, match.index)}</span>
+        <strong key={key++} className="font-bold text-[#5D9D61]">
+          {boldMatch[3]}
+        </strong>
       )
+      remaining = remaining.slice(boldMatch[0].length)
+      continue
     }
-    // Add italic text
-    parts.push(
-      <em key={`${baseKey}-${key++}`} className="italic text-[#E26C73]">
-        {match[2]}
-      </em>
-    )
-    lastIndex = match.index + match[0].length
+
+    // Italic: *text* or _text_ (but not ** or __)
+    const italicMatch = remaining.match(/^(.*?)([*_])(?!\2)(.+?)\2(?!\2)/)
+    if (italicMatch) {
+      if (italicMatch[1]) {
+        parts.push(<span key={key++}>{italicMatch[1]}</span>)
+      }
+      parts.push(
+        <em key={key++} className="italic text-[#E26C73]">
+          {italicMatch[3]}
+        </em>
+      )
+      remaining = remaining.slice(italicMatch[0].length)
+      continue
+    }
+
+    // No more matches, add the rest
+    parts.push(<span key={key++}>{remaining}</span>)
+    break
   }
 
-  // Add remaining text
-  if (lastIndex < text.length) {
-    parts.push(<span key={`${baseKey}-${key++}`}>{text.slice(lastIndex)}</span>)
-  }
-
-  return parts.length > 0 ? parts : text
+  return parts.length > 0 ? <>{parts}</> : text
 }
