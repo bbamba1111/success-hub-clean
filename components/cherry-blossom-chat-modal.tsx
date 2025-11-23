@@ -1,10 +1,20 @@
 "use client"
 
+import type React from "react"
+
 import { useState, useRef, useEffect } from "react"
-import { X, Send } from 'lucide-react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Send, Loader2, X } from 'lucide-react'
 import { renderMarkdown } from "@/lib/utils/markdown-renderer"
+
+interface Message {
+  role: "user" | "assistant"
+  content: string
+  id: string
+}
 
 interface CherryBlossomChatModalProps {
   isOpen: boolean
@@ -12,40 +22,40 @@ interface CherryBlossomChatModalProps {
   prefillMessage?: string
   conversationTitle?: string
   executiveRole?: string
+  isAuthenticated?: boolean
+  isLoadingAuth?: boolean
 }
 
-interface Message {
-  role: "user" | "assistant"
-  content: string
-}
-
-export default function CherryBlossomChatModal({
+export function CherryBlossomChatModal({
   isOpen,
   onClose,
   prefillMessage = "",
-  conversationTitle = "Cherry Blossom Chat",
-  executiveRole = "Human Zone of Genius Guide",
+  conversationTitle = "Cherry Blossom Coaching Session",
+  executiveRole = "Work-Life Balance Coach",
+  isAuthenticated = true,
+  isLoadingAuth = false,
 }: CherryBlossomChatModalProps) {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const [hasStarted, setHasStarted] = useState(false)
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }
+  const scrollAreaRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    scrollToBottom()
-  }, [messages])
-
-  useEffect(() => {
-    if (isOpen && messages.length === 0) {
-      handleWelcomeMessage()
+    if (isOpen && !hasStarted) {
+      setHasStarted(true)
+      handleWelcome()
     }
   }, [isOpen])
 
-  const handleWelcomeMessage = async () => {
+  useEffect(() => {
+    if (scrollAreaRef.current) {
+      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
+    }
+  }, [messages])
+
+  const handleWelcome = async () => {
     try {
       setIsLoading(true)
       const response = await fetch("/api/human-zone-chat", {
@@ -54,33 +64,35 @@ export default function CherryBlossomChatModal({
         body: JSON.stringify({ isWelcome: true }),
       })
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || "Failed to get welcome message")
-      }
+      if (!response.ok) throw new Error("Failed to get welcome")
 
       const data = await response.json()
-      setMessages([{ role: "assistant", content: data.message }])
+      setMessages([{ role: "assistant", content: data.message, id: "welcome" }])
+
+      if (prefillMessage) {
+        setTimeout(() => {
+          handleSubmit(null, prefillMessage)
+        }, 500)
+      }
     } catch (error) {
-      console.error("Error fetching welcome message:", error)
-      setMessages([
-        {
-          role: "assistant",
-          content: "Welcome! I'm here to help you design your 4-Hour CEO Workday. How can I assist you today?",
-        },
-      ])
+      console.error("Welcome error:", error)
     } finally {
       setIsLoading(false)
     }
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!input.trim() || isLoading) return
+  const handleSubmit = async (e: React.FormEvent | null, messageOverride?: string) => {
+    if (e) e.preventDefault()
+    const messageToSend = messageOverride || input.trim()
+    if (!messageToSend || isLoading) return
 
-    const userMessage = input.trim()
+    const userMessage: Message = {
+      role: "user",
+      content: messageToSend,
+      id: `user-${Date.now()}`,
+    }
+    setMessages((prev) => [...prev, userMessage])
     setInput("")
-    setMessages((prev) => [...prev, { role: "user", content: userMessage }])
     setIsLoading(true)
 
     try {
@@ -88,24 +100,30 @@ export default function CherryBlossomChatModal({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: [...messages, { role: "user", content: userMessage }],
+          messages: [...messages, userMessage].map((m) => ({ role: m.role, content: m.content })),
         }),
       })
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || "Failed to get response")
-      }
+      if (!response.ok) throw new Error("Failed to get response")
 
       const data = await response.json()
-      setMessages((prev) => [...prev, { role: "assistant", content: data.message }])
-    } catch (error) {
-      console.error("Error sending message:", error)
+
       setMessages((prev) => [
         ...prev,
         {
           role: "assistant",
-          content: "I'm sorry, I encountered an error. Please try again.",
+          content: data.message,
+          id: `assistant-${Date.now()}`,
+        },
+      ])
+    } catch (error) {
+      console.error("Chat error:", error)
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: "I apologize, I'm having trouble responding. Please try again.",
+          id: `error-${Date.now()}`,
         },
       ])
     } finally {
@@ -113,97 +131,128 @@ export default function CherryBlossomChatModal({
     }
   }
 
-  useEffect(() => {
-    if (isOpen && prefillMessage && messages.length === 1) {
-      setInput(prefillMessage)
-    }
-  }, [isOpen, prefillMessage, messages.length])
+  const handleClose = () => {
+    setMessages([])
+    setInput("")
+    setHasStarted(false)
+    onClose()
+  }
 
-  if (!isOpen) return null
+  if (!isAuthenticated && !isLoadingAuth) {
+    return (
+      <Dialog open={isOpen} onOpenChange={handleClose}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold text-[#E26C73]">Sign In Required</DialogTitle>
+          </DialogHeader>
+          <div className="text-center py-8">
+            <p className="text-lg text-gray-700 mb-6">
+              Please sign in to start your coaching session with Cherry Blossom
+            </p>
+            <Button size="lg" className="bg-[#E26C73] hover:bg-[#E26C73]/90 text-white">
+              Sign In
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    )
+  }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl h-[85vh] flex flex-col overflow-hidden">
+    <Dialog open={isOpen} onOpenChange={handleClose}>
+      <DialogContent className="max-w-5xl h-[85vh] flex flex-col p-0 gap-0 bg-[#FDF9F5]">
         {/* Header with soft pink background */}
-        <div className="flex items-center gap-4 px-6 py-5 bg-gradient-to-r from-pink-50 via-rose-50 to-orange-50 border-b border-pink-100">
-          <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm">
-            <span className="text-2xl">🌸</span>
-          </div>
-          <div className="flex-1">
-            <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-              {conversationTitle} <span className="text-xl">🌸</span>
-            </h2>
-            <p className="text-sm text-gray-600">{executiveRole}</p>
+        <div className="bg-[#FCF2F3] border-b border-gray-200 px-6 py-5 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            {/* Cherry blossom icon */}
+            <div className="w-14 h-14 rounded-full bg-white border-2 border-[#E26C73]/30 flex items-center justify-center flex-shrink-0">
+              <span className="text-3xl">🌸</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <h2 className="text-2xl font-bold text-gray-900">{conversationTitle}</h2>
+              <span className="text-2xl">🌸</span>
+            </div>
           </div>
           <Button
             variant="ghost"
             size="icon"
-            onClick={onClose}
-            className="rounded-full hover:bg-white/50"
+            onClick={handleClose}
+            className="h-10 w-10 rounded-full hover:bg-gray-200"
           >
-            <X className="w-5 h-5" />
+            <X className="h-5 w-5 text-gray-600" />
           </Button>
         </div>
 
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-gradient-to-b from-pink-50/30 to-white">
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
-            >
-              <div
-                className={`max-w-[80%] rounded-2xl px-5 py-4 shadow-sm ${
-                  message.role === "user"
-                    ? "bg-gradient-to-br from-[#5D9D61] to-[#4a7d4e] text-white"
-                    : "bg-white border border-pink-100"
-                }`}
-              >
-                <div
-                  className={`prose prose-sm max-w-none ${
-                    message.role === "user" ? "prose-invert" : ""
-                  }`}
-                  dangerouslySetInnerHTML={{
-                    __html: renderMarkdown(message.content),
-                  }}
-                />
+        {/* Main chat area */}
+        <ScrollArea className="flex-1 px-6" ref={scrollAreaRef}>
+          <div className="space-y-4 py-6">
+            {messages.length === 0 && (
+              <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+                <p className="text-gray-900 text-lg leading-relaxed">
+                  The Success Hub is closed for the night. Business Hours: 7 AM - 11 PM ET. Remember: Work-Life Balance
+                  means rest too! 💚
+                </p>
               </div>
-            </div>
-          ))}
-          {isLoading && (
-            <div className="flex justify-start">
-              <div className="bg-white border border-pink-100 rounded-2xl px-5 py-4 shadow-sm">
-                <div className="flex gap-2">
-                  <div className="w-2 h-2 bg-[#E26C73] rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                  <div className="w-2 h-2 bg-[#E26C73] rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                  <div className="w-2 h-2 bg-[#E26C73] rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+            )}
+
+            {messages.map((message) => (
+              <div key={message.id} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
+                <div
+                  className={`max-w-[80%] rounded-2xl p-5 shadow-sm ${
+                    message.role === "user"
+                      ? "bg-[#5D9D61] text-white"
+                      : "bg-white border border-gray-200 text-gray-900"
+                  }`}
+                >
+                  {message.role === "user" ? (
+                    <p className="text-white leading-relaxed text-base">{message.content}</p>
+                  ) : (
+                    <div className="prose prose-sm max-w-none [&_p]:text-gray-900 [&_p]:leading-relaxed [&_p]:text-base">
+                      {renderMarkdown(message.content)}
+                    </div>
+                  )}
                 </div>
               </div>
-            </div>
-          )}
-          <div ref={messagesEndRef} />
-        </div>
+            ))}
 
-        {/* Input */}
-        <form onSubmit={handleSubmit} className="p-6 border-t bg-white">
-          <div className="flex gap-3 items-center">
+            {isLoading && (
+              <div className="flex justify-start">
+                <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
+                  <Loader2 className="h-5 w-5 animate-spin text-[#E26C73]" />
+                </div>
+              </div>
+            )}
+          </div>
+        </ScrollArea>
+
+        <form onSubmit={handleSubmit} data-chat-form className="px-6 py-5 border-t border-gray-200">
+          <div className="flex gap-3 items-end">
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault()
+                  handleSubmit(e)
+                }
+              }}
               placeholder="Type your message..."
+              className="flex-1 h-14 text-base px-5 border-2 border-gray-300 rounded-xl focus:border-[#E26C73] bg-white"
               disabled={isLoading}
-              className="flex-1 h-14 px-5 text-base rounded-xl border-gray-200 focus:border-[#E26C73] focus:ring-[#E26C73]"
             />
             <Button
               type="submit"
               disabled={isLoading || !input.trim()}
-              className="h-14 w-14 rounded-xl bg-gradient-to-br from-[#5D9D61] to-[#E26C73] hover:from-[#4a7d4e] hover:to-[#d45c63] disabled:opacity-50 shadow-md"
+              size="lg"
+              className="h-14 w-14 bg-gradient-to-r from-[#5D9D61] to-[#E26C73] hover:from-[#5D9D61]/90 hover:to-[#E26C73]/90 text-white rounded-xl flex-shrink-0"
             >
-              <Send className="w-5 h-5 text-white" />
+              {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
             </Button>
           </div>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   )
 }
+
+export default CherryBlossomChatModal
