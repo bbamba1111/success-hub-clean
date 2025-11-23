@@ -32,7 +32,7 @@ export default function CherryBlossomChatModal({
   onClose,
   prefillMessage,
   conversationTitle,
-  executiveRole = 'Cherry Blossom Co-Guide',
+  executiveRole = '4-Hour Focused CEO Workday Guide',
 }: CherryBlossomChatModalProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -332,7 +332,7 @@ export default function CherryBlossomChatModal({
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className="max-w-3xl">
           <DialogHeader>
-            <DialogTitle className="text-2xl">Cherry Blossom Co-Guide</DialogTitle>
+            <DialogTitle className="text-2xl">4-Hour Focused CEO Workday Guide</DialogTitle>
             <DialogDescription className="text-lg mt-1">
               Work-Life Balance & Lifestyle Design
             </DialogDescription>
@@ -342,7 +342,7 @@ export default function CherryBlossomChatModal({
             <LogIn className="w-16 h-16 mx-auto mb-6 text-primary" />
             <h3 className="text-2xl font-bold mb-4">Log In to Continue</h3>
             <p className="text-lg text-muted-foreground mb-8 max-w-md mx-auto">
-              Access your Cherry Blossom Co-Guide conversations and build your personalized work-life balance journey.
+              Access your 4-Hour Focused CEO Workday Guide conversations and build your personalized work-life balance journey.
             </p>
             <Button size="lg" onClick={handleLogin} className="text-lg px-8">
               <LogIn className="w-5 h-5 mr-2" />
@@ -360,7 +360,7 @@ export default function CherryBlossomChatModal({
         <DialogHeader className="px-6 pt-6 pb-4 border-b">
           <div className="flex items-center justify-between">
             <div>
-              <DialogTitle className="text-2xl">Cherry Blossom Co-Guide</DialogTitle>
+              <DialogTitle className="text-2xl">4-Hour Focused CEO Workday Guide</DialogTitle>
               <DialogDescription className="text-lg mt-1">
                 {conversationTitle || 'Work-Life Balance & Lifestyle Design'}
               </DialogDescription>
