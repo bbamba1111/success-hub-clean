@@ -1,201 +1,58 @@
 "use client"
 
-import { useState, useEffect, useRef } from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Input } from '@/components/ui/input';
-import { Send, Loader2, X, LogIn } from 'lucide-react';
-import { createClient } from '@/lib/supabase/client';
+import type React from "react"
 
-interface CherryBlossomChatModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  prefillMessage?: string;
-  conversationTitle?: string;
-  executiveRole?: string;
-}
+import { useState, useRef, useEffect } from "react"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Send, Loader2, X } from 'lucide-react'
+import { renderMarkdown } from "@/lib/utils/markdown-renderer"
 
 interface Message {
-  role: "user" | "assistant";
-  content: string;
+  role: "user" | "assistant"
+  content: string
 }
 
-export default function CherryBlossomChatModal({
+interface CherryBlossomChatModalProps {
+  isOpen: boolean
+  onClose: () => void
+  prefillMessage?: string
+  conversationTitle?: string
+  executiveRole?: string
+}
+
+export function CherryBlossomChatModal({
   isOpen,
   onClose,
-  prefillMessage,
-  conversationTitle,
-  executiveRole = '4-Hour Focused CEO Workday Guide',
+  prefillMessage = "",
+  conversationTitle = "Cherry Blossom Coaching Session",
+  executiveRole = "Work-Life Balance Coach",
 }: CherryBlossomChatModalProps) {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [conversationId, setConversationId] = useState<string | null>(null);
-  const [isLoadingConversation, setIsLoadingConversation] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const prefillRef = useRef<string | undefined>(prefillMessage);
-  const titleRef = useRef<string | undefined>(conversationTitle);
-  const supabase = createClient();
+  const [messages, setMessages] = useState<Message[]>([])
+  const [input, setInput] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const [hasStarted, setHasStarted] = useState(false)
+  const scrollAreaRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (isOpen) {
-      checkAuth();
+    if (isOpen && !hasStarted) {
+      setHasStarted(true)
+      handleWelcome()
     }
-  }, [isOpen]);
+  }, [isOpen])
 
   useEffect(() => {
-    const prefillChanged = prefillMessage !== prefillRef.current;
-    const titleChanged = conversationTitle !== titleRef.current;
-
-    if (isOpen && isAuthenticated && (prefillChanged || titleChanged)) {
-      prefillRef.current = prefillMessage;
-      titleRef.current = conversationTitle;
-      createNewConversation();
-    } else if (isOpen && isAuthenticated) {
-      loadOrCreateConversation();
+    if (scrollAreaRef.current) {
+      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
     }
-  }, [isOpen, isAuthenticated, prefillMessage, conversationTitle, executiveRole]);
+  }, [messages])
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isLoading]);
-
-  const checkAuth = async () => {
-    setIsCheckingAuth(true);
+  const handleWelcome = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      setIsAuthenticated(!!user);
-    } catch (error) {
-      console.error('Auth check error:', error);
-      setIsAuthenticated(false);
-    } finally {
-      setIsCheckingAuth(false);
-    }
-  };
-
-  const createNewConversation = async () => {
-    setIsLoadingConversation(true);
-
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        setIsLoadingConversation(false);
-        if (prefillMessage) {
-          setInput(prefillMessage);
-        }
-        return;
-      }
-
-      const { data: newConv } = await supabase
-        .from('conversations')
-        .insert({
-          user_id: user.id,
-          title: conversationTitle || 'Cherry Blossom Chat',
-          executive_role: executiveRole,
-        })
-        .select()
-        .single();
-
-      const convId = newConv.id;
-      setConversationId(convId);
-      setMessages([]);
-
-      if (prefillMessage) {
-        setInput(prefillMessage);
-      }
-
-      // Send welcome message for new conversations
-      sendWelcomeMessage(convId);
-    } catch (error) {
-      console.error('Error creating conversation:', error);
-      setIsLoadingConversation(false);
-    }
-  };
-
-  const loadOrCreateConversation = async () => {
-    setIsLoadingConversation(true);
-
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        setIsLoadingConversation(false);
-        return;
-      }
-
-      const { data: existingConversations } = await supabase
-        .from('conversations')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('executive_role', executiveRole)
-        .eq('title', conversationTitle || 'Cherry Blossom Chat')
-        .order('updated_at', { ascending: false })
-        .limit(1);
-
-      let convId: string;
-      let isNewConversation = false;
-
-      if (existingConversations && existingConversations.length > 0) {
-        convId = existingConversations[0].id;
-      } else {
-        const { data: newConv } = await supabase
-          .from('conversations')
-          .insert({
-            user_id: user.id,
-            title: conversationTitle || 'Cherry Blossom Chat',
-            executive_role: executiveRole,
-          })
-          .select()
-          .single();
-
-        convId = newConv.id;
-        isNewConversation = true;
-      }
-
-      setConversationId(convId);
-
-      const { data: existingMessages } = await supabase
-        .from('messages')
-        .select('*')
-        .eq('conversation_id', convId)
-        .order('created_at', { ascending: true });
-
-      if (existingMessages && existingMessages.length > 0) {
-        const formattedMessages = existingMessages.map((msg: any) => ({
-          role: msg.role,
-          content: msg.content,
-        }));
-        setMessages(formattedMessages);
-        setIsLoadingConversation(false);
-      } else if (isNewConversation) {
-        // Send welcome message for new conversations
-        if (prefillMessage) {
-          setInput(prefillMessage);
-        }
-        sendWelcomeMessage(convId);
-      } else {
-        if (prefillMessage) {
-          setInput(prefillMessage);
-        }
-        setIsLoadingConversation(false);
-      }
-    } catch (error) {
-      console.error('Error loading conversation:', error);
-      setIsLoadingConversation(false);
-    }
-  };
-
-  const sendWelcomeMessage = async (convId: string) => {
-    setIsLoading(true);
-    try {
+      setIsLoading(true)
+      console.log("[v0] Fetching welcome message from /api/chat/cherry-blossom")
       const response = await fetch("/api/chat/cherry-blossom", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -203,244 +60,195 @@ export default function CherryBlossomChatModal({
           executiveRole,
           isWelcome: true,
         }),
-      });
+      })
 
-      const data = await response.json();
-      
+      console.log("[v0] Welcome response status:", response.status)
+      console.log("[v0] Welcome content-type:", response.headers.get("content-type"))
+
+      if (!response.ok) {
+        throw new Error("Failed to get welcome message")
+      }
+
+      const data = await response.json()
+      console.log("[v0] Welcome data:", data)
+      console.log("[v0] data.message type:", typeof data.message)
+      console.log("[v0] data.message preview:", String(data.message).substring(0, 100))
+
       if (data.message) {
-        const welcomeMessage: Message = { role: "assistant", content: data.message };
-        setMessages([welcomeMessage]);
+        setMessages([{ role: "assistant", content: data.message }])
+      } else {
+        setMessages([
+          {
+            role: "assistant",
+            content: "Welcome! I'm here to help you design your 4-Hour CEO Workday. How can I assist you today?",
+          },
+        ])
+      }
 
-        // Save welcome message to Supabase
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          await supabase.from('messages').insert({
-            conversation_id: convId,
-            role: 'assistant',
-            content: data.message,
-          });
-        }
+      if (prefillMessage) {
+        setTimeout(() => {
+          setInput(prefillMessage)
+        }, 500)
       }
     } catch (error) {
-      console.error("[Cherry Blossom] Welcome message error:", error);
+      console.error("Error getting welcome:", error)
+      setMessages([
+        {
+          role: "assistant",
+          content: "Welcome! I'm here to help you design your 4-Hour CEO Workday. How can I assist you today?",
+        },
+      ])
     } finally {
-      setIsLoading(false);
-      setIsLoadingConversation(false);
+      setIsLoading(false)
     }
-  };
+  }
 
-  const sendMessage = async () => {
-    if (!input.trim() || isLoading || !conversationId) return;
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const messageToSend = input.trim()
+    if (!messageToSend || isLoading) return
 
-    const userMessage: Message = { role: "user", content: input };
-    setMessages((prev) => [...prev, userMessage]);
-    setInput("");
-    setIsLoading(true);
+    const userMessage: Message = { role: "user", content: messageToSend }
+    setMessages((prev) => [...prev, userMessage])
+    setInput("")
+    setIsLoading(true)
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        await supabase.from('messages').insert({
-          conversation_id: conversationId,
-          role: 'user',
-          content: input,
-        });
-
-        await supabase
-          .from('conversations')
-          .update({ updated_at: new Date().toISOString() })
-          .eq('id', conversationId);
-      }
-
+      console.log("[v0] Sending message to /api/chat/cherry-blossom")
       const response = await fetch("/api/chat/cherry-blossom", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: messages.map((m) => ({ role: m.role, content: m.content })),
+          messages: [...messages, userMessage],
           executiveRole,
           isWelcome: false,
         }),
-      });
+      })
 
-      console.log("[Cherry Blossom] Response status:", response.status);
+      console.log("[v0] Chat response status:", response.status)
+      console.log("[v0] Chat content-type:", response.headers.get("content-type"))
 
-      const contentType = response.headers.get("content-type");
+      const contentType = response.headers.get("content-type")
       if (!contentType || !contentType.includes("application/json")) {
-        const text = await response.text();
-        console.error("[Cherry Blossom] Non-JSON response:", text);
-        throw new Error("Server returned non-JSON response");
+        const text = await response.text()
+        console.error("[v0] Non-JSON response:", text)
+        throw new Error("Server returned non-JSON response")
       }
 
-      const data = await response.json();
-      console.log("[Cherry Blossom] Response data:", data);
+      const data = await response.json()
+      console.log("[v0] Chat data:", data)
+      console.log("[v0] data.message type:", typeof data.message)
+      console.log("[v0] data.message preview:", String(data.message).substring(0, 100))
 
       if (data.message) {
-        const assistantMessage: Message = { role: "assistant", content: data.message };
-        setMessages((prev) => [...prev, assistantMessage]);
-
-        if (user) {
-          await supabase.from('messages').insert({
-            conversation_id: conversationId,
-            role: 'assistant',
-            content: data.message,
-          });
-        }
+        setMessages((prev) => [...prev, { role: "assistant", content: data.message }])
       } else if (data.error) {
-        console.error("[Cherry Blossom] API error:", data.error);
-        setMessages((prev) => [
-          ...prev,
-          { role: "assistant", content: `Error: ${data.error}` },
-        ]);
+        console.error("[v0] API error:", data.error)
+        setMessages((prev) => [...prev, { role: "assistant", content: `Error: ${data.error}` }])
       } else {
-        setMessages((prev) => [
-          ...prev,
-          { role: "assistant", content: "Sorry, I couldn't process that request." },
-        ]);
+        console.error("[v0] Unexpected response format:", data)
+        setMessages((prev) => [...prev, { role: "assistant", content: "Sorry, I couldn't process that request." }])
       }
     } catch (error) {
-      console.error("[Cherry Blossom] Chat error:", error);
+      console.error("[v0] Error:", error)
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "Sorry, there was an error." },
-      ]);
+        {
+          role: "assistant",
+          content: "I apologize, but I'm having trouble responding right now. Please try again.",
+        },
+      ])
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
-
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    sendMessage();
-  };
-
-  const handleLogin = () => {
-    window.location.href = '/auth/login';
-  };
-
-  if (isCheckingAuth) {
-    return (
-      <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="max-w-3xl h-[600px] flex items-center justify-center">
-          <Loader2 className="w-8 h-8 animate-spin text-primary" />
-        </DialogContent>
-      </Dialog>
-    );
   }
 
-  if (!isAuthenticated) {
-    return (
-      <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="max-w-3xl">
-          <DialogHeader>
-            <DialogTitle className="text-2xl">4-Hour Focused CEO Workday Guide</DialogTitle>
-            <DialogDescription className="text-lg mt-1">
-              Work-Life Balance & Lifestyle Design
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="text-center py-12">
-            <LogIn className="w-16 h-16 mx-auto mb-6 text-primary" />
-            <h3 className="text-2xl font-bold mb-4">Log In to Continue</h3>
-            <p className="text-lg text-muted-foreground mb-8 max-w-md mx-auto">
-              Access your 4-Hour Focused CEO Workday Guide conversations and build your personalized work-life balance journey.
-            </p>
-            <Button size="lg" onClick={handleLogin} className="text-lg px-8">
-              <LogIn className="w-5 h-5 mr-2" />
-              Log In to Continue
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-    );
+  const handleClose = () => {
+    setMessages([])
+    setInput("")
+    setHasStarted(false)
+    onClose()
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl h-[600px] flex flex-col p-0">
-        <DialogHeader className="px-6 pt-6 pb-4 border-b">
-          <div className="flex items-center justify-between">
-            <div>
-              <DialogTitle className="text-2xl">4-Hour Focused CEO Workday Guide</DialogTitle>
-              <DialogDescription className="text-lg mt-1">
-                {conversationTitle || 'Work-Life Balance & Lifestyle Design'}
-              </DialogDescription>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
+      <DialogContent className="max-w-5xl h-[85vh] flex flex-col p-0 gap-0 bg-[#FDF9F5]">
+        {/* Header with soft pink background */}
+        <div className="bg-[#FCF2F3] border-b border-gray-200 px-6 py-5 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-full bg-white border-2 border-[#E26C73]/30 flex items-center justify-center flex-shrink-0">
+              <span className="text-3xl">🌸</span>
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onClose}
-              data-testid="button-close-cherry"
-            >
-              <X className="w-5 h-5" />
-            </Button>
+            <div className="flex items-center gap-3">
+              <h2 className="text-2xl font-bold text-gray-900">{conversationTitle}</h2>
+              <span className="text-2xl">🌸</span>
+            </div>
           </div>
-        </DialogHeader>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleClose}
+            className="h-10 w-10 rounded-full hover:bg-gray-200"
+          >
+            <X className="h-5 w-5 text-gray-600" />
+          </Button>
+        </div>
 
-        <ScrollArea className="flex-1 px-6">
-          {isLoadingConversation ? (
-            <div className="flex items-center justify-center h-full">
-              <Loader2 className="w-8 h-8 animate-spin text-primary" />
-            </div>
-          ) : (
-            <div className="space-y-4 py-4">
-              {messages.map((message, index) => (
+        {/* Main chat area */}
+        <ScrollArea className="flex-1 px-6" ref={scrollAreaRef}>
+          <div className="space-y-4 py-6">
+            {messages.map((message, index) => (
+              <div key={index} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
                 <div
-                  key={index}
-                  className={`flex ${
-                    message.role === 'user' ? 'justify-end' : 'justify-start'
+                  className={`max-w-[80%] rounded-2xl p-5 shadow-sm ${
+                    message.role === "user"
+                      ? "bg-[#5D9D61] text-white"
+                      : "bg-white border border-gray-200 text-gray-900"
                   }`}
                 >
-                  <div
-                    className={`max-w-[80%] rounded-lg px-4 py-3 ${
-                      message.role === 'user'
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-muted'
-                    }`}
-                  >
-                    <p className="text-lg leading-relaxed whitespace-pre-wrap">
-                      {message.content}
-                    </p>
-                  </div>
+                  {message.role === "user" ? (
+                    <p className="text-white leading-relaxed text-base">{message.content}</p>
+                  ) : (
+                    <div className="prose prose-sm max-w-none [&_p]:text-gray-900 [&_p]:leading-relaxed [&_p]:text-base">
+                      {renderMarkdown(message.content)}
+                    </div>
+                  )}
                 </div>
-              ))}
-              {isLoading && (
-                <div className="flex justify-start">
-                  <div className="bg-muted rounded-lg px-4 py-3">
-                    <Loader2 className="w-5 h-5 animate-spin text-primary" />
-                  </div>
+              </div>
+            ))}
+            {isLoading && (
+              <div className="flex justify-start">
+                <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
+                  <Loader2 className="h-5 w-5 animate-spin text-[#E26C73]" />
                 </div>
-              )}
-              <div ref={messagesEndRef} />
-            </div>
-          )}
+              </div>
+            )}
+          </div>
         </ScrollArea>
 
-        <div className="px-6 py-4 border-t">
-          <form onSubmit={onSubmit} className="flex gap-2">
+        {/* Input form */}
+        <form onSubmit={handleSubmit} className="px-6 py-5 border-t border-gray-200">
+          <div className="flex gap-3 items-end">
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Message Cherry Blossom..."
-              disabled={isLoading || isLoadingConversation}
-              className="flex-1 text-lg"
-              data-testid="input-cherry-message"
+              placeholder="Type your message..."
+              className="flex-1 h-14 text-base px-5 border-2 border-gray-300 rounded-xl focus:border-[#E26C73] bg-white"
+              disabled={isLoading}
             />
             <Button
               type="submit"
-              disabled={isLoading || isLoadingConversation || !input.trim()}
+              disabled={isLoading || !input.trim()}
               size="lg"
-              data-testid="button-cherry-send"
+              className="h-14 w-14 bg-gradient-to-r from-[#5D9D61] to-[#E26C73] hover:from-[#5D9D61]/90 hover:to-[#E26C73]/90 text-white rounded-xl flex-shrink-0"
             >
-              {isLoading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                <Send className="w-5 h-5" />
-              )}
+              {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
             </Button>
-          </form>
-        </div>
+          </div>
+        </form>
       </DialogContent>
     </Dialog>
-  );
+  )
 }
 
+export default CherryBlossomChatModal
