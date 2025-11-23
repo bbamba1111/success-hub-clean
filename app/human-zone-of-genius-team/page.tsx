@@ -175,11 +175,11 @@ const humanSkills = [
 ]
 
 export default function HumanZoneOfGeniusTeam() {
-  const [isAssessmentChatOpen, setIsAssessmentChatOpen] = useState(false)
+  const [isCEOWorkdayChatOpen, setIsCEOWorkdayChatOpen] = useState(false)
   const [selectedExecutive, setSelectedExecutive] = useState<(typeof executives)[0] | null>(null)
 
-  const assessmentPrefillMessage =
-    "I want to design my personalized 4-Hour Focused CEO Workday (1:00-5:00 PM). Can you guide me through a comprehensive assessment to create my customized coaching/consulting business journey based on my zone of genius, entrepreneurial status, and work-life goals?"
+  const workdayPrefillMessage =
+    "I want to design my personalized 4-Hour CEO Workday (1:00-5:00 PM, Monday-Thursday). Can you help me identify my 2-3 highest-value human-only skills and create a focused schedule that maximizes my impact?"
 
   return (
     <div className="min-h-screen bg-background">
@@ -217,11 +217,11 @@ export default function HumanZoneOfGeniusTeam() {
           <Button
             size="lg"
             className="text-lg px-8 py-6 bg-[#E26C73] hover:bg-[#E26C73]/90 text-white"
-            onClick={() => setIsAssessmentChatOpen(true)}
-            data-testid="button-start-assessment"
+            onClick={() => setIsCEOWorkdayChatOpen(true)}
+            data-testid="button-design-workday"
           >
             <Brain className="w-5 h-5 mr-2" />
-            Start Your Zone of Genius Assessment
+            Design Your 4-Hour CEO Workday
           </Button>
         </div>
       </section>
@@ -250,7 +250,7 @@ export default function HumanZoneOfGeniusTeam() {
         </div>
       </section>
 
-      {/* 4. 8 HUMAN-ONLY SKILLS - Soft Coral Pink */}
+      {/* 3. 8 HUMAN-ONLY SKILLS - Soft Coral Pink */}
       <section className="py-16 px-6 bg-[#FCF2F3]">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-4 text-[#5D9D61]">Your 8 Human-Only Business Skills</h2>
@@ -274,7 +274,7 @@ export default function HumanZoneOfGeniusTeam() {
         </div>
       </section>
 
-      {/* 5. AI EXECUTIVE TEAM SERVES YOU - Soft White */}
+      {/* 4. AI EXECUTIVE TEAM SERVES YOU - Soft White */}
       <section className="py-16 px-6 bg-white">
         <div className="max-w-6xl mx-auto text-center">
           <h2 className="text-4xl font-bold mb-6 text-[#E26C73]">The AI Executive Team Serves You</h2>
@@ -311,7 +311,7 @@ export default function HumanZoneOfGeniusTeam() {
         </div>
       </section>
 
-      {/* 6. YOUR 16 AI EXECUTIVE TEAM - Soft Peachy Tan */}
+      {/* 5. YOUR 16 AI EXECUTIVE TEAM - Soft Peachy Tan */}
       <section className="py-20 px-6 bg-[#FDF9F5]">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-4 text-[#5D9D61]">Your 16 AI Executive Team</h2>
@@ -353,11 +353,11 @@ export default function HumanZoneOfGeniusTeam() {
       </section>
 
       <CherryBlossomChatModal
-        isOpen={isAssessmentChatOpen}
-        onClose={() => setIsAssessmentChatOpen(false)}
-        prefillMessage={assessmentPrefillMessage}
-        conversationTitle="Human Zone of Genius Assessment"
-        executiveRole="Cherry Blossom - CEO Workday"
+        isOpen={isCEOWorkdayChatOpen}
+        onClose={() => setIsCEOWorkdayChatOpen(false)}
+        prefillMessage={workdayPrefillMessage}
+        conversationTitle="4-Hour CEO Workday Design"
+        executiveRole="CEO Workday Coach"
       />
 
       {selectedExecutive && (
