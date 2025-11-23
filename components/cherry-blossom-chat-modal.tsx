@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Send, Loader2, X } from 'lucide-react'
 import { renderMarkdown } from "@/lib/utils/markdown-renderer"
+import Image from "next/image"
 
 interface Message {
   role: "user" | "assistant"
@@ -52,7 +53,6 @@ export function CherryBlossomChatModal({
   const handleWelcome = async () => {
     try {
       setIsLoading(true)
-      console.log("[v0] Fetching welcome message from /api/chat/cherry-blossom")
       const response = await fetch("/api/chat/cherry-blossom", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -62,17 +62,11 @@ export function CherryBlossomChatModal({
         }),
       })
 
-      console.log("[v0] Welcome response status:", response.status)
-      console.log("[v0] Welcome content-type:", response.headers.get("content-type"))
-
       if (!response.ok) {
         throw new Error("Failed to get welcome message")
       }
 
       const data = await response.json()
-      console.log("[v0] Welcome data:", data)
-      console.log("[v0] data.message type:", typeof data.message)
-      console.log("[v0] data.message preview:", String(data.message).substring(0, 100))
 
       if (data.message) {
         setMessages([{ role: "assistant", content: data.message }])
@@ -114,7 +108,6 @@ export function CherryBlossomChatModal({
     setIsLoading(true)
 
     try {
-      console.log("[v0] Sending message to /api/chat/cherry-blossom")
       const response = await fetch("/api/chat/cherry-blossom", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -125,32 +118,22 @@ export function CherryBlossomChatModal({
         }),
       })
 
-      console.log("[v0] Chat response status:", response.status)
-      console.log("[v0] Chat content-type:", response.headers.get("content-type"))
-
       const contentType = response.headers.get("content-type")
       if (!contentType || !contentType.includes("application/json")) {
-        const text = await response.text()
-        console.error("[v0] Non-JSON response:", text)
         throw new Error("Server returned non-JSON response")
       }
 
       const data = await response.json()
-      console.log("[v0] Chat data:", data)
-      console.log("[v0] data.message type:", typeof data.message)
-      console.log("[v0] data.message preview:", String(data.message).substring(0, 100))
 
       if (data.message) {
         setMessages((prev) => [...prev, { role: "assistant", content: data.message }])
       } else if (data.error) {
-        console.error("[v0] API error:", data.error)
         setMessages((prev) => [...prev, { role: "assistant", content: `Error: ${data.error}` }])
       } else {
-        console.error("[v0] Unexpected response format:", data)
         setMessages((prev) => [...prev, { role: "assistant", content: "Sorry, I couldn't process that request." }])
       }
     } catch (error) {
-      console.error("[v0] Error:", error)
+      console.error("Error:", error)
       setMessages((prev) => [
         ...prev,
         {
@@ -176,8 +159,8 @@ export function CherryBlossomChatModal({
         {/* Header with soft pink background */}
         <div className="bg-[#FCF2F3] border-b border-gray-200 px-6 py-5 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-white border-2 border-[#E26C73]/30 flex items-center justify-center flex-shrink-0">
-              <span className="text-3xl">🌸</span>
+            <div className="w-14 h-14 rounded-full bg-white border-2 border-[#E26C73]/30 flex items-center justify-center flex-shrink-0 overflow-hidden">
+              <Image src="/images/logo.png" alt="Logo" width={56} height={56} className="w-full h-full object-cover" />
             </div>
             <div className="flex items-center gap-3">
               <h2 className="text-2xl font-bold text-gray-900">{conversationTitle}</h2>
@@ -240,9 +223,13 @@ export function CherryBlossomChatModal({
               type="submit"
               disabled={isLoading || !input.trim()}
               size="lg"
-              className="h-14 w-14 bg-gradient-to-r from-[#5D9D61] to-[#E26C73] hover:from-[#5D9D61]/90 hover:to-[#E26C73]/90 text-white rounded-xl flex-shrink-0"
+              className="h-14 w-14 bg-gradient-to-r from-[#5D9D61] to-[#E26C73] hover:from-[#5D9D61]/90 hover:to-[#E26C73]/90 text-white rounded-xl flex-shrink-0 flex items-center justify-center"
             >
-              {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
+              {isLoading ? (
+                <Loader2 className="h-5 w-5 animate-spin text-white" />
+              ) : (
+                <Send className="h-5 w-5 text-white" />
+              )}
             </Button>
           </div>
         </form>
