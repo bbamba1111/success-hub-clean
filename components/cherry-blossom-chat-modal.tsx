@@ -48,17 +48,27 @@ export default function CherryBlossomChatModal({
   const handleWelcomeMessage = async () => {
     try {
       setIsLoading(true)
-      const response = await fetch("/api/human-zone-chat", {
+      const response = await fetch("/api/chat/cherry-blossom", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ isWelcome: true }),
       })
+
+      const contentType = response.headers.get("content-type")
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new Error("API returned non-JSON response")
+      }
 
       if (!response.ok) {
         throw new Error("Failed to get welcome message")
       }
 
       const data = await response.json()
+      
+      if (!data.message) {
+        throw new Error("No message in response")
+      }
+
       setMessages([{ role: "assistant", content: data.message }])
     } catch (error) {
       console.error("Error fetching welcome message:", error)
@@ -83,7 +93,7 @@ export default function CherryBlossomChatModal({
     setIsLoading(true)
 
     try {
-      const response = await fetch("/api/human-zone-chat", {
+      const response = await fetch("/api/chat/cherry-blossom", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -91,11 +101,21 @@ export default function CherryBlossomChatModal({
         }),
       })
 
+      const contentType = response.headers.get("content-type")
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new Error("API returned non-JSON response")
+      }
+
       if (!response.ok) {
         throw new Error("Failed to get response")
       }
 
       const data = await response.json()
+      
+      if (!data.message) {
+        throw new Error("No message in response")
+      }
+
       setMessages((prev) => [...prev, { role: "assistant", content: data.message }])
     } catch (error) {
       console.error("Error sending message:", error)
