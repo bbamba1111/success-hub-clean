@@ -120,7 +120,7 @@ export function SimpleChatModal({ isOpen, onClose, context, title }: SimpleChatM
 
     try {
       console.log("[v0] Sending message to API:", { message: input, context })
-
+lastAssistantMessageRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
       const response = await fetch("/api/cherry-blossom-chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
