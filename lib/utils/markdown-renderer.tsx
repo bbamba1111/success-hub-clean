@@ -1,139 +1,171 @@
-import React from 'react'
+import type React from "react"
 
-export function renderMarkdown(text: string): React.ReactNode {
-  console.log("[v0] Rendering markdown for text:", text.substring(0, 100))
-  
-  const lines = text.split('\n')
+export function renderMarkdown(content: string): React.ReactNode {
+  console.log("[v0] Rendering markdown:", content.substring(0, 100))
+
+  const lines = content.split("\n")
   const elements: React.ReactNode[] = []
-  let listItems: string[] = []
-  let listType: 'bullet' | 'number' | null = null
+  let listItems: React.ReactNode[] = []
+  let listType: "ul" | "ol" | null = null
+
+  const processInlineFormatting = (text: string, key: string) => {
+    const parts: React.ReactNode[] = []
+    const remaining = text
+    let partIndex = 0
+
+    // Process bold first (**text** or __text__)
+    const boldPattern = /(\*\*|__)((?:(?!\1).)+?)\1/g
+    let lastIndex = 0
+    let match
+
+    while ((match = boldPattern.exec(text)) !== null) {
+      // Add text before the match
+      if (match.index > lastIndex) {
+        const before = text.substring(lastIndex, match.index)
+        parts.push(...processItalics(before, `${key}-b${partIndex++}`))
+      }
+
+      parts.push(
+        <strong key={`${key}-bold-${partIndex++}`} className="font-bold text-[#4A7C4E] text-[1.05em]">
+          {match[2]}
+        </strong>,
+      )
+      lastIndex = match.index + match[0].length
+    }
+
+    // Add remaining text
+    if (lastIndex < text.length) {
+      parts.push(...processItalics(text.substring(lastIndex), `${key}-end`))
+    }
+
+    return parts.length > 0 ? parts : [text]
+  }
+
+  const processItalics = (text: string, key: string): React.ReactNode[] => {
+    const parts: React.ReactNode[] = []
+    const italicPattern = /(?<!\*)(\*|_)(?!\1)((?:(?!\1).)+?)\1(?!\*)/g
+    let lastIndex = 0
+    let match
+
+    while ((match = italicPattern.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        parts.push(text.substring(lastIndex, match.index))
+      }
+      parts.push(
+        <em key={`${key}-italic-${match.index}`} className="italic text-[#D5596B]">
+          {match[2]}
+        </em>,
+      )
+      lastIndex = match.index + match[0].length
+    }
+
+    if (lastIndex < text.length) {
+      parts.push(text.substring(lastIndex))
+    }
+
+    return parts.length > 0 ? parts : [text]
+  }
 
   const flushList = () => {
-    if (listItems.length > 0) {
-      if (listType === 'bullet') {
-        elements.push(
-          <ul key={elements.length} className="list-disc list-inside space-y-2 my-3 ml-4">
-            {listItems.map((item, i) => (
-              <li key={i} className="text-foreground leading-relaxed">{processInline(item)}</li>
-            ))}
-          </ul>
-        )
-      } else if (listType === 'number') {
-        elements.push(
-          <ol key={elements.length} className="list-decimal list-inside space-y-2 my-3 ml-4">
-            {listItems.map((item, i) => (
-              <li key={i} className="text-foreground leading-relaxed">{processInline(item)}</li>
-            ))}
-          </ol>
-        )
-      }
+    if (listItems.length > 0 && listType) {
+      const ListTag = listType
+      const className =
+        listType === "ul"
+          ? "list-disc list-outside mb-5 ml-6 space-y-2.5 marker:text-[#5D9D61]"
+          : "list-decimal list-outside mb-5 ml-6 space-y-2.5 marker:text-[#5D9D61] marker:font-semibold"
+
+      elements.push(
+        <ListTag key={`list-${elements.length}`} className={className}>
+          {listItems}
+        </ListTag>,
+      )
       listItems = []
       listType = null
     }
   }
 
-  lines.forEach((line) => {
-    // Headers
-    if (line.startsWith('### ')) {
+  lines.forEach((line, lineIndex) => {
+    const trimmedLine = line.trim()
+
+    if (!trimmedLine) {
       flushList()
-      elements.push(
-        <h3 key={elements.length} className="text-lg font-bold mt-4 mb-2 text-[#5D9D61]">
-          {processInline(line.slice(4))}
-        </h3>
-      )
-    } else if (line.startsWith('## ')) {
-      flushList()
-      elements.push(
-        <h2 key={elements.length} className="text-xl font-bold mt-4 mb-2 text-[#5D9D61]">
-          {processInline(line.slice(3))}
-        </h2>
-      )
-    } else if (line.startsWith('# ')) {
-      flushList()
-      elements.push(
-        <h1 key={elements.length} className="text-2xl font-bold mt-4 mb-3 text-[#E26C73]">
-          {processInline(line.slice(2))}
-        </h1>
-      )
+      return
     }
-    // Bullet lists (- or *)
-    else if (/^[-*]\s/.test(line)) {
-      const content = line.replace(/^[-*]\s+/, '')
-      if (listType !== 'bullet') {
+
+    // Headers - render as bold paragraphs instead of large headers
+    if (trimmedLine.startsWith("### ")) {
+      flushList()
+      const content = trimmedLine.substring(4)
+      elements.push(
+        <p key={`p-${lineIndex}`} className="mb-4 leading-[1.7] text-[0.95rem] font-bold">
+          {processInlineFormatting(content, `p-${lineIndex}`)}
+        </p>,
+      )
+      return
+    }
+
+    if (trimmedLine.startsWith("## ")) {
+      flushList()
+      const content = trimmedLine.substring(3)
+      elements.push(
+        <p key={`p-${lineIndex}`} className="mb-4 leading-[1.7] text-[0.95rem] font-bold">
+          {processInlineFormatting(content, `p-${lineIndex}`)}
+        </p>,
+      )
+      return
+    }
+
+    if (trimmedLine.startsWith("# ")) {
+      flushList()
+      const content = trimmedLine.substring(2)
+      elements.push(
+        <p key={`p-${lineIndex}`} className="mb-4 leading-[1.7] text-[0.95rem] font-bold">
+          {processInlineFormatting(content, `p-${lineIndex}`)}
+        </p>,
+      )
+      return
+    }
+
+    // Bullet points (- or *)
+    if (trimmedLine.match(/^[-*]\s+/)) {
+      if (listType !== "ul") {
         flushList()
-        listType = 'bullet'
+        listType = "ul"
       }
-      listItems.push(content)
-    }
-    // Numbered lists
-    else if (/^\d+\.\s/.test(line)) {
-      const content = line.replace(/^\d+\.\s+/, '')
-      if (listType !== 'number') {
-        flushList()
-        listType = 'number'
-      }
-      listItems.push(content)
-    }
-    // Empty lines
-    else if (line.trim() === '') {
-      flushList()
-      elements.push(<div key={elements.length} className="h-2" />)
-    }
-    // Regular paragraphs
-    else {
-      flushList()
-      elements.push(
-        <p key={elements.length} className="mb-2 text-foreground leading-relaxed">
-          {processInline(line)}
-        </p>
+      const content = trimmedLine.substring(2)
+      listItems.push(
+        <li key={`li-${lineIndex}`} className="leading-relaxed pl-2">
+          {processInlineFormatting(content, `li-${lineIndex}`)}
+        </li>,
       )
+      return
     }
+
+    // Numbered lists (1. 2. etc)
+    if (trimmedLine.match(/^\d+\.\s+/)) {
+      if (listType !== "ol") {
+        flushList()
+        listType = "ol"
+      }
+      const content = trimmedLine.replace(/^\d+\.\s+/, "")
+      listItems.push(
+        <li key={`li-${lineIndex}`} className="leading-relaxed pl-2">
+          {processInlineFormatting(content, `li-${lineIndex}`)}
+        </li>,
+      )
+      return
+    }
+
+    // Regular paragraph
+    flushList()
+    elements.push(
+      <p key={`p-${lineIndex}`} className="mb-4 leading-[1.7] text-[0.95rem]">
+        {processInlineFormatting(trimmedLine, `p-${lineIndex}`)}
+      </p>,
+    )
   })
 
   flushList()
-  return <div className="space-y-1">{elements}</div>
-}
 
-function processInline(text: string): React.ReactNode {
-  const parts: React.ReactNode[] = []
-  let remaining = text
-  let key = 0
-
-  while (remaining.length > 0) {
-    // Bold: **text** or __text__
-    const boldMatch = remaining.match(/^(.*?)(\*\*|__)(.+?)\2/)
-    if (boldMatch) {
-      if (boldMatch[1]) {
-        parts.push(<span key={key++}>{boldMatch[1]}</span>)
-      }
-      parts.push(
-        <strong key={key++} className="font-bold text-[#5D9D61]">
-          {boldMatch[3]}
-        </strong>
-      )
-      remaining = remaining.slice(boldMatch[0].length)
-      continue
-    }
-
-    // Italic: *text* or _text_ (but not ** or __)
-    const italicMatch = remaining.match(/^(.*?)([*_])(?!\2)(.+?)\2(?!\2)/)
-    if (italicMatch) {
-      if (italicMatch[1]) {
-        parts.push(<span key={key++}>{italicMatch[1]}</span>)
-      }
-      parts.push(
-        <em key={key++} className="italic text-[#E26C73]">
-          {italicMatch[3]}
-        </em>
-      )
-      remaining = remaining.slice(italicMatch[0].length)
-      continue
-    }
-
-    // No more matches, add the rest
-    parts.push(<span key={key++}>{remaining}</span>)
-    break
-  }
-
-  return parts.length > 0 ? <>{parts}</> : text
+  return <div className="space-y-3">{elements}</div>
 }
