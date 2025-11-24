@@ -294,7 +294,7 @@ export default function HomePage() {
               </CardContent>
             </Card>
 
-            {/* Step 1.2 - Intention Setting Card */}
+        {/* Step 1.2 - Intention Setting Card */}
 <Card className="bg-[#E26C73] border-0 text-white overflow-hidden">
   <CardHeader className="pb-4">
     <div className="flex items-center gap-3 mb-3">
