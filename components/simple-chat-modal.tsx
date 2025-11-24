@@ -3,10 +3,10 @@
 import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { X, Send, Loader2 } from "lucide-react"
+import { X, Send, Loader2 } from 'lucide-react'
 import { Textarea } from "@/components/ui/textarea"
 import type { JSX } from "react/jsx-runtime"
-// import { isWithinBusinessHours } from "@/lib/utils/business-hours"
+import { isWithinBusinessHours } from "@/lib/utils/business-hours"
 
 interface SimpleChatModalProps {
   isOpen: boolean
@@ -65,14 +65,15 @@ export function SimpleChatModal({ isOpen, onClose, context, title }: SimpleChatM
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const lastAssistantMessageRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (isOpen) {
-      // if (!isWithinBusinessHours()) {
-      //   alert("The Success Hub is closed for the night (11 PM - 7 AM ET). We'll see you tomorrow!")
-      //   onClose()
-      //   return
-      // }
+      if (!isWithinBusinessHours()) {
+        alert("The Success Hub is closed for the night (11 PM - 7 AM ET). We'll see you tomorrow!")
+        onClose()
+        return
+      }
 
       setMessages([])
       setInput("")
@@ -107,7 +108,11 @@ export function SimpleChatModal({ isOpen, onClose, context, title }: SimpleChatM
   }, [isOpen, context])
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+    if (messages.length > 0 && messages[messages.length - 1].role === "assistant") {
+      lastAssistantMessageRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+    } else {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+    }
   }, [messages, isLoading])
 
   const sendMessage = async () => {
@@ -183,19 +188,27 @@ export function SimpleChatModal({ isOpen, onClose, context, title }: SimpleChatM
         </CardHeader>
 
         <CardContent className="flex-1 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-[#7FB069]/5 to-white">
-          {messages.map((message, index) => (
-            <div key={index} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
+          {messages.map((message, index) => {
+            const isLastAssistantMessage = message.role === "assistant" && index === messages.length - 1
+
+            return (
               <div
-                className={`max-w-[80%] rounded-lg p-3 shadow-sm ${
-                  message.role === "user"
-                    ? "bg-gradient-to-r from-[#7FB069]/80 to-[#E26C73]/80 text-white"
-                    : "bg-white border border-[#E26C73]/20 text-gray-900"
-                }`}
+                key={index}
+                ref={isLastAssistantMessage ? lastAssistantMessageRef : null}
+                className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
               >
-                {formatMessage(message.content)}
+                <div
+                  className={`max-w-[80%] rounded-lg p-3 shadow-sm ${
+                    message.role === "user"
+                      ? "bg-gradient-to-r from-[#7FB069]/80 to-[#E26C73]/80 text-white"
+                      : "bg-white border border-[#E26C73]/20 text-gray-900"
+                  }`}
+                >
+                  {formatMessage(message.content)}
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
 
           {isLoading && (
             <div className="flex justify-start">
