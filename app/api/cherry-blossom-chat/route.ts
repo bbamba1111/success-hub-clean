@@ -2061,7 +2061,7 @@ export async function POST(req: NextRequest) {
       userPrompt =
         welcomePrompts[context] || "Please introduce yourself as Cherry Blossom and ask how you can help today."
     } else if (context) {
-      userPrompt = `[Context: ${context}]\n\n${message}`
+      userPrompt = `[Context: ${context}]\n[Formatting: Do NOT use markdown headers (***, **, *, ###, ##, #) in your response. Use bold text (**text**) for emphasis instead.]\n\n${message}`
     }
 
     conversationMessages.push({ role: "user", content: userPrompt })
