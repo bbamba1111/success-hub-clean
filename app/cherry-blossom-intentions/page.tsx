@@ -176,7 +176,7 @@ V = Vision & Visualization – seeing it clearly with all 5 senses
 E = Emotional Embodiment – step into BEING it
 N = Nurture – caring for mind, body, emotions and beliefs to sustain the success frequency
 
-I'm ready to begin! Please guide me through each step, then compile everything into ONE concise Intention Declaration Statement that I can write down and bring to the GROUNDING ceremony (Steps 5 & 6 happen live). Make it powerful, clear, and easy to remember!
+I'm ready to begin! Please guide me through each step, then compile everything into ONE short, brief, concise Intention Declaration Statement that I can write down, memorize, and declare in 2 mins or less and bring to the GROUNDING ceremony (Steps 5 & 6 happen live). Make it powerful, clear, and easy to remember!
 
 **STEP-BY-STEP PROCESS:**
 
@@ -194,14 +194,14 @@ Guide me to visualize and declare how living my Desired Work-Lifestyle creates a
 Guide me to declare this aloud with full presence and certainty:
 "I intend that, in order to manifest, all my intentions must be the will of My Creator and serve the Highest Good of the Universe, myself, and everyone concerned."
 
-**IMPORTANT: After completing all the steps above, compile Steps 1 through Step ${selectedAreas.length + 2} into ONE CONCISE INTENTION DECLARATION STATEMENT that includes:**
+**IMPORTANT: After completing all the steps above, compile Steps 1 through Step ${selectedAreas.length + 2} into ONE short, brief, concise Intention Declaration Statement that I can write down, memorize, and declare in 2 mins or less that includes:**
 - My gratitude for each focus area
 - My intentions for each focus area  
 - My vision for collective good
 - My divine alignment affirmation
 
 **WRITE IT DOWN:**
-After you compile my Intention Declaration Statement, please instruct me to write it down on paper using pages 9-10 of the 28-Day Desired Work-Lifestyle Intention Setting Guide (which I can download from the Success Hub). I will bring this written intention to the GROUNDING ceremony.
+After you compile my Intention Declaration Statement, please instruct me to write it down in your journal, or on a sheet of paper or on pages 9-10 of the 28-Day Desired Work-Lifestyle Intention Setting Guide (which I can download from the Success Hub). I will bring my written intention to the GROUNDING ceremony to be declared in unison with Thought Leader Barbara and/or other co-hort members.
 
 **GROUNDING CEREMONY OPTIONS - Steps 5 & 6 (Done Live):**
 Let me know that Steps 5 & 6 will be done live during the GROUNDING ceremony with one of these options:
