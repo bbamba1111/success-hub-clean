@@ -6,7 +6,6 @@ import { useState, useRef, useEffect } from "react"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { Send, Loader2, X } from 'lucide-react'
 import { renderMarkdown } from "@/lib/utils/markdown-renderer"
 import Image from "next/image"
@@ -35,7 +34,11 @@ export function CherryBlossomChatModal({
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [hasStarted, setHasStarted] = useState(false)
-  const scrollAreaRef = useRef<HTMLDivElement>(null)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
 
   useEffect(() => {
     if (isOpen && !hasStarted) {
@@ -45,9 +48,7 @@ export function CherryBlossomChatModal({
   }, [isOpen])
 
   useEffect(() => {
-    if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
-    }
+    scrollToBottom()
   }, [messages])
 
   const handleWelcome = async () => {
@@ -156,7 +157,7 @@ export function CherryBlossomChatModal({
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="max-w-5xl h-[85vh] flex flex-col p-0 gap-0 bg-[#FDF9F5]">
-        {/* Header with soft pink and green gradient background */}
+        {/* Header with soft pink background */}
         <div className="bg-[#FCF2F3] border-b border-gray-200 px-6 py-5 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-full bg-white border-2 border-[#E26C73]/30 flex items-center justify-center flex-shrink-0 overflow-hidden">
@@ -178,7 +179,7 @@ export function CherryBlossomChatModal({
         </div>
 
         {/* Main chat area */}
-        <ScrollArea className="flex-1 px-6" ref={scrollAreaRef}>
+        <div className="flex-1 overflow-y-auto px-6">
           <div className="space-y-4 py-6">
             {messages.map((message, index) => (
               <div key={index} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
@@ -206,8 +207,9 @@ export function CherryBlossomChatModal({
                 </div>
               </div>
             )}
+            <div ref={messagesEndRef} />
           </div>
-        </ScrollArea>
+        </div>
 
         {/* Input form */}
         <form onSubmit={handleSubmit} className="px-6 py-5 border-t border-gray-200">
@@ -223,12 +225,15 @@ export function CherryBlossomChatModal({
               type="submit"
               disabled={isLoading || !input.trim()}
               size="lg"
-              className="h-14 w-14 bg-gradient-to-r from-[#5D9D61] to-[#E26C73] hover:from-[#5D9D61]/90 hover:to-[#E26C73]/90 text-white rounded-xl flex-shrink-0 flex items-center justify-center"
+              className="h-14 px-6 bg-gradient-to-r from-[#5D9D61] to-[#E26C73] hover:from-[#5D9D61]/90 hover:to-[#E26C73]/90 text-white rounded-xl flex-shrink-0 flex items-center justify-center gap-2"
             >
               {isLoading ? (
-                <Loader2 className="h-5 w-5 animate-spin text-white" />
+                <Loader2 className="h-5 w-5 animate-spin" />
               ) : (
-                <Send className="h-5 w-5 text-white" />
+                <>
+                  <Send className="h-5 w-5" />
+                  <span className="font-medium">Send</span>
+                </>
               )}
             </Button>
           </div>
