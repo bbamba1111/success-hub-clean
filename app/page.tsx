@@ -343,28 +343,7 @@ export default function HomePage() {
             strokeWidth={2}
             d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
           />
-        </svg>
-        Download Your Guide
-      </h4>
-      <p className="text-white/80 text-sm mb-3">
-        Get the 28-Day Desired Work-Lifestyle Intention Setting Guide to write your intention on pages 9-10
-      </p>
-      <a
-        href="/downloads/28-Day-Intention-Setting-Guide.pdf"
-        download
-        className="inline-flex items-center gap-2 bg-white text-[#E26C73] px-4 py-2 rounded-lg font-semibold hover:bg-white/90 transition-colors text-sm"
-      >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-          />
-        </svg>
-        Download Intention Setting Guide (PDF)
-      </a>
-    </div>
+       
 
     <div className="flex flex-col gap-3 mt-3">
       <Link href="/focus-areas" className="block">
