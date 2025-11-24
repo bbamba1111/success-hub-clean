@@ -343,10 +343,21 @@ export default function HomePage() {
           Choose Your 1-3 Priority Focus Areas
         </Button>
       </Link>
+
+      <a
+        href="https://docs.google.com/document/d/1RtaoYOUQmmPSD2U5EaLPiilQifnSamE5Yo6SaOYf4UM/edit?usp=sharing"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block"
+      >
+        <Button className="w-full bg-transparent border-2 border-white text-white hover:bg-white/10 font-semibold">
+          <Download className="mr-2 h-4 w-4" />
+          Open The Intention Setting Guide
+        </Button>
+      </a>
     </div>
   </CardContent>
 </Card>
-
             {/* Step 1.3 - Preparation Checklist Card */}
             <Card className="bg-gradient-to-br from-[#7FB069] to-[#E26C73] border-0 text-white overflow-hidden">
               <CardHeader className="pb-4">
