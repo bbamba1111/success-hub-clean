@@ -97,14 +97,4 @@ export default function ExperiencesPage() {
                 </div>
                 <p className="text-muted-foreground leading-relaxed text-center">
                   Rewire your nervous system through neuroscience-backed rituals. Replace 6 hustle habits with practices
-                  that regulate hormones, retrain your brain, and sustain energy.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white border-0 shadow-lg">
-              <CardContent className="p-10">
-                <div className="text-center mb-6">
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-secondary/20 mb-4">
-                    <Clock className="w-8 h-8 text-secondary" />
-                 
+                  that regulate hormones, re
