@@ -194,8 +194,8 @@ export default function HumanZoneOfGeniusTeam() {
         </div>
       </header>
 
-      {/* 1. HERO - Soft Sage */}
-      <section className="relative overflow-hidden bg-soft sage">
+      {/* 1. HERO - Medium Sage */}
+      <section className="relative overflow-hidden bg-medium sage">
         <div className="max-w-5xl mx-auto px-6 py-20 text-center">
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-[#5D9D61]/20 via-[#E26C73]/20 to-[#5D9D61]/20 mb-6">
             <Sparkles className="w-10 h-10 text-[#5D9D61]" />
