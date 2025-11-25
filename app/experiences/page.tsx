@@ -9,7 +9,6 @@ import Link from "next/link"
 export default function ExperiencesPage() {
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero Section - Editorial Style */}
       <div
         className="relative min-h-[85vh] flex items-center justify-center px-6 py-20"
         style={{ backgroundColor: "#F5F1E8" }}
@@ -38,7 +37,6 @@ export default function ExperiencesPage() {
         </div>
       </div>
 
-      {/* The Promise - Clean Section */}
       <div className="py-24 px-6 bg-white">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-12 text-foreground leading-tight">
@@ -58,7 +56,6 @@ export default function ExperiencesPage() {
         </div>
       </div>
 
-      {/* The Transformation - Sage Background */}
       <div className="py-24 px-6" style={{ backgroundColor: "#E8F3E8" }}>
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
@@ -97,4 +94,67 @@ export default function ExperiencesPage() {
                 </div>
                 <p className="text-muted-foreground leading-relaxed text-center">
                   Rewire your nervous system through neuroscience-backed rituals. Replace 6 hustle habits with practices
-                  that regulate hormones, re
+                  that regulate hormones, retrain your brain, and sustain energy.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white border-0 shadow-lg">
+              <CardContent className="p-10">
+                <div className="text-center mb-6">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-secondary/20 mb-4">
+                    <Clock className="w-8 h-8 text-secondary" />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-4">AI-Powered</h3>
+                </div>
+                <p className="text-muted-foreground leading-relaxed text-center">
+                  Your 15 AI Executives handle the 80% (operations, content, admin) so you focus on your Human Zone of
+                  Genius—the 20% that creates 80% of results.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+
+      <div className="py-24 px-6 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-20">
+            <h2 className="text-5xl md:text-6xl font-bold mb-6 text-foreground">Choose Your Experience</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              How deeply will you root your new Work-Life Balance Blueprint?
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <Card className="border-2 border-border hover:border-primary/50 transition-all duration-300 bg-card">
+              <CardContent className="p-10">
+                <div className="mb-8">
+                  <Badge className="bg-primary/10 text-primary border-0 mb-4">Test Drive</Badge>
+                  <h3 className="text-3xl font-bold mb-4">7-Day Reset</h3>
+                  <p className="text-muted-foreground leading-relaxed mb-6">
+                    Experience the full blueprint for one powerful week. Perfect if you want to reset your rhythms,
+                    reclaim your time, and plug into the Make Time For More SOP.
+                  </p>
+                  <div className="border-t pt-6">
+                    <div className="text-5xl font-bold mb-2">$2,500</div>
+                    <p className="text-sm text-muted-foreground">One-time investment</p>
+                  </div>
+                </div>
+
+                <div className="space-y-4 mb-8">
+                  {[
+                    "1 Week Immersion (within 28-day cycle)",
+                    "Full SOP Access",
+                    "Daily Co-Working Mon-Thu 1-5pm ET",
+                    "AI Executive Team Access",
+                    "Community Support",
+                  ].map((feature) => (
+                    <div key={feature} className="flex items-start gap-3">
+                      <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                      <span className="text-sm text-muted-foreground">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <Button className="w-full b
