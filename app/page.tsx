@@ -1155,9 +1155,8 @@ export default function HomePage() {
                   </h3>
 
                   <p className="text-lg text-gray-800 leading-relaxed">
-                    You're either choosing a 1-off — 7-Day, 14-Day or 21-Day Experience + 1 Week Break — or you are
-                    installing it — step by step, layer by layer — until it becomes your new Work-Life Balance Business
-                    Model & Sustainable Operating Procedure (SOP) for life, business, and leadership over a 3-month
+                    Choose the 7-Day Reset, the 28-Day Habit Building Cycle — or the 90-Day Work-Lifestyle Installation where you
+                    install the Work-Life Balance Business Model & SOP — step by step, layer by layer — until it becomes your new normal for life, business, and leadership over a 3-month
                     period.
                   </p>
 
@@ -1184,7 +1183,7 @@ export default function HomePage() {
                           </h3>
 
                           <p className="text-gray-700 mb-4 italic">
-                            Experience the Full Blueprint for One Powerful Week Per Month.
+                            Experience the Work-Life Balance Business Model & SOP for One Powerful Week Per Month.
                           </p>
 
                           <p className="text-gray-700 mb-6 leading-relaxed">
@@ -1204,15 +1203,15 @@ export default function HomePage() {
                               <div className="bg-gradient-to-br from-[#E8F5E8] to-white border-4 border-[#7FB069]/30 rounded-xl p-5 text-center relative shadow-md hover:shadow-2xl transition-all">
                                 <div className="font-bold text-gray-900 mb-1 text-lg">7-Day</div>
                                 <div className="text-sm text-gray-600 mb-2 font-semibold">
-                                  Work-Life Balance Reset Experience
+                                  Work-Life Balance Reset Experience (BLACK FRIDAY SPECIAL)
                                 </div>
-                                <div className="text-sm text-gray-500 italic mb-2">(within 28-Day Cycle)</div>
-                                <div className="text-3xl font-bold text-[#7FB069] mb-2">$2,500</div>
+                                <div className="text-sm text-gray-500 italic mb-2">(Now - December 31)</div>
+                                <div className="text-3xl font-bold text-[#7FB069] mb-2">$997</div>
                                 <div className="mt-2 text-[#7FB069] font-bold text-lg">Click here to upgrade →</div>
                               </div>
                             </a>
 
-                            {/* Installation Price - Green */}
+                            {/* Founding Member Price - Green */}
                             <a
                               href="https://www.maketimeformore.com/checkout/7-day-installation"
                               target="_blank"
@@ -1222,10 +1221,10 @@ export default function HomePage() {
                               <div className="bg-gradient-to-br from-[#7FB069] to-[#6FA055] text-white rounded-xl p-5 text-center shadow-lg hover:shadow-2xl transition-all border-4 border-[#7FB069]">
                                 <div className="font-bold mb-1 text-lg">7-Day</div>
                                 <div className="text-sm mb-2 font-semibold">
-                                  Work-Life Balance Business Model & SOP Installation
+                                  Work-Life Balance Reset (Founding Member Pricing)
                                 </div>
-                                <div className="text-sm italic mb-2">(3 Consecutive Cycles)</div>
-                                <div className="text-3xl font-bold mb-2">$7,500</div>
+                                <div className="text-sm italic mb-2">(Jan 1 - March 31)</div>
+                                <div className="text-3xl font-bold mb-2">$1,250</div>
                                 <div className="mt-2 text-white font-bold text-lg">Click here to upgrade →</div>
                               </div>
                             </a>
@@ -1234,7 +1233,7 @@ export default function HomePage() {
                       </div>
                     </div>
 
-                    {/* Column 2 - 14-Day */}
+                    {/* Column 2 - 28-Day */}
                     <div className="flex flex-col">
                       <div className="bg-white rounded-2xl overflow-hidden shadow-lg flex-grow flex flex-col border-2 border-gray-200 hover:border-[#E26C73] transition-all">
                         <div className="h-[400px] overflow-hidden flex items-center justify-center bg-gray-50">
@@ -1247,16 +1246,16 @@ export default function HomePage() {
 
                         <div className="p-6 flex-grow flex flex-col">
                           <h3 className="text-2xl font-bold text-[#E26C73] mb-4">
-                            14-Day Work-Life Balance Momentum Building Experience
+                            21-Day Habit Building Cycle
                           </h3>
 
                           <p className="text-gray-700 mb-4 italic">
-                            Experience the Momentum Builder in Two Weeks Per Month
+                            Break Unhealthy Hustle Habits, Build New Ones in our 28-Day Cycle
                           </p>
 
                           <p className="text-gray-700 mb-6 leading-relaxed">
-                            Perfect if you're ready to deepen the reset — two powerful weeks to shift out of hustle
-                            mode, and start building real momentum toward your Desired Work-LifeStyle.
+                            Perfect if you are truly ready to disrupt hustle culture, install your new work-lifestyle
+                            and reset your work-life balance habits for sustainable success.
                           </p>
 
                           {/* Pricing Boxes */}
@@ -1271,10 +1270,10 @@ export default function HomePage() {
                               <div className="bg-gradient-to-br from-[#E8F5E8] to-white border-4 border-[#E26C73]/30 rounded-xl p-5 text-center shadow-md hover:shadow-2xl transition-all">
                                 <div className="font-bold text-gray-900 mb-1 text-lg">14-Day</div>
                                 <div className="text-sm text-gray-600 mb-2 font-semibold">
-                                  Work-Life Balance Momentum Building Experience
+                                  Work-Life Balance Habit Building Cycle
                                 </div>
-                                <div className="text-sm text-gray-500 italic mb-2">(within 28-Day Cycle)</div>
-                                <div className="text-3xl font-bold text-[#E26C73] mb-2">$5,000</div>
+                                <div className="text-sm text-gray-500 italic mb-2">(full 28-Day Cycle)</div>
+                                <div className="text-3xl font-bold text-[#E26C73] mb-2">$2,997</div>
                                 <div className="mt-2 text-[#E26C73] font-bold text-lg">Click here to upgrade →</div>
                               </div>
                             </a>
@@ -1287,12 +1286,12 @@ export default function HomePage() {
                               className="block hover:shadow-xl transition-all transform hover:scale-105"
                             >
                               <div className="bg-gradient-to-br from-[#7FB069] to-[#6FA055] text-white rounded-xl p-5 text-center shadow-lg hover:shadow-2xl transition-all border-4 border-[#7FB069]">
-                                <div className="font-bold mb-1 text-lg">14-Day</div>
+                                <div className="font-bold mb-1 text-lg">28-Day</div>
                                 <div className="text-sm mb-2 font-semibold">
-                                  Work-Life Balance Business Model & SOP Installation
+                                  Work-Life Balance Habit Building Cycle
                                 </div>
                                 <div className="text-sm italic mb-2">(3 Consecutive Cycles)</div>
-                                <div className="text-3xl font-bold mb-2">$15,000</div>
+                                <div className="text-3xl font-bold mb-2">$3,750</div>
                                 <div className="mt-2 text-white font-bold text-lg">Click here to upgrade →</div>
                               </div>
                             </a>
@@ -1301,7 +1300,7 @@ export default function HomePage() {
                       </div>
                     </div>
 
-                    {/* Column 3 - 21-Day */}
+                    {/* Column 3 - 90-Day */}
                     <div className="flex flex-col">
                       <div className="bg-white rounded-2xl overflow-hidden shadow-lg flex-grow flex flex-col border-2 border-gray-200 hover:border-[#7FB069] transition-all">
                         <div className="h-[400px] overflow-hidden flex items-center justify-center bg-gray-50">
@@ -1313,7 +1312,7 @@ export default function HomePage() {
                         </div>
 
                         <div className="p-6 flex-grow flex flex-col">
-                          <h3 className="text-2xl font-bold text-[#7FB069] mb-4">21-Day Habit Building Experience</h3>
+                          <h3 className="text-2xl font-bold text-[#7FB069] mb-4">90-Day Work-Lifestyle Installation</h3>
 
                           <p className="text-gray-700 mb-4 italic">
                             Break Unhealthy Hustle Habits, Build New Ones in (3) 28-Day Cycles
@@ -1336,10 +1335,10 @@ export default function HomePage() {
                               <div className="bg-gradient-to-br from-[#E8F5E8] to-white border-4 border-[#7FB069]/30 rounded-xl p-5 text-center relative shadow-md hover:shadow-2xl transition-all">
                                 <div className="font-bold text-gray-900 mb-1 text-lg">21-Day</div>
                                 <div className="text-sm text-gray-600 mb-2 font-semibold">
-                                  Work-Life Balance Habit Building Experience
+                                   Work-Life Balance Business Model & SOP Installation
                                 </div>
-                                <div className="text-sm text-gray-500 italic mb-2">(within 28-Day Cycle)</div>
-                                <div className="text-3xl font-bold text-[#7FB069] mb-2">$7,500</div>
+                                <div className="text-sm text-gray-500 italic mb-2">((3) 28-Day Cycles)</div>
+                                <div className="text-3xl font-bold text-[#7FB069] mb-2">$8,997</div>
                                 <div className="mt-2 text-[#7FB069] font-bold text-lg">Click here to upgrade →</div>
                               </div>
                             </a>
@@ -1352,12 +1351,12 @@ export default function HomePage() {
                               className="block hover:shadow-xl transition-all transform hover:scale-105"
                             >
                               <div className="bg-gradient-to-br from-[#7FB069] to-[#6FA055] text-white rounded-xl p-5 text-center shadow-lg hover:shadow-2xl transition-all border-4 border-[#7FB069]">
-                                <div className="font-bold mb-1 text-lg">21-Day</div>
+                                <div className="font-bold mb-1 text-lg">90-Day</div>
                                 <div className="text-sm mb-2 font-semibold">
                                   Work-Life Balance Business Model & SOP Installation
                                 </div>
-                                <div className="text-sm italic mb-2">(3 Consecutive Cycles)</div>
-                                <div className="text-3xl font-bold mb-2">$22,500</div>
+                                <div className="text-sm italic mb-2">(3 Consecutive 28-Day Cycles)</div>
+                                <div className="text-3xl font-bold mb-2">$11,250</div>
                                 <div className="mt-2 text-white font-bold text-lg">Click here to upgrade →</div>
                               </div>
                             </a>
