@@ -1127,10 +1127,9 @@ export default function HomePage() {
             </Card>
           </div>
 
-                    {/* Ready For More - Pricing Section */}
+                             {/* Ready For More - Pricing Section */}
           <div className="py-20 rounded-2xl">
             <div className="max-w-7xl mx-auto px-6">
-              {/* Gradient pink/green header */}
               <div className="bg-gradient-to-r from-[#E26C73] to-[#7FB069] text-white py-12 px-6 rounded-t-2xl text-center mb-0">
                 <div className="flex items-center justify-center gap-3 mb-6">
                   <img
@@ -1143,7 +1142,7 @@ export default function HomePage() {
                 </div>
                 <h2 className="text-3xl lg:text-4xl font-bold mb-4">Ready For More? Choose Your Next Level</h2>
                 <p className="text-xl text-white/90">
-                  Founding Member Scholarship: 50% Credit on All Experiences Through Dec 31, 2025
+                  Founding Member Scholarship: 50% Credit on All Experiences Through March 31, 2026
                 </p>
               </div>
 
@@ -1162,18 +1161,21 @@ export default function HomePage() {
 
                   <div className="bg-white rounded-2xl p-6 border border-[#7FB069]/20">
                     <h4 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                      <span className="text-2xl">🌸</span> 2026 Community Sabbaticals Announced
+                      <span className="text-2xl">🌸</span> 2026 Community Sabbaticals & Schedule
                     </h4>
                     <p className="text-gray-700 mb-4">
-                      We run (8) 28-Day Cycles per year during January - June and September - October. If you're planning the 90-Day Full Installation, choose 3 consecutive months when we're in session.
-
-                      As a member, you'll join us for two annual sabbaticals where the entire community takes
+                      We run <strong>(8) 28-Day Cycles per year</strong> during January - June and September - October.
+                      If you're planning the 90-Day Full Installation, choose 3 consecutive months when we're in
+                      session.
+                    </p>
+                    <p className="text-gray-700 mb-4">
+                      As a member, you'll also join us for two annual sabbaticals where the entire community takes
                       intentional time off together:
                     </p>
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="bg-[#F5F1E8] rounded-xl p-4 shadow-sm">
                         <p className="font-semibold text-[#7FB069]">Summer Sabbatical</p>
-                        <p className="text-gray-600">June - July 2026</p>
+                        <p className="text-gray-600">July - August 2026</p>
                         <p className="text-sm text-gray-500 mt-1">8 weeks of rest, travel & family time</p>
                       </div>
                       <div className="bg-[#F5F1E8] rounded-xl p-4 shadow-sm">
@@ -1292,7 +1294,7 @@ export default function HomePage() {
                                 <div className="font-bold mb-1 text-lg">
                                   <strong>7-Day Reset</strong>
                                 </div>
-                                <div className="text-xs italic mb-3 text-white/80">(Now - December 31)</div>
+                                <div className="text-xs text-white/80 italic mb-3">(Now - December 31)</div>
                                 <div className="text-xl font-bold mb-1">
                                   <strong>$997</strong>
                                 </div>
@@ -1456,7 +1458,7 @@ export default function HomePage() {
                                 <div className="font-bold mb-1 text-lg">
                                   <strong>28-Day Habit Builder</strong>
                                 </div>
-                                <div className="text-xs italic mb-3 text-white/80">(Now - December 31)</div>
+                                <div className="text-xs text-white/80 italic mb-3">(Now - December 31)</div>
                                 <div className="text-xl font-bold mb-1">
                                   <strong>$2,997</strong>
                                 </div>
@@ -1624,7 +1626,7 @@ export default function HomePage() {
                                 <div className="font-bold mb-1 text-lg">
                                   <strong>90-Day Installation</strong>
                                 </div>
-                                <div className="text-xs italic mb-3 text-white/80">(Now - December 31)</div>
+                                <div className="text-xs text-white/80 italic mb-3">(Now - December 31)</div>
                                 <div className="text-xl font-bold mb-1">
                                   <strong>$8,997</strong>
                                 </div>
