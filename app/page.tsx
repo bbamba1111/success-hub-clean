@@ -1,66 +1,46 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
+import { useState, useRef, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { ArrowRight, Clock, Target, TrendingUp, Calendar, Zap, Moon, CheckCircle, Star, Download, Brain, Users, Sparkles } from 'lucide-react'
-import CherryBlossomCountdown from "@/components/cherry-blossom-countdown"
-import WorkLifeBalanceSchedule from "@/components/work-life-balance-schedule"
-import { SimpleChatModal } from "@/components/simple-chat-modal"
-import { AIBusinessAudit } from "@/components/ai-business-audit"
-import { CoPilotTraining } from "@/components/co-pilot-training"
-import { CherryBlossomCoGuide } from "@/components/cherry-blossom-co-guide"
-import { createBrowserClient } from "@supabase/ssr"
-import { BarbaraChiefOfStaff } from "@/components/barbara-chief-of-staff"
-import { ClientCoGuideChat } from "@/components/client-co-guide-chat"
+import { Progress } from "@/components/ui/progress"
+import { CheckCircle2, Clock, Target, Calendar, Play, ChevronRight, ChevronDown, Bot, X, Send, MessageCircle, Sparkles, Brain, Users, Heart, Briefcase, Home, Smile, DollarSign, BookOpen, Compass, Zap, Shield, Star, Leaf } from 'lucide-react'
+import { CherryBlossomSuiteButton } from "@/components/cherry-blossom-suite-button"
+import { AIChatSidebar } from "@/components/ai-chat-sidebar"
 
-export default function HomePage() {
-  const [dashboardVisited, setDashboardVisited] = useState(false)
+export default function WellnessDashboard() {
+  const [completedSteps, setCompletedSteps] = useState<string[]>([])
   const [isChatOpen, setIsChatOpen] = useState(false)
-  const [chatContext, setChatContext] = useState<string>("")
-  const [chatTitle, setChatTitle] = useState("")
-  const [isCoGuideOpen, setIsCoGuideOpen] = useState(false)
-  const [userId, setUserId] = useState<string | undefined>()
-  const [isBarbaraStaffOpen, setIsBarbaraStaffOpen] = useState(false)
-
-  useEffect(() => {
-    // Check if user has visited dashboard from planner/tracker
-    const visited = localStorage.getItem("dashboardVisited")
-    if (visited === "true") {
-      setDashboardVisited(true)
-    }
-  }, [])
-
-  useEffect(() => {
-    // Get user ID from Supabase auth
-    const getUserId = async () => {
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-      const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-      if (!supabaseUrl || !supabaseAnonKey) {
-        console.log("[v0] Supabase env vars not available, skipping user ID fetch")
-        return
-      }
-
-      const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey)
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      if (user) {
-        setUserId(user.id)
-      }
-    }
-    getUserId()
-  }, [])
+  const [chatContext, setChatContext] = useState("")
+  const [chatTitle, setChatTitle] = useState("Cherry Blossom")
+  const [dashboardVisited, setDashboardVisited] = useState(false)
+  const wellnessDashboardRef = useRef<HTMLDivElement>(null)
 
   const scrollToWellnessDashboard = () => {
-    const element = document.getElementById("wellness-dashboard")
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" })
+    if (dashboardVisited && wellnessDashboardRef.current) {
+      wellnessDashboardRef.current.scrollIntoView({ behavior: "smooth" })
     }
   }
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setDashboardVisited(true)
+          }
+        })
+      },
+      { threshold: 0.1 },
+    )
+
+    if (wellnessDashboardRef.current) {
+      observer.observe(wellnessDashboardRef.current)
+    }
+
+    return () => observer.disconnect()
+  }, [])
 
   const openChat = (context: string, title: string) => {
     setChatContext(context)
@@ -95,7 +75,6 @@ export default function HomePage() {
                     Installing The Work-Life Balance Business Model & SOP
                   </p>
                 </div>
-                {/* </CHANGE> */}
 
                 <p className="text-lg text-gray-600 leading-relaxed">
                   Take The Audit, Set Your 28-Day Intention, and access Cherry Blossom your AI Powered Work-Life Balance
