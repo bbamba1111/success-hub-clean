@@ -5,16 +5,12 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowRight, Clock, Target, TrendingUp, Calendar, Zap, Moon, CheckCircle, Star, Download, Brain, Users, Sparkles } from 'lucide-react'
+import { ArrowRight, Clock, Target, TrendingUp, Calendar, Zap, Moon, CheckCircle, Star, Download } from "lucide-react"
 import CherryBlossomCountdown from "@/components/cherry-blossom-countdown"
 import WorkLifeBalanceSchedule from "@/components/work-life-balance-schedule"
 import { SimpleChatModal } from "@/components/simple-chat-modal"
-import { AIBusinessAudit } from "@/components/ai-business-audit"
-import { CoPilotTraining } from "@/components/co-pilot-training"
 import { CherryBlossomCoGuide } from "@/components/cherry-blossom-co-guide"
 import { createBrowserClient } from "@supabase/ssr"
-import { BarbaraChiefOfStaff } from "@/components/barbara-chief-of-staff"
-import { ClientCoGuideChat } from "@/components/client-co-guide-chat"
 
 export default function HomePage() {
   const [dashboardVisited, setDashboardVisited] = useState(false)
@@ -95,7 +91,6 @@ export default function HomePage() {
                     Installing The Work-Life Balance Business Model & SOP
                   </p>
                 </div>
-                {/* </CHANGE> */}
 
                 <p className="text-lg text-gray-600 leading-relaxed">
                   Take The Audit, Set Your 28-Day Intention, and access Cherry Blossom your AI Powered Work-Life Balance
@@ -294,70 +289,71 @@ export default function HomePage() {
               </CardContent>
             </Card>
 
-        {/* Step 1.2 - Intention Setting Card */}
-<Card className="bg-[#E26C73] border-0 text-white overflow-hidden">
-  <CardHeader className="pb-4">
-    <div className="flex items-center gap-3 mb-3">
-      <img
-        src="/images/logo.png"
-        alt="Make Time For More Logo"
-        width={48}
-        height={48}
-        className="rounded-full shadow-lg"
-      />
-      <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">
-        Step 1.2
-      </Badge>
-    </div>
-    <CardTitle className="text-xl font-bold text-white">
-      Set Your 28-Day Desired Work-LifeStyle Intention
-    </CardTitle>
-  </CardHeader>
-  <CardContent className="space-y-4">
-    <p className="text-white/90 leading-relaxed">
-      Transform your audit insights into powerful, actionable intentions. Choose 1-3 focus areas and let
-      Cherry Blossom guide you through creating your personalized 28-day transformation plan.
-    </p>
+            {/* Step 1.2 - Intention Setting Card */}
+            <Card className="bg-[#E26C73] border-0 text-white overflow-hidden">
+              <CardHeader className="pb-4">
+                <div className="flex items-center gap-3 mb-3">
+                  <img
+                    src="/images/logo.png"
+                    alt="Make Time For More Logo"
+                    width={48}
+                    height={48}
+                    className="rounded-full shadow-lg"
+                  />
+                  <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">
+                    Step 1.2
+                  </Badge>
+                </div>
+                <CardTitle className="text-xl font-bold text-white">
+                  Set Your 28-Day Desired Work-LifeStyle Intention
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-white/90 leading-relaxed">
+                  Transform your audit insights into powerful, actionable intentions. Choose 1-3 focus areas and let
+                  Cherry Blossom guide you through creating your personalized 28-day transformation plan.
+                </p>
 
-    <div className="space-y-3">
-      <div className="flex items-center gap-3">
-        <CheckCircle className="w-4 h-4 text-white flex-shrink-0" />
-        <span className="text-white/90 text-sm">Select 1-3 focus areas for maximum impact</span>
-      </div>
-      <div className="flex items-center gap-3">
-        <CheckCircle className="w-4 h-4 text-white flex-shrink-0" />
-        <span className="text-white/90 text-sm">AI-guided intention crafting with Cherry Blossom</span>
-      </div>
-      <div className="flex items-center gap-3">
-        <CheckCircle className="w-4 h-4 text-white flex-shrink-0" />
-        <span className="text-white/90 text-sm">Personalized daily practices & action plan</span>
-      </div>
-    </div>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-4 h-4 text-white flex-shrink-0" />
+                    <span className="text-white/90 text-sm">Select 1-3 focus areas for maximum impact</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-4 h-4 text-white flex-shrink-0" />
+                    <span className="text-white/90 text-sm">AI-guided intention crafting with Cherry Blossom</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-4 h-4 text-white flex-shrink-0" />
+                    <span className="text-white/90 text-sm">Personalized daily practices & action plan</span>
+                  </div>
+                </div>
 
-    <div className="flex flex-col gap-3 mt-3">
-      <Link href="/focus-areas" className="block">
-        <Button
-          size="lg"
-          className="w-full bg-transparent border-2 border-white text-white hover:bg-white/10 font-semibold"
-        >
-          Choose Your 1-3 Priority Focus Areas
-        </Button>
-      </Link>
+                <div className="flex flex-col gap-3 mt-3">
+                  <Link href="/focus-areas" className="block">
+                    <Button
+                      size="lg"
+                      className="w-full bg-transparent border-2 border-white text-white hover:bg-white/10 font-semibold"
+                    >
+                      Choose Your 1-3 Priority Focus Areas
+                    </Button>
+                  </Link>
 
-      <a
-        href="https://docs.google.com/document/d/1RtaoYOUQmmPSD2U5EaLPiilQifnSamE5Yo6SaOYf4UM/edit?usp=sharing"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="block"
-      >
-        <Button className="w-full bg-transparent border-2 border-white text-white hover:bg-white/10 font-semibold">
-          <Download className="mr-2 h-4 w-4" />
-          Open The Intention Setting Guide
-        </Button>
-      </a>
-    </div>
-  </CardContent>
-</Card>
+                  <a
+                    href="https://docs.google.com/document/d/1RtaoYOUQmmPSD2U5EaLPiilQifnSamE5Yo6SaOYf4UM/edit?usp=sharing"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block"
+                  >
+                    <Button className="w-full bg-transparent border-2 border-white text-white hover:bg-white/10 font-semibold">
+                      <Download className="mr-2 h-4 w-4" />
+                      Open The Intention Setting Guide
+                    </Button>
+                  </a>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Step 1.3 - Preparation Checklist Card */}
             <Card className="bg-gradient-to-br from-[#7FB069] to-[#E26C73] border-0 text-white overflow-hidden">
               <CardHeader className="pb-4">
@@ -540,7 +536,190 @@ export default function HomePage() {
         </div>
       </div>
 
-      
+      {/* AI/Human Skills Development Section */}
+      <div className="bg-[#FFE8D6] py-20">
+        <div className="max-w-6xl mx-auto px-6">
+          {/* Section Header */}
+          <div className="flex items-center justify-center gap-3 mb-8">
+            <img
+              src="/images/logo.png"
+              alt="Make Time For More Logo"
+              width={80}
+              height={80}
+              className="rounded-full shadow-lg"
+            />
+          </div>
+
+          <div className="text-center mb-12">
+            <h3 className="text-3xl font-bold bg-gradient-to-r from-[#7FB069] to-[#E26C73] bg-clip-text text-transparent mb-4">
+              The 4-Hour Focused CEO Workday
+            </h3>
+            <p className="text-xl text-gray-700 font-medium max-w-4xl mx-auto">
+              Build your AI-powered business while developing your irreplaceable human skills. Work Mon-Thu, 1-5 PM EST
+              focusing on the 20% that creates 80% of your results.
+            </p>
+          </div>
+
+          {/* Two Navigation Cards */}
+          <div className="grid md:grid-cols-2 gap-8 mb-16">
+            {/* Human Zone of Genius Card */}
+            <Card className="bg-white border-2 border-[#7FB069]/20 hover:shadow-xl transition-all">
+              <CardHeader>
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#7FB069] to-[#E26C73] flex items-center justify-center mb-4 text-3xl">
+                  🧠
+                </div>
+                <CardTitle className="text-2xl font-bold text-[#7FB069]">Human Zone of Genius</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600 text-lg leading-relaxed mb-6">
+                  Discover and develop your 8 irreplaceable human-only business skills using the 80/20 Pareto Principle
+                </p>
+                <Link href="/human-zone-of-genius">
+                  <Button className="w-full bg-[#7FB069] hover:bg-[#6FA055] text-white font-semibold text-lg py-6">
+                    Explore Your Zone of Genius
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            {/* 15 AI Executives Card */}
+            <Card className="border-2 border-[#7FB069]/30 hover:border-[#7FB069] transition-all duration-300 bg-white shadow-lg">
+              <CardContent className="p-8">
+                <div className="text-center mb-6">
+                  <div className="w-16 h-16 rounded-full bg-[#7FB069]/20 flex items-center justify-center mx-auto mb-4">
+                    <Target className="w-8 h-8 text-[#7FB069]" />
+                  </div>
+                  <CardTitle className="text-xl mb-2">AI Executive Team</CardTitle>
+                </div>
+                <p className="text-muted-foreground mb-6 text-center">
+                  Your 15 AI Executives guide strategic business decisions and provide intelligent insights for your
+                  coaching business
+                </p>
+                <Link href="/ai-executive-team" className="block">
+                  <Button className="w-full bg-[#7FB069] hover:bg-[#6FA055] text-white">
+                    Meet Your AI Executive Team
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* 80/20 Pareto Principle Section */}
+          <div className="mb-12">
+            <h3 className="text-2xl font-bold text-center text-gray-900 mb-8">The 80/20 Pareto Principle</h3>
+            <p className="text-lg text-center text-gray-700 mb-12 max-w-3xl mx-auto">
+              Focus on the 20% of work that creates 80% of your results while AI handles the rest
+            </p>
+
+            <div className="grid md:grid-cols-3 gap-8">
+              {/* You - The 20% */}
+              <Card className="bg-white border-2 border-[#7FB069]/30">
+                <CardHeader>
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#7FB069] to-[#E26C73] flex items-center justify-center mb-4 text-2xl">
+                    👤
+                  </div>
+                  <CardTitle className="text-xl font-bold text-[#7FB069]">You - The 20%</CardTitle>
+                  <p className="text-sm text-gray-600 font-semibold mt-2">Your Human Zone of Genius</p>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2 mb-6">
+                    <li className="text-gray-700 flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-[#7FB069] mt-1 flex-shrink-0" />
+                      <span>Strategic thinking & visionary leadership</span>
+                    </li>
+                    <li className="text-gray-700 flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-[#7FB069] mt-1 flex-shrink-0" />
+                      <span>Authentic relationships & high-value sales</span>
+                    </li>
+                    <li className="text-gray-700 flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-[#7FB069] mt-1 flex-shrink-0" />
+                      <span>Coaching delivery & thought leadership</span>
+                    </li>
+                    <li className="text-gray-700 flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-[#7FB069] mt-1 flex-shrink-0" />
+                      <span>Personal storytelling & ethical decisions</span>
+                    </li>
+                  </ul>
+                  <div className="bg-[#7FB069]/10 rounded-lg p-4 text-center">
+                    <div className="text-3xl font-bold text-[#7FB069] mb-1">80%</div>
+                    <div className="text-sm text-gray-700 font-medium">of results created</div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* AI Team - The 80% */}
+              <Card className="bg-white border-2 border-[#E26C73]/30">
+                <CardHeader>
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#E26C73] to-[#7FB069] flex items-center justify-center mb-4 text-2xl">
+                    🤖
+                  </div>
+                  <CardTitle className="text-xl font-bold text-[#E26C73]">AI Team - The 80%</CardTitle>
+                  <p className="text-sm text-gray-600 font-semibold mt-2">Operational Excellence</p>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2 mb-6">
+                    <li className="text-gray-700 flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-[#E26C73] mt-1 flex-shrink-0" />
+                      <span>Administrative tasks & scheduling</span>
+                    </li>
+                    <li className="text-gray-700 flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-[#E26C73] mt-1 flex-shrink-0" />
+                      <span>Content drafts & social media</span>
+                    </li>
+                    <li className="text-gray-700 flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-[#E26C73] mt-1 flex-shrink-0" />
+                      <span>Research & proposals</span>
+                    </li>
+                    <li className="text-gray-700 flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-[#E26C73] mt-1 flex-shrink-0" />
+                      <span>Bookkeeping & transcription</span>
+                    </li>
+                  </ul>
+                  <div className="bg-[#E26C73]/10 rounded-lg p-4 text-center">
+                    <div className="text-3xl font-bold text-[#E26C73] mb-1">20%</div>
+                    <div className="text-sm text-gray-700 font-medium">of work required</div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* The Result */}
+              <Card className="bg-white border-2 border-[#7FB069]/30">
+                <CardHeader>
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#7FB069] to-[#E26C73] flex items-center justify-center mb-4 text-2xl">
+                    ⚡
+                  </div>
+                  <CardTitle className="text-xl font-bold text-[#7FB069]">The Result</CardTitle>
+                  <p className="text-sm text-gray-600 font-semibold mt-2">Maximum Leverage</p>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2 mb-6">
+                    <li className="text-gray-700 flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-[#7FB069] mt-1 flex-shrink-0" />
+                      <span>Work 4 hours daily (Mon-Thu 1-5 PM)</span>
+                    </li>
+                    <li className="text-gray-700 flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-[#7FB069] mt-1 flex-shrink-0" />
+                      <span>AI handles routine operations 24/7</span>
+                    </li>
+                    <li className="text-gray-700 flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-[#7FB069] mt-1 flex-shrink-0" />
+                      <span>Daily guidance on next-best moves</span>
+                    </li>
+                    <li className="text-gray-700 flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-[#7FB069] mt-1 flex-shrink-0" />
+                      <span>Scale to 6, 7, 8 figure+ revenue</span>
+                    </li>
+                  </ul>
+                  <div className="bg-[#7FB069]/10 rounded-lg p-4 text-center">
+                    <div className="text-3xl font-bold text-[#7FB069] mb-1">10x</div>
+                    <div className="text-sm text-gray-700 font-medium">productivity increase</div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Cherry Blossom AI Suite */}
       <div className="bg-gradient-to-br from-[#7FB069]/10 to-[#7FB069]/5 pt-20 pb-25">
@@ -711,13 +890,12 @@ export default function HomePage() {
                 />
               </div>
 
-              <Link href="/human-zone-of-genius-team">
-                <Button
-                  className="w-full bg-[#7FB069] hover:bg-[#6FA055] text-white font-semibold"
-                >
-                  Plan Your CEO Workday
-                </Button>
-              </Link>
+              <Button
+                onClick={() => openChat("ceo-workday", "4-Hour Focused CEO Workday")}
+                className="w-full bg-[#7FB069] hover:bg-[#6FA055] text-white font-semibold"
+              >
+                Plan Your CEO Workday
+              </Button>
             </CardContent>
           </Card>
 
@@ -986,7 +1164,7 @@ export default function HomePage() {
                   className="bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-semibold px-8 py-4 text-lg"
                 >
                   Join Our Facebook Group
-                  <ArrowRight className="ml-2 h-4 w-5" />
+                  <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </a>
             </div>
@@ -1127,7 +1305,7 @@ export default function HomePage() {
             </Card>
           </div>
 
-                {/* Ready For More - Pricing Section */}
+          {/* Ready For More - Pricing Section */}
           <div className="py-20 rounded-2xl">
             <div className="max-w-7xl mx-auto px-6">
               <div className="bg-gradient-to-r from-[#E26C73] to-[#7FB069] text-white py-12 px-6 rounded-t-2xl text-center mb-0">
@@ -1423,65 +1601,381 @@ export default function HomePage() {
                               </li>
                               <li className="flex items-start gap-2">
                                 <span className="text-[#7FB069] font-bold">✓</span>
-                                <span>(1) Week Rest,
+                                <span>(1) Week Rest, Recover & Recharge Break</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>Cherry Blossom Suite: 6 AI-Powered Planners</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>Workout Planner & Sleep Tracker Access</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>Full AI Executive Team Access</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>Facebook Community Access</span>
+                              </li>
+                            </ul>
+                          </div>
 
-      {/* Book Thought Leader Barbara section */}
-      {/* Book Thought Leader Barbara Section */}
-      <div className="bg-gradient-to-r from-[#7FB069]/10 to-[#E26C73]/10 py-8 pb-24">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <div className="max-w-3xl mx-auto">
-              <div className="flex items-center justify-center gap-3 mb-8">
-                <img
-                  src="/images/logo.png"
-                  alt="Make Time For More Logo"
-                  width={80}
-                  height={80}
-                  className="rounded-full shadow-lg"
-                />
+                          <div className="space-y-4 mt-auto">
+                            <a
+                              href="https://www.maketimeformore.com/checkout/28-day-black-friday"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="block hover:shadow-2xl transition-all transform hover:scale-[1.02]"
+                            >
+                              <div className="bg-[#E26C73] text-white rounded-2xl p-6 text-center shadow-lg transition-all">
+                                <div className="font-bold text-sm tracking-wide mb-3">
+                                  <strong>BLACK FRIDAY SPECIAL</strong>
+                                </div>
+                                <div className="font-bold mb-1 text-lg">
+                                  <strong>28-Day Habit Builder</strong>
+                                </div>
+                                <div className="text-xs text-white/80 italic mb-3">(Now - December 31)</div>
+                                <div className="text-xl font-bold mb-1">
+                                  <strong>$2,997</strong>
+                                </div>
+                                <div className="text-white/80 text-sm mb-4">
+                                  Reg <span className="line-through">$7,500</span>
+                                </div>
+                                <div className="mt-3 bg-white/20 rounded-full py-2 px-4 text-white font-bold text-sm">
+                                  <strong>Click here to upgrade →</strong>
+                                </div>
+                              </div>
+                            </a>
+
+                            <a
+                              href="https://www.maketimeformore.com/checkout/28-day-founding"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="block hover:shadow-2xl transition-all transform hover:scale-[1.02]"
+                            >
+                              <div className="bg-[#7FB069] text-white rounded-2xl p-6 text-center shadow-lg transition-all">
+                                <div className="font-bold text-sm tracking-wide mb-3">
+                                  <strong>FOUNDING MEMBER</strong>
+                                </div>
+                                <div className="font-bold mb-1 text-lg">
+                                  <strong>28-Day Habit Builder</strong>
+                                </div>
+                                <div className="text-xs text-white/80 italic mb-3">(Jan 1 - March 31)</div>
+                                <div className="text-xl font-bold mb-1">
+                                  <strong>$3,750</strong>
+                                </div>
+                                <div className="text-white/80 text-sm mb-4">
+                                  Reg <span className="line-through">$7,500</span>
+                                </div>
+                                <div className="mt-3 bg-white/20 rounded-full py-2 px-4 text-white font-bold text-sm">
+                                  <strong>Click here to upgrade →</strong>
+                                </div>
+                              </div>
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Column 3 - 90-Day Installation */}
+                    <div className="flex flex-col">
+                      <div className="bg-white rounded-2xl overflow-hidden shadow-lg flex-grow flex flex-col border border-gray-100 hover:shadow-xl transition-all">
+                        <div className="h-[400px] overflow-hidden flex items-center justify-center bg-gray-50">
+                          <img
+                            src="/images/21-day-habit-builder.png"
+                            alt="Woman in luxury airplane seat with cherry blossom design"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+
+                        <div className="p-6 flex-grow flex flex-col">
+                          <h3 className="text-2xl font-bold text-[#2F4F4F] mb-4">
+                            <strong>90-Day Full Installation</strong>
+                          </h3>
+
+                          <p className="text-gray-700 mb-4 italic">
+                            Permanently Install the Work-Life Balance Business Model as Your Operating System.
+                          </p>
+
+                          <p className="text-gray-700 mb-4 leading-relaxed">
+                            Perfect if you're all-in on transformation—3 consecutive 28-day cycles to make the 4-day
+                            workweek and 4-hour workday automatic.
+                          </p>
+
+                          <div className="bg-[#F5F1E8] rounded-xl p-5 mb-6">
+                            <p className="font-semibold text-lg text-gray-800 mb-4">Your 90-Day Experience Includes:</p>
+                            <ul className="space-y-3 text-base text-gray-600">
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <strong>2-Part Onboarding: Work-Life Balance Audit & 28-Day Intention Setting</strong>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>
+                                  (9) <strong>4-Day Workweeks</strong> with (9) <strong>3-Day Weekends</strong>
+                                </span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>
+                                  (36) <strong>4-Hour Focused CEO Workdays</strong>
+                                </span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <strong>152 Hours of Weekly Time Freedom (x9 weeks)</strong>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>Expansion in 13 Core Life Value Areas</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>(36) Morning GIV•EN™ Routines</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>(36) 30-Minute Workday Workout Windows</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>(36) Extended Healthy Hybrid Lunch Breaks</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>(36) Power Down & Unplug Digital Detoxes</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>Quality of Lifestyle Experiences</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>(9) Sunday Shifts</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>(3) Intention Setting Ceremonies (GIVEN)</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>6 Hustle Habit Replacements (Mastered)</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>(3) Weeks Rest, Recover & Recharge Breaks</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>Cherry Blossom Suite: 6 AI-Powered Planners</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>Workout Planner & Sleep Tracker Access</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>Advanced AI Executive Workflows</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>Priority Support & 1:1 Check-ins</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>Facebook Community Access</span>
+                              </li>
+                            </ul>
+                          </div>
+
+                          <div className="space-y-4 mt-auto">
+                            <a
+                              href="https://www.maketimeformore.com/checkout/90-day-black-friday"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="block hover:shadow-2xl transition-all transform hover:scale-[1.02]"
+                            >
+                              <div className="bg-[#E26C73] text-white rounded-2xl p-6 text-center shadow-lg transition-all">
+                                <div className="font-bold text-sm tracking-wide mb-3">
+                                  <strong>BLACK FRIDAY SPECIAL</strong>
+                                </div>
+                                <div className="font-bold mb-1 text-lg">
+                                  <strong>90-Day Installation</strong>
+                                </div>
+                                <div className="text-xs text-white/80 italic mb-3">(Now - December 31)</div>
+                                <div className="text-xl font-bold mb-1">
+                                  <strong>$8,997</strong>
+                                </div>
+                                <div className="text-white/80 text-sm mb-4">
+                                  Reg <span className="line-through">$22,500</span>
+                                </div>
+                                <div className="mt-3 bg-white/20 rounded-full py-2 px-4 text-white font-bold text-sm">
+                                  <strong>Click here to upgrade →</strong>
+                                </div>
+                              </div>
+                            </a>
+
+                            <a
+                              href="https://www.maketimeformore.com/checkout/90-day-founding"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="block hover:shadow-2xl transition-all transform hover:scale-[1.02]"
+                            >
+                              <div className="bg-[#7FB069] text-white rounded-2xl p-6 text-center shadow-lg transition-all">
+                                <div className="font-bold text-sm tracking-wide mb-3">
+                                  <strong>FOUNDING MEMBER</strong>
+                                </div>
+                                <div className="font-bold mb-1 text-lg">
+                                  <strong>90-Day Installation</strong>
+                                </div>
+                                <div className="text-xs text-white/80 italic mb-3">(Jan 1 - March 31)</div>
+                                <div className="text-xl font-bold mb-1">
+                                  <strong>$11,250</strong>
+                                </div>
+                                <div className="text-white/80 text-sm mb-4">
+                                  Reg <span className="line-through">$22,500</span>
+                                </div>
+                                <div className="mt-3 bg-white/20 rounded-full py-2 px-4 text-white font-bold text-sm">
+                                  <strong>Click here to upgrade →</strong>
+                                </div>
+                              </div>
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-16 bg-gradient-to-r from-[#E26C73] to-[#7FB069] rounded-2xl p-8 shadow-lg">
+                    <div className="flex flex-col lg:flex-row items-center gap-8">
+                      <div className="lg:w-2/3 text-white">
+                        <h3 className="text-2xl font-bold mb-4">
+                          <strong>Make Time For More On Mondays</strong>
+                        </h3>
+                        <p className="mb-4 italic text-white/90">Stay Connected with 3 Mondays Per Month</p>
+                        <p className="mb-4 leading-relaxed text-white/90">
+                          Perfect if you want to maintain your connection to the community, keep your rhythms steady, or
+                          need a lighter commitment after completing an experience. Join us for 3 powerful Mondays each
+                          month during the habit-building weeks.
+                        </p>
+                        <ul className="grid md:grid-cols-2 gap-3 text-base text-white/90">
+                          <li className="flex items-start gap-2">
+                            <span className="text-white font-bold">✓</span>
+                            <span>(3) Monday Co-Working Sessions (1-5pm ET)</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-white font-bold">✓</span>
+                            <span>Morning GIV•EN™ Routine Access</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-white font-bold">✓</span>
+                            <span>SOP Access on Mondays</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-white font-bold">✓</span>
+                            <span>AI Executive Team Demos</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-white font-bold">✓</span>
+                            <span>Facebook Community Access</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-white font-bold">✓</span>
+                            <span>Upgrade Anytime</span>
+                          </li>
+                        </ul>
+                      </div>
+                      <div className="lg:w-1/3 flex flex-col gap-4">
+                        <a
+                          href="https://www.maketimeformore.com/checkout/mondays-membership"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block hover:shadow-2xl transition-all transform hover:scale-[1.02]"
+                        >
+                          <div className="bg-white text-[#2F4F4F] rounded-2xl p-6 text-center shadow-lg transition-all">
+                            <div className="font-bold text-sm tracking-wide mb-3">
+                              <strong>MONTHLY MEMBERSHIP</strong>
+                            </div>
+                            <div className="font-bold mb-1 text-lg">
+                              <strong>Mondays Only</strong>
+                            </div>
+                            <div className="text-xs text-gray-500 italic mb-3">Cancel Anytime</div>
+                            <div className="text-xl font-bold mb-1">
+                              <strong>$297/mo</strong>
+                            </div>
+                            <div className="mt-3 bg-gradient-to-r from-[#E26C73] to-[#7FB069] rounded-full py-2 px-4 text-white font-bold text-sm">
+                              <strong>Click here to join →</strong>
+                            </div>
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <h2
-                className="text-4xl text-[#E26C73] mb-8"
-                style={{ fontFamily: "'Great Vibes', cursive", fontWeight: 400 }}
-              >
-                Book Thought Leader Barbara
-              </h2>
-              <div className="flex justify-center mb-8">
-                <img
-                  src="/images/barbara-cherry-garden.jpg"
-                  alt="Barbara"
-                  className="w-64 h-64 rounded-full object-cover shadow-2xl"
-                />
-              </div>
-              <p className="text-lg text-gray-700 leading-relaxed mb-6">
-                To learn more about Barbara's availability for speaking engagements and interviews, or to schedule
-                private coaching sessions or VIP DAYs, email Barbara:{" "}
-                <a
-                  href="mailto:coachbarbara@maketimeformore.com"
-                  className="text-[#7FB069] hover:text-[#6FA055] font-semibold underline"
-                >
-                  coachbarbara@maketimeformore.com
-                </a>
-              </p>
-              <p className="text-base text-gray-600 italic">
-                Put <span className="font-bold">SPEAKING</span>, <span className="font-bold">INTERVIEW</span>,{" "}
-                <span className="font-bold">COACHING</span>, <span className="font-bold">VIP DAY</span> in the subject
-                line in all caps.
-              </p>
             </div>
           </div>
+          {/* Book Thought Leader Barbara section */}
+          {/* Book Thought Leader Barbara Section */}
+          <div className="bg-gradient-to-r from-[#7FB069]/10 to-[#E26C73]/10 py-8 pb-24">
+            <div className="max-w-6xl mx-auto px-6">
+              <div className="text-center mb-12">
+                <div className="max-w-3xl mx-auto">
+                  <div className="flex items-center justify-center gap-3 mb-8">
+                    <img
+                      src="/images/logo.png"
+                      alt="Make Time For More Logo"
+                      width={80}
+                      height={80}
+                      className="rounded-full shadow-lg"
+                    />
+                  </div>
+                  <h2
+                    className="text-4xl text-[#E26C73] mb-8"
+                    style={{ fontFamily: "'Great Vibes', cursive", fontWeight: 400 }}
+                  >
+                    Book Thought Leader Barbara
+                  </h2>
+                  <div className="flex justify-center mb-8">
+                    <img
+                      src="/images/barbara-cherry-garden.jpg"
+                      alt="Barbara"
+                      className="w-64 h-64 rounded-full object-cover shadow-2xl"
+                    />
+                  </div>
+                  <p className="text-lg text-gray-700 leading-relaxed mb-6">
+                    To learn more about Barbara's availability for speaking engagements and interviews, or to schedule
+                    private coaching sessions or VIP DAYs, email Barbara:{" "}
+                    <a
+                      href="mailto:coachbarbara@maketimeformore.com"
+                      className="text-[#7FB069] hover:text-[#6FA055] font-semibold underline"
+                    >
+                      coachbarbara@maketimeformore.com
+                    </a>
+                  </p>
+                  <p className="text-base text-gray-600 italic">
+                    Put <span className="font-bold">SPEAKING</span>, <span className="font-bold">INTERVIEW</span>,{" "}
+                    <span className="font-bold">COACHING</span>, <span className="font-bold">VIP DAY</span> in the
+                    subject line in all caps.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <SimpleChatModal
+            isOpen={isChatOpen}
+            onClose={() => setIsChatOpen(false)}
+            context={chatContext}
+            title={chatTitle}
+          />
+
+          {/* Removed FloatingChatButton component */}
+
+          <CherryBlossomCoGuide isOpen={isCoGuideOpen} onClose={() => setIsCoGuideOpen(false)} userId={userId} />
         </div>
       </div>
-      <SimpleChatModal
-        isOpen={isChatOpen}
-        onClose={() => setIsChatOpen(false)}
-        context={chatContext}
-        title={chatTitle}
-      />
-
-      {/* Removed FloatingChatButton component */}
-
-      <CherryBlossomCoGuide isOpen={isCoGuideOpen} onClose={() => setIsCoGuideOpen(false)} userId={userId} />
     </div>
   )
 }
