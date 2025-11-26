@@ -1282,7 +1282,7 @@ export default function HomePage() {
                               rel="noopener noreferrer"
                               className="block hover:shadow-2xl transition-all transform hover:scale-[1.02]"
                             >
-                              <div className="bg-[#E26C73] text-white rounded-2xl p-6 text-center shadow-lg transition-all">
+                              <div className="bg-[#E26C73] text-black rounded-2xl p-6 text-center shadow-lg transition-all">
                                 <div className="font-bold text-sm tracking-wide mb-3">
                                   <strong>BLACK FRIDAY SPECIAL</strong>
                                 </div>
@@ -1290,10 +1290,10 @@ export default function HomePage() {
                                   <strong>7-Day Reset</strong>
                                 </div>
                                 <div className="text-m text-white/80 italic mb-3">(Now - December 31)</div>
-                                <div className="text-xl font-bold mb-1">
+                                <div className="text-xxl font-bold mb-1">
                                   <strong>$997</strong>
                                 </div>
-                                <div className="text-white/80 text-sm mb-4">
+                                <div className="text-white/80 text-m mb-4">
                                   Reg <span className="line-through">$2,500</span>
                                 </div>
                                 <div className="mt-3 bg-white/20 rounded-full py-2 px-4 text-white font-bold text-sm">
