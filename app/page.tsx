@@ -1386,30 +1386,30 @@ export default function HomePage() {
                           month during the habit-building weeks.
                         </p>
                         <ul className="grid md:grid-cols-2 gap-3 text-base text-white/90">
-                          <li className="flex items-start gap-2">
+                          <div className="flex items-start gap-2">
                             <span className="text-white font-bold">✓</span>
                             <span>(3) Monday Co-Working Sessions (1-5pm ET)</span>
-                          </li>
-                          <li className="flex items-start gap-2">
+                          </div>
+                          <div className="flex items-start gap-2">
                             <span className="text-white font-bold">✓</span>
                             <span>Morning GIV•EN™ Routine Access</span>
-                          </li>
-                          <li className="flex items-start gap-2">
+                          </div>
+                          <div className="flex items-start gap-2">
                             <span className="text-white font-bold">✓</span>
                             <span>SOP Access on Mondays</span>
-                          </li>
-                          <li className="flex items-start gap-2">
+                          </div>
+                          <div className="flex items-start gap-2">
                             <span className="text-white font-bold">✓</span>
                             <span>AI Executive Team Demos</span>
-                          </li>
-                          <li className="flex items-start gap-2">
+                          </div>
+                          <div className="flex items-start gap-2">
                             <span className="text-white font-bold">✓</span>
                             <span>Facebook Community Access</span>
-                          </li>
-                          <li className="flex items-start gap-2">
+                          </div>
+                          <div className="flex items-start gap-2">
                             <span className="text-white font-bold">✓</span>
                             <span>Upgrade Anytime</span>
-                          </li>
+                          </div>
                         </ul>
                       </div>
                       <div className="lg:w-1/3 flex flex-col gap-4">
