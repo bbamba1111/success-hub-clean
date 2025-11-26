@@ -1161,12 +1161,12 @@ export default function HomePage() {
                   </p>
 
                   <p className="text-lg text-gray-800 leading-relaxed">
-                    You choose your Experience or the Installation level based on the rhythm you're ready to adopt:
+                    You choose your level based on the work-life balance, time-freedom and sustainable success rhythm you're ready to adopt:
                   </p>
 
                   {/* Three Column Pricing Grid */}
                   <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto mt-12">
-                    {/* Column 1 - 7-Day */}
+                    {/* Column 1 - 7-Day - BLACK FRIDAY */}
                     <div className="flex flex-col">
                       <div className="bg-white rounded-2xl overflow-hidden shadow-lg flex-grow flex flex-col border-2 border-gray-200 hover:border-[#7FB069] transition-all">
                         <div className="h-[400px] overflow-hidden flex items-center justify-center bg-gray-50">
@@ -1179,7 +1179,7 @@ export default function HomePage() {
 
                         <div className="p-6 flex-grow flex flex-col">
                           <h3 className="text-2xl font-bold text-[#7FB069] mb-4">
-                            7-Day Work-Life Balance Reset Experience
+                            7-Day Work-Life Balance Reset
                           </h3>
 
                           <p className="text-gray-700 mb-4 italic">
@@ -1203,9 +1203,9 @@ export default function HomePage() {
                               <div className="bg-gradient-to-br from-[#E8F5E8] to-white border-4 border-[#7FB069]/30 rounded-xl p-5 text-center relative shadow-md hover:shadow-2xl transition-all">
                                 <div className="font-bold text-gray-900 mb-1 text-lg">7-Day</div>
                                 <div className="text-sm text-gray-600 mb-2 font-semibold">
-                                  Work-Life Balance Reset Experience (BLACK FRIDAY SPECIAL)
+                                  Work-Life Balance Reset Experience
                                 </div>
-                                <div className="text-sm text-gray-500 italic mb-2">(Now - December 31)</div>
+                                <div className="text-lg text-gray-500 italic mb-2">(Now - December 31)</div>
                                 <div className="text-3xl font-bold text-[#7FB069] mb-2">$997</div>
                                 <div className="mt-2 text-[#7FB069] font-bold text-lg">Click here to upgrade →</div>
                               </div>
@@ -1219,11 +1219,11 @@ export default function HomePage() {
                               className="block hover:shadow-xl transition-all transform hover:scale-105"
                             >
                               <div className="bg-gradient-to-br from-[#7FB069] to-[#6FA055] text-white rounded-xl p-5 text-center shadow-lg hover:shadow-2xl transition-all border-4 border-[#7FB069]">
-                                <div className="font-bold mb-1 text-lg">7-Day</div>
+                                <div className="font-bold mb-1 text-lg">7-Day Founder</div>
                                 <div className="text-sm mb-2 font-semibold">
-                                  Work-Life Balance Reset (Founding Member Pricing)
+                                  Work-Life Balance Reset
                                 </div>
-                                <div className="text-sm italic mb-2">(Jan 1 - March 31)</div>
+                                <div className="text-lg italic mb-2">(Jan 1 - March 31)</div>
                                 <div className="text-3xl font-bold mb-2">$1,250</div>
                                 <div className="mt-2 text-white font-bold text-lg">Click here to upgrade →</div>
                               </div>
@@ -1268,7 +1268,7 @@ export default function HomePage() {
                               className="block hover:shadow-xl transition-all transform hover:scale-105"
                             >
                               <div className="bg-gradient-to-br from-[#E8F5E8] to-white border-4 border-[#E26C73]/30 rounded-xl p-5 text-center shadow-md hover:shadow-2xl transition-all">
-                                <div className="font-bold text-gray-900 mb-1 text-lg">14-Day</div>
+                                <div className="font-bold text-gray-900 mb-1 text-lg">28-Day</div>
                                 <div className="text-sm text-gray-600 mb-2 font-semibold">
                                   Work-Life Balance Habit Building Cycle
                                 </div>
