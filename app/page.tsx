@@ -1442,9 +1442,6 @@ export default function HomePage() {
               </div>
             </div>
           </div>
-         </div>
-        </div>
-       </div>
 
       {/* Book Thought Leader Barbara section */}
       {/* Book Thought Leader Barbara Section */}
