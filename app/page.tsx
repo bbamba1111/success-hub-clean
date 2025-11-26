@@ -1289,7 +1289,7 @@ export default function HomePage() {
                                 <div className="font-bold mb-1 text-lg">
                                   <strong>7-Day Reset</strong>
                                 </div>
-                                <div className="text-xs text-white/80 italic mb-3">(Now - December 31)</div>
+                                <div className="text-m text-white/80 italic mb-3">(Now - December 31)</div>
                                 <div className="text-xl font-bold mb-1">
                                   <strong>$997</strong>
                                 </div>
@@ -1315,7 +1315,7 @@ export default function HomePage() {
                                 <div className="font-bold mb-1 text-lg">
                                   <strong>7-Day Reset</strong>
                                 </div>
-                                <div className="text-xs text-white/80 italic mb-3">(Jan 1 - March 31)</div>
+                                <div className="text-m text-white/80 italic mb-3">(Jan 1 - March 31)</div>
                                 <div className="text-xl font-bold mb-1">
                                   <strong>$1,250</strong>
                                 </div>
@@ -1453,7 +1453,7 @@ export default function HomePage() {
                                 <div className="font-bold mb-1 text-lg">
                                   <strong>28-Day Habit Builder</strong>
                                 </div>
-                                <div className="text-xs text-white/80 italic mb-3">(Now - December 31)</div>
+                                <div className="text-m text-white/80 italic mb-3">(Now - December 31)</div>
                                 <div className="text-xl font-bold mb-1">
                                   <strong>$2,997</strong>
                                 </div>
@@ -1479,7 +1479,7 @@ export default function HomePage() {
                                 <div className="font-bold mb-1 text-lg">
                                   <strong>28-Day Habit Builder</strong>
                                 </div>
-                                <div className="text-xs text-white/80 italic mb-3">(Jan 1 - March 31)</div>
+                                <div className="text-m text-white/80 italic mb-3">(Jan 1 - March 31)</div>
                                 <div className="text-xl font-bold mb-1">
                                   <strong>$3,750</strong>
                                 </div>
@@ -1621,7 +1621,7 @@ export default function HomePage() {
                                 <div className="font-bold mb-1 text-lg">
                                   <strong>90-Day Installation</strong>
                                 </div>
-                                <div className="text-xs text-white/80 italic mb-3">(Now - December 31)</div>
+                                <div className="text-m text-white/80 italic mb-3">(Now - December 31)</div>
                                 <div className="text-xl font-bold mb-1">
                                   <strong>$8,997</strong>
                                 </div>
@@ -1647,7 +1647,7 @@ export default function HomePage() {
                                 <div className="font-bold mb-1 text-lg">
                                   <strong>90-Day Installation</strong>
                                 </div>
-                                <div className="text-xs text-white/80 italic mb-3">(Jan 1 - March 31)</div>
+                                <div className="text-m text-white/80 italic mb-3">(Jan 1 - March 31)</div>
                                 <div className="text-xl font-bold mb-1">
                                   <strong>$11,250</strong>
                                 </div>
