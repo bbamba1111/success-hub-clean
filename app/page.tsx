@@ -1127,7 +1127,7 @@ export default function HomePage() {
             </Card>
           </div>
 
-                             {/* Ready For More - Pricing Section */}
+                                      {/* Ready For More - Pricing Section */}
           <div className="py-20 rounded-2xl">
             <div className="max-w-7xl mx-auto px-6">
               <div className="bg-gradient-to-r from-[#E26C73] to-[#7FB069] text-white py-12 px-6 rounded-t-2xl text-center mb-0">
@@ -1501,9 +1501,176 @@ export default function HomePage() {
                       </div>
                     </div>
 
-                   
+                    {/* Column 3 - 90-Day Installation */}
+                    <div className="flex flex-col">
+                      <div className="bg-white rounded-2xl overflow-hidden shadow-lg flex-grow flex flex-col border border-gray-100 hover:shadow-xl transition-all">
+                        <div className="h-[400px] overflow-hidden flex items-center justify-center bg-gray-50">
+                          <img
+                            src="/images/21-day-habit-builder.png"
+                            alt="Woman in luxury airplane seat with cherry blossom design"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
 
-        {/* Make Time For More On Mondays - Gradient pink/green */}
+                        <div className="p-6 flex-grow flex flex-col">
+                          <h3 className="text-2xl font-bold text-[#2F4F4F] mb-4">
+                            <strong>90-Day Full Installation</strong>
+                          </h3>
+
+                          <p className="text-gray-700 mb-4 italic">
+                            Permanently Install the Work-Life Balance Business Model as Your Operating System.
+                          </p>
+
+                          <p className="text-gray-700 mb-4 leading-relaxed">
+                            Perfect if you're all-in on transformation—3 consecutive 28-day cycles to make the 4-day
+                            workweek and 4-hour workday automatic.
+                          </p>
+
+                          <div className="bg-[#F5F1E8] rounded-xl p-5 mb-6">
+                            <p className="font-semibold text-lg text-gray-800 mb-4">Your 90-Day Experience Includes:</p>
+                            <ul className="space-y-3 text-base text-gray-600">
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <strong>2-Part Onboarding: Work-Life Balance Audit & 28-Day Intention Setting</strong>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>
+                                  (9) <strong>4-Day Workweeks</strong> with (9) <strong>3-Day Weekends</strong>
+                                </span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>
+                                  (36) <strong>4-Hour Focused CEO Workdays</strong>
+                                </span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <strong>152 Hours of Weekly Time Freedom (x9 weeks)</strong>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>Expansion in 13 Core Life Value Areas</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>(36) Morning GIV•EN™ Routines</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>(36) 30-Minute Workday Workout Windows</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>(36) Extended Healthy Hybrid Lunch Breaks</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>(36) Power Down & Unplug Digital Detoxes</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>Quality of Lifestyle Experiences</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>(9) Sunday Shifts</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>(3) Intention Setting Ceremonies (GIVEN)</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>6 Hustle Habit Replacements (Mastered)</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>(3) Weeks Rest, Recover & Recharge Breaks</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>Cherry Blossom Suite: 6 AI-Powered Planners</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>Workout Planner & Sleep Tracker Access</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>Advanced AI Executive Workflows</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>Priority Support & 1:1 Check-ins</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-[#7FB069] font-bold">✓</span>
+                                <span>Facebook Community Access</span>
+                              </li>
+                            </ul>
+                          </div>
+
+                          <div className="space-y-4 mt-auto">
+                            <a
+                              href="https://www.maketimeformore.com/checkout/90-day-black-friday"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="block hover:shadow-2xl transition-all transform hover:scale-[1.02]"
+                            >
+                              <div className="bg-[#E26C73] text-white rounded-2xl p-6 text-center shadow-lg transition-all">
+                                <div className="font-bold text-sm tracking-wide mb-3">
+                                  <strong>BLACK FRIDAY SPECIAL</strong>
+                                </div>
+                                <div className="font-bold mb-1 text-lg">
+                                  <strong>90-Day Installation</strong>
+                                </div>
+                                <div className="text-xs text-white/80 italic mb-3">(Now - December 31)</div>
+                                <div className="text-xl font-bold mb-1">
+                                  <strong>$8,997</strong>
+                                </div>
+                                <div className="text-white/80 text-sm mb-4">
+                                  Reg <span className="line-through">$22,500</span>
+                                </div>
+                                <div className="mt-3 bg-white/20 rounded-full py-2 px-4 text-white font-bold text-sm">
+                                  <strong>Click here to upgrade →</strong>
+                                </div>
+                              </div>
+                            </a>
+
+                            <a
+                              href="https://www.maketimeformore.com/checkout/90-day-founding"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="block hover:shadow-2xl transition-all transform hover:scale-[1.02]"
+                            >
+                              <div className="bg-[#7FB069] text-white rounded-2xl p-6 text-center shadow-lg transition-all">
+                                <div className="font-bold text-sm tracking-wide mb-3">
+                                  <strong>FOUNDING MEMBER</strong>
+                                </div>
+                                <div className="font-bold mb-1 text-lg">
+                                  <strong>90-Day Installation</strong>
+                                </div>
+                                <div className="text-xs text-white/80 italic mb-3">(Jan 1 - March 31)</div>
+                                <div className="text-xl font-bold mb-1">
+                                  <strong>$11,250</strong>
+                                </div>
+                                <div className="text-white/80 text-sm mb-4">
+                                  Reg <span className="line-through">$22,500</span>
+                                </div>
+                                <div className="mt-3 bg-white/20 rounded-full py-2 px-4 text-white font-bold text-sm">
+                                  <strong>Click here to upgrade →</strong>
+                                </div>
+                              </div>
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Make Time For More On Mondays - Gradient pink/green */}
                   <div className="mt-16 bg-gradient-to-r from-[#E26C73] to-[#7FB069] rounded-2xl p-8 shadow-lg">
                     <div className="flex flex-col lg:flex-row items-center gap-8">
                       <div className="lg:w-2/3 text-white">
@@ -1572,7 +1739,7 @@ export default function HomePage() {
                 </div>
               </div>
             </div>
-          </div>          
+          </div>
 
       {/* Book Thought Leader Barbara section */}
       {/* Book Thought Leader Barbara Section */}
