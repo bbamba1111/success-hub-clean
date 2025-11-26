@@ -1246,11 +1246,11 @@ export default function HomePage() {
 
                         <div className="p-6 flex-grow flex flex-col">
                           <h3 className="text-2xl font-bold text-[#E26C73] mb-4">
-                            21-Day Habit Building Cycle
+                            28-Day Habit Building Cycle
                           </h3>
 
                           <p className="text-gray-700 mb-4 italic">
-                            Break Unhealthy Hustle Habits, Build New Ones in our 28-Day Cycle
+                            Break Unhealthy Hustle Habits, Build New Ones In 28-Days
                           </p>
 
                           <p className="text-gray-700 mb-6 leading-relaxed">
@@ -1315,7 +1315,7 @@ export default function HomePage() {
                           <h3 className="text-2xl font-bold text-[#7FB069] mb-4">90-Day Work-Lifestyle Installation</h3>
 
                           <p className="text-gray-700 mb-4 italic">
-                            Break Unhealthy Hustle Habits, Build New Ones in (3) 28-Day Cycles
+                            Install Your Desired Work-Lifestyle over (3) 28-Day Cycles
                           </p>
 
                           <p className="text-gray-700 mb-6 leading-relaxed">
@@ -1333,7 +1333,7 @@ export default function HomePage() {
                               className="block hover:shadow-xl transition-all transform hover:scale-105"
                             >
                               <div className="bg-gradient-to-br from-[#E8F5E8] to-white border-4 border-[#7FB069]/30 rounded-xl p-5 text-center relative shadow-md hover:shadow-2xl transition-all">
-                                <div className="font-bold text-gray-900 mb-1 text-lg">21-Day</div>
+                                <div className="font-bold text-gray-900 mb-1 text-lg">90-Day</div>
                                 <div className="text-sm text-gray-600 mb-2 font-semibold">
                                    Work-Life Balance Business Model & SOP Installation
                                 </div>
