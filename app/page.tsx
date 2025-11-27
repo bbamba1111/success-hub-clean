@@ -1441,7 +1441,7 @@ export default function HomePage() {
 
                           <div className="space-y-4 mt-auto">
                             <a
-                              href="https://www.maketimeformore.com/checkout/28-day-experience"
+                              href="https://www.maketimeformore.com/checkout/28-day-black-friday"
                               target="_blank"
                               rel="noopener noreferrer"
                               className="block hover:shadow-2xl transition-all transform hover:scale-[1.02]"
