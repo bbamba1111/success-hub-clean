@@ -1290,7 +1290,7 @@ export default function HomePage() {
                                   <strong>7-Day Reset</strong>
                                 </div>
                                 <div className="text-m text-white/80 italic mb-3">(Now - December 31)</div>
-                                <div className="text-l font-bold mb-1">
+                                <div className="text-1xl font-bold mb-1">
                                   <strong>$997</strong>
                                 </div>
                                 <div className="text-white/80 text-m mb-4">
