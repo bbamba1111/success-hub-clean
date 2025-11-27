@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useSearchParams } from "next/navigation"
+import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from "react"
-import { CheckCircle2, Eye, EyeOff, X } from "lucide-react"
+import { CheckCircle2, Eye, EyeOff, X } from 'lucide-react'
 import Link from "next/link"
 
 export default function WelcomePage() {
@@ -143,31 +143,33 @@ export default function WelcomePage() {
                 <div className="flex flex-col gap-3">
                   <div className="grid gap-2">
                     <Label htmlFor="email" className="text-sm">
-                      Email {!isValidEmail(emailParam) && <span className="text-red-500">*</span>}
+                      Email <span className="text-red-500">*</span>
                     </Label>
                     <Input
                       id="email"
                       type="email"
                       value={userEmail}
                       onChange={(e) => setUserEmail(e.target.value)}
-                      disabled={isValidEmail(emailParam)}
-                      className={isValidEmail(emailParam) ? "bg-gray-50 text-sm" : "text-sm"}
+                      className="text-sm"
                       placeholder="your@email.com"
                       required
                     />
-                    {!isValidEmail(emailParam) && (
-                      <p className="text-xs text-gray-500">Enter the email you used for your purchase</p>
-                    )}
+                    <p className="text-xs text-gray-500">Enter the email you used for your purchase</p>
                   </div>
 
-                  {userName && (
-                    <div className="grid gap-2">
-                      <Label htmlFor="firstName" className="text-sm">
-                        First Name
-                      </Label>
-                      <Input id="firstName" type="text" value={userName} disabled className="bg-gray-50 text-sm" />
-                    </div>
-                  )}
+                  <div className="grid gap-2">
+                    <Label htmlFor="firstName" className="text-sm">
+                      First Name
+                    </Label>
+                    <Input
+                      id="firstName"
+                      type="text"
+                      value={userName}
+                      onChange={(e) => setUserName(e.target.value)}
+                      className="text-sm"
+                      placeholder="Your first name"
+                    />
+                  </div>
 
                   {productName && (
                     <div className="grid gap-2">
