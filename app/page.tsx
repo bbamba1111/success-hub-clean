@@ -1277,7 +1277,7 @@ export default function HomePage() {
 
                           <div className="space-y-4 mt-auto">
                             <a
-                              href="https://www.maketimeformore.com/checkout/7-day-black-friday"
+                              href="https://www.maketimeformore.com/checkout/1-week-hzlvl"
                               target="_blank"
                               rel="noopener noreferrer"
                               className="block hover:shadow-2xl transition-all transform hover:scale-[1.02]"
@@ -1303,7 +1303,7 @@ export default function HomePage() {
                             </a>
 
                             <a
-                              href="https://www.maketimeformore.com/checkout/7-day-founding"
+                              href="https://www.maketimeformore.com/checkout/7-day-installation"
                               target="_blank"
                               rel="noopener noreferrer"
                               className="block hover:shadow-2xl transition-all transform hover:scale-[1.02]"
