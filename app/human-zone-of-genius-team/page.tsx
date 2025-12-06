@@ -6,7 +6,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import Link from "next/link"
 import { Sparkles, Brain, ArrowLeft, Target, Clock, Zap, Heart, MessageCircle, Lightbulb, Users, Award, Shield } from 'lucide-react'
 import CherryBlossomChatModal from "@/components/cherry-blossom-chat-modal"
-import { ExecutiveChatModal } from "@/components/executive-chat-modal"
 
 const executives = [
   {
@@ -175,11 +174,16 @@ const humanSkills = [
 ]
 
 export default function HumanZoneOfGeniusTeam() {
-  const [isCEOWorkdayChatOpen, setIsCEOWorkdayChatOpen] = useState(false)
+  const [isAssessmentChatOpen, setIsAssessmentChatOpen] = useState(false)
   const [selectedExecutive, setSelectedExecutive] = useState<(typeof executives)[0] | null>(null)
+  const [isExecutiveChatOpen, setIsExecutiveChatOpen] = useState(false)
 
-  const workdayPrefillMessage =
-    "I want to design my personalized 4-Hour CEO Workday (1:00-5:00 PM, Monday-Thursday). Can you help me identify my 2-3 highest-value human-only skills and create a focused schedule that maximizes my impact?"
+  const assessmentPrefillMessage =
+    "I want to design my personalized 4-Hour Focused CEO Workday (1:00-5:00 PM, Monday-Thursday). Can you help me identify my zone of genius and create a workday focused on the 20% of high-value work that generates 80% of results?"
+
+  const getExecutivePrefillMessage = (exec: (typeof executives)[0]) => {
+    return `Hello ${exec.name}! I'd like your guidance as my ${exec.role}. ${exec.description} How can you help me today?`
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -194,8 +198,8 @@ export default function HumanZoneOfGeniusTeam() {
         </div>
       </header>
 
-      {/* 1. HERO - Medium Sage */}
-      <section className="relative overflow-hidden bg-medium sage">
+      {/* Section 1: HERO - Soft Sage Green */}
+      <section className="relative overflow-hidden bg-[#5D9D61]/10">
         <div className="max-w-5xl mx-auto px-6 py-20 text-center">
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-[#5D9D61]/20 via-[#E26C73]/20 to-[#5D9D61]/20 mb-6">
             <Sparkles className="w-10 h-10 text-[#5D9D61]" />
@@ -217,8 +221,8 @@ export default function HumanZoneOfGeniusTeam() {
           <Button
             size="lg"
             className="text-lg px-8 py-6 bg-[#E26C73] hover:bg-[#E26C73]/90 text-white"
-            onClick={() => setIsCEOWorkdayChatOpen(true)}
-            data-testid="button-design-workday"
+            onClick={() => setIsAssessmentChatOpen(true)}
+            data-testid="button-start-assessment"
           >
             <Brain className="w-5 h-5 mr-2" />
             Design Your 4-Hour CEO Workday
@@ -226,8 +230,8 @@ export default function HumanZoneOfGeniusTeam() {
         </div>
       </section>
 
-      {/* 2. 4 WORKDAY PILLARS - Soft Peachy Tan */}
-      <section className="py-16 px-6 bg-[#FDF9F5]">
+      {/* Section 2: 4 WORKDAY PILLARS - White */}
+      <section className="py-16 px-6 bg-white">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-4 text-[#E26C73]">4 Workday Pillars</h2>
           <p className="text-xl text-center text-muted-foreground mb-12 max-w-3xl mx-auto">
@@ -250,8 +254,8 @@ export default function HumanZoneOfGeniusTeam() {
         </div>
       </section>
 
-      {/* 3. 8 HUMAN-ONLY SKILLS - Soft Coral Pink */}
-      <section className="py-16 px-6 bg-[#FCF2F3]">
+      {/* Section 3: 8 HUMAN-ONLY SKILLS - Beige */}
+      <section className="py-16 px-6 bg-[#F5F1E8]">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-4 text-[#5D9D61]">Your 8 Human-Only Business Skills</h2>
           <p className="text-xl text-center text-muted-foreground mb-12 max-w-3xl mx-auto">
@@ -274,8 +278,8 @@ export default function HumanZoneOfGeniusTeam() {
         </div>
       </section>
 
-      {/* 4. AI EXECUTIVE TEAM SERVES YOU - Soft White */}
-      <section className="py-16 px-6 bg-white">
+      {/* Section 4: AI EXECUTIVE TEAM SERVES YOU - Gradient */}
+      <section className="py-16 px-6 bg-gradient-to-b from-[#5D9D61]/10 via-white to-[#E26C73]/10">
         <div className="max-w-6xl mx-auto text-center">
           <h2 className="text-4xl font-bold mb-6 text-[#E26C73]">The AI Executive Team Serves You</h2>
           <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
@@ -311,8 +315,8 @@ export default function HumanZoneOfGeniusTeam() {
         </div>
       </section>
 
-      {/* 5. YOUR 16 AI EXECUTIVE TEAM - Soft Peachy Tan */}
-      <section className="py-20 px-6 bg-[#FDF9F5]">
+      {/* Section 5: YOUR 16 AI EXECUTIVE TEAM - Soft Sage Green */}
+      <section className="py-20 px-6 bg-[#5D9D61]/10">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-4 text-[#5D9D61]">Your 16 AI Executive Team</h2>
           <p className="text-xl text-center text-muted-foreground mb-12 max-w-3xl mx-auto">
@@ -324,7 +328,10 @@ export default function HumanZoneOfGeniusTeam() {
               <Card
                 key={exec.id}
                 className="border-2 border-[#5D9D61]/30 hover:border-[#E26C73] transition-all cursor-pointer hover-elevate"
-                onClick={() => setSelectedExecutive(exec)}
+                onClick={() => {
+                  setSelectedExecutive(exec)
+                  setIsExecutiveChatOpen(true)
+                }}
                 data-testid={`card-executive-${exec.id}`}
               >
                 <CardHeader>
@@ -353,21 +360,24 @@ export default function HumanZoneOfGeniusTeam() {
       </section>
 
       <CherryBlossomChatModal
-        isOpen={isCEOWorkdayChatOpen}
-        onClose={() => setIsCEOWorkdayChatOpen(false)}
-        prefillMessage={workdayPrefillMessage}
+        isOpen={isAssessmentChatOpen}
+        onClose={() => setIsAssessmentChatOpen(false)}
+        prefillMessage={assessmentPrefillMessage}
         conversationTitle="4-Hour CEO Workday Design"
-        executiveRole="CEO Workday Coach"
+        executiveRole="Cherry Blossom - CEO Workday Coach"
       />
 
       {selectedExecutive && (
-        <ExecutiveChatModal
-          isOpen={!!selectedExecutive}
-          onClose={() => setSelectedExecutive(null)}
-          executiveId={selectedExecutive.id}
-          executiveName={selectedExecutive.name}
-          executiveRole={selectedExecutive.role}
-          executiveIcon={selectedExecutive.icon}
+        <CherryBlossomChatModal
+          isOpen={isExecutiveChatOpen}
+          onClose={() => {
+            setIsExecutiveChatOpen(false)
+            setSelectedExecutive(null)
+          }}
+          prefillMessage={getExecutivePrefillMessage(selectedExecutive)}
+          conversationTitle={`${selectedExecutive.name} - ${selectedExecutive.role}`}
+          executiveRole={`${selectedExecutive.name} - ${selectedExecutive.role}`}
+          context={selectedExecutive.id}
         />
       )}
     </div>
