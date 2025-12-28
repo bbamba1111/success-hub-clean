@@ -172,7 +172,7 @@ export default function HomePage() {
               <div className="py-6 px-8 flex flex-col justify-center bg-white">
                 {/* Header */}
                 <div className="mb-6 text-center">
-                  <p className="text-sm text-gray-600 font-medium">Choose the option that fits your rhythm:</p>
+                  <p className="text-sm text-gray-600 font-medium">Get Oriented Inside The Hub:</p>
                 </div>
 
                 {/* Stacked Options */}
