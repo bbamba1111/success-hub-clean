@@ -1044,34 +1044,7 @@ export default function HomePage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-gray-700 leading-relaxed">
-                  No matter when you join, the rhythm stays the same.
-
-During Integration Week, you step away from live co-working and live the Work-Life Balance Business Model™ independently — inside your real life and real schedule.
-
-What Integration Week includes:
-
-No live co-working sessions
-
-Full access to the Installation Hub, tools, and resources
-
-You live the 4-day workweek and 4-hour workdays on your own
-
-16 intentional work hours
-
-152 hours of time freedom
-
-This week exists to build trust — not momentum.
-
-You prove to yourself the rhythm works without support holding you up.
-Confidence locks in through lived experience.
-
-If you join during Week 1, 2, or 3 of a cycle, you still participate in Integration Week during Week 4 — because this rhythm is static by design.
-
-You don’t catch up.
-You sync in.
-
-Integration isn’t a pause from the model —
-it’s where the model becomes yours.
+Hello copy goes here
                 </p>
 
                 <div className="space-y-3">
