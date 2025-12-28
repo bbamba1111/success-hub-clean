@@ -999,16 +999,16 @@ export default function HomePage() {
               className="rounded-full shadow-lg"
             />
             <Badge variant="secondary" className="bg-gradient-to-r from-[#E26C73] to-[#7FB069] text-white border-0">
-              Week 4
+              Week 4 Integration
             </Badge>
           </div>
 
           <div className="text-center mb-12">
             <h3 className="text-3xl font-bold bg-gradient-to-r from-[#E26C73] to-[#7FB069] bg-clip-text text-transparent mb-4">
-              Rest, Recover & Recharge Unapologetically
+              Integration Week — Live the Rhythm Solo 
             </h3>
             <p className="text-xl text-gray-700 font-medium">
-              This is Week 4 of each 28-day cycle - Time to celebrate your transformation and plan your well-deserved
+              Integration Week is always Week 4 of the monthly 28-day cycle (e.g., the January Cycle, February Cycle, etc.)
               break
             </p>
           </div>
@@ -1026,11 +1026,11 @@ export default function HomePage() {
           {/* The Button for Sabbatical Planning was updated here */}
           <div className="max-w-4xl mx-auto mb-8">
             <Button
-              onClick={() => openChat("sabbatical-planning", "Plan Your Sabbatical or 1-Week Break")}
+              onClick={() => openChat("sabbatical-planning", "Plan Your Integration Week")}
               size="lg"
               className="w-full bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-bold px-12 py-6 text-xl shadow-xl hover:shadow-2xl transition-all transform hover:scale-105"
             >
-              Plan Your Sabbatical or 1-Week Break
+              Plan Your Integration Week
             </Button>
           </div>
 
@@ -1038,14 +1038,40 @@ export default function HomePage() {
             <Card className="border-2 border-[#E26C73]/30 bg-white/80">
               <CardHeader>
                 <CardTitle className="text-[#E26C73] flex items-center gap-2">
-                  <Star className="h-5 w-5" />
-                  Share Your Vacation Plans & Pics
+                  <Woman className="h-5 w-5" />
+                 Live the Work-Life Balance Business Model™ Independently
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-gray-700 leading-relaxed">
-                  After 3 weeks of transformation, it's time to celebrate your progress with a well-deserved vacation.
-                  Use this week to rest, recharge, and reflect on your journey.
+                  No matter when you join, the rhythm stays the same.
+
+During Integration Week, you step away from live co-working and live the Work-Life Balance Business Model™ independently — inside your real life and real schedule.
+
+What Integration Week includes:
+
+No live co-working sessions
+
+Full access to the Installation Hub, tools, and resources
+
+You live the 4-day workweek and 4-hour workdays on your own
+
+16 intentional work hours
+
+152 hours of time freedom
+
+This week exists to build trust — not momentum.
+
+You prove to yourself the rhythm works without support holding you up.
+Confidence locks in through lived experience.
+
+If you join during Week 1, 2, or 3 of a cycle, you still participate in Integration Week during Week 4 — because this rhythm is static by design.
+
+You don’t catch up.
+You sync in.
+
+Integration isn’t a pause from the model —
+it’s where the model becomes yours.
                 </p>
 
                 <div className="space-y-3">
