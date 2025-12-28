@@ -147,7 +147,7 @@ export default function HomePage() {
             </h2>
             <p
               className="text-[39px] text-gray-700 mt-6"
-              style={{ fontFamily: "'Great Vibes', cursive", fontWeight: 400 }}
+              style={{ fontFamily: "'PlayFair', cursive", fontWeight: 400 }}
             >
               Live with Thought Leader Barbara
             </p>
