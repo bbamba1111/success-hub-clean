@@ -85,10 +85,10 @@ export default function HomePage() {
               <div className="space-y-6">
                 <div className="space-y-2">
                   <h1 className="text-3xl lg:text-3xl font-bold text-gray-900 leading-tight">
-                    Make Time For More<sup className="text-lg">™</sup> Monthly
+                    Make Time For More<sup className="text-lg">™</sup> 
                   </h1>
                   <p className="text-lg text-gray-600 font-normal">
-                    Installing The Work-Life Balance Business Model & SOP
+                   Welcome to The Work-Life Balance Installation Hub
                   </p>
                 </div>
 
@@ -183,7 +183,7 @@ export default function HomePage() {
                   <div className="space-y-3">
                     <div className="text-center">
                       <p className="text-lg text-gray-800 mb-3">
-                        <span className="font-semibold">Take The Audit:</span> Monday OR Wednesday | 7:00 - 8:30 PM ET
+                        <span className="font-semibold">Take The Audit:</span> Tuesday | 2:00 - 4:00 PM ET
                       </p>
                     </div>
                     <a
@@ -202,7 +202,7 @@ export default function HomePage() {
                   <div className="space-y-3">
                     <div className="text-center">
                       <p className="text-lg text-gray-800 mb-3">
-                        <span className="font-semibold">Set Your Intention:</span> Tuesday OR Thursday | 7:00 - 8:30 PM
+                        <span className="font-semibold">Set Your Intention:</span> Wednesday | 2:00 - 4:00 PM
                         ET
                       </p>
                     </div>
