@@ -944,7 +944,7 @@ export default function HomePage() {
         </Card>
       </div>
 
-      {/* Week 4: Integration Week Section */}
+   {/* Week 4: Integration Week Section */}
 <div className="py-20 bg-gradient-to-br from-[#7FB069]/10 to-white">
   <div className="max-w-7xl mx-auto px-6">
     <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -1154,49 +1154,6 @@ export default function HomePage() {
     </div>
   </div>
 </div>
-
-      {/* Facebook Group CTA Section */}
-      <div className="bg-gradient-to-r from-[#7FB069]/10 to-[#E26C73]/10 py-24">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <div className="max-w-2xl mx-auto">
-              <div className="flex items-center justify-center gap-3 mb-8">
-                <img
-                  src="/images/logo.png"
-                  alt="Make Time For More Logo"
-                  width={80}
-                  height={80}
-                  className="rounded-full shadow-lg"
-                />
-              </div>
-              <h2 className="text-3xl font-bold text-[#E26C73] mb-6">Join Our Facebook Community</h2>
-              <p className="text-lg text-gray-600 mb-8">
-                Connect with like-minded women on their work-life balance journey. Share experiences, get support,
-                celebrate wins together, and share pics and videos of you making time for more.
-              </p>
-              <img
-                src="/images/facebook-group-community.jpg"
-                alt="Diverse community of women in cherry blossom setting"
-                className="w-full h-auto object-cover rounded-2xl shadow-2xl mb-8"
-              />
-              <a
-                href="https://www.facebook.com/groups/maketimeformore"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block"
-              >
-                <Button
-                  size="lg"
-                  className="bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-semibold px-8 py-4 text-lg"
-                >
-                  Join Our Facebook Group
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
 
       
 
