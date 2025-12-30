@@ -1000,6 +1000,75 @@ export default function HomePage() {
           </div>
         </div>
       </div>
+
+      {/* Share Your Monthly Success Story Section */}
+      <div className="py-20 bg-gradient-to-br from-[#E26C73]/10 to-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left: Content */}
+            <div className="space-y-6">
+              <h2 className="text-4xl lg:text-5xl font-bold text-[#E26C73]">
+                Share Your Monthly Success Story
+              </h2>
+              <p className="text-xl text-gray-700 leading-relaxed">
+                At the end of every 28-Day Installation Cycle, we invite you to{" "}
+                <span className="font-bold text-[#E26C73]">reflect, celebrate, and share</span> your transformation.
+              </p>
+              <p className="text-lg text-gray-700 leading-relaxed">
+                Your story matters — not just for you, but for every entrepreneur still trapped in hustle culture, wondering if balance is actually possible.
+              </p>
+
+              <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-[#E26C73]/20">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">What to Share:</h3>
+                <ul className="space-y-3 text-gray-700">
+                  <li className="flex items-start gap-3">
+                    <Sparkles className="w-6 h-6 text-[#E26C73] flex-shrink-0 mt-1" />
+                    <span>What shifted for you this month?</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Sparkles className="w-6 h-6 text-[#E26C73] flex-shrink-0 mt-1" />
+                    <span>What habits finally stuck?</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Sparkles className="w-6 h-6 text-[#E26C73] flex-shrink-0 mt-1" />
+                    <span>What time freedom did you reclaim?</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Sparkles className="w-6 h-6 text-[#E26C73] flex-shrink-0 mt-1" />
+                    <span>How did your business or life transform?</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="space-y-4">
+                <a
+                  href="https://www.maketimeformore.com/testimonials"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block"
+                >
+                  <Button className="w-full bg-gradient-to-r from-[#E26C73] to-[#7FB069] hover:from-[#D55A60] hover:to-[#6FA055] text-white text-lg py-6">
+                    Submit Your Success Story
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </a>
+                <p className="text-center text-gray-600 text-sm italic">
+                  Your testimonial may be featured on our website, in our community, and in our marketing to inspire others.
+                </p>
+              </div>
+            </div>
+
+            {/* Right: Image */}
+            <div>
+              <img
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1debrief-MRp5ajmcKDbCglvbDKinQcD0Ug8uCx.png"
+                alt="Share Your Success Story"
+                className="w-full rounded-3xl shadow-2xl"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
       
       {/* Facebook Group CTA Section */}
       <div className="bg-gradient-to-r from-[#7FB069]/10 to-[#E26C73]/10 py-24">
