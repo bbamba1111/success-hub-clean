@@ -944,6 +944,63 @@ export default function HomePage() {
         </Card>
       </div>
 
+{/* Week 4: Integration Week Section */}
+      <div className="py-20 bg-gradient-to-br from-[#7FB069]/10 to-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left: Image */}
+            <div className="order-2 lg:order-1">
+              <img
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1balck-RiZx5UtrQ1qvJVC6d3ANH1aMYrFG11.png"
+                alt="Integration Week - Living Your New Rhythm"
+                className="w-full rounded-3xl shadow-2xl"
+              />
+            </div>
+
+            {/* Right: Content */}
+            <div className="order-1 lg:order-2 space-y-6">
+              <h2 className="text-4xl lg:text-5xl font-bold text-[#7FB069]">
+                Week 4: Integration Week
+              </h2>
+              <p className="text-xl text-gray-700 leading-relaxed">
+                Your fourth week of every cycle is designed for <span className="font-bold text-[#7FB069]">solo practice</span> — no co-working sessions, no live calls.
+              </p>
+              <p className="text-lg text-gray-700 leading-relaxed">
+                This is where you prove to yourself that the Work-Life Balance rhythm you've been installing over the past three Mondays has truly become <span className="font-semibold">automatic</span>.
+              </p>
+
+              <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-[#7FB069]/20">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">What Happens During Integration Week:</h3>
+                <ul className="space-y-3 text-gray-700">
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="w-6 h-6 text-[#7FB069] flex-shrink-0 mt-1" />
+                    <span><strong>Monday - Thursday:</strong> You live the full model solo — GIV•EN, Workout Window, Extended Lunch, 4-Hour CEO Block, Quality of Life Experiences, Power Down Detox</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="w-6 h-6 text-[#7FB069] flex-shrink-0 mt-1" />
+                    <span><strong>Friday - Sunday:</strong> Pure white space. No structure. Just life.</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="w-6 h-6 text-[#7FB069] flex-shrink-0 mt-1" />
+                    <span><strong>16-Hour Work Week:</strong> You work 4 focused hours per day, Monday-Thursday (16 total hours)</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="w-6 h-6 text-[#7FB069] flex-shrink-0 mt-1" />
+                    <span><strong>152 Hours Time Freedom:</strong> The remaining 152 hours of your week belong to YOU</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="bg-[#E26C73]/10 rounded-2xl p-6">
+                <p className="text-gray-800 font-medium">
+                  <span className="text-[#E26C73] font-bold">This is the proof:</span> If you can live this rhythm independently for a full week — without external accountability or co-working support — you've successfully installed a sustainable Work-Life Balance business model.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
       {/* Facebook Group CTA Section */}
       <div className="bg-gradient-to-r from-[#7FB069]/10 to-[#E26C73]/10 py-24">
         <div className="max-w-6xl mx-auto px-6">
