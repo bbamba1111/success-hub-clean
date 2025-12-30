@@ -944,216 +944,216 @@ export default function HomePage() {
         </Card>
       </div>
 
-  {/* Week 4: Integration Week Section */}
-<div className="py-20 bg-gradient-to-br from-[#7FB069]/10 to-white">
-  <div className="max-w-7xl mx-auto px-6">
-    <div className="grid lg:grid-cols-2 gap-12 items-center">
-      {/* Left: Image */}
-      <div className="order-2 lg:order-1">
-        <img
-          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1balck-RiZx5UtrQ1qvJVC6d3ANH1aMYrFG11.png"
-          alt="Integration Week - Living Your New Rhythm"
-          className="w-full rounded-3xl shadow-2xl"
-        />
-      </div>
-
-      {/* Right: Content */}
-      <div className="order-1 lg:order-2 space-y-6">
-        <h2 className="text-4xl lg:text-5xl font-bold text-[#7FB069]">
-          Week 4: Integration Week
-        </h2>
-        <p className="text-xl text-gray-700 leading-relaxed">
-          Your fourth week of every cycle is designed for <span className="font-bold text-[#7FB069]">solo practice</span> — no co-working sessions, no live calls.
-        </p>
-        <p className="text-lg text-gray-700 leading-relaxed">
-          This is where you prove to yourself that the Work-Life Balance rhythm you've been installing over the past three Mondays has truly become <span className="font-semibold">automatic</span>.
-        </p>
-
-        <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-[#7FB069]/20">
-          <h3 className="text-xl font-bold text-gray-900 mb-4">What Happens During Integration Week:</h3>
-          <ul className="space-y-3 text-gray-700">
-            <li className="flex items-start gap-3">
-              <CheckCircle2 className="w-6 h-6 text-[#7FB069] flex-shrink-0 mt-1" />
-              <span><strong>Monday - Thursday:</strong> You live the full model solo — GIV•EN, Workout Window, Extended Lunch, 4-Hour CEO Block, Quality of Life Experiences, Power Down Detox</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <CheckCircle2 className="w-6 h-6 text-[#7FB069] flex-shrink-0 mt-1" />
-              <span><strong>Friday - Sunday:</strong> Pure white space. No structure. Just life.</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <CheckCircle2 className="w-6 h-6 text-[#7FB069] flex-shrink-0 mt-1" />
-              <span><strong>16-Hour Work Week:</strong> You work 4 focused hours per day, Monday-Thursday (16 total hours)</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <CheckCircle2 className="w-6 h-6 text-[#7FB069] flex-shrink-0 mt-1" />
-              <span><strong>152 Hours Time Freedom:</strong> The remaining 152 hours of your week belong to YOU</span>
-            </li>
-          </ul>
-        </div>
-
-        <div className="bg-[#E26C73]/10 rounded-2xl p-6">
-          <p className="text-gray-800 font-medium">
-            <span className="text-[#E26C73] font-bold">This is the proof:</span> If you can live this rhythm independently for a full week — without external accountability or co-working support — you've successfully installed a sustainable Work-Life Balance business model.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-{/* Share Your Monthly Success Story Section */}
-<div className="py-20 bg-gradient-to-br from-[#E26C73]/10 to-white">
-  <div className="max-w-7xl mx-auto px-6">
-    <div className="grid lg:grid-cols-2 gap-12 items-center">
-      {/* Left: Content */}
-      <div className="space-y-6">
-        <h2 className="text-4xl lg:text-5xl font-bold text-[#E26C73]">
-          Share Your Monthly Success Story
-        </h2>
-        <p className="text-xl text-gray-700 leading-relaxed">
-          At the end of every 28-Day Installation Cycle, we invite you to{" "}
-          <span className="font-bold text-[#E26C73]">reflect, celebrate, and share</span> your transformation.
-        </p>
-        <p className="text-lg text-gray-700 leading-relaxed">
-          Your story matters — not just for you, but for every entrepreneur still trapped in hustle culture, wondering if balance is actually possible.
-        </p>
-
-        <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-[#E26C73]/20">
-          <h3 className="text-xl font-bold text-gray-900 mb-4">What to Share:</h3>
-          <ul className="space-y-3 text-gray-700">
-            <li className="flex items-start gap-3">
-              <Sparkles className="w-6 h-6 text-[#E26C73] flex-shrink-0 mt-1" />
-              <span>What shifted for you this month?</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <Sparkles className="w-6 h-6 text-[#E26C73] flex-shrink-0 mt-1" />
-              <span>What habits finally stuck?</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <Sparkles className="w-6 h-6 text-[#E26C73] flex-shrink-0 mt-1" />
-              <span>What time freedom did you reclaim?</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <Sparkles className="w-6 h-6 text-[#E26C73] flex-shrink-0 mt-1" />
-              <span>How did your business or life transform?</span>
-            </li>
-          </ul>
-        </div>
-
-        <div className="space-y-4">
-          <a
-            href="https://www.maketimeformore.com/testimonials"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block"
-          >
-            <Button className="w-full bg-gradient-to-r from-[#E26C73] to-[#7FB069] hover:from-[#D55A60] hover:to-[#6FA055] text-white text-lg py-6">
-              Submit Your Success Story
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
-          </a>
-          <p className="text-center text-gray-600 text-sm italic">
-            Your testimonial may be featured on our website, in our community, and in our marketing to inspire others.
-          </p>
-        </div>
-      </div>
-
-      {/* Right: Image */}
-      <div>
-        <img
-          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1debrief-MRp5ajmcKDbCglvbDKinQcD0Ug8uCx.png"
-          alt="Share Your Success Story"
-          className="w-full rounded-3xl shadow-2xl"
-        />
-      </div>
-    </div>
-  </div>
-</div>
-
-{/* Rest, Recover & Recharge Section */}
-<div className="py-20 bg-gradient-to-br from-[#F5F1E8] to-white">
-  <div className="max-w-7xl mx-auto px-6">
-    <div className="text-center mb-12">
-      <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-        Rest, Recover & Recharge Unapologetically
-      </h2>
-      <p className="text-xl text-gray-700 max-w-3xl mx-auto">
-        We don't just teach Work-Life Balance — we live it. That's why we take{" "}
-        <span className="font-bold text-[#7FB069]">two community-wide sabbaticals</span> every year.
-      </p>
-    </div>
-
-    <div className="grid lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
-      {/* Facebook Group Card */}
-      <Card className="border-2 border-[#E26C73]/20 shadow-lg hover:shadow-xl transition-shadow">
-        <CardHeader className="bg-gradient-to-br from-[#E26C73]/10 to-white">
-          <CardTitle className="text-2xl text-[#E26C73] flex items-center gap-3">
-            <Users className="w-8 h-8" />
-            Share in the Facebook Group
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="pt-6 space-y-4">
-          <p className="text-gray-700 leading-relaxed">
-            During Integration Week and sabbaticals, stay connected with the community in our private Facebook Group.
-          </p>
-          <ul className="space-y-3 text-gray-700">
-            <li className="flex items-start gap-3">
-              <CheckCircle className="w-5 h-5 text-[#E26C73] flex-shrink-0 mt-1" />
-              <span>Post your wins and reflections</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <CheckCircle className="w-5 h-5 text-[#E26C73] flex-shrink-0 mt-1" />
-              <span>Celebrate others living the rhythm</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <CheckCircle className="w-5 h-5 text-[#E26C73] flex-shrink-0 mt-1" />
-              <span>Share your sabbatical plans</span>
-            </li>
-          </ul>
-          <a
-            href="https://www.facebook.com/groups/maketimeformore"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block"
-          >
-            <Button className="w-full bg-[#E26C73] hover:bg-[#D55A60] text-white">
-              Join Facebook Group
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
-          </a>
-        </CardContent>
-      </Card>
-
-      {/* Sabbatical Planning Card */}
-      <Card className="border-2 border-[#7FB069]/20 shadow-lg hover:shadow-xl transition-shadow">
-        <CardHeader className="bg-gradient-to-br from-[#7FB069]/10 to-white">
-          <CardTitle className="text-2xl text-[#7FB069] flex items-center gap-3">
-            <Heart className="w-8 h-8" />
-            Plan Your Personal Sabbaticals
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="pt-6 space-y-4">
-          <p className="text-gray-700 leading-relaxed">
-            Use our community sabbaticals as permission to design your own rest periods.
-          </p>
-          <div className="space-y-3">
-            <div className="bg-[#7FB069]/10 rounded-lg p-4">
-              <p className="font-bold text-gray-900 mb-1">Summer Sabbatical</p>
-              <p className="text-gray-700 text-sm">July - August: Travel, family time, outdoor adventures</p>
+        {/* Week 4: Integration Week Section */}
+      <div className="py-20 bg-gradient-to-br from-[#7FB069]/10 to-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left: Image */}
+            <div className="order-2 lg:order-1">
+              <img
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1balck-RiZx5UtrQ1qvJVC6d3ANH1aMYrFG11.png"
+                alt="Integration Week - Living Your New Rhythm"
+                className="w-full rounded-3xl shadow-2xl"
+              />
             </div>
-            <div className="bg-[#E26C73]/10 rounded-lg p-4">
-              <p className="font-bold text-gray-900 mb-1">Winter Holiday</p>
-              <p className="text-gray-700 text-sm">November - December: Holidays, reflection, celebration</p>
+
+            {/* Right: Content */}
+            <div className="order-1 lg:order-2 space-y-6">
+              <h2 className="text-4xl lg:text-5xl font-bold text-[#7FB069]">
+                Week 4: Integration Week
+              </h2>
+              <p className="text-xl text-gray-700 leading-relaxed">
+                Your fourth week of every cycle is designed for <span className="font-bold text-[#7FB069]">solo practice</span> — no co-working sessions, no live calls.
+              </p>
+              <p className="text-lg text-gray-700 leading-relaxed">
+                This is where you prove to yourself that the Work-Life Balance rhythm you've been installing over the past three Mondays has truly become <span className="font-semibold">automatic</span>.
+              </p>
+
+              <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-[#7FB069]/20">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">What Happens During Integration Week:</h3>
+                <ul className="space-y-3 text-gray-700">
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="w-6 h-6 text-[#7FB069] flex-shrink-0 mt-1" />
+                    <span><strong>Monday - Thursday:</strong> You live the full model solo — GIV•EN, Workout Window, Extended Lunch, 4-Hour CEO Block, Quality of Life Experiences, Power Down Detox</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="w-6 h-6 text-[#7FB069] flex-shrink-0 mt-1" />
+                    <span><strong>Friday - Sunday:</strong> Pure white space. No structure. Just life.</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="w-6 h-6 text-[#7FB069] flex-shrink-0 mt-1" />
+                    <span><strong>16-Hour Work Week:</strong> You work 4 focused hours per day, Monday-Thursday (16 total hours)</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="w-6 h-6 text-[#7FB069] flex-shrink-0 mt-1" />
+                    <span><strong>152 Hours Time Freedom:</strong> The remaining 152 hours of your week belong to YOU</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="bg-[#E26C73]/10 rounded-2xl p-6">
+                <p className="text-gray-800 font-medium">
+                  <span className="text-[#E26C73] font-bold">This is the proof:</span> If you can live this rhythm independently for a full week — without external accountability or co-working support — you've successfully installed a sustainable Work-Life Balance business model.
+                </p>
+              </div>
             </div>
           </div>
-          <p className="text-sm text-gray-600 italic">
-            All content remains accessible during sabbaticals — rest at your own pace.
-          </p>
-        </CardContent>
-      </Card>
-    </div>
-  </div>
-</div>
+        </div>
+      </div>
+
+      {/* Share Your Monthly Success Story Section */}
+      <div className="py-20 bg-gradient-to-br from-[#E26C73]/10 to-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left: Content */}
+            <div className="space-y-6">
+              <h2 className="text-4xl lg:text-5xl font-bold text-[#E26C73]">
+                Share Your Monthly Success Story
+              </h2>
+              <p className="text-xl text-gray-700 leading-relaxed">
+                At the end of every 28-Day Installation Cycle, we invite you to{" "}
+                <span className="font-bold text-[#E26C73]">reflect, celebrate, and share</span> your transformation.
+              </p>
+              <p className="text-lg text-gray-700 leading-relaxed">
+                Your story matters — not just for you, but for every entrepreneur still trapped in hustle culture, wondering if balance is actually possible.
+              </p>
+
+              <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-[#E26C73]/20">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">What to Share:</h3>
+                <ul className="space-y-3 text-gray-700">
+                  <li className="flex items-start gap-3">
+                    <Sparkles className="w-6 h-6 text-[#E26C73] flex-shrink-0 mt-1" />
+                    <span>What shifted for you this month?</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Sparkles className="w-6 h-6 text-[#E26C73] flex-shrink-0 mt-1" />
+                    <span>What habits finally stuck?</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Sparkles className="w-6 h-6 text-[#E26C73] flex-shrink-0 mt-1" />
+                    <span>What time freedom did you reclaim?</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Sparkles className="w-6 h-6 text-[#E26C73] flex-shrink-0 mt-1" />
+                    <span>How did your business or life transform?</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="space-y-4">
+                <a
+                  href="https://www.maketimeformore.com/testimonials"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block"
+                >
+                  <Button className="w-full bg-gradient-to-r from-[#E26C73] to-[#7FB069] hover:from-[#D55A60] hover:to-[#6FA055] text-white text-lg py-6">
+                    Submit Your Success Story
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </a>
+                <p className="text-center text-gray-600 text-sm italic">
+                  Your testimonial may be featured on our website, in our community, and in our marketing to inspire others.
+                </p>
+              </div>
+            </div>
+
+            {/* Right: Image */}
+            <div>
+              <img
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1debrief-MRp5ajmcKDbCglvbDKinQcD0Ug8uCx.png"
+                alt="Share Your Success Story"
+                className="w-full rounded-3xl shadow-2xl"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Rest, Recover & Recharge Section */}
+      <div className="py-20 bg-gradient-to-br from-[#F5F1E8] to-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+              Rest, Recover & Recharge Unapologetically
+            </h2>
+            <p className="text-xl text-gray-700 max-w-3xl mx-auto">
+              We don't just teach Work-Life Balance — we live it. That's why we take{" "}
+              <span className="font-bold text-[#7FB069]">two community-wide sabbaticals</span> every year.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            {/* Facebook Group Card */}
+            <Card className="border-2 border-[#E26C73]/20 shadow-lg hover:shadow-xl transition-shadow">
+              <CardHeader className="bg-gradient-to-br from-[#E26C73]/10 to-white">
+                <CardTitle className="text-2xl text-[#E26C73] flex items-center gap-3">
+                  <Users className="w-8 h-8" />
+                  Share in the Facebook Group
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6 space-y-4">
+                <p className="text-gray-700 leading-relaxed">
+                  During Integration Week and sabbaticals, stay connected with the community in our private Facebook Group.
+                </p>
+                <ul className="space-y-3 text-gray-700">
+                  <li className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-[#E26C73] flex-shrink-0 mt-1" />
+                    <span>Post your wins and reflections</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-[#E26C73] flex-shrink-0 mt-1" />
+                    <span>Celebrate others living the rhythm</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-[#E26C73] flex-shrink-0 mt-1" />
+                    <span>Share your sabbatical plans</span>
+                  </li>
+                </ul>
+                <a
+                  href="https://www.facebook.com/groups/maketimeformore"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block"
+                >
+                  <Button className="w-full bg-[#E26C73] hover:bg-[#D55A60] text-white">
+                    Join Facebook Group
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </a>
+              </CardContent>
+            </Card>
+
+            {/* Sabbatical Planning Card */}
+            <Card className="border-2 border-[#7FB069]/20 shadow-lg hover:shadow-xl transition-shadow">
+              <CardHeader className="bg-gradient-to-br from-[#7FB069]/10 to-white">
+                <CardTitle className="text-2xl text-[#7FB069] flex items-center gap-3">
+                  <Heart className="w-8 h-8" />
+                  Plan Your Personal Sabbaticals
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6 space-y-4">
+                <p className="text-gray-700 leading-relaxed">
+                  Use our community sabbaticals as permission to design your own rest periods.
+                </p>
+                <div className="space-y-3">
+                  <div className="bg-[#7FB069]/10 rounded-lg p-4">
+                    <p className="font-bold text-gray-900 mb-1">Summer Sabbatical</p>
+                    <p className="text-gray-700 text-sm">July - August: Travel, family time, outdoor adventures</p>
+                  </div>
+                  <div className="bg-[#E26C73]/10 rounded-lg p-4">
+                    <p className="font-bold text-gray-900 mb-1">Winter Holiday</p>
+                    <p className="text-gray-700 text-sm">November - December: Holidays, reflection, celebration</p>
+                  </div>
+                </div>
+                <p className="text-sm text-gray-600 italic">
+                  All content remains accessible during sabbaticals — rest at your own pace.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
       
 
           {/* Ready For More - Pricing Section */}
