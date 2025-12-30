@@ -944,7 +944,7 @@ export default function HomePage() {
         </Card>
       </div>
 
-   {/* Week 4: Integration Week Section */}
+  {/* Week 4: Integration Week Section */}
 <div className="py-20 bg-gradient-to-br from-[#7FB069]/10 to-white">
   <div className="max-w-7xl mx-auto px-6">
     <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -1154,7 +1154,6 @@ export default function HomePage() {
     </div>
   </div>
 </div>
-
       
 
           {/* Ready For More - Pricing Section */}
