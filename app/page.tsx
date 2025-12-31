@@ -1131,11 +1131,12 @@ export default function HomePage() {
 
           <div className="text-center mb-12">
             <h3 className="text-3xl font-bold bg-gradient-to-r from-[#E26C73] to-[#7FB069] bg-clip-text text-transparent mb-4">
-              Rest, Recover & Recharge Unapologetically
+              Your Permission to Disconnect & Explore
             </h3>
             <p className="text-xl text-gray-700 font-medium">
-              This is Week 4 of each 28-day cycle - Time to celebrate your transformation and plan your well-deserved
-              break
+              We don't just teach Work-Life Balance — we live it. That's why we take two community-wide sabbaticals every year where you have full permission to step away, explore, and recharge guilt-free.
+
+Travel to new destinations, learn something new, spend quality time with family, pursue a passion project, or simply rest. No work. No guilt. No FOMO.
             </p>
           </div>
 
