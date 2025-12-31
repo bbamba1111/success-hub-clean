@@ -206,7 +206,7 @@ export default function HumanZoneOfGeniusTeam() {
           </div>
 
           <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight text-[#5D9D61]">
-            Human Zone Of Genius Team
+            Human Zone Of Genius & AI Executive Team
           </h1>
 
           <p className="text-xl md:text-2xl text-muted-foreground mb-4 max-w-3xl mx-auto leading-relaxed">
@@ -225,7 +225,7 @@ export default function HumanZoneOfGeniusTeam() {
             data-testid="button-start-assessment"
           >
             <Brain className="w-5 h-5 mr-2" />
-            Design Your 4-Hour CEO Workday
+            Design Your 4-Hour CEO Workday & Delegate The Rest
           </Button>
         </div>
       </section>
