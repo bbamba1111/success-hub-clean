@@ -1153,11 +1153,11 @@ Travel to new destinations, learn something new, spend quality time with family,
           {/* The Button for Sabbatical Planning was updated here */}
           <div className="max-w-4xl mx-auto mb-8">
             <Button
-              onClick={() => openChat("sabbatical-planning", "Plan Your Sabbatical or 1-Week Break")}
+              onClick={() => openChat("sabbatical-planning", "Plan Your Summer or Winter Holiday Sabbatical")}
               size="lg"
               className="w-full bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-bold px-12 py-6 text-xl shadow-xl hover:shadow-2xl transition-all transform hover:scale-105"
             >
-              Plan Your Sabbatical or 1-Week Break
+              Plan Your Summer or Winter Holiday Sabbatical
             </Button>
           </div>
 
@@ -1166,13 +1166,15 @@ Travel to new destinations, learn something new, spend quality time with family,
               <CardHeader>
                 <CardTitle className="text-[#E26C73] flex items-center gap-2">
                   <Star className="h-5 w-5" />
-                  Share Your Vacation Plans & Pics
+                  Share Your Sabbitical Plans & Pics
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-gray-700 leading-relaxed">
-                  After 3 weeks of transformation, it's time to celebrate your progress with a well-deserved vacation.
-                  Use this week to rest, recharge, and reflect on your journey.
+                  Two full months in either Summer and/or Winter to travel, play, celebrate holidays, reflect on the year, rest deeply or fully disconnect. No pressure, no
+                          deadlines — just intentional time alone and with with loved ones. All content remains accessible during
+                      sabbaticals. Live sessions pause, but the community stays active in the Facebook Group to share vacation plans, family
+                          adventures, and sabbatical experiences.
                 </p>
 
                 <div className="space-y-3">
@@ -1208,13 +1210,13 @@ Travel to new destinations, learn something new, spend quality time with family,
               <CardHeader>
                 <CardTitle className="text-[#E26C73] flex items-center gap-2">
                   <Star className="h-5 w-5" />
-                  Share Your Monthly Success Story
+                  Share Your Sabbitical Success Story
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-gray-700 leading-relaxed">
-                  Your transformation story can inspire others on their work-life balance journey. Share your experience
-                  and celebrate your achievements with our community.
+                  Your sabbitical success story can inspire others on their work-life balance journey. Share your experience
+                  and celebrate your achievements and transformation with our community.
                 </p>
 
                 <div className="space-y-3">
@@ -1224,7 +1226,7 @@ Travel to new destinations, learn something new, spend quality time with family,
                   </div>
                   <div className="flex items-center gap-3">
                     <CheckCircle className="w-4 h-4 text-[#E26C73] flex-shrink-0" />
-                    <span className="text-gray-700 text-sm">Celebrate your progress and achievements</span>
+                    <span className="text-gray-700 text-sm">Celebrate your experiences and achievements</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <CheckCircle className="w-4 h-4 text-[#E26C73] flex-shrink-0" />
@@ -1239,7 +1241,7 @@ Travel to new destinations, learn something new, spend quality time with family,
                   className="block"
                 >
                   <Button className="w-full bg-[#E26C73] hover:bg-[#D55A60] text-white">
-                    Submit Your 28-Day Testimonial Here
+                    Submit Your Sabbitical Success Story Here
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </a>
