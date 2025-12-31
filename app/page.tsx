@@ -1166,15 +1166,13 @@ Travel to new destinations, learn something new, spend quality time with family,
               <CardHeader>
                 <CardTitle className="text-[#E26C73] flex items-center gap-2">
                   <Star className="h-5 w-5" />
-                  Share Your Sabbitical Plans & Pics
+                  Summer Sabbatical (July - August)
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-gray-700 leading-relaxed">
-                  Two full months in either Summer and/or Winter to travel, play, celebrate holidays, reflect on the year, rest deeply or fully disconnect. No pressure, no
-                          deadlines — just intentional time alone and with with loved ones. All content remains accessible during
-                      sabbaticals. Live sessions pause, but the community stays active in the Facebook Group to share vacation plans, family
-                          adventures, and sabbatical experiences.
+                  Two full months to travel, play, and fully disconnect. Share vacation plans, family
+                          adventures, and sabbatical experiences in the Facebook Group.
                 </p>
 
                 <div className="space-y-3">
@@ -1210,13 +1208,13 @@ Travel to new destinations, learn something new, spend quality time with family,
               <CardHeader>
                 <CardTitle className="text-[#E26C73] flex items-center gap-2">
                   <Star className="h-5 w-5" />
-                  Share Your Sabbitical Success Story
+                 Winter Sabbatical (November - December)
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-gray-700 leading-relaxed">
-                  Your sabbitical success story can inspire others on their work-life balance journey. Share your experience
-                  and celebrate your achievements and transformation with our community.
+                  Two months to celebrate holidays, reflect on the year, and rest deeply. No pressure, no
+                          deadlines — just intentional time with loved ones.
                 </p>
 
                 <div className="space-y-3">
