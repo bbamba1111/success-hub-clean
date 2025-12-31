@@ -1069,8 +1069,7 @@ export default function HomePage() {
           </div>
         </div>
       </div>
-
-          {/* Join Us on Facebook Section */}
+{/* Join Us on Facebook Section */}
       <div className="py-20 bg-gradient-to-br from-[#E26C73]/10 to-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
