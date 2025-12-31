@@ -1001,20 +1001,21 @@ export default function HomePage() {
         </div>
       </div>
 
-            {/* Share Your Monthly Success Story Section */}
+      {/* Share Your Monthly Success Story Section */}
       <div className="py-20 bg-gradient-to-br from-[#E26C73]/10 to-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left: Content */}
             <div className="space-y-6">
-              <h2 className="text-4xl lg:text-5xl font-bold text-[#E26C73]">Share Your Monthly Success Story</h2>
+              <h2 className="text-4xl lg:text-5xl font-bold text-[#E26C73]">
+                Share Your Monthly Success Story
+              </h2>
               <p className="text-xl text-gray-700 leading-relaxed">
                 At the end of every 28-Day Installation Cycle, we invite you to{" "}
                 <span className="font-bold text-[#E26C73]">reflect, celebrate, and share</span> your transformation.
               </p>
               <p className="text-lg text-gray-700 leading-relaxed">
-                Your story matters — not just for you, but for every entrepreneur still trapped in hustle culture,
-                wondering if balance is actually possible.
+                Your story matters — not just for you, but for every entrepreneur still trapped in hustle culture, wondering if balance is actually possible.
               </p>
 
               <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-[#E26C73]/20">
@@ -1052,8 +1053,7 @@ export default function HomePage() {
                   </Button>
                 </a>
                 <p className="text-center text-gray-600 text-sm italic">
-                  Your testimonial may be featured on our website, in our community, and in our marketing to inspire
-                  others.
+                  Your testimonial may be featured on our website, in our community, and in our marketing to inspire others.
                 </p>
               </div>
             </div>
@@ -1061,7 +1061,7 @@ export default function HomePage() {
             {/* Right: Image */}
             <div>
               <img
-                src="/images/1debrief.png"
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1debrief-MRp5ajmcKDbCglvbDKinQcD0Ug8uCx.png"
                 alt="Share Your Success Story"
                 className="w-full rounded-3xl shadow-2xl"
               />
@@ -1069,147 +1069,182 @@ export default function HomePage() {
           </div>
         </div>
       </div>
-
-      {/* Join Us on Facebook Section */}
-      <div className="py-20 bg-gradient-to-br from-[#E26C73]/10 to-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left: Content */}
-            <div className="space-y-6">
-              <h2 className="text-4xl lg:text-5xl font-bold text-[#E26C73]">Join Us on Facebook</h2>
-              <p className="text-xl text-gray-700 leading-relaxed">
-                Stay connected with our vibrant community in our{" "}
-                <span className="font-bold text-[#E26C73]">private Facebook Group</span> — your space for
-                celebration, support, and real-time connection.
-              </p>
-              <p className="text-lg text-gray-700 leading-relaxed">
-                During Integration Week and sabbaticals, the Facebook Group becomes your hub for sharing wins,
-                reflections, and staying inspired by others living the rhythm.
-              </p>
-
-              <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-[#E26C73]/20">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">What You'll Find:</h3>
-                <ul className="space-y-3 text-gray-700">
-                  <li className="flex items-start gap-3">
-                    <CheckCircle className="w-6 h-6 text-[#E26C73] flex-shrink-0 mt-1" />
-                    <span>Post your wins, reflections, and success stories</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <CheckCircle className="w-6 h-6 text-[#E26C73] flex-shrink-0 mt-1" />
-                    <span>Celebrate others living the Work-Life Balance rhythm</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <CheckCircle className="w-6 h-6 text-[#E26C73] flex-shrink-0 mt-1" />
-                    <span>Share your sabbatical plans and vacation highlights</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <CheckCircle className="w-6 h-6 text-[#E26C73] flex-shrink-0 mt-1" />
-                    <span>Get peer support during your Integration Week practice</span>
-                  </li>
-                </ul>
+      
+      {/* Facebook Group CTA Section */}
+      <div className="bg-gradient-to-r from-[#7FB069]/10 to-[#E26C73]/10 py-24">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <div className="max-w-2xl mx-auto">
+              <div className="flex items-center justify-center gap-3 mb-8">
+                <img
+                  src="/images/logo.png"
+                  alt="Make Time For More Logo"
+                  width={80}
+                  height={80}
+                  className="rounded-full shadow-lg"
+                />
               </div>
-
-              <div className="bg-[#7FB069]/10 rounded-2xl p-6">
-                <p className="text-gray-800 font-medium">
-                  <span className="text-[#7FB069] font-bold">Community matters:</span> You're not alone on this
-                  journey. Join thousands of entrepreneurs who are choosing rest, reclaiming time, and building
-                  sustainable businesses.
-                </p>
-              </div>
-
+              <h2 className="text-3xl font-bold text-[#E26C73] mb-6">Join Our Facebook Community</h2>
+              <p className="text-lg text-gray-600 mb-8">
+                Connect with like-minded women on their work-life balance journey. Share experiences, get support,
+                celebrate wins together, and share pics and videos of you making time for more.
+              </p>
+              <img
+                src="/images/facebook-group-community.jpg"
+                alt="Diverse community of women in cherry blossom setting"
+                className="w-full h-auto object-cover rounded-2xl shadow-2xl mb-8"
+              />
               <a
                 href="https://www.facebook.com/groups/maketimeformore"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block"
+                className="inline-block"
               >
-                <Button className="w-full bg-[#E26C73] hover:bg-[#D55A60] text-white text-lg py-6">
-                  Join Facebook Group
-                  <ArrowRight className="w-5 h-5 ml-2" />
+                <Button
+                  size="lg"
+                  className="bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-semibold px-8 py-4 text-lg"
+                >
+                  Join Our Facebook Group
+                  <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </a>
             </div>
-
-            {/* Right: Image */}
-            <div>
-              <img
-                src="/images/celebration-placeholder.png"
-                alt="Join Our Facebook Community"
-                className="w-full rounded-3xl shadow-2xl"
-              />
-            </div>
           </div>
         </div>
       </div>
 
-      {/* Rest, Recover & Recharge Unapologetically Section */}
-      <div className="py-20 bg-gradient-to-br from-[#7FB069]/10 to-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left: Image */}
-            <div className="order-2 lg:order-1">
+      {/* Rest, Recover & Recharge Section */}
+      <div className="bg-gradient-to-br from-[#7FB069]/10 to-[#7FB069]/5 pt-20 pb-8">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="flex items-center justify-center gap-3 mb-8">
+            <img
+              src="/images/logo.png"
+              alt="Make Time For More Logo"
+              width={80}
+              height={80}
+              className="rounded-full shadow-lg"
+            />
+            <Badge variant="secondary" className="bg-gradient-to-r from-[#E26C73] to-[#7FB069] text-white border-0">
+              Week 4
+            </Badge>
+          </div>
+
+          <div className="text-center mb-12">
+            <h3 className="text-3xl font-bold bg-gradient-to-r from-[#E26C73] to-[#7FB069] bg-clip-text text-transparent mb-4">
+              Rest, Recover & Recharge Unapologetically
+            </h3>
+            <p className="text-xl text-gray-700 font-medium">
+              This is Week 4 of each 28-day cycle - Time to celebrate your transformation and plan your well-deserved
+              break
+            </p>
+          </div>
+
+          <div className="text-center mb-8">
+            <div className="max-w-4xl mx-auto">
               <img
-                src="/images/sabbatical-placeholder.png"
-                alt="Plan Your Personal Sabbaticals"
-                className="w-full rounded-3xl shadow-2xl"
+                src="/images/vacation-celebration-women-cherry-blossoms.png"
+                alt="Three diverse women celebrating together in cherry blossom setting"
+                className="w-full h-auto object-cover rounded-2xl shadow-2xl"
               />
             </div>
+          </div>
 
-            {/* Right: Content */}
-            <div className="order-1 lg:order-2 space-y-6">
-              <h2 className="text-4xl lg:text-5xl font-bold text-[#7FB069]">
-                Rest, Recover & Recharge Unapologetically
-              </h2>
-              <p className="text-xl text-gray-700 leading-relaxed">
-                We don't just teach Work-Life Balance — <span className="font-bold text-[#7FB069]">we live it</span>
-                . That's why we take two community-wide sabbaticals every year.
-              </p>
-              <p className="text-lg text-gray-700 leading-relaxed">
-                Use our sabbaticals as permission to design your own rest periods, knowing the entire community is
-                stepping away together.
-              </p>
+          {/* The Button for Sabbatical Planning was updated here */}
+          <div className="max-w-4xl mx-auto mb-8">
+            <Button
+              onClick={() => openChat("sabbatical-planning", "Plan Your Sabbatical or 1-Week Break")}
+              size="lg"
+              className="w-full bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-bold px-12 py-6 text-xl shadow-xl hover:shadow-2xl transition-all transform hover:scale-105"
+            >
+              Plan Your Sabbatical or 1-Week Break
+            </Button>
+          </div>
 
-              <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-[#7FB069]/20">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Annual Community Sabbaticals:</h3>
-                <div className="space-y-4">
-                  <div className="bg-[#7FB069]/10 rounded-lg p-4">
-                    <p className="font-bold text-gray-900 mb-2 flex items-center gap-2">
-                      <Heart className="w-5 h-5 text-[#7FB069]" />
-                      Summer Sabbatical (July - August)
-                    </p>
-                    <p className="text-gray-700 text-sm">
-                      Travel adventures, family time, outdoor experiences, and pure play. No work. No guilt.
-                    </p>
+          <div className="grid lg:grid-cols-2 gap-8 mb-20">
+            <Card className="border-2 border-[#E26C73]/30 bg-white/80">
+              <CardHeader>
+                <CardTitle className="text-[#E26C73] flex items-center gap-2">
+                  <Star className="h-5 w-5" />
+                  Share Your Vacation Plans & Pics
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-gray-700 leading-relaxed">
+                  After 3 weeks of transformation, it's time to celebrate your progress with a well-deserved vacation.
+                  Use this week to rest, recharge, and reflect on your journey.
+                </p>
+
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-4 h-4 text-[#E26C73] flex-shrink-0" />
+                    <span className="text-gray-700 text-sm">Plan restorative vacation activities</span>
                   </div>
-                  <div className="bg-[#E26C73]/10 rounded-lg p-4">
-                    <p className="font-bold text-gray-900 mb-2 flex items-center gap-2">
-                      <Heart className="w-5 h-5 text-[#E26C73]" />
-                      Winter Holiday (November - December)
-                    </p>
-                    <p className="text-gray-700 text-sm">
-                      Holiday celebrations, year-end reflection, quality time with loved ones, and intentional rest.
-                    </p>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-4 h-4 text-[#E26C73] flex-shrink-0" />
+                    <span className="text-gray-700 text-sm">Maintain work-life balance during time off</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-4 h-4 text-[#E26C73] flex-shrink-0" />
+                    <span className="text-gray-700 text-sm">Reflect on your 28-day transformation</span>
                   </div>
                 </div>
-              </div>
 
-              <div className="bg-[#E26C73]/10 rounded-2xl p-6">
-                <p className="text-gray-800 font-medium">
-                  <span className="text-[#E26C73] font-bold">Important:</span> All content remains accessible during
-                  sabbaticals. You can rest at your own pace and catch up anytime. Your membership never pauses.
-                </p>
-              </div>
+                <a
+                  href="https://www.facebook.com/groups/maketimeformore"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block"
+                >
+                  <Button className="w-full bg-[#E26C73] hover:bg-[#D55A60] text-white">
+                    Share Your Plans, Pics & Bucket List In Our FB Group
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </a>
+              </CardContent>
+            </Card>
 
-              <div className="space-y-3">
-                <p className="text-gray-700 font-medium">
-                  During sabbaticals, live sessions pause, but the community stays active in the Facebook Group to
-                  share vacation plans and celebrate rest.
+            <Card className="border-2 border-[#E26C73]/30 bg-white/80">
+              <CardHeader>
+                <CardTitle className="text-[#E26C73] flex items-center gap-2">
+                  <Star className="h-5 w-5" />
+                  Share Your Monthly Success Story
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-gray-700 leading-relaxed">
+                  Your transformation story can inspire others on their work-life balance journey. Share your experience
+                  and celebrate your achievements with our community.
                 </p>
-              </div>
-            </div>
+
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-4 h-4 text-[#E26C73] flex-shrink-0" />
+                    <span className="text-gray-700 text-sm">Craft your transformation testimonial</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-4 h-4 text-[#E26C73] flex-shrink-0" />
+                    <span className="text-gray-700 text-sm">Celebrate your progress and achievements</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-4 h-4 text-[#E26C73] flex-shrink-0" />
+                    <span className="text-gray-700 text-sm">Inspire others in the community</span>
+                  </div>
+                </div>
+
+                <a
+                  href="https://forms.gle/yKRn6Wv4wkZDhoUH7"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block"
+                >
+                  <Button className="w-full bg-[#E26C73] hover:bg-[#D55A60] text-white">
+                    Submit Your 28-Day Testimonial Here
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </a>
+              </CardContent>
+            </Card>
           </div>
-        </div>
-      </div>
 
           {/* Ready For More - Pricing Section */}
           <div className="py-20 rounded-2xl">
