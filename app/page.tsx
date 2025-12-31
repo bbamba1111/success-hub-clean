@@ -1001,21 +1001,20 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Share Your Monthly Success Story Section */}
+            {/* Share Your Monthly Success Story Section */}
       <div className="py-20 bg-gradient-to-br from-[#E26C73]/10 to-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left: Content */}
             <div className="space-y-6">
-              <h2 className="text-4xl lg:text-5xl font-bold text-[#E26C73]">
-                Share Your Monthly Success Story
-              </h2>
+              <h2 className="text-4xl lg:text-5xl font-bold text-[#E26C73]">Share Your Monthly Success Story</h2>
               <p className="text-xl text-gray-700 leading-relaxed">
                 At the end of every 28-Day Installation Cycle, we invite you to{" "}
                 <span className="font-bold text-[#E26C73]">reflect, celebrate, and share</span> your transformation.
               </p>
               <p className="text-lg text-gray-700 leading-relaxed">
-                Your story matters — not just for you, but for every entrepreneur still trapped in hustle culture, wondering if balance is actually possible.
+                Your story matters — not just for you, but for every entrepreneur still trapped in hustle culture,
+                wondering if balance is actually possible.
               </p>
 
               <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-[#E26C73]/20">
@@ -1053,7 +1052,8 @@ export default function HomePage() {
                   </Button>
                 </a>
                 <p className="text-center text-gray-600 text-sm italic">
-                  Your testimonial may be featured on our website, in our community, and in our marketing to inspire others.
+                  Your testimonial may be featured on our website, in our community, and in our marketing to inspire
+                  others.
                 </p>
               </div>
             </div>
@@ -1061,7 +1061,7 @@ export default function HomePage() {
             {/* Right: Image */}
             <div>
               <img
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1debrief-MRp5ajmcKDbCglvbDKinQcD0Ug8uCx.png"
+                src="/images/1debrief.png"
                 alt="Share Your Success Story"
                 className="w-full rounded-3xl shadow-2xl"
               />
@@ -1076,15 +1076,15 @@ export default function HomePage() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left: Content */}
             <div className="space-y-6">
-              <h2 className="text-4xl lg:text-5xl font-bold text-[#E26C73]">
-                Join Us on Facebook
-              </h2>
+              <h2 className="text-4xl lg:text-5xl font-bold text-[#E26C73]">Join Us on Facebook</h2>
               <p className="text-xl text-gray-700 leading-relaxed">
                 Stay connected with our vibrant community in our{" "}
-                <span className="font-bold text-[#E26C73]">private Facebook Group</span> — your space for celebration, support, and real-time connection.
+                <span className="font-bold text-[#E26C73]">private Facebook Group</span> — your space for
+                celebration, support, and real-time connection.
               </p>
               <p className="text-lg text-gray-700 leading-relaxed">
-                During Integration Week and sabbaticals, the Facebook Group becomes your hub for sharing wins, reflections, and staying inspired by others living the rhythm.
+                During Integration Week and sabbaticals, the Facebook Group becomes your hub for sharing wins,
+                reflections, and staying inspired by others living the rhythm.
               </p>
 
               <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-[#E26C73]/20">
@@ -1111,7 +1111,9 @@ export default function HomePage() {
 
               <div className="bg-[#7FB069]/10 rounded-2xl p-6">
                 <p className="text-gray-800 font-medium">
-                  <span className="text-[#7FB069] font-bold">Community matters:</span> You're not alone on this journey. Join thousands of entrepreneurs who are choosing rest, reclaiming time, and building sustainable businesses.
+                  <span className="text-[#7FB069] font-bold">Community matters:</span> You're not alone on this
+                  journey. Join thousands of entrepreneurs who are choosing rest, reclaiming time, and building
+                  sustainable businesses.
                 </p>
               </div>
 
@@ -1131,7 +1133,7 @@ export default function HomePage() {
             {/* Right: Image */}
             <div>
               <img
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/celebration-woman-9RtPAqN5xF3kZmE8wH2bLxYvNmK7Qp.png"
+                src="/images/celebration-placeholder.png"
                 alt="Join Our Facebook Community"
                 className="w-full rounded-3xl shadow-2xl"
               />
@@ -1147,7 +1149,7 @@ export default function HomePage() {
             {/* Left: Image */}
             <div className="order-2 lg:order-1">
               <img
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/sabbatical-woman-3TgH9mK2pL5vRxW6nY8cMzAbCdEfGh.png"
+                src="/images/sabbatical-placeholder.png"
                 alt="Plan Your Personal Sabbaticals"
                 className="w-full rounded-3xl shadow-2xl"
               />
@@ -1159,11 +1161,12 @@ export default function HomePage() {
                 Rest, Recover & Recharge Unapologetically
               </h2>
               <p className="text-xl text-gray-700 leading-relaxed">
-                We don't just teach Work-Life Balance —{" "}
-                <span className="font-bold text-[#7FB069]">we live it</span>. That's why we take two community-wide sabbaticals every year.
+                We don't just teach Work-Life Balance — <span className="font-bold text-[#7FB069]">we live it</span>
+                . That's why we take two community-wide sabbaticals every year.
               </p>
               <p className="text-lg text-gray-700 leading-relaxed">
-                Use our sabbaticals as permission to design your own rest periods, knowing the entire community is stepping away together.
+                Use our sabbaticals as permission to design your own rest periods, knowing the entire community is
+                stepping away together.
               </p>
 
               <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-[#7FB069]/20">
@@ -1174,27 +1177,33 @@ export default function HomePage() {
                       <Heart className="w-5 h-5 text-[#7FB069]" />
                       Summer Sabbatical (July - August)
                     </p>
-                    <p className="text-gray-700 text-sm">Travel adventures, family time, outdoor experiences, and pure play. No work. No guilt.</p>
+                    <p className="text-gray-700 text-sm">
+                      Travel adventures, family time, outdoor experiences, and pure play. No work. No guilt.
+                    </p>
                   </div>
                   <div className="bg-[#E26C73]/10 rounded-lg p-4">
                     <p className="font-bold text-gray-900 mb-2 flex items-center gap-2">
                       <Heart className="w-5 h-5 text-[#E26C73]" />
                       Winter Holiday (November - December)
                     </p>
-                    <p className="text-gray-700 text-sm">Holiday celebrations, year-end reflection, quality time with loved ones, and intentional rest.</p>
+                    <p className="text-gray-700 text-sm">
+                      Holiday celebrations, year-end reflection, quality time with loved ones, and intentional rest.
+                    </p>
                   </div>
                 </div>
               </div>
 
               <div className="bg-[#E26C73]/10 rounded-2xl p-6">
                 <p className="text-gray-800 font-medium">
-                  <span className="text-[#E26C73] font-bold">Important:</span> All content remains accessible during sabbaticals. You can rest at your own pace and catch up anytime. Your membership never pauses.
+                  <span className="text-[#E26C73] font-bold">Important:</span> All content remains accessible during
+                  sabbaticals. You can rest at your own pace and catch up anytime. Your membership never pauses.
                 </p>
               </div>
 
               <div className="space-y-3">
                 <p className="text-gray-700 font-medium">
-                  During sabbaticals, live sessions pause, but the community stays active in the Facebook Group to share vacation plans and celebrate rest.
+                  During sabbaticals, live sessions pause, but the community stays active in the Facebook Group to
+                  share vacation plans and celebrate rest.
                 </p>
               </div>
             </div>
