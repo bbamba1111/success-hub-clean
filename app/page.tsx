@@ -1070,75 +1070,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Join Us on Facebook Section */}
-      <div className="py-20 bg-gradient-to-br from-[#E26C73]/10 to-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left: Content */}
-            <div className="space-y-6">
-              <h2 className="text-4xl lg:text-5xl font-bold text-[#E26C73]">
-                Join Us on Facebook
-              </h2>
-              <p className="text-xl text-gray-700 leading-relaxed">
-                Stay connected with our vibrant community in our{" "}
-                <span className="font-bold text-[#E26C73]">private Facebook Group</span> — your space for celebration, support, and real-time connection.
-              </p>
-              <p className="text-lg text-gray-700 leading-relaxed">
-                During Integration Week and sabbaticals, the Facebook Group becomes your hub for sharing wins, reflections, and staying inspired by others living the rhythm.
-              </p>
-
-              <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-[#E26C73]/20">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">What You'll Find:</h3>
-                <ul className="space-y-3 text-gray-700">
-                  <li className="flex items-start gap-3">
-                    <CheckCircle className="w-6 h-6 text-[#E26C73] flex-shrink-0 mt-1" />
-                    <span>Post your wins, reflections, and success stories</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <CheckCircle className="w-6 h-6 text-[#E26C73] flex-shrink-0 mt-1" />
-                    <span>Celebrate others living the Work-Life Balance rhythm</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <CheckCircle className="w-6 h-6 text-[#E26C73] flex-shrink-0 mt-1" />
-                    <span>Share your sabbatical plans and vacation highlights</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <CheckCircle className="w-6 h-6 text-[#E26C73] flex-shrink-0 mt-1" />
-                    <span>Get peer support during your Integration Week practice</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="bg-[#7FB069]/10 rounded-2xl p-6">
-                <p className="text-gray-800 font-medium">
-                  <span className="text-[#7FB069] font-bold">Community matters:</span> You're not alone on this journey. Join Thought Leader Barbara and other women entrepreneurs who are choosing rest, reclaiming time, and building sustainable businesses.
-                </p>
-              </div>
-
-              <a
-                href="https://www.facebook.com/groups/maketimeformore"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block"
-              >
-                <Button className="w-full bg-[#E26C73] hover:bg-[#D55A60] text-white text-lg py-6">
-                  Join Facebook Group
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-              </a>
-            </div>
-
-            {/* Right: Image */}
-            <div>
-              <img
-                src="/images/celebration-placeholder.png"
-                alt="Join Our Facebook Community"
-                className="w-full rounded-3xl shadow-2xl"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
+      
       
           {/* Ready For More - Pricing Section */}
           <div className="py-20 rounded-2xl">
