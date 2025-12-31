@@ -1178,15 +1178,16 @@ Travel to new destinations, learn something new, spend quality time with family,
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
                     <CheckCircle className="w-4 h-4 text-[#E26C73] flex-shrink-0" />
-                    <span className="text-gray-700 text-sm">Plan restorative vacation activities</span>
+                    <span className="text-gray-700 text-sm">Share photos from epic family vacations and travel adventures</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <CheckCircle className="w-4 h-4 text-[#E26C73] flex-shrink-0" />
-                    <span className="text-gray-700 text-sm">Maintain work-life balance during time off</span>
+                    <span className="text-gray-700 text-sm">Post about new hobbies, skills, or experiences you're exploring
+</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <CheckCircle className="w-4 h-4 text-[#E26C73] flex-shrink-0" />
-                    <span className="text-gray-700 text-sm">Reflect on your 28-day transformation</span>
+                    <span className="text-gray-700 text-sm">Celebrate your guilt-free time off and inspire others to disconnect</span>
                   </div>
                 </div>
 
@@ -1214,21 +1215,21 @@ Travel to new destinations, learn something new, spend quality time with family,
               <CardContent className="space-y-4">
                 <p className="text-gray-700 leading-relaxed">
                   Two months to celebrate holidays, reflect on the year, and rest deeply. No pressure, no
-                          deadlines — just intentional time with loved ones.
+                         deadlines — just intentional time with loved ones.
                 </p>
 
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
                     <CheckCircle className="w-4 h-4 text-[#E26C73] flex-shrink-0" />
-                    <span className="text-gray-700 text-sm">Craft your transformation testimonial</span>
+                    <span className="text-gray-700 text-sm">Share holiday celebrations and quality time with loved ones</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <CheckCircle className="w-4 h-4 text-[#E26C73] flex-shrink-0" />
-                    <span className="text-gray-700 text-sm">Celebrate your experiences and achievements</span>
+                    <span className="text-gray-700 text-sm">Post year-end reflections and transformation stories</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <CheckCircle className="w-4 h-4 text-[#E26C73] flex-shrink-0" />
-                    <span className="text-gray-700 text-sm">Inspire others in the community</span>
+                    <span className="text-gray-700 text-sm">Inspire the community by showing what intentional rest looks like</span>
                   </div>
                 </div>
 
@@ -1239,7 +1240,7 @@ Travel to new destinations, learn something new, spend quality time with family,
                   className="block"
                 >
                   <Button className="w-full bg-[#E26C73] hover:bg-[#D55A60] text-white">
-                    Submit Your Sabbitical Success Story Here
+                    Submit Your Sabbitical Experiences & Stories Here
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </a>
