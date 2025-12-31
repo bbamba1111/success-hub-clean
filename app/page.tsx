@@ -62,7 +62,7 @@ export default function HomePage() {
     setChatContext(context)
     setChatTitle(title)
     setIsChatOpen(true)
-  }
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white">
