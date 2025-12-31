@@ -1111,7 +1111,7 @@ export default function HomePage() {
 
               <div className="bg-[#7FB069]/10 rounded-2xl p-6">
                 <p className="text-gray-800 font-medium">
-                  <span className="text-[#7FB069] font-bold">Community matters:</span> You're not alone on this journey. Join thousands of entrepreneurs who are choosing rest, reclaiming time, and building sustainable businesses.
+                  <span className="text-[#7FB069] font-bold">Community matters:</span> You're not alone on this journey. Join Thought Leader Barbara and other women entrepreneurs who are choosing rest, reclaiming time, and building sustainable businesses.
                 </p>
               </div>
 
