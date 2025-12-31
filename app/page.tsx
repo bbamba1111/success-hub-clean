@@ -1070,8 +1070,6 @@ export default function HomePage() {
         </div>
       </div>
 
-      
-      
           {/* Ready For More - Pricing Section */}
           <div className="py-20 rounded-2xl">
             <div className="max-w-7xl mx-auto px-6">
