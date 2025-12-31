@@ -1157,7 +1157,7 @@ Travel to new destinations, learn something new, spend quality time with family,
               size="lg"
               className="w-full bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-bold px-12 py-6 text-xl shadow-xl hover:shadow-2xl transition-all transform hover:scale-105"
             >
-              Plan Your Summer or Winter Holiday Sabbatical
+              Plan Your Summer & Winter Holiday Sabbaticals Here
             </Button>
           </div>
 
@@ -1198,7 +1198,7 @@ Travel to new destinations, learn something new, spend quality time with family,
                   className="block"
                 >
                   <Button className="w-full bg-[#E26C73] hover:bg-[#D55A60] text-white">
-                    Share Your Plans, Pics & Bucket List In Our FB Group
+                    Share Your Summer Sabbatical Experiences Here
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </a>
@@ -1234,13 +1234,13 @@ Travel to new destinations, learn something new, spend quality time with family,
                 </div>
 
                 <a
-                  href="https://forms.gle/yKRn6Wv4wkZDhoUH7"
+                  href="https://www.facebook.com/groups/maketimeformore"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block"
                 >
                   <Button className="w-full bg-[#E26C73] hover:bg-[#D55A60] text-white">
-                    Submit Your Sabbitical Experiences & Stories Here
+                    Share Your Winter Holiday Sabbatical Experiences Here
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </a>
