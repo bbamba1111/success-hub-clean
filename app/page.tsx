@@ -1622,8 +1622,6 @@ Travel to new destinations, learn something new, spend quality time with family,
                       </div>
                     </div>
 
-                    
-
                   <div className="mt-16 bg-gradient-to-r from-[#E26C73] to-[#7FB069] rounded-2xl p-8 shadow-lg">
                     <div className="flex flex-col lg:flex-row items-center gap-8">
                       <div className="lg:w-2/3 text-white">
