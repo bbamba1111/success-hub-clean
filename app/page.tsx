@@ -1312,12 +1312,7 @@ Travel to new destinations, learn something new, spend quality time with family,
 <div className="flex flex-col">
   <div className="bg-white rounded-2xl overflow-hidden shadow-lg flex-grow flex flex-col border border-gray-100 hover:shadow-xl transition-all">
     <div className="h-[400px] overflow-hidden flex items-center justify-center bg-gray-50">
-      <img
-        src="/images/monday-installation.png"
-        alt="Mid-life woman entrepreneur working calmly with cherry blossoms"
-        className="w-full h-full object-cover"
-      />
-    </div>
+      <img src="/images/7-day-work-life-balance.png" alt="Professional woman working on laptop at outdoor cafe with cherry blossoms" className="w-full h-full object-cover" /> </div>
 
     <div className="p-6 flex-grow flex flex-col">
       <h3 className="text-2xl font-bold text-[#2F4F4F] mb-2">
