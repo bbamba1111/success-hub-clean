@@ -1113,6 +1113,362 @@ export default function HomePage() {
         </div>
       </div>
 
+      {/* NEW PRICING SECTION - Choose Your Transformation Path */}
+      <div className="py-20 bg-gradient-to-br from-[#F5F1E8] to-white">
+        <div className="max-w-7xl mx-auto px-6">
+          {/* Section Header */}
+          <div className="text-center mb-16">
+            <h2 className="text-4xl lg:text-5xl font-bold text-[#2F4F4F] mb-6">Choose Your Transformation Path</h2>
+            <p className="text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
+              End go-mode dread. Reclaim your life from hustle habits you carried from corporate. Your rate × hours
+              reclaimed = transformation you own.
+            </p>
+          </div>
+
+          {/* 2 Column Layout for Main Offers */}
+          <div className="grid lg:grid-cols-2 gap-8 mb-12">
+            {/* Column 1 - Monday Rhythm Reset ($997) */}
+            <div className="bg-gradient-to-br from-[#7FB069]/10 to-white rounded-3xl p-8 shadow-xl border-2 border-[#7FB069]/20 hover:shadow-2xl transition-all">
+              <div className="mb-6">
+                <h3 className="text-3xl font-bold text-[#2F4F4F] mb-3">Monday Rhythm Reset™</h3>
+                <p className="text-lg text-gray-700 italic mb-4">
+                  End go-mode dread. Reclaim 212 hours of your life—32% of your month back from 672 hustle hours—in 28
+                  days.
+                </p>
+                <p className="text-base text-gray-600 leading-relaxed">
+                  3 live Mondays prove the container works. Integration Week solo locks it in. Your math: 212 × your
+                  rate ÷ $997 = life reclaimed you own and post.
+                </p>
+              </div>
+
+              {/* Value Delivered */}
+              <div className="bg-white rounded-2xl p-6 mb-6 shadow-md">
+                <h4 className="font-bold text-lg text-gray-900 mb-4">Value Delivered:</h4>
+                <ul className="space-y-2 text-sm text-gray-700">
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#7FB069] font-bold text-lg">•</span>
+                    <span>
+                      <strong>212 hours reclaimed</strong> (32% month back)
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#7FB069] font-bold text-lg">•</span>
+                    <span>
+                      <strong>$106,000 value created</strong> (106x ROI at $500/hr)
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#7FB069] font-bold text-lg">•</span>
+                    <span>
+                      <strong>$105,003 scholarship</strong> (99% generosity)
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#7FB069] font-bold text-lg">•</span>
+                    <span>Your math: 212 × your rate = conviction posted as "128x Week 1"</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Features Included */}
+              <div className="bg-[#F5F1E8] rounded-2xl p-6 mb-6">
+                <h4 className="font-bold text-lg text-gray-900 mb-4">Features Included:</h4>
+                <ul className="space-y-3 text-sm text-gray-700">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-5 h-5 text-[#7FB069] flex-shrink-0 mt-0.5" />
+                    <span>
+                      <strong>3 live co-working Mondays</strong> (20 hours each = 60 structured)
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-5 h-5 text-[#7FB069] flex-shrink-0 mt-0.5" />
+                    <span>
+                      <strong>Sunday Shift alignment</strong> (1 hour × 3)
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-5 h-5 text-[#7FB069] flex-shrink-0 mt-0.5" />
+                    <span>GIV•EN routine, workout window, extended lunch, 4-hour CEO block, power down detox</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-5 h-5 text-[#7FB069] flex-shrink-0 mt-0.5" />
+                    <span>
+                      <strong>Integration solo</strong> (152 hours flex with non-negotiables locked)
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-5 h-5 text-[#7FB069] flex-shrink-0 mt-0.5" />
+                    <span>
+                      <strong>Cherry Blossom AI taste</strong> (Mondays only)
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-5 h-5 text-[#7FB069] flex-shrink-0 mt-0.5" />
+                    <span>
+                      <strong>Facebook Hub accountability</strong> + screenshots
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-5 h-5 text-[#7FB069] flex-shrink-0 mt-0.5" />
+                    <span>
+                      <strong>Work-Life Balance Audit</strong> + 28-day intention
+                    </span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Benefits */}
+              <div className="bg-[#7FB069]/10 rounded-2xl p-6 mb-6">
+                <h4 className="font-bold text-lg text-gray-900 mb-4">Benefits You Get:</h4>
+                <ul className="space-y-2 text-sm text-gray-700">
+                  <li className="flex items-start gap-2">
+                    <ArrowRight className="w-5 h-5 text-[#7FB069] flex-shrink-0 mt-0.5" />
+                    <span>Family present, deep sleep—no more 3-5 hour exhaustion</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <ArrowRight className="w-5 h-5 text-[#7FB069] flex-shrink-0 mt-0.5" />
+                    <span>Go-mode gone—sacred rhythm replaces survival</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <ArrowRight className="w-5 h-5 text-[#7FB069] flex-shrink-0 mt-0.5" />
+                    <span>Clients closed in 4-hour blocks (no 10+ hour days)</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <ArrowRight className="w-5 h-5 text-[#7FB069] flex-shrink-0 mt-0.5" />
+                    <span>"One more thing" guilt eliminated—white space automatic</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <ArrowRight className="w-5 h-5 text-[#7FB069] flex-shrink-0 mt-0.5" />
+                    <span>Post "128x my life back" conviction</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* CTA Button */}
+              <a
+                href="https://www.maketimeformore.com/checkout/monday-rhythm-reset-997"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block"
+              >
+                <Button className="w-full bg-[#7FB069] hover:bg-[#6FA055] text-white text-lg py-6 rounded-xl shadow-lg hover:shadow-xl transition-all">
+                  <div className="flex flex-col items-center gap-1">
+                    <span className="font-bold text-2xl">$997</span>
+                    <span className="text-sm">Founding Cycle - One-Time Payment</span>
+                    <span className="text-xs mt-1">212 hours × your rate = 106x ROI</span>
+                  </div>
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+              </a>
+              <p className="text-center text-xs text-gray-500 mt-3 italic">
+                Repeat $997/cycle to lock habits (3 cycles = $2,991, 636 hours quarter)
+              </p>
+            </div>
+
+            {/* Column 2 - 21 Day Habit Breaker ($9,997) */}
+            <div className="bg-gradient-to-br from-[#E26C73]/10 to-white rounded-3xl p-8 shadow-xl border-2 border-[#E26C73] hover:shadow-2xl transition-all relative">
+              <div className="absolute top-4 right-4 bg-[#E26C73] text-white px-4 py-2 rounded-full text-sm font-bold z-10">
+                MOST POPULAR
+              </div>
+
+              <div className="mb-6">
+                <h3 className="text-3xl font-bold text-[#2F4F4F] mb-3">21 Day Habit Breaker + 1 Week Integration</h3>
+                <p className="text-lg text-gray-700 italic mb-4">
+                  Eliminate Tue-Thu gap. Reclaim 608 hours—90% of your month back—in 28 days.
+                </p>
+                <p className="text-base text-gray-600 leading-relaxed">
+                  12 live Mon-Thu days break 10+ hour survival. Integration solo proves lifestyle sticks. Your math: 608
+                  × your rate ÷ $9,997 = transformation owned.
+                </p>
+              </div>
+
+              {/* Value Delivered */}
+              <div className="bg-white rounded-2xl p-6 mb-6 shadow-md">
+                <h4 className="font-bold text-lg text-gray-900 mb-4">Value Delivered:</h4>
+                <ul className="space-y-2 text-sm text-gray-700">
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#E26C73] font-bold text-lg">•</span>
+                    <span>
+                      <strong>608 hours reclaimed</strong> (90% month back)
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#E26C73] font-bold text-lg">•</span>
+                    <span>
+                      <strong>$304,000 value created</strong> (30x ROI at $500/hr)
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#E26C73] font-bold text-lg">•</span>
+                    <span>
+                      <strong>$294,003 scholarship</strong> (97% generosity)
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#E26C73] font-bold text-lg">•</span>
+                    <span>Your math: 608 × your rate = gap closed forever</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Features Included */}
+              <div className="bg-[#F5F1E8] rounded-2xl p-6 mb-6">
+                <h4 className="font-bold text-lg text-gray-900 mb-4">Features Included:</h4>
+                <ul className="space-y-3 text-sm text-gray-700">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-5 h-5 text-[#E26C73] flex-shrink-0 mt-0.5" />
+                    <span>
+                      <strong>12 live co-working days</strong> (Mon-Thu × 4 weeks = 152/week)
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-5 h-5 text-[#E26C73] flex-shrink-0 mt-0.5" />
+                    <span>
+                      <strong>Full daily:</strong> GIV•EN → workout → lunch → 4-hour CEO → lifestyle → detox
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-5 h-5 text-[#E26C73] flex-shrink-0 mt-0.5" />
+                    <span>
+                      <strong>Daily Sunday Shift</strong> + nightly non-negotiables
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-5 h-5 text-[#E26C73] flex-shrink-0 mt-0.5" />
+                    <span>
+                      <strong>Integration full solo</strong> (152 hours Rhythm Flex Credits)
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-5 h-5 text-[#E26C73] flex-shrink-0 mt-0.5" />
+                    <span>
+                      <strong>16 AI Executive Advisors</strong> (systemize/delegate Tue-Thu)
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-5 h-5 text-[#E26C73] flex-shrink-0 mt-0.5" />
+                    <span>
+                      <strong>Custom SOP</strong> for Human Zone pricing
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-5 h-5 text-[#E26C73] flex-shrink-0 mt-0.5" />
+                    <span>
+                      <strong>Priority 1:1</strong> + cohort masterminds
+                    </span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Benefits */}
+              <div className="bg-[#E26C73]/10 rounded-2xl p-6 mb-6">
+                <h4 className="font-bold text-lg text-gray-900 mb-4">Benefits You Get:</h4>
+                <ul className="space-y-2 text-sm text-gray-700">
+                  <li className="flex items-start gap-2">
+                    <ArrowRight className="w-5 h-5 text-[#E26C73] flex-shrink-0 mt-0.5" />
+                    <span>Fri-Sun pure white space—no Tue-Thu go-mode lost</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <ArrowRight className="w-5 h-5 text-[#E26C73] flex-shrink-0 mt-0.5" />
+                    <span>Neural pathways lock lifestyle across 12 days</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <ArrowRight className="w-5 h-5 text-[#E26C73] flex-shrink-0 mt-0.5" />
+                    <span>CEO genius 4x frequency—$304k value scaled</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <ArrowRight className="w-5 h-5 text-[#E26C73] flex-shrink-0 mt-0.5" />
+                    <span>AI automates Tue-Thu—price to prevented pain</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <ArrowRight className="w-5 h-5 text-[#E26C73] flex-shrink-0 mt-0.5" />
+                    <span>Bali weekends, business scaled</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* CTA Button */}
+              <a
+                href="https://www.maketimeformore.com/checkout/21-day-habit-breaker-9997"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block"
+              >
+                <Button className="w-full bg-gradient-to-r from-[#E26C73] to-[#7FB069] hover:from-[#D55A60] hover:to-[#6FA055] text-white text-lg py-6 rounded-xl shadow-lg hover:shadow-xl transition-all">
+                  <div className="flex flex-col items-center gap-1">
+                    <span className="font-bold text-2xl">$9,997</span>
+                    <span className="text-sm">Founding Cycle - One-Time Payment</span>
+                    <span className="text-xs mt-1">608 hours × your rate = 30x ROI</span>
+                  </div>
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+              </a>
+              <p className="text-center text-xs text-gray-500 mt-3 italic">
+                Repeat $9,997/cycle (or $297/mo maintenance post-proof)
+              </p>
+            </div>
+          </div>
+
+          {/* Full Width Row for $297 Monthly Maintenance */}
+          <div className="mt-12 bg-gradient-to-r from-[#E26C73] to-[#7FB069] rounded-2xl p-8 shadow-xl">
+            <div className="flex flex-col lg:flex-row items-center gap-8">
+              <div className="lg:w-2/3 text-white">
+                <h3 className="text-3xl font-bold mb-4">Monthly Membership - Stay Connected</h3>
+                <p className="mb-4 italic text-white/90 text-lg">Keep Your Momentum with Ongoing Support</p>
+                <p className="mb-6 leading-relaxed text-white/90">
+                  Perfect for maintaining your Work-Life Balance transformation after completing an experience. Stay
+                  connected with the community, access ongoing resources, and keep your rhythms strong with 3 Mondays
+                  per month.
+                </p>
+                <div className="grid md:grid-cols-2 gap-4 text-base text-white/90">
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-5 h-5 text-white flex-shrink-0 mt-1" />
+                    <span>(3) Monday Co-Working Sessions (1-5pm ET)</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-5 h-5 text-white flex-shrink-0 mt-1" />
+                    <span>Morning GIV•EN™ Routine Access</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-5 h-5 text-white flex-shrink-0 mt-1" />
+                    <span>SOP Access on Mondays</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-5 h-5 text-white flex-shrink-0 mt-1" />
+                    <span>AI Executive Team Access</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-5 h-5 text-white flex-shrink-0 mt-1" />
+                    <span>Facebook Community Access</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="w-5 h-5 text-white flex-shrink-0 mt-1" />
+                    <span>Upgrade Anytime to Full Experience</span>
+                  </div>
+                </div>
+              </div>
+              <div className="lg:w-1/3">
+                <a
+                  href="https://www.maketimeformore.com/checkout/monthly-membership"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block"
+                >
+                  <Button className="w-full bg-white text-[#2F4F4F] hover:bg-gray-50 text-lg py-6 rounded-xl shadow-lg hover:shadow-xl transition-all">
+                    <div className="flex flex-col items-center gap-1">
+                      <span className="text-sm font-bold tracking-wide">MONTHLY MEMBERSHIP</span>
+                      <span className="font-bold text-2xl">$297/mo</span>
+                      <span className="text-xs text-gray-500">Cancel Anytime</span>
+                    </div>
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
       {/* Rest, Recover & Recharge Section */}
       <div className="bg-gradient-to-br from-[#7FB069]/10 to-[#7FB069]/5 pt-20 pb-8">
         <div className="max-w-6xl mx-auto px-6">
