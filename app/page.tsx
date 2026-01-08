@@ -1402,7 +1402,7 @@ Travel to new destinations, learn something new, spend quality time with family,
 
       <div className="space-y-4 mt-auto">
         <a
-          href="https://www.maketimeformore.com/checkout/monday-installation"
+          href="https://www.maketimeformore.com/checkout/1-week-hzlvl"
           target="_blank"
           rel="noopener noreferrer"
           className="block hover:shadow-2xl transition-all transform hover:scale-[1.02]"
