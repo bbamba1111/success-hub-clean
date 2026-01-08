@@ -1308,148 +1308,139 @@ Travel to new destinations, learn something new, spend quality time with family,
                   </div>
 
                   <div className="grid md:grid-cols-2 gap-8 max-w-7xl mx-auto mt-12">
-                    {/* Column 1 - 7-Day Reset */}
-                    <div className="flex flex-col">
-                      <div className="bg-white rounded-2xl overflow-hidden shadow-lg flex-grow flex flex-col border border-gray-100 hover:shadow-xl transition-all">
-                        <div className="h-[400px] overflow-hidden flex items-center justify-center bg-gray-50">
-                          <img
-                            src="/images/7-day-work-life-balance.png"
-                            alt="Professional woman working on laptop at outdoor cafe with cherry blossoms"
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
+                    {/* Column 1 - Monday Rhythm Reset */}
+<div className="flex flex-col">
+  <div className="bg-white rounded-2xl overflow-hidden shadow-lg flex-grow flex flex-col border border-gray-100 hover:shadow-xl transition-all">
+    <div className="h-[400px] overflow-hidden flex items-center justify-center bg-gray-50">
+      <img
+        src="/images/monday-rhythm-reset.png"
+        alt="Monday Rhythm Reset"
+        className="w-full h-full object-cover"
+      />
+    </div>
 
-                        <div className="p-6 flex-grow flex flex-col">
-                          <h3 className="text-2xl font-bold text-[#2F4F4F] mb-4">
-                            <strong>7-Day Work-Life Balance Reset</strong>
-                          </h3>
+    <div className="p-6 flex-grow flex flex-col">
+      <h3 className="text-2xl font-bold text-[#2F4F4F] mb-4">
+        <strong>Monday Rhythm Reset™</strong>
+      </h3>
 
-                          <p className="text-gray-700 mb-4 italic">
-                            Experience the Full Blueprint for One Powerful Week.
-                          </p>
+      <p className="text-gray-700 mb-4 italic">
+        End go-mode dread. Reclaim 212 hours—32% of your month back from 672 hustle hours—in 28 days.
+      </p>
 
-                          <p className="text-gray-700 mb-4 leading-relaxed">
-                            Perfect if you want to test-drive the transformation, reset your rhythms, and experience
-                            what's possible in just one week.
-                          </p>
+      <p className="text-gray-700 mb-4 leading-relaxed">
+        3 live Mondays prove the container works. Integration Week solo locks it in. Your math: 212 × your rate ÷ $997 = life reclaimed you own and post.
+      </p>
 
-                          <div className="bg-[#F5F1E8] rounded-xl p-5 mb-6">
-                            <p className="font-semibold text-lg text-gray-800 mb-4">Your 7-Day Experience Includes:</p>
-                            <ul className="space-y-3 text-base text-gray-600">
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <strong>2-Part Onboarding: Work-Life Balance Audit & 28-Day Intention Setting</strong>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <strong>A 4-Day Workweek with A 3-Day Weekend</strong>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <span>
-                                  (4) <strong>4-Hour Focused CEO Workdays</strong>
-                                </span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <strong>152 Hours of Weekly Time Freedom</strong>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <span>Expansion in 13 Core Life Value Areas</span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <span>(4) Morning GIV•EN™ Routines</span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <span>(4) 30-Minute Workday Workout Windows</span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <span>(4) Extended Healthy Hybrid Lunch Breaks</span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <span>(4) Power Down & Unplug Digital Detoxes</span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <span>Quality of Lifestyle Experiences</span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <span>(1) Sunday Shift</span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <span>Cherry Blossom Suite: 6 AI-Powered Planners</span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <span>Workout Planner & Sleep Tracker Access</span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <span>15 AI Executive Team Access</span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <span>Facebook Community Access</span>
-                              </li>
-                            </ul>
-                          </div>
+      <div className="bg-[#7FB069]/10 rounded-xl p-5 mb-4">
+        <p className="font-semibold text-lg text-gray-800 mb-3">Value Delivered:</p>
+        <ul className="space-y-2 text-sm text-gray-700">
+          <li className="flex items-start gap-2">
+            <span className="text-[#7FB069] font-bold">•</span>
+            <span><strong>212 hours reclaimed</strong> (32% month back)</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="text-[#7FB069] font-bold">•</span>
+            <span><strong>$106,000 value created</strong> (106x ROI at $500/hr)</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="text-[#7FB069] font-bold">•</span>
+            <span><strong>$105,003 scholarship</strong> (99% generosity)</span>
+          </li>
+        </ul>
+      </div>
 
-                          <div className="space-y-4 mt-auto">
-                            <a
-                              href="https://www.maketimeformore.com/checkout/1-week-hzlvl"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="block hover:shadow-2xl transition-all transform hover:scale-[1.02]"
-                            >
-                              <div className="bg-[#E26C73] text-white rounded-2xl p-6 text-center shadow-lg transition-all">
-                                <div className="font-bold text-sm tracking-wide mb-3">
-                                  <strong>BLACK FRIDAY SPECIAL</strong>
-                                </div>
-                                <div className="font-bold mb-1 text-lg">
-                                  <strong>7-Day Reset</strong>
-                                </div>
-                                <div className="text-m text-white/80 italic mb-3">(Now - December 31)</div>
-                                <div className="text-xl font-bold mb-1">
-                                  <strong>$997</strong>
-                                </div>
-                                <div className="text-white/80 text-m mb-4">
-                                  Reg <span className="line-through">$2,500</span>
-                                </div>
-                                <div className="mt-3 bg-white/20 rounded-full py-2 px-4 text-white font-bold text-sm">
-                                  <strong>Click here to upgrade →</strong>
-                                </div>
-                              </div>
-                            </a>
+      <div className="bg-[#F5F1E8] rounded-xl p-5 mb-4">
+        <p className="font-semibold text-lg text-gray-800 mb-4">Features Included:</p>
+        <ul className="space-y-3 text-base text-gray-600">
+          <li className="flex items-start gap-2">
+            <span className="text-[#7FB069] font-bold">✓</span>
+            <span><strong>3 live co-working Mondays</strong> (20 hours each = 60 structured)</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="text-[#7FB069] font-bold">✓</span>
+            <span><strong>Sunday Shift alignment</strong> (1 hour × 3)</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="text-[#7FB069] font-bold">✓</span>
+            <span><strong>GIV•EN routine</strong>, workout window, extended lunch, 4-hour CEO block, power down detox</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="text-[#7FB069] font-bold">✓</span>
+            <span><strong>Integration solo</strong> (152 hours flex with non-negotiables locked)</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="text-[#7FB069] font-bold">✓</span>
+            <span><strong>Cherry Blossom AI taste</strong> (Mondays only)</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="text-[#7FB069] font-bold">✓</span>
+            <span><strong>Facebook Hub accountability</strong> + screenshots</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="text-[#7FB069] font-bold">✓</span>
+            <span><strong>Work-Life Balance Audit</strong> + 28-day intention</span>
+          </li>
+        </ul>
+      </div>
 
-                            <a
-                              href="https://www.maketimeformore.com/checkout/7-day-installation"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="block hover:shadow-2xl transition-all transform hover:scale-[1.02]"
-                            >
-                              <div className="bg-[#7FB069] text-white rounded-2xl p-6 text-center shadow-lg transition-all">
-                                <div className="font-bold text-sm tracking-wide mb-3">
-                                  <strong>FOUNDING MEMBER</strong>
-                                </div>
-                                <div className="font-bold mb-1 text-lg">
-                                  <strong>7-Day Reset</strong>
-                                </div>
-                                <div className="text-m text-white/80 italic mb-3">(Jan 1 - March 31)</div>
-                                <div className="text-xl font-bold mb-1">
-                                  <strong>$1,250</strong>
-                                </div>
-                                <div className="text-white/80 text-sm mb-4">
-                                  Reg <span className="line-through">$2,500</span>
-                                </div>
-                                <div className="mt-3 bg-white/20 rounded-full py-2 px-4 text-white font-bold text-sm">
-                                  <strong>Click here to upgrade →</strong>
+      <div className="bg-[#E26C73]/10 rounded-xl p-5 mb-6">
+        <p className="font-semibold text-lg text-gray-800 mb-3">Benefits You Get:</p>
+        <ul className="space-y-2 text-sm text-gray-700">
+          <li className="flex items-start gap-2">
+            <span className="text-[#E26C73] font-bold">→</span>
+            <span>Family present, deep sleep—no more 3-5 hour exhaustion</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="text-[#E26C73] font-bold">→</span>
+            <span>Go-mode gone—sacred rhythm replaces survival</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="text-[#E26C73] font-bold">→</span>
+            <span>Clients closed in 4-hour blocks (no 10+ hour days)</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="text-[#E26C73] font-bold">→</span>
+            <span>"One more thing" guilt eliminated—white space automatic</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="text-[#E26C73] font-bold">→</span>
+            <span>Post "128x my life back" conviction</span>
+          </li>
+        </ul>
+      </div>
+
+      <div className="space-y-4 mt-auto">
+        <a
+          href="https://www.maketimeformore.com/checkout/monday-rhythm-reset-997"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block hover:shadow-2xl transition-all transform hover:scale-[1.02]"
+        >
+          <div className="bg-[#7FB069] text-white rounded-2xl p-6 text-center shadow-lg transition-all">
+            <div className="font-bold text-sm tracking-wide mb-3">
+              <strong>FOUNDING CYCLE OFFER</strong>
+            </div>
+            <div className="font-bold mb-1 text-lg">
+              <strong>Monday Rhythm Reset™</strong>
+            </div>
+            <div className="text-sm text-white/80 italic mb-3">Taste the Container</div>
+            <div className="text-3xl font-bold mb-1">
+              <strong>$997</strong>
+            </div>
+            <div className="text-white/80 text-sm mb-4">
+              One-Time Payment
+            </div>
+            <div className="text-xs text-white/90 mb-3">
+              212 hours reclaimed × your rate = 106x ROI
+            </div>
+            <div className="mt-3 bg-white/20 rounded-full py-2 px-4 text-white font-bold text-sm">
+              <strong>Reclaim 32% of Your Month →</strong>
+            </div>
+          </div>
+        </a>
+        <p className="text-center text-xs text-gray-500 italic">
+          Repeat $997/cycle to lock habits (3 cycles = $2,991, 636 hours quarter)
                                 </div>
                               </div>
                             </a>
