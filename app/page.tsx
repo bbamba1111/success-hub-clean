@@ -1307,7 +1307,8 @@ Travel to new destinations, learn something new, spend quality time with family,
                     </div>
                   </div>
 
-                  
+         
+          </div>         
                    
                     
           {/* Book Thought Leader Barbara section */}
