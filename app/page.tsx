@@ -1307,14 +1307,16 @@ Travel to new destinations, learn something new, spend quality time with family,
                     </div>
                   </div>
 
-                  <div className="grid md:grid-cols-2 gap-8 max-w-7xl mx-auto mt-12">
-                   <div className="max-w-7xl mx-auto mt-12">
+                  {/* =========================
+    PRICING / UPGRADE GRID
+   ========================= */}
+<div className="max-w-7xl mx-auto mt-12">
   {/* =========================
       TOP ROW: 2 COLUMNS
      ========================= */}
   <div className="grid md:grid-cols-2 gap-8">
     {/* =====================================================
-        COLUMN 1 — MAKE TIME FOR MORE ON MONDAYS (INSTALLATION)
+        COLUMN 1 — MONDAY INSTALLATION (28-DAY CYCLE)
        ===================================================== */}
     <div className="flex flex-col">
       <div className="bg-white rounded-2xl overflow-hidden shadow-lg flex-grow flex flex-col border border-gray-100 hover:shadow-xl transition-all">
@@ -1336,8 +1338,8 @@ Travel to new destinations, learn something new, spend quality time with family,
           </p>
 
           <p className="text-gray-700 mb-5 leading-relaxed">
-            A Monday-only Work-Life Balance Business Model™ installation—guided, co-worked, and proven through
-            lived Integration Week.
+            A Monday-only Work-Life Balance Business Model™ installation—guided, co-worked, and proven through lived
+            Integration Week.
           </p>
 
           <div className="bg-[#F5F1E8] rounded-xl p-5 mb-6">
@@ -1416,7 +1418,10 @@ Travel to new destinations, learn something new, spend quality time with family,
             <p className="font-semibold text-gray-800 mb-2">Commitment & Investment</p>
             <ul className="text-gray-700 space-y-2">
               <li>• <strong>$997 per cycle</strong></li>
-              <li>• Founding Members commit to <strong>(3) consecutive cycles</strong> (total <strong>$2,991</strong>)</li>
+              <li>
+                • Founding Members commit to <strong>(3) consecutive cycles</strong> (total{" "}
+                <strong>$2,991</strong>)
+              </li>
               <li>• Mondays-only live co-working + Integration Week after each cycle</li>
               <li>• <strong>No refunds</strong> — installation commitment</li>
             </ul>
@@ -1474,9 +1479,9 @@ Travel to new destinations, learn something new, spend quality time with family,
           </p>
 
           <p className="text-gray-700 mb-5 leading-relaxed">
-            This is where you live the complete rhythm as a <strong>4-Day Workweek</strong> with
-            <strong> 4-Hour Focused CEO Workdays</strong> — the model that creates
-            <strong> 152 hours of weekly time freedom</strong>.
+            This is where you live the complete rhythm as a <strong>4-Day Workweek</strong> with{" "}
+            <strong>4-Hour Focused CEO Workdays</strong> — the model that creates{" "}
+            <strong>152 hours of weekly time freedom</strong>.
           </p>
 
           <div className="bg-[#F5F1E8] rounded-xl p-5 mb-6">
@@ -1515,9 +1520,7 @@ Travel to new destinations, learn something new, spend quality time with family,
 
               <li className="flex items-start gap-2">
                 <span className="text-[#7FB069] font-bold">✓</span>
-                <span>
-                  Work-Life Balance Audit + 28-Day Intention + Sunday Shifts™
-                </span>
+                <span>Work-Life Balance Audit + 28-Day Intention + Sunday Shifts™</span>
               </li>
 
               <li className="flex items-start gap-2">
@@ -1626,6 +1629,7 @@ Travel to new destinations, learn something new, spend quality time with family,
     </div>
   </div>
 </div>
+
 
           {/* Book Thought Leader Barbara section */}
           {/* Book Thought Leader Barbara Section */}
