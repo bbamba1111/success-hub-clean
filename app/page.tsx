@@ -1307,7 +1307,7 @@ Travel to new destinations, learn something new, spend quality time with family,
                     </div>
                   </div>
 
-                  <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto mt-12">
+                  <div className="grid md:grid-cols-2 gap-8 max-w-7xl mx-auto mt-12">
                    {/* Column 1 - The Monday Installation */}
 <div className="flex flex-col">
   <div className="bg-white rounded-2xl overflow-hidden shadow-lg flex-grow flex flex-col border border-gray-100 hover:shadow-xl transition-all">
