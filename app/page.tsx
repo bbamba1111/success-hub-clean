@@ -1280,31 +1280,7 @@ Travel to new destinations, learn something new, spend quality time with family,
                     practice days.
                   </p>
 
-                  <div className="bg-white rounded-2xl p-6 border border-[#7FB069]/20">
-                    <h4 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                      <span className="text-2xl">🌸</span> 2026 Community Sabbaticals & Schedule
-                    </h4>
-                    <p className="text-gray-700 mb-4">
-                      We run <strong>(8) 28-Day Cycles per year</strong> during January - June and September - October.
-                      If you're planning the 90-Day Full Installation, choose 3 consecutive months when we're in
-                      session.
-                    </p>
-                    <p className="text-gray-700 mb-4">
-                      As a member, you'll also join us for two annual sabbaticals where the entire community takes
-                      intentional time off together:
-                    </p>
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="bg-[#F5F1E8] rounded-xl p-4 shadow-sm">
-                        <p className="font-semibold text-[#7FB069]">Summer Sabbatical</p>
-                        <p className="text-gray-600">July - August 2026</p>
-                        <p className="text-sm text-gray-500 mt-1">8 weeks of rest, travel & family time</p>
-                      </div>
-                      <div className="bg-[#F5F1E8] rounded-xl p-4 shadow-sm">
-                        <p className="font-semibold text-[#E26C73]">Winter Holiday Sabbatical</p>
-                        <p className="text-gray-600">November - December 2026</p>
-                        <p className="text-sm text-gray-500 mt-1">8 weeks of celebration & reflection</p>
-                      </div>
-                    </div>
+                  
                   </div>
 
                   <div className="grid md:grid-cols-2 gap-8 max-w-7xl mx-auto mt-12">
