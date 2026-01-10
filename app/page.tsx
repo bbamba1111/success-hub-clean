@@ -1281,7 +1281,6 @@ Travel to new destinations, learn something new, spend quality time with family,
                   </p>
 
                   
-                  </div>
 
                   <div className="grid md:grid-cols-2 gap-8 max-w-7xl mx-auto mt-12">
 
