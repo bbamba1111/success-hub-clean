@@ -1284,7 +1284,7 @@ Travel to new destinations, learn something new, spend quality time with family,
 
                   <div className="grid md:grid-cols-2 gap-8 max-w-7xl mx-auto mt-12">
 
-                    {/* Column 2 — 21-Day Habit Builder + 1 Week Integration */}
+                    {/* Column 2 — Habit Building Installation™ */}
 <div className="flex flex-col">
   <div className="bg-white rounded-2xl overflow-hidden shadow-lg flex-grow flex flex-col border border-gray-100 hover:shadow-xl transition-all">
     <div className="h-[400px] overflow-hidden flex items-center justify-center bg-gray-50">
@@ -1295,100 +1295,56 @@ Travel to new destinations, learn something new, spend quality time with family,
 
     <div className="p-6 flex-grow flex flex-col">
       <h3 className="text-2xl font-bold text-[#2F4F4F] mb-3">
-        <strong>21-Day Habit Builder + Integration Week</strong>
+        <strong>Habit Building Installation™</strong>
       </h3>
 
       <p className="text-gray-700 mb-3 italic">
-        <strong>Full Work-Life Balance Business Model™ & SOP</strong>
+        <strong>Repetition · Momentum · Wiring</strong>
       </p>
 
+      <p className="text-gray-700 mb-3 italic">
+        <strong>Increased frequency to actively build the rhythm through lived repetition.</strong>
+      </p>
+      
       <p className="text-gray-700 mb-5 leading-relaxed">
-        Eliminate the Tue–Thu gap. Live the complete <strong>4-Day Workweek</strong> with
-        <strong> 4-Hour Focused CEO Workdays</strong>—and install the rhythm as your operating system.
+        The Habit Building Installation™ is for women who already know the rhythm works — and want it to install <strong>faster.</strong> Instead of practicing once a week, you practice
+        <strong> four days per week (Monday–Thursday)</strong>during the structured weeks of a single 28-day cycle.
       </p>
 
       <div className="bg-[#F5F1E8] rounded-xl p-5 mb-6">
         <p className="font-semibold text-lg text-gray-800 mb-4">
-          Your 28-Day Habit Builder Includes:
+          Structure & Frequency
         </p>
 
         <ul className="space-y-3 text-base text-gray-700">
           <li className="flex items-start gap-2">
             <span className="text-[#7FB069] font-bold">✓</span>
             <span>
-              <strong>(12) Live Co-Working Days</strong> (Mon–Thurs across 3 weeks)
+              <strong>Frequency:</strong> 4 days per week (Mon–Thu)
             </span>
           </li>
 
           <li className="flex items-start gap-2">
             <span className="text-[#7FB069] font-bold">✓</span>
             <span>
-              <strong>(1) Integration Week</strong> (solo lived proof · no live co-working)
+              <strong>Structure</strong> 3 structured weeks + 1 Integration Week
             </span>
           </li>
 
           <li className="flex items-start gap-2">
             <span className="text-[#7FB069] font-bold">✓</span>
             <span>
-              <strong>4-Day Workweek</strong> + <strong>4-Hour Focused CEO Workdays</strong>
+              <strong>Duration:</strong> 1 full 28-day cycle
             </span>
           </li>
 
           <li className="flex items-start gap-2">
             <span className="text-[#7FB069] font-bold">✓</span>
             <span>
-              <strong>152 Hours of Weekly Time Freedom</strong> (your new baseline)
+              <strong>Total Installation Days</strong> 12
             </span>
-          </li>
+          </li>      
 
-          <li className="flex items-start gap-2">
-            <span className="text-[#7FB069] font-bold">✓</span>
-            <span>
-              <strong>New 9–5 & Nighttime Non-Negotiables™ SOP</strong> (full details inside the Hub)
-            </span>
-          </li>
-
-          <li className="flex items-start gap-2">
-            <span className="text-[#7FB069] font-bold">✓</span>
-            <span>
-              <strong>Work-Life Balance Audit</strong> + <strong>28-Day Intention</strong>
-            </span>
-          </li>
-
-          <li className="flex items-start gap-2">
-            <span className="text-[#7FB069] font-bold">✓</span>
-            <span>
-              <strong>Sunday Shift™</strong> (alignment + rhythm preview)
-            </span>
-          </li>
-
-          <li className="flex items-start gap-2">
-            <span className="text-[#7FB069] font-bold">✓</span>
-            <span>
-              <strong>16 AI Executive Advisors</strong> (systemize/delegate Tue–Thu)
-            </span>
-          </li>
-
-          <li className="flex items-start gap-2">
-            <span className="text-[#7FB069] font-bold">✓</span>
-            <span>
-              <strong>Custom SOP for Human Zone of Genius Pricing</strong>
-            </span>
-          </li>
-
-          <li className="flex items-start gap-2">
-            <span className="text-[#7FB069] font-bold">✓</span>
-            <span>
-              <strong>Priority Support</strong> + cohort guidance
-            </span>
-          </li>
-
-          <li className="flex items-start gap-2">
-            <span className="text-[#7FB069] font-bold">✓</span>
-            <span>
-              <strong>Private Facebook Community</strong> (accountability + proof + support)
-            </span>
-          </li>
         </ul>
 
         <div className="mt-5 pt-5 border-t border-[#e6dfd3]">
