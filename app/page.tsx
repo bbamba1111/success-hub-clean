@@ -1350,12 +1350,7 @@ Travel to new destinations, learn something new, spend quality time with family,
         <div className="mt-5 pt-5 border-t border-[#e6dfd3]">
           <p className="font-semibold text-gray-800 mb-2">Purpose</p>
           <p className="text-gray-700">
-            This installation is designed to <strong>prove what's possible</strong> — without overwhelming your nervous system. It answers one essential question:
-
-                “Can I actually do this?”
-
-            Mondays are where possibility becomes proof.
-            
+            This installation is designed to <strong>prove what's possible</strong> — without overwhelming your nervous system. It answers one essential question: “Can I actually do this?” Mondays are where possibility becomes proof.
           </p>
         </div>
       </div>
