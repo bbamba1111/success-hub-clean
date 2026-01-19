@@ -1318,28 +1318,28 @@ Travel to new destinations, learn something new, spend quality time with family,
 
         <ul className="space-y-3 text-base text-gray-700">
           <li className="flex items-start gap-2">
-            <span className="text-[#7FB069] font-bold">✓</span>
+            <span className="text-[#7FB069] font-bold">•</span>
             <span>
               <strong>Frequency:</strong> 4 days per week (Mon–Thu)
             </span>
           </li>
 
           <li className="flex items-start gap-2">
-            <span className="text-[#7FB069] font-bold">✓</span>
+            <span className="text-[#7FB069] font-bold">•</span>
             <span>
               <strong>Structure</strong> 3 structured weeks + 1 Integration Week
             </span>
           </li>
 
           <li className="flex items-start gap-2">
-            <span className="text-[#7FB069] font-bold">✓</span>
+            <span className="text-[#7FB069] font-bold">•</span>
             <span>
               <strong>Duration:</strong> 1 full 28-day cycle
             </span>
           </li>
 
           <li className="flex items-start gap-2">
-            <span className="text-[#7FB069] font-bold">✓•</span>
+            <span className="text-[#7FB069] font-bold">•</span>
             <span>
               <strong>Total Installation Days</strong> 12
             </span>
@@ -1348,9 +1348,22 @@ Travel to new destinations, learn something new, spend quality time with family,
         </ul>
 
         <div className="mt-5 pt-5 border-t border-[#e6dfd3]">
+          <p className="font-semibold text-gray-800 mb-2">Purpose</p>
+          <p className="text-gray-700">
+            This installation is designed to <strong>prove what's possible</strong> — without overwhelming your nervous system.
+            It answers one essential question:
+
+                “Can I actually do this?”
+
+            Mondays are where possibility becomes proof.
+          </p>
+        </div>
+      </div>
+
+        <div className="mt-5 pt-5 border-t border-[#e6dfd3]">
           <p className="font-semibold text-gray-800 mb-2">Time Freedom Outcome</p>
           <p className="text-gray-700">
-            Reclaim <strong>608 hours</strong> in 28 days by installing the full Mon–Thurs model + Integration Week.
+            Reclaim <strong>prove 608 hours</strong> in 28 days by installing the full Mon–Thurs model + Integration Week.
           </p>
         </div>
       </div>
@@ -1358,9 +1371,8 @@ Travel to new destinations, learn something new, spend quality time with family,
       <div className="bg-gray-50 border border-gray-100 rounded-xl p-5 mb-6">
         <p className="font-semibold text-gray-800 mb-2">Investment</p>
         <ul className="text-gray-700 space-y-2">
-          <li>• <strong>$9,997</strong> per 28-day cycle</li>
-          <li>• Includes 12 live Mon–Thurs days + 1 Integration Week</li>
-          <li>• Option to repeat the cycle or move into Maintenance after proof</li>
+          <li> <strong>$9,997</strong> per 28-day cycle</li>
+          <li>Option to repeat the cycle or move into Maintenance after proof</li>
         </ul>
       </div>
 
