@@ -1339,7 +1339,7 @@ Travel to new destinations, learn something new, spend quality time with family,
           </li>
 
           <li className="flex items-start gap-2">
-            <span className="text-[#7FB069] font-bold">✓</span>
+            <span className="text-[#7FB069] font-bold">✓•</span>
             <span>
               <strong>Total Installation Days</strong> 12
             </span>
