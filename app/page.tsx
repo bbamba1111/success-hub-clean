@@ -1353,7 +1353,6 @@ Travel to new destinations, learn something new, spend quality time with family,
             This installation is designed to <strong>normalize the rhythm as your baseline.</strong>
           </p>
         </div>
-      </div>
       
         <div className="mt-5 pt-5 border-t border-[#e6dfd3]">
           <p className="font-semibold text-gray-800 mb-2">Time Freedom Outcome</p>
