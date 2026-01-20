@@ -1358,9 +1358,9 @@ Travel to new destinations, learn something new, spend quality time with family,
       <div className="bg-gray-50 border border-gray-100 rounded-xl p-5 mb-6">
         <p className="font-semibold text-gray-800 mb-2">Investment</p>
         <ul className="text-gray-700 space-y-2">
-          <li>• <strong>$9,997</strong> per 28-day cycle</li>
-          <li>• Includes 12 live Mon–Thurs days + 1 Integration Week</li>
-          <li>• Option to repeat the cycle or move into Maintenance after proof</li>
+          <li> <strong>$9,997</strong> per 28-day cycle</li>
+          <li> Includes 12 live Mon–Thurs days + 1 Integration Week</li>
+          <li> Option to repeat the cycle or move into Maintenance after proof</li>
         </ul>
       </div>
 
