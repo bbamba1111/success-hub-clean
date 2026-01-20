@@ -1505,9 +1505,10 @@ This is where the 4-Day Workweek and 4-Hour Focused CEO Workdays become natural 
       <div className="bg-gray-50 border border-gray-100 rounded-xl p-5 mb-6">
         <p className="font-semibold text-gray-800 mb-2">Investment</p>
         <ul className="text-gray-700 space-y-2">
-          <li> <strong>$19,997</strong> per 28-day cycle</li>
-          <li> Includes 12 live Mon–Thurs days + 1 Integration Week</li>
-          <li> Option to repeat the cycle or move into Maintenance after proof</li>
+          <li> <strong>Investment is shared by invitation.
+          </strong> This container is intentionally limited to ensure alignment, support, and sustainability.</li>
+          <li>Request Invitation</li>
+          <li> Message Thought Leader Barbara</li>
         </ul>
       </div>
 
@@ -1521,18 +1522,12 @@ This is where the 4-Day Workweek and 4-Hour Focused CEO Workdays become natural 
                             >
                               <div className="bg-[#7FB069] text-white rounded-2xl p-6 text-center shadow-lg transition-all">
                                 <div className="font-bold text-sm tracking-wide mb-3">
-                                  <strong>APPLICATION-ONLY</strong>
+                                  <strong>INVITATION-ONLY</strong>
                                 </div>
                                 <div className="font-bold mb-1 text-lg">
                                   <strong>Desired Work-Lifestyle Installation</strong>
                                 </div>
-                                <div className="text-m text-white/80 italic mb-3">(Jan 1 - March 31)</div>
-                                <div className="text-xl font-bold mb-1">
-                                  <strong>$11,250</strong>
-                                </div>
-                                <div className="text-white/80 text-sm mb-4">
-                                  Reg <span className="line-through">$22,500</span>
-                                </div>
+                                  
                                 <div className="mt-3 bg-white/20 rounded-full py-2 px-4 text-white font-bold text-sm">
                                   <strong>Contact TL Barbara →</strong>
                                 </div>
