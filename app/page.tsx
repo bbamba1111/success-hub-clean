@@ -1434,14 +1434,14 @@ This is where the 4-Day Workweek and 4-Hour Focused CEO Workdays become natural 
                           </p>
 
                           <p className="text-gray-700 mb-4 leading-relaxed">
-                            </strong>You live the full 4-Day (Mon–Thu) rhythm across three consecutive 28-day cycles,</strong> allowing the structure to move from:
+                            You live the full 4-Day (Mon–Thu) rhythm </strong>across three consecutive 28-day cycles,</strong> allowing the structure to move from:
                           </p>
 
                           <p className="text-gray-700 mb-4 leading-relaxed">
                             </strong>new → familiar → automatic</strong> 
                           </p>
 
-                              <div className="bg-[#F5F1E8] rounded-xl p-5 mb-6">
+                            <div className="bg-[#F5F1E8] rounded-xl p-5 mb-6">
                             <p className="font-semibold text-lg text-gray-800 mb-4">Structure & Frequency</p>
                             <ul className="space-y-3 text-base text-gray-600">
                               <li className="flex items-start gap-2">
