@@ -1384,13 +1384,13 @@ This is where the 4-Day Workweek and 4-Hour Focused CEO Workdays become natural 
         >
           <div className="bg-[#E26C73] text-white rounded-2xl p-6 text-center shadow-lg transition-all">
             <div className="font-bold text-sm tracking-wide mb-3">
-              <strong>UPGRADE — HABIT BUILDER</strong>
+              <strong>UPGRADE</strong>
             </div>
             <div className="text-lg font-bold mb-1">
-              <strong>21-Day Habit Builder + Integration</strong>
+              <strong>Habit Building Installation</strong>
             </div>
             <div className="text-white/80 text-sm mb-4">
-              Full 4-Day Workweek · 152 hrs/week time freedom
+              4-Day Workweeks · 4-Hour Workdays · 152 hrs/week time freedom
             </div>
             <div className="text-xl font-bold mb-1">
               <strong>$9,997</strong>
@@ -1402,14 +1402,14 @@ This is where the 4-Day Workweek and 4-Hour Focused CEO Workdays become natural 
         </a>
 
         <p className="text-xs text-gray-500 text-center px-2">
-          For women ready to close the Tue–Thu gap and wire the full lifestyle rhythm.
+          For women ready to close the Tue–Thu gap.
         </p>
       </div>
     </div>
   </div>
 </div>
 
-{/* Column 3 - 90-Day Installation */}
+{/* Column 3 - Desired Work-Lifestyle Installation™ */}
                     <div className="flex flex-col">
                       <div className="bg-white rounded-2xl overflow-hidden shadow-lg flex-grow flex flex-col border border-gray-100 hover:shadow-xl transition-all">
                         <div className="h-[400px] overflow-hidden flex items-center justify-center bg-gray-50">
@@ -1422,20 +1422,27 @@ This is where the 4-Day Workweek and 4-Hour Focused CEO Workdays become natural 
 
                         <div className="p-6 flex-grow flex flex-col">
                           <h3 className="text-2xl font-bold text-[#2F4F4F] mb-4">
-                            <strong>90-Day Full Installation</strong>
+                            <strong>Desired Work-Lifestyle Installation™</strong>
                           </h3>
 
                           <p className="text-gray-700 mb-4 italic">
-                            Permanently Install the Work-Life Balance Business Model as Your Operating System.
+                            Normalization · Identity · Baseline
                           </p>
 
                           <p className="text-gray-700 mb-4 leading-relaxed">
-                            Perfect if you're all-in on transformation—3 consecutive 28-day cycles to make the 4-day
-                            workweek and 4-hour workday automatic.
+                            This is where the rhythm stops being built — and becomes who you are.<strong>default way of living and leading</strong> — not something they are practicing temporarily.
                           </p>
 
-                          <div className="bg-[#F5F1E8] rounded-xl p-5 mb-6">
-                            <p className="font-semibold text-lg text-gray-800 mb-4">Your 90-Day Experience Includes:</p>
+                          <p className="text-gray-700 mb-4 leading-relaxed">
+                            </strong>You live the full 4-Day (Mon–Thu) rhythm across three consecutive 28-day cycles,</strong> allowing the structure to move from:
+                          </p>
+
+                          <p className="text-gray-700 mb-4 leading-relaxed">
+                            </strong>new → familiar → automatic</strong> 
+                          </p>
+
+                              <div className="bg-[#F5F1E8] rounded-xl p-5 mb-6">
+                            <p className="font-semibold text-lg text-gray-800 mb-4">Structure & Frequency</p>
                             <ul className="space-y-3 text-base text-gray-600">
                               <li className="flex items-start gap-2">
                                 <span className="text-[#7FB069] font-bold">✓</span>
