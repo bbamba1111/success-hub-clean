@@ -1303,12 +1303,12 @@ Travel to new destinations, learn something new, spend quality time with family,
       </p>
 
       <p className="text-gray-700 mb-3 italic">
-        <strong>Increased frequency to actively build the rhythm through lived repetition.</strong>
+        Increased frequency to actively build the rhythm through lived repetition.
       </p>
       
       <p className="text-gray-700 mb-5 leading-relaxed">
         The Habit Building Installation™ is for women who already know the rhythm works — and want it to install <strong>faster.</strong> Instead of practicing once a week, you practice
-        <strong> four days per week (Monday–Thursday)</strong>during the structured weeks of a single 28-day cycle.
+        <strong> four days per week (Monday–Thursday)</strong> during the structured weeks of a single 28-day cycle.
       </p>
 
       <div className="bg-[#F5F1E8] rounded-xl p-5 mb-6">
@@ -1347,6 +1347,14 @@ Travel to new destinations, learn something new, spend quality time with family,
 
         </ul>
 
+     <div className="mt-5 pt-5 border-t border-[#e6dfd3]">
+          <p className="font-semibold text-gray-800 mb-2">Purpose</p>
+          <p className="text-gray-700">
+            This installation is designed to <strong>normalize the rhythm as your baseline.</strong> It answers the question: “How do I make this my life — not a phase?”
+          </p>
+        </div>
+      </div>
+      
         <div className="mt-5 pt-5 border-t border-[#e6dfd3]">
           <p className="font-semibold text-gray-800 mb-2">Time Freedom Outcome</p>
           <p className="text-gray-700">
