@@ -1436,6 +1436,10 @@ This is where the 4-Day Workweek and 4-Hour Focused CEO Workdays become natural 
         The Desired Work-Lifestyle Installation™ is for women who want this rhythm to become their <strong>default way of living and leading</strong> — not something they are practicing temporarily.
       </p>
 
+        <p className="text-gray-700 mb-5 leading-relaxed">
+        You live the full 4-Day (Mon–Thu) rhythm across three consecutive 28-day cycles.
+      </p>                  
+
       <div className="bg-[#F5F1E8] rounded-xl p-5 mb-6">
         <p className="font-semibold text-gray-800 mb-3">
           Structure & Frequency
@@ -1445,32 +1449,25 @@ This is where the 4-Day Workweek and 4-Hour Focused CEO Workdays become natural 
           <li className="flex items-start gap-2">
             <span className="text-[#7FB069] font-bold">•</span>
             <span>
-              <strong>Frequency:</strong> 4 days per week (Mon–Thu)
+              <strong>Frequency:</strong> 4 days per week (Monday–Thursday)
             </span>
           </li>
 
           <li className="flex items-start gap-2">
             <span className="text-[#7FB069] font-bold">•</span>
             <span>
-              <strong>Structure</strong> 3 structured weeks + 1 Integration Week
+              <strong>Structure</strong> Full 4-Day rhythm every cycle
             </span>
           </li>
 
           <li className="flex items-start gap-2">
             <span className="text-[#7FB069] font-bold">•</span>
             <span>
-              <strong>Duration:</strong> 1 full 28-day cycle
+              <strong>Duration:</strong> 3 consecutive 28-day cycles (≈ 3 months)
             </span>
           </li>
 
-          <li className="flex items-start gap-2">
-            <span className="text-[#7FB069] font-bold">•</span>
-            <span>
-              <strong>Total Installation Days</strong> 12
-            </span>
-          </li>      
-
-        </ul>
+          </ul>
 
      <div className="mt-5 pt-5 border-t border-[#e6dfd3]">
           <p className="font-semibold text-gray-800 mb-3">Purpose</p>
