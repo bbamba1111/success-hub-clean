@@ -1350,7 +1350,11 @@ Travel to new destinations, learn something new, spend quality time with family,
      <div className="mt-5 pt-5 border-t border-[#e6dfd3]">
           <p className="font-semibold text-gray-800 mb-2">Purpose</p>
           <p className="text-gray-700">
-            This installation is designed to <strong>normalize the rhythm as your baseline.</strong>
+            This installation is designed to <strong>normalize the rhythm as your baseline.</strong> It answers the question:
+
+“How do I make this my life — not a phase?”
+
+This is where the 4-Day Workweek and 4-Hour Focused CEO Workdays become natural — unlocking
           </p>
         </div>
       
