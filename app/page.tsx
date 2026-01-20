@@ -1409,7 +1409,7 @@ This is where the 4-Day Workweek and 4-Hour Focused CEO Workdays become natural 
   </div>
 </div>
 
-{/* Column 3 - Desired Work-Lifestyle Installation */}
+{/* Column 3 - Desired Work-Lifestyle Installation™ */}
                     <div className="flex flex-col">
                       <div className="bg-white rounded-2xl overflow-hidden shadow-lg flex-grow flex flex-col border border-gray-100 hover:shadow-xl transition-all">
                         <div className="h-[400px] overflow-hidden flex items-center justify-center bg-gray-50">
@@ -1425,6 +1425,10 @@ This is where the 4-Day Workweek and 4-Hour Focused CEO Workdays become natural 
                             <strong>Desired Work-Lifestyle Installation</strong>
                           </h3>
 
+                          <p className="text-gray-700 mb-3 italic">
+                            <strong>Normalization · Identity · Baseline</strong>
+                          </p>
+                          
                           <p className="text-gray-700 mb-4 italic">
                             Permanently Install the Work-Life Balance Business Model as Your Operating System.
                           </p>
