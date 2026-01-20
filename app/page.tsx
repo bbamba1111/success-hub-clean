@@ -1424,105 +1424,82 @@ This is where the 4-Day Workweek and 4-Hour Focused CEO Workdays become natural 
                           <h3 className="text-2xl font-bold text-[#2F4F4F] mb-4">
                             <strong>Desired Work-Lifestyle Installation</strong>
                           </h3>
+      <p className="text-gray-700 mb-3 italic">
+        <strong>Repetition · Momentum · Wiring</strong>
+      </p>
 
-                          <p className="text-gray-700 mb-3 italic">
-                            <strong>Normalization · Identity · Baseline</strong>
-                          </p>
-                          
-                          <p className="text-gray-700 mb-4 italic">
-                            Permanently Install the Work-Life Balance Business Model as Your Operating System.
-                          </p>
+      <p className="text-gray-700 mb-3 italic">
+        Increased frequency to actively build the rhythm through lived repetition.
+      </p>
+      
+      <p className="text-gray-700 mb-5 leading-relaxed">
+        The Habit Building Installation™ is for women who already know the rhythm works — and want it to install <strong>faster.</strong> Instead of practicing once a week, you practice
+        <strong> four days per week (Monday–Thursday)</strong> during the structured weeks of a single 28-day cycle.
+      </p>
 
-                          <p className="text-gray-700 mb-4 leading-relaxed">
-                            Perfect if you're all-in on transformation—3 consecutive 28-day cycles to make the 4-day
-                            workweek and 4-hour workday automatic.
-                          </p>
+      <div className="bg-[#F5F1E8] rounded-xl p-5 mb-6">
+        <p className="font-semibold text-gray-800 mb-3">
+          Structure & Frequency
+        </p>
 
-                          <div className="bg-[#F5F1E8] rounded-xl p-5 mb-6">
-                            <p className="font-semibold text-lg text-gray-800 mb-4">Your 90-Day Experience Includes:</p>
-                            <ul className="space-y-3 text-base text-gray-600">
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <strong>2-Part Onboarding: Work-Life Balance Audit & 28-Day Intention Setting</strong>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <span>
-                                  (9) <strong>4-Day Workweeks</strong> with (9) <strong>3-Day Weekends</strong>
-                                </span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <span>
-                                  (36) <strong>4-Hour Focused CEO Workdays</strong>
-                                </span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <strong>152 Hours of Weekly Time Freedom (x9 weeks)</strong>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <span>Expansion in 13 Core Life Value Areas</span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <span>(36) Morning GIV•EN™ Routines</span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <span>(36) 30-Minute Workday Workout Windows</span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <span>(36) Extended Healthy Hybrid Lunch Breaks</span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <span>(36) Power Down & Unplug Digital Detoxes</span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <span>Quality of Lifestyle Experiences</span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <span>(9) Sunday Shifts</span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <span>(3) Intention Setting Ceremonies (GIVEN)</span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <span>6 Hustle Habit Replacements (Mastered)</span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <span>(3) Weeks Rest, Recover & Recharge Breaks</span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <span>Cherry Blossom Suite: 6 AI-Powered Planners</span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <span>Workout Planner & Sleep Tracker Access</span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <span>Advanced AI Executive Workflows</span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <span>Priority Support & 1:1 Check-ins</span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-[#7FB069] font-bold">✓</span>
-                                <span>Facebook Community Access</span>
-                              </li>
-                            </ul>
-                          </div>
+        <ul className="space-y-3 text-base text-gray-700">
+          <li className="flex items-start gap-2">
+            <span className="text-[#7FB069] font-bold">•</span>
+            <span>
+              <strong>Frequency:</strong> 4 days per week (Mon–Thu)
+            </span>
+          </li>
+
+          <li className="flex items-start gap-2">
+            <span className="text-[#7FB069] font-bold">•</span>
+            <span>
+              <strong>Structure</strong> 3 structured weeks + 1 Integration Week
+            </span>
+          </li>
+
+          <li className="flex items-start gap-2">
+            <span className="text-[#7FB069] font-bold">•</span>
+            <span>
+              <strong>Duration:</strong> 1 full 28-day cycle
+            </span>
+          </li>
+
+          <li className="flex items-start gap-2">
+            <span className="text-[#7FB069] font-bold">•</span>
+            <span>
+              <strong>Total Installation Days</strong> 12
+            </span>
+          </li>      
+
+        </ul>
+
+     <div className="mt-5 pt-5 border-t border-[#e6dfd3]">
+          <p className="font-semibold text-gray-800 mb-3">Purpose</p>
+          <p className="text-gray-700">
+            This installation is designed to <strong>normalize the rhythm as your baseline.</strong> It answers the question:
+
+“How do I make this my life — not a phase?”
+
+This is where the 4-Day Workweek and 4-Hour Focused CEO Workdays become natural — unlocking <strong>152 hours of weekly time freedom</strong> as a lived reality, not a goal.
+          </p>
+        </div>
+      
+        <div className="mt-5 pt-5 border-t border-[#e6dfd3]">
+          <p className="font-semibold text-gray-800 mb-3">Time Freedom Outcome</p>
+          <p className="text-gray-700">
+            Reclaim <strong>608 hours</strong> in 28 days by installing the full Mon–Thurs model + Integration Week.
+          </p>
+        </div>
+      </div>
+
+      <div className="bg-gray-50 border border-gray-100 rounded-xl p-5 mb-6">
+        <p className="font-semibold text-gray-800 mb-2">Investment</p>
+        <ul className="text-gray-700 space-y-2">
+          <li> <strong>$9,997</strong> per 28-day cycle</li>
+          <li> Includes 12 live Mon–Thurs days + 1 Integration Week</li>
+          <li> Option to repeat the cycle or move into Maintenance after proof</li>
+        </ul>
+      </div>
 
                           <div className="space-y-4 mt-auto">
                             
