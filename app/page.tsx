@@ -1312,7 +1312,7 @@ Travel to new destinations, learn something new, spend quality time with family,
       </p>
 
       <div className="bg-[#F5F1E8] rounded-xl p-5 mb-6">
-        <p className="font-semibold text-gray-800 mb-3">
+        <p className="font-semibold text-gray-800 mb-3.75">
           Structure & Frequency
         </p>
 
@@ -1348,9 +1348,9 @@ Travel to new destinations, learn something new, spend quality time with family,
         </ul>
 
      <div className="mt-5 pt-5 border-t border-[#e6dfd3]">
-          <p className="font-semibold text-gray-800 mb-3">Purpose</p>
+          <p className="font-semibold text-gray-800 mb-3.75">Purpose</p>
           <p className="text-gray-700">
-            This installation is designed to <strong>normalize the rhythm as your baseline.</strong> It answers the question:
+            This installation is designed to <strong>normalize the rhythm as your baseline.</strong> </p> It answers the question:
 
 “How do I make this my life — not a phase?”
 
@@ -1359,7 +1359,7 @@ This is where the 4-Day Workweek and 4-Hour Focused CEO Workdays become natural 
         </div>
       
         <div className="mt-5 pt-5 border-t border-[#e6dfd3]">
-          <p className="font-semibold text-gray-800 mb-3">Time Freedom Outcome</p>
+          <p className="font-semibold text-gray-800 mb-3.75">Time Freedom Outcome</p>
           <p className="text-gray-700">
             Reclaim <strong>608 hours</strong> in 28 days by installing the full Mon–Thurs model + Integration Week.
           </p>
