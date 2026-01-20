@@ -1318,28 +1318,28 @@ Travel to new destinations, learn something new, spend quality time with family,
 
         <ul className="space-y-3 text-base text-gray-700">
           <li className="flex items-start gap-2">
-            <span className="text-[#7FB069] font-bold">✓</span>
+            <span className="text-[#7FB069] font-bold">•</span>
             <span>
               <strong>Frequency:</strong> 4 days per week (Mon–Thu)
             </span>
           </li>
 
           <li className="flex items-start gap-2">
-            <span className="text-[#7FB069] font-bold">✓</span>
+            <span className="text-[#7FB069] font-bold">•</span>
             <span>
               <strong>Structure</strong> 3 structured weeks + 1 Integration Week
             </span>
           </li>
 
           <li className="flex items-start gap-2">
-            <span className="text-[#7FB069] font-bold">✓</span>
+            <span className="text-[#7FB069] font-bold">•</span>
             <span>
               <strong>Duration:</strong> 1 full 28-day cycle
             </span>
           </li>
 
           <li className="flex items-start gap-2">
-            <span className="text-[#7FB069] font-bold">✓•</span>
+            <span className="text-[#7FB069] font-bold">•</span>
             <span>
               <strong>Total Installation Days</strong> 12
             </span>
