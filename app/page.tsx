@@ -1433,15 +1433,15 @@ This is where the 4-Day Workweek and 4-Hour Focused CEO Workdays become natural 
       </p>
 
       <p className="text-gray-700 mb-3 italic">
-       This is where the rhythm stops being built — and becomes who you are.
+      This installation is for women who are ready to normalize the rhythm as their default way of living and leading.
       </p>
       
       <p className="text-gray-700 mb-5 leading-relaxed">
-        The Desired Work-Lifestyle Installation™ is for women who want this rhythm to become their <strong>default way of living and leading</strong> — not something they are practicing temporarily.
+        You live the full 4-Day (Mon–Thu) rhythm across three consecutive 28-day cycles — allowing the structure to move from familiar → embodied → automatic.
       </p>
 
         <p className="text-gray-700 mb-5 leading-relaxed">
-        You live the full 4-Day (Mon–Thu) rhythm across three consecutive 28-day cycles.
+        This is where the rhythm stops being built — and becomes who you are.
       </p>                  
 
       <div className="bg-[#F5F1E8] rounded-xl p-5 mb-6">
@@ -1453,28 +1453,28 @@ This is where the 4-Day Workweek and 4-Hour Focused CEO Workdays become natural 
           <li className="flex items-start gap-2">
             <span className="text-[#7FB069] font-bold">•</span>
             <span>
-              <strong>Frequency:</strong> 4 days per week (Monday–Thursday)
+              <strong>Frequency:</strong> 4 days per week (Mon–Thu)
             </span>
           </li>
 
           <li className="flex items-start gap-2">
             <span className="text-[#7FB069] font-bold">•</span>
             <span>
-              <strong>Structure</strong> Full 4-Day rhythm every cycle
+              <strong>Structure</strong> 4-Day Workweek 4-Hour Workday
             </span>
           </li>
 
           <li className="flex items-start gap-2">
             <span className="text-[#7FB069] font-bold">•</span>
             <span>
-              <strong>Duration:</strong> 3 consecutive 28-day cycles (≈ 3 months)
+              <strong>Duration:</strong> 3 consecutive 28-day cycles
             </span>
           </li>
 
           <li className="flex items-start gap-2">
             <span className="text-[#7FB069] font-bold">•</span>
             <span>
-              <strong>This Installation:</strong> You are no longer visiting the rhythm — you are living inside it.
+              <strong>Purpose:</strong> Customize and mormalize the rhythm as your baseline
             </span>
           </li>      
 
