@@ -1311,6 +1311,10 @@ Travel to new destinations, learn something new, spend quality time with family,
         <strong> four days per week (Monday–Thursday)</strong> during the structured weeks of a single 28-day cycle.
       </p>
 
+      <p className="text-gray-700 mb-5 leading-relaxed">
+        Instead of practicing once a week, you practice <strong> four days per week (Monday–Thursday)</strong> during the structured weeks of a single 28-day cycle.
+      </p>
+
       <div className="bg-[#F5F1E8] rounded-xl p-5 mb-6">
         <p className="font-semibold text-gray-800 mb-4">
           Structure & Frequency
@@ -1472,12 +1476,15 @@ This is where the 4-Day Workweek and 4-Hour Focused CEO Workdays become natural 
      <div className="mt-5 pt-5 border-t border-[#e6dfd3]">
           <p className="font-semibold text-gray-800 mb-3">Purpose</p>
           <p className="text-gray-700">
-            This installation is designed to <strong>normalize the rhythm as your baseline.</strong> It answers the question:
+            This installation is designed to <strong>normalize the rhythm as your baseline.</strong>
+          </p>
 
-“How do I make this my life — not a phase?”
+        <p className="text-gray-700">
+            It answers the question: “How do I make this my life — not a phase?”
 
 This is where the 4-Day Workweek and 4-Hour Focused CEO Workdays become natural — unlocking <strong>152 hours of weekly time freedom</strong> as a lived reality, not a goal.
           </p>
+       
         </div>
       
         <div className="mt-5 pt-5 border-t border-[#e6dfd3]">
