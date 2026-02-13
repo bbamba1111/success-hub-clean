@@ -124,6 +124,65 @@ export default function HomePage() {
         </div>
       </div>
 
+      {/* Step 2 - Sunday Shift Section */}
+      <div className="relative overflow-hidden py-20">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#7FB069]/10 to-[#E26C73]/10" />
+        <div className="relative max-w-6xl mx-auto px-6">
+          {/* Step 2 Badge at Top */}
+          <div className="flex items-center justify-center gap-3 mb-8">
+            <img
+              src="/images/logo.png"
+              alt="Make Time For More Logo"
+              width={80}
+              height={80}
+              className="rounded-full shadow-lg"
+            />
+            <Badge variant="secondary" className="bg-gradient-to-r from-[#7FB069] to-[#E26C73] text-white border-0">
+              Step 2
+            </Badge>
+          </div>
+
+          {/* Header Text Above Image */}
+          <div className="text-center mb-8">
+            <h3 className="text-4xl font-bold bg-gradient-to-r from-[#7FB069] to-[#E26C73] bg-clip-text text-transparent mb-4">
+              Make The Sunday Shift
+            </h3>
+            <p className="text-xl text-gray-700 font-medium">
+              Adopt The Work-Life Balance Business Model & SOP™ -- the "Sustainable" Operating Procedure
+            </p>
+          </div>
+
+          {/* Cherry Blossom Countdown Component */}
+          <div className="text-center mb-12">
+            <CherryBlossomCountdown />
+          </div>
+
+          {/* Content Grid with rounded corners and shadow */}
+          <div className="flex justify-center">
+            <div className="space-y-4 flex flex-col max-w-4xl w-full bg-white/80 rounded-2xl shadow-xl p-6">
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="flex items-center gap-3 text-gray-700 bg-white/80 p-3 rounded-lg shadow-sm">
+                  <Clock className="w-5 h-5 text-[#7FB069] flex-shrink-0" />
+                  <span className="font-semibold text-lg">Join Us Live: Sunday @ 1:00–2:00 PM ET</span>
+                </div>
+
+                <a
+                  href="https://join.butter.us/make-time-for-more/sunday-shift"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block"
+                >
+                  <Button className="w-full h-full bg-white hover:bg-gray-50 text-[#7FB069] border-2 border-[#7FB069] font-semibold py-3 text-lg">
+                    Enter Here to Make The Sunday Shift
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
       {/* Onboarding Section - Complete Onboarding */}
       <div className="bg-gradient-to-br from-[#F5F1E8] to-white py-20">
         <div className="max-w-6xl mx-auto px-6">
