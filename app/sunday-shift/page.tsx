@@ -50,7 +50,7 @@ export default function SundayShiftPage() {
       <div className="bg-white py-12">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <h1 className="text-4xl lg:text-5xl font-bold text-[#2F4F4F] leading-tight text-balance">
-            Welcome to Make Time For More™ Harmony<sup className="text-xl">™</sup>
+            Make Time For More™ Harmony<sup className="text-xl">™</sup>
           </h1>
           <p className="text-xl text-gray-600 mt-4 leading-relaxed">
             The Parallel Lane & Counterpart to Hustle Entrepreneurship
