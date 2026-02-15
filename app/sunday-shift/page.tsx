@@ -55,7 +55,7 @@ export default function SundayShiftPage() {
               Make The Sunday Shift<sup className="text-xl">™</sup>
             </h1>
             <p className="text-xl text-gray-700 font-medium">
-              Adopt The Work-Life Balance Business Model & SOP™ -- the "Sustainable" Operating Procedure
+              In the Parallel Lane of Harmony Entrepreneurship, Monday Is Not Reactive — It's Intentional.
             </p>
           </div>
 
@@ -68,7 +68,7 @@ export default function SundayShiftPage() {
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="flex items-center gap-3 text-gray-700 bg-white/80 p-3 rounded-lg shadow-sm">
                   <Clock className="w-5 h-5 text-[#7FB069] flex-shrink-0" />
-                  <span className="font-semibold text-lg">Join Us Live: Sunday @ 1:00-2:00 PM ET</span>
+                  <span className="font-semibold text-lg">Join Us Live: Sunday @ 1:00-3:00 PM ET</span>
                 </div>
 
                 <a
@@ -99,14 +99,12 @@ export default function SundayShiftPage() {
               height={80}
               className="rounded-full shadow-lg"
             />
-            <Badge variant="secondary" className="bg-gradient-to-r from-[#7FB069] to-[#E26C73] text-white border-0">
-              Step 2
-            </Badge>
+            
           </div>
 
           <div className="text-center mb-6">
             <h2 className="text-3xl font-bold text-[#7FB069] mb-4">
-              Complete Onboarding: Your First 3-Steps to Balance, Freedom & Success
+              How you enter the week determines how you live, work & lead in the week.
             </h2>
             <p
               className="text-[39px] text-gray-700 mt-6"
@@ -233,7 +231,7 @@ export default function SundayShiftPage() {
                   <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 2.2</Badge>
                 </div>
                 <CardTitle className="text-xl font-bold text-white">
-                  Set Your 28-Day Desired Work-LifeStyle Intention
+                  Set Your 7-Day Desired Work-LifeStyle Intention
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
