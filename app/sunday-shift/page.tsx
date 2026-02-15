@@ -46,42 +46,16 @@ export default function SundayShiftPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white">
-      {/* Header */}
-      <div className="bg-white py-12">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <h1 className="text-4xl lg:text-5xl font-bold text-[#2F4F4F] leading-tight text-balance">
-            Make Time For More™ Harmony<sup className="text-l">™</sup>
-          </h1>
-          <p className="text-xl text-gray-600 mt-4 leading-relaxed">
-            The Parallel Lane & Counterpart to Hustle Entrepreneurship
-          </p>
-        </div>
-      </div>
-
-      {/* Step 1 - Make The Sunday Shift Section (MOVED TO FIRST) */}
+      {/* Make The Sunday Shift Section */}
       <div className="relative overflow-hidden py-20">
         <div className="absolute inset-0 bg-gradient-to-r from-[#7FB069]/10 to-[#E26C73]/10" />
         <div className="relative max-w-6xl mx-auto px-6">
-          <div className="flex items-center justify-center gap-3 mb-8">
-            <img
-              src="/images/logo.png"
-              alt="Make Time For More Logo"
-              width={80}
-              height={80}
-              className="rounded-full shadow-lg"
-            />
-            
-          </div>
-
           <div className="text-center mb-8">
-            <h3 className="text-4xl font-bold bg-gradient-to-r from-[#7FB069] to-[#E26C73] bg-clip-text text-transparent mb-4">
-              Make The Sunday Shift
-            </h3>
-            <h2 className="text-4xl font-bold bg-gradient-to-r from-[#7FB069] to-[#E26C73] bg-clip-text text-transparent mb-4">
-              Make The Sunday Shift
-            </h2>
-            <p className="text-xl text-gray-700 font-large">
-              Take The First 3-Steps to Balance, Freedom & Sustainable Success
+            <h1 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-[#7FB069] to-[#E26C73] bg-clip-text text-transparent mb-4">
+              Make The Sunday Shift<sup className="text-xl">™</sup>
+            </h1>
+            <p className="text-xl text-gray-700 font-medium">
+              Adopt The Work-Life Balance Business Model & SOP™ -- the "Sustainable" Operating Procedure
             </p>
           </div>
 
