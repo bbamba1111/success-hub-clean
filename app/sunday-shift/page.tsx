@@ -79,7 +79,11 @@ export default function SundayShiftPage() {
             <h3 className="text-4xl font-bold bg-gradient-to-r from-[#7FB069] to-[#E26C73] bg-clip-text text-transparent mb-4">
               Make The Sunday Shift
             </h3>
-            <p className="text-xl text-gray-700 font-medium">
+              <div className="text-center mb-8">
+            <h3 className="text-4xl font-bold bg-gradient-to-r from-[#7FB069] to-[#E26C73] bg-clip-text text-transparent mb-4">
+              Make The Sunday Shift
+            </h3>
+            <p className="text-xl text-gray-700 font-large">
               Take The First 3-Steps to Balance, Freedom & Sustainable Success
             </p>
           </div>
