@@ -54,7 +54,7 @@ export default function SundayShiftPage() {
             <h1 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-[#7FB069] to-[#E26C73] bg-clip-text text-transparent mb-4">
               Make The Sunday Shift<sup className="text-xl">™</sup>
             </h1>
-            <p className="text-xl text-gray-700 font-medium">
+            <p className="text-xl text-gray-700 font-large">
               In the Parallel Lane of Harmony Entrepreneurship, Monday Is Not Reactive — It's Intentional.
             </p>
           </div>
@@ -179,7 +179,7 @@ export default function SundayShiftPage() {
 
           <div className="text-center mb-8">
             <p className="text-lg text-gray-600">
-              Complete these three essential steps to prepare for your transformation journey
+              Complete these three essential steps to prepare for your Monday Reset and the upcoming week.
             </p>
           </div>
 
