@@ -65,10 +65,10 @@ export default function SundayShiftPage() {
               <div className="space-y-6">
                 <div className="space-y-2">
                   <h1 className="text-3xl lg:text-3xl font-bold text-gray-900 leading-tight">
-                    Welcome to Harmony<sup className="text-lg">™</sup>
+                    Welcome to Make Time For More<sup className="text-lg">™</sup>
                   </h1>
                   <p className="text-lg text-gray-600 font-normal">
-                    A Parallel Lane & Counterpart to Hustle Entrepreneurship
+                    The Parallel Lane & Counterpart to Hustle Entrepreneurship
                   </p>
                 </div>
 
