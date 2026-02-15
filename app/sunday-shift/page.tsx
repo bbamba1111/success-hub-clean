@@ -54,8 +54,8 @@ export default function SundayShiftPage() {
             <h1 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-[#7FB069] to-[#E26C73] bg-clip-text text-transparent mb-4">
               Make The Sunday Shift<sup className="text-xl">™</sup>
             </h1>
-            <p className="text-xl text-gray-700 font-large">
-              In the Parallel Lane of Harmony Entrepreneurship, Monday Is Not Reactive — It's Intentional.
+            <p className="text-xl text-gray-700 font-medium">
+              Adopt The Work-Life Balance Business Model & SOP™ -- the "Sustainable" Operating Procedure
             </p>
           </div>
 
@@ -68,7 +68,7 @@ export default function SundayShiftPage() {
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="flex items-center gap-3 text-gray-700 bg-white/80 p-3 rounded-lg shadow-sm">
                   <Clock className="w-5 h-5 text-[#7FB069] flex-shrink-0" />
-                  <span className="font-semibold text-lg">Join Us Live: Sunday @ 1:00-3:00 PM ET</span>
+                  <span className="font-semibold text-lg">Join Us Live: Sunday @ 1:00-2:00 PM ET</span>
                 </div>
 
                 <a
@@ -88,33 +88,22 @@ export default function SundayShiftPage() {
         </div>
       </div>
 
-      {/* Step 2 - Complete Onboarding Section (MOVED TO SECOND) */}
+      {/* Complete Onboarding Section */}
       <div className="bg-gradient-to-br from-[#F5F1E8] to-white py-20">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="flex items-center justify-center gap-3 mb-8">
-            <img
-              src="/images/logo.png"
-              alt="Make Time For More Logo"
-              width={80}
-              height={80}
-              className="rounded-full shadow-lg"
-            />
-            
-          </div>
-
           <div className="text-center mb-6">
-            <h2 className="text-3xl font-bold text-[#7FB069] mb-4">
-              How you enter the week determines how you live, work & lead in the week.
-            </h2>
             <p
-              className="text-[39px] text-gray-700 mt-6"
+              className="text-[39px] text-gray-700 mb-4"
               style={{ fontFamily: "'Great Vibes', cursive", fontWeight: 400 }}
             >
               Live with Thought Leader Barbara
             </p>
+            <h2 className="text-3xl font-bold text-[#7FB069] mb-4">
+              Complete Onboarding: Your First 3-Steps to Balance, Freedom & Success
+            </h2>
           </div>
 
-          {/* Live Onboarding Schedule */}
+          {/* Barbara Image & Quote */}
           <div className="bg-gradient-to-r from-[#F9F6F1] via-[#FAF7F2] to-[#F9F6F1] rounded-2xl overflow-hidden shadow-xl mb-12 border border-gray-200">
             <div className="grid md:grid-cols-[320px,1fr] gap-0">
               <div className="relative h-full min-h-[280px] bg-[#F9F6F1] flex items-center justify-center py-6 px-8">
@@ -128,50 +117,11 @@ export default function SundayShiftPage() {
               </div>
 
               <div className="py-6 px-8 flex flex-col justify-center bg-white">
-                <div className="mb-6 text-center">
-                  <p className="text-sm text-gray-600 font-medium">Choose the option that fits your rhythm:</p>
-                </div>
-
-                <div className="space-y-4 max-w-xl mx-auto">
-                  <div className="space-y-3">
-                    <div className="text-center">
-                      <p className="text-lg text-gray-800 mb-3">
-                        <span className="font-semibold">Take The Audit:</span> Tuesday | 2:00 - 4:00 PM ET
-                      </p>
-                    </div>
-                    <a
-                      href="https://join.butter.us/make-time-for-more/audit"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block"
-                    >
-                      <Button className="w-full bg-[#7FB069]/80 hover:bg-[#7FB069] text-white rounded-lg text-base font-bold py-3">
-                        Enter Audit Onboarding
-                      </Button>
-                    </a>
-                  </div>
-
-                  <div className="space-y-3">
-                    <div className="text-center">
-                      <p className="text-lg text-gray-800 mb-3">
-                        <span className="font-semibold">Set Your Intention:</span> Wednesday | 2:00 - 4:00 PM ET
-                      </p>
-                    </div>
-                    <a
-                      href="https://join.butter.us/make-time-for-more/onboarding"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block"
-                    >
-                      <Button className="w-full bg-[#E26C73]/80 hover:bg-[#E26C73] text-white rounded-lg text-base font-bold py-3">
-                        Enter Intention Onboarding
-                      </Button>
-                    </a>
-                  </div>
-                </div>
-
-                <p className="text-[15px] text-gray-600 italic text-center mt-6">
-                  No reminders will be sent — this is your monthly alignment assignment.
+                <p
+                  className="text-[32px] text-gray-700 text-center italic leading-relaxed"
+                  style={{ fontFamily: "'Great Vibes', cursive", fontWeight: 400 }}
+                >
+                  {"\"How you enter the week determines how you live, work & lead the week.\""}
                 </p>
               </div>
             </div>
@@ -179,7 +129,7 @@ export default function SundayShiftPage() {
 
           <div className="text-center mb-8">
             <p className="text-lg text-gray-600">
-              Complete these three essential steps to prepare for your Monday Reset and the upcoming week.
+              Complete these three essential steps to prepare for your transformation journey
             </p>
           </div>
 
@@ -231,7 +181,7 @@ export default function SundayShiftPage() {
                   <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 2.2</Badge>
                 </div>
                 <CardTitle className="text-xl font-bold text-white">
-                  Set Your 7-Day Desired Work-LifeStyle Intention
+                  Set Your 28-Day Desired Work-LifeStyle Intention
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
