@@ -2,7 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Great_Vibes } from 'next/font/google'
 import "./globals.css"
-import { TopNavigation } from "@/components/top-navigation"
+import { ConditionalNav } from "@/components/conditional-nav"
 
 const greatVibes = Great_Vibes({
   weight: "400",
@@ -24,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={greatVibes.variable}>
-        <TopNavigation />
+        <ConditionalNav />
         {children}
       </body>
     </html>
