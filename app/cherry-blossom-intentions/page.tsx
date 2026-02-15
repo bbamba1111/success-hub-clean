@@ -497,9 +497,3 @@ Let's create my sacred 28-Day Desired Work-Lifestyle Intention together!`
     </div>
   )
 }
-
-
-
-
-
-
