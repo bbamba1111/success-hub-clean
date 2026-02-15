@@ -65,15 +65,15 @@ export default function SundayShiftPage() {
               <div className="space-y-6">
                 <div className="space-y-2">
                   <h1 className="text-3xl lg:text-3xl font-bold text-gray-900 leading-tight">
-                    Make Time For More<sup className="text-lg">™</sup> 
+                    Welcome to Harmony<sup className="text-lg">™</sup>
                   </h1>
                   <p className="text-lg text-gray-600 font-normal">
-                   Welcome to The Work-Life Balance Installation Hub
+                    A Parallel Lane & Counterpart to Hustle Entrepreneurship
                   </p>
                 </div>
 
                 <p className="text-lg text-gray-600 leading-relaxed">
-                  This is your central space to begin living the Work-Life Balance Business Model & SOP™. Here, you'll Take The Audit, Set Your 28-Day Intention, and access Cherry Blossom your AI Powered Work-Life Balance Co-Guide. Experience non-negotiable co-working, community connections, wellness tracking, personalized guidance and more — all in one Dashboard.
+                  This is where we Make The Sunday Shift<sup className="text-sm">™</sup> — and take the first three steps toward Work-Life Balance, Time Freedom, and Sustainable Success.
                 </p>
               </div>
             </div>
