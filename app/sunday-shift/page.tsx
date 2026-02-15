@@ -46,49 +46,15 @@ export default function SundayShiftPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white">
-      {/* Hero Section */}
-      <div className="relative overflow-hidden bg-white">
-        <div className="max-w-7xl mx-auto px-6 py-16">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left Content */}
-            <div className="space-y-8">
-              <div className="flex justify-center mb-6">
-                <img
-                  src="/images/logo.png"
-                  alt="Make Time For More Logo"
-                  width={104}
-                  height={104}
-                  className="rounded-full shadow-lg"
-                />
-              </div>
-
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <h1 className="text-3xl lg:text-3xl font-bold text-gray-900 leading-tight">
-                    Welcome to Make Time For More<sup className="text-lg">™</sup>
-                  </h1>
-                  <p className="text-lg text-gray-600 font-normal">
-                    The Parallel Lane & Counterpart to Hustle Entrepreneurship
-                  </p>
-                </div>
-
-                <p className="text-lg text-gray-600 leading-relaxed">
-                  This is where we Make The Sunday Shift<sup className="text-sm">™</sup> — and take the first three steps toward Work-Life Balance, Time Freedom, and Sustainable Success.
-                </p>
-              </div>
-            </div>
-
-            {/* Right Image */}
-            <div className="relative">
-              <div className="rounded-2xl overflow-hidden shadow-2xl">
-                <img
-                  src="/images/hero-women-tea-cherry-blossoms-new.png"
-                  alt="Diverse women enjoying tea together in cherry blossom garden"
-                  className="w-full h-auto object-cover"
-                />
-              </div>
-            </div>
-          </div>
+      {/* Header */}
+      <div className="bg-white py-12">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h1 className="text-4xl lg:text-5xl font-bold text-[#2F4F4F] leading-tight text-balance">
+            Make The Sunday Shift<sup className="text-xl">™</sup>
+          </h1>
+          <p className="text-xl text-gray-600 mt-4 leading-relaxed">
+            Take The First 3-Steps to Time-Freedom, Harmony & Sustainable Success
+          </p>
         </div>
       </div>
 
