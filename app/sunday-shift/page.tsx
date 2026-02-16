@@ -121,14 +121,14 @@ export default function SundayShiftPage() {
                   className="text-[34px] text-gray-700 text-center italic leading-relaxed"
                   style={{ fontFamily: "'Cormorant Garamond'", fontWeight: 400 }}
                 >
-                  {"\"How you enter the week determines how you live, work & lead the week.\" — B. Bamba"}
+                  {"\"How you enter the week determines how you live, work and lead the week.\" — B. Bamba"}
                 </p>
               </div>
             </div>
           </div>
 
           <div className="text-center mb-8">
-            <p className="text-xlg text-gray-800">
+            <p className="text-[28px] text-gray-700">
               Complete these three essential steps to prepare your energy, calendar, and focus for Monday and the days ahead.
             </p>
           </div>
