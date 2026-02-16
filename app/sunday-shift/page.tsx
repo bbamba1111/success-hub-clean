@@ -98,7 +98,7 @@ export default function SundayShiftPage() {
             >
               Live with Thought Leader Barbara
             </p>
-            <h2 className="text-3xl font-bold text-[#7FB069] mb-4">
+            <h2 className="text-3xl font-light text-[#7FB069] mb-4">
               Your First 3 Steps to Clarity, Non-Negotiable Priorities & Intentional Success
             </h2>
           </div>
@@ -118,17 +118,17 @@ export default function SundayShiftPage() {
 
               <div className="py-6 px-8 flex flex-col justify-center bg-white">
                 <p
-                  className="text-[32px] text-gray-700 text-center italic leading-relaxed"
+                  className="text-[34px] text-gray-700 text-center italic leading-relaxed"
                   style={{ fontFamily: "'Cormorant Garamond'", fontWeight: 400 }}
                 >
-                  {"\"How you enter the week determines how you live, work & lead the week.\""}
+                  {"\"How you enter the week determines how you live, work & lead the week.\"— B. Bamba"}
                 </p>
               </div>
             </div>
           </div>
 
           <div className="text-center mb-8">
-            <p className="text-lg text-gray-600">
+            <p className="text-xlg text-gray-800">
               Complete these three essential steps to prepare your energy, calendar, and focus for Monday and the days ahead.
             </p>
           </div>
