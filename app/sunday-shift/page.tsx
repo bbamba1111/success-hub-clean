@@ -119,7 +119,7 @@ export default function SundayShiftPage() {
               <div className="py-6 px-8 flex flex-col justify-center bg-white">
                 <p
                   className="text-[32px] text-gray-700 text-center italic leading-relaxed"
-                  style={{ fontFamily: "'Great Vibes', cursive", fontWeight: 400 }}
+                  style={{ fontFamily: "'Alex Brush', script", fontWeight: 400 }}
                 >
                   {"\"How you enter the week determines how you live, work & lead the week.\""}
                 </p>
@@ -128,7 +128,7 @@ export default function SundayShiftPage() {
           </div>
 
           <div className="text-center mb-8">
-            <p className="text-lg text-gray-600">
+            <p className="text-xlg text-gray-700">
               Complete these three essential steps to prepare for your transformation journey
             </p>
           </div>
@@ -181,7 +181,7 @@ export default function SundayShiftPage() {
                   <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 2.2</Badge>
                 </div>
                 <CardTitle className="text-xl font-bold text-white">
-                  Set Your 28-Day Desired Work-LifeStyle Intention
+                  Set Your 7-Day Desired Work-LifeStyle Intention
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
