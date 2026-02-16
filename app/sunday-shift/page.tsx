@@ -181,12 +181,12 @@ export default function SundayShiftPage() {
                   <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 2</Badge>
                 </div>
                 <CardTitle className="text-xl font-bold text-white">
-                  Set Your 28-Day Desired Work-LifeStyle Intention
+                  Set Your 7-Day Desired Work-LifeStyle Intention
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-white/90 leading-relaxed">
-                  Transform your audit insights into powerful, actionable intentions. Choose 1-3 focus areas and let Cherry Blossom guide you through creating your personalized 28-day transformation plan.
+                  Transform your audit insights into powerful, actionable intentions. Choose 1-3 focus areas and let Cherry Blossom guide you through creating your personalized 7-day transformation plan.
                 </p>
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
