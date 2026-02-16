@@ -93,14 +93,14 @@ export default function SundayShiftPage() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-6">
             <p
-              className="text-[39px] text-gray-700 mb-4"
-              style={{ fontFamily: "'Great Vibes', script", fontWeight: 400 }}
+              className="text-[45px] text-gray-700 mb-4"
+              style={{ fontFamily: "'Great Vibes', script", fontWeight: 200 }}
             >
               Live with Thought Leader Barbara
             </p>
-            <h2 className="text-3xl font-bold text-[#7FB069] mb-4">
+            <h3 className="text-3xl font-light text-[#7FB069] mb-4">
             Your First 3-Steps to Clarity, Non-Negotiable Priorities & Intentional Success
-            </h2>
+            </h3>
           </div>
 
           {/* Barbara Image & Quote */}
@@ -118,8 +118,8 @@ export default function SundayShiftPage() {
 
               <div className="py-6 px-8 flex flex-col justify-center bg-white">
                 <p
-                  className="text-[32px] text-gray-700 text-center italic leading-relaxed"
-                  style={{ fontFamily: "'Alex Brush', script", fontWeight: 400 }}
+                  className="text-[40px] text-gray-700 text-center italic leading-relaxed"
+                  style={{ fontFamily: "'Better Saturday', script", fontWeight: 200 }}
                 >
                   {"\"How you enter the week determines how you live, work & lead the week.\""}
                 </p>
