@@ -286,10 +286,10 @@ export default function SundayShiftPage() {
 
       {/* Share Your Sunday Shift Reflection */}
       <div className="py-20 bg-gradient-to-br from-[#E26C73]/10 to-white">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="max-w-6xl mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
-              <h2 className="text-4xl lg:text-5xl font-bold text-[#E26C73]">
+              <h2 className="text-3xl lg:text-4xl font-bold text-[#E26C73]">
                 Share Your Sunday Shift Reflection
               </h2>
               <p className="text-xl text-gray-700 leading-relaxed">
@@ -297,7 +297,7 @@ export default function SundayShiftPage() {
                 <span className="font-bold text-[#E26C73]">reflect, celebrate, and share</span> your experience.
               </p>
               <p className="text-lg text-gray-700 leading-relaxed">
-                Your story matters — not just for you, but for every woman entrepreneur still trapped in hustle culture, wondering if balance is actually possible.
+                Your testimony matters — not just for you, but for every woman entrepreneur still trapped in hustle culture, wondering if she can start her week differently.
               </p>
 
               <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-[#E26C73]/20">
