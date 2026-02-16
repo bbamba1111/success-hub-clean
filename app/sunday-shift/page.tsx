@@ -305,19 +305,19 @@ export default function SundayShiftPage() {
                 <ul className="space-y-3 text-gray-700">
                   <li className="flex items-start gap-3">
                     <Sparkles className="w-6 h-6 text-[#E26C73] flex-shrink-0 mt-1" />
-                    <span>What shifted for you this month?</span>
+                    <span>What shifted for you?</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <Sparkles className="w-6 h-6 text-[#E26C73] flex-shrink-0 mt-1" />
-                    <span>What habits finally stuck?</span>
+                    <span>The clarity you gained from the Audit?</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <Sparkles className="w-6 h-6 text-[#E26C73] flex-shrink-0 mt-1" />
-                    <span>What time freedom did you reclaim?</span>
+                    <span>The power of choosing 1–3 non-negotiable priorities?</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <Sparkles className="w-6 h-6 text-[#E26C73] flex-shrink-0 mt-1" />
-                    <span>How did your business or life transform?</span>
+                    <span>How you now feel about starting Monday?</span>
                   </li>
                 </ul>
               </div>
@@ -330,12 +330,12 @@ export default function SundayShiftPage() {
                   className="block"
                 >
                   <Button className="w-full bg-gradient-to-r from-[#E26C73] to-[#7FB069] hover:from-[#D55A60] hover:to-[#6FA055] text-white text-lg py-6">
-                    Submit Your Success Story
+                    Submit Your Testimony
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
                 </a>
                 <p className="text-center text-gray-600 text-sm italic">
-                  Your testimonial may be featured on our website, in our community, and in our marketing to inspire others.
+                  Your testimony may be featured on our website, in our community, and/or in our marketing to inspire others.
                 </p>
               </div>
             </div>
