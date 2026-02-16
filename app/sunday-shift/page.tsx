@@ -55,7 +55,7 @@ export default function SundayShiftPage() {
               Make The Sunday Shift<sup className="text-xl">™</sup>
             </h1>
             <p className="text-xl text-gray-700 font-medium">
-             In the Parallel Lane of Harmony Entrepreneurship, Monday Is Not Reactive — It's Intentional.
+              In the Parallel Lane of Harmony Entrepreneurship, Monday Is Not Reactive — It’s Intentional.
             </p>
           </div>
 
@@ -68,7 +68,7 @@ export default function SundayShiftPage() {
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="flex items-center gap-3 text-gray-700 bg-white/80 p-3 rounded-lg shadow-sm">
                   <Clock className="w-5 h-5 text-[#7FB069] flex-shrink-0" />
-                  <span className="font-semibold text-lg">Join Us Live: Sunday @ 1:00-2:00 PM ET</span>
+                  <span className="font-semibold text-lg">Join Us Live: Sunday @ 1:00-3:00 PM ET</span>
                 </div>
 
                 <a
@@ -93,14 +93,14 @@ export default function SundayShiftPage() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-6">
             <p
-              className="text-[45px] text-gray-700 mb-4"
-              style={{ fontFamily: "'Great Vibes', script", fontWeight: 200 }}
+              className="text-[39px] text-gray-700 mb-4"
+              style={{ fontFamily: "'Playfair Display'", fontWeight: 400 }}
             >
               Live with Thought Leader Barbara
             </p>
-            <h3 className="text-3xl font-light text-[#7FB069] mb-4">
-            Your First 3-Steps to Clarity, Non-Negotiable Priorities & Intentional Success
-            </h3>
+            <h2 className="text-3xl font-bold text-[#7FB069] mb-4">
+              Your First 3 Steps to Clarity, Non-Negotiable Priorities & Intentional Success
+            </h2>
           </div>
 
           {/* Barbara Image & Quote */}
@@ -117,9 +117,9 @@ export default function SundayShiftPage() {
               </div>
 
               <div className="py-6 px-8 flex flex-col justify-center bg-white">
-              </p>
-            <h2 className="text-3xl font-light text-[#7FB069] mb-4">
-            style={{ fontFamily: "'Poppins', cursive", fontWeight: 400 }}
+                <p
+                  className="text-[32px] text-gray-700 text-center italic leading-relaxed"
+                  style={{ fontFamily: "'Cormorant Garamond'", fontWeight: 400 }}
                 >
                   {"\"How you enter the week determines how you live, work & lead the week.\""}
                 </p>
@@ -128,8 +128,8 @@ export default function SundayShiftPage() {
           </div>
 
           <div className="text-center mb-8">
-            <p className="text-xlg text-gray-700">
-              Complete these three essential steps to prepare for your transformation journey
+            <p className="text-lg text-gray-600">
+              Complete these three essential steps to prepare your energy, calendar, and focus for Monday and the days ahead.
             </p>
           </div>
 
@@ -181,7 +181,7 @@ export default function SundayShiftPage() {
                   <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 2.2</Badge>
                 </div>
                 <CardTitle className="text-xl font-bold text-white">
-                  Set Your 7-Day Desired Work-LifeStyle Intention
+                  Set Your 28-Day Desired Work-LifeStyle Intention
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
