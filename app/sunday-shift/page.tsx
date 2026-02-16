@@ -55,7 +55,7 @@ export default function SundayShiftPage() {
               Make The Sunday Shift<sup className="text-xl">™</sup>
             </h1>
             <p className="text-xl text-gray-700 font-medium">
-              Adopt The Work-Life Balance Business Model & SOP™ -- the "Sustainable" Operating Procedure
+             In the Parallel Lane of Harmony Entrepreneurship, Monday Is Not Reactive — It's Intentional.
             </p>
           </div>
 
@@ -94,12 +94,12 @@ export default function SundayShiftPage() {
           <div className="text-center mb-6">
             <p
               className="text-[39px] text-gray-700 mb-4"
-              style={{ fontFamily: "'Great Vibes', cursive", fontWeight: 400 }}
+              style={{ fontFamily: "'Great Vibes', script", fontWeight: 400 }}
             >
               Live with Thought Leader Barbara
             </p>
             <h2 className="text-3xl font-bold text-[#7FB069] mb-4">
-              Complete Onboarding: Your First 3-Steps to Balance, Freedom & Success
+            Your First 3-Steps to Clarity, Non-Negotiable Priorities & Intentional Success
             </h2>
           </div>
 
