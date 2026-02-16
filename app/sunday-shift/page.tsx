@@ -128,19 +128,19 @@ export default function SundayShiftPage() {
           </div>
 
           <div className="text-center mb-8">
-            <p className="text-[22px] text-gray-700">
+            <p className="text-[20px] text-gray-700">
               Complete these three essential steps to prepare your energy, calendar, and focus for Monday and the days ahead.
             </p>
           </div>
 
           {/* Three Steps Grid - Audit, Intention, Prep */}
           <div className="grid lg:grid-cols-3 gap-6 mb-8">
-            {/* Step 2.1 - Audit Card */}
+            {/* Step 1 - Audit Card */}
             <Card className="bg-[#7FB069] border-0 text-white overflow-hidden">
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-3 mb-3">
                   <img src="/images/logo.png" alt="Make Time For More Logo" width={48} height={48} className="rounded-full shadow-lg" />
-                  <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 2.1</Badge>
+                  <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 1</Badge>
                 </div>
                 <CardTitle className="text-xl font-bold text-white">Take The Work-Life Balance Audit</CardTitle>
               </CardHeader>
@@ -173,12 +173,12 @@ export default function SundayShiftPage() {
               </CardContent>
             </Card>
 
-            {/* Step 2.2 - Intention Setting Card */}
+            {/* Step 2 - Intention Setting Card */}
             <Card className="bg-[#E26C73] border-0 text-white overflow-hidden">
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-3 mb-3">
                   <img src="/images/logo.png" alt="Make Time For More Logo" width={48} height={48} className="rounded-full shadow-lg" />
-                  <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 2.2</Badge>
+                  <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 2</Badge>
                 </div>
                 <CardTitle className="text-xl font-bold text-white">
                   Set Your 28-Day Desired Work-LifeStyle Intention
@@ -223,15 +223,15 @@ export default function SundayShiftPage() {
               </CardContent>
             </Card>
 
-            {/* Step 2.3 - Preparation Checklist Card */}
+            {/* Step 3 - Preparation Checklist Card */}
             <Card className="bg-gradient-to-br from-[#7FB069] to-[#E26C73] border-0 text-white overflow-hidden">
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-3 mb-3">
                   <img src="/images/logo.png" alt="Make Time For More Logo" width={48} height={48} className="rounded-full shadow-lg" />
-                  <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 2.3</Badge>
+                  <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 3</Badge>
                 </div>
                 <CardTitle className="text-xl font-bold text-white">
-                  Prepare For The Experience: Download Your Preparation Checklist
+                  Prepare For The Monday Reset: Download Your Preparation Checklist
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -278,7 +278,7 @@ export default function SundayShiftPage() {
           {/* Important Note */}
           <div className="bg-white p-6 rounded-2xl shadow-lg border border-[#E26C73]">
             <p className="text-xl font-bold text-[#E26C73] text-center">
-              Completing Onboarding is Mandatory to Make The Sunday Shift™ and Start Co-Working
+              What Happens After The Sunday Shift™
             </p>
           </div>
         </div>
