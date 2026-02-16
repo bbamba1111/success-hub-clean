@@ -118,10 +118,10 @@ export default function SundayShiftPage() {
 
               <div className="py-6 px-8 flex flex-col justify-center bg-white">
                 <p
-                  className="text-[34px] text-gray-700 text-center italic leading-relaxed"
+                  className="text-[32px] text-gray-700 text-center italic leading-relaxed"
                   style={{ fontFamily: "'Cormorant Garamond'", fontWeight: 400 }}
                 >
-                  {"\"How you enter the week determines how you live, work and lead the week.\" — B. Bamba"}
+                  {"\"How you enter the week determines how you'll live, work and lead the week.\" — B. Bamba"}
                 </p>
               </div>
             </div>
