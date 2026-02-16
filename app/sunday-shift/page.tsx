@@ -308,7 +308,7 @@ export default function SundayShiftPage() {
           <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
             <div className="rounded-2xl overflow-hidden shadow-2xl">
               <img
-                src="/images/harmony-woman-coffee.png"
+                src="/images/ChatGPT Image Feb 11, 2026, 11_29_58 AM.png"
                 alt="Woman enjoying peaceful morning with coffee - Make Time For More Harmony"
                 className="w-full h-auto object-cover"
               />
@@ -350,7 +350,7 @@ export default function SundayShiftPage() {
               </div>
               <div className="flex justify-center">
                 <img
-                  src="/images/harmony-logo-clock.png"
+                  src="/images/ChatGPT Image Feb 11, 2026, 11_15_45 AM.png"
                   alt="Make Time For More Harmony - from hustle to harmony"
                   className="w-80 h-80 rounded-2xl shadow-xl object-cover"
                 />
@@ -458,7 +458,7 @@ export default function SundayShiftPage() {
             </div>
             <div className="flex justify-center">
               <img
-                src="/images/no-more-grinding-quote.png"
+                src="/images/ChatGPT Image Dec 21, 2025, 03_31_18 AM.png"
                 alt="No more grinding into the week. You now ease into it harmonized, intentional, and fully aligned."
                 className="w-full max-w-md rounded-2xl shadow-xl"
               />
