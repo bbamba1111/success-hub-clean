@@ -118,12 +118,11 @@ export default function SundayShiftPage() {
 
               <div className="py-6 px-8 flex flex-col justify-center bg-white">
                 <p
-                  <h3 className="text-2xl font-light text-[#7FB069] mb-4">
+                  <h3 className="text-3xl font-light text-[#7FB069] mb-4">
             "How you enter the week, determines how you live, work and lead the week."
             </h3>
               </div>
-            </div>
-          </div>
+           
 
           <div className="text-center mb-8">
             <p className="text-xlg text-gray-700">
