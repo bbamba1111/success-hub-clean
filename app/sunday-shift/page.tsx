@@ -302,7 +302,7 @@ export default function SundayShiftPage() {
           <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
             <div className="rounded-2xl overflow-hidden shadow-2xl">
               <img
-                src="/images/harmony-woman-coffee.png"
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Feb%2011%2C%202026%2C%2011_29_58%20AM-GpoaKt4dbVfVYKzrkkHmBOk789E8Tq.png"
                 alt="Woman enjoying peaceful morning with coffee - Make Time For More Harmony"
                 className="w-full h-auto object-cover"
               />
@@ -344,7 +344,7 @@ export default function SundayShiftPage() {
               </div>
               <div className="flex justify-center">
                 <img
-                  src="/images/harmony-logo-clock.png"
+                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Feb%2011%2C%202026%2C%2011_15_45%20AM-KtQZLNIuyo8SJCTL71G2WeKgifNDbE.png"
                   alt="Make Time For More Harmony - from hustle to harmony"
                   className="w-80 h-80 rounded-2xl shadow-xl object-cover"
                 />
@@ -452,7 +452,7 @@ export default function SundayShiftPage() {
             </div>
             <div className="flex justify-center">
               <img
-                src="/images/no-more-grinding-quote.png"
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Dec%2021%2C%202025%2C%2003_31_18%20AM-QJOoaSnovH48wFCYRsMtGAljPojxL7.png"
                 alt="No more grinding into the week. You now ease into it harmonized, intentional, and fully aligned."
                 className="w-full max-w-md rounded-2xl shadow-xl"
               />
