@@ -121,7 +121,6 @@ export default function SundayShiftPage() {
                   <h3 className="text-2xl font-light text-[#7FB069] mb-4">
             "How you enter the week, determines how you live, work and lead the week."
             </h3>
-                </p>
               </div>
             </div>
           </div>
