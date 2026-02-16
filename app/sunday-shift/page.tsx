@@ -128,7 +128,7 @@ export default function SundayShiftPage() {
           </div>
 
           <div className="text-center mb-8">
-            <p className="text-[28px] text-gray-700">
+            <p className="text-[22px] text-gray-700">
               Complete these three essential steps to prepare your energy, calendar, and focus for Monday and the days ahead.
             </p>
           </div>
