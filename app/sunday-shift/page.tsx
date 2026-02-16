@@ -98,7 +98,7 @@ export default function SundayShiftPage() {
             >
               Live with Thought Leader Barbara
             </p>
-            <h2 className="text-3xl font-light text-[#7FB069] mb-4">
+            <h2 className="text-3xl font-medium text-[#7FB069] mb-4">
               Your First 3 Steps to Clarity, Non-Negotiable Priorities & Intentional Success
             </h2>
           </div>
@@ -121,7 +121,7 @@ export default function SundayShiftPage() {
                   className="text-[34px] text-gray-700 text-center italic leading-relaxed"
                   style={{ fontFamily: "'Cormorant Garamond'", fontWeight: 400 }}
                 >
-                  {"\"How you enter the week determines how you live, work & lead the week.\"— B. Bamba"}
+                  {"\"How you enter the week determines how you live, work & lead the week.\" — B. Bamba"}
                 </p>
               </div>
             </div>
