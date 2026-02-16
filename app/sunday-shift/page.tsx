@@ -275,11 +275,215 @@ export default function SundayShiftPage() {
             </Card>
           </div>
 
-          {/* Important Note */}
-          <div className="bg-white p-6 rounded-2xl shadow-lg border border-[#E26C73]">
-            <p className="text-xl font-bold text-[#E26C73] text-center">
-              Completing Onboarding is Mandatory to Make The Sunday Shift™ and Start Co-Working
+        </div>
+      </div>
+
+      {/* Monday Reset Masterclass Invitation Section */}
+      <div className="py-20 bg-gradient-to-br from-[#2F4F4F] to-[#1a3535] relative overflow-hidden">
+        {/* Subtle pattern overlay */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-10 right-10 w-64 h-64 rounded-full bg-[#7FB069]" />
+          <div className="absolute bottom-10 left-10 w-48 h-48 rounded-full bg-[#E26C73]" />
+        </div>
+
+        <div className="relative max-w-6xl mx-auto px-6">
+          {/* Cherry Blossom Header */}
+          <div className="text-center mb-12">
+            <p className="text-[#E26C73] text-sm font-semibold tracking-widest uppercase mb-4">What Happens After The Sunday Shift</p>
+            <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6 text-balance">
+              The Monday Reset<sup className="text-xl">™</sup>
+            </h2>
+            <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
+              The Sunday Shift creates clarity. The Monday Reset installs the container.
             </p>
+          </div>
+
+          {/* Hero Image + Intro */}
+          <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
+            <div className="rounded-2xl overflow-hidden shadow-2xl">
+              <img
+                src="/images/harmony-woman-coffee.png"
+                alt="Woman enjoying peaceful morning with coffee - Make Time For More Harmony"
+                className="w-full h-auto object-cover"
+              />
+            </div>
+            <div className="space-y-6 text-white">
+              <div className="space-y-4">
+                <p className="text-lg leading-relaxed text-white/90">
+                  You identified the imbalances. You chose your 1-3 non-negotiable priorities. You clarified what matters most this week.
+                </p>
+                <p className="text-xl font-semibold text-[#7FB069]">
+                  Now you are invited to live inside a structure that supports it.
+                </p>
+                <p className="text-lg leading-relaxed text-white/90">
+                  Most women try to improve their lives without changing the structure that is exhausting them. They set intentions — but enter Monday inside the same reactive framework.
+                </p>
+                <p className="text-lg leading-relaxed text-white/90">
+                  In the Harmony Lane of Entrepreneurship, we do something different. We redesign how the week begins.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Why This Works - Science Section */}
+          <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-10 mb-16 border border-white/20">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div>
+                <h3 className="text-3xl font-bold text-white mb-6">Why This Works</h3>
+                <p className="text-lg text-white/90 leading-relaxed mb-6">
+                  Burnout is not a discipline problem. It is a structural one. When you have been conditioned to push, force, overwork, and over-effort your way to success, your nervous system stays in stress chemistry.
+                </p>
+                <p className="text-lg text-white/90 leading-relaxed mb-6">
+                  But science shows us something powerful:
+                </p>
+                <div className="space-y-3">
+                  <p className="text-[#7FB069] font-semibold text-lg">Energy precedes execution.</p>
+                  <p className="text-[#7FB069] font-semibold text-lg">Clarity precedes results.</p>
+                  <p className="text-[#7FB069] font-semibold text-lg">Structure shapes behavior.</p>
+                </div>
+              </div>
+              <div className="flex justify-center">
+                <img
+                  src="/images/harmony-logo-clock.png"
+                  alt="Make Time For More Harmony - from hustle to harmony"
+                  className="w-80 h-80 rounded-2xl shadow-xl object-cover"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* The Shift */}
+          <div className="text-center mb-16">
+            <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+              <div className="bg-[#E26C73]/20 rounded-2xl p-6 border border-[#E26C73]/30">
+                <p className="text-[#E26C73] font-semibold mb-2">FROM</p>
+                <p className="text-white text-lg">Over-efforting</p>
+                <p className="text-[#7FB069] font-bold text-2xl my-2">&#8594;</p>
+                <p className="text-[#7FB069] font-semibold mb-2">TO</p>
+                <p className="text-white text-lg">Intentional Execution</p>
+              </div>
+              <div className="bg-[#E26C73]/20 rounded-2xl p-6 border border-[#E26C73]/30">
+                <p className="text-[#E26C73] font-semibold mb-2">FROM</p>
+                <p className="text-white text-lg">Forcing Outcomes</p>
+                <p className="text-[#7FB069] font-bold text-2xl my-2">&#8594;</p>
+                <p className="text-[#7FB069] font-semibold mb-2">TO</p>
+                <p className="text-white text-lg">Focused Leadership</p>
+              </div>
+              <div className="bg-[#E26C73]/20 rounded-2xl p-6 border border-[#E26C73]/30">
+                <p className="text-[#E26C73] font-semibold mb-2">FROM</p>
+                <p className="text-white text-lg">Hustling Harder</p>
+                <p className="text-[#7FB069] font-bold text-2xl my-2">&#8594;</p>
+                <p className="text-[#7FB069] font-semibold mb-2">TO</p>
+                <p className="text-white text-lg">Harmonizing Rhythm</p>
+              </div>
+            </div>
+          </div>
+
+          {/* What You Experience on Monday */}
+          <div className="mb-16">
+            <h3 className="text-3xl font-bold text-white text-center mb-10">What You Experience on Monday</h3>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+                <div className="w-12 h-12 bg-[#7FB069]/20 rounded-full flex items-center justify-center mb-4">
+                  <span className="text-[#7FB069] text-xl font-bold">1</span>
+                </div>
+                <h4 className="text-white font-bold text-lg mb-2">Morning GIV*EN Alignment</h4>
+                <p className="text-white/70 text-sm">A grounded ritual to set your intention before the day begins.</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+                <div className="w-12 h-12 bg-[#7FB069]/20 rounded-full flex items-center justify-center mb-4">
+                  <span className="text-[#7FB069] text-xl font-bold">2</span>
+                </div>
+                <h4 className="text-white font-bold text-lg mb-2">Workday Workout Window</h4>
+                <p className="text-white/70 text-sm">Built-in movement to reset your energy mid-day.</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+                <div className="w-12 h-12 bg-[#7FB069]/20 rounded-full flex items-center justify-center mb-4">
+                  <span className="text-[#7FB069] text-xl font-bold">3</span>
+                </div>
+                <h4 className="text-white font-bold text-lg mb-2">Extended Healthy Hybrid Lunch</h4>
+                <p className="text-white/70 text-sm">A real break — not a rushed meal at your desk.</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+                <div className="w-12 h-12 bg-[#E26C73]/20 rounded-full flex items-center justify-center mb-4">
+                  <span className="text-[#E26C73] text-xl font-bold">4</span>
+                </div>
+                <h4 className="text-white font-bold text-lg mb-2">4-Hour Focused CEO Workday</h4>
+                <p className="text-white/70 text-sm">Co-worked deep focus — your highest-value work gets done here.</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+                <div className="w-12 h-12 bg-[#E26C73]/20 rounded-full flex items-center justify-center mb-4">
+                  <span className="text-[#E26C73] text-xl font-bold">5</span>
+                </div>
+                <h4 className="text-white font-bold text-lg mb-2">20 Hours Protected Time Freedom</h4>
+                <p className="text-white/70 text-sm">Your life expands in the space work no longer occupies.</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+                <div className="w-12 h-12 bg-[#E26C73]/20 rounded-full flex items-center justify-center mb-4">
+                  <span className="text-[#E26C73] text-xl font-bold">6</span>
+                </div>
+                <h4 className="text-white font-bold text-lg mb-2">Power Down & Unplug</h4>
+                <p className="text-white/70 text-sm">A structured close so you truly disconnect and recharge.</p>
+              </div>
+            </div>
+            <p className="text-center text-white/60 mt-6 text-sm italic">
+              Four elements are co-worked. Two are lived independently. Work has a start time. Work has a stop time.
+            </p>
+          </div>
+
+          {/* Monday Is the On-Ramp */}
+          <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
+            <div className="space-y-6 text-white">
+              <h3 className="text-3xl font-bold">Monday Is the On-Ramp</h3>
+              <p className="text-lg text-white/90 leading-relaxed">
+                The Monday Reset is your first installation day. Some women experience one Reset and feel the shift. Some return weekly to strengthen the rhythm.
+              </p>
+              <p className="text-lg text-white/90 leading-relaxed">
+                Some expand into the full Monday-Thursday model, where frequency and repetition wire this as their new default operating system.
+              </p>
+              <div className="space-y-3 pt-4">
+                <p className="text-[#7FB069] font-semibold text-lg">Frequency builds sustainability.</p>
+                <p className="text-[#7FB069] font-semibold text-lg">Repetition builds identity.</p>
+                <p className="text-[#7FB069] font-semibold text-lg">Rhythm builds legacy.</p>
+              </div>
+              <p className="text-xl font-semibold text-white pt-4">
+                You prepared the lane. Now you are invited to step into it.
+              </p>
+            </div>
+            <div className="flex justify-center">
+              <img
+                src="/images/no-more-grinding-quote.png"
+                alt="No more grinding into the week. You now ease into it harmonized, intentional, and fully aligned."
+                className="w-full max-w-md rounded-2xl shadow-xl"
+              />
+            </div>
+          </div>
+
+          {/* CTA */}
+          <div className="bg-gradient-to-r from-[#7FB069] to-[#E26C73] rounded-3xl p-10 text-center shadow-2xl">
+            <p className="text-white/90 text-sm font-semibold tracking-widest uppercase mb-4">Pilot Case Study Opportunity</p>
+            <h3 className="text-3xl lg:text-4xl font-bold text-white mb-4">
+              Reserve Your Spot for The Monday Reset<sup className="text-lg">™</sup>
+            </h3>
+            <p className="text-white/90 text-lg mb-8 max-w-2xl mx-auto">
+              Step into the structure that replaces survival with sustainability. One Monday can shift everything.
+            </p>
+            <div className="flex flex-col items-center gap-4">
+              <a
+                href="https://www.maketimeformore.com/checkout/monday-reset-297"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block"
+              >
+                <Button className="bg-white text-[#2F4F4F] hover:bg-gray-50 text-lg px-12 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all font-bold">
+                  <div className="flex flex-col items-center gap-1">
+                    <span className="text-sm font-semibold tracking-wide">CASE STUDY INVESTMENT</span>
+                    <span className="text-3xl font-bold">$297</span>
+                  </div>
+                </Button>
+              </a>
+              <p className="text-white/70 text-sm italic">Limited spots available for the founding pilot cohort</p>
+            </div>
           </div>
         </div>
       </div>
