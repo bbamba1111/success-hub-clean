@@ -140,7 +140,7 @@ export default function SundayShiftPage() {
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-3 mb-3">
                   <img src="/images/logo.png" alt="Make Time For More Logo" width={48} height={48} className="rounded-full shadow-lg" />
-                  <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 2.1</Badge>
+                  <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 1</Badge>
                 </div>
                 <CardTitle className="text-xl font-bold text-white">Take The Work-Life Balance Audit</CardTitle>
               </CardHeader>
@@ -178,7 +178,7 @@ export default function SundayShiftPage() {
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-3 mb-3">
                   <img src="/images/logo.png" alt="Make Time For More Logo" width={48} height={48} className="rounded-full shadow-lg" />
-                  <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 2.2</Badge>
+                  <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 2</Badge>
                 </div>
                 <CardTitle className="text-xl font-bold text-white">
                   Set Your 7-Day Desired Work-LifeStyle Intention
@@ -228,7 +228,7 @@ export default function SundayShiftPage() {
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-3 mb-3">
                   <img src="/images/logo.png" alt="Make Time For More Logo" width={48} height={48} className="rounded-full shadow-lg" />
-                  <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 2.3</Badge>
+                  <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 3</Badge>
                 </div>
                 <CardTitle className="text-xl font-bold text-white">
                   Prepare For The Monday Reset: Download Your Preparation Checklist
@@ -279,7 +279,7 @@ export default function SundayShiftPage() {
       </div>
 
       {/* Monday Reset Masterclass Invitation Section */}
-      <div className="py-20 bg-gradient-to-br from-[#729A74] to-[#1a3535] relative overflow-hidden">
+      <div className="py-20 bg-gradient-to-br from-[#58795C] to-[#1a3535] relative overflow-hidden">
         {/* Subtle pattern overlay */}
         <div className="absolute inset-0 opacity-5">
           <div className="absolute top-10 right-10 w-64 h-64 rounded-full bg-[#7FB069]" />
@@ -289,9 +289,9 @@ export default function SundayShiftPage() {
         <div className="relative max-w-6xl mx-auto px-6">
           {/* Cherry Blossom Header */}
           <div className="text-center mb-12">
-            <p className="text-[#E26C73] text-l font-semibold tracking-widest uppercase mb-4">What Happens After The Sunday Shift</p>
+            <p className="text-[#FFFFFF] text-l font-semibold tracking-widest uppercase mb-4">What Happens After The Sunday Shift</p>
             <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6 text-balance">
-              The Monday Reset<sup className="text-2xl">™</sup>
+              The Monday Reset<sup className="text-4xl">™</sup>
             </h2>
             <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
               The Sunday Shift creates clarity. The Monday Reset installs the container.
@@ -384,49 +384,49 @@ export default function SundayShiftPage() {
             <h3 className="text-3xl font-bold text-white text-center mb-10">What You Experience on Monday</h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                <div className="w-12 h-12 bg-[#7FB069]/20 rounded-full flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-[#4F3B1D]/20 rounded-full flex items-center justify-center mb-4">
                   <span className="text-[#7FB069] text-xl font-bold">1</span>
                 </div>
                 <h4 className="text-white font-bold text-lg mb-2">Morning GIV*EN Alignment</h4>
-                <p className="text-white/70 text-sm">A grounded ritual to set your intention before the day begins.</p>
+                <p className="text-white/70 text-m">A grounded ritual to set your intention before the day begins.</p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                <div className="w-12 h-12 bg-[#7FB069]/20 rounded-full flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-[#4F3B1D]/20 rounded-full flex items-center justify-center mb-4">
                   <span className="text-[#7FB069] text-xl font-bold">2</span>
                 </div>
-                <h4 className="text-white font-bold text-lg mb-2">Workday Workout Window</h4>
-                <p className="text-white/70 text-sm">Built-in movement to reset your energy mid-day.</p>
+                <h4 className="text-white font-bold text-lg mb-2">30 Min Workday Workout Window</h4>
+                <p className="text-white/70 text-m">Built-in movement to reset your energy mid-day.</p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                <div className="w-12 h-12 bg-[#7FB069]/20 rounded-full flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-[#4F3B1D]/20 rounded-full flex items-center justify-center mb-4">
                   <span className="text-[#7FB069] text-xl font-bold">3</span>
                 </div>
                 <h4 className="text-white font-bold text-lg mb-2">Extended Healthy Hybrid Lunch</h4>
-                <p className="text-white/70 text-sm">A real break — not a rushed meal at your desk.</p>
+                <p className="text-white/70 text-m">A real break — not a rushed meal at your desk.</p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                <div className="w-12 h-12 bg-[#E26C73]/20 rounded-full flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-[#4F3B1D]/20 rounded-full flex items-center justify-center mb-4">
                   <span className="text-[#E26C73] text-xl font-bold">4</span>
                 </div>
                 <h4 className="text-white font-bold text-lg mb-2">4-Hour Focused CEO Workday</h4>
-                <p className="text-white/70 text-sm">Co-worked deep focus — your highest-value work gets done here.</p>
+                <p className="text-white/70 text-m">Co-worked deep focus — your highest-value work gets done here.</p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                <div className="w-12 h-12 bg-[#E26C73]/20 rounded-full flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-[#4F3B1D]/20 rounded-full flex items-center justify-center mb-4">
                   <span className="text-[#E26C73] text-xl font-bold">5</span>
                 </div>
                 <h4 className="text-white font-bold text-lg mb-2">20 Hours Protected Time Freedom</h4>
-                <p className="text-white/70 text-sm">Your life expands in the space work no longer occupies.</p>
+                <p className="text-white/70 text-m">Your life expands in the space work no longer occupies.</p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                <div className="w-12 h-12 bg-[#E26C73]/20 rounded-full flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-[#4F3B1D]/20 rounded-full flex items-center justify-center mb-4">
                   <span className="text-[#E26C73] text-xl font-bold">6</span>
                 </div>
                 <h4 className="text-white font-bold text-lg mb-2">Power Down & Unplug</h4>
-                <p className="text-white/70 text-sm">A structured close so you truly disconnect and recharge.</p>
+                <p className="text-white/70 text-m">A structured close so you truly disconnect and recharge.</p>
               </div>
             </div>
-            <p className="text-center text-white/60 mt-6 text-sm italic">
+            <p className="text-center text-white/60 mt-6 text-m italic">
               Four elements are co-worked. Two are lived independently. Work has a start time. Work has a stop time.
             </p>
           </div>
