@@ -594,15 +594,5 @@ export default function SundayShiftPage() {
           </div>
         </div>
       </div>
-
-      <SimpleChatModal
-        isOpen={isChatOpen}
-        onClose={() => setIsChatOpen(false)}
-        context={chatContext}
-        title={chatTitle}
-      />
-
-      <CherryBlossomCoGuide isOpen={isCoGuideOpen} onClose={() => setIsCoGuideOpen(false)} userId={userId} />
-    </div>
   )
 }
