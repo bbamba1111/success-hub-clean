@@ -55,7 +55,7 @@ export default function SundayShiftPage() {
               Make The Sunday Shift<sup className="text-xl">™</sup>
             </h1>
             <p className="text-xl text-gray-700 font-medium">
-              In the Parallel Lane of Harmony Entrepreneurship, Monday Is Not Reactive — It’s Intentional.
+              Adopt The Work-Life Balance Business Model & SOP™ -- the "Sustainable" Operating Procedure
             </p>
           </div>
 
@@ -68,7 +68,7 @@ export default function SundayShiftPage() {
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="flex items-center gap-3 text-gray-700 bg-white/80 p-3 rounded-lg shadow-sm">
                   <Clock className="w-5 h-5 text-[#7FB069] flex-shrink-0" />
-                  <span className="font-semibold text-lg">Join Us Live: Sunday @ 1:00-3:00 PM ET</span>
+                  <span className="font-semibold text-lg">Join Us Live: Sunday @ 1:00-2:00 PM ET</span>
                 </div>
 
                 <a
@@ -94,12 +94,12 @@ export default function SundayShiftPage() {
           <div className="text-center mb-6">
             <p
               className="text-[39px] text-gray-700 mb-4"
-              style={{ fontFamily: "'Playfair Display'", fontWeight: 400 }}
+              style={{ fontFamily: "'Great Vibes', cursive", fontWeight: 400 }}
             >
               Live with Thought Leader Barbara
             </p>
-            <h2 className="text-3xl font-medium text-[#7FB069] mb-4">
-              Your First 3 Steps to Clarity, Non-Negotiable Priorities & Intentional Success
+            <h2 className="text-3xl font-bold text-[#7FB069] mb-4">
+              Complete Onboarding: Your First 3-Steps to Balance, Freedom & Success
             </h2>
           </div>
 
@@ -118,29 +118,29 @@ export default function SundayShiftPage() {
 
               <div className="py-6 px-8 flex flex-col justify-center bg-white">
                 <p
-                  className="text-[33px] text-gray-700 text-center italic leading-relaxed"
-                  style={{ fontFamily: "'Cormorant Garamond'", fontWeight: 400 }}
+                  className="text-[32px] text-gray-700 text-center italic leading-relaxed"
+                  style={{ fontFamily: "'Great Vibes', cursive", fontWeight: 400 }}
                 >
-                  {"\"How you enter the week determines how you live, work and lead the week.\" — B. Bamba"}
+                  {"\"How you enter the week determines how you live, work & lead the week.\""}
                 </p>
               </div>
             </div>
           </div>
 
           <div className="text-center mb-8">
-            <p className="text-[20px] text-gray-700">
-              Complete these three essential steps to prepare your energy, calendar, and focus for Monday and the days ahead.
+            <p className="text-lg text-gray-600">
+              Complete these three essential steps to prepare for your transformation journey
             </p>
           </div>
 
           {/* Three Steps Grid - Audit, Intention, Prep */}
           <div className="grid lg:grid-cols-3 gap-6 mb-8">
-            {/* Step 1 - Audit Card */}
+            {/* Step 2.1 - Audit Card */}
             <Card className="bg-[#7FB069] border-0 text-white overflow-hidden">
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-3 mb-3">
                   <img src="/images/logo.png" alt="Make Time For More Logo" width={48} height={48} className="rounded-full shadow-lg" />
-                  <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 1</Badge>
+                  <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 2.1</Badge>
                 </div>
                 <CardTitle className="text-xl font-bold text-white">Take The Work-Life Balance Audit</CardTitle>
               </CardHeader>
@@ -173,20 +173,20 @@ export default function SundayShiftPage() {
               </CardContent>
             </Card>
 
-            {/* Step 2 - Intention Setting Card */}
+            {/* Step 2.2 - Intention Setting Card */}
             <Card className="bg-[#E26C73] border-0 text-white overflow-hidden">
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-3 mb-3">
                   <img src="/images/logo.png" alt="Make Time For More Logo" width={48} height={48} className="rounded-full shadow-lg" />
-                  <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 2</Badge>
+                  <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 2.2</Badge>
                 </div>
                 <CardTitle className="text-xl font-bold text-white">
-                  Set Your 7-Day Desired Work-LifeStyle Intention
+                  Set Your 28-Day Desired Work-LifeStyle Intention
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-white/90 leading-relaxed">
-                  Transform your audit insights into powerful, actionable intentions. Choose 1-3 focus areas and let Cherry Blossom guide you through creating your personalized 7-day transformation plan.
+                  Transform your audit insights into powerful, actionable intentions. Choose 1-3 focus areas and let Cherry Blossom guide you through creating your personalized 28-day transformation plan.
                 </p>
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
@@ -223,15 +223,15 @@ export default function SundayShiftPage() {
               </CardContent>
             </Card>
 
-            {/* Step 3 - Preparation Checklist Card */}
+            {/* Step 2.3 - Preparation Checklist Card */}
             <Card className="bg-gradient-to-br from-[#7FB069] to-[#E26C73] border-0 text-white overflow-hidden">
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-3 mb-3">
                   <img src="/images/logo.png" alt="Make Time For More Logo" width={48} height={48} className="rounded-full shadow-lg" />
-                  <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 3</Badge>
+                  <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 2.3</Badge>
                 </div>
                 <CardTitle className="text-xl font-bold text-white">
-                  Prepare For The Monday Reset: Download Your Preparation Checklist
+                  Prepare For The Experience: Download Your Preparation Checklist
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -275,7 +275,10 @@ export default function SundayShiftPage() {
             </Card>
           </div>
 
-{/* Monday Reset Masterclass Invitation Section */}
+        </div>
+      </div>
+
+      {/* Monday Reset Masterclass Invitation Section */}
       <div className="py-20 bg-gradient-to-br from-[#2F4F4F] to-[#1a3535] relative overflow-hidden">
         {/* Subtle pattern overlay */}
         <div className="absolute inset-0 opacity-5">
@@ -594,5 +597,17 @@ export default function SundayShiftPage() {
           </div>
         </div>
       </div>
+
+
+
+      <SimpleChatModal
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+        context={chatContext}
+        title={chatTitle}
+      />
+
+      <CherryBlossomCoGuide isOpen={isCoGuideOpen} onClose={() => setIsCoGuideOpen(false)} userId={userId} />
+    </div>
   )
 }
