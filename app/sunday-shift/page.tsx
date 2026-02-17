@@ -121,7 +121,7 @@ export default function SundayShiftPage() {
                   className="text-[33px] text-gray-700 text-center italic leading-relaxed"
                   style={{ fontFamily: "'Cormorant Garamond'", fontWeight: 400 }}
                 >
-                  {"\"How you enter the week determines how you live, work and lead your week.\" — B. Bamba"}
+                  {"\"How you enter the week determines how you live, work and lead the week.\" — B. Bamba"}
                 </p>
               </div>
             </div>
@@ -275,14 +275,6 @@ export default function SundayShiftPage() {
             </Card>
           </div>
 
-          {/* Important Note */}
-          <div className="bg-white p-6 rounded-2xl shadow-lg border border-[#E26C73]">
-            <p className="text-xl font-bold text-[#E26C73] text-center">
-              What Happens After You Make The Sunday Shift™
-            </p>
-          </div>
-        </div>
-      </div>
 {/* Monday Reset Masterclass Invitation Section */}
       <div className="py-20 bg-gradient-to-br from-[#2F4F4F] to-[#1a3535] relative overflow-hidden">
         {/* Subtle pattern overlay */}
