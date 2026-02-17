@@ -55,7 +55,7 @@ export default function SundayShiftPage() {
               Make The Sunday Shift<sup className="text-xl">™</sup>
             </h1>
             <p className="text-xl text-gray-700 font-medium">
-              Adopt The Work-Life Balance Business Model & SOP™ -- the "Sustainable" Operating Procedure
+              In the Parallel Lane of Harmony Entrepreneurship, Monday Is Not Reactive — It’s Intentional.
             </p>
           </div>
 
@@ -93,13 +93,13 @@ export default function SundayShiftPage() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-6">
             <p
-              className="text-[39px] text-gray-700 mb-4"
-              style={{ fontFamily: "'Great Vibes', cursive", fontWeight: 400 }}
+              className="text-[42px] text-gray-700 mb-4"
+              style={{ fontFamily: "'Playfair Display', cursive", fontWeight: 400 }}
             >
               Live with Thought Leader Barbara
             </p>
-            <h2 className="text-3xl font-bold text-[#7FB069] mb-4">
-              Complete Onboarding: Your First 3-Steps to Balance, Freedom & Success
+            <h2 className="text-3xl font-medium text-[#7FB069] mb-4">
+           Your First 3-Steps to Balance, Freedom & Success
             </h2>
           </div>
 
@@ -118,18 +118,18 @@ export default function SundayShiftPage() {
 
               <div className="py-6 px-8 flex flex-col justify-center bg-white">
                 <p
-                  className="text-[32px] text-gray-700 text-center italic leading-relaxed"
-                  style={{ fontFamily: "'Great Vibes', cursive", fontWeight: 400 }}
+                  className="text-[33px] text-gray-700 text-center italic leading-relaxed"
+                  style={{ fontFamily: "'Playfair Display'", fontWeight: 400 }}
                 >
-                  {"\"How you enter the week determines how you live, work & lead the week.\""}
+                  {"\"How you enter the week determines how you live, work and lead the week.\" — B. Bamba"}
                 </p>
               </div>
             </div>
           </div>
 
           <div className="text-center mb-8">
-            <p className="text-lg text-gray-600">
-              Complete these three essential steps to prepare for your transformation journey
+            <p className="text-xlg text-gray-700">
+              Complete these three essential steps to prepare your energy, calendar, and focus for Monday and the days ahead.
             </p>
           </div>
 
@@ -181,12 +181,12 @@ export default function SundayShiftPage() {
                   <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 2.2</Badge>
                 </div>
                 <CardTitle className="text-xl font-bold text-white">
-                  Set Your 28-Day Desired Work-LifeStyle Intention
+                  Set Your 7-Day Desired Work-LifeStyle Intention
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-white/90 leading-relaxed">
-                  Transform your audit insights into powerful, actionable intentions. Choose 1-3 focus areas and let Cherry Blossom guide you through creating your personalized 28-day transformation plan.
+                  Transform your audit insights into powerful, actionable intentions. Choose 1-3 focus areas and let Cherry Blossom guide you through creating your personalized 7-day transformation plan.
                 </p>
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
@@ -231,7 +231,7 @@ export default function SundayShiftPage() {
                   <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 2.3</Badge>
                 </div>
                 <CardTitle className="text-xl font-bold text-white">
-                  Prepare For The Experience: Download Your Preparation Checklist
+                  Prepare For The Monday Reset: Download Your Preparation Checklist
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -279,7 +279,7 @@ export default function SundayShiftPage() {
       </div>
 
       {/* Monday Reset Masterclass Invitation Section */}
-      <div className="py-20 bg-gradient-to-br from-[#2F4F4F] to-[#1a3535] relative overflow-hidden">
+      <div className="py-20 bg-gradient-to-br from-[#729A74] to-[#1a3535] relative overflow-hidden">
         {/* Subtle pattern overlay */}
         <div className="absolute inset-0 opacity-5">
           <div className="absolute top-10 right-10 w-64 h-64 rounded-full bg-[#7FB069]" />
@@ -289,9 +289,9 @@ export default function SundayShiftPage() {
         <div className="relative max-w-6xl mx-auto px-6">
           {/* Cherry Blossom Header */}
           <div className="text-center mb-12">
-            <p className="text-[#E26C73] text-sm font-semibold tracking-widest uppercase mb-4">What Happens After The Sunday Shift</p>
+            <p className="text-[#E26C73] text-l font-semibold tracking-widest uppercase mb-4">What Happens After The Sunday Shift</p>
             <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6 text-balance">
-              The Monday Reset<sup className="text-xl">™</sup>
+              The Monday Reset<sup className="text-2xl">™</sup>
             </h2>
             <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
               The Sunday Shift creates clarity. The Monday Reset installs the container.
@@ -466,7 +466,7 @@ export default function SundayShiftPage() {
               Reserve Your Spot for The Monday Reset<sup className="text-lg">™</sup>
             </h3>
             <p className="text-white/90 text-lg mb-8 max-w-2xl mx-auto">
-              Step into the structure that replaces survival with sustainability. One Monday can shift everything.
+              Step into the structure that replaces survival with sustainability.
             </p>
             <div className="flex flex-col items-center gap-4">
               <a
@@ -475,14 +475,14 @@ export default function SundayShiftPage() {
                 rel="noopener noreferrer"
                 className="block"
               >
-                <Button className="bg-white text-[#2F4F4F] hover:bg-gray-50 text-lg px-12 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all font-bold">
+                <Button className="bg-white text-[#729A74] hover:bg-gray-50 text-lg px-12 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all font-bold">
                   <div className="flex flex-col items-center gap-1">
                     <span className="text-sm font-semibold tracking-wide">CASE STUDY INVESTMENT</span>
-                    <span className="text-3xl font-bold">$297</span>
+                    <span className="text-2xl font-bold">$297</span>
                   </div>
                 </Button>
               </a>
-              <p className="text-white/70 text-sm italic">Limited spots available for the founding pilot cohort</p>
+              <p className="text-white/70 text-sm italic">Limited spots available for the founding pilot cohort.</p>
             </div>
           </div>
         </div>
