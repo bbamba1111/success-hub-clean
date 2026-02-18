@@ -477,7 +477,7 @@ export default function SundayShiftPage() {
               >
                 <Button className="bg-white text-[#729A74] hover:bg-gray-50 text-lg px-12 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all font-bold">
                   <div className="flex flex-col items-center gap-1">
-                  <span className="text-2xl font-bold">Step Into The Monday Reset $297</span>
+                  <span className="text-2xl font-bold">Reserve My Monday Reset $297</span>
                   </div>
                 </Button>
               </a>
@@ -489,12 +489,12 @@ export default function SundayShiftPage() {
 
       {/* Share Your Monthly Success Story Section */}
       <div className="py-20 bg-gradient-to-br from-[#E26C73]/10 to-white">
-        <div className="max-w-4xl mx-auto px-6">
+        <div className="max-w-6xl mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
-              <h2 className="text-3xl lg:text-3xl font-bold text-[#E26C73]">
+              <h1 className="text-3xl lg:text-3xl font-bold text-[#E26C73]">
                 Share Your Testimony
-              </h2>
+              </h1>
               <p className="text-xl text-gray-700 leading-relaxed">
                After Making The Sunday Shift, we invite you to{" "}
                 <span className="font-bold text-[#E26C73]">reflect, celebrate, and share</span> your experience.
