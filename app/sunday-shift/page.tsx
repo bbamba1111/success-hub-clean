@@ -94,12 +94,12 @@ export default function SundayShiftPage() {
           <div className="text-center mb-6">
             <p
               className="text-[42px] text-gray-700 mb-4"
-              style={{ fontFamily: "'Playfair Display', cursive", fontWeight: 400 }}
+              style={{ fontFamily: "'Playfair Display'", fontWeight: 400 }}
             >
               Live with Thought Leader Barbara
             </p>
             <h2 className="text-3xl font-medium text-[#7FB069] mb-4">
-           Your First 3-Steps to Balance, Freedom & Success
+           Your First 3-Steps to Work-Life Balance, Time-Freedom & Sustainable Success
             </h2>
           </div>
 
@@ -128,7 +128,7 @@ export default function SundayShiftPage() {
           </div>
 
           <div className="text-center mb-8">
-            <p className="text-xlg text-gray-700">
+            <p className="text-2xl text-gray-800">
               Complete these three essential steps to prepare your energy, calendar, and focus for Monday and the days ahead.
             </p>
           </div>
@@ -461,7 +461,7 @@ export default function SundayShiftPage() {
 
           {/* CTA */}
           <div className="bg-gradient-to-r from-[#7FB069] to-[#E26C73] rounded-3xl p-10 text-center shadow-2xl">
-            <p className="text-white/90 text-sm font-semibold tracking-widest uppercase mb-4">Pilot Case Study Opportunity</p>
+            <p className="text-white/90 text-sm font-semibold tracking-widest uppercase mb-4">Pilot Case Study Opportunity & Investment $297</p>
             <h3 className="text-3xl lg:text-4xl font-bold text-white mb-4">
               Reserve Your Spot for The Monday Reset<sup className="text-lg">™</sup>
             </h3>
@@ -477,12 +477,11 @@ export default function SundayShiftPage() {
               >
                 <Button className="bg-white text-[#729A74] hover:bg-gray-50 text-lg px-12 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all font-bold">
                   <div className="flex flex-col items-center gap-1">
-                    <span className="text-sm font-semibold tracking-wide">CASE STUDY INVESTMENT</span>
-                    <span className="text-2xl font-bold">$297</span>
+                  <span className="text-2xl font-bold">Learn More</span>
                   </div>
                 </Button>
               </a>
-              <p className="text-white/70 text-sm italic">Limited spots available for the founding pilot cohort.</p>
+              <p className="text-white/70 text-m italic">Limited spots available for the founding pilot cohort.</p>
             </div>
           </div>
         </div>
@@ -490,18 +489,18 @@ export default function SundayShiftPage() {
 
       {/* Share Your Monthly Success Story Section */}
       <div className="py-20 bg-gradient-to-br from-[#E26C73]/10 to-white">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="max-w-4xl mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
-              <h2 className="text-4xl lg:text-5xl font-bold text-[#E26C73]">
-                Share Your Monthly Success Story
-              </h2>
+              <h3 className="text-3xl lg:text-3xl font-bold text-[#E26C73]">
+                Share Your Testimony
+              </h3>
               <p className="text-xl text-gray-700 leading-relaxed">
-                At the end of every 28-Day Installation Cycle, we invite you to{" "}
-                <span className="font-bold text-[#E26C73]">reflect, celebrate, and share</span> your transformation.
+               After Making The Sunday Shift, we invite you to{" "}
+                <span className="font-bold text-[#E26C73]">reflect, celebrate, and share</span> your experience.
               </p>
               <p className="text-lg text-gray-700 leading-relaxed">
-                Your story matters — not just for you, but for every entrepreneur still trapped in hustle culture, wondering if balance is actually possible.
+                Your story matters — not just for you, but for every woman entrepreneur still trapped in hustle culture, with no alternative Lane.
               </p>
 
               <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-[#E26C73]/20">
@@ -534,7 +533,7 @@ export default function SundayShiftPage() {
                   className="block"
                 >
                   <Button className="w-full bg-gradient-to-r from-[#E26C73] to-[#7FB069] hover:from-[#D55A60] hover:to-[#6FA055] text-white text-lg py-6">
-                    Submit Your Success Story
+                    Submit Your Experience
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
                 </a>
@@ -547,7 +546,7 @@ export default function SundayShiftPage() {
             <div>
               <img
                 src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1debrief-MRp5ajmcKDbCglvbDKinQcD0Ug8uCx.png"
-                alt="Share Your Success Story"
+                alt="Share Your Experience"
                 className="w-full rounded-3xl shadow-2xl"
               />
             </div>
