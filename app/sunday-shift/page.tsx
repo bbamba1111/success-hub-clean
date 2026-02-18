@@ -128,7 +128,7 @@ export default function SundayShiftPage() {
           </div>
 
           <div className="text-center mb-8">
-            <p className="text-2xl text-gray-800">
+            <p className="text-xl text-gray-800">
               Complete these three essential steps to prepare your energy, calendar, and focus for Monday and the days ahead.
             </p>
           </div>
@@ -477,7 +477,7 @@ export default function SundayShiftPage() {
               >
                 <Button className="bg-white text-[#729A74] hover:bg-gray-50 text-lg px-12 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all font-bold">
                   <div className="flex flex-col items-center gap-1">
-                  <span className="text-2xl font-bold">Learn More Here</span>
+                  <span className="text-2xl font-bold">$297 Learn More Here</span>
                   </div>
                 </Button>
               </a>
