@@ -492,7 +492,7 @@ export default function SundayShiftPage() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
-              <h1 className="text-3xl lg:text-3xl font-bold text-[#E26C73]">
+              <h1 className="text-5xl lg:text-5xl font-bold text-[#E26C73]">
                 Share Your Testimony
               </h1>
               <p className="text-xl text-gray-700 leading-relaxed">
