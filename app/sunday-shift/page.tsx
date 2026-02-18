@@ -461,9 +461,9 @@ export default function SundayShiftPage() {
 
           {/* CTA */}
           <div className="bg-gradient-to-r from-[#7FB069] to-[#E26C73] rounded-3xl p-10 text-center shadow-2xl">
-            <p className="text-white/90 text-sm font-semibold tracking-widest uppercase mb-4">Pilot Case Study Opportunity & Investment $297</p>
+            <p className="text-white/90 text-sm font-semibold tracking-widest uppercase mb-4">Pilot Case Study Opportunity</p>
             <h3 className="text-3xl lg:text-4xl font-bold text-white mb-4">
-              Reserve Your Spot for The Monday Reset<sup className="text-lg">™</sup>
+              Reserve Your Spot for The Monday Reset<sup className="text-lg">™ $297</sup>
             </h3>
             <p className="text-white/90 text-lg mb-8 max-w-2xl mx-auto">
               Step into the structure that replaces survival with sustainability.
@@ -477,7 +477,7 @@ export default function SundayShiftPage() {
               >
                 <Button className="bg-white text-[#729A74] hover:bg-gray-50 text-lg px-12 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all font-bold">
                   <div className="flex flex-col items-center gap-1">
-                  <span className="text-2xl font-bold">Learn More</span>
+                  <span className="text-2xl font-bold">Learn More Here</span>
                   </div>
                 </Button>
               </a>
