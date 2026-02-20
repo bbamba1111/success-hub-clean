@@ -1,19 +1,11 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Great_Vibes } from 'next/font/google'
 import "./globals.css"
-import { TopNavigation } from "@/components/top-navigation"
-
-const greatVibes = Great_Vibes({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-great-vibes",
-})
 
 export const metadata: Metadata = {
-  title: "Success Hub - Make Time For More",
-  description: "Your work-life balance success hub",
-    generator: 'v0.app'
+  title: "v0 App",
+  description: "Created with v0",
+  generator: "v0.dev",
 }
 
 export default function RootLayout({
@@ -23,10 +15,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={greatVibes.variable}>
-        <TopNavigation />
-        {children}
-      </body>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body>{children}</body>
     </html>
   )
 }

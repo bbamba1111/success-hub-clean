@@ -1,655 +1,537 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import type React from "react"
+
+import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import SimpleChatModal from "@/components/simple-chat-modal"
-import {
-  ArrowLeft,
-  RotateCcw,
-  Target,
-  Heart,
-  Brain,
-  Dumbbell,
-  Apple,
-  Moon,
-  Smile,
-  User,
-  BookOpen,
-  Briefcase,
-  DollarSign,
-  TreePine,
-  Users,
-  Gamepad2,
-  Users2,
-  Gift,
-  Copy,
-  Check,
-} from "lucide-react"
 import Link from "next/link"
-import { getAuditResults } from "@/utils/audit-storage"
+import Image from "next/image"
+import {
+  Sparkles,
+  Leaf,
+  Brain,
+  Briefcase,
+  Utensils,
+  Moon,
+  Heart,
+  BookOpen,
+  DollarSign,
+  Users,
+  Palette,
+  HeartHandshake,
+  Home,
+  Check,
+  Copy,
+  Info,
+  User,
+  ExternalLink,
+  Flower,
+} from "lucide-react"
+import { Progress } from "@/components/ui/progress"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { getSavedAuditResults } from "@/utils/audit-storage"
+import { categoryLabels, recommendations } from "@/components/work-life-balance-audit"
+import { Input } from "@/components/ui/input"
+import { ButtonLink } from "@/components/ui/button-link"
+import CherryBlossomConfetti from "@/components/cherry-blossom-confetti"
+import { useRouter } from "next/navigation"
 
-interface AuditResult {
-  category: string
-  percentage: number
-  label: string
-}
-
-interface AuditData {
-  overallScore: number
-  results: AuditResult[]
-  timestamp: number
-}
-
-const categoryLabels = {
-  spiritual: "Spiritual Well-being",
-  mental: "Mental Health",
-  physicalMovement: "Physical Movement",
-  physicalNourishment: "Physical Nourishment",
-  physicalSleep: "Physical Sleep",
-  emotional: "Emotional Health",
-  personal: "Personal Growth",
-  intellectual: "Intellectual Development",
-  professional: "Professional Life",
-  financial: "Financial Health",
-  environmental: "Environmental Wellness",
-  relational: "Relationships",
-  social: "Social Connections",
-  recreational: "Recreation & Fun",
-  charitable: "Charitable Giving",
-}
-
-const categoryIcons = {
-  spiritual: Heart,
-  mental: Brain,
-  physicalMovement: Dumbbell,
-  physicalNourishment: Apple,
-  physicalSleep: Moon,
-  emotional: Smile,
-  personal: User,
-  intellectual: BookOpen,
-  professional: Briefcase,
-  financial: DollarSign,
-  environmental: TreePine,
-  relational: Users2,
-  social: Users,
-  recreational: Gamepad2,
-  charitable: Gift,
+// Define the category icons directly in this file to avoid the import error
+const categoryIcons: Record<string, React.ReactNode> = {
+  spiritual: <Leaf className="h-5 w-5" />,
+  mental: <Brain className="h-5 w-5" />,
+  physicalMovement: <Briefcase className="h-5 w-5" />,
+  physicalNourishment: <Utensils className="h-5 w-5" />,
+  physicalSleep: <Moon className="h-5 w-5" />,
+  emotional: <Heart className="h-5 w-5" />,
+  personal: <Sparkles className="h-5 w-5" />,
+  intellectual: <BookOpen className="h-5 w-5" />,
+  professional: <Briefcase className="h-5 w-5" />,
+  financial: <DollarSign className="h-5 w-5" />,
+  environmental: <Home className="h-5 w-5" />,
+  relational: <Users className="h-5 w-5" />,
+  social: <Users className="h-5 w-5" />,
+  recreational: <Palette className="h-5 w-5" />,
+  charitable: <HeartHandshake className="h-5 w-5" />,
 }
 
 export default function MyResultsPage() {
-  const [auditData, setAuditData] = useState<AuditData | null>(null)
-  const [userName, setUserName] = useState("")
-  const [copied, setCopied] = useState(false)
-  const [isChatOpen, setIsChatOpen] = useState(false)
-  const [chatContext, setChatContext] = useState("")
-  const [chatTitle, setChatTitle] = useState("")
+  const router = useRouter()
+  const [results, setResults] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+  const [name, setName] = useState("")
+  const [isCherryPromptCopied, setIsCherryPromptCopied] = useState(false)
+  const cherryBlossomPromptRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
-    const data = getAuditResults()
-    console.log("Retrieved audit data:", data)
-    setAuditData(data)
+    try {
+      // Get saved results from localStorage
+      const savedResults = getSavedAuditResults()
+      setResults(savedResults)
+      if (savedResults) {
+        setName(savedResults.name || "")
+      }
+    } catch (error) {
+      console.error("Error loading saved results:", error)
+    } finally {
+      setLoading(false)
+    }
   }, [])
 
-  if (!auditData) {
-    return (
-      <div className="min-h-screen bg-white p-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center py-12">
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">No Results Found</h1>
-            <p className="text-gray-600 mb-8">Please take the audit first to see your results.</p>
-            <Link href="/audit">
-              <Button className="bg-[#7FB069] hover:bg-[#6FA055] text-white">Take Audit</Button>
-            </Link>
-          </div>
-        </div>
-      </div>
-    )
+  const getScoreColor = (percentage: number) => {
+    if (percentage < 40) return "text-red-500"
+    if (percentage < 70) return "text-amber-500"
+    return "text-emerald-500"
   }
 
-  // Sort results by percentage (highest first)
-  const sortedResults = [...auditData.results].sort((a, b) => b.percentage - a.percentage)
-
-  // Get top 3 recommendations (lowest scoring areas)
-  const recommendations = [...auditData.results]
-    .sort((a, b) => a.percentage - b.percentage)
-    .slice(0, 3)
-    .map((result) => ({
-      ...result,
-      name: categoryLabels[result.category as keyof typeof categoryLabels],
-      icon: categoryIcons[result.category as keyof typeof categoryIcons],
-    }))
-
-  const getScoreMessage = (score: number) => {
-    if (score >= 80) return "Excellent balance"
-    if (score >= 70) return "Good balance"
-    if (score >= 60) return "Fair balance"
-    return "Needs attention"
+  const getScoreDescription = (percentage: number) => {
+    if (percentage < 40) return "Needs significant improvement"
+    if (percentage < 70) return "Room for improvement"
+    if (percentage < 90) return "Good balance"
+    return "Excellent balance"
   }
 
-  const handleCopyResults = async () => {
-    const namePrefix = userName.trim() ? `Hi Cherry Blossom! My name is ${userName.trim()}.\n\n` : ""
-    const auditSummary = `${namePrefix}My Work-Life Balance Audit Results:
-
-Overall Score: ${auditData.overallScore}%
-Completed: ${new Date(auditData.timestamp).toLocaleDateString()}
-
-Category Breakdown:
-${sortedResults
-  .map((result) => {
-    const categoryName = categoryLabels[result.category as keyof typeof categoryLabels]
-    return `• ${categoryName}: ${result.percentage}%`
-  })
-  .join("\n")}
-
-Top 3 Areas for Improvement:
-${recommendations
-  .map((rec, index) => {
-    const categoryName = categoryLabels[rec.category as keyof typeof categoryLabels]
-    return `${index + 1}. ${categoryName}: ${rec.percentage}%`
-  })
-  .join("\n")}
-
-Please provide personalized insights and recommendations based on these results.`
-
-    try {
-      await navigator.clipboard.writeText(auditSummary)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    } catch (err) {
-      console.error("Failed to copy text: ", err)
+  // Function to copy Cherry Blossom prompt to clipboard
+  const copyCherryBlossomPrompt = async () => {
+    if (cherryBlossomPromptRef.current) {
+      try {
+        await navigator.clipboard.writeText(cherryBlossomPromptRef.current.value)
+        setIsCherryPromptCopied(true)
+        setTimeout(() => setIsCherryPromptCopied(false), 2000)
+      } catch (error) {
+        console.error("Error copying Cherry Blossom prompt:", error)
+      }
     }
   }
 
-  const openChat = (context: string, title: string) => {
-    setChatContext(context)
-    setChatTitle(title)
-    setIsChatOpen(true)
+  // Generate Cherry Blossom prompt
+  const generateCherryBlossomPrompt = () => {
+    if (!results) return ""
+
+    let prompt = `Hello Cherry Blossom! I just completed the Work-Lifestyle Balance Audit. Here are my results:
+
+`
+    prompt += `Name: ${name || results.name}
+`
+    prompt += `Overall Score: ${results.overallScore}%
+
+`
+
+    const isExcellentScore = results.overallScore >= 80
+
+    if (isExcellentScore) {
+      prompt += `I'm doing well with my work-lifestyle balance, scoring ${results.overallScore}% overall!
+
+`
+      prompt += `My category scores (from lowest to highest):
+`
+      results.results.forEach((result: any) => {
+        prompt += `- ${categoryLabels[result.category]}: ${Math.round(result.percentage)}%
+`
+      })
+
+      prompt += `
+I'd like your guidance on maintaining my excellent work-lifestyle balance. What specific strategies would you recommend to help me continue this success?`
+    } else {
+      prompt += `My category scores (from lowest to highest):
+`
+      results.results.forEach((result: any) => {
+        prompt += `- ${categoryLabels[result.category]}: ${Math.round(result.percentage)}%
+`
+      })
+
+      prompt += `
+My lowest scoring areas are:
+`
+      results.results.slice(0, 3).forEach((result: any) => {
+        prompt += `- ${categoryLabels[result.category]}
+`
+      })
+
+      prompt += `
+I'd like your guidance on improving these areas. What specific strategies would you recommend for my situation?`
+    }
+
+    return prompt
+  }
+
+  if (loading) {
+    return (
+      <main className="flex min-h-screen flex-col items-center justify-center p-4 md:p-8 bg-gradient-to-b from-white to-brand-tan">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-pink mx-auto mb-4"></div>
+          <p className="text-black">Loading your results...</p>
+        </div>
+      </main>
+    )
+  }
+
+  if (!results) {
+    return (
+      <main className="flex min-h-screen flex-col items-center justify-center p-4 md:p-8 bg-gradient-to-b from-white to-brand-tan">
+        <div className="max-w-md text-center">
+          <div className="mb-8 flex justify-center">
+            <Image
+              src="/images/logo.png"
+              alt="Make Time For More Logo"
+              width={130}
+              height={130}
+              className="rounded-full shadow-lg"
+            />
+          </div>
+          <h1 className="text-3xl brand-title mb-2 text-brand-pink">Make Time For More™</h1>
+          <h2 className="text-2xl brand-subtitle mb-6 text-black">No Results Found</h2>
+          <p className="text-black mb-8 text-lg">
+            You haven't completed the Work-Life Balance Audit yet. Take the audit to see your personalized results.
+          </p>
+          <Link href="/">
+            <Button className="bg-brand-green hover:bg-green-600 text-white px-8 py-4 text-lg">
+              Take the Audit Now
+            </Button>
+          </Link>
+        </div>
+      </main>
+    )
   }
 
   return (
-    <div className="min-h-screen bg-white p-4">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <Link href="/">
-            <Button variant="outline" className="flex items-center gap-2 bg-transparent">
-              <ArrowLeft className="h-4 w-4" />
-              Back to Home
+    <main className="flex min-h-screen flex-col items-center p-4 md:p-8 pt-4 md:pt-8 bg-gradient-to-b from-white to-brand-tan">
+      <CherryBlossomConfetti duration={6} speed="normal" density="medium" />
+
+      {/* Top Navigation */}
+      <div className="w-full max-w-4xl mb-6">
+        <div className="flex justify-between items-center">
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => router.push("/")} className="">
+              Retake Audit
             </Button>
-          </Link>
-          <Link href="/audit">
-            <Button className="bg-[#7FB069] hover:bg-[#6FA055] text-white flex items-center gap-2">
-              <RotateCcw className="h-4 w-4" />
-              Retake The Audit
+            <Button variant="outline" onClick={() => router.push("/my-results")} className="bg-brand-tan">
+              Back to Results
             </Button>
-          </Link>
-        </div>
-
-        {/* Logo and Title */}
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center mx-auto mb-4">
-            <img src="/images/logo.png" alt="Logo" className="w-36 h-36 rounded-full" />
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Work-Life Balance Results</h1>
-          <p className="text-gray-600">Completed on {new Date(auditData.timestamp).toLocaleDateString()}</p>
-        </div>
-
-        {/* Overall Score */}
-        <div className="text-center mb-8">
-          <div className="text-6xl font-bold text-gray-900 mb-2">Overall Score: {auditData.overallScore}%</div>
-          <p className="text-lg text-gray-600 mb-2">{getScoreMessage(auditData.overallScore)}</p>
-        </div>
-
-        {/* Category Breakdown */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Category Breakdown</h2>
-          <div className="space-y-4">
-            {sortedResults.map((result) => {
-              const IconComponent = categoryIcons[result.category as keyof typeof categoryIcons]
-              const categoryName = categoryLabels[result.category as keyof typeof categoryLabels]
-
-              return (
-                <div key={result.category} className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
-                  <div className="w-8 h-8 flex items-center justify-center">
-                    <IconComponent className="w-6 h-6 text-black" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-medium text-gray-900">{categoryName}</span>
-                      <span className="font-bold text-gray-900">{result.percentage}%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-3">
-                      <div
-                        className="h-3 rounded-full bg-gradient-to-r from-[#E26C73] to-[#7FB069]"
-                        style={{ width: `${result.percentage}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-
-        {/* Top 3 Recommendations */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Top 3 Recommendations</h2>
-          <div className="space-y-6">
-            {recommendations.map((rec, index) => {
-              const IconComponent = rec.icon
-              return (
-                <Card key={rec.category} className="border-2 border-gray-200">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-3 text-[#7FB069]">
-                      <IconComponent className="w-6 h-6" />
-                      Maintain Your {rec.name}
-                    </CardTitle>
-                    <p className="text-[#E26C73]">Current score: {rec.percentage}%</p>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-2">
-                      {rec.category === "environmental" && (
-                        <>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Organize your living space</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Create a comfortable work environment</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Reduce clutter regularly</span>
-                          </li>
-                        </>
-                      )}
-                      {rec.category === "spiritual" && (
-                        <>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Start a daily 5-minute meditation practice</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Reduce clutter regularly</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Practice gratitude journaling</span>
-                          </li>
-                        </>
-                      )}
-                      {rec.category === "mental" && (
-                        <>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Practice stress management techniques</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Set healthy boundaries with work</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Take regular mental health breaks</span>
-                          </li>
-                        </>
-                      )}
-                      {rec.category === "physicalMovement" && (
-                        <>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Add 30 minutes of daily movement</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Take walking breaks during work</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Try a new physical activity weekly</span>
-                          </li>
-                        </>
-                      )}
-                      {rec.category === "physicalNourishment" && (
-                        <>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Plan healthy meals in advance</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Stay hydrated throughout the day</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Eat mindfully without distractions</span>
-                          </li>
-                        </>
-                      )}
-                      {rec.category === "physicalSleep" && (
-                        <>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Establish a consistent bedtime routine</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Limit screen time before bed</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Create a comfortable sleep environment</span>
-                          </li>
-                        </>
-                      )}
-                      {rec.category === "emotional" && (
-                        <>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Practice emotional awareness daily</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Express feelings in healthy ways</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Seek support when needed</span>
-                          </li>
-                        </>
-                      )}
-                      {rec.category === "personal" && (
-                        <>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Set personal development goals</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Dedicate time to hobbies and interests</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Reflect on personal values regularly</span>
-                          </li>
-                        </>
-                      )}
-                      {rec.category === "intellectual" && (
-                        <>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Read for 20 minutes daily</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Learn a new skill monthly</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Engage in stimulating conversations</span>
-                          </li>
-                        </>
-                      )}
-                      {rec.category === "professional" && (
-                        <>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Set clear work-life boundaries</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Pursue professional development</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Communicate effectively with colleagues</span>
-                          </li>
-                        </>
-                      )}
-                      {rec.category === "financial" && (
-                        <>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Create and stick to a budget</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Build an emergency fund</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Review financial goals monthly</span>
-                          </li>
-                        </>
-                      )}
-                      {rec.category === "social" && (
-                        <>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Schedule regular social activities</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Reach out to friends and family</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Join community groups or clubs</span>
-                          </li>
-                        </>
-                      )}
-                      {rec.category === "recreational" && (
-                        <>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Schedule regular fun activities</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Try new hobbies and experiences</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Make time for play and relaxation</span>
-                          </li>
-                        </>
-                      )}
-                      {rec.category === "relational" && (
-                        <>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Invest quality time in relationships</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Practice active listening</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Express appreciation regularly</span>
-                          </li>
-                        </>
-                      )}
-                      {rec.category === "charitable" && (
-                        <>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Volunteer for causes you care about</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Make regular charitable donations</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Help others in your community</span>
-                          </li>
-                        </>
-                      )}
-                    </ul>
-                  </CardContent>
-                </Card>
-              )
-            })}
-          </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-          <Link href="/focus-areas">
-            <Button className="bg-[#7FB069] hover:bg-[#6FA055] text-white px-8 py-3">
-              Set Your Focus Areas
-              <Target className="ml-2 h-5 w-5" />
+            <Button variant="outline" onClick={() => router.push("/about")} className="">
+              About
             </Button>
-          </Link>
-        </div>
-
-        {/* Cherry Blossom Audit Review Section */}
-        <div className="mb-12">
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <img src="/images/logo.png" alt="Cherry Blossom Logo" className="w-12 h-12 rounded-full" />
-              <h2 className="text-2xl font-bold text-gray-900">Get Deeper Insights with Cherry Blossom AI</h2>
-            </div>
-            <p className="text-gray-600 mb-6">
-              Share your audit results with Cherry Blossom AI for personalized insights and recommendations
-            </p>
+            <Button variant="outline" onClick={() => router.push("/learn-more")} className="">
+              Learn More
+            </Button>
+            <Button variant="outline" onClick={() => router.push("/join-us")} className="">
+              Join Us
+            </Button>
           </div>
-
-          <Card className="border-2 border-[#E26C73]/20">
-            <CardContent className="p-6">
-              <div className="space-y-4">
-                {/* Name Input */}
-                <div className="mb-6">
-                  <label htmlFor="userName" className="block text-sm font-medium text-gray-700 mb-2">
-                    Your Name (Optional)
-                  </label>
-                  <Input
-                    id="userName"
-                    type="text"
-                    placeholder="Enter your name for personalized chat"
-                    value={userName}
-                    onChange={(e) => setUserName(e.target.value)}
-                    className="w-full border-[#E26C73]/30 focus:border-[#E26C73] focus:ring-[#E26C73]"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    Adding your name will personalize your conversation with Cherry Blossom AI
-                  </p>
-                </div>
-
-                <div className="flex items-center justify-between mb-4">
-                  <h4 className="text-lg font-semibold text-[#E26C73]">Your Audit Summary:</h4>
-                  <Button
-                    onClick={handleCopyResults}
-                    variant="outline"
-                    size="sm"
-                    className={`flex items-center gap-2 bg-transparent border-[#E26C73] transition-all duration-200 ${
-                      copied
-                        ? "text-green-600 border-green-600 hover:bg-green-50"
-                        : "text-[#E26C73] hover:bg-[#E26C73] hover:text-white"
-                    }`}
-                  >
-                    {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                    {copied ? "Copied!" : "Copy Results"}
-                  </Button>
-                </div>
-
-                <div className="bg-gray-50 p-4 rounded-lg max-h-48 overflow-y-auto">
-                  <div className="text-sm text-gray-700 space-y-2">
-                    {userName.trim() && (
-                      <div className="font-medium text-[#E26C73] mb-2">
-                        Hi Cherry Blossom! My name is {userName.trim()}.
-                      </div>
-                    )}
-                    <div className="font-semibold">Overall Score: {auditData.overallScore}%</div>
-                    <div className="text-xs text-gray-500">
-                      Completed: {new Date(auditData.timestamp).toLocaleDateString()}
-                    </div>
-
-                    <div className="mt-4">
-                      <div className="font-medium mb-2">Category Breakdown:</div>
-                      <div className="space-y-1">
-                        {sortedResults.slice(0, 5).map((result) => {
-                          const categoryName = categoryLabels[result.category as keyof typeof categoryLabels]
-                          return (
-                            <div key={result.category} className="flex justify-between">
-                              <span>• {categoryName}</span>
-                              <span>{result.percentage}%</span>
-                            </div>
-                          )
-                        })}
-                        {sortedResults.length > 5 && (
-                          <div className="text-xs text-gray-500 italic">
-                            ...and {sortedResults.length - 5} more categories
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="mt-4">
-                      <div className="font-medium mb-2">Top Areas for Improvement:</div>
-                      <div className="space-y-1">
-                        {recommendations.map((rec, index) => {
-                          const categoryName = categoryLabels[rec.category as keyof typeof categoryLabels]
-                          return (
-                            <div key={rec.category} className="flex justify-between">
-                              <span>
-                                {index + 1}. {categoryName}
-                              </span>
-                              <span>{rec.percentage}%</span>
-                            </div>
-                          )
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-[#E26C73] text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
-                      1
-                    </div>
-                    <p className="text-gray-700">Enter your name above (optional) and copy your audit results</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-[#E26C73] text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
-                      2
-                    </div>
-                    <p className="text-gray-700">Click "Review Your Audit" to open Cherry Blossom AI</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-[#E26C73] text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
-                      3
-                    </div>
-                    <p className="text-gray-700">Paste your results and get personalized insights</p>
-                  </div>
-                </div>
-
-                <div className="flex justify-center pt-4">
-                  <Button
-                    onClick={() => openChat("audit-review", "Review Your Audit with Cherry Blossom")}
-                    className="bg-gradient-to-r from-[#E26C73] to-[#7FB069] hover:from-[#D55A60] hover:to-[#6FA055] text-white px-8 py-3"
-                  >
-                    Review Your Audit with Cherry Blossom
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() => window.open("https://www.maketimeformore.com", "_blank")}
+              className=""
+            >
+              <ExternalLink className="mr-2 h-4 w-4" />
+              Visit Website
+            </Button>
+            <Button
+              onClick={() =>
+                window.open(
+                  "https://docs.google.com/forms/d/e/1FAIpQLSeYa2yNmiIOXykp3Kd5Xts0jDPe96NJ4adWhFYEwi5GXZ3Ilw/viewform?usp=header",
+                  "_blank",
+                )
+              }
+              className="bg-brand-green text-white hover:bg-green-600"
+            >
+              <ExternalLink className="mr-2 h-4 w-4" />
+              APPLY NOW!
+            </Button>
+          </div>
         </div>
       </div>
 
-      <SimpleChatModal
-        isOpen={isChatOpen}
-        onClose={() => setIsChatOpen(false)}
-        context={chatContext}
-        title={chatTitle}
-      />
-    </div>
+      <div className="max-w-4xl w-full">
+        <div className="mb-8 flex justify-center">
+          <Image
+            src="/images/logo.png"
+            alt="Make Time For More Logo"
+            width={130}
+            height={130}
+            className="rounded-full shadow-lg"
+          />
+        </div>
+
+        <h1 className="text-3xl brand-title mb-2 text-brand-pink text-center">Make Time For More™</h1>
+        <h2 className="text-2xl brand-subtitle mb-4 text-black text-center">
+          Your Work-Life Balance Results Are In...
+        </h2>
+
+        {results.name && <p className="text-center text-black mb-6 text-lg">Results for: {results.name}</p>}
+
+        <div className="space-y-10">
+          <div className="text-center mb-6">
+            <h3 className="text-2xl header-bold mb-4">Overall Score: {results.overallScore}%</h3>
+            <p className={`${getScoreColor(results.overallScore)} header-bold text-xl`}>
+              {getScoreDescription(results.overallScore)}
+            </p>
+
+            {results.overallScore === 100 && (
+              <div className="mt-6 p-6 bg-green-50 border border-green-200 rounded-md">
+                <p className="text-emerald-700 header-bold text-lg">
+                  Congratulations! You've achieved perfect balance across all areas of your life. This is truly
+                  remarkable and reflects your dedication to holistic well-being.
+                </p>
+              </div>
+            )}
+
+            {results.overallScore < 100 && results.overallScore >= 80 && (
+              <div className="mt-6 p-6 bg-green-50 border border-green-200 rounded-md">
+                <p className="text-emerald-700 header-bold text-lg">
+                  Congratulations! Your excellent score shows you've developed strong work-lifestyle balance habits.
+                  You're already implementing many effective strategies in your daily life.
+                </p>
+              </div>
+            )}
+          </div>
+
+          <div className="space-y-6">
+            <h4 className="header-bold text-xl text-black">Category Breakdown</h4>
+            {results.results &&
+              results.results.map((result: any) => {
+                const percentage = Math.round(result.percentage)
+                const color = percentage < 40 ? "#dc3545" : percentage < 70 ? "#ffc107" : "#28a745"
+
+                return (
+                  <div key={result.category} className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-3">
+                        <span className="w-6 h-6 flex items-center justify-center">
+                          {categoryIcons[result.category]}
+                        </span>
+                        <span className="text-lg text-black">{categoryLabels[result.category]}</span>
+                      </div>
+                      <span style={{ color: color }} className="text-lg header-bold">
+                        {percentage}%
+                      </span>
+                    </div>
+                    <Progress value={percentage} className="h-3" />
+                  </div>
+                )
+              })}
+          </div>
+
+          <div className="space-y-6">
+            <h4 className="header-bold text-xl text-black">
+              {results.overallScore >= 80 ? "Top Recommendations to Maintain Your Balance" : "Top Recommendations"}
+            </h4>
+            <div className="grid gap-6">
+              {results.results &&
+                results.results.slice(0, 3).map((result: any) => (
+                  <Card key={result.category} className="border-brand-tan">
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center gap-3">
+                        <span className="w-6 h-6 flex items-center justify-center">
+                          {categoryIcons[result.category]}
+                        </span>
+                        <CardTitle className="text-lg text-black">
+                          {results.overallScore >= 80
+                            ? `Maintain Your ${categoryLabels[result.category]}`
+                            : `Improve Your ${categoryLabels[result.category]}`}
+                        </CardTitle>
+                      </div>
+                      <CardDescription className="text-base">
+                        Current score: {Math.round(result.percentage)}%
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="list-disc pl-6 space-y-2">
+                        {recommendations[result.category] &&
+                          recommendations[result.category].slice(0, 3).map((rec: string, index: number) => (
+                            <li key={index} className="text-base text-black">
+                              {rec}
+                            </li>
+                          ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                ))}
+            </div>
+          </div>
+
+          <Card className="border-[#E26C73] bg-[#f5f0e6] shadow-md mt-6 w-full">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base text-[#E26C73] flex items-center gap-2">
+                <Image
+                  src="/images/logo.png"
+                  alt="Cherry Blossom"
+                  width={24}
+                  height={24}
+                  className="rounded-full flex-shrink-0"
+                />
+                <span className="break-words">Get Ongoing Support From Cherry Blossom</span>
+              </CardTitle>
+              <CardDescription className="break-words">
+                This FREE audit, created by Thought Leader Barbara is her gift to you that keeps on GIV*EN. Cherry
+                Blossom can help you maintain your work-lifestyle balance and continue your success journey.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="bg-white p-3 rounded-md border border-rose-100">
+                <h5 className="font-medium text-black font-bold mb-2">
+                  How to Get Deeper Insights from Cherry Blossom:
+                </h5>
+
+                {/* Name field */}
+                <div className="flex items-center gap-2 mb-4">
+                  <User className="h-5 w-5 text-gray-400 flex-shrink-0" />
+                  <Input
+                    type="text"
+                    placeholder="Enter your full name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full"
+                  />
+                </div>
+
+                <ol className="list-decimal pl-5 space-y-2 text-sm">
+                  <li className="break-words">
+                    <strong>Copy your results</strong> using the button below
+                  </li>
+                  <li className="break-words">Click the "Chat with Cherry Blossom" button to open ChatGPT</li>
+                  <li className="break-words">Create a free OpenAI account if you don't have one</li>
+                  <li className="break-words">Paste your results into the Cherry Blossom chat box</li>
+                  <li className="break-words">
+                    Cherry Blossom will provide personalized guidance based on your results
+                  </li>
+                </ol>
+                <div className="flex items-center gap-2 mt-3 text-xs text-gray-600">
+                  <Info className="h-4 w-4 flex-shrink-0" />
+                  <span className="break-words">
+                    A free OpenAI account is required to access Cherry Blossom. Sign up at{" "}
+                    <a
+                      href="https://chat.openai.com/auth/login"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#E26C73] underline"
+                    >
+                      chat.openai.com
+                    </a>
+                  </span>
+                </div>
+              </div>
+
+              <div className="space-y-2 w-full">
+                <div className="bg-white p-4 rounded-md border-2 border-[#E26C73] shadow-md">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 gap-2">
+                    <label className="text-base font-bold text-[#E26C73]">Your Results for Cherry Blossom:</label>
+                    <Button
+                      onClick={copyCherryBlossomPrompt}
+                      variant="outline"
+                      className="bg-[#5D9D61] hover:bg-[#4c8050] text-white w-full sm:w-auto"
+                      size="sm"
+                    >
+                      {isCherryPromptCopied ? (
+                        <>
+                          <Check className="mr-1 h-4 w-4" />
+                          Copied!
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="mr-1 h-4 w-4" />
+                          Copy
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                  <div className="relative w-full">
+                    <textarea
+                      ref={cherryBlossomPromptRef}
+                      className="w-full h-40 p-3 text-base bg-gray-50 text-gray-800 border border-gray-300 rounded-md font-medium resize-none focus:outline-none focus:ring-2 focus:ring-[#E26C73] focus:border-transparent"
+                      value={generateCherryBlossomPrompt()}
+                      readOnly
+                      onClick={(e) => e.currentTarget.select()}
+                    />
+                    {!isCherryPromptCopied && (
+                      <div className="absolute top-2 right-2 bg-white/80 px-2 py-1 rounded text-xs text-gray-600 pointer-events-none">
+                        Click to select all
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <Button
+                  onClick={copyCherryBlossomPrompt}
+                  className="w-full bg-[#5D9D61] hover:bg-[#4c8050] text-white py-3 text-base font-bold"
+                >
+                  {isCherryPromptCopied ? (
+                    <>
+                      <Check className="mr-2 h-5 w-5" />
+                      Copied Successfully!
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="mr-2 h-5 w-5" />
+                      Copy Your Results For Cherry Blossom
+                    </>
+                  )}
+                </Button>
+              </div>
+
+              <ButtonLink
+                href="https://chatgpt.com/g/g-67f5422677308191aa28a86d8ae5084e-free-work-life-balance-audit-for-women-founders"
+                className="bg-[#E26C73] hover:bg-[#d15964] text-white flex items-center justify-center w-full"
+              >
+                <ExternalLink className="mr-2 h-4 w-4 flex-shrink-0" />
+                <span className="break-words">Click Here to Paste Your Results & Chat with Cherry Blossom</span>
+                <Flower className="ml-2 h-4 w-4 text-pink-300 font-extrabold flex-shrink-0" />
+              </ButtonLink>
+            </CardContent>
+          </Card>
+
+          {/* Bottom Navigation - moved up with reduced spacing */}
+          <div className="w-full max-w-4xl mt-8 mb-6">
+            <div className="flex justify-between items-center">
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={() => router.push("/")} className="">
+                  Retake Audit
+                </Button>
+                <Button variant="outline" onClick={() => router.push("/my-results")} className="bg-brand-tan">
+                  Back to Results
+                </Button>
+                <Button variant="outline" onClick={() => router.push("/about")} className="">
+                  About
+                </Button>
+                <Button variant="outline" onClick={() => router.push("/learn-more")} className="">
+                  Learn More
+                </Button>
+                <Button variant="outline" onClick={() => router.push("/join-us")} className="">
+                  Join Us
+                </Button>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => window.open("https://www.maketimeformore.com", "_blank")}
+                  className=""
+                >
+                  <ExternalLink className="mr-2 h-4 w-4" />
+                  Visit Website
+                </Button>
+                <Button
+                  onClick={() =>
+                    window.open(
+                      "https://docs.google.com/forms/d/e/1FAIpQLSeYa2yNmiIOXykp3Kd5Xts0jDPe96NJ4adWhFYEwi5GXZ3Ilw/viewform?usp=header",
+                      "_blank",
+                    )
+                  }
+                  className="bg-brand-green text-white hover:bg-green-600"
+                >
+                  <ExternalLink className="mr-2 h-4 w-4" />
+                  APPLY NOW!
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <footer className="bg-brand-tan py-6 text-center text-black rounded-lg">
+            <p>© 2025 Make Time For More™. All rights reserved.</p>
+          </footer>
+        </div>
+      </div>
+    </main>
   )
 }

@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Countdown Timer with Confetti</title>
+  <style>
+    /* Countdown Timer Styles */
+    .countdown-container {
+      font-family: 'Arial', sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      border-radius: 10px;
+      background: linear-gradient(to right, #E26C73, #5D9D61);
+      color: white;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .countdown-title {
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .countdown-timer {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-bottom: 20px;
+    }
+
+    .countdown-item {
+      text-align: center;
+    }
+
+    .countdown-number {
+      font-size: 36px;
+      font-weight: bold;
+      line-height: 1;
+    }
+
+    .countdown-label {
+      font-size: 14px;
+      text-transform: uppercase;
+      font-weight: 500;
+      margin-top: 5px;
+    }
+
+    .countdown-message {
+      text-align: center;
+      font-size: 16px;
+      line-height: 1.5;
+      margin-top: 15px;
+    }
+
+    /* Confetti Canvas */
+    #confetti-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 600px) {
+      .countdown-timer {
+        gap: 15px;
+      }
+      
+      .countdown-number {
+        font-size: 28px;
+      }
+      
+      .countdown-label {
+        font-size: 12px;
+      }
+      
+      .countdown-title {
+        font-size: 20px;
+      }
+      
+      .countdown-message {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Countdown Timer Container -->
+  <div class="countdown-container">
+    <canvas id="confetti-canvas"></canvas>
+    <div class="countdown-title">
+      Counting Down to <span id="week-label"></span> of Work-Life Balance in <span id="current-month"></span>
+    </div>
+    <div class="countdown-timer">
+      <div class="countdown-item">
+        <div id="days" class="countdown-number">00</div>
+        <div class="countdown-label">Days</div>
+      </div>
+      <div class="countdown-item">
+        <div id="hours" class="countdown-number">00</div>
+        <div class="countdown-label">Hours</div>
+      </div>
+      <div class="countdown-item">
+        <div id="minutes" class="countdown-number">00</div>
+        <div class="countdown-label">Mins</div>
+      </div>
+      <div class="countdown-item">
+        <div id="seconds" class="countdown-number">00</div>
+        <div class="countdown-label">Secs</div>
+      </div>
+    </div>
+    <div id="countdown-message" class="countdown-message"></div>
+  </div>
+
+  <!-- Confetti Script -->
+  <script>
+    // SIMPLIFIED VERSION - Directly execute code without waiting for DOMContentLoaded
+    // This ensures the code runs immediately
+    
+    // Confetti animation
+    const confettiCanvas = document.getElementById('confetti-canvas');
+    const ctx = confettiCanvas.getContext('2d');
+    let confettiActive = true;
+    let confettiAnimationId;
+
+    // Set canvas size
+    function resizeCanvas() {
+      confettiCanvas.width = confettiCanvas.offsetWidth;
+      confettiCanvas.height = confettiCanvas.offsetHeight;
+    }
+    resizeCanvas();
+
+    // Cherry blossom petal colors
+    const colors = [
+      '#FBCFE8', // Light pink
+      '#F9A8D4', // Medium pink
+      '#F472B6', // Darker pink
+      '#E26C73'  // Brand pink
+    ];
+
+    // Petal class
+    class Petal {
+      constructor() {
+        this.x = Math.random() * confettiCanvas.width;
+        this.y = -20 - Math.random() * 100; // Start above the canvas
+        this.size = 10 + Math.random() * 15;
+        this.speedY = 1 + Math.random() * 3; // Faster fall
+        this.speedX = 0.5 - Math.random();
+        this.rotation = Math.random() * Math.PI * 2;
+        this.rotationSpeed = 0.01 + Math.random() * 0.03;
+        this.color = colors[Math.floor(Math.random() * colors.length)];
+        this.opacity = 0.7 + Math.random() * 0.3;
+        this.type = Math.floor(Math.random() * 3); // 3 different petal types
+      }
+
+      update() {
+        this.y += this.speedY;
+        this.x += this.speedX;
+        this.rotation += this.rotationSpeed;
+        
+        // Fade out as it falls
+        if (this.y > confettiCanvas.height * 0.7) {
+          this.opacity -= 0.01;
+        }
+        
+        // Reset if it goes out of bounds
+        if (this.y > confettiCanvas.height || this.opacity <= 0) {
+          this.reset();
+        }
+      }
+
+      reset() {
+        this.x = Math.random() * confettiCanvas.width;
+        this.y = -20;
+        this.opacity = 0.7 + Math.random() * 0.3;
+      }
+
+      draw() {
+        ctx.globalAlpha = this.opacity;
+        ctx.fillStyle = this.color;
+        
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation);
+        
+        // Draw different petal shapes based on type
+        if (this.type === 0) {
+          // Oval petal
+          ctx.beginPath();
+          ctx.moveTo(0, -this.size/2);
+          ctx.bezierCurveTo(this.size/2, -this.size/2, this.size/2, this.size/2, 0, this.size/2);
+          ctx.bezierCurveTo(-this.size/2, this.size/2, -this.size/2, -this.size/2, 0, -this.size/2);
+          ctx.fill();
+        } else if (this.type === 1) {
+          // Heart-like petal
+          ctx.beginPath();
+          ctx.moveTo(0, -this.size/2);
+          ctx.quadraticCurveTo(this.size/2, 0, 0, this.size/2);
+          ctx.quadraticCurveTo(-this.size/2, 0, 0, -this.size/2);
+          ctx.fill();
+        } else {
+          // Teardrop petal
+          ctx.beginPath();
+          ctx.moveTo(0, -this.size/2);
+          ctx.quadraticCurveTo(this.size/2, 0, 0, this.size/2);
+          ctx.quadraticCurveTo(-this.size/2, 0, 0, -this.size/2);
+          ctx.fill();
+        }
+        
+        ctx.restore();
+        ctx.globalAlpha = 1;
+      }
+    }
+
+    // Create petals
+    const petals = [];
+    function createPetals(count) {
+      for (let i = 0; i < count; i++) {
+        petals.push(new Petal());
+      }
+    }
+
+    // Animation loop
+    function animateConfetti() {
+      if (!confettiActive) return;
+      
+      ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+      
+      petals.forEach(petal => {
+        petal.update();
+        petal.draw();
+      });
+      
+      confettiAnimationId = requestAnimationFrame(animateConfetti);
+    }
+
+    // Start confetti
+    function startConfetti() {
+      resizeCanvas();
+      createPetals(15); // Create 15 petals - REDUCED for better performance
+      confettiActive = true;
+      animateConfetti();
+    }
+
+    // Stop confetti
+    function stopConfetti() {
+      confettiActive = false;
+      cancelAnimationFrame(confettiAnimationId);
+      ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+      petals.length = 0;
+    }
+
+    // ===== COUNTDOWN TIMER =====
+    // SIMPLIFIED countdown timer with direct DOM manipulation
+    
+    function updateCountdown() {
+      const now = new Date();
+      
+      // Get next Sunday
+      const nextSunday = new Date(now);
+      nextSunday.setDate(now.getDate() + ((7 - now.getDay()) % 7));
+      
+      // Determine which Sunday of the month it is
+      let sundayCount = 0;
+      const tempDate = new Date(nextSunday.getFullYear(), nextSunday.getMonth(), 1);
+      while (tempDate <= nextSunday) {
+        if (tempDate.getDay() === 0) {
+          sundayCount++;
+        }
+        tempDate.setDate(tempDate.getDate() + 1);
+      }
+      
+      // If it's the 4th or 5th Sunday, move to the 1st Sunday of next month
+      let targetSunday = nextSunday;
+      if (sundayCount >= 4) {
+        targetSunday = new Date(nextSunday.getFullYear(), nextSunday.getMonth() + 1, 1);
+        while (targetSunday.getDay() !== 0) {
+          targetSunday.setDate(targetSunday.getDate() + 1);
+        }
+      }
+      
+      // Set time to 1:00 PM EST
+      targetSunday.setHours(13, 0, 0, 0);
+      
+      // If the target is in the past (we're on Sunday after 1pm), move to next valid Sunday
+      if (targetSunday <= now) {
+        if (now.getDay() === 0 && now.getHours() >= 13) {
+          targetSunday.setDate(targetSunday.getDate() + 7);
+          
+          // Check if this would be the 4th Sunday
+          let newSundayCount = 0;
+          const tempDate = new Date(targetSunday.getFullYear(), targetSunday.getMonth(), 1);
+          while (tempDate <= targetSunday) {
+            if (tempDate.getDay() === 0) {
+              newSundayCount++;
+            }
+            tempDate.setDate(tempDate.getDate() + 1);
+          }
+          
+          if (newSundayCount >= 4) {
+            targetSunday = new Date(targetSunday.getFullYear(), targetSunday.getMonth() + 1, 1);
+            while (targetSunday.getDay() !== 0) {
+              targetSunday.setDate(targetSunday.getDate() + 1);
+            }
+            targetSunday.setHours(13, 0, 0, 0);
+          }
+        }
+      }
+      
+      // Calculate time difference
+      const diff = targetSunday.getTime() - now.getTime();
+      
+      // Convert to days, hours, minutes, seconds
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      
+      // Update DOM elements
+      document.getElementById('days').textContent = days.toString().padStart(2, '0');
+      document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+      document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+      document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+      
+      // Determine which Sunday it is (1st, 2nd, or 3rd)
+      let sundayNumber = 0;
+      const tempDate2 = new Date(targetSunday.getFullYear(), targetSunday.getMonth(), 1);
+      while (tempDate2 <= targetSunday) {
+        if (tempDate2.getDay() === 0) {
+          sundayNumber++;
+        }
+        tempDate2.setDate(tempDate2.getDate() + 1);
+      }
+      
+      // Set month name
+      const monthName = targetSunday.toLocaleString('default', { month: 'long' });
+      document.getElementById('current-month').textContent = monthName;
+      
+      // Set week label and message
+      let weekLabel = '';
+      let message = '';
+      
+      if (sundayNumber === 1) {
+        weekLabel = 'The 1st Week';
+        message = 'The 7-Day Work-Life Balance Reset Experience where You Reset Your Rhythms and Reclaim Your Time In One Powerful Week This Month!';
+      } else if (sundayNumber === 2) {
+        weekLabel = 'The 2nd Week';
+        message = 'Our 14-Day Momentum Building Week -- Perfect if you\'re ready to start building real momentum toward your desired work-lifestyle!';
+      } else if (sundayNumber === 3) {
+        weekLabel = 'The 3rd Week';
+        message = 'Our 21-Day Habit Building week followed by our 1-Week Recovery Break -- Perfect if you are truly ready to disrupt hustle culture, and reset your work-life balance habits for sustainable success.';
+      }
+      
+      document.getElementById('week-label').textContent = weekLabel;
+      document.getElementById('countdown-message').textContent = message;
+    }
+    
+    // Start everything immediately
+    startConfetti();
+    updateCountdown(); // Initial update
+    
+    // Update countdown every second
+    setInterval(updateCountdown, 1000);
+    
+    // Handle window resize
+    window.addEventListener('resize', resizeCanvas);
+  </script>
+</body>
+</html>
