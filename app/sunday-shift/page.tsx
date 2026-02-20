@@ -294,7 +294,7 @@ export default function SundayShiftPage() {
               The Monday Reset<sup className="text-4xl">™</sup>
             </h2>
             <p className="text-2xl text-white/80 max-w-3xl mx-auto leading-relaxed">
-              Participate in the Founding Case Study of the Parallel Lane
+              Participate in the Founding Case Study of Harmony The Parallel Lane of Hustle Entrepreneurship
             </p>
           </div>
 
