@@ -293,7 +293,7 @@ export default function SundayShiftPage() {
             <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6 text-balance">
               The Monday Reset<sup className="text-4xl">™</sup>
             </h2>
-            <p className="text-2xl text-white/80 max-w-5xl mx-auto leading-relaxed">
+            <p className="text-2xl text-white/80 max-w-8xl mx-auto leading-relaxed">
               Participate in the Founding Case Study of Harmony — The Parallel Lane of Hustle Entrepreneurship
             </p>
           </div>
