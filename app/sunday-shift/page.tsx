@@ -294,7 +294,7 @@ export default function SundayShiftPage() {
               The Monday Reset<sup className="text-4xl">™</sup>
             </h2>
             <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
-              The Sunday Shift creates clarity. The Monday Reset installs the container.
+              Participate in the Founding Case Study of the Parallel Lane
             </p>
           </div>
 
@@ -310,7 +310,7 @@ export default function SundayShiftPage() {
             <div className="space-y-6 text-white">
               <div className="space-y-4">
                 <p className="text-lg leading-relaxed text-white/90">
-                  You identified the imbalances. You chose your 1-3 non-negotiable priorities. You clarified what matters most this week.
+                  You identified the imbalances. You chose your 1-3 non-negotiable priorities. You’ve set your intention for the week.
                 </p>
                 <p className="text-xl font-semibold text-[#7FB069]">
                   Now you are invited to live inside a structure that supports it.
@@ -325,6 +325,89 @@ export default function SundayShiftPage() {
             </div>
           </div>
 
+          {/* This Is a Live Case-Study Installation */}
+          <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
+            <div className="space-y-6 text-white">
+              <h3 className="text-3xl font-bold">This Is a Live Case-Study Installation</h3>
+              <p className="text-lg text-white/90 leading-relaxed">
+                The Work-Life Balance Business Model & SOP has already been architected as a harmony-first operating system for women in entrepreneurship.
+              </p>
+              <p className="text-lg text-white/90 leading-relaxed">
+                The Monday Reset is where you experience it in real time.
+              </p>
+              <p className="text-lg text-white/90 leading-relaxed">
+                We are currently running live case-study installations validating the structural impact of the Parallel Lane.
+              </p>
+              <p className="text-xl font-semibold text-[#7FB069]">This is not about motivation.</p>
+              <p className="text-lg text-white/90 leading-relaxed">
+                {"It's about measuring:"}
+              </p>
+              <ul className="space-y-3 text-white/90 text-lg">
+                <li className="flex items-start gap-3">
+                  <span className="text-[#7FB069] font-bold mt-1">&#8226;</span>
+                  <span>What shifts when work is intentionally contained</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-[#7FB069] font-bold mt-1">&#8226;</span>
+                  <span>What happens when energy precedes execution</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-[#7FB069] font-bold mt-1">&#8226;</span>
+                  <span>How a 4-Hour Focused CEO Workday affects output and clarity</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-[#7FB069] font-bold mt-1">&#8226;</span>
+                  <span>What 20 hours of protected time freedom does to leadership</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-[#7FB069] font-bold mt-1">&#8226;</span>
+                  <span>How rhythm changes nervous system chemistry</span>
+                </li>
+              </ul>
+              <div className="pt-4 space-y-2">
+                <p className="text-xl font-semibold text-white">You are not a beta tester.</p>
+                <p className="text-[#E26C73] font-semibold text-lg">You are a founding participant.</p>
+                <p className="text-[#E26C73] font-semibold text-lg">A pioneer. A contributor. A lane-builder.</p>
+              </div>
+            </div>
+            <div className="rounded-2xl overflow-hidden shadow-2xl">
+              <img
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Feb%2020%2C%202026%2C%2002_24_53%20AM-XpA8JBEKrb1lmrQfB0H72i1Z4RAx2q.png"
+                alt="Mother laughing joyfully with her two children at a cherry blossom park picnic - Make Time For More Harmony"
+                className="w-full h-auto object-cover"
+              />
+            </div>
+          </div>
+
+          {/* Why This Matters */}
+          <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-10 mb-16 border border-white/20">
+            <h3 className="text-3xl font-bold text-white mb-8 text-center">Why This Matters</h3>
+            <p className="text-lg text-white/90 leading-relaxed text-center max-w-3xl mx-auto mb-8">
+              The data and lived experience from these installations inform:
+            </p>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto mb-10">
+              <div className="bg-white/5 rounded-xl p-5 border border-white/10 text-center">
+                <p className="text-white font-semibold text-lg">{"Women's Associations"}</p>
+              </div>
+              <div className="bg-white/5 rounded-xl p-5 border border-white/10 text-center">
+                <p className="text-white font-semibold text-lg">Founder Communities</p>
+              </div>
+              <div className="bg-white/5 rounded-xl p-5 border border-white/10 text-center">
+                <p className="text-white font-semibold text-lg">Entrepreneurial Ecosystems</p>
+              </div>
+              <div className="bg-white/5 rounded-xl p-5 border border-white/10 text-center">
+                <p className="text-white font-semibold text-lg">Conference & Panel Conversations</p>
+              </div>
+              <div className="bg-white/5 rounded-xl p-5 border border-white/10 text-center lg:col-span-1 md:col-span-2">
+                <p className="text-white font-semibold text-lg">Wellness-Focused Workplace Design in the AI Age</p>
+              </div>
+            </div>
+            <div className="text-center space-y-2">
+              <p className="text-xl font-bold text-[#7FB069]">This is operating system architecture.</p>
+              <p className="text-xl font-bold text-[#E26C73]">Not productivity advice.</p>
+            </div>
+          </div>
+          
           {/* Why This Works - Science Section */}
           <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-10 mb-16 border border-white/20">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
