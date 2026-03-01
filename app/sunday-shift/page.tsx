@@ -546,7 +546,7 @@ export default function SundayShiftPage() {
           <div className="bg-gradient-to-r from-[#7FB069] to-[#E26C73] rounded-3xl p-10 text-center shadow-2xl">
             <p className="text-white/90 text-sm font-semibold tracking-widest uppercase mb-4">Pilot Case Study Opportunity</p>
             <h3 className="text-3xl lg:text-4xl font-bold text-white mb-4">
-              Make Time For More<sup className="text-lg">™</sup>
+              Make Time For More Harmony<sup className="text-lg">™</sup>
             </h3>
             <p className="text-white/90 text-lg mb-8 max-w-2xl mx-auto">
               Step into the structure that replaces survival with sustainability.
