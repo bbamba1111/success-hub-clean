@@ -291,7 +291,7 @@ export default function SundayShiftPage() {
           <div className="text-center mb-12">
             <p className="text-[#FFFFFF] text-l font-semibold tracking-widest uppercase mb-4">What Happens After The Sunday Shift</p>
             <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6 text-balance">
-              The Monday Reset<sup className="text-4xl">™</sup>
+              Make Time For More Harmony<sup className="text-4xl">™</sup>
             </h2>
             <p className="text-2xl text-white/80 max-w-8xl mx-auto leading-relaxed">
               Participate in the Founding Case Study of Harmony — The Parallel Lane of Hustle Entrepreneurship
@@ -333,7 +333,7 @@ export default function SundayShiftPage() {
                 The Work-Life Balance Business Model & SOP has already been architected as a harmony-first operating system for women in entrepreneurship.
               </p>
               <p className="text-lg text-white/90 leading-relaxed">
-                The Monday Reset is where you experience it in real time.
+                Make Time For Harmony is where you experience it in real time.
               </p>
               <p className="text-lg text-white/90 leading-relaxed">
                 We are currently running live case-study installations validating the structural impact of the Parallel Lane.
@@ -519,7 +519,7 @@ export default function SundayShiftPage() {
             <div className="space-y-6 text-white">
               <h3 className="text-3xl font-bold">Monday Is the On-Ramp</h3>
               <p className="text-lg text-white/90 leading-relaxed">
-                The Monday Reset is your first installation day. Some women experience one Reset and feel the shift. Some return weekly to strengthen the rhythm.
+                Make Time For More Harmony is your first installation day. Some women experience one Reset and feel the shift. Some return weekly, on Mondays, to strengthen the rhythm.
               </p>
               <p className="text-lg text-white/90 leading-relaxed">
                 Some expand into the full Monday-Thursday model, where frequency and repetition wire this as their new default operating system.
@@ -530,7 +530,7 @@ export default function SundayShiftPage() {
                 <p className="text-[#7FB069] font-semibold text-lg">Rhythm builds legacy.</p>
               </div>
               <p className="text-xl font-semibold text-white pt-4">
-                You prepared the lane. Now you are invited to step into it.
+                We've prepared the lane. Now you are invited to merge into it.
               </p>
             </div>
             <div className="flex justify-center">
