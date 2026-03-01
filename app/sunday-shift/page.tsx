@@ -546,21 +546,21 @@ export default function SundayShiftPage() {
           <div className="bg-gradient-to-r from-[#7FB069] to-[#E26C73] rounded-3xl p-10 text-center shadow-2xl">
             <p className="text-white/90 text-sm font-semibold tracking-widest uppercase mb-4">Pilot Case Study Opportunity</p>
             <h3 className="text-3xl lg:text-4xl font-bold text-white mb-4">
-              Reserve Your Spot for The Monday Reset<sup className="text-lg">™</sup>
+              Make Time For More<sup className="text-lg">™</sup>
             </h3>
             <p className="text-white/90 text-lg mb-8 max-w-2xl mx-auto">
               Step into the structure that replaces survival with sustainability.
             </p>
             <div className="flex flex-col items-center gap-4">
               <a
-                href="https://www.maketimeformore.com/checkout/monday-reset-297"
+                href="https://www.maketimeformore.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block"
               >
                 <Button className="bg-white text-[#729A74] hover:bg-gray-50 text-lg px-12 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all font-bold">
                   <div className="flex flex-col items-center gap-1">
-                  <span className="text-2xl font-bold">Reserve My Monday Reset $297</span>
+                  <span className="text-2xl font-bold">Merge Into The Parallel Lane $497</span>
                   </div>
                 </Button>
               </a>
@@ -571,48 +571,7 @@ export default function SundayShiftPage() {
       </div>
 
     
-      {/* Facebook Group CTA Section */}
-      <div className="bg-gradient-to-r from-[#7FB069]/10 to-[#E26C73]/10 py-24">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <div className="max-w-2xl mx-auto">
-              <div className="flex items-center justify-center gap-3 mb-8">
-                <img
-                  src="/images/logo.png"
-                  alt="Make Time For More Logo"
-                  width={80}
-                  height={80}
-                  className="rounded-full shadow-lg"
-                />
-              </div>
-              <h2 className="text-3xl font-bold text-[#E26C73] mb-6">Join Our Facebook Community</h2>
-              <p className="text-lg text-gray-600 mb-8">
-                Connect with like-minded women on their work-life balance journey. Share experiences, get support,
-                celebrate wins together, and share pics and videos of you making time for more.
-              </p>
-              <img
-                src="/images/facebook-group-community.jpg"
-                alt="Diverse community of women in cherry blossom setting"
-                className="w-full h-auto object-cover rounded-2xl shadow-2xl mb-8"
-              />
-              <a
-                href="https://www.facebook.com/groups/maketimeformore"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block"
-              >
-                <Button
-                  size="lg"
-                  className="bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-semibold px-8 py-4 text-lg"
-                >
-                  Join Our Facebook Group
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
+    
 
 
 
