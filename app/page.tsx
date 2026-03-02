@@ -125,7 +125,241 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Step 1 - Sunday Shift Section */}
+ {/* Make The Sunday Shift Section */}
+      <div className="relative overflow-hidden py-20">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#7FB069]/10 to-[#E26C73]/10" />
+        <div className="relative max-w-6xl mx-auto px-6">
+          <div className="text-center mb-8">
+            <h1 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-[#7FB069] to-[#E26C73] bg-clip-text text-transparent mb-4">
+              Make The Sunday Shift<sup className="text-xl">™</sup>
+            </h1>
+            <p className="text-xl text-gray-700 font-medium">
+              In the Parallel Lane of Harmony Entrepreneurship, Monday Is Not Reactive — It’s Intentional.
+            </p>
+          </div>
+
+          <div className="text-center mb-12">
+            <CherryBlossomCountdown />
+          </div>
+
+          <div className="flex justify-center">
+            <div className="space-y-4 flex flex-col max-w-4xl w-full bg-white/80 rounded-2xl shadow-xl p-6">
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="flex items-center gap-3 text-gray-700 bg-white/80 p-3 rounded-lg shadow-sm">
+                  <Clock className="w-5 h-5 text-[#7FB069] flex-shrink-0" />
+                  <span className="font-semibold text-lg">Join Us Live: Sunday @ 1:00-2:00 PM ET</span>
+                </div>
+
+                <a
+                  href="https://join.butter.us/make-time-for-more/sunday-shift"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block"
+                >
+                  <Button className="w-full h-full bg-white hover:bg-gray-50 text-[#7FB069] border-2 border-[#7FB069] font-semibold py-3 text-lg">
+                    Enter Here to Make The Sunday Shift
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Complete Onboarding Section */}
+      <div className="bg-gradient-to-br from-[#F5F1E8] to-white py-20">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-6">
+            <p
+              className="text-[42px] text-gray-700 mb-4"
+              style={{ fontFamily: "'Playfair Display'", fontWeight: 400 }}
+            >
+              Live with Thought Leader Barbara
+            </p>
+            <h2 className="text-3xl font-medium text-[#7FB069] mb-4">
+           Your First 3-Steps to Work-Life Balance, Time-Freedom & Sustainable Success
+            </h2>
+          </div>
+
+          {/* Barbara Image & Quote */}
+          <div className="bg-gradient-to-r from-[#F9F6F1] via-[#FAF7F2] to-[#F9F6F1] rounded-2xl overflow-hidden shadow-xl mb-12 border border-gray-200">
+            <div className="grid md:grid-cols-[320px,1fr] gap-0">
+              <div className="relative h-full min-h-[280px] bg-[#F9F6F1] flex items-center justify-center py-6 px-8">
+                <div className="relative flex items-center justify-center">
+                  <img
+                    src="/images/barbara-cherry-garden.jpg"
+                    alt="Barbara"
+                    className="w-[270px] h-[270px] rounded-full object-cover shadow-2xl"
+                  />
+                </div>
+              </div>
+
+              <div className="py-6 px-8 flex flex-col justify-center bg-white">
+                <p
+                  className="text-[33px] text-gray-700 text-center italic leading-relaxed"
+                  style={{ fontFamily: "'Playfair Display'", fontWeight: 400 }}
+                >
+                  {"\"How you enter the week determines how you live, work and lead the week.\" — B. Bamba"}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="text-center mb-8">
+            <p className="text-xl text-gray-800">
+              Complete these three essential steps to prepare your energy, calendar, and focus for Monday and the days ahead.
+            </p>
+          </div>
+
+          {/* Three Steps Grid - Audit, Intention, Prep */}
+          <div className="grid lg:grid-cols-3 gap-6 mb-8">
+            {/* Step 2.1 - Audit Card */}
+            <Card className="bg-[#7FB069] border-0 text-white overflow-hidden">
+              <CardHeader className="pb-4">
+                <div className="flex items-center gap-3 mb-3">
+                  <img src="/images/logo.png" alt="Make Time For More Logo" width={48} height={48} className="rounded-full shadow-lg" />
+                  <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 1</Badge>
+                </div>
+                <CardTitle className="text-xl font-bold text-white">Take The Work-Life Balance Audit</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-white/90 leading-relaxed">
+                  Discover exactly where you stand across 15 key life areas with our comprehensive assessment. Get personalized insights and identify your biggest opportunities for growth.
+                </p>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-4 h-4 text-white flex-shrink-0" />
+                    <span className="text-white/90 text-sm">15-question comprehensive assessment</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-4 h-4 text-white flex-shrink-0" />
+                    <span className="text-white/90 text-sm">Instant personalized results</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-4 h-4 text-white flex-shrink-0" />
+                    <span className="text-white/90 text-sm">AI-powered insights from Cherry Blossom</span>
+                  </div>
+                </div>
+                <div className="h-9"></div>
+                <div className="flex flex-col gap-3 mt-3">
+                  <Link href="/audit" className="block">
+                    <Button size="lg" className="w-full bg-transparent border-2 border-white text-white hover:bg-white/10 font-semibold">
+                      Take The Work-Life Balance Audit
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Step 2.2 - Intention Setting Card */}
+            <Card className="bg-[#E26C73] border-0 text-white overflow-hidden">
+              <CardHeader className="pb-4">
+                <div className="flex items-center gap-3 mb-3">
+                  <img src="/images/logo.png" alt="Make Time For More Logo" width={48} height={48} className="rounded-full shadow-lg" />
+                  <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 2</Badge>
+                </div>
+                <CardTitle className="text-xl font-bold text-white">
+                  Set Your 7-Day Desired Work-LifeStyle Intention
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-white/90 leading-relaxed">
+                  Transform your audit insights into powerful, actionable intentions. Choose 1-3 focus areas and let Cherry Blossom guide you through creating your personalized 7-day transformation plan.
+                </p>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-4 h-4 text-white flex-shrink-0" />
+                    <span className="text-white/90 text-sm">Select 1-3 focus areas for maximum impact</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-4 h-4 text-white flex-shrink-0" />
+                    <span className="text-white/90 text-sm">AI-guided intention crafting with Cherry Blossom</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-4 h-4 text-white flex-shrink-0" />
+                    <span className="text-white/90 text-sm">Personalized daily practices & action plan</span>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-3 mt-3">
+                  <Link href="/focus-areas" className="block">
+                    <Button size="lg" className="w-full bg-transparent border-2 border-white text-white hover:bg-white/10 font-semibold">
+                      Choose Your 1-3 Priority Focus Areas
+                    </Button>
+                  </Link>
+                  <a
+                    href="https://docs.google.com/document/d/1RtaoYOUQmmPSD2U5EaLPiilQifnSamE5Yo6SaOYf4UM/edit?usp=sharing"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block"
+                  >
+                    <Button className="w-full bg-transparent border-2 border-white text-white hover:bg-white/10 font-semibold">
+                      <Download className="mr-2 h-4 w-4" />
+                      Open The Intention Setting Guide
+                    </Button>
+                  </a>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Step 2.3 - Preparation Checklist Card */}
+            <Card className="bg-gradient-to-br from-[#7FB069] to-[#E26C73] border-0 text-white overflow-hidden">
+              <CardHeader className="pb-4">
+                <div className="flex items-center gap-3 mb-3">
+                  <img src="/images/logo.png" alt="Make Time For More Logo" width={48} height={48} className="rounded-full shadow-lg" />
+                  <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 3</Badge>
+                </div>
+                <CardTitle className="text-xl font-bold text-white">
+                  Prepare For The Monday Reset: Download Your Preparation Checklist
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-white/90 leading-relaxed">
+                  Get ready for your transformation with our comprehensive preparation checklist. Complete these steps to create the optimal environment for your work-life balance journey.
+                </p>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-4 h-4 text-white flex-shrink-0" />
+                    <span className="text-white/90 text-sm">Clear your physical space</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-4 h-4 text-white flex-shrink-0" />
+                    <span className="text-white/90 text-sm">Block off your calendar</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-4 h-4 text-white flex-shrink-0" />
+                    <span className="text-white/90 text-sm">Notify your family & team</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-4 h-4 text-white flex-shrink-0" />
+                    <span className="text-white/90 text-sm">Delegate or delay tasks</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-4 h-4 text-white flex-shrink-0" />
+                    <span className="text-white/90 text-sm">Prepare your spirit</span>
+                  </div>
+                </div>
+                <a
+                  href="https://docs.google.com/document/d/1IZ5qefGnMQpYJP8wMgQS3tVY6sj56CHcCpRBkOGpGjU/edit?usp=sharing"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block mt-3"
+                >
+                  <Button className="w-full bg-transparent border-2 border-white text-white hover:bg-white/10 font-semibold">
+                    <Download className="mr-2 h-4 w-4" />
+                    Open The Preparation Checklist
+                  </Button>
+                </a>
+              </CardContent>
+            </Card>
+          </div>
+
+        </div>
+      </div>
+
+
+      
+      {/* Step 11 - Sunday Shift Section */}
       <div className="relative overflow-hidden py-20">
         <div className="absolute inset-0 bg-gradient-to-r from-[#7FB069]/10 to-[#E26C73]/10" />
         <div className="relative max-w-6xl mx-auto px-6">
