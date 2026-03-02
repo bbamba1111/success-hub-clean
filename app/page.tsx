@@ -89,6 +89,8 @@ export default function HomePage() {
                   </h1>
                   <p className="text-lg text-gray-600 font-normal">
                    Welcome to The Work-Life Balance Installation Hub
+                  </p>
+                  <p className="text-lg text-gray-600 font-normal">
                    The Parallel Lane to Hustle Entrepreneurship
                   </p>
                 </div>
