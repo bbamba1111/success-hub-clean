@@ -85,15 +85,16 @@ export default function HomePage() {
               <div className="space-y-6">
                 <div className="space-y-2">
                   <h1 className="text-3xl lg:text-3xl font-bold text-gray-900 leading-tight">
-                    Make Time For More<sup className="text-lg">™</sup> 
+                    Make Time For More Harmony<sup className="text-lg">™</sup> 
                   </h1>
                   <p className="text-lg text-gray-600 font-normal">
                    Welcome to The Work-Life Balance Installation Hub
+                   The Parallel Lane to Hustle Entrepreneurship
                   </p>
                 </div>
 
                 <p className="text-lg text-gray-600 leading-relaxed">
-                  This is your central space to begin living the Work-Life Balance Business Model & SOP™. Here, you’ll Take The Audit, Set Your 28-Day Intention, and access Cherry Blossom your AI Powered Work-Life Balance Co-Guide. Experience non-negotiable co-working, community connections, wellness tracking, personalized guidance and more — all in one{" "}
+                  This is your central space to begin harmonizing work and life. Here, you’ll Take The Audit, Set Your 28-Day Intention, and access Cherry Blossom your AI Powered Work-Life Balance Co-Guide. Experience non-negotiable co-working, community connections, wellness tracking, personalized guidance and more — all in one{" "}
                   <button
                     onClick={scrollToWellnessDashboard}
                     className={`font-bold underline transition-colors ${
@@ -124,11 +125,11 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Step 2 - Sunday Shift Section */}
+      {/* Step 1 - Sunday Shift Section */}
       <div className="relative overflow-hidden py-20">
         <div className="absolute inset-0 bg-gradient-to-r from-[#7FB069]/10 to-[#E26C73]/10" />
         <div className="relative max-w-6xl mx-auto px-6">
-          {/* Step 2 Badge at Top */}
+          {/* Step 1 Badge at Top */}
           <div className="flex items-center justify-center gap-3 mb-8">
             <img
               src="/images/logo.png"
