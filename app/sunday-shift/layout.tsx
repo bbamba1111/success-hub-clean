@@ -41,8 +41,6 @@ export default function SundayShiftLayout({
     router.push("/")
   }
 
-  console.log("[v0] Sunday Shift layout rendering, user:", user?.email)
-
   return (
     <>
       {/* Custom Nav for Sunday Shift */}
