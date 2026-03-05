@@ -7,23 +7,36 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ArrowRight, Clock, Target, TrendingUp, Calendar, Zap, Moon, CheckCircle, Star, Download, CheckCircle2, Sparkles, Heart, Users } from "lucide-react"
 import CherryBlossomCountdown from "@/components/cherry-blossom-countdown"
+import WorkLifeBalanceSchedule from "@/components/work-life-balance-schedule"
 import { SimpleChatModal } from "@/components/simple-chat-modal"
 import { CherryBlossomCoGuide } from "@/components/cherry-blossom-co-guide"
 import { createBrowserClient } from "@supabase/ssr"
 
-export default function SundayShiftPage() {
+export default function HomePage() {
+  const [dashboardVisited, setDashboardVisited] = useState(false)
   const [isChatOpen, setIsChatOpen] = useState(false)
   const [chatContext, setChatContext] = useState<string>("")
   const [chatTitle, setChatTitle] = useState("")
   const [isCoGuideOpen, setIsCoGuideOpen] = useState(false)
   const [userId, setUserId] = useState<string | undefined>()
+  const [isBarbaraStaffOpen, setIsBarbaraStaffOpen] = useState(false)
 
   useEffect(() => {
+    // Check if user has visited dashboard from planner/tracker
+    const visited = localStorage.getItem("dashboardVisited")
+    if (visited === "true") {
+      setDashboardVisited(true)
+    }
+  }, [])
+
+  useEffect(() => {
+    // Get user ID from Supabase auth
     const getUserId = async () => {
       const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
       const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
       if (!supabaseUrl || !supabaseAnonKey) {
+        console.log("[v0] Supabase env vars not available, skipping user ID fetch")
         return
       }
 
@@ -38,6 +51,13 @@ export default function SundayShiftPage() {
     getUserId()
   }, [])
 
+  const scrollToWellnessDashboard = () => {
+    const element = document.getElementById("wellness-dashboard")
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" })
+    }
+  }
+
   const openChat = (context: string, title: string) => {
     setChatContext(context)
     setChatTitle(title)
@@ -46,7 +66,68 @@ export default function SundayShiftPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white">
-      {/* Make The Sunday Shift Section */}
+      {/* Hero Section */}
+      <div className="relative overflow-hidden bg-white">
+        <div className="max-w-7xl mx-auto px-6 py-16">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left Content */}
+            <div className="space-y-8">
+              <div className="flex justify-center mb-6">
+                <img
+                  src="/images/logo.png"
+                  alt="Make Time For More Logo"
+                  width={104}
+                  height={104}
+                  className="rounded-full shadow-lg"
+                />
+              </div>
+
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <h1 className="text-3xl lg:text-3xl font-bold text-gray-900 leading-tight">
+                    Make Time For More Harmony<sup className="text-lg">™</sup> 
+                  </h1>
+                  <p className="text-lg text-gray-600 font-normal">
+                   Welcome to The Work-Life Balance Installation Hub
+                  </p>
+                  <p className="text-lg text-gray-600 font-normal">
+                   The Parallel Lane to Hustle Entrepreneurship
+                  </p>
+                </div>
+
+                <p className="text-lg text-gray-600 leading-relaxed">
+                  This is your central space to begin harmonizing work and life. Here, you’ll Take The Audit, Set Your 28-Day Intention, and access Cherry Blossom your AI Powered Work-Life Balance Co-Guide. Experience non-negotiable co-working, community connections, wellness tracking, personalized guidance and more — all in one{" "}
+                  <button
+                    onClick={scrollToWellnessDashboard}
+                    className={`font-bold underline transition-colors ${
+                      dashboardVisited
+                        ? "text-[#7FB069] hover:text-[#6FA055] cursor-pointer"
+                        : "text-gray-400 cursor-not-allowed"
+                    }`}
+                    disabled={!dashboardVisited}
+                  >
+                    Dashboard
+                  </button>
+                  .
+                </p>
+              </div>
+            </div>
+
+            {/* Right Image */}
+            <div className="relative">
+              <div className="rounded-2xl overflow-hidden shadow-2xl">
+                <img
+                  src="/images/hero-women-tea-cherry-blossoms-new.png"
+                  alt="Diverse women enjoying tea together in cherry blossom garden"
+                  className="w-full h-auto object-cover"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+ {/* Make The Sunday Shift Section */}
       <div className="relative overflow-hidden py-20">
         <div className="absolute inset-0 bg-gradient-to-r from-[#7FB069]/10 to-[#E26C73]/10" />
         <div className="relative max-w-6xl mx-auto px-6">
@@ -278,311 +359,1194 @@ export default function SundayShiftPage() {
         </div>
       </div>
 
-      {/* Monday Reset Masterclass Invitation Section */}
-      <div className="py-20 bg-gradient-to-br from-[#58795C] to-[#1a3535] relative overflow-hidden">
-        {/* Subtle pattern overlay */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-10 right-10 w-64 h-64 rounded-full bg-[#7FB069]" />
-          <div className="absolute bottom-10 left-10 w-48 h-48 rounded-full bg-[#E26C73]" />
+
+      
+      
+      {/* Step 2 - Co-Working Non-Negotiables Section */}
+      <div className="bg-white py-20">
+        <div className="max-w-6xl mx-auto px-6">
+          {/* Step 2 Badge at Top */}
+          <div className="flex items-center justify-center gap-3 mb-8">
+            <img
+              src="/images/logo.png"
+              alt="Make Time For More Logo"
+              width={80}
+              height={80}
+              className="rounded-full shadow-lg"
+            />
+            <Badge variant="secondary" className="bg-[#7FB069] text-white border-0">
+              Step 2
+            </Badge>
+          </div>
+
+          {/* Header Text Above Image */}
+          <div className="text-center mb-12">
+            <h3 className="text-3xl font-bold text-[#7FB069] mb-4">
+              Break The Hustle Habit — Co-Work Your Non-Negotiables™
+            </h3>
+          </div>
+
+          {/* New Co-Working Women Image */}
+          <div className="text-center mb-8">
+            <div className="max-w-6xl mx-auto">
+              <img
+                src="/images/design-mode/00000000000001step4.png"
+                alt="Diverse professional women in co-working environments with cherry blossoms"
+                className="w-full h-auto object-cover rounded-2xl shadow-2xl"
+              />
+            </div>
+          </div>
+
+          {/* Green Banner */}
+          <div className="max-w-6xl mx-auto mb-8 -mt-4">
+            <div className="bg-[#7FB069] text-white p-4 rounded-b-2xl shadow-lg text-center">
+              <p className="text-lg lg:text-2xl font-medium leading-relaxed">
+                You'll Practice, Embody & Live This Schedule with Us — 4 Days a Week
+              </p>
+            </div>
+          </div>
+
+          {/* Interactive Schedule Component */}
+          <div className="rounded-2xl overflow-hidden mt-4">
+            <WorkLifeBalanceSchedule />
+          </div>
+        </div>
+      </div>
+
+      
+
+      {/* Cherry Blossom AI Suite */}
+      <div className="bg-gradient-to-br from-[#7FB069]/10 to-[#7FB069]/5 pt-20 pb-25">
+        <div className="text-center mb-12">
+          <div className="max-w-2xl mx-auto mb-6">
+            <div className="flex items-center justify-center gap-3 mb-8">
+              <img
+                src="/images/logo.png"
+                alt="Make Time For More Logo"
+                width={80}
+                height={80}
+                className="rounded-full shadow-lg"
+              />
+            </div>
+            <img
+              src="/images/cherry-blossom-suite-new.png"
+              alt="Cherry Blossom Suite"
+              className="w-full h-auto object-contain mx-auto mb-6 rounded-2xl"
+            />
+            <h2 className="text-2xl font-bold text-[#E26C73] mb-4">
+              🌸 World's First AI-Powered Work-Life Balance Planner 🌸
+            </h2>
+            <p className="text-lg text-gray-900 mb-4">
+              6 AI Powered Work-Life Balance Co-Guides to help plan your Experience — Each co-guide provides
+              personalized planning, progress insights and transformation strategies.
+            </p>
+          </div>
         </div>
 
-        <div className="relative max-w-6xl mx-auto px-6">
-          {/* Cherry Blossom Header */}
-          <div className="text-center mb-12">
-            <p className="text-[#FFFFFF] text-l font-semibold tracking-widest uppercase mb-4">What Happens After The Sunday Shift</p>
-            <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6 text-balance">
-              Make Time For More Harmony<sup className="text-4xl">™</sup>
-            </h2>
-            <p className="text-2xl text-white/80 max-w-8xl mx-auto leading-relaxed">
-              Participate in the Founding Case Study of Harmony — The Parallel Lane of Hustle Entrepreneurship
-            </p>
-          </div>
-
-          {/* Hero Image + Intro */}
-          <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
-            <div className="rounded-2xl overflow-hidden shadow-2xl">
-              <img
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Feb%2011%2C%202026%2C%2011_29_58%20AM-GpoaKt4dbVfVYKzrkkHmBOk789E8Tq.png"
-                alt="Woman enjoying peaceful morning with coffee - Make Time For More Harmony"
-                className="w-full h-auto object-cover"
-              />
-            </div>
-            <div className="space-y-6 text-white">
-              <div className="space-y-4">
-                <p className="text-lg leading-relaxed text-white/90">
-                  You identified the imbalances. You chose your 1-3 non-negotiable priorities. You’ve set your intention for the week.
-                </p>
-                <p className="text-xl font-semibold text-[#7FB069]">
-                  Now you are invited to live inside a structure that supports it.
-                </p>
-                <p className="text-lg leading-relaxed text-white/90">
-                  Most women try to improve their lives without changing the structure that is exhausting them. They set intentions — but enter Monday inside the same reactive framework.
-                </p>
-                <p className="text-lg leading-relaxed text-white/90">
-                  In the Harmony Lane of Entrepreneurship, we do something different. We redesign how the week begins.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* This Is a Live Case-Study Installation */}
-          <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
-            <div className="space-y-6 text-white">
-              <h3 className="text-3xl font-bold">This Is a Live Case-Study Installation</h3>
-              <p className="text-lg text-white/90 leading-relaxed">
-                The Work-Life Balance Business Model & SOP has already been architected as a harmony-first operating system for women in entrepreneurship.
-              </p>
-              <p className="text-lg text-white/90 leading-relaxed">
-                Make Time For Harmony is where you experience it in real time.
-              </p>
-              <p className="text-lg text-white/90 leading-relaxed">
-                We are currently running live case-study installations validating the structural impact of the Parallel Lane.
-              </p>
-              <p className="text-xl font-semibold text-[#7FB069]">This is not about motivation.</p>
-              <p className="text-lg text-white/90 leading-relaxed">
-                {"It's about measuring:"}
-              </p>
-              <ul className="space-y-3 text-white/90 text-lg">
-                <li className="flex items-start gap-3">
-                  <span className="text-[#7FB069] font-bold mt-1">&#8226;</span>
-                  <span>What shifts when work is intentionally contained</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-[#7FB069] font-bold mt-1">&#8226;</span>
-                  <span>What happens when energy precedes execution</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-[#7FB069] font-bold mt-1">&#8226;</span>
-                  <span>How a 4-Hour Focused CEO Workday affects output and clarity</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-[#7FB069] font-bold mt-1">&#8226;</span>
-                  <span>What 20 hours of protected time freedom does to leadership</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-[#7FB069] font-bold mt-1">&#8226;</span>
-                  <span>How rhythm changes nervous system chemistry</span>
-                </li>
-              </ul>
-              <div className="pt-4 space-y-2">
-                <p className="text-xl font-semibold text-white">You are not a beta tester.</p>
-                <p className="text-[#E26C73] font-semibold text-lg">You are a founding participant.</p>
-                <p className="text-[#E26C73] font-semibold text-lg">A pioneer. A contributor. A lane-builder.</p>
-              </div>
-            </div>
-            <div className="rounded-2xl overflow-hidden shadow-2xl">
-              <img
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Feb%2020%2C%202026%2C%2002_24_53%20AM-XpA8JBEKrb1lmrQfB0H72i1Z4RAx2q.png"
-                alt="Mother laughing joyfully with her two children at a cherry blossom park picnic - Make Time For More Harmony"
-                className="w-full h-auto object-cover"
-              />
-            </div>
-          </div>
-
-          {/* Why This Matters */}
-          <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-10 mb-16 border border-white/20">
-            <h3 className="text-3xl font-bold text-white mb-8 text-center">Why This Matters</h3>
-            <p className="text-lg text-white/90 leading-relaxed text-center max-w-3xl mx-auto mb-8">
-              The data and lived experience from these installations inform:
-            </p>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto mb-10">
-              <div className="bg-white/5 rounded-xl p-5 border border-white/10 text-center">
-                <p className="text-white font-semibold text-lg">{"Women's Associations"}</p>
-              </div>
-              <div className="bg-white/5 rounded-xl p-5 border border-white/10 text-center">
-                <p className="text-white font-semibold text-lg">Founder Communities</p>
-              </div>
-              <div className="bg-white/5 rounded-xl p-5 border border-white/10 text-center">
-                <p className="text-white font-semibold text-lg">Entrepreneurial Ecosystems</p>
-              </div>
-              <div className="bg-white/5 rounded-xl p-5 border border-white/10 text-center">
-                <p className="text-white font-semibold text-lg">Conference & Panel Conversations</p>
-              </div>
-              <div className="bg-white/5 rounded-xl p-5 border border-white/10 text-center lg:col-span-1 md:col-span-2">
-                <p className="text-white font-semibold text-lg">Wellness-Focused Workplace Design in the AI Age</p>
-              </div>
-            </div>
-            <div className="text-center space-y-2">
-              <p className="text-xl font-bold text-[#7FB069]">This is operating system architecture.</p>
-              <p className="text-xl font-bold text-[#E26C73]">Not productivity advice.</p>
-            </div>
-          </div>
-          
-          {/* Why This Works - Science Section */}
-          <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-10 mb-16 border border-white/20">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              <div>
-                <h3 className="text-3xl font-bold text-white mb-6">Why This Works</h3>
-                <p className="text-lg text-white/90 leading-relaxed mb-6">
-                  Burnout is not a discipline problem. It is a structural one. When you have been conditioned to push, force, overwork, and over-effort your way to success, your nervous system stays in stress chemistry.
-                </p>
-                <p className="text-lg text-white/90 leading-relaxed mb-6">
-                  But science shows us something powerful:
-                </p>
-                <div className="space-y-3">
-                  <p className="text-[#7FB069] font-semibold text-lg">Energy precedes execution.</p>
-                  <p className="text-[#7FB069] font-semibold text-lg">Clarity precedes results.</p>
-                  <p className="text-[#7FB069] font-semibold text-lg">Structure shapes behavior.</p>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12 max-w-7xl mx-auto px-6">
+          {/* Card 1 - Morning GIV•EN™ Routine */}
+          <Card className="bg-gradient-to-br from-[#E26C73]/10 to-[#E26C73]/5 border-2 border-[#E26C73]/20 hover:shadow-xl transition-all duration-300">
+            <CardHeader className="pb-4">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#E26C73] to-[#7FB069] flex items-center justify-center shadow-sm">
+                  <img
+                    src="/images/tea-cup-icon.png"
+                    alt="Morning GIV•EN™ Routine"
+                    className="w-8 h-8 object-contain"
+                  />
                 </div>
               </div>
-              <div className="flex justify-center">
+              <CardTitle className="text-xl font-bold text-gray-900 mb-3">Morning GIV•EN™ Routine</CardTitle>
+              <p className="text-gray-700 text-sm leading-relaxed">
+                Your spiritual alignment and morning routine co-guide for starting each day with intention and divine
+                connection.
+              </p>
+            </CardHeader>
+
+            <CardContent className="pt-0">
+              <div className="mb-6 rounded-lg overflow-hidden">
                 <img
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Feb%2011%2C%202026%2C%2011_15_45%20AM-KtQZLNIuyo8SJCTL71G2WeKgifNDbE.png"
-                  alt="Make Time For More Harmony - from hustle to harmony"
-                  className="w-80 h-80 rounded-2xl shadow-xl object-cover"
+                  src="/images/morning-routine-pink-meditation.webp"
+                  alt="Woman meditating in pink attire"
+                  className="w-full h-48 object-cover"
                 />
               </div>
-            </div>
-          </div>
 
-          {/* The Shift */}
-          <div className="text-center mb-16">
-            <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-              <div className="bg-[#E26C73]/20 rounded-2xl p-6 border border-[#E26C73]/30">
-                <p className="text-[#E26C73] font-semibold mb-2">FROM</p>
-                <p className="text-white text-lg">Over-efforting</p>
-                <p className="text-[#7FB069] font-bold text-2xl my-2">&#8594;</p>
-                <p className="text-[#7FB069] font-semibold mb-2">TO</p>
-                <p className="text-white text-lg">Intentional Execution</p>
-              </div>
-              <div className="bg-[#E26C73]/20 rounded-2xl p-6 border border-[#E26C73]/30">
-                <p className="text-[#E26C73] font-semibold mb-2">FROM</p>
-                <p className="text-white text-lg">Forcing Outcomes</p>
-                <p className="text-[#7FB069] font-bold text-2xl my-2">&#8594;</p>
-                <p className="text-[#7FB069] font-semibold mb-2">TO</p>
-                <p className="text-white text-lg">Focused Leadership</p>
-              </div>
-              <div className="bg-[#E26C73]/20 rounded-2xl p-6 border border-[#E26C73]/30">
-                <p className="text-[#E26C73] font-semibold mb-2">FROM</p>
-                <p className="text-white text-lg">Hustling Harder</p>
-                <p className="text-[#7FB069] font-bold text-2xl my-2">&#8594;</p>
-                <p className="text-[#7FB069] font-semibold mb-2">TO</p>
-                <p className="text-white text-lg">Harmonizing Rhythm</p>
-              </div>
-            </div>
-          </div>
+              <Button
+                onClick={() => openChat("morning-routine", "Morning GIV•EN™ Routine")}
+                className="w-full bg-[#E26C73] hover:bg-[#D55A60] text-white font-semibold"
+              >
+                Plan Your Morning Routine
+              </Button>
+            </CardContent>
+          </Card>
 
-          {/* What You Experience on Monday */}
-          <div className="mb-16">
-            <h3 className="text-3xl font-bold text-white text-center mb-10">What You Experience on Monday</h3>
+          {/* Card 2 - 30-Minute Workday Workout Window */}
+          <Card className="bg-gradient-to-br from-[#7FB069]/10 to-[#7FB069]/5 border-2 border-[#7FB069]/20 hover:shadow-xl transition-all duration-300">
+            <CardHeader className="pb-4">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#7FB069] to-[#E26C73] flex items-center justify-center shadow-sm">
+                  <img
+                    src="/images/yoga-meditation-icon.png"
+                    alt="30-Minute Workday Workout Window"
+                    className="w-8 h-8 object-contain"
+                  />
+                </div>
+              </div>
+              <CardTitle className="text-xl font-bold text-gray-900 mb-3">30-Minute Workday Workout Window</CardTitle>
+              <p className="text-gray-700 text-sm leading-relaxed">
+                Your movement and energy optimization co-guide for integrating physical wellness into your workday.
+              </p>
+            </CardHeader>
+
+            <CardContent className="pt-0">
+              <div className="mb-6 rounded-lg overflow-hidden">
+                <img
+                  src="/images/workout-window-screen.webp"
+                  alt="Woman viewing virtual workout class"
+                  className="w-full h-48 object-cover"
+                />
+              </div>
+
+              <Button
+                onClick={() => openChat("workout-window", "30-Minute Workday Workout Window")}
+                className="w-full bg-[#7FB069] hover:bg-[#6FA055] text-white font-semibold"
+              >
+                Plan Your Workout Window
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Card 3 - Extended Healthy Hybrid Lunch Break */}
+          <Card className="bg-gradient-to-br from-[#E26C73]/10 to-[#E26C73]/5 border-2 border-[#E26C73]/20 hover:shadow-xl transition-all duration-300">
+            <CardHeader className="pb-4">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#E26C73] to-[#7FB069] flex items-center justify-center shadow-sm">
+                  <img
+                    src="/images/tea-cup-icon.png"
+                    alt="Extended Healthy Hybrid Lunch Break"
+                    className="w-8 h-8 object-contain"
+                  />
+                </div>
+              </div>
+              <CardTitle className="text-xl font-bold text-gray-900 mb-3">
+                Extended Healthy Hybrid Lunch Break
+              </CardTitle>
+              <p className="text-gray-700 text-sm leading-relaxed">
+                Your nourishment and activity-stacking co-guide for combining social connections, business meetings, and
+                healthy eating in beautiful settings.
+              </p>
+            </CardHeader>
+
+            <CardContent className="pt-0">
+              <div className="mb-6 rounded-lg overflow-hidden">
+                <img
+                  src="/images/hybrid-lunch-outdoor.png"
+                  alt="Woman enjoying healthy salad outdoors"
+                  className="w-full h-48 object-cover"
+                />
+              </div>
+
+              <Button
+                onClick={() => openChat("lunch-break", "Extended Healthy Hybrid Lunch Break")}
+                className="w-full bg-[#E26C73] hover:bg-[#D55A60] text-white font-semibold"
+              >
+                Plan Your Lunch Break
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Card 4 - 4-Hour Focused CEO Workday */}
+          <Card className="bg-gradient-to-br from-[#7FB069]/10 to-[#7FB069]/5 border-2 border-[#7FB069]/20 hover:shadow-xl transition-all duration-300">
+            <CardHeader className="pb-4">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#7FB069] to-[#E26C73] flex items-center justify-center shadow-sm">
+                  <img
+                    src="/images/ceo-presentation-cherry-blossom-icon.png"
+                    alt="4-Hour Focused CEO Workday"
+                    className="w-8 h-8 object-contain"
+                  />
+                </div>
+              </div>
+              <CardTitle className="text-xl font-bold text-gray-900 mb-3">4-Hour Focused CEO Workday</CardTitle>
+              <p className="text-gray-700 text-sm leading-relaxed">
+                Your productivity and business alignment co-guide for working ON your business with divine co-creation
+                and quantum focus.
+              </p>
+            </CardHeader>
+
+            <CardContent className="pt-0">
+              <div className="mb-6 rounded-lg overflow-hidden">
+                <img
+                  src="/images/ceo-workday-focused.png"
+                  alt="Professional woman working at desk"
+                  className="w-full h-48 object-cover"
+                />
+              </div>
+
+              <Button
+                onClick={() => openChat("ceo-workday", "4-Hour Focused CEO Workday")}
+                className="w-full bg-[#7FB069] hover:bg-[#6FA055] text-white font-semibold"
+              >
+                Plan Your CEO Workday
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Card 5 - Quality of Lifestyle Experiences */}
+          <Card className="bg-gradient-to-br from-[#E26C73]/10 to-[#E26C73]/5 border-2 border-[#E26C73]/20 hover:shadow-xl transition-all duration-300">
+            <CardHeader className="pb-4">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#E26C73] to-[#7FB069] flex items-center justify-center shadow-sm">
+                  <img
+                    src="/images/family-vacation-icon.png"
+                    alt="Quality of Lifestyle Experiences"
+                    className="w-8 h-8 object-contain"
+                  />
+                </div>
+              </div>
+              <CardTitle className="text-xl font-bold text-gray-900 mb-3">Quality of Lifestyle Experiences</CardTitle>
+              <p className="text-gray-700 text-sm leading-relaxed">
+                Your joy, creativity, and connection co-guide for immersing in the real wealth of life experiences.
+              </p>
+            </CardHeader>
+
+            <CardContent className="pt-0">
+              <div className="mb-6 rounded-lg overflow-hidden">
+                <img
+                  src="/images/family-lifestyle-experiences.png"
+                  alt="Woman enjoying quality time with family"
+                  className="w-full h-48 object-cover"
+                />
+              </div>
+
+              <Button
+                onClick={() => openChat("lifestyle-experiences", "Quality of Lifestyle Experiences")}
+                className="w-full bg-[#E26C73] hover:bg-[#D55A60] text-white font-semibold"
+              >
+                Plan Your Lifestyle Experiences
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Card 6 - Power Down & Unplug Digital Detox */}
+          <Card className="bg-gradient-to-br from-[#E26C73]/10 to-[#E26C73]/5 border-2 border-[#E26C73]/20 hover:shadow-xl transition-all duration-300">
+            <CardHeader className="pb-4">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#7FB069] to-[#E26C73] flex items-center justify-center shadow-sm">
+                  <img
+                    src="/images/power-down-moon-cherry-blossom-icon.png"
+                    alt="Power Down & Unplug Digital Detox"
+                    className="w-8 h-8 object-contain"
+                  />
+                </div>
+              </div>
+              <CardTitle className="text-xl font-bold text-gray-900 mb-3">Power Down & Unplug Digital Detox</CardTitle>
+              <p className="text-gray-700 text-sm leading-relaxed">
+                Your evening wind-down and nervous system regulation co-guide for restorative sleep and overnight
+                hormone repair.
+              </p>
+            </CardHeader>
+
+            <CardContent className="pt-0">
+              <div className="mb-6 rounded-lg overflow-hidden">
+                <img
+                  src="/images/power-down-reading-night.png"
+                  alt="Woman reading in cozy evening setting"
+                  className="w-full h-48 object-cover"
+                />
+              </div>
+
+              <Button
+                onClick={() => openChat("digital-detox", "Power Down & Unplug Digital Detox")}
+                className="w-full bg-[#E26C73] hover:bg-[#D55A60] text-white font-semibold"
+              >
+                Plan Your Digital Detox
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      {/* Wellness Tracking Dashboard */}
+      <div id="wellness-dashboard" className="max-w-6xl mx-auto px-16 py-16">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Your Wellness Tracking Dashboard</h2>
+          <p className="text-lg text-gray-600">Monitor and optimize your daily wellness habits</p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-8 mb-8">
+          <Card className="border-2 border-[#7FB069]/30 hover:border-[#7FB069] transition-all duration-300 hover:shadow-lg">
+            <CardHeader>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-[#7FB069] to-[#E26C73] rounded-full flex items-center justify-center">
+                  <Zap className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <CardTitle className="text-[#7FB069]">Workout Planner</CardTitle>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600 mb-6">
+                Track your 30-minute workday workout sessions. Plan, schedule, and monitor your movement and energy
+                optimization journey.
+              </p>
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center gap-2 text-sm text-gray-700">
+                  <Target className="w-4 h-4 text-[#7FB069]" />
+                  Weekly workout goals and progress tracking
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-700">
+                  <Calendar className="w-4 h-4 text-[#7FB069]" />
+                  Date-specific workout scheduling
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-700">
+                  <TrendingUp className="w-4 h-4 text-[#7FB069]" />
+                  Monthly progress overview
+                </div>
+              </div>
+              <Link href="/workout-planner">
+                <Button className="w-full bg-[#7FB069] hover:bg-[#6FA055] text-white">
+                  Open Workout Planner
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+
+          <Card className="border-2 border-[#E26C73]/30 hover:border-[#E26C73] transition-all duration-300 hover:shadow-lg">
+            <CardHeader>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-[#E26C73] to-[#7FB069] rounded-full flex items-center justify-center">
+                  <Moon className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <CardTitle className="text-[#E26C73]">Sleep Tracker</CardTitle>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600 mb-6">
+                Monitor your power down and unplug evening routine. Track sleep quality, duration, and digital detox
+                habits.
+              </p>
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center gap-2 text-sm text-gray-700">
+                  <Target className="w-4 h-4 text-[#E26C73]" />
+                  Sleep quality and duration goals
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-700">
+                  <Calendar className="w-4 h-4 text-[#E26C73]" />
+                  Daily sleep log with dates
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-700">
+                  <TrendingUp className="w-4 h-4 text-[#E26C73]" />
+                  Weekly sleep pattern analysis
+                </div>
+              </div>
+              <Link href="/sleep-tracker">
+                <Button className="w-full bg-[#E26C73] hover:bg-[#D55A60] text-white">
+                  Open Sleep Tracker
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        </div>
+
+        <Card className="border-2 border-gray-200 bg-gradient-to-br from-white to-gray-50">
+          <CardContent className="p-8">
+            <h3 className="text-xl font-bold text-gray-900 mb-6 text-center">Complete Wellness Tracking Features</h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                <div className="w-12 h-12 bg-[#4F3B1D]/20 rounded-full flex items-center justify-center mb-4">
-                  <span className="text-[#7FB069] text-xl font-bold">1</span>
+              <div className="flex items-start gap-3">
+                <Calendar className="h-5 w-5 text-[#7FB069] flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-1">Date Tracking</h4>
+                  <p className="text-sm text-gray-600">
+                    Every workout and sleep entry includes specific dates for accurate progress monitoring.
+                  </p>
                 </div>
-                <h4 className="text-white font-bold text-lg mb-2">Morning GIV*EN Alignment</h4>
-                <p className="text-white/70 text-m">A grounded ritual to set your intention before the day begins.</p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                <div className="w-12 h-12 bg-[#4F3B1D]/20 rounded-full flex items-center justify-center mb-4">
-                  <span className="text-[#7FB069] text-xl font-bold">2</span>
-                </div>
-                <h4 className="text-white font-bold text-lg mb-2">30 Min Workday Workout Window</h4>
-                <p className="text-white/70 text-m">Built-in movement to reset your energy mid-day.</p>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                <div className="w-12 h-12 bg-[#4F3B1D]/20 rounded-full flex items-center justify-center mb-4">
-                  <span className="text-[#7FB069] text-xl font-bold">3</span>
-                </div>
-                <h4 className="text-white font-bold text-lg mb-2">Extended Healthy Hybrid Lunch</h4>
-                <p className="text-white/70 text-m">A real break — not a rushed meal at your desk.</p>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                <div className="w-12 h-12 bg-[#4F3B1D]/20 rounded-full flex items-center justify-center mb-4">
-                  <span className="text-[#E26C73] text-xl font-bold">4</span>
-                </div>
-                <h4 className="text-white font-bold text-lg mb-2">4-Hour Focused CEO Workday</h4>
-                <p className="text-white/70 text-m">Co-worked deep focus — your highest-value work gets done here.</p>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                <div className="w-12 h-12 bg-[#4F3B1D]/20 rounded-full flex items-center justify-center mb-4">
-                  <span className="text-[#E26C73] text-xl font-bold">5</span>
-                </div>
-                <h4 className="text-white font-bold text-lg mb-2">20 Hours Protected Time Freedom</h4>
-                <p className="text-white/70 text-m">Your life expands in the space work no longer occupies.</p>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                <div className="w-12 h-12 bg-[#4F3B1D]/20 rounded-full flex items-center justify-center mb-4">
-                  <span className="text-[#E26C73] text-xl font-bold">6</span>
-                </div>
-                <h4 className="text-white font-bold text-lg mb-2">Power Down & Unplug</h4>
-                <p className="text-white/70 text-m">A structured close so you truly disconnect and recharge.</p>
-              </div>
-            </div>
-            <p className="text-center text-white/60 mt-6 text-m italic">
-              Four elements are co-worked. Two are lived independently. Work has a start time. Work has a stop time.
-            </p>
-          </div>
 
-          {/* Monday Is the On-Ramp */}
-          <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
-            <div className="space-y-6 text-white">
-              <h3 className="text-3xl font-bold">Monday Is the On-Ramp</h3>
-              <p className="text-lg text-white/90 leading-relaxed">
-                Make Time For More Harmony is your first installation day. Some women experience one Reset and feel the shift. Some return weekly, on Mondays, to strengthen the rhythm.
-              </p>
-              <p className="text-lg text-white/90 leading-relaxed">
-                Some expand into the full Monday-Thursday model, where frequency and repetition wire this as their new default operating system.
-              </p>
-              <div className="space-y-3 pt-4">
-                <p className="text-[#7FB069] font-semibold text-lg">Frequency builds sustainability.</p>
-                <p className="text-[#7FB069] font-semibold text-lg">Repetition builds identity.</p>
-                <p className="text-[#7FB069] font-semibold text-lg">Rhythm builds legacy.</p>
+              <div className="flex items-start gap-3">
+                <TrendingUp className="h-5 w-5 text-[#E26C73] flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-1">Progress Analytics</h4>
+                  <p className="text-sm text-gray-600">
+                    Comprehensive weekly and monthly progress tracking with visual charts and insights.
+                  </p>
+                </div>
               </div>
-              <p className="text-xl font-semibold text-white pt-4">
-                We've prepared the lane. Now you are invited to merge into it.
-              </p>
+
+              <div className="flex items-start gap-3">
+                <Target className="h-5 w-5 text-[#7FB069] flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-1">Goal Setting</h4>
+                  <p className="text-sm text-gray-600">
+                    Set and track weekly goals for both movement and sleep optimization.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <CheckCircle className="h-5 w-5 text-[#E26C73] flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-1">Habit Tracking</h4>
+                  <p className="text-sm text-gray-600">
+                    Build and maintain healthy habits with our comprehensive tracking system.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <Zap className="h-5 w-5 text-[#7FB069] flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-1">Energy Optimization</h4>
+                  <p className="text-sm text-gray-600">
+                    Track your energy levels throughout the day and optimize your schedule accordingly.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <Moon className="h-5 w-5 text-[#E26C73] flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-1">Wellness Insights</h4>
+                  <p className="text-sm text-gray-600">
+                    Get personalized insights and recommendations based on your wellness data.
+                  </p>
+                </div>
+              </div>
             </div>
-            <div className="flex justify-center">
+          </CardContent>
+        </Card>
+      </div>
+
+{/* Week 4: Integration Week Section */}
+      <div className="py-20 bg-gradient-to-br from-[#7FB069]/10 to-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left: Image */}
+            <div className="order-2 lg:order-1">
               <img
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Dec%2021%2C%202025%2C%2003_31_18%20AM-QJOoaSnovH48wFCYRsMtGAljPojxL7.png"
-                alt="No more grinding into the week. You now ease into it harmonized, intentional, and fully aligned."
-                className="w-full max-w-md rounded-2xl shadow-xl"
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1balck-RiZx5UtrQ1qvJVC6d3ANH1aMYrFG11.png"
+                alt="Integration Week - Living Your New Rhythm"
+                className="w-full rounded-3xl shadow-2xl"
               />
             </div>
-          </div>
 
-          {/* CTA */}
-          <div className="bg-gradient-to-r from-[#7FB069] to-[#E26C73] rounded-3xl p-10 text-center shadow-2xl">
-            <p className="text-white/90 text-sm font-semibold tracking-widest uppercase mb-4">Pilot Case Study Opportunity</p>
-            <h3 className="text-3xl lg:text-4xl font-bold text-white mb-4">
-              Make Time For More Harmony<sup className="text-lg">™</sup>
-            </h3>
-            <p className="text-white/90 text-lg mb-8 max-w-2xl mx-auto">
-              Step into the structure that replaces survival with sustainability.
-            </p>
-            <div className="flex flex-col items-center gap-4">
-              <a
-                href="https://www.maketimeformore.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block"
-              >
-                <Button className="bg-white text-[#729A74] hover:bg-gray-50 text-lg px-12 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all font-bold">
-                  <div className="flex flex-col items-center gap-1">
-                  <span className="text-2xl font-bold">Merge Into The Parallel Lane $497</span>
-                  </div>
-                </Button>
-              </a>
-              <p className="text-white/70 text-m italic">Limited spots available for the founding pilot cohort.</p>
+            {/* Right: Content */}
+            <div className="order-1 lg:order-2 space-y-6">
+              <h2 className="text-4xl lg:text-5xl font-bold text-[#7FB069]">
+                Week 4: Integration Week
+              </h2>
+              <p className="text-xl text-gray-700 leading-relaxed">
+                Your fourth week of every cycle is designed for <span className="font-bold text-[#7FB069]">solo practice</span> — no co-working sessions, no live calls.
+              </p>
+              <p className="text-lg text-gray-700 leading-relaxed">
+                This is where you prove to yourself that the Work-Life Balance rhythm you've been installing over the past three Mondays has truly become <span className="font-semibold">automatic</span>.
+              </p>
+
+              <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-[#7FB069]/20">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">What Happens During Integration Week:</h3>
+                <ul className="space-y-3 text-gray-700">
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="w-6 h-6 text-[#7FB069] flex-shrink-0 mt-1" />
+                    <span><strong>Monday - Thursday:</strong> You live the full model solo — GIV•EN, Workout Window, Extended Lunch, 4-Hour CEO Block, Quality of Life Experiences, Power Down Detox</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="w-6 h-6 text-[#7FB069] flex-shrink-0 mt-1" />
+                    <span><strong>Friday - Sunday:</strong> Pure white space. No structure. Just life.</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="w-6 h-6 text-[#7FB069] flex-shrink-0 mt-1" />
+                    <span><strong>16-Hour Work Week:</strong> You work 4 focused hours per day, Monday-Thursday (16 total hours)</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="w-6 h-6 text-[#7FB069] flex-shrink-0 mt-1" />
+                    <span><strong>152 Hours Time Freedom:</strong> The remaining 152 hours of your week belong to YOU</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="bg-[#E26C73]/10 rounded-2xl p-6">
+                <p className="text-gray-800 font-medium">
+                  <span className="text-[#E26C73] font-bold">This is the proof:</span> If you can live this rhythm independently for a full week — without external accountability or co-working support — you've successfully installed a sustainable Work-Life Balance business model.
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-    
-    
+      {/* Share Your Monthly Success Story Section */}
+      <div className="py-20 bg-gradient-to-br from-[#E26C73]/10 to-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left: Content */}
+            <div className="space-y-6">
+              <h2 className="text-4xl lg:text-5xl font-bold text-[#E26C73]">
+                Share Your Monthly Success Story
+              </h2>
+              <p className="text-xl text-gray-700 leading-relaxed">
+                At the end of every 28-Day Installation Cycle, we invite you to{" "}
+                <span className="font-bold text-[#E26C73]">reflect, celebrate, and share</span> your transformation.
+              </p>
+              <p className="text-lg text-gray-700 leading-relaxed">
+                Your story matters — not just for you, but for every entrepreneur still trapped in hustle culture, wondering if balance is actually possible.
+              </p>
 
+              <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-[#E26C73]/20">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">What to Share:</h3>
+                <ul className="space-y-3 text-gray-700">
+                  <li className="flex items-start gap-3">
+                    <Sparkles className="w-6 h-6 text-[#E26C73] flex-shrink-0 mt-1" />
+                    <span>What shifted for you this month?</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Sparkles className="w-6 h-6 text-[#E26C73] flex-shrink-0 mt-1" />
+                    <span>What habits finally stuck?</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Sparkles className="w-6 h-6 text-[#E26C73] flex-shrink-0 mt-1" />
+                    <span>What time freedom did you reclaim?</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Sparkles className="w-6 h-6 text-[#E26C73] flex-shrink-0 mt-1" />
+                    <span>How did your business or life transform?</span>
+                  </li>
+                </ul>
+              </div>
 
+              <div className="space-y-4">
+                <a
+                  href="https://www.maketimeformore.com/testimonials"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block"
+                >
+                  <Button className="w-full bg-gradient-to-r from-[#E26C73] to-[#7FB069] hover:from-[#D55A60] hover:to-[#6FA055] text-white text-lg py-6">
+                    Submit Your Success Story
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </a>
+                <p className="text-center text-gray-600 text-sm italic">
+                  Your testimonial may be featured on our website, in our community, and in our marketing to inspire others.
+                </p>
+              </div>
+            </div>
 
-      <SimpleChatModal
-        isOpen={isChatOpen}
-        onClose={() => setIsChatOpen(false)}
-        context={chatContext}
-        title={chatTitle}
+            {/* Right: Image */}
+            <div>
+              <img
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1debrief-MRp5ajmcKDbCglvbDKinQcD0Ug8uCx.png"
+                alt="Share Your Success Story"
+                className="w-full rounded-3xl shadow-2xl"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Facebook Group CTA Section */}
+      <div className="bg-gradient-to-r from-[#7FB069]/10 to-[#E26C73]/10 py-24">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <div className="max-w-2xl mx-auto">
+              <div className="flex items-center justify-center gap-3 mb-8">
+                <img
+                  src="/images/logo.png"
+                  alt="Make Time For More Logo"
+                  width={80}
+                  height={80}
+                  className="rounded-full shadow-lg"
+                />
+              </div>
+              <h2 className="text-3xl font-bold text-[#E26C73] mb-6">Join Our Facebook Community</h2>
+              <p className="text-lg text-gray-600 mb-8">
+                Connect with like-minded women on their work-life balance journey. Share experiences, get support,
+                celebrate wins together, and share pics and videos of you making time for more.
+              </p>
+              <img
+                src="/images/facebook-group-community.jpg"
+                alt="Diverse community of women in cherry blossom setting"
+                className="w-full h-auto object-cover rounded-2xl shadow-2xl mb-8"
+              />
+              <a
+                href="https://www.facebook.com/groups/maketimeformore"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block"
+              >
+                <Button
+                  size="lg"
+                  className="bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-semibold px-8 py-4 text-lg"
+                >
+                  Join Our Facebook Group
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Rest, Recover & Recharge Section */}
+      <div className="bg-gradient-to-br from-[#7FB069]/10 to-[#7FB069]/5 pt-20 pb-8">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="flex items-center justify-center gap-3 mb-8">
+            <img
+              src="/images/logo.png"
+              alt="Make Time For More Logo"
+              width={80}
+              height={80}
+              className="rounded-full shadow-lg"
+            />
+            <Badge variant="secondary" className="bg-gradient-to-r from-[#E26C73] to-[#7FB069] text-white border-0">
+              Week 4
+            </Badge>
+          </div>
+
+          <div className="text-center mb-12">
+            <h3 className="text-3xl font-bold bg-gradient-to-r from-[#E26C73] to-[#7FB069] bg-clip-text text-transparent mb-4">
+              Your Permission to Disconnect & Explore
+            </h3>
+            <p className="text-xl text-gray-700 font-medium">
+              We don't just teach Work-Life Balance — we live it. That's why we take two community-wide sabbaticals every year where you have full permission to step away, explore, and recharge guilt-free.
+
+Travel to new destinations, learn something new, spend quality time with family, pursue a passion project, or simply rest. No work. No guilt. No FOMO.
+            </p>
+          </div>
+
+          <div className="text-center mb-8">
+            <div className="max-w-4xl mx-auto">
+              <img
+                src="/images/vacation-celebration-women-cherry-blossoms.png"
+                alt="Three diverse women celebrating together in cherry blossom setting"
+                className="w-full h-auto object-cover rounded-2xl shadow-2xl"
+              />
+            </div>
+          </div>
+
+          {/* The Button for Sabbatical Planning was updated here */}
+          <div className="max-w-4xl mx-auto mb-8">
+            <Button
+              onClick={() => openChat("sabbatical-planning", "Plan Your Summer or Winter Holiday Sabbatical")}
+              size="lg"
+              className="w-full bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-bold px-12 py-6 text-xl shadow-xl hover:shadow-2xl transition-all transform hover:scale-105"
+            >
+              Plan Your Summer & Winter Holiday Sabbaticals Here
+            </Button>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-8 mb-20">
+            <Card className="border-2 border-[#E26C73]/30 bg-white/80">
+              <CardHeader>
+                <CardTitle className="text-[#E26C73] flex items-center gap-2">
+                  <Star className="h-5 w-5" />
+                  Summer Sabbatical (July - August)
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-gray-700 leading-relaxed">
+                  Two full months to travel, play, and fully disconnect. Share vacation plans, family
+                          adventures, and sabbatical experiences in the Facebook Group.
+                </p>
+
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-4 h-4 text-[#E26C73] flex-shrink-0" />
+                    <span className="text-gray-700 text-sm">Share photos from epic family vacations and travel adventures</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-4 h-4 text-[#E26C73] flex-shrink-0" />
+                    <span className="text-gray-700 text-sm">Post about new hobbies, skills, or experiences you're exploring
+</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-4 h-4 text-[#E26C73] flex-shrink-0" />
+                    <span className="text-gray-700 text-sm">Celebrate your guilt-free time off and inspire others to disconnect</span>
+                  </div>
+                </div>
+
+                <a
+                  href="https://www.facebook.com/groups/maketimeformore"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block"
+                >
+                  <Button className="w-full bg-[#E26C73] hover:bg-[#D55A60] text-white">
+                    Share Your Summer Sabbatical Experiences Here
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </a>
+              </CardContent>
+            </Card>
+
+            <Card className="border-2 border-[#E26C73]/30 bg-white/80">
+              <CardHeader>
+                <CardTitle className="text-[#E26C73] flex items-center gap-2">
+                  <Star className="h-5 w-5" />
+                 Winter Sabbatical (November - December)
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-gray-700 leading-relaxed">
+                  Two months to celebrate holidays, reflect on the year, and rest deeply. No pressure, no
+                         deadlines — just intentional time with loved ones.
+                </p>
+
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-4 h-4 text-[#E26C73] flex-shrink-0" />
+                    <span className="text-gray-700 text-sm">Share holiday celebrations and quality time with loved ones</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-4 h-4 text-[#E26C73] flex-shrink-0" />
+                    <span className="text-gray-700 text-sm">Post year-end reflections and transformation stories</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="w-4 h-4 text-[#E26C73] flex-shrink-0" />
+                    <span className="text-gray-700 text-sm">Inspire the community by showing what intentional rest looks like</span>
+                  </div>
+                </div>
+
+                <a
+                  href="https://www.facebook.com/groups/maketimeformore"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block"
+                >
+                  <Button className="w-full bg-[#E26C73] hover:bg-[#D55A60] text-white">
+                    Share Your Winter Holiday Sabbatical Experiences Here
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </a>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Ready For More - Pricing Section */}
+          <div className="py-20 rounded-2xl">
+            <div className="max-w-7xl mx-auto px-6">
+              <div className="bg-gradient-to-r from-[#E26C73] to-[#7FB069] text-white py-12 px-6 rounded-t-2xl text-center mb-0">
+                <div className="flex items-center justify-center gap-3 mb-6">
+                  <img
+                    src="/images/logo.png"
+                    alt="Make Time For More Logo"
+                    width={80}
+                    height={80}
+                    className="rounded-full shadow-lg"
+                  />
+                </div>
+                <h2 className="text-3xl lg:text-4xl font-bold mb-4">Ready For More? Choose Your Next Level</h2>
+                <p className="text-xl text-white/90">
+                  Founding Member Scholarship: 50% Credit on All Experiences Through March 31, 2026
+                </p>
+              </div>
+
+              {/* Content Section - Cream/beige background */}
+              <div className="bg-[#F5F1E8] py-12 px-6 lg:px-12 rounded-b-2xl">
+                <div className="max-w-5xl mx-auto space-y-6 mb-12">
+                  <h3 className="text-2xl font-bold text-gray-900">
+                    How Deeply Will You Root Your New Work-Life Balance Blueprint?
+                  </h3>
+
+                  <p className="text-lg text-gray-800 leading-relaxed">
+                    Choose your experience level based on the transformation you're ready for. Each includes our
+                    complete Make Time For More™ SOP with co-working sessions (Mon-Thu 1-5pm ET) plus independent
+                    practice days.
+                  </p>
+
+                  
+
+                  <div className="grid md:grid-cols-2 gap-8 max-w-7xl mx-auto mt-12">
+
+                    {/* Column 2 — Habit Building Installation™ */}
+<div className="flex flex-col">
+  <div className="bg-white rounded-2xl overflow-hidden shadow-lg flex-grow flex flex-col border border-gray-100 hover:shadow-xl transition-all">
+    <div className="h-[400px] overflow-hidden flex items-center justify-center bg-gray-50">
+      <img src="/images/14-day-momentum-builder.png" alt="Woman in peaceful meditation in serene room with cherry blossoms"
+        className="w-full h-full object-cover"
       />
+    </div>
 
-      <CherryBlossomCoGuide isOpen={isCoGuideOpen} onClose={() => setIsCoGuideOpen(false)} userId={userId} />
+    <div className="p-6 flex-grow flex flex-col">
+      <h3 className="text-2xl font-bold text-[#2F4F4F] mb-3">
+        <strong>Habit Building Installation™</strong>
+      </h3>
+
+      <p className="text-gray-700 mb-3 italic">
+        <strong>Repetition · Momentum · Wiring</strong>
+      </p>
+
+      <p className="text-gray-700 mb-3 italic">
+        Increased frequency to actively build the rhythm through lived repetition.
+      </p>
+      
+      <p className="text-gray-700 mb-5 leading-relaxed">
+        The Habit Building Installation™ is for women who already know the rhythm works — and want it to install <strong>faster.</strong> Instead of practicing once a week, you practice
+        <strong> four days per week (Monday–Thursday)</strong> during the structured weeks of a single 28-day cycle.
+      </p>
+
+      <p className="text-gray-700 mb-5 leading-relaxed">
+        Instead of practicing once a week, you practice <strong> four days per week (Monday–Thursday)</strong> during the structured weeks of a single 28-day cycle.
+      </p>
+
+      <div className="bg-[#F5F1E8] rounded-xl p-5 mb-6">
+        <p className="font-semibold text-gray-800 mb-4">
+          Structure & Frequency
+        </p>
+
+        <ul className="space-y-3 text-base text-gray-700">
+          <li className="flex items-start gap-2">
+            <span className="text-[#7FB069] font-bold">•</span>
+            <span>
+              <strong>Frequency:</strong> 4 days per week (Mon–Thu)
+            </span>
+          </li>
+
+          <li className="flex items-start gap-2">
+            <span className="text-[#7FB069] font-bold">•</span>
+            <span>
+              <strong>Structure</strong> 3 structured weeks + 1 Integration Week
+            </span>
+          </li>
+
+          <li className="flex items-start gap-2">
+            <span className="text-[#7FB069] font-bold">•</span>
+            <span>
+              <strong>Duration:</strong> 1 full 28-day cycle
+            </span>
+          </li>
+
+          <li className="flex items-start gap-2">
+            <span className="text-[#7FB069] font-bold">•</span>
+            <span>
+              <strong>Total Installation Days</strong> 12
+            </span>
+          </li>      
+
+        </ul>
+
+     <div className="mt-5 pt-5 border-t border-[#e6dfd3]">
+          <p className="font-semibold text-gray-800 mb-4">Purpose</p>
+          <p className="text-gray-700">
+            This installation is designed to <strong>normalize the rhythm as your baseline.</strong> It answers the question:
+
+“How do I make this my life — not a phase?”
+
+This is where the 4-Day Workweek and 4-Hour Focused CEO Workdays become natural — unlocking <strong>152 hours of weekly time freedom</strong> as a lived reality, not a goal.
+          </p>
+        </div>
+      
+        <div className="mt-5 pt-5 border-t border-[#e6dfd3]">
+          <p className="font-semibold text-gray-800 mb-4">Time Freedom Outcome</p>
+          <p className="text-gray-700">
+            Reclaim <strong>608 hours</strong> in 28 days by installing the full Mon–Thurs model + Integration Week.
+          </p>
+        </div>
+      </div>
+
+      <div className="bg-gray-50 border border-gray-100 rounded-xl p-5 mb-6">
+        <p className="font-semibold text-gray-800 mb-2">Investment</p>
+        <ul className="text-gray-700 space-y-2">
+          <li> <strong>$9,997</strong> per 28-day cycle</li>
+          <li> Includes 12 live Mon–Thurs days + 1 Integration Week</li>
+          <li> Option to repeat the cycle or move into Maintenance after proof</li>
+        </ul>
+      </div>
+
+      <div className="space-y-4 mt-auto">
+        <a
+          href="https://www.maketimeformore.com/checkout/28-day-founding"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block hover:shadow-2xl transition-all transform hover:scale-[1.02]"
+        >
+          <div className="bg-[#E26C73] text-white rounded-2xl p-6 text-center shadow-lg transition-all">
+            <div className="font-bold text-sm tracking-wide mb-3">
+              <strong>UPGRADE</strong>
+            </div>
+            <div className="text-lg font-bold mb-1">
+              <strong>Habit Building Installation</strong>
+            </div>
+            <div className="text-white/80 text-sm mb-4">
+              Full 4-Day Workweeks · 4-Hour Workdays = 152 hrs/week time freedom
+            </div>
+            <div className="text-xl font-bold mb-1">
+              <strong>$9,997</strong>
+            </div>
+            <div className="mt-3 bg-white/20 rounded-full py-2 px-4 text-white font-bold text-sm">
+              <strong>Click here to upgrade →</strong>
+            </div>
+          </div>
+        </a>
+
+        <p className="text-xs text-gray-500 text-center px-2">
+          For women ready to close the Tue–Thu gap.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{/* Column 3 - Desired Work-Lifestyle Installation™ */}
+                    <div className="flex flex-col">
+                      <div className="bg-white rounded-2xl overflow-hidden shadow-lg flex-grow flex flex-col border border-gray-100 hover:shadow-xl transition-all">
+                        <div className="h-[400px] overflow-hidden flex items-center justify-center bg-gray-50">
+                          <img
+                            src="/images/21-day-habit-builder.png"
+                            alt="Woman in luxury airplane seat with cherry blossom design"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+
+                        <div className="p-6 flex-grow flex flex-col">
+                          <h3 className="text-2xl font-bold text-[#2F4F4F] mb-4">
+                            <strong>Desired Work-Lifestyle Installation</strong>
+                          </h3>
+      <p className="text-gray-700 mb-3 italic">
+        <strong>Normalization · Identity · Baseline</strong>
+      </p>
+
+      <p className="text-gray-700 mb-3 italic">
+      This installation is for women who are ready to normalize the rhythm as their default way of living and leading.
+      </p>
+      
+      <p className="text-gray-700 mb-5 leading-relaxed">
+        You live the full 4-Day (Mon–Thu) rhythm across three consecutive 28-day cycles — allowing the structure to move from familiar → embodied → automatic.
+      </p>
+
+        <p className="text-gray-700 mb-5 leading-relaxed">
+        This is where the rhythm stops being built — and becomes who you are.
+      </p>                  
+
+      <div className="bg-[#F5F1E8] rounded-xl p-5 mb-6">
+        <p className="font-semibold text-gray-800 mb-3">
+          Structure & Frequency
+        </p>
+
+        <ul className="space-y-3 text-base text-gray-700">
+          <li className="flex items-start gap-2">
+            <span className="text-[#7FB069] font-bold">•</span>
+            <span>
+              <strong>Frequency:</strong> 4 days per week (Mon–Thu)
+            </span>
+          </li>
+
+          <li className="flex items-start gap-2">
+            <span className="text-[#7FB069] font-bold">•</span>
+            <span>
+              <strong>Structure</strong> 4-Day Workweek 4-Hour Workday
+            </span>
+          </li>
+
+          <li className="flex items-start gap-2">
+            <span className="text-[#7FB069] font-bold">•</span>
+            <span>
+              <strong>Duration:</strong> 3 consecutive 28-day cycles
+            </span>
+          </li>
+
+          <li className="flex items-start gap-2">
+            <span className="text-[#7FB069] font-bold">•</span>
+            <span>
+              <strong>Purpose:</strong> Customize and mormalize the rhythm as your baseline
+            </span>
+          </li>      
+
+          </ul>
+
+     <div className="mt-5 pt-5 border-t border-[#e6dfd3]">
+          <p className="font-semibold text-gray-800 mb-3">Purpose</p>
+          <p className="text-gray-700">
+            This installation is designed to <strong>normalize the rhythm as your baseline.</strong>
+          </p>
+
+        <p className="text-gray-700">
+            It answers the question: “How do I make this my life — not a phase?”
+
+This is where the 4-Day Workweek and 4-Hour Focused CEO Workdays become natural — unlocking <strong>152 hours of weekly time freedom</strong> as a lived reality, not a goal.
+          </p>
+       
+        </div>
+      
+        <div className="mt-5 pt-5 border-t border-[#e6dfd3]">
+          <p className="font-semibold text-gray-800 mb-3">Time Freedom Outcome</p>
+          <p className="text-gray-700">
+            Reclaim <strong>608 hours</strong> in 28 days by installing the full Mon–Thurs model + Integration Week.
+          </p>
+        </div>
+      </div>
+
+      <div className="bg-gray-50 border border-gray-100 rounded-xl p-5 mb-6">
+        <p className="font-semibold text-gray-800 mb-2">Investment</p>
+        <ul className="text-gray-700 space-y-2">
+          <li> <strong>Investment is shared by invitation.
+          </strong> This container is intentionally limited to ensure alignment, support, and sustainability.</li>
+          <li>Request Invitation</li>
+          <li> Message Thought Leader Barbara</li>
+        </ul>
+      </div>
+
+                          <div className="space-y-4 mt-auto">
+                            
+                            <a
+                              href="https://www.maketimeformore.com/checkout/90-day-founding"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="block hover:shadow-2xl transition-all transform hover:scale-[1.02]"
+                            >
+                              <div className="bg-[#7FB069] text-white rounded-2xl p-6 text-center shadow-lg transition-all">
+                                <div className="font-bold text-sm tracking-wide mb-3">
+                                  <strong>INVITATION-ONLY</strong>
+                                </div>
+                                <div className="font-bold mb-1 text-lg">
+                                  <strong>Desired Work-Lifestyle Installation</strong>
+                                </div>
+                                  
+                                <div className="mt-3 bg-white/20 rounded-full py-2 px-4 text-white font-bold text-sm">
+                                  <strong>Contact TL Barbara →</strong>
+                                </div>
+                              </div>
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-16 bg-gradient-to-r from-[#E26C73] to-[#7FB069] rounded-2xl p-8 shadow-lg">
+                    <div className="flex flex-col lg:flex-row items-center gap-8">
+                      <div className="lg:w-2/3 text-white">
+                        <h3 className="text-2xl font-bold mb-4">
+                          <strong>Make Time For More On Mondays</strong>
+                        </h3>
+                        <p className="mb-4 italic text-white/90">Stay Connected with 3 Mondays Per Month</p>
+                        <p className="mb-4 leading-relaxed text-white/90">
+                          Perfect if you want to maintain your connection to the community, keep your rhythms steady, or
+                          need a lighter commitment after completing an experience. Join us for 3 powerful Mondays each
+                          month during the habit-building weeks.
+                        </p>
+                        <ul className="grid md:grid-cols-2 gap-3 text-base text-white/90">
+                          <li className="flex items-start gap-2">
+                            <span className="text-white font-bold">✓</span>
+                            <span>(3) Monday Co-Working Sessions (1-5pm ET)</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-white font-bold">✓</span>
+                            <span>Morning GIV•EN™ Routine Access</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-white font-bold">✓</span>
+                            <span>SOP Access on Mondays</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-white font-bold">✓</span>
+                            <span>AI Executive Team Demos</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-white font-bold">✓</span>
+                            <span>Facebook Community Access</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-white font-bold">✓</span>
+                            <span>Upgrade Anytime</span>
+                          </li>
+                        </ul>
+                      </div>
+                      <div className="lg:w-1/3 flex flex-col gap-4">
+                        <a
+                          href="https://www.maketimeformore.com/checkout/mondays-membership"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block hover:shadow-2xl transition-all transform hover:scale-[1.02]"
+                        >
+                          <div className="bg-white text-[#2F4F4F] rounded-2xl p-6 text-center shadow-lg transition-all">
+                            <div className="font-bold text-sm tracking-wide mb-3">
+                              <strong>MONTHLY MEMBERSHIP</strong>
+                            </div>
+                            <div className="font-bold mb-1 text-lg">
+                              <strong>Mondays Only</strong>
+                            </div>
+                            <div className="text-xs text-gray-500 italic mb-3">Cancel Anytime</div>
+                            <div className="text-xl font-bold mb-1">
+                              <strong>$297/mo</strong>
+                            </div>
+                            <div className="mt-3 bg-gradient-to-r from-[#E26C73] to-[#7FB069] rounded-full py-2 px-4 text-white font-bold text-sm">
+                              <strong>Click here to join →</strong>
+                            </div>
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+                    
+          {/* Book Thought Leader Barbara section */}
+          {/* Book Thought Leader Barbara Section */}
+          <div className="bg-gradient-to-r from-[#7FB069]/10 to-[#E26C73]/10 py-8 pb-24">
+            <div className="max-w-6xl mx-auto px-6">
+              <div className="text-center mb-12">
+                <div className="max-w-3xl mx-auto">
+                  <div className="flex items-center justify-center gap-3 mb-8">
+                    <img
+                      src="/images/logo.png"
+                      alt="Make Time For More Logo"
+                      width={80}
+                      height={80}
+                      className="rounded-full shadow-lg"
+                    />
+                  </div>
+                  <h2
+                    className="text-4xl text-[#E26C73] mb-8"
+                    style={{ fontFamily: "'Great Vibes', cursive", fontWeight: 400 }}
+                  >
+                    Book Thought Leader Barbara
+                  </h2>
+                  <div className="flex justify-center mb-8">
+                    <img
+                      src="/images/barbara-cherry-garden.jpg"
+                      alt="Barbara"
+                      className="w-64 h-64 rounded-full object-cover shadow-2xl"
+                    />
+                  </div>
+                  <p className="text-lg text-gray-700 leading-relaxed mb-6">
+                    To learn more about Barbara's availability for speaking engagements and interviews, or to schedule
+                    private coaching sessions or VIP DAYs, email Barbara:{" "}
+                    <a
+                      href="mailto:coachbarbara@maketimeformore.com"
+                      className="text-[#7FB069] hover:text-[#6FA055] font-semibold underline"
+                    >
+                      coachbarbara@maketimeformore.com
+                    </a>
+                  </p>
+                  <p className="text-base text-gray-600 italic">
+                    Put <span className="font-bold">SPEAKING</span>, <span className="font-bold">INTERVIEW</span>,{" "}
+                    <span className="font-bold">COACHING</span>, <span className="font-bold">VIP DAY</span> in the
+                    subject line in all caps.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <SimpleChatModal
+            isOpen={isChatOpen}
+            onClose={() => setIsChatOpen(false)}
+            context={chatContext}
+            title={chatTitle}
+          />
+
+          {/* Removed FloatingChatButton component */}
+
+          <CherryBlossomCoGuide isOpen={isCoGuideOpen} onClose={() => setIsCoGuideOpen(false)} userId={userId} />
+        </div>
+      </div>
     </div>
   )
 }
