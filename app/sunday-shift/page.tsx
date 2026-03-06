@@ -97,10 +97,10 @@ export default function SundayShiftPage() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-6">
             <p
-              className="text-[42px] text-gray-700 mb-4"
+              className="text-[40px] text-gray-700 mb-4"
               style={{ fontFamily: "'Playfair Display'", fontWeight: 400 }}
             >
-              Live with Thought Leader Barbara
+              Merge into the Harmony Lane — where work is intentionally contained so life can expand.
             </p>
             <h2 className="text-3xl font-medium text-[#7FB069] mb-4">
            Your First 3-Steps to Work-Life Balance, Time-Freedom & Sustainable Success
