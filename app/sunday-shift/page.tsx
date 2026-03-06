@@ -58,9 +58,7 @@ export default function SundayShiftPage() {
             <h2 className="text-3xl font-medium text-[#7FB069] mb-4">
            Design Your Week On Sunday & Make Time For More On Monday
             </h2>
-            <p className="text-2xl text-gray-700 font-medium">
-              Merge into the Harmony Lane — where work is intentionally contained so life can expand.
-            </p>
+            
           </div>
 
           <div className="text-center mb-12">
