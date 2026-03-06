@@ -59,7 +59,7 @@ export default function SundayShiftPage() {
            Design Your Week On Sunday & Make Time For More On Monday
             </h2>
             <p className="text-2xl text-gray-700 font-medium">
-              Merge Into the Week in the Harmony Lane of Entrepreneurship
+              Merge into the Harmony Lane — where work is intentionally contained so life can expand.
             </p>
           </div>
 
