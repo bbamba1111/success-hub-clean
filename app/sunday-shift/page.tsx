@@ -98,11 +98,10 @@ export default function SundayShiftPage() {
               className="text-[40px] text-gray-700 mb-4"
               style={{ fontFamily: "'Playfair Display'", fontWeight: 400 }}
             >
-              Design the week you actually want to live.
-Barbara
+              In the Hustle Lane, the week begins in reaction and survival mode.
             </p>
             <h2 className="text-3xl font-medium text-[#7FB069] mb-4">
-           Three steps to assess where you are, set your intention, and prepare to live it.
+           In the Harmony Lane, you intentionally prepare how the week begins.
             </h2>
           </div>
 
