@@ -131,7 +131,7 @@ export default function SundayShiftPage() {
 
           <div className="text-center mb-8">
             <p className="text-xl text-gray-800">
-              Complete these three essential steps to prepare your energy, calendar, and focus for Monday and the days ahead.
+              Three steps to assess where you are, set your intention, and prepare to live it.
             </p>
           </div>
 
