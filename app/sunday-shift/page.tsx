@@ -54,12 +54,13 @@ export default function SundayShiftPage() {
             <h1 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-[#7FB069] to-[#E26C73] bg-clip-text text-transparent mb-4">
               Make The Sunday Shift<sup className="text-2xl">™</sup>
             </h1>
-            <p className="text-4xl text-gray-700 font-medium">
-              Design Your Week On Sunday & Make Time For More On Monday
-            </p>
-            <h2 className="text-xl font-medium text-[#7FB069] mb-4">
+        
+            <h2 className="text-4xl font-medium text-[#7FB069] mb-4">
            Merge Into the Week in the Harmony Lane of Entrepreneurship
             </h2>
+            <p className="text-2xl text-gray-700 font-medium">
+              Design Your Week On Sunday & Make Time For More On Monday
+            </p>
           </div>
 
           <div className="text-center mb-12">
