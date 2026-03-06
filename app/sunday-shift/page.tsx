@@ -58,7 +58,7 @@ export default function SundayShiftPage() {
             <h2 className="text-4xl font-medium text-[#7FB069] mb-4">
            Design Your Week On Sunday & Make Time For More On Monday
             </h2>
-            <p className="text-2xl text-gray-700 font-medium"/60 mt-6 text-m italic">
+            <p className="text-2xl text-gray-700 font-medium" text-m italic">
               Design Your Week On Sunday & Make Time For More On Monday
             </p>
           </div>
