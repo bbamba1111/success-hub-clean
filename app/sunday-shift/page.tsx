@@ -66,11 +66,11 @@ export default function SundayShiftPage() {
           </div>
 
           <div className="flex justify-center">
-            <div className="space-y-4 flex flex-col max-w-4xl w-full bg-white/80 rounded-2xl shadow-xl p-6">
+            <div className="space-y-4 flex flex-col max-w-6xl w-full bg-white/80 rounded-2xl shadow-xl p-6">
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="flex items-center gap-3 text-gray-700 bg-white/80 p-3 rounded-lg shadow-sm">
                   <Clock className="w-5 h-5 text-[#7FB069] flex-shrink-0" />
-                  <span className="font-semibold text-lg">Join Us Live: Sunday @ 1:00-2:00 PM ET</span>
+                  <span className="font-semibold text-lg">Join Barbara Live — Sunday @ 1:00–3:00 PM ET</span>
                 </div>
 
                 <a
