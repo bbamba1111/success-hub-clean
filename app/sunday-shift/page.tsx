@@ -130,7 +130,7 @@ export default function SundayShiftPage() {
           </div>
 
           <div className="text-center mb-8">
-            <p className="text-xl text-gray-800">
+            <p className="text-xl text-gray-900">
               Complete these three steps to assess where you are, set your intention, and prepare to live it.
             </p>
           </div>
