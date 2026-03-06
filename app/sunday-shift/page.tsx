@@ -51,6 +51,10 @@ export default function SundayShiftPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-[#7FB069]/10 to-[#E26C73]/10" />
         <div className="relative max-w-6xl mx-auto px-6">
           <div className="text-center mb-8">
+            <h2 className="text-3xl font-medium text-[#7FB069] mb-4">
+           Start Your Week with Clarity Instead of Chaos
+            </h2>
+
             <h1 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-[#7FB069] to-[#E26C73] bg-clip-text text-transparent mb-4">
               Make The Sunday Shift<sup className="text-2xl">™</sup>
             </h1>
@@ -233,7 +237,7 @@ export default function SundayShiftPage() {
                   <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 3</Badge>
                 </div>
                 <CardTitle className="text-xl font-bold text-white">
-                  Prepare For Your Monday Reset: Download Your Preparation Checklist
+                  Prepare to Live Monday In The Harmony Lane: Download Your Preparation Checklist
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
