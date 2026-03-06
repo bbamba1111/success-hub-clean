@@ -74,7 +74,7 @@ export default function SundayShiftPage() {
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="flex items-center gap-3 text-gray-700 bg-white/80 p-3 rounded-lg shadow-sm">
                   <Clock className="w-5 h-5 text-[#7FB069] flex-shrink-0" />
-                  <span className="font-semibold text-lg">Design Your Week Live with Barbara — Sunday @ 1:00–3:00 PM ET</span>
+                  <span className="font-semibold text-lg">Design Your Week Live with Barbara — Sunday 1–3 PM ET</span>
                 </div>
 
                 <a
