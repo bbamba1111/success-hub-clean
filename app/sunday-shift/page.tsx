@@ -55,7 +55,7 @@ export default function SundayShiftPage() {
            Start Your Week with Clarity Instead of Chaos
             </h2>
 
-            <h1 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-[#7FB069] to-[#E26C73] bg-clip-text text-transparent mb-4">
+            <h1 className="text-6xl lg:text-6xl font-bold bg-gradient-to-r from-[#7FB069] to-[#E26C73] bg-clip-text text-transparent mb-4">
               Make The Sunday Shift<sup className="text-2xl">™</sup>
             </h1>
         
