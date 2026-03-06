@@ -51,7 +51,7 @@ export default function SundayShiftPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-[#7FB069]/10 to-[#E26C73]/10" />
         <div className="relative max-w-6xl mx-auto px-6">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-medium text-[#7FB069] mb-4">
+            <h2 className="text-2xl font-medium text-[#7FB069] mb-4">
            Start Your Week with Clarity Instead of Chaos
             </h2>
 
