@@ -55,8 +55,11 @@ export default function SundayShiftPage() {
               Make The Sunday Shift<sup className="text-xl">™</sup>
             </h1>
             <p className="text-xl text-gray-700 font-medium">
-              In the Parallel Lane of Harmony Entrepreneurship, Monday Is Not Reactive — It’s Intentional.
+              Design Your Week On Sunday & Make Time For More On Monday
             </p>
+            <h2 className="text-xl font-medium text-[#7FB069] mb-4">
+           Your First 3-Steps to Work-Life Balance, Time-Freedom & Sustainable Success
+            </h2>
           </div>
 
           <div className="text-center mb-12">
