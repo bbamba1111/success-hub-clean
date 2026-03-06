@@ -98,7 +98,8 @@ export default function SundayShiftPage() {
               className="text-[40px] text-gray-700 mb-4"
               style={{ fontFamily: "'Playfair Display'", fontWeight: 400 }}
             >
-              Assess where you are, set your intention for the week, and prepare yourself to live it.
+              Design the week you actually want to live.
+Barbara
             </p>
             <h2 className="text-3xl font-medium text-[#7FB069] mb-4">
            Three steps to assess where you are, set your intention, and prepare to live it.
