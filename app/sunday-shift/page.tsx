@@ -98,10 +98,10 @@ export default function SundayShiftPage() {
               className="text-[40px] text-gray-700 mb-4"
               style={{ fontFamily: "'Playfair Display'", fontWeight: 400 }}
             >
-              Merge into the Harmony Lane — where work is intentionally contained so life can expand.
+              Assess where you are, set your intention for the week, and prepare yourself to live it.
             </p>
             <h2 className="text-3xl font-medium text-[#7FB069] mb-4">
-           Your First 3-Steps to Work-Life Balance, Time-Freedom & Sustainable Success
+           Three steps to assess where you are, set your intention, and prepare to live it.
             </h2>
           </div>
 
