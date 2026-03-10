@@ -187,7 +187,7 @@ export default function SundayShiftPage() {
                   <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 2</Badge>
                 </div>
                 <CardTitle className="text-xl font-bold text-white">
-                  Set Your 7-Day Desired Work-LifeStyle Intention
+                  Set Your Desired Work-LifeStyle Intention
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -237,7 +237,7 @@ export default function SundayShiftPage() {
                   <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 3</Badge>
                 </div>
                 <CardTitle className="text-xl font-bold text-white">
-                  Prepare to Live Monday In The Harmony Lane: Download Your Preparation Checklist
+                  Prepare For Your Experience: Download Your Preparation Checklist
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
