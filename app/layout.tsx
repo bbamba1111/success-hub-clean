@@ -1,14 +1,27 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Great_Vibes } from 'next/font/google'
+import { Great_Vibes, Playfair_Display, Poppins } from 'next/font/google'
 import "./globals.css"
-import { TopNavigation } from "@/components/top-navigation"
+import { ConditionalNav } from "@/components/conditional-nav"
 
 const greatVibes = Great_Vibes({
   weight: "400",
   subsets: ["latin"],
   variable: "--font-great-vibes",
 })
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-playfair",
+})
+
+const poppins = Poppins({
+  weight: ["300", "400", "500", "600", "700"],
+  subsets: ["latin"],
+  variable: "--font-poppins",
+})
+
+
 
 export const metadata: Metadata = {
   title: "Success Hub - Make Time For More",
@@ -23,8 +36,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={greatVibes.variable}>
-        <TopNavigation />
+      <body className={`${greatVibes.variable} ${playfair.variable} ${poppins.variable}`}>
+        <ConditionalNav />
         {children}
       </body>
     </html>
