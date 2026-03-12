@@ -15,7 +15,7 @@ export function HeroSection() {
             Welcome to
           </p>
 
-          <h1 className="text-6xl md:text-8xl font-playfair font-bold text-[#2F4F4F] mb-8 tracking-tight text-balance">
+          <h1 className="text-5xl md:text-7xl font-Play Fair font-bold text-[#2F4F4F] mb-8 tracking-tight text-balance">
             Make Time For More<sup className="text-3xl">™</sup>
           </h1>
 
