@@ -232,7 +232,7 @@ export function CountdownTimer() {
   }
 
   return (
-    <div className="max-w-[2000px] mx-auto">
+    <div className="max-w-[1536px] mx-auto">
       {/* Cherry Blossom Image Container */}
       <div 
         ref={containerRef}
@@ -253,30 +253,30 @@ export function CountdownTimer() {
 
       {/* Countdown Timer Container */}
       <div className="max-w-[1536px] mx-auto p-8 rounded-lg bg-gradient-to-r from-[#E26C73] to-[#5D9D61] text-white shadow-lg relative overflow-hidden">
-        <div className="text-3xl md:text-4xl font-bold text-center mb-6">
+        <div className="text-2xl md:text-3xl font-bold text-center mb-6">
           Counting Down to <span>{weekLabel}</span> of Work-Life Balance in <span>{currentMonth}</span>
         </div>
         <div className="flex justify-center gap-10 md:gap-12 mb-6">
           <div className="text-center">
-            <div className="text-5xl md:text-6xl font-bold leading-none">
+            <div className="text-4xl md:text-5xl font-bold leading-none">
               {timeLeft.days.toString().padStart(2, '0')}
             </div>
             <div className="text-base md:text-lg uppercase font-medium mt-1">Days</div>
           </div>
           <div className="text-center">
-            <div className="text-5xl md:text-6xl font-bold leading-none">
+            <div className="text-4xl md:text-5xl font-bold leading-none">
               {timeLeft.hours.toString().padStart(2, '0')}
             </div>
             <div className="text-base md:text-lg uppercase font-medium mt-1">Hours</div>
           </div>
           <div className="text-center">
-            <div className="text-5xl md:text-6xl font-bold leading-none">
+            <div className="text-4xl md:text-5xl font-bold leading-none">
               {timeLeft.minutes.toString().padStart(2, '0')}
             </div>
             <div className="text-base md:text-lg uppercase font-medium mt-1">Mins</div>
           </div>
           <div className="text-center">
-            <div className="text-5xl md:text-6xl font-bold leading-none">
+            <div className="text-4xl md:text-5xl font-bold leading-none">
               {timeLeft.seconds.toString().padStart(2, '0')}
             </div>
             <div className="text-base md:text-lg uppercase font-medium mt-1">Secs</div>
