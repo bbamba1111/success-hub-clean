@@ -12,7 +12,7 @@ export function MondayPreviewSection() {
           <p className="font-poppins text-lg font-semibold tracking-widest text-[#F8C8C8] uppercase mb-4">
             After The Sunday Shift
           </p>
-          <h2 className="font-playfair text-4xl md:text-6xl font-bold mb-8">
+          <h2 className="font-poppins text-4xl md:text-6xl font-bold mb-8">
             Make Time For More On Mondays<sup className="text-2xl">™</sup>
           </h2>
           <p className="font-poppins text-xl md:text-2xl text-white/80 max-w-3xl mx-auto leading-relaxed">
@@ -31,7 +31,7 @@ export function MondayPreviewSection() {
           </div>
 
           <div className="space-y-8">
-            <h3 className="font-playfair text-3xl md:text-4xl font-bold">
+            <h3 className="font-Poppins text-3xl md:text-4xl font-bold">
               Together We Co-Work Our Non-Negotiables<sup className="text-xl">™</sup>
             </h3>
             <p className="font-poppins text-xl text-white/80 leading-relaxed">
@@ -45,7 +45,7 @@ export function MondayPreviewSection() {
                   <Clock className="w-10 h-10 text-[#7FB069]" />
                 </div>
                 <div>
-                  <p className="font-playfair text-4xl font-bold text-[#7FB069]">20 Hours</p>
+                  <p className="font-Poppins text-4xl font-bold text-[#7FB069]">20 Hours</p>
                   <p className="font-poppins text-lg text-white/70">of Time Freedom Every Monday</p>
                 </div>
               </div>
