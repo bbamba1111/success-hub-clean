@@ -26,6 +26,12 @@ export function HeroSection() {
           <p className="text-xl md:text-2xl font-poppins text-[#7FB069] italic max-w-3xl mb-12">
             Inside the Harmony Lane™, work is intentionally contained so life can expand.
           </p>
+           {/* Countdown Timer with Cherry Blossom Image */}
+        <div className="w-full max-w-5xl mx-auto">
+          <CountdownTimer />
+        </div>
+      </div>
+    </section>
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row gap-6 mb-16">
