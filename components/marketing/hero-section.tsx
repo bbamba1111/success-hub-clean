@@ -8,10 +8,11 @@ export function HeroSection() {
   return (
     <section className="relative bg-[#F7E9D6] overflow-hidden">
       {/* Transparent Background Image Overlay - Full Width */}
-      <img 
-        src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%2027%2C%202025%2C%2001_52_43%20AM-YXHlRDw4ynWk2MHKKfV1Flm3qZbI1k.png"
-        alt=""
-        className="absolute inset-0 w-full h-full object-cover opacity-20"
+      <div 
+        className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat opacity-20"
+        style={{
+          backgroundImage: `url('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%2027%2C%202025%2C%2001_52_43%20AM-YXHlRDw4ynWk2MHKKfV1Flm3qZbI1k.png')`
+        }}
       />
       
       {/* Content */}
