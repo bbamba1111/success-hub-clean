@@ -37,162 +37,66 @@ export function SundayShiftSection() {
           </p>
         </div>
 
-        {/* Three Step Cards */}
+        {/* Three Step Cards - Compact like Harmony Lane section */}
         <div className="grid md:grid-cols-3 gap-8 mb-16">
-          {/* Card 1 - Take The Work-Life Balance Audit (Soft Green) */}
-          <div className="bg-[#8FBC8F]/90 rounded-3xl p-8 text-white shadow-xl">
+          {/* Card 1 - Take The Work-Life Balance Audit (Green - exact from screenshot) */}
+          <div className="bg-[#7FB069] rounded-3xl p-8 text-white shadow-xl">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
                 <img src="/images/logo.png" alt="Logo" className="w-8 h-8 rounded-full" />
               </div>
-              <span className="bg-[#5A7A5A] text-white text-sm font-poppins font-medium px-4 py-1 rounded-full">
+              <span className="bg-[#5A8A4A] text-white text-sm font-poppins font-medium px-4 py-1 rounded-full">
                 Step 1
               </span>
             </div>
             
-            <h3 className="font-playfair text-2xl lg:text-3xl font-bold mb-4">
+            <h3 className="font-playfair text-2xl font-bold mb-4">
               Take The Work-Life Balance Audit
             </h3>
             
-            <p className="font-poppins text-lg text-white/90 mb-6 leading-relaxed">
+            <p className="font-poppins text-xl text-white/95 leading-relaxed">
               Discover exactly where you stand across 15 key life areas with our comprehensive assessment. Get personalized insights and identify your biggest opportunities for growth.
             </p>
-            
-            <ul className="space-y-3 mb-8">
-              <li className="flex items-start gap-3 font-poppins text-base">
-                <svg className="w-5 h-5 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-                <span>15-question comprehensive assessment</span>
-              </li>
-              <li className="flex items-start gap-3 font-poppins text-base">
-                <svg className="w-5 h-5 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-                <span>Instant personalized results</span>
-              </li>
-              <li className="flex items-start gap-3 font-poppins text-base">
-                <svg className="w-5 h-5 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-                <span>AI-powered insights from Cherry Blossom</span>
-              </li>
-            </ul>
-            
-            <button className="w-full bg-white/20 hover:bg-white/30 border-2 border-white text-white font-poppins font-semibold py-4 px-6 rounded-xl transition-all text-lg">
-              Take The Work-Life Balance Audit
-            </button>
           </div>
 
-          {/* Card 2 - Set Your Intention (Soft Coral/Pink) */}
-          <div className="bg-[#E8A0A0]/90 rounded-3xl p-8 text-white shadow-xl">
+          {/* Card 2 - Set Your Intention (Coral/Pink - exact from screenshot) */}
+          <div className="bg-[#E26C73] rounded-3xl p-8 text-white shadow-xl">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
                 <img src="/images/logo.png" alt="Logo" className="w-8 h-8 rounded-full" />
               </div>
-              <span className="bg-[#C07070] text-white text-sm font-poppins font-medium px-4 py-1 rounded-full">
+              <span className="bg-[#C25A60] text-white text-sm font-poppins font-medium px-4 py-1 rounded-full">
                 Step 2
               </span>
             </div>
             
-            <h3 className="font-playfair text-2xl lg:text-3xl font-bold mb-4">
+            <h3 className="font-playfair text-2xl font-bold mb-4">
               Set Your Desired Work-LifeStyle Intention
             </h3>
             
-            <p className="font-poppins text-lg text-white/90 mb-6 leading-relaxed">
+            <p className="font-poppins text-xl text-white/95 leading-relaxed">
               Transform your audit insights into powerful, actionable intentions. Choose 1-3 focus areas and let Cherry Blossom guide you through creating your personalized 7-day transformation plan.
             </p>
-            
-            <ul className="space-y-3 mb-8">
-              <li className="flex items-start gap-3 font-poppins text-base">
-                <svg className="w-5 h-5 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-                <span>Select 1-3 focus areas for maximum impact</span>
-              </li>
-              <li className="flex items-start gap-3 font-poppins text-base">
-                <svg className="w-5 h-5 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-                <span>AI-guided intention crafting with Cherry Blossom</span>
-              </li>
-              <li className="flex items-start gap-3 font-poppins text-base">
-                <svg className="w-5 h-5 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-                <span>Personalized daily practices & action plan</span>
-              </li>
-            </ul>
-            
-            <button className="w-full bg-white/20 hover:bg-white/30 border-2 border-white text-white font-poppins font-semibold py-4 px-6 rounded-xl transition-all text-lg mb-3">
-              Choose Your 1-3 Priority Focus Areas
-            </button>
-            <button className="w-full bg-[#C07070] hover:bg-[#A06060] text-white font-poppins font-semibold py-3 px-6 rounded-xl transition-all text-base flex items-center justify-center gap-2">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-              </svg>
-              Open The Intention Setting Guide
-            </button>
           </div>
 
-          {/* Card 3 - Prepare For Your Experience (Soft Tan/Olive) */}
-          <div className="bg-[#C4A77D]/90 rounded-3xl p-8 text-white shadow-xl">
+          {/* Card 3 - Prepare For Your Experience (Green to Coral Gradient - exact from screenshot) */}
+          <div className="bg-gradient-to-br from-[#7FB069] via-[#A08060] to-[#E26C73] rounded-3xl p-8 text-white shadow-xl">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
                 <img src="/images/logo.png" alt="Logo" className="w-8 h-8 rounded-full" />
               </div>
-              <span className="bg-[#9A8060] text-white text-sm font-poppins font-medium px-4 py-1 rounded-full">
+              <span className="bg-white/30 text-white text-sm font-poppins font-medium px-4 py-1 rounded-full">
                 Step 3
               </span>
             </div>
             
-            <h3 className="font-playfair text-2xl lg:text-3xl font-bold mb-4">
+            <h3 className="font-playfair text-2xl font-bold mb-4">
               Prepare For Your Experience: Download Your Preparation Checklist
             </h3>
             
-            <p className="font-poppins text-lg text-white/90 mb-6 leading-relaxed">
+            <p className="font-poppins text-xl text-white/95 leading-relaxed">
               Get ready for your transformation with our comprehensive preparation checklist. Complete these steps to create the optimal environment for your work-life balance journey.
             </p>
-            
-            <ul className="space-y-3 mb-8">
-              <li className="flex items-start gap-3 font-poppins text-base">
-                <svg className="w-5 h-5 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-                <span>Clear your physical space</span>
-              </li>
-              <li className="flex items-start gap-3 font-poppins text-base">
-                <svg className="w-5 h-5 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-                <span>Block off your calendar</span>
-              </li>
-              <li className="flex items-start gap-3 font-poppins text-base">
-                <svg className="w-5 h-5 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-                <span>Notify your family & team</span>
-              </li>
-              <li className="flex items-start gap-3 font-poppins text-base">
-                <svg className="w-5 h-5 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-                <span>Delegate or delay tasks</span>
-              </li>
-              <li className="flex items-start gap-3 font-poppins text-base">
-                <svg className="w-5 h-5 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-                <span>Prepare your spirit</span>
-              </li>
-            </ul>
-            
-            <button className="w-full bg-white/30 hover:bg-white/40 text-white font-poppins font-semibold py-3 px-6 rounded-xl transition-all text-base flex items-center justify-center gap-2">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-              </svg>
-              Open The Preparation Checklist
-            </button>
           </div>
         </div>
 
