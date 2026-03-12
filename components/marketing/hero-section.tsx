@@ -6,7 +6,15 @@ import Link from "next/link"
 
 export function HeroSection() {
   return (
-    <section className="relative bg-gradient-to-b from-[#FDF8F5] via-[#FEF1EE] to-[#F5FAF5] overflow-hidden">
+    <section className="relative bg-[#F7E9D6] overflow-hidden">
+      {/* Transparent Background Image Overlay - Full Width */}
+      <div 
+        className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat opacity-20"
+        style={{
+          backgroundImage: `url('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%2027%2C%202025%2C%2001_52_43%20AM-YXHlRDw4ynWk2MHKKfV1Flm3qZbI1k.png')`
+        }}
+      />
+      
       {/* Content */}
       <div className="relative z-20 max-w-7xl mx-auto px-6 pt-20 pb-12">
         <div className="flex flex-col items-center text-center">
