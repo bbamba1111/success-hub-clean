@@ -51,7 +51,7 @@ export function HeroSection() {
         </div>
 
         {/* Countdown Timer with Cherry Blossom Image */}
-        <div className="w-full max-w-5xl mx-auto">
+        <div className="w-full max-w-7xl mx-auto">
           <CountdownTimer />
         </div>
       </div>
