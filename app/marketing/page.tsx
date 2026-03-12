@@ -9,9 +9,6 @@ import { PremiumSection } from "@/components/marketing/premium-section"
 import { GardenClosingSection } from "@/components/marketing/garden-closing-section"
 import { Footer } from "@/components/marketing/footer"
 
-// Force dynamic rendering to avoid static generation issues with countdown timer
-export const dynamic = 'force-dynamic'
-
 export default function MarketingHomePage() {
   return (
     <main className="min-h-screen">
