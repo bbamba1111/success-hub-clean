@@ -31,7 +31,6 @@ export function HeroSection() {
           <CountdownTimer />
         </div>
       </div>
-    </section>
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row gap-6 mb-16">
