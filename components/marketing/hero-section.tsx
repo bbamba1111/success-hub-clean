@@ -22,14 +22,7 @@ export function HeroSection() {
           <p className="text-2xl md:text-3xl font-poppins text-[#4A5568] max-w-4xl mb-6 leading-relaxed">
             A premium boutique Work-Life Balance installation for women entrepreneurs who left high-stress careers — and accidentally recreated burnout in their business.
           </p>
-         </div>
-        </div>
-      {/* Countdown Timer with Cherry Blossom Image */}
-        <div className="w-full max-w-7xl mx-auto">
-          <CountdownTimer />
-        </div>
-      </div>
-          
+         
           <p className="text-xl md:text-2xl font-poppins text-[#7FB069] italic max-w-3xl mb-12">
             Inside the Harmony Lane™, work is intentionally contained so life can expand.
           </p>
