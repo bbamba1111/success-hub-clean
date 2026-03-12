@@ -77,4 +77,3 @@ export function getRotatingMessage(sundayNumber: number): string {
 export function getMonthName(date: Date): string {
   return date.toLocaleString("en-US", { month: "long" })
 }
-
