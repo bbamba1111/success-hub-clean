@@ -11,7 +11,7 @@ export function HeroSection() {
       <div 
         className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat opacity-20"
         style={{
-          backgroundImage: `url('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%2027%2C%202025%2C%2001_52_43%20AM-YXHlRDw4ynWk2MHKKfV1Flm3qZbI1k.png')`
+          backgroundImage: `url('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202026-03-12%20032212-p7XriKHU1PL257ZUtf4gqS0VHCh9b4.png')`
         }}
       />
       
