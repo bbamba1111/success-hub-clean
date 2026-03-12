@@ -27,7 +27,7 @@ export function HeroSection() {
             Make Time For More<sup className="text-3xl">™</sup>
           </h1>
 
-          <p className="text-2xl md:text-3xl font-poppins text-[#4A5568] max-w-4xl mb-12 leading-relaxed">
+          <p className="text-2xl md:text-2xl font-poppins text-[#4A5568] max-w-4xl mb-12 leading-relaxed">
             A premium boutique Work-Life Balance installation for women entrepreneurs who left high-stress careers — and accidentally recreated burnout in their business.
           </p>
 
