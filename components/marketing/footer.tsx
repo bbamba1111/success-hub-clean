@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link"
 
 const footerLinks = {
@@ -21,30 +23,30 @@ const footerLinks = {
 
 export function Footer() {
   return (
-    <footer className="bg-[#2F4F4F] text-white py-16">
+    <footer className="bg-[#2F4F4F] text-white py-20">
       <div className="max-w-6xl mx-auto px-6">
-        <div className="grid md:grid-cols-4 gap-12 mb-12">
+        <div className="grid md:grid-cols-4 gap-12 mb-14">
           {/* Brand */}
           <div className="md:col-span-1">
-            <h3 className="text-xl font-serif font-bold mb-4">
-              Make Time For More<sup className="text-xs">™</sup>
+            <h3 className="font-playfair text-2xl font-bold mb-5">
+              Make Time For More<sup className="text-sm">™</sup>
             </h3>
-            <p className="text-white/70 text-sm leading-relaxed">
+            <p className="font-poppins text-base text-white/70 leading-relaxed">
               A premium boutique Work-Life Balance installation for women entrepreneurs.
             </p>
           </div>
 
           {/* Main Links */}
           <div>
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-[#F8C8C8] mb-4">
+            <h4 className="font-poppins text-base font-semibold uppercase tracking-wider text-[#F8C8C8] mb-5">
               Experience
             </h4>
-            <ul className="space-y-3">
+            <ul className="space-y-4">
               {footerLinks.main.map((link) => (
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-white/70 hover:text-white text-sm transition-colors"
+                    className="font-poppins text-base text-white/70 hover:text-white transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -55,15 +57,15 @@ export function Footer() {
 
           {/* Resources */}
           <div>
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-[#F8C8C8] mb-4">
+            <h4 className="font-poppins text-base font-semibold uppercase tracking-wider text-[#F8C8C8] mb-5">
               Resources
             </h4>
-            <ul className="space-y-3">
+            <ul className="space-y-4">
               {footerLinks.resources.map((link) => (
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-white/70 hover:text-white text-sm transition-colors"
+                    className="font-poppins text-base text-white/70 hover:text-white transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -74,15 +76,15 @@ export function Footer() {
 
           {/* Legal */}
           <div>
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-[#F8C8C8] mb-4">
+            <h4 className="font-poppins text-base font-semibold uppercase tracking-wider text-[#F8C8C8] mb-5">
               Connect
             </h4>
-            <ul className="space-y-3">
+            <ul className="space-y-4">
               {footerLinks.legal.map((link) => (
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-white/70 hover:text-white text-sm transition-colors"
+                    className="font-poppins text-base text-white/70 hover:text-white transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -93,11 +95,11 @@ export function Footer() {
         </div>
 
         {/* Bottom */}
-        <div className="border-t border-white/20 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-white/50 text-sm">
+        <div className="border-t border-white/20 pt-10 flex flex-col md:flex-row justify-between items-center gap-6">
+          <p className="font-poppins text-base text-white/50">
             © {new Date().getFullYear()} Make Time For More™. All rights reserved.
           </p>
-          <p className="text-white/50 text-sm italic">
+          <p className="font-poppins text-base text-white/50 italic">
             Inside the Harmony Lane™, work is intentionally contained so life can expand.
           </p>
         </div>

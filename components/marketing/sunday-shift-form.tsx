@@ -23,18 +23,18 @@ export function SundayShiftForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-md mx-auto">
-      <div className="bg-white rounded-2xl p-8 shadow-xl border border-[#F8C8C8]/30">
-        <h4 className="text-xl font-bold text-[#2F4F4F] text-center mb-2">
+    <form onSubmit={handleSubmit} className="max-w-lg mx-auto">
+      <div className="bg-white rounded-3xl p-10 shadow-2xl border border-[#F8C8C8]/30">
+        <h4 className="font-playfair text-2xl font-bold text-[#2F4F4F] text-center mb-3">
           Reserve Your Seat
         </h4>
-        <p className="text-[#6B7280] text-center mb-6 text-sm">
+        <p className="font-poppins text-lg text-[#6B7280] text-center mb-8">
           Join us in the Cherry Blossom Garden
         </p>
 
-        <div className="space-y-4">
+        <div className="space-y-5">
           <div>
-            <label htmlFor="firstName" className="block text-sm font-medium text-[#4A5568] mb-1">
+            <label htmlFor="firstName" className="block font-poppins text-base font-medium text-[#4A5568] mb-2">
               First Name
             </label>
             <Input
@@ -44,12 +44,12 @@ export function SundayShiftForm() {
               onChange={(e) => setFirstName(e.target.value)}
               required
               placeholder="Your first name"
-              className="w-full border-[#F8C8C8]/50 focus:border-[#E26C73] focus:ring-[#E26C73]/20 rounded-lg"
+              className="w-full border-[#F8C8C8]/50 focus:border-[#E26C73] focus:ring-[#E26C73]/20 rounded-xl py-6 text-lg font-poppins"
             />
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-[#4A5568] mb-1">
+            <label htmlFor="email" className="block font-poppins text-base font-medium text-[#4A5568] mb-2">
               Email Address
             </label>
             <Input
@@ -59,20 +59,20 @@ export function SundayShiftForm() {
               onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="you@example.com"
-              className="w-full border-[#F8C8C8]/50 focus:border-[#E26C73] focus:ring-[#E26C73]/20 rounded-lg"
+              className="w-full border-[#F8C8C8]/50 focus:border-[#E26C73] focus:ring-[#E26C73]/20 rounded-xl py-6 text-lg font-poppins"
             />
           </div>
 
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-[#E26C73] hover:bg-[#D15A61] text-white py-6 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all disabled:opacity-50"
+            className="w-full bg-[#E26C73] hover:bg-[#D15A61] text-white py-7 text-xl font-poppins font-semibold rounded-full shadow-lg hover:shadow-xl transition-all disabled:opacity-50"
           >
             {isSubmitting ? "Reserving..." : "Enter the Cherry Blossom Garden"}
           </Button>
         </div>
 
-        <p className="text-xs text-[#6B7280] text-center mt-4 italic">
+        <p className="font-poppins text-base text-[#6B7280] text-center mt-6 italic">
           Free weekly ritual • Sundays • Live inside the Cherry Blossom Garden
         </p>
       </div>

@@ -1,6 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Great_Vibes, Playfair_Display, Poppins, Montserrat } from 'next/font/google'
+import { Great_Vibes, Playfair_Display, Poppins } from 'next/font/google'
 import "./globals.css"
 import { ConditionalNav } from "@/components/conditional-nav"
 
@@ -21,10 +21,7 @@ const poppins = Poppins({
   variable: "--font-poppins",
 })
 
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  variable: "--font-montserrat",
-})
+
 
 export const metadata: Metadata = {
   title: "Success Hub - Make Time For More",
@@ -39,7 +36,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${greatVibes.variable} ${playfair.variable} ${poppins.variable} ${montserrat.variable}`}>
+      <body className={`${greatVibes.variable} ${playfair.variable} ${poppins.variable}`}>
         <ConditionalNav />
         {children}
       </body>

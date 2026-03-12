@@ -15,7 +15,6 @@ const config: Config = {
       fontFamily: {
         playfair: ['var(--font-playfair)', 'serif'],
         poppins: ['var(--font-poppins)', 'sans-serif'],
-        montserrat: ['var(--font-montserrat)', 'sans-serif'],
       },
       colors: {
         background: "hsl(var(--background))",
