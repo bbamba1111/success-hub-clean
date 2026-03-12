@@ -16,7 +16,7 @@ export function HarmonyLaneSection() {
 
         {/* 3 Images Grid */}
         <div className="grid md:grid-cols-3 gap-8 mb-20">
-          {/* Image 1 - Family Picnic */}
+          {/* Image 1 - Women with Children Picnic */}
           <div className="rounded-3xl overflow-hidden shadow-2xl">
             <img 
               src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Feb%2020%2C%202026%2C%2002_25_32%20AM-V8DJdzqsH1OgGwEdNX9b1rAik1pJNM.png"
@@ -25,20 +25,20 @@ export function HarmonyLaneSection() {
             />
           </div>
           
-          {/* Image 2 - Hustle to Harmony */}
-          <div className="rounded-3xl overflow-hidden shadow-2xl">
-            <img 
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1Lo-69OI13Z8ayTZmvn4Zy98USTNf31fGS.png"
-              alt="Woman transitioning from corporate hustle to cherry blossom harmony"
-              className="w-full h-80 object-cover"
-            />
-          </div>
-          
-          {/* Image 3 - Couple Dinner */}
+          {/* Image 2 - Dinner Date */}
           <div className="rounded-3xl overflow-hidden shadow-2xl">
             <img 
               src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Feb%2028%2C%202026%2C%2011_07_56%20PM-Nz2F5DwFg32nSCzQXiBc2mBRTLQn3C.png"
               alt="Couple enjoying romantic dinner with cherry blossom decor - Make Time For More Harmony"
+              className="w-full h-80 object-cover"
+            />
+          </div>
+          
+          {/* Image 3 - 3 Women Traveling */}
+          <div className="rounded-3xl overflow-hidden shadow-2xl">
+            <img 
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Sep%2027%2C%202025%2C%2011_49_27%20AM-TRAiXpwlHcY1M8VKFGpyaZgVIc6GS7.png"
+              alt="Three diverse women friends traveling together in Japan with cherry blossoms - Make Time For More Harmony"
               className="w-full h-80 object-cover"
             />
           </div>
