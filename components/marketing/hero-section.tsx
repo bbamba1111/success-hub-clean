@@ -20,7 +20,7 @@ export function HeroSection() {
         <div className="flex flex-col items-center text-center">
           {/* Logo/Brand */}
           <p className="text-lg font-poppins font-medium tracking-widest text-[#E26C73] uppercase mb-6">
-            Welcome to
+            Welcome to Harmony — The Parallel Lane to Hustle Entrepreneurship
           </p>
 
           <h1 className="text-6xl md:text-8xl font-playfair font-bold text-[#2F4F4F] mb-8 tracking-tight text-balance">
