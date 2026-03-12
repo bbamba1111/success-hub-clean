@@ -232,7 +232,7 @@ export function CountdownTimer() {
   }
 
   return (
-    <div className="max-w-[1536px] mx-auto">
+    <div className="max-w-[2000px] mx-auto">
       {/* Cherry Blossom Image Container */}
       <div 
         ref={containerRef}
