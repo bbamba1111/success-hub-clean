@@ -19,7 +19,7 @@ export function HeroSection() {
       <div className="relative z-20 max-w-7xl mx-auto px-6 pt-20 pb-12">
         <div className="flex flex-col items-center text-center">
           {/* Logo/Brand */}
-          <p className="text-lg font-poppins font-medium tracking-widest text-[#E26C73] uppercase mb-6">
+          <p className="text-lg font-cormorant garamond font-medium tracking-widest text-[#E26C73] uppercase mb-6">
             Welcome to
           </p>
 
