@@ -6,7 +6,7 @@ export function ProblemSection() {
           You didn't leave the workforce just to recreate burnout in your business.
         </h2>
 
-        <div className="space-y-8 font-poppins text-xl md:text-2xl text-[#4A5568] leading-relaxed">
+        <div className="space-y-8 font-Cormorant Garamond text-xl md:text-2xl text-[#4A5568] leading-relaxed">
           <p>
             You left for balance, freedom, and success on your terms.
           </p>
