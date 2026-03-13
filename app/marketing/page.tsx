@@ -9,6 +9,9 @@ import { PremiumSection } from "@/components/marketing/premium-section"
 import { GardenClosingSection } from "@/components/marketing/garden-closing-section"
 import { Footer } from "@/components/marketing/footer"
 
+// Skip static generation - countdown timer uses client-side only APIs
+export const dynamic = 'force-dynamic'
+
 export default function MarketingHomePage() {
   return (
     <main className="min-h-screen">
