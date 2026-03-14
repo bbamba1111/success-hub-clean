@@ -6,7 +6,7 @@ import { TopNavigation } from "@/components/top-navigation"
 export function ConditionalNav() {
   const pathname = usePathname()
 
-  // Hide the default nav on sunday-shift pages (they have their own nav)
+  // Hide the default nav on sunday-shift pages (free access funnel - no navigation)
   if (pathname?.startsWith("/sunday-shift")) {
     return null
   }
