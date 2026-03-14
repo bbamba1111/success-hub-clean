@@ -113,7 +113,11 @@ const questions = [
   },
 ]
 
-export default function WorkLifeBalanceAudit() {
+interface WorkLifeBalanceAuditProps {
+  resultsUrl?: string
+}
+
+export default function WorkLifeBalanceAudit({ resultsUrl = "/my-results" }: WorkLifeBalanceAuditProps) {
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState<Record<number, number>>({})
   const [isComplete, setIsComplete] = useState(false)
@@ -180,7 +184,7 @@ export default function WorkLifeBalanceAudit() {
   }
 
   const goToResults = () => {
-    router.push("/my-results")
+    router.push(resultsUrl)
   }
 
   const progress = ((currentQuestion + 1) / questions.length) * 100

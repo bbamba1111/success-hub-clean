@@ -1,51 +1,16 @@
-"use client"
-
-import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowRight, Clock, Target, TrendingUp, Calendar, Zap, Moon, CheckCircle, Star, Download, CheckCircle2, Sparkles, Heart, Users } from "lucide-react"
+import { ArrowRight, Clock, CheckCircle, Download, Video } from "lucide-react"
 import CherryBlossomCountdown from "@/components/cherry-blossom-countdown"
-import { SimpleChatModal } from "@/components/simple-chat-modal"
-import { CherryBlossomCoGuide } from "@/components/cherry-blossom-co-guide"
-import { createBrowserClient } from "@supabase/ssr"
+
+// Configurable Zoom URL - Update this when you have your Zoom link
+const SUNDAY_ZOOM_URL = "https://join.butter.us/make-time-for-more/sunday-shift"
 
 export default function SundayShiftPage() {
-  const [isChatOpen, setIsChatOpen] = useState(false)
-  const [chatContext, setChatContext] = useState<string>("")
-  const [chatTitle, setChatTitle] = useState("")
-  const [isCoGuideOpen, setIsCoGuideOpen] = useState(false)
-  const [userId, setUserId] = useState<string | undefined>()
-
-  useEffect(() => {
-    const getUserId = async () => {
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-      const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-      if (!supabaseUrl || !supabaseAnonKey) {
-        return
-      }
-
-      const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey)
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      if (user) {
-        setUserId(user.id)
-      }
-    }
-    getUserId()
-  }, [])
-
-  const openChat = (context: string, title: string) => {
-    setChatContext(context)
-    setChatTitle(title)
-    setIsChatOpen(true)
-  }
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white">
+    <div>
       {/* Make The Sunday Shift Section */}
       <div className="relative overflow-hidden py-20">
         <div className="absolute inset-0 bg-gradient-to-r from-[#7FB069]/10 to-[#E26C73]/10" />
@@ -78,13 +43,14 @@ export default function SundayShiftPage() {
                 </div>
 
                 <a
-                  href="https://join.butter.us/make-time-for-more/sunday-shift"
+                  href={SUNDAY_ZOOM_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block"
                 >
                   <Button className="w-full h-full bg-white hover:bg-gray-50 text-[#7FB069] border-2 border-[#7FB069] font-semibold py-3 text-lg">
-                    Enter Here to Make The Sunday Shift
+                    <Video className="mr-2 h-5 w-5" />
+                    Join The Sunday Session
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </a>
@@ -170,7 +136,7 @@ export default function SundayShiftPage() {
                 </div>
                 <div className="h-9"></div>
                 <div className="flex flex-col gap-3 mt-3">
-                  <Link href="/audit" className="block">
+                  <Link href="/sunday-shift/audit" className="block">
                     <Button size="lg" className="w-full bg-transparent border-2 border-white text-white hover:bg-white/10 font-semibold">
                       Take The Work-Life Balance Audit
                     </Button>
@@ -209,7 +175,7 @@ export default function SundayShiftPage() {
                   </div>
                 </div>
                 <div className="flex flex-col gap-3 mt-3">
-                  <Link href="/focus-areas" className="block">
+                  <Link href="/sunday-shift/intention-setter" className="block">
                     <Button size="lg" className="w-full bg-transparent border-2 border-white text-white hover:bg-white/10 font-semibold">
                       Choose Your 1-3 Priority Focus Areas
                     </Button>
@@ -266,21 +232,66 @@ export default function SundayShiftPage() {
                     <span className="text-white/90 text-sm">Prepare your spirit</span>
                   </div>
                 </div>
-                <a
-                  href="https://docs.google.com/document/d/1IZ5qefGnMQpYJP8wMgQS3tVY6sj56CHcCpRBkOGpGjU/edit?usp=sharing"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block mt-3"
-                >
+                <Link href="/sunday-shift/prep-sheet" className="block mt-3">
                   <Button className="w-full bg-transparent border-2 border-white text-white hover:bg-white/10 font-semibold">
                     <Download className="mr-2 h-4 w-4" />
-                    Open The Preparation Checklist
+                    View Preparation Checklist
                   </Button>
-                </a>
+                </Link>
               </CardContent>
             </Card>
           </div>
 
+        </div>
+      </div>
+
+      {/* Work With Me Live Section */}
+      <div className="py-16 bg-white">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Work With Me Live on Sundays
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Join the Sunday session for focused support and guided implementation. 
+              This is where you come to co-work and design your week with intention.
+            </p>
+          </div>
+
+          <Card className="border-0 bg-gradient-to-r from-[#7FB069]/10 to-[#E26C73]/10 shadow-lg">
+            <CardContent className="p-8">
+              <div className="flex flex-col md:flex-row items-center gap-6">
+                <div className="flex-shrink-0">
+                  <div className="w-20 h-20 bg-gradient-to-br from-[#7FB069] to-[#E26C73] rounded-full flex items-center justify-center">
+                    <Video className="w-10 h-10 text-white" />
+                  </div>
+                </div>
+                <div className="flex-1 text-center md:text-left">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">
+                    Sunday Session: Design Your Week
+                  </h3>
+                  <p className="text-gray-600 mb-1">
+                    <span className="font-semibold">Every Sunday</span> | 1:00 PM - 3:00 PM ET
+                  </p>
+                  <p className="text-gray-500 text-sm">
+                    Live guided session with Barbara to help you enter the week with clarity and intention.
+                  </p>
+                </div>
+                <div className="flex-shrink-0">
+                  <a
+                    href={SUNDAY_ZOOM_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button size="lg" className="bg-[#7FB069] hover:bg-[#E26C73] text-white font-semibold px-8">
+                      <Video className="mr-2 h-5 w-5" />
+                      Join on Zoom
+                    </Button>
+                  </a>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
 
@@ -575,20 +586,6 @@ export default function SundayShiftPage() {
           </div>
         </div>
       </div>
-
-    
-    
-
-
-
-      <SimpleChatModal
-        isOpen={isChatOpen}
-        onClose={() => setIsChatOpen(false)}
-        context={chatContext}
-        title={chatTitle}
-      />
-
-      <CherryBlossomCoGuide isOpen={isCoGuideOpen} onClose={() => setIsCoGuideOpen(false)} userId={userId} />
     </div>
   )
 }
