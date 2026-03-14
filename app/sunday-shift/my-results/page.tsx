@@ -630,13 +630,22 @@ Please provide personalized insights and recommendations based on these results.
                   </div>
                 </div>
 
-                <div className="flex justify-center pt-4">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
                   <Button
                     onClick={() => openChat("audit-review", "Review Your Audit with Cherry Blossom")}
-                    className="bg-gradient-to-r from-[#E26C73] to-[#7FB069] hover:from-[#D55A60] hover:to-[#6FA055] text-white px-8 py-3"
+                    className="bg-gradient-to-r from-[#E26C73] to-[#7FB069] hover:from-[#D55A60] hover:to-[#6FA055] text-white px-6 py-3 min-w-[280px]"
                   >
                     Review Your Audit with Cherry Blossom
                   </Button>
+                  
+                  <span className="text-gray-500 font-medium text-lg">OR</span>
+                  
+                  <Link href="/sunday-shift/intention-setter">
+                    <Button className="bg-[#7FB069] hover:bg-[#6FA055] text-white px-6 py-3 min-w-[280px]">
+                      Choose 1-3 Priority Improvement Areas
+                      <Target className="ml-2 h-5 w-5" />
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </CardContent>
