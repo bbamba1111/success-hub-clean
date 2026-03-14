@@ -2,7 +2,7 @@ export function ProblemSection() {
   return (
     <section className="py-28 bg-gradient-to-br from-white via-[#FDF8F5] to-white">
       <div className="max-w-4xl mx-auto px-6 text-center">
-        <h2 className="font-playfair display text-3xl md:text-6xl font-bold text-[#2F4F4F] mb-10 text-balance leading-tight">
+        <h2 className="montserrat display text-3xl md:text-6xl font-bold text-[#2F4F4F] mb-10 text-balance leading-tight">
           You didn't leave the workforce just to recreate burnout in your business.
         </h2>
 
