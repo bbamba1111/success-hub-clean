@@ -169,78 +169,83 @@ Please provide personalized insights and recommendations based on these results.
   }
 
   return (
-    <div className="min-h-screen bg-white p-4">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <Link href="/sunday-shift">
-            <Button variant="outline" className="flex items-center gap-2 bg-transparent">
-              <ArrowLeft className="h-4 w-4" />
-              Back to Sunday Shift
-            </Button>
-          </Link>
-          <Link href="/sunday-shift/audit">
-            <Button className="bg-[#7FB069] hover:bg-[#6FA055] text-white flex items-center gap-2">
-              <RotateCcw className="h-4 w-4" />
-              Retake The Audit
-            </Button>
-          </Link>
-        </div>
-
-        {/* Logo and Title */}
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center mx-auto mb-4">
-            <img src="/images/logo.png" alt="Logo" className="w-36 h-36 rounded-full" />
+    <div className="min-h-screen bg-white">
+      {/* Section 1: Header, Logo, Score, Category Breakdown - Soft Green Background */}
+      <div className="bg-gradient-to-b from-[#7FB069]/10 to-[#7FB069]/5 py-8 px-4">
+        <div className="max-w-4xl mx-auto">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-8">
+            <Link href="/sunday-shift">
+              <Button variant="outline" className="flex items-center gap-2 bg-white/80 hover:bg-white">
+                <ArrowLeft className="h-4 w-4" />
+                Back to Sunday Shift
+              </Button>
+            </Link>
+            <Link href="/sunday-shift/audit">
+              <Button className="bg-[#7FB069] hover:bg-[#6FA055] text-white flex items-center gap-2">
+                <RotateCcw className="h-4 w-4" />
+                Retake The Audit
+              </Button>
+            </Link>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Work-Life Balance Results</h1>
-          <p className="text-gray-600">Completed on {new Date(auditData.timestamp).toLocaleDateString()}</p>
-        </div>
 
-        {/* Overall Score */}
-        <div className="text-center mb-8">
-          <div className="text-6xl font-bold text-gray-900 mb-2">Overall Score: {auditData.overallScore}%</div>
-          <p className="text-lg text-gray-600 mb-2">{getScoreMessage(auditData.overallScore)}</p>
-        </div>
+          {/* Logo and Title */}
+          <div className="text-center mb-8">
+            <div className="flex items-center justify-center mx-auto mb-4">
+              <img src="/images/logo.png" alt="Logo" className="w-36 h-36 rounded-full shadow-lg" />
+            </div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Work-Life Balance Results</h1>
+            <p className="text-gray-600">Completed on {new Date(auditData.timestamp).toLocaleDateString()}</p>
+          </div>
 
-        {/* Category Breakdown */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Category Breakdown</h2>
-          <div className="space-y-4">
-            {sortedResults.map((result) => {
-              const IconComponent = categoryIcons[result.category as keyof typeof categoryIcons]
-              const categoryName = categoryLabels[result.category as keyof typeof categoryLabels]
+          {/* Overall Score */}
+          <div className="text-center mb-8">
+            <div className="text-6xl font-bold text-gray-900 mb-2">Overall Score: {auditData.overallScore}%</div>
+            <p className="text-lg text-gray-600 mb-2">{getScoreMessage(auditData.overallScore)}</p>
+          </div>
 
-              return (
-                <div key={result.category} className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
-                  <div className="w-8 h-8 flex items-center justify-center">
-                    <IconComponent className="w-6 h-6 text-black" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-medium text-gray-900">{categoryName}</span>
-                      <span className="font-bold text-gray-900">{result.percentage}%</span>
+          {/* Category Breakdown */}
+          <div className="mb-4">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Category Breakdown</h2>
+            <div className="space-y-4">
+              {sortedResults.map((result) => {
+                const IconComponent = categoryIcons[result.category as keyof typeof categoryIcons]
+                const categoryName = categoryLabels[result.category as keyof typeof categoryLabels]
+
+                return (
+                  <div key={result.category} className="flex items-center gap-4 p-4 bg-white/80 rounded-lg shadow-sm">
+                    <div className="w-8 h-8 flex items-center justify-center">
+                      <IconComponent className="w-6 h-6 text-[#7FB069]" />
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-3">
-                      <div
-                        className="h-3 rounded-full bg-gradient-to-r from-[#E26C73] to-[#7FB069]"
-                        style={{ width: `${result.percentage}%` }}
-                      ></div>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-medium text-gray-900">{categoryName}</span>
+                        <span className="font-bold text-gray-900">{result.percentage}%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-3">
+                        <div
+                          className="h-3 rounded-full bg-gradient-to-r from-[#E26C73] to-[#7FB069]"
+                          style={{ width: `${result.percentage}%` }}
+                        ></div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )
-            })}
+                )
+              })}
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* Top 3 Recommendations */}
-        <div className="mb-12">
+      {/* Section 2: Top 3 Recommendations - Soft Coral/Peach Background */}
+      <div className="bg-gradient-to-b from-[#E26C73]/10 to-[#E26C73]/5 py-12 px-4">
+        <div className="max-w-4xl mx-auto">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Top 3 Recommendations</h2>
           <div className="space-y-6">
             {recommendations.map((rec) => {
               const IconComponent = rec.icon
               return (
-                <Card key={rec.category} className="border-2 border-gray-200">
+                <Card key={rec.category} className="border-0 bg-white/90 shadow-md">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-3 text-[#7FB069]">
                       <IconComponent className="w-6 h-6" />
@@ -497,22 +502,14 @@ Please provide personalized insights and recommendations based on these results.
             })}
           </div>
         </div>
+      </div>
 
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-          <Link href="/sunday-shift/intention-setter">
-            <Button className="bg-[#7FB069] hover:bg-[#6FA055] text-white px-8 py-3">
-              Set Your Focus Areas
-              <Target className="ml-2 h-5 w-5" />
-            </Button>
-          </Link>
-        </div>
-
-        {/* Cherry Blossom Audit Review Section */}
-        <div className="mb-12">
+      {/* Section 3: Cherry Blossom AI - Soft Tan Background */}
+      <div className="bg-gradient-to-b from-[#F5F1E8] to-[#F5F1E8]/50 py-12 px-4">
+        <div className="max-w-4xl mx-auto">
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-3 mb-4">
-              <img src="/images/logo.png" alt="Cherry Blossom Logo" className="w-12 h-12 rounded-full" />
+              <img src="/images/logo.png" alt="Cherry Blossom Logo" className="w-12 h-12 rounded-full shadow-md" />
               <h2 className="text-2xl font-bold text-gray-900">Get Deeper Insights with Cherry Blossom AI</h2>
             </div>
             <p className="text-gray-600 mb-6">
@@ -520,7 +517,7 @@ Please provide personalized insights and recommendations based on these results.
             </p>
           </div>
 
-          <Card className="border-2 border-[#E26C73]/20">
+          <Card className="border-0 bg-white/90 shadow-lg">
             <CardContent className="p-6">
               <div className="space-y-4">
                 {/* Name Input */}
