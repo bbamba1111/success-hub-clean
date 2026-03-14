@@ -4,7 +4,7 @@ import { SundayShiftForm } from "./sunday-shift-form"
 
 export function SundayShiftSection() {
   return (
-    <section id="sunday-shift" className="py-28 bg-gradient-to-br from-[#FDF8F5] via-white to-[#F0F7F4]">
+    <section id="sunday-shift" className="py-28 bg-gradient-to-br from-[#F7E9D6] via-white to-[#F0F7F4]">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
           <p className="font-montserrat text-lg font-semibold tracking-widest text-[#7FB069] uppercase mb-4">
@@ -22,7 +22,7 @@ export function SundayShiftSection() {
         </div>
 
         {/* No More Grinding Quote Image */}
-        <div className="max-w-lg mx-auto rounded-5xl overflow-hidden shadow-3xl mb-16">
+        <div className="max-w-lg mx-auto rounded-5xl overflow-hidden shadow-3xl mb-20">
           <img 
             src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Jan%2026%2C%202026%2C%2006_51_34%20PM-8N6Xj3b72aWeyWXFbZdj21YBKi2Yij.png"
             alt="No more grinding into the week. You now ease into it harmonized, intentional, and fully aligned. - Make Time For More On Mondays"
