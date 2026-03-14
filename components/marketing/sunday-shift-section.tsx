@@ -4,7 +4,7 @@ import { SundayShiftForm } from "./sunday-shift-form"
 
 export function SundayShiftSection() {
   return (
-    <section id="sunday-shift" className="py-28 bg-gradient-to-br from-[#F7E9D6] via-white to-[#F0F7F4]">
+    <section id="sunday-shift" className="py-28 bg-gradient-to-br from-[#E7EDDB] via-white to-[#F0F7F4]">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
           <p className="font-montserrat text-lg font-semibold tracking-widest text-[#7FB069] uppercase mb-4">
