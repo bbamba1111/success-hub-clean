@@ -53,7 +53,7 @@ export function HarmonyLaneSection() {
                 <span className="text-3xl font-montserrat font-bold text-[#E26C73]">1</span>
               </div>
               <h3 className="text-2xl font-montserrat font-bold text-[#2F4F4F] mb-4">Hustle Lane</h3>
-              <p className="text-xl font-poppins text-[#4A5568] leading-relaxed">Where most entrepreneurs start — grinding, pushing, over-efforting</p>
+              <p className="text-xl font-montserrat text-[#4A5568] leading-relaxed">Where most entrepreneurs start — grinding, pushing, over-efforting</p>
             </div>
           </div>
 
