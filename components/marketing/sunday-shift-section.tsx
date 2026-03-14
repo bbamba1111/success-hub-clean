@@ -7,14 +7,14 @@ export function SundayShiftSection() {
     <section id="sunday-shift" className="py-28 bg-gradient-to-br from-[#FDF8F5] via-white to-[#F0F7F4]">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
-          <p className="font-montserrat text-lg font-semibold tracking-widest text-[#7FB069] uppercase mb-4">
+          <p className="font-montserrat text-lg font-thin tracking-widest text-[#7FB069] uppercase mb-4">
             Your First Step
           </p>
           <h2 className="font-montserrat text-4xl md:text-6xl font-bold text-[#2F4F4F] mb-6">
             Make The Sunday Shift<sup className="text-2xl">™</sup>
           </h2>
           <p className="font-montserrat text-2xl text-[#E26C73] font-medium mb-4">
-            Your first step to safely merge into Harmony.
+            Your first step to safely merge into The Harmony Lane.
           </p>
           <p className="font-montserrat text-xl text-[#4A5568] max-w-3xl mx-auto leading-relaxed">
             A free weekly reset where women entrepreneurs design the week before it begins.
@@ -22,7 +22,7 @@ export function SundayShiftSection() {
         </div>
 
         {/* No More Grinding Quote Image */}
-        <div className="max-w-lg mx-auto rounded-4xl overflow-hidden shadow-2xl mb-16">
+        <div className="max-w-lg mx-auto rounded-5xl overflow-hidden shadow-2xl mb-16">
           <img 
             src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Jan%2026%2C%202026%2C%2006_51_34%20PM-8N6Xj3b72aWeyWXFbZdj21YBKi2Yij.png"
             alt="No more grinding into the week. You now ease into it harmonized, intentional, and fully aligned. - Make Time For More On Mondays"
