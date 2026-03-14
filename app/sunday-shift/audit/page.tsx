@@ -14,7 +14,7 @@ export default function SundayShiftAuditPage() {
           Back to Sunday Shift
         </Link>
       </div>
-      <WorkLifeBalanceAudit resultsUrl="/sunday-shift/results" />
+      <WorkLifeBalanceAudit resultsUrl="/sunday-shift/my-results" />
     </div>
   )
 }
