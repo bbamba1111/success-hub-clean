@@ -16,13 +16,13 @@ export function SundayShiftSection() {
           <p className="font-montserrat text-2xl text-[#E26C73] font-medium mb-4">
             Your first step to safely merge into Harmony.
           </p>
-          <p className="font-montserrat text-xl text-[#4A5568] max-w-2xl mx-auto leading-relaxed">
+          <p className="font-montserrat text-xl text-[#4A5568] max-w-3xl mx-auto leading-relaxed">
             A free weekly reset where women entrepreneurs design the week before it begins.
           </p>
         </div>
 
         {/* No More Grinding Quote Image */}
-        <div className="max-w-xlg mx-auto rounded-3xl overflow-hidden shadow-2xl mb-16">
+        <div className="max-w-lg mx-auto rounded-4xl overflow-hidden shadow-2xl mb-16">
           <img 
             src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Jan%2026%2C%202026%2C%2006_51_34%20PM-8N6Xj3b72aWeyWXFbZdj21YBKi2Yij.png"
             alt="No more grinding into the week. You now ease into it harmonized, intentional, and fully aligned. - Make Time For More On Mondays"
