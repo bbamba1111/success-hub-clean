@@ -1,28 +1,50 @@
 import { createServerClient } from "@supabase/ssr"
 import { NextResponse, type NextRequest } from "next/server"
 
-// Free app URL - update this when deployed
-const FREE_APP_URL = process.env.FREE_APP_URL || "https://sunday-shift.vercel.app"
+// Routes that are publicly accessible without any authentication
+const PUBLIC_ROUTES = [
+  "/",
+  "/auth",
+  "/api",
+  "/_next",
+  "/images",
+  "/marketing",
+  "/sunday-shift",
+  "/garden",
+  "/audit",
+  "/focus-areas",
+  "/my-results",
+  "/preview-results",
+  "/pricing",
+]
 
-// Routes that should only exist on the free app, not the paid hub
-const FREE_ONLY_ROUTES = ["/marketing", "/garden", "/sunday-shift"]
+// Routes that require authentication but NOT paid membership (free access after login)
+const AUTH_ONLY_ROUTES = [
+  "/welcome",
+  "/human-zone-of-genius-team",
+  "/ai-executive-team",
+]
+
+// Valid paid membership tiers (from database constraint)
+// 'free' is explicitly NOT in this list - only paying members get access
+const PAID_TIERS = ["monday_only", "7_day", "21_day", "monthly", "annual", "premium"]
+
+function isPublicRoute(pathname: string): boolean {
+  return PUBLIC_ROUTES.some(route => 
+    pathname === route || pathname.startsWith(route + "/")
+  )
+}
+
+function isAuthOnlyRoute(pathname: string): boolean {
+  return AUTH_ONLY_ROUTES.some(route => 
+    pathname === route || pathname.startsWith(route + "/")
+  )
+}
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
   })
-
-  // Redirect free-only routes to the separate free app domain
-  const isFreeOnlyRoute = FREE_ONLY_ROUTES.some(route => 
-    request.nextUrl.pathname === route || request.nextUrl.pathname.startsWith(route + "/")
-  )
-  
-  if (isFreeOnlyRoute) {
-    // Redirect to the free app at the same path
-    const redirectUrl = new URL(request.nextUrl.pathname, FREE_APP_URL)
-    redirectUrl.search = request.nextUrl.search
-    return NextResponse.redirect(redirectUrl)
-  }
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -47,26 +69,46 @@ export async function updateSession(request: NextRequest) {
     },
   })
 
-  // IMPORTANT: Do not run code between createServerClient and supabase.auth.getUser()
+  const pathname = request.nextUrl.pathname
+
+  // Allow public routes without any checks
+  if (isPublicRoute(pathname)) {
+    return supabaseResponse
+  }
+
+  // Get the authenticated user
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // Protect all routes except home page, auth pages, welcome page, API routes, and public assets
-  // Note: audit, focus-areas, my-results are kept on hub for paid users but require auth
-  if (
-    !user &&
-    request.nextUrl.pathname !== "/" &&
-    !request.nextUrl.pathname.startsWith("/auth") &&
-    !request.nextUrl.pathname.startsWith("/welcome") &&
-    !request.nextUrl.pathname.startsWith("/human-zone-of-genius-team") &&
-    !request.nextUrl.pathname.startsWith("/ai-executive-team") &&
-    !request.nextUrl.pathname.startsWith("/api") &&
-    !request.nextUrl.pathname.startsWith("/_next") &&
-    !request.nextUrl.pathname.startsWith("/images")
-  ) {
+  // If not logged in, redirect to login
+  if (!user) {
     const url = request.nextUrl.clone()
     url.pathname = "/auth/login"
+    url.searchParams.set("redirect", pathname)
+    return NextResponse.redirect(url)
+  }
+
+  // For auth-only routes, just being logged in is enough
+  if (isAuthOnlyRoute(pathname)) {
+    return supabaseResponse
+  }
+
+  // For all other routes (protected hub routes), check for paid membership
+  const { data: profile } = await supabase
+    .from("user_profiles")
+    .select("membership_tier")
+    .eq("id", user.id)
+    .single()
+
+  const membershipTier = profile?.membership_tier?.toLowerCase() || "free"
+  const isPaid = PAID_TIERS.includes(membershipTier)
+
+  if (!isPaid) {
+    // Redirect non-paid users to pricing/upgrade page
+    const url = request.nextUrl.clone()
+    url.pathname = "/pricing"
+    url.searchParams.set("upgrade", "true")
     return NextResponse.redirect(url)
   }
 
