@@ -19,6 +19,15 @@ export function HeroSection() {
       <div className="relative z-20 max-w-7xl mx-auto px-6 pt-20 pb-12">
         <div className="flex flex-col items-center text-center">
           {/* Logo/Brand */}
+          <p className="text-lg font-montserrat font-medium tracking-widest text-[#E26C73] uppercase mb-6">
+            Welcome to Harmony The Parallel Lane to Hustle Entrepreneurship
+          </p>
+
+          <h1 className="text-6xl md:text-8xl font-playfair display font-bold text-[#2F4F4F] mb-8 tracking-tight text-balance">
+            Make Time For More<sup className="text-3xl">™</sup>
+          </h1>
+
+          <p className="text-2xl md:text-3xl font-montserrat text-[#4A5568] max-w-4xl mb-12 leading-relaxed">
           <p className="text-lg font-poppins font-medium tracking-widest text-[#E26C73] uppercase mb-6">
             Welcome to
           </p>

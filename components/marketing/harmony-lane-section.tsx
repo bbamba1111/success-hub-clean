@@ -6,6 +6,10 @@ export function HarmonyLaneSection() {
       <div className="max-w-7xl mx-auto px-6">
         {/* New Header */}
         <div className="text-center mb-20">
+          <h2 className="text-3xl md:text-6xl font-montserrat font-bold text-[#2F4F4F] mb-8 tracking-tight text-balance">
+            Inside The Harmony Lane<sup className="text-2xl">™</sup>, work is intentionally contained so life can expand
+          </h2>
+          <p className="text-xl md:text-2xl font-montserrat text-[#4A5568] max-w-4xl mx-auto leading-relaxed">
           <h2 className="text-4xl md:text-6xl font-playfair font-bold text-[#2F4F4F] mb-8 tracking-tight text-balance">
             Inside The Harmony Lane<sup className="text-2xl">™</sup>, Work Is Intentionally Contained So Life Can Expand
           </h2>
@@ -50,6 +54,10 @@ export function HarmonyLaneSection() {
           <div className="bg-gradient-to-br from-[#FEE2E2] to-[#FFF5F5] rounded-2xl p-10 text-center border border-[#E26C73]/20 shadow-lg min-h-[320px] flex flex-col justify-between">
             <div>
               <div className="w-20 h-20 bg-[#E26C73]/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <span className="text-3xl font-montserrat font-bold text-[#E26C73]">1</span>
+              </div>
+              <h3 className="text-2xl font-montserrat font-bold text-[#2F4F4F] mb-4">Hustle Lane</h3>
+              <p className="text-xl font-montserrat text-[#4A5568] leading-relaxed">Where most entrepreneurs start — grinding, pushing, over-efforting</p>
                 <span className="text-3xl font-playfair font-bold text-[#E26C73]">1</span>
               </div>
               <h3 className="text-2xl font-playfair font-bold text-[#2F4F4F] mb-4">Hustle Lane</h3>
@@ -61,6 +69,10 @@ export function HarmonyLaneSection() {
           <div className="bg-gradient-to-br from-[#FEE2E2]/50 via-[#FFF5F5] to-[#ECFDF5]/50 rounded-2xl p-10 text-center border border-[#F8C8C8]/30 shadow-lg min-h-[320px] flex flex-col justify-between">
             <div>
               <div className="w-20 h-20 bg-gradient-to-br from-[#E26C73]/20 to-[#7FB069]/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <span className="text-3xl font-montserrat font-bold text-[#2F4F4F]">2</span>
+              </div>
+              <h3 className="text-2xl font-montserrat font-bold text-[#2F4F4F] mb-4">Merge Into Harmony</h3>
+              <p className="text-xl font-montserrat text-[#4A5568] leading-relaxed">The transition point where you choose a sustainable rhythm</p>
                 <span className="text-3xl font-playfair font-bold text-[#2F4F4F]">2</span>
               </div>
               <h3 className="text-2xl font-playfair font-bold text-[#2F4F4F] mb-4">Merge Into Harmony</h3>
@@ -75,6 +87,10 @@ export function HarmonyLaneSection() {
           <div className="bg-gradient-to-br from-[#ECFDF5] to-[#F0FDF4] rounded-2xl p-10 text-center border border-[#7FB069]/20 shadow-lg min-h-[320px] flex flex-col justify-between">
             <div>
               <div className="w-20 h-20 bg-[#7FB069]/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <span className="text-3xl font-montserrat font-bold text-[#7FB069]">3</span>
+              </div>
+              <h3 className="text-2xl font-montserrat font-bold text-[#2F4F4F] mb-4">The Cherry Blossom Garden</h3>
+              <p className="text-xl font-montserrat text-[#4A5568] leading-relaxed">Where work-life balance becomes your sustainable operating system</p>
                 <span className="text-3xl font-playfair font-bold text-[#7FB069]">3</span>
               </div>
               <h3 className="text-2xl font-playfair font-bold text-[#2F4F4F] mb-4">The Cherry Blossom Garden</h3>
