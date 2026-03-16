@@ -7,6 +7,11 @@ export function ProblemSection() {
         </h2>
 
         <div className="space-y-8 font-montserrat text-xl md:text-2xl text-[#4A5568] leading-relaxed">
+        <h2 className="font-playfair text-4xl md:text-6xl font-bold text-[#2F4F4F] mb-10 text-balance leading-tight">
+          You didn't leave the workforce just to recreate burnout in your business.
+        </h2>
+
+        <div className="space-y-8 font-poppins text-xl md:text-2xl text-[#4A5568] leading-relaxed">
           <p>
             You left for balance, freedom, and success on your terms.
           </p>

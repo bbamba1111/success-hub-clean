@@ -10,6 +10,10 @@ export function HarmonyLaneSection() {
             Inside The Harmony Lane<sup className="text-2xl">™</sup>, work is intentionally contained so life can expand
           </h2>
           <p className="text-xl md:text-2xl font-montserrat text-[#4A5568] max-w-4xl mx-auto leading-relaxed">
+          <h2 className="text-4xl md:text-6xl font-playfair font-bold text-[#2F4F4F] mb-8 tracking-tight text-balance">
+            Inside The Harmony Lane<sup className="text-2xl">™</sup>, Work Is Intentionally Contained So Life Can Expand
+          </h2>
+          <p className="text-xl md:text-2xl font-poppins text-[#4A5568] max-w-4xl mx-auto leading-relaxed">
             Harmony is the counterpart to hustle. It is the lane women entrepreneurs merge into when they need to recover, restore, realign, and sustain success.
           </p>
         </div>
@@ -54,6 +58,10 @@ export function HarmonyLaneSection() {
               </div>
               <h3 className="text-2xl font-montserrat font-bold text-[#2F4F4F] mb-4">Hustle Lane</h3>
               <p className="text-xl font-montserrat text-[#4A5568] leading-relaxed">Where most entrepreneurs start — grinding, pushing, over-efforting</p>
+                <span className="text-3xl font-playfair font-bold text-[#E26C73]">1</span>
+              </div>
+              <h3 className="text-2xl font-playfair font-bold text-[#2F4F4F] mb-4">Hustle Lane</h3>
+              <p className="text-xl font-poppins text-[#4A5568] leading-relaxed">Where most entrepreneurs start — grinding, pushing, over-efforting</p>
             </div>
           </div>
 
@@ -65,6 +73,10 @@ export function HarmonyLaneSection() {
               </div>
               <h3 className="text-2xl font-montserrat font-bold text-[#2F4F4F] mb-4">Merge Into Harmony</h3>
               <p className="text-xl font-montserrat text-[#4A5568] leading-relaxed">The transition point where you choose a sustainable rhythm</p>
+                <span className="text-3xl font-playfair font-bold text-[#2F4F4F]">2</span>
+              </div>
+              <h3 className="text-2xl font-playfair font-bold text-[#2F4F4F] mb-4">Merge Into Harmony</h3>
+              <p className="text-xl font-poppins text-[#4A5568] leading-relaxed">The transition point where you choose a sustainable rhythm</p>
             </div>
             <div className="flex justify-center mt-4">
               <ArrowRight className="w-8 h-8 text-[#7FB069]" />
@@ -79,6 +91,10 @@ export function HarmonyLaneSection() {
               </div>
               <h3 className="text-2xl font-montserrat font-bold text-[#2F4F4F] mb-4">The Cherry Blossom Garden</h3>
               <p className="text-xl font-montserrat text-[#4A5568] leading-relaxed">Where work-life balance becomes your sustainable operating system</p>
+                <span className="text-3xl font-playfair font-bold text-[#7FB069]">3</span>
+              </div>
+              <h3 className="text-2xl font-playfair font-bold text-[#2F4F4F] mb-4">The Cherry Blossom Garden</h3>
+              <p className="text-xl font-poppins text-[#4A5568] leading-relaxed">Where work-life balance becomes your sustainable operating system</p>
             </div>
           </div>
         </div>

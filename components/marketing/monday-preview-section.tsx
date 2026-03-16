@@ -16,6 +16,13 @@ export function MondayPreviewSection() {
             Make Time For More On Mondays<sup className="text-2xl">™</sup>
           </h2>
           <p className="font-montserrat text-xl md:text-2xl text-white/80 max-w-3xl mx-auto leading-relaxed">
+          <p className="font-poppins text-lg font-semibold tracking-widest text-[#F8C8C8] uppercase mb-4">
+            What Happens Next
+          </p>
+          <h2 className="font-playfair text-4xl md:text-6xl font-bold mb-8">
+            After The Sunday Shift<sup className="text-2xl">™</sup>
+          </h2>
+          <p className="font-poppins text-xl md:text-2xl text-white/80 max-w-3xl mx-auto leading-relaxed">
             Women who resonate with the rhythm are invited into the next step:
           </p>
         </div>
@@ -35,6 +42,10 @@ export function MondayPreviewSection() {
               Co-Work Your Non-Negotiabless<sup className="text-xl">™</sup>
             </h3>
             <p className="font-montserrat text-xl text-white/80 leading-relaxed">
+            <h3 className="font-playfair text-3xl md:text-4xl font-bold">
+              Make Time For More On Mondays<sup className="text-xl">™</sup>
+            </h3>
+            <p className="font-poppins text-xl text-white/80 leading-relaxed">
               A boutique Monday-only installation where work is intentionally contained inside a focused rhythm so life can expand.
             </p>
 
@@ -47,11 +58,14 @@ export function MondayPreviewSection() {
                 <div>
                   <p className="font-montserrat text-4xl font-bold text-[#7FB069]">20 Hours</p>
                   <p className="font-montserrat text-lg text-white/70">of Time Freedom Every Monday</p>
+                  <p className="font-playfair text-4xl font-bold text-[#7FB069]">20 Hours</p>
+                  <p className="font-poppins text-lg text-white/70">of Time Freedom Every Monday</p>
                 </div>
               </div>
             </div>
 
             <div className="space-y-4 font-montserrat text-xl text-white/80">
+            <div className="space-y-4 font-poppins text-xl text-white/80">
               <p>This is not a course.</p>
               <p>Not traditional coworking.</p>
               <p>Not another productivity hack.</p>
@@ -64,6 +78,7 @@ export function MondayPreviewSection() {
               <Button 
                 size="lg"
                 className="bg-[#7FB069] hover:bg-[#6FA055] text-white px-10 py-7 text-xl font-montserrat font-semibold rounded-full shadow-lg hover:shadow-xl transition-all"
+                className="bg-[#7FB069] hover:bg-[#6FA055] text-white px-10 py-7 text-xl font-poppins font-semibold rounded-full shadow-lg hover:shadow-xl transition-all"
               >
                 Preview Mondays
               </Button>
