@@ -1,33 +1,62 @@
+"use client"
+
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowRight, Clock, CheckCircle, Download, Video } from "lucide-react"
+import { ArrowRight, Clock, Target, TrendingUp, Calendar, Zap, Moon, CheckCircle, Star, Download, CheckCircle2, Sparkles, Heart, Users } from "lucide-react"
 import CherryBlossomCountdown from "@/components/cherry-blossom-countdown"
-
-// Configurable Zoom URL - Update this when you have your Zoom link
-const SUNDAY_ZOOM_URL = "https://join.butter.us/make-time-for-more/sunday-shift"
+import { SimpleChatModal } from "@/components/simple-chat-modal"
+import { CherryBlossomCoGuide } from "@/components/cherry-blossom-co-guide"
+import { createBrowserClient } from "@supabase/ssr"
 
 export default function SundayShiftPage() {
+  const [isChatOpen, setIsChatOpen] = useState(false)
+  const [chatContext, setChatContext] = useState<string>("")
+  const [chatTitle, setChatTitle] = useState("")
+  const [isCoGuideOpen, setIsCoGuideOpen] = useState(false)
+  const [userId, setUserId] = useState<string | undefined>()
+
+  useEffect(() => {
+    const getUserId = async () => {
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+      const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+      if (!supabaseUrl || !supabaseAnonKey) {
+        return
+      }
+
+      const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey)
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      if (user) {
+        setUserId(user.id)
+      }
+    }
+    getUserId()
+  }, [])
+
+  const openChat = (context: string, title: string) => {
+    setChatContext(context)
+    setChatTitle(title)
+    setIsChatOpen(true)
+  }
+
   return (
-    <div>
+    <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white">
       {/* Make The Sunday Shift Section */}
       <div className="relative overflow-hidden py-20">
         <div className="absolute inset-0 bg-gradient-to-r from-[#7FB069]/10 to-[#E26C73]/10" />
         <div className="relative max-w-6xl mx-auto px-6">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-medium text-[#7FB069] mb-4">
-           Start Your Week with Clarity Instead of Chaos
-            </h2>
-
-            <h1 className="text-6xl lg:text-6xl font-bold bg-gradient-to-r from-[#7FB069] to-[#E26C73] bg-clip-text text-transparent mb-4">
-              Make The Sunday Shift<sup className="text-2xl">™</sup>
+            <h1 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-[#7FB069] to-[#E26C73] bg-clip-text text-transparent mb-4">
+              Make The Sunday Shift<sup className="text-xl">™</sup>
             </h1>
-        
-            <h2 className="text-3xl font-medium text-[#7FB069] mb-4">
-           Design Your Week On Sunday & Make Time For More On Monday
-            </h2>
-            
+            <p className="text-xl text-gray-700 font-medium">
+              Adopt The Work-Life Balance Business Model & SOP™ -- the "Sustainable" Operating Procedure
+            </p>
           </div>
 
           <div className="text-center mb-12">
@@ -35,22 +64,21 @@ export default function SundayShiftPage() {
           </div>
 
           <div className="flex justify-center">
-            <div className="space-y-4 flex flex-col max-w-6xl w-full bg-white/80 rounded-2xl shadow-xl p-6">
+            <div className="space-y-4 flex flex-col max-w-4xl w-full bg-white/80 rounded-2xl shadow-xl p-6">
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="flex items-center gap-3 text-gray-700 bg-white/80 p-3 rounded-lg shadow-sm">
                   <Clock className="w-5 h-5 text-[#7FB069] flex-shrink-0" />
-                  <span className="font-semibold text-lg">Design Your Week with Barbara — Sunday 1–3 PM ET</span>
+                  <span className="font-semibold text-lg">Join Us Live: Sunday @ 1:00-2:00 PM ET</span>
                 </div>
 
                 <a
-                  href={SUNDAY_ZOOM_URL}
+                  href="https://join.butter.us/make-time-for-more/sunday-shift"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block"
                 >
                   <Button className="w-full h-full bg-white hover:bg-gray-50 text-[#7FB069] border-2 border-[#7FB069] font-semibold py-3 text-lg">
-                    <Video className="mr-2 h-5 w-5" />
-                    Join The Sunday Session
+                    Enter Here to Make The Sunday Shift
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </a>
@@ -65,13 +93,13 @@ export default function SundayShiftPage() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-6">
             <p
-              className="text-[40px] text-gray-700 mb-4"
-              style={{ fontFamily: "'Playfair Display'", fontWeight: 400 }}
+              className="text-[39px] text-gray-700 mb-4"
+              style={{ fontFamily: "'Great Vibes', cursive", fontWeight: 400 }}
             >
-              In the Hustle Lane, the week begins in reaction and survival mode.
+              Live with Thought Leader Barbara
             </p>
-            <h2 className="text-3xl font-medium text-[#7FB069] mb-4">
-           In the Harmony Lane, you intentionally prepare how the week begins.
+            <h2 className="text-3xl font-bold text-[#7FB069] mb-4">
+              Complete Onboarding: Your First 3-Steps to Balance, Freedom & Success
             </h2>
           </div>
 
@@ -90,18 +118,18 @@ export default function SundayShiftPage() {
 
               <div className="py-6 px-8 flex flex-col justify-center bg-white">
                 <p
-                  className="text-[33px] text-gray-700 text-center italic leading-relaxed"
-                  style={{ fontFamily: "'Playfair Display'", fontWeight: 400 }}
+                  className="text-[32px] text-gray-700 text-center italic leading-relaxed"
+                  style={{ fontFamily: "'Great Vibes', cursive", fontWeight: 400 }}
                 >
-                  {"\"How you enter the week determines how you live, work and lead the week.\" — B. Bamba"}
+                  {"\"How you enter the week determines how you live, work & lead the week.\""}
                 </p>
               </div>
             </div>
           </div>
 
           <div className="text-center mb-8">
-            <p className="text-xl text-gray-900">
-              Complete these three steps to assess where you are, set your intention, and prepare to live in The Harmony Lane.
+            <p className="text-lg text-gray-600">
+              Complete these three essential steps to prepare for your transformation journey
             </p>
           </div>
 
@@ -112,7 +140,7 @@ export default function SundayShiftPage() {
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-3 mb-3">
                   <img src="/images/logo.png" alt="Make Time For More Logo" width={48} height={48} className="rounded-full shadow-lg" />
-                  <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 1</Badge>
+                  <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 2.1</Badge>
                 </div>
                 <CardTitle className="text-xl font-bold text-white">Take The Work-Life Balance Audit</CardTitle>
               </CardHeader>
@@ -136,7 +164,7 @@ export default function SundayShiftPage() {
                 </div>
                 <div className="h-9"></div>
                 <div className="flex flex-col gap-3 mt-3">
-                  <Link href="/sunday-shift/audit" className="block">
+                  <Link href="/audit" className="block">
                     <Button size="lg" className="w-full bg-transparent border-2 border-white text-white hover:bg-white/10 font-semibold">
                       Take The Work-Life Balance Audit
                     </Button>
@@ -150,15 +178,15 @@ export default function SundayShiftPage() {
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-3 mb-3">
                   <img src="/images/logo.png" alt="Make Time For More Logo" width={48} height={48} className="rounded-full shadow-lg" />
-                  <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 2</Badge>
+                  <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 2.2</Badge>
                 </div>
                 <CardTitle className="text-xl font-bold text-white">
-                  Set Your Desired Work-LifeStyle Intention
+                  Set Your 28-Day Desired Work-LifeStyle Intention
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-white/90 leading-relaxed">
-                  Transform your audit insights into powerful, actionable intentions. Choose 1-3 focus areas and let Cherry Blossom guide you through creating your personalized 7-day transformation plan.
+                  Transform your audit insights into powerful, actionable intentions. Choose 1-3 focus areas and let Cherry Blossom guide you through creating your personalized 28-day transformation plan.
                 </p>
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
@@ -175,7 +203,7 @@ export default function SundayShiftPage() {
                   </div>
                 </div>
                 <div className="flex flex-col gap-3 mt-3">
-                  <Link href="/sunday-shift/intention-setter" className="block">
+                  <Link href="/focus-areas" className="block">
                     <Button size="lg" className="w-full bg-transparent border-2 border-white text-white hover:bg-white/10 font-semibold">
                       Choose Your 1-3 Priority Focus Areas
                     </Button>
@@ -200,10 +228,10 @@ export default function SundayShiftPage() {
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-3 mb-3">
                   <img src="/images/logo.png" alt="Make Time For More Logo" width={48} height={48} className="rounded-full shadow-lg" />
-                  <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 3</Badge>
+                  <Badge variant="secondary" className="bg-white/20 text-white border-0 text-sm">Step 2.3</Badge>
                 </div>
                 <CardTitle className="text-xl font-bold text-white">
-                  Prepare For Your Experience: Download Your Preparation Checklist
+                  Prepare For The Experience: Download Your Preparation Checklist
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -232,12 +260,17 @@ export default function SundayShiftPage() {
                     <span className="text-white/90 text-sm">Prepare your spirit</span>
                   </div>
                 </div>
-                <Link href="/sunday-shift/prep-sheet" className="block mt-3">
+                <a
+                  href="https://docs.google.com/document/d/1IZ5qefGnMQpYJP8wMgQS3tVY6sj56CHcCpRBkOGpGjU/edit?usp=sharing"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block mt-3"
+                >
                   <Button className="w-full bg-transparent border-2 border-white text-white hover:bg-white/10 font-semibold">
                     <Download className="mr-2 h-4 w-4" />
-                    View Preparation Checklist
+                    Open The Preparation Checklist
                   </Button>
-                </Link>
+                </a>
               </CardContent>
             </Card>
           </div>
@@ -245,58 +278,8 @@ export default function SundayShiftPage() {
         </div>
       </div>
 
-      {/* Work With Me Live Section */}
-      <div className="py-16 bg-white">
-        <div className="max-w-4xl mx-auto px-6">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Work With Me Live on Sundays
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Join the Sunday session for focused support and guided implementation. 
-              This is where you come to co-work and design your week with intention.
-            </p>
-          </div>
-
-          <Card className="border-0 bg-gradient-to-r from-[#7FB069]/10 to-[#E26C73]/10 shadow-lg">
-            <CardContent className="p-8">
-              <div className="flex flex-col md:flex-row items-center gap-6">
-                <div className="flex-shrink-0">
-                  <div className="w-20 h-20 bg-gradient-to-br from-[#7FB069] to-[#E26C73] rounded-full flex items-center justify-center">
-                    <Video className="w-10 h-10 text-white" />
-                  </div>
-                </div>
-                <div className="flex-1 text-center md:text-left">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">
-                    Sunday Session: Design Your Week
-                  </h3>
-                  <p className="text-gray-600 mb-1">
-                    <span className="font-semibold">Every Sunday</span> | 1:00 PM - 3:00 PM ET
-                  </p>
-                  <p className="text-gray-500 text-sm">
-                    Live guided session with Barbara to help you enter the week with clarity and intention.
-                  </p>
-                </div>
-                <div className="flex-shrink-0">
-                  <a
-                    href={SUNDAY_ZOOM_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Button size="lg" className="bg-[#7FB069] hover:bg-[#E26C73] text-white font-semibold px-8">
-                      <Video className="mr-2 h-5 w-5" />
-                      Join on Zoom
-                    </Button>
-                  </a>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-
       {/* Monday Reset Masterclass Invitation Section */}
-      <div className="py-20 bg-gradient-to-br from-[#58795C] to-[#1a3535] relative overflow-hidden">
+      <div className="py-20 bg-gradient-to-br from-[#2F4F4F] to-[#1a3535] relative overflow-hidden">
         {/* Subtle pattern overlay */}
         <div className="absolute inset-0 opacity-5">
           <div className="absolute top-10 right-10 w-64 h-64 rounded-full bg-[#7FB069]" />
@@ -306,12 +289,12 @@ export default function SundayShiftPage() {
         <div className="relative max-w-6xl mx-auto px-6">
           {/* Cherry Blossom Header */}
           <div className="text-center mb-12">
-            <p className="text-[#FFFFFF] text-l font-semibold tracking-widest uppercase mb-4">What Happens After The Sunday Shift</p>
+            <p className="text-[#E26C73] text-sm font-semibold tracking-widest uppercase mb-4">What Happens After The Sunday Shift</p>
             <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6 text-balance">
-              Make Time For More On Monday<sup className="text-4xl">™</sup>
+              The Monday Reset<sup className="text-xl">™</sup>
             </h2>
-            <p className="text-2xl text-white/80 max-w-8xl mx-auto leading-relaxed">
-              Participate in the Founding Case Study of Harmony — The Parallel Lane of Hustle Entrepreneurship
+            <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
+              The Sunday Shift creates clarity. The Monday Reset installs the container.
             </p>
           </div>
 
@@ -327,7 +310,7 @@ export default function SundayShiftPage() {
             <div className="space-y-6 text-white">
               <div className="space-y-4">
                 <p className="text-lg leading-relaxed text-white/90">
-                  You identified the imbalances. You chose your 1-3 non-negotiable priorities. You’ve set your intention for the week.
+                  You identified the imbalances. You chose your 1-3 non-negotiable priorities. You clarified what matters most this week.
                 </p>
                 <p className="text-xl font-semibold text-[#7FB069]">
                   Now you are invited to live inside a structure that supports it.
@@ -350,7 +333,7 @@ export default function SundayShiftPage() {
                 The Work-Life Balance Business Model & SOP has already been architected as a harmony-first operating system for women in entrepreneurship.
               </p>
               <p className="text-lg text-white/90 leading-relaxed">
-                Make Time For More On Mondays is where you experience it in real time.
+                The Monday Reset is where you experience it in real time.
               </p>
               <p className="text-lg text-white/90 leading-relaxed">
                 We are currently running live case-study installations validating the structural impact of the Parallel Lane.
@@ -424,7 +407,7 @@ export default function SundayShiftPage() {
               <p className="text-xl font-bold text-[#E26C73]">Not productivity advice.</p>
             </div>
           </div>
-          
+
           {/* Why This Works - Science Section */}
           <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-10 mb-16 border border-white/20">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -484,49 +467,49 @@ export default function SundayShiftPage() {
             <h3 className="text-3xl font-bold text-white text-center mb-10">What You Experience on Monday</h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                <div className="w-12 h-12 bg-[#4F3B1D]/20 rounded-full flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-[#7FB069]/20 rounded-full flex items-center justify-center mb-4">
                   <span className="text-[#7FB069] text-xl font-bold">1</span>
                 </div>
                 <h4 className="text-white font-bold text-lg mb-2">Morning GIV*EN Alignment</h4>
-                <p className="text-white/70 text-m">A grounded ritual to set your intention before the day begins.</p>
+                <p className="text-white/70 text-sm">A grounded ritual to set your intention before the day begins.</p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                <div className="w-12 h-12 bg-[#4F3B1D]/20 rounded-full flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-[#7FB069]/20 rounded-full flex items-center justify-center mb-4">
                   <span className="text-[#7FB069] text-xl font-bold">2</span>
                 </div>
-                <h4 className="text-white font-bold text-lg mb-2">30 Min Workday Workout Window</h4>
-                <p className="text-white/70 text-m">Built-in movement to reset your energy mid-day.</p>
+                <h4 className="text-white font-bold text-lg mb-2">Workday Workout Window</h4>
+                <p className="text-white/70 text-sm">Built-in movement to reset your energy mid-day.</p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                <div className="w-12 h-12 bg-[#4F3B1D]/20 rounded-full flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-[#7FB069]/20 rounded-full flex items-center justify-center mb-4">
                   <span className="text-[#7FB069] text-xl font-bold">3</span>
                 </div>
                 <h4 className="text-white font-bold text-lg mb-2">Extended Healthy Hybrid Lunch</h4>
-                <p className="text-white/70 text-m">A real break — not a rushed meal at your desk.</p>
+                <p className="text-white/70 text-sm">A real break — not a rushed meal at your desk.</p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                <div className="w-12 h-12 bg-[#4F3B1D]/20 rounded-full flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-[#E26C73]/20 rounded-full flex items-center justify-center mb-4">
                   <span className="text-[#E26C73] text-xl font-bold">4</span>
                 </div>
                 <h4 className="text-white font-bold text-lg mb-2">4-Hour Focused CEO Workday</h4>
-                <p className="text-white/70 text-m">Co-worked deep focus — your highest-value work gets done here.</p>
+                <p className="text-white/70 text-sm">Co-worked deep focus — your highest-value work gets done here.</p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                <div className="w-12 h-12 bg-[#4F3B1D]/20 rounded-full flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-[#E26C73]/20 rounded-full flex items-center justify-center mb-4">
                   <span className="text-[#E26C73] text-xl font-bold">5</span>
                 </div>
                 <h4 className="text-white font-bold text-lg mb-2">20 Hours Protected Time Freedom</h4>
-                <p className="text-white/70 text-m">Your life expands in the space work no longer occupies.</p>
+                <p className="text-white/70 text-sm">Your life expands in the space work no longer occupies.</p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                <div className="w-12 h-12 bg-[#4F3B1D]/20 rounded-full flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-[#E26C73]/20 rounded-full flex items-center justify-center mb-4">
                   <span className="text-[#E26C73] text-xl font-bold">6</span>
                 </div>
                 <h4 className="text-white font-bold text-lg mb-2">Power Down & Unplug</h4>
-                <p className="text-white/70 text-m">A structured close so you truly disconnect and recharge.</p>
+                <p className="text-white/70 text-sm">A structured close so you truly disconnect and recharge.</p>
               </div>
             </div>
-            <p className="text-center text-white/60 mt-6 text-m italic">
+            <p className="text-center text-white/60 mt-6 text-sm italic">
               Four elements are co-worked. Two are lived independently. Work has a start time. Work has a stop time.
             </p>
           </div>
@@ -536,7 +519,7 @@ export default function SundayShiftPage() {
             <div className="space-y-6 text-white">
               <h3 className="text-3xl font-bold">Monday Is the On-Ramp</h3>
               <p className="text-lg text-white/90 leading-relaxed">
-                Make Time For More On Monday is your first installation day. Some women experience one Monday and feel the shift. Some return weekly, on Mondays, to strengthen the rhythm.
+                The Monday Reset is your first installation day. Some women experience one Reset and feel the shift. Some return weekly to strengthen the rhythm.
               </p>
               <p className="text-lg text-white/90 leading-relaxed">
                 Some expand into the full Monday-Thursday model, where frequency and repetition wire this as their new default operating system.
@@ -547,7 +530,7 @@ export default function SundayShiftPage() {
                 <p className="text-[#7FB069] font-semibold text-lg">Rhythm builds legacy.</p>
               </div>
               <p className="text-xl font-semibold text-white pt-4">
-                We've paved the lane. Now you are invited to merge into it.
+                You prepared the lane. Now you are invited to step into it.
               </p>
             </div>
             <div className="flex justify-center">
@@ -563,29 +546,151 @@ export default function SundayShiftPage() {
           <div className="bg-gradient-to-r from-[#7FB069] to-[#E26C73] rounded-3xl p-10 text-center shadow-2xl">
             <p className="text-white/90 text-sm font-semibold tracking-widest uppercase mb-4">Pilot Case Study Opportunity</p>
             <h3 className="text-3xl lg:text-4xl font-bold text-white mb-4">
-              Make Time For More On Monday<sup className="text-lg">™</sup>
+              Reserve Your Spot for The Monday Reset<sup className="text-lg">™</sup>
             </h3>
             <p className="text-white/90 text-lg mb-8 max-w-2xl mx-auto">
-              Step into the structure that replaces survival with sustainability.
+              Step into the structure that replaces survival with sustainability. One Monday can shift everything.
             </p>
             <div className="flex flex-col items-center gap-4">
               <a
-                href="https://www.maketimeformore.com"
+                href="https://www.maketimeformore.com/checkout/monday-reset-297"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block"
               >
-                <Button className="bg-white text-[#729A74] hover:bg-gray-50 text-lg px-12 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all font-bold">
+                <Button className="bg-white text-[#2F4F4F] hover:bg-gray-50 text-lg px-12 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all font-bold">
                   <div className="flex flex-col items-center gap-1">
-                  <span className="text-2xl font-bold">Merge Into The Parallel Lane $497</span>
+                    <span className="text-sm font-semibold tracking-wide">CASE STUDY INVESTMENT</span>
+                    <span className="text-3xl font-bold">$297</span>
                   </div>
                 </Button>
               </a>
-              <p className="text-white/70 text-m italic">Limited spots available for the founding pilot cohort.</p>
+              <p className="text-white/70 text-sm italic">Limited spots available for the founding pilot cohort</p>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Share Your Monthly Success Story Section */}
+      <div className="py-20 bg-gradient-to-br from-[#E26C73]/10 to-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="space-y-6">
+              <h2 className="text-4xl lg:text-5xl font-bold text-[#E26C73]">
+                Share Your Monthly Success Story
+              </h2>
+              <p className="text-xl text-gray-700 leading-relaxed">
+                At the end of every 28-Day Installation Cycle, we invite you to{" "}
+                <span className="font-bold text-[#E26C73]">reflect, celebrate, and share</span> your transformation.
+              </p>
+              <p className="text-lg text-gray-700 leading-relaxed">
+                Your story matters — not just for you, but for every entrepreneur still trapped in hustle culture, wondering if balance is actually possible.
+              </p>
+
+              <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-[#E26C73]/20">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">What to Share:</h3>
+                <ul className="space-y-3 text-gray-700">
+                  <li className="flex items-start gap-3">
+                    <Sparkles className="w-6 h-6 text-[#E26C73] flex-shrink-0 mt-1" />
+                    <span>What shifted for you this month?</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Sparkles className="w-6 h-6 text-[#E26C73] flex-shrink-0 mt-1" />
+                    <span>What habits finally stuck?</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Sparkles className="w-6 h-6 text-[#E26C73] flex-shrink-0 mt-1" />
+                    <span>What time freedom did you reclaim?</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Sparkles className="w-6 h-6 text-[#E26C73] flex-shrink-0 mt-1" />
+                    <span>How did your business or life transform?</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="space-y-4">
+                <a
+                  href="https://www.maketimeformore.com/testimonials"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block"
+                >
+                  <Button className="w-full bg-gradient-to-r from-[#E26C73] to-[#7FB069] hover:from-[#D55A60] hover:to-[#6FA055] text-white text-lg py-6">
+                    Submit Your Success Story
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </a>
+                <p className="text-center text-gray-600 text-sm italic">
+                  Your testimonial may be featured on our website, in our community, and in our marketing to inspire others.
+                </p>
+              </div>
+            </div>
+
+            <div>
+              <img
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1debrief-MRp5ajmcKDbCglvbDKinQcD0Ug8uCx.png"
+                alt="Share Your Success Story"
+                className="w-full rounded-3xl shadow-2xl"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Facebook Group CTA Section */}
+      <div className="bg-gradient-to-r from-[#7FB069]/10 to-[#E26C73]/10 py-24">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <div className="max-w-2xl mx-auto">
+              <div className="flex items-center justify-center gap-3 mb-8">
+                <img
+                  src="/images/logo.png"
+                  alt="Make Time For More Logo"
+                  width={80}
+                  height={80}
+                  className="rounded-full shadow-lg"
+                />
+              </div>
+              <h2 className="text-3xl font-bold text-[#E26C73] mb-6">Join Our Facebook Community</h2>
+              <p className="text-lg text-gray-600 mb-8">
+                Connect with like-minded women on their work-life balance journey. Share experiences, get support,
+                celebrate wins together, and share pics and videos of you making time for more.
+              </p>
+              <img
+                src="/images/facebook-group-community.jpg"
+                alt="Diverse community of women in cherry blossom setting"
+                className="w-full h-auto object-cover rounded-2xl shadow-2xl mb-8"
+              />
+              <a
+                href="https://www.facebook.com/groups/maketimeformore"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block"
+              >
+                <Button
+                  size="lg"
+                  className="bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-semibold px-8 py-4 text-lg"
+                >
+                  Join Our Facebook Group
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <SimpleChatModal
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+        context={chatContext}
+        title={chatTitle}
+      />
+
+      <CherryBlossomCoGuide isOpen={isCoGuideOpen} onClose={() => setIsCoGuideOpen(false)} userId={userId} />
     </div>
   )
 }

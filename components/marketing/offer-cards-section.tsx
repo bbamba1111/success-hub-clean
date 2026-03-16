@@ -10,8 +10,8 @@ export function OfferCardsSection() {
           <p className="font-poppins text-lg font-semibold tracking-widest text-[#E26C73] uppercase mb-4">
             Choose Your Rhythm
           </p>
-          <h2 className="font-poppins text-4xl md:text-5xl font-bold text-[#2F4F4F] mb-6 text-balance">
-            Choose Your Desired Level of Work-Life Balance Support and Frequency That Fits the Season You're In
+          <h2 className="font-playfair text-4xl md:text-5xl font-bold text-[#2F4F4F] mb-6 text-balance">
+            Choose the Level of Support and Frequency That Fits the Season You're In
           </h2>
         </div>
 
@@ -23,7 +23,7 @@ export function OfferCardsSection() {
               <p className="font-poppins text-base font-semibold text-[#E26C73] uppercase tracking-wide mb-3">
                 Starter
               </p>
-              <h3 className="font-poppins text-3xl font-bold text-[#2F4F4F] mb-3">1-Day Pass</h3>
+              <h3 className="font-playfair text-3xl font-bold text-[#2F4F4F] mb-3">1-Day Pass</h3>
               <p className="font-poppins text-lg text-[#6B7280] mb-8">24-hour access</p>
               
               <div className="space-y-4 mb-10">
@@ -62,7 +62,7 @@ export function OfferCardsSection() {
               <p className="font-poppins text-base font-semibold text-[#7FB069] uppercase tracking-wide mb-3">
                 Immersion
               </p>
-              <h3 className="font-poppins text-3xl font-bold text-[#2F4F4F] mb-3">1-Week Model</h3>
+              <h3 className="font-playfair text-3xl font-bold text-[#2F4F4F] mb-3">1-Week Model</h3>
               <p className="font-poppins text-lg text-[#6B7280] mb-8">7-day access</p>
               
               <div className="space-y-4 mb-10">
