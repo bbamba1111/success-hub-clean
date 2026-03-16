@@ -11,7 +11,7 @@ export function HeroSection() {
       <div 
         className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat opacity-20"
         style={{
-          backgroundImage: `url('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202026-03-12%20032212-p7XriKHU1PL257ZUtf4gqS0VHCh9b4.png')`
+          backgroundImage: `url('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Mar%2027%2C%202025%2C%2001_52_43%20AM-YXHlRDw4ynWk2MHKKfV1Flm3qZbI1k.png')`
         }}
       />
       
@@ -20,14 +20,14 @@ export function HeroSection() {
         <div className="flex flex-col items-center text-center">
           {/* Logo/Brand */}
           <p className="text-lg font-poppins font-medium tracking-widest text-[#E26C73] uppercase mb-6">
-            Welcome to Harmony — The Parallel Lane to Hustle Entrepreneurship
+            Welcome to
           </p>
 
           <h1 className="text-6xl md:text-8xl font-playfair font-bold text-[#2F4F4F] mb-8 tracking-tight text-balance">
             Make Time For More<sup className="text-3xl">™</sup>
           </h1>
 
-          <p className="text-2xl md:text-2xl font-poppins text-[#4A5568] max-w-4xl mb-12 leading-relaxed">
+          <p className="text-2xl md:text-3xl font-poppins text-[#4A5568] max-w-4xl mb-12 leading-relaxed">
             A premium boutique Work-Life Balance installation for women entrepreneurs who left high-stress careers — and accidentally recreated burnout in their business.
           </p>
 

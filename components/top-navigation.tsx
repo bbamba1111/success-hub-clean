@@ -14,6 +14,7 @@ export function TopNavigation() {
   const supabase = createClient()
 
   useEffect(() => {
+    // Check current user
     const checkUser = async () => {
       const { data: { user } } = await supabase.auth.getUser()
       setUser(user)
@@ -21,6 +22,7 @@ export function TopNavigation() {
     }
     checkUser()
 
+    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
     })
@@ -49,14 +51,14 @@ export function TopNavigation() {
           
           <div className="flex items-center gap-4">
             <Link href="/">
-              <Button variant="ghost" className="flex items-center gap-2">
+              <Button variant="ghost" className="flex items-center gap-2" data-testid="button-nav-home">
                 <Home className="h-4 w-4" />
                 Main
               </Button>
             </Link>
             
             <Link href="/human-zone-of-genius-team">
-              <Button variant="ghost" className="flex items-center gap-2">
+              <Button variant="ghost" className="flex items-center gap-2" data-testid="button-nav-workday">
                 <Brain className="h-4 w-4" />
                 4-Hour Focused CEO Workday
               </Button>
@@ -73,6 +75,7 @@ export function TopNavigation() {
                       variant="outline" 
                       onClick={handleLogout}
                       className="flex items-center gap-2"
+                      data-testid="button-logout"
                     >
                       <LogOut className="h-4 w-4" />
                       Log Out
@@ -82,6 +85,7 @@ export function TopNavigation() {
                   <Link href="/auth/login">
                     <Button 
                       className="flex items-center gap-2 bg-gradient-to-r from-[#5D9D61] to-[#E26C73] text-white hover:opacity-90"
+                      data-testid="button-login"
                     >
                       <LogIn className="h-4 w-4" />
                       Log In
