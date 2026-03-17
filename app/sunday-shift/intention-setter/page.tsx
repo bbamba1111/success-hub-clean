@@ -256,7 +256,7 @@ export default function SundayShiftIntentionSetterPage() {
         {hasAuditResults && focusAreas.length > 0 && (
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
             {selectedCount > 0 && (
-              <Link href="/cherry-blossom-intentions" onClick={saveFocusAreas}>
+              <Link href="/sunday-shift/cherry-blossom-intentions" onClick={saveFocusAreas}>
                 <Button size="lg" className="bg-[#7FB069] hover:bg-[#E26C73] text-white px-8 py-3">
                   Continue to Intention Setting
                   <CheckCircle2 className="ml-2 h-5 w-5" />
