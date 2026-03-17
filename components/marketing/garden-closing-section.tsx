@@ -1,65 +1,93 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
+import { useState } from "react"
 import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Menu, X } from "lucide-react"
 
-export function GardenClosingSection() {
+const navItems = [
+  { label: "Home", href: "/" },
+  { label: "The Sunday Shift", href: "#sunday-shift" },
+  { label: "Mondays", href: "/mondays" },
+  { label: "Experiences", href: "/experiences" },
+  { label: "About Barbara", href: "/about" },
+  { label: "Speaking", href: "/speaking" },
+  { label: "Media", href: "/media" },
+]
+
+export function MarketingNav() {
+  const [isOpen, setIsOpen] = useState(false)
+
   return (
-    <section className="py-28 bg-gradient-to-br from-[#FAF7F2] via-[#FDF8F5] to-[#F8C8C8]/20 relative overflow-hidden">
-      {/* Decorative background elements */}
-      <div className="absolute top-10 right-10 w-64 h-64 rounded-full bg-[#F8C8C8]/20 blur-3xl" />
-      <div className="absolute bottom-10 left-10 w-48 h-48 rounded-full bg-[#7FB069]/10 blur-3xl" />
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-[#F8C8C8]/30">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="flex items-center justify-between h-20">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2">
+            <span className="font-playfair text-2xl font-bold text-[#2F4F4F]">
+              Make Time For More<sup className="text-sm">™</sup>
+            </span>
+          </Link>
 
-      <div className="relative max-w-6xl mx-auto px-6">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Hustle to Harmony Image */}
-          <div className="w-full rounded-3xl overflow-hidden shadow-2xl order-2 lg:order-1">
-            <img 
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1Lo-69OI13Z8ayTZmvn4Zy98USTNf31fGS.png"
-              alt="Woman transitioning from corporate hustle to harmony in cherry blossom garden"
-              className="w-full h-auto object-cover"
-            />
+          {/* Desktop Nav */}
+          <div className="hidden lg:flex items-center gap-8">
+            {navItems.map((item) => (
+              <Link
+                key={item.label}
+                href={item.href}
+                className="font-poppins text-base font-medium text-[#4A5568] hover:text-[#E26C73] transition-colors"
+              >
+                {item.label}
+              </Link>
+            ))}
           </div>
 
-          <div className="space-y-8 order-1 lg:order-2">
-            <p className="font-poppins text-lg font-semibold tracking-widest text-[#E26C73] uppercase">
-              Your Sanctuary Awaits
-            </p>
-            <h2 className="font-playfair text-4xl md:text-5xl font-bold text-[#2F4F4F] leading-tight">
-              Welcome to the Cherry Blossom Garden
-            </h2>
+          {/* CTA */}
+          <div className="hidden lg:block">
+            <Link href="#sunday-shift">
+              <Button className="bg-[#E26C73] hover:bg-[#D15A61] text-white rounded-full px-8 py-6 font-poppins text-base font-semibold">
+                Enter the Garden
+              </Button>
+            </Link>
+          </div>
 
-            <div className="space-y-5 font-poppins text-xl text-[#4A5568] leading-relaxed">
-              <p>
-                The Cherry Blossom Garden is our virtual studio where women gather to restore rhythm, reconnect with their original entrepreneurial intentions, and Make Time For More.
-              </p>
+          {/* Mobile Menu Button */}
+          <button
+            className="lg:hidden p-2"
+            onClick={() => setIsOpen(!isOpen)}
+            aria-label="Toggle menu"
+          >
+            {isOpen ? (
+              <X className="w-7 h-7 text-[#2F4F4F]" />
+            ) : (
+              <Menu className="w-7 h-7 text-[#2F4F4F]" />
+            )}
+          </button>
+        </div>
 
-              <p className="text-[#7FB069] italic text-2xl">
-                Cherry blossoms remind us that time is fleeting.
-              </p>
-
-              <p>
-                Life is transient.
-              </p>
-
-              <p className="text-[#E26C73] font-medium text-2xl">
-                The moments that matter most are not meant to be postponed.
-              </p>
-            </div>
-
-            <div className="pt-6">
-              <Link href="#sunday-shift">
-                <Button 
-                  size="lg"
-                  className="bg-[#E26C73] hover:bg-[#D15A61] text-white px-12 py-7 text-xl font-poppins font-semibold rounded-full shadow-lg hover:shadow-xl transition-all"
+        {/* Mobile Menu */}
+        {isOpen && (
+          <div className="lg:hidden py-6 border-t border-[#F8C8C8]/30">
+            <div className="flex flex-col gap-4">
+              {navItems.map((item) => (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className="font-poppins text-lg font-medium text-[#4A5568] hover:text-[#E26C73] transition-colors py-2"
+                  onClick={() => setIsOpen(false)}
                 >
-                  Enter The Cherry Blossom Garden
+                  {item.label}
+                </Link>
+              ))}
+              <Link href="#sunday-shift" onClick={() => setIsOpen(false)}>
+                <Button className="w-full bg-[#E26C73] hover:bg-[#D15A61] text-white rounded-full mt-4 py-6 font-poppins text-lg font-semibold">
+                  Enter the Garden
                 </Button>
               </Link>
             </div>
           </div>
-        </div>
+        )}
       </div>
-    </section>
+    </nav>
   )
 }

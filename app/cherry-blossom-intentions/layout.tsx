@@ -1,13 +1,13 @@
 import Link from "next/link"
 
-export default function SundayShiftLayout({
+export default function CherryBlossomIntentionsLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white">
-      {/* Minimal header for Sunday Shift free funnel - no main app navigation */}
+      {/* Minimal header for restricted funnel - no main app navigation */}
       <header className="bg-white/80 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
@@ -20,7 +20,7 @@ export default function SundayShiftLayout({
                 className="rounded-full shadow-md"
               />
               <span className="text-lg font-semibold text-gray-800">
-                Make The Sunday Shift<sup className="text-xs">TM</sup>
+                Make Time For More
               </span>
             </Link>
           </div>
@@ -36,7 +36,7 @@ export default function SundayShiftLayout({
       <footer className="bg-gray-50 border-t border-gray-100 py-8">
         <div className="max-w-6xl mx-auto px-6 text-center">
           <p className="text-gray-500 text-sm">
-            Make Time For More | The Sunday Shift Free Experience
+            Make Time For More | Cherry Blossom Intentions
           </p>
         </div>
       </footer>

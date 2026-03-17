@@ -6,8 +6,8 @@ export function HarmonyLaneSection() {
       <div className="max-w-7xl mx-auto px-6">
         {/* New Header */}
         <div className="text-center mb-20">
-          <h2 className="text-4xl md:text-6xl font-playfair font-bold text-[#2F4F4F] mb-8 tracking-tight text-balance">
-            Inside The Harmony Lane<sup className="text-2xl">™</sup>, Work Is Intentionally Contained So Life Can Expand
+          <h2 className="text-4xl md:text-6xl font-Poppins font-bold text-[#2F4F4F] mb-8 tracking-tight text-balance">
+            Inside The Harmony Lane<sup className="text-2xl">™</sup>, work is intentionally contained so life can expand
           </h2>
           <p className="text-xl md:text-2xl font-poppins text-[#4A5568] max-w-4xl mx-auto leading-relaxed">
             Harmony is the counterpart to hustle. It is the lane women entrepreneurs merge into when they need to recover, restore, realign, and sustain success.

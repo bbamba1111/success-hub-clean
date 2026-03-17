@@ -175,15 +175,15 @@ export default function CherryBlossomCountdown() {
     if (sundayNumber === 1) {
       weekLabel = "The 1st Week"
       message =
-        "The 7-Day Work-Life Balance Reset Experience where You Reset Your Rhythms and Reclaim Your Time In One Powerful Week This Month!"
+        "Design your week on Sunday and enter Monday with clarity, intention, and space for what matters."
     } else if (sundayNumber === 2) {
       weekLabel = "The 2nd Week"
       message =
-        "Our 14-Day Momentum Building Week -- Perfect if you're ready to start building real momentum toward your desired work-lifestyle!"
+        "Each Sunday you design your week intentionally so Monday begins with focus instead of reaction."
     } else if (sundayNumber === 3) {
       weekLabel = "The 3rd Week"
       message =
-        "Our 21-Day Habit Building week followed by our 1-Week Recovery Break -- Perfect if you are truly ready to disrupt hustle culture, and reset your work-life balance habits for sustainable success."
+        "Repeating this weekly rhythm helps you contain work, expand life, and prepares you to live it solo during integration week -- next week."
     }
 
     setWeekInfo({
