@@ -3,10 +3,31 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Check, Star, ArrowLeft, Sparkles, Target, Users, Calendar } from "lucide-react"
+import { Check, Star, ArrowLeft, Sparkles, Target, Users, Calendar, AlertCircle } from "lucide-react"
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
+import { Suspense } from "react"
 
-export default function PricingPage() {
+function UpgradeBanner() {
+  const searchParams = useSearchParams()
+  const isUpgradeRedirect = searchParams.get("upgrade") === "true"
+  
+  if (!isUpgradeRedirect) return null
+  
+  return (
+    <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-8 flex items-center gap-3">
+      <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0" />
+      <div>
+        <p className="font-semibold text-amber-800">Membership Required</p>
+        <p className="text-amber-700 text-sm">
+          The page you tried to access requires a paid membership. Choose a plan below to unlock full access to the Success Hub.
+        </p>
+      </div>
+    </div>
+  )
+}
+
+function PricingContent() {
   const plans = [
     {
       name: "Starter",
@@ -89,6 +110,9 @@ export default function PricingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white">
       <div className="max-w-7xl mx-auto px-6 py-12">
+        {/* Upgrade Banner - shows when redirected from protected route */}
+        <UpgradeBanner />
+        
         {/* Header */}
         <div className="text-center mb-16">
           <Link href="/" className="inline-flex items-center text-[#7FB069] hover:text-[#6FA055] mb-8">
@@ -340,5 +364,13 @@ export default function PricingPage() {
         </Card>
       </div>
     </div>
+  )
+}
+
+export default function PricingPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white flex items-center justify-center">Loading...</div>}>
+      <PricingContent />
+    </Suspense>
   )
 }

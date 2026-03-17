@@ -327,7 +327,7 @@ export default function SundayShiftPage() {
             <div className="space-y-6 text-white">
               <div className="space-y-4">
                 <p className="text-lg leading-relaxed text-white/90">
-                  You identified the imbalances. You chose your 1-3 non-negotiable priorities. You’ve set your intention for the week.
+                  You identified the imbalances. You chose your 1-3 non-negotiable priorities. You've set your intention for the week.
                 </p>
                 <p className="text-xl font-semibold text-[#7FB069]">
                   Now you are invited to live inside a structure that supports it.

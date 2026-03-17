@@ -498,6 +498,16 @@ Please provide personalized insights and recommendations based on these results.
           </div>
         </div>
 
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+          <Link href="/focus-areas">
+            <Button className="bg-[#7FB069] hover:bg-[#6FA055] text-white px-8 py-3">
+              Set Your Focus Areas
+              <Target className="ml-2 h-5 w-5" />
+            </Button>
+          </Link>
+        </div>
+
         {/* Cherry Blossom Audit Review Section */}
         <div className="mb-12">
           <div className="text-center mb-8">
@@ -620,22 +630,13 @@ Please provide personalized insights and recommendations based on these results.
                   </div>
                 </div>
 
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+                <div className="flex justify-center pt-4">
                   <Button
                     onClick={() => openChat("audit-review", "Review Your Audit with Cherry Blossom")}
-                    className="bg-gradient-to-r from-[#E26C73] to-[#7FB069] hover:from-[#D55A60] hover:to-[#6FA055] text-white px-6 py-3 min-w-[280px]"
+                    className="bg-gradient-to-r from-[#E26C73] to-[#7FB069] hover:from-[#D55A60] hover:to-[#6FA055] text-white px-8 py-3"
                   >
                     Review Your Audit with Cherry Blossom
                   </Button>
-                  
-                  <span className="text-gray-500 font-medium text-lg">OR</span>
-                  
-                  <Link href="/focus-areas">
-                    <Button className="bg-[#7FB069] hover:bg-[#6FA055] text-white px-6 py-3 min-w-[280px]">
-                      Choose 1-3 Priority Improvement Areas
-                      <Target className="ml-2 h-5 w-5" />
-                    </Button>
-                  </Link>
                 </div>
               </div>
             </CardContent>
