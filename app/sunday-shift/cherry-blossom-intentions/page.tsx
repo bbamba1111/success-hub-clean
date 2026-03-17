@@ -289,7 +289,7 @@ Let's create my sacred 28-Day Desired Work-Lifestyle Intention together!`
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-2">
               <h2 className="text-2xl font-bold text-[#E26C73]">Your Selected Focus Areas</h2>
-              <Link href="/focus-areas">
+              <Link href="/sunday-shift/focus-areas">
                 <Button
                   variant="outline"
                   size="sm"
@@ -326,7 +326,7 @@ Let's create my sacred 28-Day Desired Work-Lifestyle Intention together!`
                 <p className="text-gray-600 mb-6">
                   Please go back and select 1-3 focus areas to create your personalized 28-day transformation plan.
                 </p>
-                <Link href="/focus-areas">
+                <Link href="/sunday-shift/focus-areas">
                   <Button className="bg-[#E26C73] hover:bg-[#D55A60] text-white px-8 py-3">Select Focus Areas</Button>
                 </Link>
               </div>
@@ -439,7 +439,7 @@ Let's create my sacred 28-Day Desired Work-Lifestyle Intention together!`
         {selectedAreas.length > 0 && (
           <div className="mt-8 mb-4">
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/focus-areas">
+              <Link href="/sunday-shift/focus-areas">
                 <Button
                   variant="outline"
                   className="flex items-center gap-2 border-[#E26C73] text-[#E26C73] hover:bg-[#E26C73] hover:text-white bg-white px-6 py-2"
@@ -447,7 +447,7 @@ Let's create my sacred 28-Day Desired Work-Lifestyle Intention together!`
                   ← Back to Focus Areas
                 </Button>
               </Link>
-              <Link href="/my-results">
+              <Link href="/sunday-shift/my-results">
                 <Button
                   variant="outline"
                   className="flex items-center gap-2 border-[#7FB069] text-[#7FB069] hover:bg-[#7FB069] hover:text-white bg-white px-6 py-2"
@@ -455,7 +455,7 @@ Let's create my sacred 28-Day Desired Work-Lifestyle Intention together!`
                   ← Back to My Results
                 </Button>
               </Link>
-              <Link href="/">
+              <Link href="/sunday-shift">
                 <Button
                   variant="outline"
                   className="flex items-center gap-2 border-gray-400 text-gray-600 hover:bg-gray-100 hover:text-gray-800 bg-white px-6 py-2"
