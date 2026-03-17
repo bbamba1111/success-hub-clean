@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { ArrowRight, Clock, CheckCircle, Download, Video } from "lucide-react"
 import CherryBlossomCountdown from "@/components/cherry-blossom-countdown"
 
-// Configurable Zoom URL - Update this when you have your Zoom link
+// Configurable Zoom URL - Update this when you have your Zoom link ready
 const SUNDAY_ZOOM_URL = "https://join.butter.us/make-time-for-more/sunday-shift"
 
 export default function SundayShiftPage() {
