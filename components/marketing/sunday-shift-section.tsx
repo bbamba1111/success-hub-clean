@@ -10,7 +10,7 @@ export function SundayShiftSection() {
           <p className="font-poppins text-lg font-semibold tracking-widest text-[#7FB069] uppercase mb-4">
             Your First Step
           </p>
-          <h2 className="font-playfair text-4xl md:text-6xl font-bold text-[#2F4F4F] mb-6">
+          <h2 className="font-poppins text-4xl md:text-6xl font-bold text-[#2F4F4F] mb-6">
             Make The Sunday Shift<sup className="text-2xl">™</sup>
           </h2>
           <p className="font-poppins text-2xl text-[#E26C73] font-medium mb-4">

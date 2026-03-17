@@ -23,12 +23,12 @@ export function SundayShiftForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-lg mx-auto">
+    <form onSubmit={handleSubmit} className="max-w-xlg mx-auto">
       <div className="bg-white rounded-3xl p-10 shadow-2xl border border-[#F8C8C8]/30">
-        <h4 className="font-playfair text-2xl font-bold text-[#2F4F4F] text-center mb-3">
+        <h4 className="font-poppins text-2xl font-bold text-[#2F4F4F] text-center mb-3">
           Reserve Your Seat
         </h4>
-        <p className="font-poppins text-lg text-[#6B7280] text-center mb-8">
+        <p className="font-poppins text-xlg text-[#6B7280] text-center mb-8">
           Join us in the Cherry Blossom Garden
         </p>
 
