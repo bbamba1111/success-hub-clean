@@ -66,7 +66,7 @@ export default function SundayShiftPage() {
           <div className="text-center mb-6">
             <p
               className="text-[40px] text-gray-700 mb-4"
-              style={{ fontFamily: "'Montserrat'", fontWeight: 400 }}
+              style={{ fontFamily: "'Playfair Display'", fontWeight: 400 }}
             >
               In the Hustle Lane, the week begins in reaction and survival mode.
             </p>

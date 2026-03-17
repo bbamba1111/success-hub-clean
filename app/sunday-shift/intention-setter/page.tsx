@@ -118,21 +118,14 @@ export default function SundayShiftIntentionSetterPage() {
   return (
     <div className="py-8 px-4">
       <div className="max-w-4xl mx-auto">
-        {/* Back Links */}
-        <div className="mb-6 flex flex-wrap items-center gap-4">
+        {/* Back Link */}
+        <div className="mb-6">
           <Link
             href="/sunday-shift"
             className="inline-flex items-center gap-2 text-[#7FB069] hover:text-[#E26C73] transition-colors duration-200 font-medium"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Sunday Shift
-          </Link>
-          <Link
-            href="/sunday-shift/my-results"
-            className="inline-flex items-center gap-2 text-[#E26C73] hover:text-[#7FB069] transition-colors duration-200 font-medium"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Audit Scores
           </Link>
         </div>
 
