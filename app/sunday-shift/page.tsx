@@ -35,25 +35,10 @@ export default function SundayShiftPage() {
           </div>
 
           <div className="flex justify-center">
-            <div className="space-y-4 flex flex-col max-w-6xl w-full bg-white/80 rounded-2xl shadow-xl p-6">
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="flex items-center gap-3 text-gray-700 bg-white/80 p-3 rounded-lg shadow-sm">
-                  <Clock className="w-5 h-5 text-[#7FB069] flex-shrink-0" />
-                  <span className="font-semibold text-lg">Design Your Week with Barbara — Sunday 1–3 PM ET</span>
-                </div>
-
-                <a
-                  href={SUNDAY_ZOOM_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block"
-                >
-                  <Button className="w-full h-full bg-white hover:bg-gray-50 text-[#7FB069] border-2 border-[#7FB069] font-semibold py-3 text-lg">
-                    <Video className="mr-2 h-5 w-5" />
-                    Join The Sunday Session
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </a>
+            <div className="bg-white/80 rounded-2xl shadow-xl p-6 max-w-xl w-full">
+              <div className="flex items-center justify-center gap-3 text-gray-700">
+                <Clock className="w-5 h-5 text-[#7FB069] flex-shrink-0" />
+                <span className="font-semibold text-lg">Design Your Week with Barbara — Sunday 1–3 PM ET</span>
               </div>
             </div>
           </div>
