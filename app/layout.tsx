@@ -1,4 +1,4 @@
-  import type React from "react"
+import type React from "react"
 import type { Metadata } from "next"
 import { Great_Vibes, Playfair_Display, Poppins } from 'next/font/google'
 import "./globals.css"
