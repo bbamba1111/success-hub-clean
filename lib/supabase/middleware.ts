@@ -1,46 +1,6 @@
 import { createServerClient } from "@supabase/ssr"
 import { NextResponse, type NextRequest } from "next/server"
 
-// Routes that are publicly accessible without any authentication
-const PUBLIC_ROUTES = [
-  "/",
-  "/auth",
-  "/api",
-  "/_next",
-  "/images",
-  "/marketing",
-  "/sunday-shift",
-  "/garden",
-  "/audit",
-  "/focus-areas",
-  "/my-results",
-  "/preview-results",
-  "/pricing",
-]
-
-// Routes that require authentication but NOT paid membership (free access after login)
-const AUTH_ONLY_ROUTES = [
-  "/welcome",
-  "/human-zone-of-genius-team",
-  "/ai-executive-team",
-]
-
-// Valid paid membership tiers (from database constraint)
-// 'free' is explicitly NOT in this list - only paying members get access
-const PAID_TIERS = ["monday_only", "7_day", "21_day", "monthly", "annual", "premium"]
-
-function isPublicRoute(pathname: string): boolean {
-  return PUBLIC_ROUTES.some(route => 
-    pathname === route || pathname.startsWith(route + "/")
-  )
-}
-
-function isAuthOnlyRoute(pathname: string): boolean {
-  return AUTH_ONLY_ROUTES.some(route => 
-    pathname === route || pathname.startsWith(route + "/")
-  )
-}
-
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
@@ -51,6 +11,7 @@ export async function updateSession(request: NextRequest) {
 
   // If Supabase env vars are not available, skip auth check (development mode)
   if (!supabaseUrl || !supabaseAnonKey) {
+    console.log("[v0] Supabase env vars not available in middleware, skipping auth check")
     return supabaseResponse
   }
 
@@ -69,46 +30,25 @@ export async function updateSession(request: NextRequest) {
     },
   })
 
-  const pathname = request.nextUrl.pathname
-
-  // Allow public routes without any checks
-  if (isPublicRoute(pathname)) {
-    return supabaseResponse
-  }
-
-  // Get the authenticated user
+  // IMPORTANT: Do not run code between createServerClient and supabase.auth.getUser()
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // If not logged in, redirect to login
-  if (!user) {
+    // Protect all routes except home page, auth pages, welcome page, API routes, and public assets
+  if (
+    !user &&
+    request.nextUrl.pathname !== "/" &&
+    !request.nextUrl.pathname.startsWith("/auth") &&
+    !request.nextUrl.pathname.startsWith("/welcome") &&
+    !request.nextUrl.pathname.startsWith("/human-zone-of-genius-team") &&
+    !request.nextUrl.pathname.startsWith("/ai-executive-team") &&
+    !request.nextUrl.pathname.startsWith("/api") &&
+    !request.nextUrl.pathname.startsWith("/_next") &&
+    !request.nextUrl.pathname.startsWith("/images")
+  ) {
     const url = request.nextUrl.clone()
     url.pathname = "/auth/login"
-    url.searchParams.set("redirect", pathname)
-    return NextResponse.redirect(url)
-  }
-
-  // For auth-only routes, just being logged in is enough
-  if (isAuthOnlyRoute(pathname)) {
-    return supabaseResponse
-  }
-
-  // For all other routes (protected hub routes), check for paid membership
-  const { data: profile } = await supabase
-    .from("user_profiles")
-    .select("membership_tier")
-    .eq("id", user.id)
-    .single()
-
-  const membershipTier = profile?.membership_tier?.toLowerCase() || "free"
-  const isPaid = PAID_TIERS.includes(membershipTier)
-
-  if (!isPaid) {
-    // Redirect non-paid users to pricing/upgrade page
-    const url = request.nextUrl.clone()
-    url.pathname = "/pricing"
-    url.searchParams.set("upgrade", "true")
     return NextResponse.redirect(url)
   }
 
