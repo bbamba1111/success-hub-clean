@@ -5,7 +5,7 @@ export function PremiumSection() {
         <p className="font-poppins text-lg font-semibold tracking-widest text-[#E26C73] uppercase mb-6">
           By Invitation
         </p>
-        <h2 className="font-poppins text-4xl md:text-5xl font-bold text-[#2F4F4F] mb-10 text-balance leading-tight">
+        <h2 className="font-playfair text-4xl md:text-5xl font-bold text-[#2F4F4F] mb-10 text-balance leading-tight">
           Exclusive by Design. Intimate by Intention. Transformational by Rhythm.
         </h2>
 

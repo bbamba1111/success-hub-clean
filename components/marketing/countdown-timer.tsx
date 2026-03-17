@@ -8,103 +8,11 @@ export function CountdownTimer() {
   const [weekLabel, setWeekLabel] = useState("Loading...")
   const [currentMonth, setCurrentMonth] = useState("Loading...")
   const [countdownMessage, setCountdownMessage] = useState("Loading countdown message...")
-  const [animationActive, setAnimationActive] = useState(true)
   const containerRef = useRef<HTMLDivElement>(null)
-  const petalsRef = useRef<HTMLDivElement[]>([])
-
-  const maxPetals = 15
-
-  const petalImages = [
-    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M10,0C10,0,15,5,15,10S10,20,10,20S5,15,5,10S10,0,10,0z' fill='%23FBCFE8'/%3E%3C/svg%3E",
-    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M10,0C15,5,15,15,10,20C5,15,5,5,10,0z' fill='%23F472B6'/%3E%3C/svg%3E",
-    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M10,0C10,0,15,5,15,10S10,20,10,20S5,15,5,10S10,0,10,0z' fill='%23E26C73'/%3E%3C/svg%3E",
-    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M10,0C12,5,15,7,10,15C5,7,8,5,10,0z' fill='%23F9A8D4'/%3E%3C/svg%3E"
-  ]
 
   useEffect(() => {
     setMounted(true)
   }, [])
-
-  // Petal animation
-  useEffect(() => {
-    if (!mounted || !animationActive || !containerRef.current) return
-
-    const container = containerRef.current
-
-    const createPetal = () => {
-      if (!animationActive || !container) return
-
-      const petal = document.createElement('div')
-      petal.className = 'petal'
-      petal.style.cssText = `
-        position: absolute;
-        width: 15px;
-        height: 15px;
-        background-size: contain;
-        background-repeat: no-repeat;
-        opacity: 0.8;
-        pointer-events: none;
-        z-index: 10;
-      `
-
-      const size = 15 + Math.random() * 15
-      const startX = Math.random() * container.offsetWidth
-      const rotation = Math.random() * 360
-      const duration = 4 + Math.random() * 4
-      const petalImage = petalImages[Math.floor(Math.random() * petalImages.length)]
-
-      petal.style.width = `${size}px`
-      petal.style.height = `${size}px`
-      petal.style.backgroundImage = `url("${petalImage}")`
-      petal.style.left = `${startX}px`
-      petal.style.top = '-20px'
-      petal.style.transform = `rotate(${rotation}deg)`
-
-      container.appendChild(petal)
-
-      let startTime: number | null = null
-      const endY = container.offsetHeight + 20
-      const endX = startX + (Math.random() * 100 - 50)
-      const endRotation = rotation + 360
-
-      const animatePetal = (timestamp: number) => {
-        if (!startTime) startTime = timestamp
-        const elapsed = timestamp - startTime
-        const progress = Math.min(elapsed / (duration * 1000), 1)
-
-        const currentY = progress * endY
-        const currentX = startX + progress * (endX - startX)
-        const currentRotation = rotation + progress * (endRotation - rotation)
-
-        petal.style.top = `${currentY}px`
-        petal.style.left = `${currentX}px`
-        petal.style.transform = `rotate(${currentRotation}deg)`
-
-        if (progress < 1 && animationActive) {
-          requestAnimationFrame(animatePetal)
-        } else {
-          if (container.contains(petal)) {
-            container.removeChild(petal)
-          }
-          if (animationActive) {
-            setTimeout(createPetal, Math.random() * 500)
-          }
-        }
-      }
-
-      requestAnimationFrame(animatePetal)
-    }
-
-    // Create initial petals
-    for (let i = 0; i < maxPetals; i++) {
-      setTimeout(createPetal, i * 200)
-    }
-
-    return () => {
-      const petals = container.querySelectorAll('.petal')
-      petals.forEach(petal => petal.remove())
-    }
-  }, [mounted, animationActive])
 
   // Countdown timer
   useEffect(() => {
@@ -214,14 +122,6 @@ export function CountdownTimer() {
     return () => clearInterval(interval)
   }, [mounted])
 
-  const stopPetals = () => {
-    setAnimationActive(false)
-    if (containerRef.current) {
-      const petals = containerRef.current.querySelectorAll('.petal')
-      petals.forEach(petal => petal.remove())
-    }
-  }
-
   if (!mounted) {
     return (
       <div className="max-w-[1536px] mx-auto">
@@ -243,12 +143,6 @@ export function CountdownTimer() {
           alt="Women enjoying tea under cherry blossoms" 
           className="w-full h-full object-cover block"
         />
-        <button 
-          onClick={stopPetals}
-          className={`absolute bottom-5 right-5 bg-white/70 border border-[#D07F84] text-[#D07F84] py-2 px-4 rounded-full text-sm cursor-pointer z-20 hover:bg-[#D07F84] hover:text-white transition-colors ${!animationActive ? 'hidden' : ''}`}
-        >
-          Stop Petals
-        </button>
       </div>
 
       {/* Countdown Timer Container */}
