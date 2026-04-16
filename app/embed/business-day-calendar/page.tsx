@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
-const EVENTBRITE_LINK = "https://www.eventbrite.com/e/1987139297130?aff=oddtdtcreator"
+const EVENTBRITE_LINK = "https://www.eventbrite.com/e/make-time-for-moretm-tickets-1987139297130?aff=oddtdtcreator"
 
 const MONTHS = [
   "January", "February", "March", "April", "May", "June",
