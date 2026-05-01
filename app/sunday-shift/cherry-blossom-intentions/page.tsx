@@ -157,7 +157,7 @@ const generateIntentionPrompt = () => {
 ${nameText}
 Overall Score: ${auditData.overallScore}%
 
-My ${selectedAreas.length} selected focus areas that I want to focus on:
+My ${selectedAreas.length} selected focus areas that I want to focus on: 
 ${focusAreasText}
 
 **ABOUT THE INTENTION SETTING PROCESS:**
