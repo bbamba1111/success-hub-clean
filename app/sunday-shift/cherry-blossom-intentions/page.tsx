@@ -152,7 +152,7 @@ const generateIntentionPrompt = () => {
   const nameText = userName ? `Name: ${userName}` : "Name: Not provided"
   const focusAreasText = selectedAreas.map((area, index) => `${index + 1}. ${area.name}`).join("\n")
 
-  return `Hello Cherry Blossom! I just completed my Work-Life Balance Audit and I'm ready to set powerful intentions for transformation using The GIVEN framework.
+  return `Hello Cherry Blossom! I just completed my Work-Life Balance Audit and I'm ready to set my Desired Work-Lifestyle Intention using The GIVEN framework.
 
 ${nameText}
 Overall Score: ${auditData.overallScore}%
@@ -161,7 +161,7 @@ My ${selectedAreas.length} selected focus areas that I want to focus on:
 ${focusAreasText}
 
 **ABOUT THE INTENTION SETTING PROCESS:**
-I will craft my intention with you now, then I'll declare it aloud during the Collective Intention Setting Circle — a spiritual act of asking, witnessed by my mentor and cohort, where I'll plant my intention as a seed into the spiritual realm, quantum field, vortex.
+I will craft my intention with you now, then I'll declare it aloud during the Collective Intention Setting Circle with Thought Leader Barbara and any fellow co-hort members. This is my spiritual act of asking my Creator for what I want, as it is witnessed by my mentor and cohort, where I will plant my seed of intention into the spiritual realm, quantum field, vortex, My Auric Field, etc.
 
 **IMPORTANT INTENTION LANGUAGE GUIDELINES:**
 - Eliminate words like "trying," "hoping," "wanting," "to be," and "not"
@@ -170,10 +170,10 @@ I will craft my intention with you now, then I'll declare it aloud during the Co
 - Speak with clarity, certainty, and faith
 
 **THE GIVEN FRAMEWORK:**
-G = Gratitude – the opening frequency
+G = Gratitude – gratitude opens the frequency
 I = Invitation – invite Your Creator into your day
-V = Vision & Visualization – seeing it clearly with all 5 senses
-E = Emotional Embodiment – step into BEING the person and living your Desired Work-Lifestyle
+V = Vision & Visualization – see it clearly in your imagination with all 5 senses
+E = Emotional Embodiment – step into BEING the person you desire to be TODAY and live your Desired Work-Lifestyle in real-time
 N = Nurture – caring for mind, body, emotions and beliefs to sustain the high vibrational success frequency
 
 I'm ready to begin! Please guide me through each step, then compile everything into ONE short, brief, concise Intention Declaration Statement that I can write down, memorize, and declare in 1 minute or less and bring to the GROUNDING ceremony (Steps 5 & 6 happen live). Make it powerful, clear, and easy to remember!
@@ -277,7 +277,7 @@ Let's create my sacred Desired Work-Lifestyle Intention together!`
             <h1 className="text-4xl font-bold">Set Your Desired Work-Life Balance Intention with Cherry Blossom</h1>
           </div>
           <p className="text-xl mb-6 opacity-90">
-            Get AI-guided intention setting support as you transform your Work-Life Balance Audit insights and your chosen 1-3 priority focus areas into a Personal Work-Life Balance Intention Declaration. This Personal Intention Declaration is designed to keep your mind, thoughts, and beliefs aligned with what you really want.
+            Get AI-guided intention setting support as you transform your Work-Life Balance Audit insights and your chosen 1-3 priority focus areas into your Desired Work-Lifestyle Intention Declaration. This Personal Intention Declaration is designed to keep your mind, thoughts, and beliefs aligned with what you really want.
           
           </p>
         </div>
@@ -324,7 +324,7 @@ Let's create my sacred Desired Work-Lifestyle Intention together!`
                 <Target className="w-16 h-16 text-[#E26C73]/50 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-gray-900 mb-4">No Focus Areas Selected</h3>
                 <p className="text-gray-600 mb-6">
-                  Please go back and select 1-3 focus areas to create your Personal Work-Life Balance Intention Declaration.
+                  Please go back and select 1-3 focus areas to create your Desired Work-Lifestyle Intention Declaration.
                 </p>
                 <Link href="/sunday-shift/intention-setter">
                   <Button className="bg-[#E26C73] hover:bg-[#D55A60] text-white px-8 py-3">Select Focus Areas</Button>
@@ -347,11 +347,11 @@ Let's create my sacred Desired Work-Lifestyle Intention together!`
                   className="rounded-full shadow-lg"
                 />
                 <div>
-                  <h2 className="text-2xl font-bold text-[#E26C73]">Set Your Personal Work-Life Balance Intentions with Cherry Blossom</h2>
+                  <h2 className="text-2xl font-bold text-[#E26C73]">Set Your Desired Work-Lifestyle Intention with Cherry Blossom</h2>
                 </div>
               </div>
               <p className="text-gray-600 mb-8">
-                Get AI-guided intention setting support from Cherry Blossom, as you transform your Work-Life Balance Audit insights and your chosen 1-3 priority focus areas into a Personal Work-Life Balance Intention Declaration.
+                Get AI-guided intention setting support from Cherry Blossom, as you transform your Work-Life Balance Audit insights and your chosen 1-3 priority focus areas into a Desired Work-Lifestyle Intention Declaration.
               </p>
 
               {/* Name Input */}
@@ -396,7 +396,7 @@ Let's create my sacred Desired Work-Lifestyle Intention together!`
                   <div className="w-6 h-6 bg-white border-2 border-gray-300 text-black rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
                     4
                   </div>
-                  <p className="text-gray-700">Create your personalized 28-day transformation plan</p>
+                  <p className="text-gray-700">Create your Desired Work-Lifestyle Intention </p>
                 </div>
               </div>
 
@@ -491,7 +491,7 @@ Let's create my sacred Desired Work-Lifestyle Intention together!`
         isOpen={isChatOpen}
         onClose={() => setIsChatOpen(false)}
         context="intention-setting"
-        title="Set Your 28-Day Intentions"
+        title="Set Your Desired Work-Lifestyle Intention"
       />
     </div>
   )
