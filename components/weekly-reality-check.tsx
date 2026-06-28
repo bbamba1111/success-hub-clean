@@ -193,70 +193,90 @@ export function WeeklyRealityCheck() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.4, ease: "easeInOut" }}
-            className="overflow-hidden"
+            className="relative overflow-hidden"
           >
-            <div className="py-16 lg:py-20">
-              {/* Full-width header */}
-              <div className="max-w-4xl mx-auto px-6 text-center">
-                <div className="flex items-center justify-center gap-3 mb-6">
-                  <img
-                    src="/images/logo.png"
-                    alt="Make Time For More Logo"
-                    width={72}
-                    height={72}
-                    className="rounded-full shadow-lg"
-                  />
-                  <Badge
-                    variant="secondary"
-                    className="bg-gradient-to-r from-[#7FB069] to-[#E26C73] text-white border-0"
-                  >
-                    Weekly Ritual
-                  </Badge>
-                </div>
+            {/* Wall-to-wall zen background */}
+            <div className="absolute inset-0">
+              <img
+                src="/images/reality-check-zen-bg.png"
+                alt="Cherry blossom zen garden with balanced stones and calm water"
+                className="h-full w-full object-cover"
+              />
+              {/* Soft dark overlay for text contrast */}
+              <div
+                className="absolute inset-0"
+                style={{
+                  background:
+                    "linear-gradient(180deg, rgba(28,22,26,0.45) 0%, rgba(28,22,26,0.3) 45%, rgba(28,22,26,0.55) 100%)",
+                }}
+              />
+            </div>
 
-                <h2 className="text-3xl lg:text-4xl font-bold text-[#7FB069] mb-3 text-balance">
-                  Take Your Weekly Work-Life Balance Reality Check™
-                </h2>
-                <p className="text-xl font-semibold text-gray-800 mb-8 text-pretty">
-                  Your Official Entry Into The Work-Life Balance Business Week™
-                </p>
+            <div className="relative z-10 py-16 lg:py-20">
+              {/* Full-width header on a blurred glass panel */}
+              <div className="max-w-4xl mx-auto px-6">
+                <div className="rounded-3xl border border-white/15 bg-black/20 p-8 backdrop-blur-md sm:p-10 text-center">
+                  <div className="flex items-center justify-center gap-3 mb-6">
+                    <img
+                      src="/images/logo.png"
+                      alt="Make Time For More Logo"
+                      width={72}
+                      height={72}
+                      className="rounded-full shadow-lg"
+                    />
+                    <Badge
+                      variant="secondary"
+                      className="bg-white/20 text-white border-0 backdrop-blur-sm text-xs font-medium uppercase tracking-[0.3em]"
+                    >
+                      Weekly Ritual
+                    </Badge>
+                  </div>
 
-                <div className="space-y-4 text-left max-w-3xl mx-auto">
-                  <p className="text-lg text-gray-600 leading-relaxed">
-                    Every successful Work-Life Balance Business Week™ begins with reality—not reactivity.
+                  <h2 className="text-3xl lg:text-4xl font-bold text-white mb-3 text-balance">
+                    Take Your Weekly Work-Life Balance Reality Check™
+                  </h2>
+                  <p className="text-xl font-semibold text-[#FFD6E0] mb-8 text-pretty">
+                    Your Official Entry Into The Work-Life Balance Business Week™
                   </p>
-                  <p className="text-lg text-gray-600 leading-relaxed">
-                    Before you begin Monday&apos;s live experience, complete your Weekly Work-Life Balance Reality
-                    Check™.
-                  </p>
-                  <p className="text-lg text-gray-600 leading-relaxed">
-                    This simple three-step weekly ritual helps you understand your current reality, intentionally
-                    design your week, and prepare your operating environment before your Work-Life Balance Business
-                    Week™ begins.
-                  </p>
-                  <div className="rounded-2xl bg-white/70 border border-[#7FB069]/20 p-5">
-                    <p className="font-semibold text-gray-800 mb-2">Complete this experience:</p>
-                    <div className="space-y-2">
-                      <div className="flex items-start gap-3">
-                        <CheckCircle className="w-5 h-5 text-[#7FB069] flex-shrink-0 mt-0.5" />
-                        <span className="text-gray-700">Immediately after joining (new members)</span>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <CheckCircle className="w-5 h-5 text-[#7FB069] flex-shrink-0 mt-0.5" />
-                        <span className="text-gray-700">
-                          Then every Sunday evening or before each new Work-Life Balance Business Week™ begins.
-                        </span>
+
+                  <div className="space-y-4 text-left max-w-3xl mx-auto">
+                    <p className="text-lg text-white/90 leading-relaxed">
+                      Every successful Work-Life Balance Business Week™ begins with reality—not reactivity.
+                    </p>
+                    <p className="text-lg text-white/90 leading-relaxed">
+                      Before you begin Monday&apos;s live experience, complete your Weekly Work-Life Balance Reality
+                      Check™.
+                    </p>
+                    <p className="text-lg text-white/90 leading-relaxed">
+                      This simple three-step weekly ritual helps you understand your current reality, intentionally
+                      design your week, and prepare your operating environment before your Work-Life Balance Business
+                      Week™ begins.
+                    </p>
+                    <div className="rounded-2xl bg-white/10 border border-white/20 p-5 backdrop-blur-sm">
+                      <p className="font-semibold text-white mb-2">Complete this experience:</p>
+                      <div className="space-y-2">
+                        <div className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-[#FFD6E0] flex-shrink-0 mt-0.5" />
+                          <span className="text-white/90">Immediately after joining (new members)</span>
+                        </div>
+                        <div className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-[#FFD6E0] flex-shrink-0 mt-0.5" />
+                          <span className="text-white/90">
+                            Then every Sunday evening or before each new Work-Life Balance Business Week™ begins.
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Three cards */}
+              {/* Three cards on a blurred glass screen */}
               <div className="max-w-6xl mx-auto px-6 mt-12">
-                <div className="grid lg:grid-cols-3 gap-6">
+                <div className="rounded-3xl border border-white/15 bg-white/10 p-5 backdrop-blur-md sm:p-6">
+                  <div className="grid lg:grid-cols-3 gap-6">
                   {/* Step 1 - Audit */}
-                  <Card className="bg-[#7FB069] border-0 text-white overflow-hidden flex flex-col">
+                  <Card className="bg-[#7FB069]/80 backdrop-blur-md border border-white/20 text-white overflow-hidden flex flex-col">
                     <CardHeader className="pb-4">
                       <div className="flex items-center gap-3 mb-3">
                         <img
@@ -307,7 +327,7 @@ export function WeeklyRealityCheck() {
                   </Card>
 
                   {/* Step 2 - Intention */}
-                  <Card className="bg-[#E26C73] border-0 text-white overflow-hidden flex flex-col">
+                  <Card className="bg-[#E26C73]/80 backdrop-blur-md border border-white/20 text-white overflow-hidden flex flex-col">
                     <CardHeader className="pb-4">
                       <div className="flex items-center gap-3 mb-3">
                         <img
@@ -369,7 +389,7 @@ export function WeeklyRealityCheck() {
                   </Card>
 
                   {/* Step 3 - Operating Environment */}
-                  <Card className="bg-gradient-to-br from-[#7FB069] to-[#E26C73] border-0 text-white overflow-hidden flex flex-col">
+                  <Card className="bg-gradient-to-br from-[#7FB069]/80 to-[#E26C73]/80 backdrop-blur-md border border-white/20 text-white overflow-hidden flex flex-col">
                     <CardHeader className="pb-4">
                       <div className="flex items-center gap-3 mb-3">
                         <img
@@ -437,6 +457,7 @@ export function WeeklyRealityCheck() {
                       </div>
                     </CardContent>
                   </Card>
+                  </div>
                 </div>
 
                 {completedAt && (
@@ -444,7 +465,7 @@ export function WeeklyRealityCheck() {
                     <Button
                       onClick={() => setExpanded(false)}
                       variant="ghost"
-                      className="text-[#7FB069] hover:bg-[#7FB069]/10"
+                      className="text-white hover:bg-white/10"
                     >
                       <ChevronDown className="mr-2 h-4 w-4" />
                       Collapse Reality Check
