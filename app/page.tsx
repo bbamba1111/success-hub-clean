@@ -10,6 +10,7 @@ import CherryBlossomCountdown from "@/components/cherry-blossom-countdown"
 import WorkLifeBalanceSchedule from "@/components/work-life-balance-schedule"
 import { SimpleChatModal } from "@/components/simple-chat-modal"
 import { CherryBlossomCoGuide } from "@/components/cherry-blossom-co-guide"
+import { MorningGivenHero } from "@/components/morning-given-hero"
 import { createBrowserClient } from "@supabase/ssr"
 
 export default function HomePage() {
@@ -66,6 +67,9 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white">
+      {/* NEW Dynamic Hero Section - Morning GIV•EN™ Routine */}
+      <MorningGivenHero />
+
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-white">
         <div className="max-w-7xl mx-auto px-6 py-16">
