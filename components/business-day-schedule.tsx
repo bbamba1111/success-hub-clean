@@ -94,6 +94,7 @@ export function BusinessDaySchedule() {
         {/* 10:00–11:00 PM — Power Down™ */}
         <BusinessDayBlock
           sectionId="block-power-down"
+          backgroundImage="/images/block-power-down.png"
           tint="238 240 247"
           emoji="🌙"
           time="10:00–11:00 PM"
@@ -106,6 +107,7 @@ export function BusinessDaySchedule() {
         {/* 11:00 PM–7:00 AM — Unplug Digital Detox™ */}
         <BusinessDayBlock
           sectionId="block-digital-detox"
+          backgroundImage="/images/block-digital-detox.png"
           tint="239 240 244"
           emoji="🌙"
           time="11:00 PM–7:00 AM"
