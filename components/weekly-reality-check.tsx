@@ -193,17 +193,8 @@ export function WeeklyRealityCheck() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.4, ease: "easeInOut" }}
-            className="relative overflow-hidden"
+            className="relative overflow-hidden bg-white"
           >
-            {/* Wall-to-wall zen background */}
-            <div className="absolute inset-0">
-              <img
-                src="/images/reality-check-zen-bg.png"
-                alt="Cherry blossom zen garden with balanced stones and calm water"
-                className="h-full w-full object-cover"
-              />
-            </div>
-
             <div className="relative z-10 py-16 lg:py-20">
               {/* Full-width header on a blurred glass panel */}
               <div className="max-w-4xl mx-auto px-6">
