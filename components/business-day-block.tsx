@@ -1,6 +1,7 @@
 "use client"
 
 import type { ReactNode } from "react"
+import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 
 export type BlockStatus = "current" | "upcoming" | "completed"
@@ -54,10 +55,15 @@ export function BusinessDayBlock({
       aria-label={title}
       className="scroll-mt-24 w-full px-4 py-3 sm:px-6 lg:px-8"
     >
-      <div
-        className={`relative w-full overflow-hidden rounded-3xl shadow-lg transition-all duration-500 ${
-          isCompleted ? "opacity-60" : "opacity-100"
-        } ${isCurrent ? "ring-2 ring-[#7FB069] ring-offset-2 ring-offset-[#F5F1E8]" : ""}`}
+      <motion.div
+        initial={{ opacity: 0, y: 6 }}
+        whileInView={{ opacity: isCompleted ? 0.6 : 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        whileHover={{ boxShadow: "0 24px 50px -12px rgba(28,22,26,0.45)" }}
+        className={`relative w-full overflow-hidden rounded-3xl shadow-lg ${
+          isCurrent ? "ring-2 ring-[#7FB069] ring-offset-2 ring-offset-[#F5F1E8]" : ""
+        }`}
       >
         {/* Per-block background image — replace only `backgroundImage` later */}
         <div className="absolute inset-0">
@@ -65,22 +71,22 @@ export function BusinessDayBlock({
             src={backgroundImage || "/placeholder.svg"}
             alt=""
             aria-hidden="true"
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover object-center"
           />
-          {/* Left-weighted wash so the glass panel text stays legible over any image */}
+          {/* Gentle left-weighted wash — only enough to keep panel text legible; lets photography breathe on the right */}
           <div
             className="absolute inset-0"
             style={{
               background:
-                "linear-gradient(90deg, rgba(28,22,26,0.45) 0%, rgba(28,22,26,0.25) 45%, rgba(28,22,26,0.05) 100%)",
+                "linear-gradient(90deg, rgba(28,22,26,0.40) 0%, rgba(28,22,26,0.15) 38%, rgba(28,22,26,0) 60%)",
             }}
           />
         </div>
 
         {/* Content row — compact timeline card (~300px) */}
         <div className="relative z-10 flex min-h-[280px] items-center px-4 py-5 sm:px-6 md:min-h-[300px] lg:px-10">
-          {/* Frosted glass content panel on the left */}
-          <div className="w-full max-w-md rounded-2xl border border-white/20 bg-white/15 p-5 backdrop-blur-md sm:p-6">
+          {/* Frosted glass content panel on the left — ~38% of card width */}
+          <div className="w-full max-w-sm rounded-2xl border border-white/20 bg-white/15 p-5 backdrop-blur-md sm:p-6 md:w-[38%] md:max-w-none lg:w-[38%]">
             <div className="mb-2.5 flex flex-wrap items-center gap-2.5">
               <span
                 className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] ${STATUS_BADGE[status]}`}
@@ -111,7 +117,7 @@ export function BusinessDayBlock({
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </section>
   )
 }
