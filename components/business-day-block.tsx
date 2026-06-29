@@ -65,55 +65,58 @@ export function BusinessDayBlock({
         }`}
         style={{ backgroundColor: `rgb(${tint})` }}
       >
-        {/* Per-block image — sits only in the RIGHT region and shows the FULL scene (no crop). Replace only `backgroundImage` later. */}
-        <div className="absolute inset-y-0 right-0 w-full md:w-[86%] lg:w-[90%]" style={{ backgroundColor: `rgb(${tint})` }}>
-          <img
-            src={backgroundImage || "/placeholder.svg"}
-            alt=""
-            aria-hidden="true"
-            className="h-full w-full object-contain object-right"
-          />
-        </div>
+        {/* Two-column experience layout: clean content panel (~36%) + dominant photography (~64%) */}
+        <div className="relative z-10 flex min-h-[280px] flex-col md:min-h-[300px] md:flex-row">
+          {/* Left content panel — 42% tablet, 34–38% desktop, capped at 600px */}
+          <div
+            className="flex items-center px-5 py-6 sm:px-8 md:w-[42%] md:max-w-[600px] md:px-10 lg:w-[36%]"
+            style={{ backgroundColor: `rgb(${tint})` }}
+          >
+            <div className="w-full">
+              <div className="mb-2.5 flex flex-wrap items-center gap-2.5">
+                <span
+                  className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] ${STATUS_BADGE[status]}`}
+                >
+                  {STATUS_LABEL[status]}
+                </span>
+                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#6B5860]">{time}</span>
+              </div>
 
-        {/* Left tinted panel that feathers into the image so the full scene shows on the right */}
-        <div
-          className="absolute inset-y-0 left-0 w-full md:w-[32%] lg:w-[28%]"
-          style={{
-            background: `linear-gradient(90deg, rgb(${tint}) 0%, rgb(${tint}) 70%, rgb(${tint} / 0) 100%)`,
-          }}
-        />
+              <h3 className="text-xl font-bold leading-tight text-balance text-[#3A2E33] sm:text-2xl">
+                {emoji ? <span className="mr-2">{emoji}</span> : null}
+                {title}
+              </h3>
 
-        {/* Content — sits within the solid portion of the left panel */}
-        <div className="relative z-10 flex min-h-[280px] items-center px-5 py-6 sm:px-8 md:min-h-[300px] lg:px-12">
-          <div className="w-full max-w-md">
-            <div className="mb-2.5 flex flex-wrap items-center gap-2.5">
-              <span
-                className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] ${STATUS_BADGE[status]}`}
-              >
-                {STATUS_LABEL[status]}
-              </span>
-              <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#6B5860]">{time}</span>
+              <div className="mt-2 line-clamp-2 text-pretty text-sm leading-relaxed text-[#5C4F55]">{description}</div>
+
+              {children}
+
+              <div className="mt-4">
+                <Button
+                  size="sm"
+                  onClick={onAction}
+                  disabled={isCompleted}
+                  className="bg-[#7FB069] text-white hover:bg-[#6FA058] disabled:opacity-50"
+                >
+                  {buttonText}
+                </Button>
+              </div>
             </div>
+          </div>
 
-            <h3 className="text-xl font-bold leading-tight text-balance text-[#3A2E33] sm:text-2xl">
-              {emoji ? <span className="mr-2">{emoji}</span> : null}
-              {title}
-            </h3>
-
-            <div className="mt-2 line-clamp-2 text-pretty text-sm leading-relaxed text-[#5C4F55]">{description}</div>
-
-            {children}
-
-            <div className="mt-4">
-              <Button
-                size="sm"
-                onClick={onAction}
-                disabled={isCompleted}
-                className="bg-[#7FB069] text-white hover:bg-[#6FA058] disabled:opacity-50"
-              >
-                {buttonText}
-              </Button>
-            </div>
+          {/* Right image area — dominant photography, fills the rest of the card */}
+          <div className="relative min-h-[200px] flex-1">
+            <img
+              src={backgroundImage || "/placeholder.svg"}
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 h-full w-full object-cover object-center"
+            />
+            {/* Soft ~48px horizontal fade blending the panel into the photography (desktop only) */}
+            <div
+              className="pointer-events-none absolute inset-y-0 left-0 hidden w-12 md:block"
+              style={{ background: `linear-gradient(90deg, rgb(${tint}) 0%, rgb(${tint} / 0) 100%)` }}
+            />
           </div>
         </div>
       </motion.div>
