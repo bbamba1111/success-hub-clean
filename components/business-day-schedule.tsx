@@ -16,6 +16,7 @@ export function BusinessDaySchedule() {
         {/* 7:00–9:00 AM — Early Access, Flex Time™ & Preparation */}
         <BusinessDayBlock
           sectionId="block-early-access"
+          backgroundImage="/images/block-early-access.png"
           tint="253 246 234"
           emoji="🌅"
           time="7:00–9:00 AM"
@@ -67,6 +68,7 @@ export function BusinessDaySchedule() {
         {/* 1:00–5:00 PM — 4-Hour Focused CEO Workday™ */}
         <BusinessDayBlock
           sectionId="block-ceo-workday"
+          backgroundImage="/images/block-ceo-workday.png"
           tint="237 242 247"
           emoji="💼"
           time="1:00–5:00 PM"
@@ -79,6 +81,7 @@ export function BusinessDaySchedule() {
         {/* 5:00–10:00 PM — Time Freedom™ */}
         <BusinessDayBlock
           sectionId="block-time-freedom"
+          backgroundImage="/images/block-time-freedom.png"
           tint="252 241 239"
           emoji="🌸"
           time="5:00–10:00 PM"
