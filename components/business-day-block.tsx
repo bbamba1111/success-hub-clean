@@ -65,21 +65,21 @@ export function BusinessDayBlock({
         }`}
         style={{ backgroundColor: `rgb(${tint})` }}
       >
-        {/* Per-block image — sits on the RIGHT and stays fully visible. Replace only `backgroundImage` later. */}
-        <div className="absolute inset-0">
+        {/* Per-block image — sits only in the RIGHT region and shows the FULL scene (no crop). Replace only `backgroundImage` later. */}
+        <div className="absolute inset-y-0 right-0 w-full md:w-[62%] lg:w-[66%]" style={{ backgroundColor: `rgb(${tint})` }}>
           <img
             src={backgroundImage || "/placeholder.svg"}
             alt=""
             aria-hidden="true"
-            className="h-full w-full object-cover object-center"
+            className="h-full w-full object-contain object-right"
           />
         </div>
 
         {/* Left tinted panel that feathers into the image so the full scene shows on the right */}
         <div
-          className="absolute inset-y-0 left-0 w-full md:w-[62%] lg:w-[58%]"
+          className="absolute inset-y-0 left-0 w-full md:w-[44%] lg:w-[40%]"
           style={{
-            background: `linear-gradient(90deg, rgb(${tint}) 0%, rgb(${tint}) 55%, rgb(${tint} / 0.85) 70%, rgb(${tint} / 0) 100%)`,
+            background: `linear-gradient(90deg, rgb(${tint}) 0%, rgb(${tint}) 70%, rgb(${tint} / 0) 100%)`,
           }}
         />
 
