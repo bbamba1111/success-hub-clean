@@ -16,6 +16,7 @@ export function BusinessDaySchedule() {
         {/* 7:00–9:00 AM — Early Access, Flex Time™ & Preparation */}
         <BusinessDayBlock
           sectionId="block-early-access"
+          tint="253 246 234"
           emoji="🌅"
           time="7:00–9:00 AM"
           title="Early Access, Flex Time™ & Preparation"
@@ -28,6 +29,7 @@ export function BusinessDaySchedule() {
         <BusinessDayBlock
           sectionId="block-morning-given"
           backgroundImage="/images/block-morning-given.png"
+          tint="252 240 238"
           emoji="🌸"
           time="9:00–10:30 AM"
           title="Morning GIV•EN™ Routine™"
@@ -40,6 +42,7 @@ export function BusinessDaySchedule() {
         <BusinessDayBlock
           sectionId="block-movement-window"
           backgroundImage="/images/block-movement-window.png"
+          tint="240 245 236"
           emoji="💪"
           time="10:30–11:00 AM"
           title="30-Minute Workday Movement Window™"
@@ -52,6 +55,7 @@ export function BusinessDaySchedule() {
         <BusinessDayBlock
           sectionId="block-lunch-break"
           backgroundImage="/images/block-lunch-break.png"
+          tint="238 244 234"
           emoji="🥗"
           time="11:00 AM–1:00 PM"
           title="Extended Healthy Hybrid Lunch Break™"
@@ -63,6 +67,7 @@ export function BusinessDaySchedule() {
         {/* 1:00–5:00 PM — 4-Hour Focused CEO Workday™ */}
         <BusinessDayBlock
           sectionId="block-ceo-workday"
+          tint="237 242 247"
           emoji="💼"
           time="1:00–5:00 PM"
           title="4-Hour Focused CEO Workday™"
@@ -74,6 +79,7 @@ export function BusinessDaySchedule() {
         {/* 5:00–10:00 PM — Time Freedom™ */}
         <BusinessDayBlock
           sectionId="block-time-freedom"
+          tint="252 241 239"
           emoji="🌸"
           time="5:00–10:00 PM"
           title="Time Freedom™"
@@ -85,6 +91,7 @@ export function BusinessDaySchedule() {
         {/* 10:00–11:00 PM — Power Down™ */}
         <BusinessDayBlock
           sectionId="block-power-down"
+          tint="238 240 247"
           emoji="🌙"
           time="10:00–11:00 PM"
           title="Power Down™"
@@ -96,6 +103,7 @@ export function BusinessDaySchedule() {
         {/* 11:00 PM–7:00 AM — Unplug Digital Detox™ */}
         <BusinessDayBlock
           sectionId="block-digital-detox"
+          tint="239 240 244"
           emoji="🌙"
           time="11:00 PM–7:00 AM"
           title="Unplug Digital Detox™"

@@ -15,9 +15,11 @@ export interface BusinessDayBlockProps {
   title: string
   description: ReactNode
   buttonText: string
+  /** Space-separated RGB for the left panel tint, e.g. "251 239 230". */
+  tint?: string
   /** Placeholder state. Phase 2 (Circadian Rhythm Engine) will drive this automatically. */
   status?: BlockStatus
-  /** Optional extra content rendered inside the glass panel (e.g. a featured sub-card). */
+  /** Optional extra content rendered inside the panel (e.g. a featured sub-card). */
   children?: ReactNode
   onAction?: () => void
 }
@@ -30,8 +32,8 @@ const STATUS_LABEL: Record<BlockStatus, string> = {
 
 const STATUS_BADGE: Record<BlockStatus, string> = {
   current: "bg-[#7FB069] text-white",
-  upcoming: "bg-white/25 text-white",
-  completed: "bg-white/15 text-white/80",
+  upcoming: "bg-[#7FB069]/15 text-[#5A7A45]",
+  completed: "bg-black/10 text-[#6B5860]",
 }
 
 export function BusinessDayBlock({
@@ -42,6 +44,7 @@ export function BusinessDayBlock({
   title,
   description,
   buttonText,
+  tint = "248 243 236",
   status = "upcoming",
   children,
   onAction,
@@ -50,22 +53,19 @@ export function BusinessDayBlock({
   const isCurrent = status === "current"
 
   return (
-    <section
-      id={sectionId}
-      aria-label={title}
-      className="scroll-mt-24 w-full px-4 py-3 sm:px-6 lg:px-8"
-    >
+    <section id={sectionId} aria-label={title} className="scroll-mt-24 w-full px-4 py-3 sm:px-6 lg:px-8">
       <motion.div
         initial={{ opacity: 0, y: 6 }}
-        whileInView={{ opacity: isCompleted ? 0.6 : 1, y: 0 }}
+        whileInView={{ opacity: isCompleted ? 0.65 : 1, y: 0 }}
         viewport={{ once: true, amount: 0.3 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        whileHover={{ boxShadow: "0 24px 50px -12px rgba(28,22,26,0.45)" }}
+        whileHover={{ boxShadow: "0 24px 50px -12px rgba(28,22,26,0.35)" }}
         className={`relative w-full overflow-hidden rounded-3xl shadow-lg ${
           isCurrent ? "ring-2 ring-[#7FB069] ring-offset-2 ring-offset-[#F5F1E8]" : ""
         }`}
+        style={{ backgroundColor: `rgb(${tint})` }}
       >
-        {/* Per-block background image — replace only `backgroundImage` later */}
+        {/* Per-block image — sits on the RIGHT and stays fully visible. Replace only `backgroundImage` later. */}
         <div className="absolute inset-0">
           <img
             src={backgroundImage || "/placeholder.svg"}
@@ -73,35 +73,34 @@ export function BusinessDayBlock({
             aria-hidden="true"
             className="h-full w-full object-cover object-center"
           />
-          {/* Gentle left-weighted wash — only enough to keep panel text legible; lets photography breathe on the right */}
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(90deg, rgba(28,22,26,0.40) 0%, rgba(28,22,26,0.15) 38%, rgba(28,22,26,0) 60%)",
-            }}
-          />
         </div>
 
-        {/* Content row — compact timeline card (~300px) */}
-        <div className="relative z-10 flex min-h-[280px] items-center px-4 py-5 sm:px-6 md:min-h-[300px] lg:px-10">
-          {/* Frosted glass content panel on the left — ~38% of card width */}
-          <div className="w-full max-w-sm rounded-2xl border border-white/20 bg-white/15 p-5 backdrop-blur-md sm:p-6 md:w-[38%] md:max-w-none lg:w-[38%]">
+        {/* Left tinted panel that feathers into the image so the full scene shows on the right */}
+        <div
+          className="absolute inset-y-0 left-0 w-full md:w-[62%] lg:w-[58%]"
+          style={{
+            background: `linear-gradient(90deg, rgb(${tint}) 0%, rgb(${tint}) 55%, rgb(${tint} / 0.85) 70%, rgb(${tint} / 0) 100%)`,
+          }}
+        />
+
+        {/* Content — sits within the solid portion of the left panel */}
+        <div className="relative z-10 flex min-h-[280px] items-center px-5 py-6 sm:px-8 md:min-h-[300px] lg:px-12">
+          <div className="w-full max-w-md">
             <div className="mb-2.5 flex flex-wrap items-center gap-2.5">
               <span
                 className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] ${STATUS_BADGE[status]}`}
               >
                 {STATUS_LABEL[status]}
               </span>
-              <span className="text-xs font-medium uppercase tracking-[0.18em] text-white/90">{time}</span>
+              <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#6B5860]">{time}</span>
             </div>
 
-            <h3 className="text-xl font-bold leading-tight text-balance text-white sm:text-2xl">
+            <h3 className="text-xl font-bold leading-tight text-balance text-[#3A2E33] sm:text-2xl">
               {emoji ? <span className="mr-2">{emoji}</span> : null}
               {title}
             </h3>
 
-            <div className="mt-2 line-clamp-2 text-pretty text-sm leading-relaxed text-white/90">{description}</div>
+            <div className="mt-2 line-clamp-2 text-pretty text-sm leading-relaxed text-[#5C4F55]">{description}</div>
 
             {children}
 
