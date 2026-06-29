@@ -27,6 +27,7 @@ export function BusinessDaySchedule() {
         {/* 9:00–10:30 AM — Morning GIV•EN™ Routine */}
         <BusinessDayBlock
           sectionId="block-morning-given"
+          backgroundImage="/images/block-morning-given.png"
           emoji="🌸"
           time="9:00–10:30 AM"
           title="Morning GIV•EN™ Routine™"
@@ -38,6 +39,7 @@ export function BusinessDaySchedule() {
         {/* 10:30–11:00 AM — 30-Minute Workday Movement Window™ */}
         <BusinessDayBlock
           sectionId="block-movement-window"
+          backgroundImage="/images/block-movement-window.png"
           emoji="💪"
           time="10:30–11:00 AM"
           title="30-Minute Workday Movement Window™"
@@ -49,6 +51,7 @@ export function BusinessDaySchedule() {
         {/* 11:00 AM–1:00 PM — Extended Healthy Hybrid Lunch Break™ */}
         <BusinessDayBlock
           sectionId="block-lunch-break"
+          backgroundImage="/images/block-lunch-break.png"
           emoji="🥗"
           time="11:00 AM–1:00 PM"
           title="Extended Healthy Hybrid Lunch Break™"
