@@ -12,6 +12,7 @@ import { SimpleChatModal } from "@/components/simple-chat-modal"
 import { CherryBlossomCoGuide } from "@/components/cherry-blossom-co-guide"
 import { MorningGivenHero } from "@/components/morning-given-hero"
 import { WeeklyRealityCheck } from "@/components/weekly-reality-check"
+import { BusinessDayHero } from "@/components/business-day-hero"
 import { createBrowserClient } from "@supabase/ssr"
 
 export default function HomePage() {
@@ -73,6 +74,9 @@ export default function HomePage() {
 
       {/* Weekly Work-Life Balance Reality Check™ - directly under the main hero */}
       <WeeklyRealityCheck />
+
+      {/* Today's Work-Life Balance Business Day™ - dynamic day/status/CTA over a static banner */}
+      <BusinessDayHero />
 
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-white">
