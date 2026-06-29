@@ -13,6 +13,7 @@ import { CherryBlossomCoGuide } from "@/components/cherry-blossom-co-guide"
 import { MorningGivenHero } from "@/components/morning-given-hero"
 import { WeeklyRealityCheck } from "@/components/weekly-reality-check"
 import { BusinessDayHero } from "@/components/business-day-hero"
+import { BusinessDaySchedule } from "@/components/business-day-schedule"
 import { createBrowserClient } from "@supabase/ssr"
 
 export default function HomePage() {
@@ -77,6 +78,9 @@ export default function HomePage() {
 
       {/* Today's Work-Life Balance Business Day™ - dynamic day/status/CTA over a static banner */}
       <BusinessDayHero />
+
+      {/* Today's Work-Life Balance Business Day™ - full daily rhythm of time-block cards (Phase 1) */}
+      <BusinessDaySchedule />
 
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-white">
