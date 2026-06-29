@@ -207,7 +207,7 @@ export function WeeklyRealityCheck() {
             <div className="relative z-10 py-16 lg:py-20">
               {/* Full-width header on a blurred glass panel */}
               <div className="max-w-4xl mx-auto px-6">
-                <div className="rounded-3xl border border-white/15 bg-black/20 p-8 backdrop-blur-md sm:p-10 text-center">
+                <div className="rounded-3xl border border-white/20 bg-[#E26C73]/45 p-8 backdrop-blur-md sm:p-10 text-center">
                   <div className="flex items-center justify-center gap-3 mb-6">
                     <img
                       src="/images/logo.png"
@@ -265,7 +265,7 @@ export function WeeklyRealityCheck() {
 
               {/* Three cards on a blurred glass screen */}
               <div className="max-w-6xl mx-auto px-6 mt-12">
-                <div className="rounded-3xl border border-white/15 bg-white/10 p-5 backdrop-blur-md sm:p-6">
+                <div className="rounded-3xl border border-white/20 bg-[#E26C73]/45 p-5 backdrop-blur-md sm:p-6">
                   <div className="grid lg:grid-cols-3 gap-6">
                   {/* Step 1 - Audit */}
                   <Card className="bg-[#7FB069]/80 backdrop-blur-md border border-white/20 text-white overflow-hidden flex flex-col">
