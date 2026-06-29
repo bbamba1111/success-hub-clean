@@ -52,7 +52,7 @@ export function BusinessDayBlock({
     <section
       id={sectionId}
       aria-label={title}
-      className="scroll-mt-24 w-full px-4 py-6 sm:px-6 lg:px-8"
+      className="scroll-mt-24 w-full px-4 py-3 sm:px-6 lg:px-8"
     >
       <div
         className={`relative w-full overflow-hidden rounded-3xl shadow-lg transition-all duration-500 ${
@@ -77,30 +77,31 @@ export function BusinessDayBlock({
           />
         </div>
 
-        {/* Content row */}
-        <div className="relative z-10 flex min-h-[340px] items-center px-5 py-10 sm:px-8 lg:min-h-[420px] lg:px-12">
+        {/* Content row — compact timeline card (~300px) */}
+        <div className="relative z-10 flex min-h-[280px] items-center px-4 py-5 sm:px-6 md:min-h-[300px] lg:px-10">
           {/* Frosted glass content panel on the left */}
-          <div className="w-full max-w-xl rounded-3xl border border-white/20 bg-white/15 p-6 backdrop-blur-md sm:p-8">
-            <div className="mb-4 flex flex-wrap items-center gap-3">
+          <div className="w-full max-w-md rounded-2xl border border-white/20 bg-white/15 p-5 backdrop-blur-md sm:p-6">
+            <div className="mb-2.5 flex flex-wrap items-center gap-2.5">
               <span
-                className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] ${STATUS_BADGE[status]}`}
+                className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] ${STATUS_BADGE[status]}`}
               >
                 {STATUS_LABEL[status]}
               </span>
-              <span className="text-sm font-medium uppercase tracking-[0.2em] text-white/90">{time}</span>
+              <span className="text-xs font-medium uppercase tracking-[0.18em] text-white/90">{time}</span>
             </div>
 
-            <h3 className="text-2xl font-bold leading-tight text-balance text-white sm:text-3xl lg:text-4xl">
+            <h3 className="text-xl font-bold leading-tight text-balance text-white sm:text-2xl">
               {emoji ? <span className="mr-2">{emoji}</span> : null}
               {title}
             </h3>
 
-            <div className="mt-4 space-y-3 text-pretty text-base leading-relaxed text-white/90">{description}</div>
+            <div className="mt-2 line-clamp-2 text-pretty text-sm leading-relaxed text-white/90">{description}</div>
 
             {children}
 
-            <div className="mt-7">
+            <div className="mt-4">
               <Button
+                size="sm"
                 onClick={onAction}
                 disabled={isCompleted}
                 className="bg-[#7FB069] text-white hover:bg-[#6FA058] disabled:opacity-50"
