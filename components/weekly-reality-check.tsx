@@ -227,7 +227,7 @@ export function WeeklyRealityCheck() {
                   <h2 className="text-3xl lg:text-4xl font-bold text-white mb-3 text-balance">
                     Take Your Weekly Work-Life Balance Reality Check™
                   </h2>
-                  <p className="text-xl font-semibold text-[#FFD6E0] mb-8 text-pretty">
+                  <p className="text-xl font-semibold text-[#C8E6A0] mb-8 text-pretty">
                     Your Official Entry Into The Work-Life Balance Business Week™
                   </p>
 
@@ -248,11 +248,11 @@ export function WeeklyRealityCheck() {
                       <p className="font-semibold text-white mb-2">Complete this experience:</p>
                       <div className="space-y-2">
                         <div className="flex items-start gap-3">
-                          <CheckCircle className="w-5 h-5 text-[#FFD6E0] flex-shrink-0 mt-0.5" />
+                          <CheckCircle className="w-5 h-5 text-[#C8E6A0] flex-shrink-0 mt-0.5" />
                           <span className="text-white/90">Immediately after joining (new members)</span>
                         </div>
                         <div className="flex items-start gap-3">
-                          <CheckCircle className="w-5 h-5 text-[#FFD6E0] flex-shrink-0 mt-0.5" />
+                          <CheckCircle className="w-5 h-5 text-[#C8E6A0] flex-shrink-0 mt-0.5" />
                           <span className="text-white/90">
                             Then every Sunday evening or before each new Work-Life Balance Business Week™ begins.
                           </span>
