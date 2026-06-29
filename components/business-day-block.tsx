@@ -66,7 +66,7 @@ export function BusinessDayBlock({
         style={{ backgroundColor: `rgb(${tint})` }}
       >
         {/* Per-block image — sits only in the RIGHT region and shows the FULL scene (no crop). Replace only `backgroundImage` later. */}
-        <div className="absolute inset-y-0 right-0 w-full md:w-[62%] lg:w-[66%]" style={{ backgroundColor: `rgb(${tint})` }}>
+        <div className="absolute inset-y-0 right-0 w-full md:w-[70%] lg:w-[74%]" style={{ backgroundColor: `rgb(${tint})` }}>
           <img
             src={backgroundImage || "/placeholder.svg"}
             alt=""
