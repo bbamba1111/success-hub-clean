@@ -71,6 +71,9 @@ export default function HomePage() {
       {/* NEW Dynamic Hero Section - Morning GIV•EN™ Routine */}
       <MorningGivenHero />
 
+      {/* Weekly Work-Life Balance Reality Check™ - directly under the main hero */}
+      <WeeklyRealityCheck />
+
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-white">
         <div className="max-w-7xl mx-auto px-6 py-16">
@@ -128,10 +131,6 @@ export default function HomePage() {
           </div>
         </div>
       </div>
-
-      {/* Weekly Work-Life Balance Reality Check™ - replaces the old onboarding experience */}
-      <WeeklyRealityCheck />
-
 
       {/* Step 2 - Sunday Shift Section */}
       <div className="relative overflow-hidden py-20">

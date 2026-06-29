@@ -202,14 +202,6 @@ export function WeeklyRealityCheck() {
                 alt="Cherry blossom zen garden with balanced stones and calm water"
                 className="h-full w-full object-cover"
               />
-              {/* Soft dark overlay for text contrast */}
-              <div
-                className="absolute inset-0"
-                style={{
-                  background:
-                    "linear-gradient(180deg, rgba(28,22,26,0.45) 0%, rgba(28,22,26,0.3) 45%, rgba(28,22,26,0.55) 100%)",
-                }}
-              />
             </div>
 
             <div className="relative z-10 py-16 lg:py-20">
