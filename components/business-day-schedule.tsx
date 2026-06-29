@@ -4,8 +4,15 @@ import { BusinessDayBlock } from "@/components/business-day-block"
 
 export function BusinessDaySchedule() {
   return (
-    <div className="w-full bg-gradient-to-br from-[#F5F1E8] to-white py-8">
+    <div id="todays-business-day" className="w-full scroll-mt-20 bg-gradient-to-br from-[#F5F1E8] to-white py-8">
       <div className="mx-auto max-w-7xl">
+        <div className="px-6 pb-2 text-center">
+          <h2 className="text-pretty text-2xl font-bold text-[#C13B6B] sm:text-3xl">
+            Today&apos;s <span className="text-[#7FB069]">Work-Life Balance Business Day™</span>
+          </h2>
+          <p className="mt-1 text-sm font-medium text-[#6B5860]">Continue into today&apos;s rhythm.</p>
+        </div>
+
         {/* 7:00–9:00 AM — Early Access, Flex Time™ & Preparation */}
         <BusinessDayBlock
           sectionId="block-early-access"

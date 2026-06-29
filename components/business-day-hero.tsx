@@ -9,75 +9,96 @@ const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Frid
 type StatusKey = "LIVE" | "NEXT" | "NIGHT" | "OPEN"
 
 const STATUS_META: Record<StatusKey, { label: string; icon: string; className: string }> = {
-  LIVE: {
-    label: "LIVE NOW",
-    icon: "🔴",
-    className: "bg-[#E26C73] text-white",
-  },
-  NEXT: {
-    label: "STARTING NEXT",
-    icon: "🟢",
-    className: "bg-[#7FB069] text-white",
-  },
-  NIGHT: {
-    label: "CLOSED FOR THE NIGHT",
-    icon: "🌙",
-    className: "bg-[#2E2A3A] text-white",
-  },
-  OPEN: {
-    label: "COMMUNITY OPEN",
-    icon: "🌅",
-    className: "bg-white/85 text-[#5A4A52]",
-  },
+  LIVE: { label: "LIVE NOW", icon: "🔴", className: "bg-[#E26C73] text-white" },
+  NEXT: { label: "STARTING NEXT", icon: "🟢", className: "bg-[#7FB069] text-white" },
+  NIGHT: { label: "CLOSED FOR THE NIGHT", icon: "🌙", className: "bg-[#2E2A3A] text-white" },
+  OPEN: { label: "COMMUNITY OPEN", icon: "🌅", className: "bg-white/85 text-[#5A4A52]" },
 }
 
-type Block = {
-  /** minutes from midnight when this block begins */
-  start: number
-  cta: string
-  status: StatusKey
-}
+type Block = { start: number; cta: string; status: StatusKey }
 
 // Ordered schedule for the Work-Life Balance Business Day™
 const SCHEDULE: Block[] = [
-  { start: 7 * 60 + 30, cta: "Enter Early Access™", status: "OPEN" }, // 7:30 AM
-  { start: 9 * 60, cta: "Join Morning GIV•EN™", status: "LIVE" }, // 9:00 AM
-  { start: 10 * 60 + 45, cta: "Start Your Movement Window™", status: "LIVE" }, // 10:45 AM
-  { start: 11 * 60 + 30, cta: "Begin Lunch Break™", status: "OPEN" }, // 11:30 AM
-  { start: 13 * 60 + 15, cta: "Enter CEO Workday™", status: "LIVE" }, // 1:15 PM
-  { start: 18 * 60, cta: "Enjoy Time Freedom™", status: "OPEN" }, // 6:00 PM
-  { start: 22 * 60 + 15, cta: "Join Power Down™", status: "LIVE" }, // 10:15 PM
-  { start: 23 * 60 + 30, cta: "Community Closed", status: "NIGHT" }, // 11:30 PM
+  { start: 7 * 60 + 30, cta: "Enter Early Access™", status: "OPEN" },
+  { start: 9 * 60, cta: "Join Morning GIV•EN™", status: "LIVE" },
+  { start: 10 * 60 + 45, cta: "Start Your Movement Window™", status: "LIVE" },
+  { start: 11 * 60 + 30, cta: "Begin Lunch Break™", status: "OPEN" },
+  { start: 13 * 60 + 15, cta: "Enter CEO Workday™", status: "LIVE" },
+  { start: 18 * 60, cta: "Enjoy Time Freedom™", status: "OPEN" },
+  { start: 22 * 60 + 15, cta: "Join Power Down™", status: "LIVE" },
+  { start: 23 * 60 + 30, cta: "Community Closed", status: "NIGHT" },
 ]
 
-function resolveNow(now: Date) {
+function resolveStatus(now: Date) {
   const dayName = DAY_NAMES[now.getDay()]
   const minutes = now.getHours() * 60 + now.getMinutes()
 
-  // Before the day opens -> night / closed
   if (minutes < SCHEDULE[0].start) {
     const minutesUntilOpen = SCHEDULE[0].start - minutes
-    if (minutesUntilOpen <= 30) {
-      return { dayName, status: "NEXT" as StatusKey, cta: "Enter Early Access™" }
-    }
-    return { dayName, status: "NIGHT" as StatusKey, cta: "Community Closed" }
+    if (minutesUntilOpen <= 30) return { dayName, status: "NEXT" as StatusKey }
+    return { dayName, status: "NIGHT" as StatusKey }
   }
 
-  // Find the active block (last block whose start has passed)
   let activeIndex = 0
   for (let i = 0; i < SCHEDULE.length; i++) {
     if (minutes >= SCHEDULE[i].start) activeIndex = i
   }
-
   const active = SCHEDULE[activeIndex]
   const next = SCHEDULE[activeIndex + 1]
+  if (next && next.start - minutes <= 15) return { dayName, status: "NEXT" as StatusKey }
+  return { dayName, status: active.status }
+}
 
-  // If we are within 15 minutes of the next block, surface "STARTING NEXT"
-  if (next && next.start - minutes <= 15) {
-    return { dayName, status: "NEXT" as StatusKey, cta: next.cta }
-  }
+// Rotating Daily Inspiration — one item surfaces per calendar day
+type Inspiration = { kind: string; emoji: string; body: string }
 
-  return { dayName, status: active.status, cta: active.cta }
+const DAILY_INSPIRATIONS: Inspiration[] = [
+  {
+    kind: "Today's Collective Intention",
+    emoji: "🎯",
+    body: "Today we choose intentional work over constant work.",
+  },
+  {
+    kind: "Today's Collective Affirmation",
+    emoji: "🌸",
+    body: "I protect my time so I can expand my life.",
+  },
+  {
+    kind: "Thought Leader Barbara's Daily Reflection",
+    emoji: "📖",
+    body: "Success isn't measured by how much of yourself you give away. It's measured by how intentionally you protect what matters most.",
+  },
+  {
+    kind: "Quote of the Day",
+    emoji: "💬",
+    body: "The goal isn't to fit more work into your day. The goal is to design a day that fits your life.",
+  },
+  {
+    kind: "Today's Collective Affirmation",
+    emoji: "🌸",
+    body: "Today I choose progress over pressure. I will lead with intention, protect my boundaries, and create space for what matters most.",
+  },
+  {
+    kind: "Weekly Focus",
+    emoji: "🎯",
+    body: "This week, we practice finishing the workday on purpose — not by exhaustion.",
+  },
+  {
+    kind: "Gratitude Prompt",
+    emoji: "❤️",
+    body: "Before you begin, name one thing your work makes possible in your life.",
+  },
+]
+
+function dayOfYear(d: Date) {
+  const start = new Date(d.getFullYear(), 0, 0)
+  const diff = d.getTime() - start.getTime()
+  return Math.floor(diff / 86_400_000)
+}
+
+function scrollToRhythm() {
+  const el = document.getElementById("todays-business-day")
+  if (el) el.scrollIntoView({ behavior: "smooth", block: "start" })
 }
 
 export function BusinessDayHero() {
@@ -89,8 +110,12 @@ export function BusinessDayHero() {
     return () => clearInterval(id)
   }, [])
 
-  const resolved = useMemo(() => (now ? resolveNow(now) : null), [now])
+  const resolved = useMemo(() => (now ? resolveStatus(now) : null), [now])
   const status = resolved ? STATUS_META[resolved.status] : null
+  const inspiration = useMemo(
+    () => (now ? DAILY_INSPIRATIONS[dayOfYear(now) % DAILY_INSPIRATIONS.length] : null),
+    [now],
+  )
 
   return (
     <section className="relative w-full overflow-hidden">
@@ -106,17 +131,17 @@ export function BusinessDayHero() {
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(90deg, rgba(255,241,245,0.55) 0%, rgba(255,241,245,0.2) 38%, rgba(255,241,245,0) 60%)",
+              "linear-gradient(90deg, rgba(255,241,245,0.6) 0%, rgba(255,241,245,0.22) 40%, rgba(255,241,245,0) 62%)",
           }}
         />
       </div>
 
-      <div className="relative z-10 mx-auto flex min-h-[460px] max-w-7xl items-center px-6 py-16 sm:min-h-[540px] lg:py-24">
+      <div className="relative z-10 mx-auto flex min-h-[520px] max-w-7xl items-center px-6 py-16 sm:min-h-[600px] lg:py-24">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
-          className="w-full max-w-xl rounded-3xl border border-white/40 bg-white/25 p-8 shadow-xl backdrop-blur-md sm:p-10"
+          className="w-full max-w-2xl rounded-3xl border border-white/40 bg-white/25 p-8 shadow-xl backdrop-blur-md sm:p-10"
         >
           {/* Dynamic day + status row */}
           <div className="mb-6 flex flex-wrap items-center gap-3">
@@ -138,36 +163,63 @@ export function BusinessDayHero() {
             )}
           </div>
 
-          <h2 className="text-pretty text-4xl font-bold leading-tight text-[#C13B6B] sm:text-5xl">
-            <span aria-hidden>🌸 </span>
-            Today&apos;s{" "}
+          <h1 className="text-pretty text-4xl font-bold leading-tight text-[#C13B6B] sm:text-5xl">
+            Join Today&apos;s{" "}
             <span className="text-[#7FB069]">Work-Life Balance Business Day™</span>
-          </h2>
+          </h1>
 
-          <p className="mt-5 text-lg font-medium leading-relaxed text-[#5A4A52]">
-            Practice The New 9-to-5™ &amp; Nighttime SOP{" "}
-            <span className="whitespace-nowrap">(Sustainable Operating Practices™)</span>
+          <p className="mt-4 text-lg font-semibold text-[#5A4A52]">
+            Live Intentionally. Work Smarter. Lead Successfully.
           </p>
 
-          <p className="mt-2 text-base italic text-[#8A6B74]">
-            Live intentionally. Lead successfully.
+          <p className="mt-3 text-base leading-relaxed text-[#6B5860]">
+            Welcome to today&apos;s Work-Life Balance Business Day™. Practice The New 9-to-5™ &amp; Nighttime SOP{" "}
+            <span className="whitespace-nowrap">(Sustainable Operating Practices™)</span> in real time alongside a
+            community committed to designing work around life—not life around work.
           </p>
 
-          <div className="mt-8 flex flex-wrap items-center gap-4">
+          {/* Daily Inspiration Panel — rotates each calendar day */}
+          {inspiration && (
+            <motion.div
+              key={inspiration.body}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.15 }}
+              className="mt-7 rounded-2xl border border-[#7FB069]/30 bg-white/55 p-5 backdrop-blur-sm"
+            >
+              <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-[#5A7F46]">
+                <span aria-hidden>{inspiration.emoji}</span>
+                {inspiration.kind}
+              </p>
+              <p className="mt-2 text-pretty text-lg font-medium italic leading-relaxed text-[#4A3A42]">
+                &ldquo;{inspiration.body}&rdquo;
+              </p>
+            </motion.div>
+          )}
+
+          {/* One primary CTA */}
+          <div className="mt-8">
             <Button
               size="lg"
+              onClick={scrollToRhythm}
               className="bg-[#E26C73] px-8 text-base font-semibold text-white shadow-lg transition-transform hover:scale-[1.03] hover:bg-[#d65a62]"
             >
-              {resolved ? resolved.cta : "Enter Today's Business Day"}
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-[#7FB069] bg-white/60 px-8 text-base font-semibold text-[#5A7F46] hover:bg-white/80"
-            >
-              View Today&apos;s Rhythm
+              Enter Today&apos;s Business Day™
             </Button>
           </div>
+
+          {/* Scroll indicator */}
+          <motion.button
+            type="button"
+            onClick={scrollToRhythm}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, y: [0, 6, 0] }}
+            transition={{ delay: 0.4, y: { duration: 1.8, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" } }}
+            className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[#5A7F46] hover:text-[#4A6B38]"
+          >
+            <span aria-hidden>↓</span>
+            Continue Into Today&apos;s Rhythm
+          </motion.button>
         </motion.div>
       </div>
     </section>
