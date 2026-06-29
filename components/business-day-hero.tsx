@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react"
 import { motion } from "framer-motion"
+import { createBrowserClient } from "@supabase/ssr"
 import { Button } from "@/components/ui/button"
 
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
@@ -49,46 +50,133 @@ function resolveStatus(now: Date) {
   return { dayName, status: active.status }
 }
 
-// Rotating Daily Inspiration — one item surfaces per calendar day
-type Inspiration = { kind: string; emoji: string; body: string }
+// ---- Personalized daily experience -------------------------------------------------
 
-const DAILY_INSPIRATIONS: Inspiration[] = [
-  {
-    kind: "Today's Collective Intention",
-    emoji: "🎯",
-    body: "Today we choose intentional work over constant work.",
-  },
-  {
-    kind: "Today's Collective Affirmation",
-    emoji: "🌸",
-    body: "I protect my time so I can expand my life.",
-  },
-  {
-    kind: "Thought Leader Barbara's Daily Reflection",
-    emoji: "📖",
-    body: "Success isn't measured by how much of yourself you give away. It's measured by how intentionally you protect what matters most.",
-  },
-  {
-    kind: "Quote of the Day",
-    emoji: "💬",
-    body: "The goal isn't to fit more work into your day. The goal is to design a day that fits your life.",
-  },
-  {
-    kind: "Today's Collective Affirmation",
-    emoji: "🌸",
-    body: "Today I choose progress over pressure. I will lead with intention, protect my boundaries, and create space for what matters most.",
-  },
-  {
-    kind: "Weekly Focus",
-    emoji: "🎯",
-    body: "This week, we practice finishing the workday on purpose — not by exhaustion.",
-  },
-  {
-    kind: "Gratitude Prompt",
-    emoji: "❤️",
-    body: "Before you begin, name one thing your work makes possible in your life.",
-  },
-]
+type PartOfDay = "morning" | "ceo" | "evening"
+
+type Phase = {
+  greetingPeriod: "Morning" | "Afternoon" | "Evening"
+  greetingEmoji: string
+  part: PartOfDay
+  messages: string[]
+}
+
+// Resolve the current phase of the Work-Life Balance Business Day™ from local time (in minutes).
+function resolvePhase(minutes: number): Phase {
+  // 7:00–9:00 — Early Access, Flex Time™ & Preparation
+  if (minutes >= 7 * 60 && minutes < 9 * 60) {
+    return {
+      greetingPeriod: "Morning",
+      greetingEmoji: "🌸",
+      part: "morning",
+      messages: [
+        "Today is a fresh opportunity to intentionally design your day before the world begins making demands on your time.",
+        "Before the noise begins, take this quiet space to prepare your mind, your priorities, and your presence.",
+      ],
+    }
+  }
+  // 9:00–10:30 — Morning GIV•EN™ Routine
+  if (minutes >= 9 * 60 && minutes < 10 * 60 + 30) {
+    return {
+      greetingPeriod: "Morning",
+      greetingEmoji: "🌸",
+      part: "morning",
+      messages: [
+        "Today begins with gratitude, purpose, and intention. Before leading your business, lead yourself.",
+        "Align your mind, body, and spirit first. Everything you build today flows from this alignment.",
+      ],
+    }
+  }
+  // 10:30–11:00 — Movement Window™
+  if (minutes >= 10 * 60 + 30 && minutes < 11 * 60) {
+    return {
+      greetingPeriod: "Morning",
+      greetingEmoji: "🌿",
+      part: "morning",
+      messages: [
+        "Small moments of movement create lasting energy. Care for your body so it can support your vision.",
+        "Move with intention. Your body is the vehicle for everything you're here to create.",
+      ],
+    }
+  }
+  // 11:00–13:00 — Extended Healthy Hybrid Lunch Break™
+  if (minutes >= 11 * 60 && minutes < 13 * 60) {
+    return {
+      greetingPeriod: "Afternoon",
+      greetingEmoji: "🌿",
+      part: "morning",
+      messages: [
+        "Nourishment is productive. Step into nature, reconnect, and return refreshed for meaningful work.",
+        "Rest is not a reward for finishing — it's the fuel that makes great work possible.",
+      ],
+    }
+  }
+  // 13:00–17:00 — 4-Hour Focused CEO Workday™
+  if (minutes >= 13 * 60 && minutes < 17 * 60) {
+    return {
+      greetingPeriod: "Afternoon",
+      greetingEmoji: "🌿",
+      part: "ceo",
+      messages: [
+        "Protect your focus. Every intentional decision today moves your business closer to the future you're creating.",
+        "This is your protected execution window. Do the deep work only you can do.",
+      ],
+    }
+  }
+  // 17:00–22:00 — Time Freedom™
+  if (minutes >= 17 * 60 && minutes < 22 * 60) {
+    return {
+      greetingPeriod: "Evening",
+      greetingEmoji: "🌙",
+      part: "evening",
+      messages: [
+        "You earned this time. Be fully present with the people and experiences that matter most.",
+        "Enjoy the life you built your business to support. Presence is the real success.",
+      ],
+    }
+  }
+  // 22:00–23:00 — Power Down™
+  if (minutes >= 22 * 60 && minutes < 23 * 60) {
+    return {
+      greetingPeriod: "Evening",
+      greetingEmoji: "🌙",
+      part: "evening",
+      messages: [
+        "Success also means knowing when to stop. Rest is part of tomorrow's performance.",
+        "Slow your mind, reflect on today, and prepare tomorrow with intention.",
+      ],
+    }
+  }
+  // 23:00–7:00 — Unplug Digital Detox™
+  return {
+    greetingPeriod: "Evening",
+    greetingEmoji: "🌙",
+    part: "evening",
+    messages: [
+      "Your devices are resting. Now let your mind and body do the same.",
+      "Tomorrow's success begins tonight. Give yourself the gift of restorative sleep.",
+    ],
+  }
+}
+
+// "Repeat After Me™" affirmation library, grouped by part of day. Rotates daily.
+const AFFIRMATIONS: Record<PartOfDay, string[][]> = {
+  morning: [
+    ["I choose intention over reaction.", "I protect my time.", "I lead with clarity.", "I make time for more."],
+    ["I begin today aligned.", "I honor my non-negotiables.", "I design my day on purpose.", "I am present."],
+    ["I lead myself before I lead others.", "I move with calm and clarity.", "I create from a full cup."],
+  ],
+  ceo: [
+    ["I focus on what matters most.", "I create value with every decision.", "I work smarter.", "I finish well."],
+    ["I protect my deep work.", "I make confident decisions.", "I execute with intention.", "I deliver excellence."],
+    ["I do the work only I can do.", "I trust my focus.", "I build the future with each action."],
+  ],
+  evening: [
+    ["I release today's work.", "I welcome rest.", "Tomorrow begins with the choices I make tonight."],
+    ["I am present with the people I love.", "I let go of what's unfinished.", "I rest with gratitude."],
+    ["I close today on purpose.", "I quiet my mind.", "I prepare tomorrow with peace."],
+  ],
+}
 
 function dayOfYear(d: Date) {
   const start = new Date(d.getFullYear(), 0, 0)
@@ -101,8 +189,23 @@ function scrollToRhythm() {
   if (el) el.scrollIntoView({ behavior: "smooth", block: "start" })
 }
 
+function getFirstName(user: { user_metadata?: Record<string, unknown>; email?: string } | null): string {
+  if (!user) return "Friend"
+  const meta = user.user_metadata ?? {}
+  const candidate =
+    (meta.first_name as string) ||
+    (meta.firstName as string) ||
+    (meta.full_name as string) ||
+    (meta.name as string) ||
+    ""
+  if (candidate.trim()) return candidate.trim().split(/\s+/)[0]
+  if (user.email) return user.email.split("@")[0]
+  return "Friend"
+}
+
 export function BusinessDayHero() {
   const [now, setNow] = useState<Date | null>(null)
+  const [firstName, setFirstName] = useState("Friend")
 
   useEffect(() => {
     setNow(new Date())
@@ -110,12 +213,33 @@ export function BusinessDayHero() {
     return () => clearInterval(id)
   }, [])
 
+  useEffect(() => {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    if (!supabaseUrl || !supabaseAnonKey) return
+
+    const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey)
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) setFirstName(getFirstName(user))
+    })
+  }, [])
+
   const resolved = useMemo(() => (now ? resolveStatus(now) : null), [now])
   const status = resolved ? STATUS_META[resolved.status] : null
-  const inspiration = useMemo(
-    () => (now ? DAILY_INSPIRATIONS[dayOfYear(now) % DAILY_INSPIRATIONS.length] : null),
-    [now],
-  )
+
+  const phase = useMemo(() => (now ? resolvePhase(now.getHours() * 60 + now.getMinutes()) : null), [now])
+
+  // Pick a message + affirmation set that stays stable for the day but rotates daily.
+  const message = useMemo(() => {
+    if (!now || !phase) return null
+    return phase.messages[dayOfYear(now) % phase.messages.length]
+  }, [now, phase])
+
+  const affirmations = useMemo(() => {
+    if (!now || !phase) return null
+    const sets = AFFIRMATIONS[phase.part]
+    return sets[dayOfYear(now) % sets.length]
+  }, [now, phase])
 
   return (
     <section className="relative w-full overflow-hidden">
@@ -172,28 +296,42 @@ export function BusinessDayHero() {
             Live Intentionally. Work Smarter. Lead Successfully.
           </p>
 
-          <p className="mt-3 text-base leading-relaxed text-[#6B5860]">
-            Welcome to today&apos;s Work-Life Balance Business Day™. Practice The New 9-to-5™ &amp; Nighttime SOP{" "}
-            <span className="whitespace-nowrap">(Sustainable Operating Practices™)</span> in real time alongside a
-            community committed to designing work around life—not life around work.
-          </p>
-
-          {/* Daily Inspiration Panel — rotates each calendar day */}
-          {inspiration && (
+          {/* Personalized greeting + dynamic motivational message */}
+          {phase && (
             <motion.div
-              key={inspiration.body}
+              key={`${phase.greetingPeriod}-${message}`}
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.15 }}
-              className="mt-7 rounded-2xl border border-[#7FB069]/30 bg-white/55 p-5 backdrop-blur-sm"
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="mt-5"
+            >
+              <p className="text-xl font-bold text-[#C13B6B] sm:text-2xl">
+                Good {phase.greetingPeriod}, {firstName} <span aria-hidden>{phase.greetingEmoji}</span>
+              </p>
+              <p className="mt-2 text-base leading-relaxed text-[#6B5860]">{message}</p>
+            </motion.div>
+          )}
+
+          {/* Repeat After Me™ affirmation card — rotates daily */}
+          {affirmations && (
+            <motion.div
+              key={affirmations.join("|")}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="mt-6 rounded-2xl border border-[#7FB069]/30 bg-white/55 p-5 backdrop-blur-sm"
             >
               <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-[#5A7F46]">
-                <span aria-hidden>{inspiration.emoji}</span>
-                {inspiration.kind}
+                <span aria-hidden>🌸</span>
+                Repeat After Me™
               </p>
-              <p className="mt-2 text-pretty text-lg font-medium italic leading-relaxed text-[#4A3A42]">
-                &ldquo;{inspiration.body}&rdquo;
-              </p>
+              <ul className="mt-3 space-y-1.5">
+                {affirmations.map((line) => (
+                  <li key={line} className="text-pretty text-base font-medium italic leading-relaxed text-[#4A3A42]">
+                    {line}
+                  </li>
+                ))}
+              </ul>
             </motion.div>
           )}
 
