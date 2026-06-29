@@ -207,7 +207,7 @@ export function WeeklyRealityCheck() {
             <div className="relative z-10 py-16 lg:py-20">
               {/* Full-width header on a blurred glass panel */}
               <div className="max-w-4xl mx-auto px-6">
-                <div className="rounded-3xl border border-white/20 bg-[#E26C73]/45 p-8 backdrop-blur-md sm:p-10 text-center">
+                <div className="rounded-3xl border border-white/20 bg-[#E26C73] p-8 shadow-xl sm:p-10 text-center">
                   <div className="flex items-center justify-center gap-3 mb-6">
                     <img
                       src="/images/logo.png"
@@ -232,14 +232,14 @@ export function WeeklyRealityCheck() {
                   </p>
 
                   <div className="space-y-4 text-left max-w-3xl mx-auto">
-                    <p className="text-lg text-white/90 leading-relaxed">
+                    <p className="text-lg text-white leading-relaxed">
                       Every successful Work-Life Balance Business Week™ begins with reality—not reactivity.
                     </p>
-                    <p className="text-lg text-white/90 leading-relaxed">
+                    <p className="text-lg text-white leading-relaxed">
                       Before you begin Monday&apos;s live experience, complete your Weekly Work-Life Balance Reality
                       Check™.
                     </p>
-                    <p className="text-lg text-white/90 leading-relaxed">
+                    <p className="text-lg text-white leading-relaxed">
                       This simple three-step weekly ritual helps you understand your current reality, intentionally
                       design your week, and prepare your operating environment before your Work-Life Balance Business
                       Week™ begins.
@@ -249,11 +249,11 @@ export function WeeklyRealityCheck() {
                       <div className="space-y-2">
                         <div className="flex items-start gap-3">
                           <CheckCircle className="w-5 h-5 text-[#C8E6A0] flex-shrink-0 mt-0.5" />
-                          <span className="text-white/90">Immediately after joining (new members)</span>
+                          <span className="text-white">Immediately after joining (new members)</span>
                         </div>
                         <div className="flex items-start gap-3">
                           <CheckCircle className="w-5 h-5 text-[#C8E6A0] flex-shrink-0 mt-0.5" />
-                          <span className="text-white/90">
+                          <span className="text-white">
                             Then every Sunday evening or before each new Work-Life Balance Business Week™ begins.
                           </span>
                         </div>
