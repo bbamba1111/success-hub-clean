@@ -21,6 +21,8 @@ export interface BusinessDayBlockProps {
   status?: BlockStatus
   /** Optional extra content rendered inside the panel (e.g. a featured sub-card). */
   children?: ReactNode
+  /** External link for the CTA. When provided, the button renders as a link. */
+  href?: string
   onAction?: () => void
 }
 
@@ -47,6 +49,7 @@ export function BusinessDayBlock({
   tint = "248 243 236",
   status = "upcoming",
   children,
+  href,
   onAction,
 }: BusinessDayBlockProps) {
   const isCompleted = status === "completed"
@@ -92,14 +95,26 @@ export function BusinessDayBlock({
               {children}
 
               <div className="mt-4">
-                <Button
-                  size="sm"
-                  onClick={onAction}
-                  disabled={isCompleted}
-                  className="bg-[#7FB069] text-white hover:bg-[#6FA058] disabled:opacity-50"
-                >
-                  {buttonText}
-                </Button>
+                {href && !isCompleted ? (
+                  <Button
+                    asChild
+                    size="sm"
+                    className="bg-[#7FB069] text-white hover:bg-[#6FA058]"
+                  >
+                    <a href={href} target="_blank" rel="noopener noreferrer">
+                      {buttonText}
+                    </a>
+                  </Button>
+                ) : (
+                  <Button
+                    size="sm"
+                    onClick={onAction}
+                    disabled={isCompleted}
+                    className="bg-[#7FB069] text-white hover:bg-[#6FA058] disabled:opacity-50"
+                  >
+                    {buttonText}
+                  </Button>
+                )}
               </div>
             </div>
           </div>
