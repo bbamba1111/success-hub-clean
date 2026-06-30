@@ -74,6 +74,10 @@ export function OperatingEngineProvider({ children }: { children: ReactNode }) {
   const [now, setNow] = useState<Date | null>(null)
   const [member, setMember] = useState<MemberInput>({})
   const [role, setRole] = useState<Role>("member")
+  // The closed-hours lockout applies only to confirmed, signed-in members.
+  // Until we resolve the session we treat the user as unauthenticated so the
+  // gate never flashes for admins or anonymous (preview) visitors.
+  const [authenticated, setAuthenticated] = useState(false)
 
   // Developer Mode state (admin only).
   const [devEnabled, setDevEnabled] = useState(false)
@@ -93,22 +97,30 @@ export function OperatingEngineProvider({ children }: { children: ReactNode }) {
     if (!url || !anonKey) return
 
     const supabase = createBrowserClient(url, anonKey)
-    supabase.auth.getUser().then(async ({ data: { user } }) => {
-      if (!user) return
-      const firstName = getFirstName(user)
-      if (firstName) setMember((prev) => ({ ...prev, firstName }))
+    supabase.auth
+      .getUser()
+      .then(async ({ data: { user } }) => {
+        // No session → anonymous visitor (e.g. preview): never lock them out.
+        if (!user) return
+        setAuthenticated(true)
 
-      const { data: profile } = await supabase
-        .from("user_profiles")
-        .select("role, name")
-        .eq("id", user.id)
-        .single()
+        const firstName = getFirstName(user)
+        if (firstName) setMember((prev) => ({ ...prev, firstName }))
 
-      if (profile?.role === "platform_admin") setRole("platform_admin")
-      if (!firstName && typeof profile?.name === "string" && profile.name.trim()) {
-        setMember((prev) => ({ ...prev, firstName: profile.name.trim().split(/\s+/)[0] }))
-      }
-    })
+        const { data: profile } = await supabase
+          .from("user_profiles")
+          .select("role, name")
+          .eq("id", user.id)
+          .single()
+
+        if (profile?.role === "platform_admin") setRole("platform_admin")
+        if (!firstName && typeof profile?.name === "string" && profile.name.trim()) {
+          setMember((prev) => ({ ...prev, firstName: profile.name.trim().split(/\s+/)[0] }))
+        }
+      })
+      .catch(() => {
+        /* auth lookup failed — treat as anonymous, do not lock */
+      })
   }, [])
 
   const isAdmin = role === "platform_admin"
@@ -148,10 +160,11 @@ export function OperatingEngineProvider({ children }: { children: ReactNode }) {
     return getMemberExperience(now, {
       member,
       role,
+      authenticated,
       developerMode: isAdmin && devEnabled,
       override,
     })
-  }, [now, member, role, isAdmin, devEnabled, override])
+  }, [now, member, role, authenticated, isAdmin, devEnabled, override])
 
   const devApi = useMemo<DeveloperModeApi>(
     () => ({

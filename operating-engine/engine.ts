@@ -36,6 +36,13 @@ export interface GetExperienceOptions {
   timeZone?: string
   /** The current user's role. Defaults to "member". */
   role?: Role
+  /**
+   * Whether a member is authenticated. The Community Closed lockout only
+   * applies to signed-in members — anonymous visitors and the pre-auth
+   * loading window are never told to "go to sleep". Defaults to true so a
+   * plain member call locks during closed hours.
+   */
+  authenticated?: boolean
   /** Whether the admin has Developer Mode enabled (no effect for members). */
   developerMode?: boolean
   /** Developer Mode simulation override (applied only for admins with dev mode on). */
@@ -127,9 +134,11 @@ export function getMemberExperience(
   const member = getMemberState(time, phase, businessDay, memberInput)
   const motivation = getMotivationState(time, phase)
 
-  // Members are locked out while the community is closed (Digital Detox).
-  // Admins with Developer Mode enabled are never involuntarily locked out.
-  const locked = !community.isOpen && !developerMode
+  // The Community Closed lockout (Digital Detox) applies only to signed-in
+  // members. Anonymous visitors are never shown the "go to sleep" gate, and
+  // admins with Developer Mode enabled are never involuntarily locked out.
+  const authenticated = options.authenticated ?? true
+  const locked = !community.isOpen && !developerMode && authenticated
 
   const access: AccessState = { role, isAdmin, developerMode, overrideActive, locked }
 
