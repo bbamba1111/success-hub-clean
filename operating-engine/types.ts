@@ -43,6 +43,49 @@ export type GreetingPeriod = "Morning" | "Afternoon" | "Evening"
 /** Live engagement style for a block. */
 export type EngagementKind = "live-room" | "social" | "self-guided" | "closed"
 
+/** Platform roles. `platform_admin` unlocks Developer Mode + 24/7 access. */
+export type Role = "member" | "platform_admin"
+
+/** Admin-only override of the live-session / community status (Developer Mode). */
+export type LiveSessionOverride = "live" | "replay" | "closed" | "self-guided"
+
+/**
+ * Developer Mode override (admin only). Lets a Platform Administrator preview
+ * any state of the Operating Environment without waiting for the real clock.
+ * Time-travel reduces to a synthetic TimeContext, so every sub-engine runs
+ * normally on the simulated moment. Ignored entirely for regular members.
+ */
+export interface EngineOverride {
+  /** Preview a specific block; sets effective time to that block's midpoint. */
+  blockId?: BlockId
+  /** Simulate a specific minutes-since-midnight (alternative to blockId). */
+  minutesSinceMidnight?: number
+  /** Simulate a specific day of week (0 = Sunday … 6 = Saturday). */
+  dayOfWeek?: number
+  /** Override the season used by the Theme Engine. */
+  season?: Season
+  /** Override the live-session / community status. */
+  liveSession?: LiveSessionOverride
+  /** Simulated member preset (greeting, streak, installation week, etc.). */
+  member?: MemberInput
+}
+
+/**
+ * Access result — answers "should this user be locked out right now?".
+ * Members are locked during Digital Detox (community closed). Platform admins
+ * with Developer Mode enabled are never involuntarily locked out.
+ */
+export interface AccessState {
+  role: Role
+  isAdmin: boolean
+  /** Admin + Developer Mode toggle enabled. */
+  developerMode: boolean
+  /** Whether a simulation override is currently applied. */
+  overrideActive: boolean
+  /** Whether the Community Closed lockout should be enforced for this user. */
+  locked: boolean
+}
+
 /**
  * Static configuration for a single Work-Life Balance Business Day™ block.
  * Times are expressed in minutes-since-midnight in the platform timezone.
@@ -229,4 +272,6 @@ export interface MemberExperience {
   community: CommunityState
   member: MemberState
   motivation: MotivationState
+  /** Role-based access + Developer Mode state for the current user. */
+  access: AccessState
 }

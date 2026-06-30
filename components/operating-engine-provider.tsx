@@ -5,22 +5,56 @@
  *
  * Responsibilities (and ONLY these):
  *  1. Tick the clock every 30s.
- *  2. Resolve the member's first name once (from Supabase, if configured).
- *  3. Run the pure engine and share ONE snapshot via context.
+ *  2. Resolve the member's first name + role once (from Supabase, if configured).
+ *  3. Manage admin-only Developer Mode state (toggle + simulation override).
+ *  4. Run the pure engine and share ONE snapshot via context.
  *
  * Components never call `new Date()` or re-implement schedule logic — they
  * read the snapshot through `useOperatingEngine()`. This guarantees the Hero
  * and the Business Day timeline can never disagree.
  */
 
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react"
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react"
 import { createBrowserClient } from "@supabase/ssr"
-import { getMemberExperience, type MemberExperience, type MemberInput } from "@/operating-engine"
+import {
+  getMemberExperience,
+  type EngineOverride,
+  type MemberExperience,
+  type MemberInput,
+  type Role,
+} from "@/operating-engine"
 
 const OperatingEngineContext = createContext<MemberExperience | null>(null)
 
+/** Admin-only Developer Mode controls, exposed to the Developer Toolbar. */
+export interface DeveloperModeApi {
+  /** True only for authenticated Platform Administrators. */
+  isAdmin: boolean
+  /** Whether Developer Mode is currently enabled. */
+  enabled: boolean
+  setEnabled: (enabled: boolean) => void
+  /** The active simulation override. */
+  override: EngineOverride
+  setOverride: (patch: EngineOverride) => void
+  /** Clear all simulation and return to real time. */
+  reset: () => void
+  /** The real (un-simulated) instant, for "current vs simulated" display. */
+  realNow: Date | null
+}
+
+const DeveloperModeContext = createContext<DeveloperModeApi | null>(null)
+
 /** Refresh cadence for the live snapshot. */
 const TICK_MS = 30_000
+const DEV_MODE_STORAGE_KEY = "mtfm.devMode.enabled"
 
 function getFirstName(user: { user_metadata?: Record<string, unknown>; email?: string } | null): string | undefined {
   if (!user) return undefined
@@ -39,6 +73,11 @@ function getFirstName(user: { user_metadata?: Record<string, unknown>; email?: s
 export function OperatingEngineProvider({ children }: { children: ReactNode }) {
   const [now, setNow] = useState<Date | null>(null)
   const [member, setMember] = useState<MemberInput>({})
+  const [role, setRole] = useState<Role>("member")
+
+  // Developer Mode state (admin only).
+  const [devEnabled, setDevEnabled] = useState(false)
+  const [override, setOverrideState] = useState<EngineOverride>({})
 
   // 1. Tick the clock (client-only to avoid hydration mismatch).
   useEffect(() => {
@@ -47,26 +86,91 @@ export function OperatingEngineProvider({ children }: { children: ReactNode }) {
     return () => clearInterval(id)
   }, [])
 
-  // 2. Resolve member identity once.
+  // 2. Resolve member identity + role once.
   useEffect(() => {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL
     const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
     if (!url || !anonKey) return
 
     const supabase = createBrowserClient(url, anonKey)
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (!user) return
       const firstName = getFirstName(user)
       if (firstName) setMember((prev) => ({ ...prev, firstName }))
+
+      const { data: profile } = await supabase
+        .from("user_profiles")
+        .select("role, name")
+        .eq("id", user.id)
+        .single()
+
+      if (profile?.role === "platform_admin") setRole("platform_admin")
+      if (!firstName && typeof profile?.name === "string" && profile.name.trim()) {
+        setMember((prev) => ({ ...prev, firstName: profile.name.trim().split(/\s+/)[0] }))
+      }
     })
   }, [])
+
+  const isAdmin = role === "platform_admin"
+
+  // Restore the admin's Developer Mode toggle for the session.
+  // Defaults ON for admins (so they are never involuntarily locked out),
+  // unless they explicitly turned it off earlier this session.
+  useEffect(() => {
+    if (!isAdmin) return
+    try {
+      const stored = sessionStorage.getItem(DEV_MODE_STORAGE_KEY)
+      setDevEnabled(stored === null ? true : stored === "true")
+    } catch {
+      setDevEnabled(true)
+    }
+  }, [isAdmin])
+
+  const setEnabled = useCallback((enabled: boolean) => {
+    setDevEnabled(enabled)
+    try {
+      sessionStorage.setItem(DEV_MODE_STORAGE_KEY, String(enabled))
+    } catch {
+      /* ignore */
+    }
+    if (!enabled) setOverrideState({})
+  }, [])
+
+  const setOverride = useCallback((patch: EngineOverride) => {
+    setOverrideState((prev) => ({ ...prev, ...patch }))
+  }, [])
+
+  const reset = useCallback(() => setOverrideState({}), [])
 
   // 3. Run the pure engine into a single shared snapshot.
   const experience = useMemo<MemberExperience | null>(() => {
     if (!now) return null
-    return getMemberExperience(now, { member })
-  }, [now, member])
+    return getMemberExperience(now, {
+      member,
+      role,
+      developerMode: isAdmin && devEnabled,
+      override,
+    })
+  }, [now, member, role, isAdmin, devEnabled, override])
 
-  return <OperatingEngineContext.Provider value={experience}>{children}</OperatingEngineContext.Provider>
+  const devApi = useMemo<DeveloperModeApi>(
+    () => ({
+      isAdmin,
+      enabled: isAdmin && devEnabled,
+      setEnabled,
+      override,
+      setOverride,
+      reset,
+      realNow: now,
+    }),
+    [isAdmin, devEnabled, setEnabled, override, setOverride, reset, now],
+  )
+
+  return (
+    <OperatingEngineContext.Provider value={experience}>
+      <DeveloperModeContext.Provider value={devApi}>{children}</DeveloperModeContext.Provider>
+    </OperatingEngineContext.Provider>
+  )
 }
 
 /**
@@ -75,4 +179,9 @@ export function OperatingEngineProvider({ children }: { children: ReactNode }) {
  */
 export function useOperatingEngine(): MemberExperience | null {
   return useContext(OperatingEngineContext)
+}
+
+/** Read admin-only Developer Mode controls. Returns `null` outside the provider. */
+export function useDeveloperMode(): DeveloperModeApi | null {
+  return useContext(DeveloperModeContext)
 }
