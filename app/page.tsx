@@ -10,7 +10,6 @@ import CherryBlossomCountdown from "@/components/cherry-blossom-countdown"
 import WorkLifeBalanceSchedule from "@/components/work-life-balance-schedule"
 import { SimpleChatModal } from "@/components/simple-chat-modal"
 import { CherryBlossomCoGuide } from "@/components/cherry-blossom-co-guide"
-import { MorningGivenHero } from "@/components/morning-given-hero"
 import { WeeklyRealityCheck } from "@/components/weekly-reality-check"
 import { BusinessDayHero } from "@/components/business-day-hero"
 import { BusinessDaySchedule } from "@/components/business-day-schedule"
@@ -71,22 +70,19 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white">
-      {/* NEW Dynamic Hero Section - Morning GIV•EN™ Routine */}
-      <MorningGivenHero />
-
-      {/* Weekly Work-Life Balance Reality Check™ - directly under the main hero */}
-      <WeeklyRealityCheck />
-
       {/* Phase 1: Home page powered entirely by the shared Operating Engine.
-          One provider supplies a single time-aware snapshot to both the Hero
-          and the Business Day timeline so they can never disagree. */}
+          One provider supplies a single time-aware snapshot so the hero and the
+          Business Day timeline can never disagree. This is the ONLY home hero. */}
       <OperatingEngineProvider>
-        {/* Today's Work-Life Balance Business Day™ - dynamic hero driven by the engine */}
+        {/* Single engine-driven hero - the primary Home page experience */}
         <BusinessDayHero />
 
         {/* Today's Work-Life Balance Business Day™ - full daily rhythm of time-block cards */}
         <BusinessDaySchedule />
       </OperatingEngineProvider>
+
+      {/* Weekly Work-Life Balance Reality Check™ - directly under the engine hero */}
+      <WeeklyRealityCheck />
 
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-white">
