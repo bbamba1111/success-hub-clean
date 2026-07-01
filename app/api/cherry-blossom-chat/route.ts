@@ -16,45 +16,72 @@ async function buildMemoryContext(): Promise<string> {
     } = await supabase.auth.getUser()
     if (!user) return ""
 
-    const { data: rc } = await supabase
+    // Load the two most recent weekly records so Cherry Blossom can speak to
+    // trends and progress (this week + last week).
+    const { data: rows } = await supabase
       .from("reality_checks")
       .select(
         "week_key, overall_score, life_value_scores, selected_priority_areas, operating_declaration, weekly_reflection, completed_at",
       )
       .eq("user_id", user.id)
       .order("week_key", { ascending: false })
-      .limit(1)
-      .maybeSingle()
+      .limit(2)
 
-    if (!rc) return ""
+    if (!rows || rows.length === 0) return ""
+
+    const current = rows[0]
+    const previous = rows[1]
 
     const lines: string[] = [
       "MEMBER MEMORY — THIS IS WHAT YOU ALREADY KNOW ABOUT THIS MEMBER.",
       "Use it naturally like a coach who remembers them. Do not ask them to repeat it.",
-      `Week of: ${rc.week_key}`,
+      `Current week: ${current.week_key}`,
     ]
 
-    if (typeof rc.overall_score === "number") {
-      lines.push(`Overall Work-Life Balance score: ${rc.overall_score}%.`)
+    if (typeof current.overall_score === "number") {
+      lines.push(`Overall Work-Life Balance score: ${current.overall_score}%.`)
     }
 
-    if (Array.isArray(rc.life_value_scores) && rc.life_value_scores.length > 0) {
-      const scored = rc.life_value_scores
+    if (Array.isArray(current.life_value_scores) && current.life_value_scores.length > 0) {
+      const scored = current.life_value_scores
         .map((r: { label?: string; category?: string; percentage?: number }) => `${r.label ?? r.category}: ${r.percentage}%`)
         .join(", ")
       lines.push(`Life value scores — ${scored}.`)
     }
 
-    if (Array.isArray(rc.selected_priority_areas) && rc.selected_priority_areas.length > 0) {
-      lines.push(`Chosen Priority Focus Areas this week: ${rc.selected_priority_areas.join(", ")}.`)
+    if (Array.isArray(current.selected_priority_areas) && current.selected_priority_areas.length > 0) {
+      lines.push(`Chosen Priority Focus Areas this week: ${current.selected_priority_areas.join(", ")}.`)
     }
 
-    if (rc.operating_declaration) {
-      lines.push(`Weekly Operating Declaration: "${rc.operating_declaration}"`)
+    if (current.operating_declaration) {
+      lines.push(`Weekly Operating Declaration: "${current.operating_declaration}"`)
     }
 
-    if (rc.weekly_reflection) {
-      lines.push(`Most recent Weekly Reflection: "${rc.weekly_reflection}"`)
+    if (current.weekly_reflection) {
+      lines.push(`This week's Weekly Reflection: "${current.weekly_reflection}"`)
+    }
+
+    // Previous-week context enables natural trend/progress coaching.
+    if (previous) {
+      lines.push("")
+      lines.push(`Previous week: ${previous.week_key}`)
+      if (typeof previous.overall_score === "number") {
+        lines.push(`Previous overall score: ${previous.overall_score}%.`)
+        if (typeof current.overall_score === "number") {
+          const delta = current.overall_score - previous.overall_score
+          const direction = delta > 0 ? `up ${delta}` : delta < 0 ? `down ${Math.abs(delta)}` : "unchanged"
+          lines.push(`Change since last week: ${direction} point(s). Reference this progress naturally when relevant.`)
+        }
+      }
+      if (Array.isArray(previous.life_value_scores) && previous.life_value_scores.length > 0) {
+        const prevScored = previous.life_value_scores
+          .map((r: { label?: string; category?: string; percentage?: number }) => `${r.label ?? r.category}: ${r.percentage}%`)
+          .join(", ")
+        lines.push(`Previous life value scores — ${prevScored}.`)
+      }
+      if (previous.operating_declaration) {
+        lines.push(`Last week's Weekly Operating Declaration: "${previous.operating_declaration}"`)
+      }
     }
 
     return `\n\n---\n${lines.join("\n")}\n---\n`
