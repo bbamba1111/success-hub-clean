@@ -188,6 +188,70 @@ export async function hasCompletedThisWeeksRealityCheck(): Promise<boolean> {
   }
 }
 
+export interface OperatingCenterData {
+  memberName: string | null
+  current: RealityCheckRecord | null
+  previous: RealityCheckRecord | null
+  /** current.overall_score - previous.overall_score, or null if not comparable. */
+  scoreDelta: number | null
+  /** True if the current record belongs to this calendar week. */
+  currentIsThisWeek: boolean
+}
+
+/**
+ * Loads everything the Weekly Operating Center™ dashboard needs in one call:
+ * the member's name, this week's Reality Check (or latest), the prior week for
+ * trend comparison, and the computed score delta. Returns safe empties for
+ * anonymous sessions so the page can still render a friendly empty state.
+ */
+export async function getOperatingCenterData(): Promise<OperatingCenterData> {
+  const empty: OperatingCenterData = {
+    memberName: null,
+    current: null,
+    previous: null,
+    scoreDelta: null,
+    currentIsThisWeek: false,
+  }
+
+  const userId = await getUserId()
+  if (!userId) return empty
+
+  try {
+    const supabase = createClient()
+
+    const [{ data: profile }, { data: rows }] = await Promise.all([
+      supabase.from("user_profiles").select("name").eq("id", userId).maybeSingle(),
+      supabase
+        .from("reality_checks")
+        .select(
+          "week_key, overall_score, life_value_scores, selected_priority_areas, operating_declaration, weekly_reflection, scored_at, completed_at",
+        )
+        .eq("user_id", userId)
+        .order("week_key", { ascending: false })
+        .limit(2),
+    ])
+
+    const current = (rows?.[0] as RealityCheckRecord) ?? null
+    const previous = (rows?.[1] as RealityCheckRecord) ?? null
+
+    const scoreDelta =
+      current?.overall_score != null && previous?.overall_score != null
+        ? current.overall_score - previous.overall_score
+        : null
+
+    return {
+      memberName: (profile?.name as string) ?? null,
+      current,
+      previous,
+      scoreDelta,
+      currentIsThisWeek: current?.week_key === getWeekKey(),
+    }
+  } catch (error) {
+    console.log("[v0] getOperatingCenterData skipped:", (error as Error)?.message)
+    return empty
+  }
+}
+
 /**
  * Decides where a member lands right after login, per the Phase 1 flow:
  *   - If this week's Weekly Reality Check™ is NOT done → send to the Welcome

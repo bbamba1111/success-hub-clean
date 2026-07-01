@@ -6,7 +6,7 @@ import { Clock, ClipboardCheck, MessageCircleHeart, Sparkles } from "lucide-reac
 import { RitualTimeline } from "@/components/begin/ritual-timeline"
 
 export const metadata: Metadata = {
-  title: "Welcome to Your First Work-Life Balance Business Week™ | Make Time For More™",
+  title: "Welcome to Your Work-Life Balance Business Week™ | Make Time For More™",
   description:
     "Every Work-Life Balance Business Week™ begins with one simple ritual — the Weekly Reality Check™. Take 5–7 minutes to understand where you are today.",
 }
@@ -58,7 +58,7 @@ export default function BeginPage() {
               Make Time For More™
             </p>
             <h1 className="font-playfair text-balance text-4xl font-bold leading-tight text-[#5A4A52] sm:text-5xl">
-              Welcome to Your First Work-Life Balance Business Week™
+              Welcome to Your Work-Life Balance Business Week™
             </h1>
             <p className="mx-auto mt-6 max-w-xl text-pretty text-lg leading-relaxed text-[#5A4A52]/85">
               Every Work-Life Balance Business Week™ begins with one simple ritual. Before we build your week,

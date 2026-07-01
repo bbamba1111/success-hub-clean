@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Home, Brain, LogIn, LogOut } from 'lucide-react'
+import { Home, Brain, LogIn, LogOut, LayoutDashboard } from 'lucide-react'
 import { createClient } from "@/lib/supabase/client"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
@@ -56,7 +56,16 @@ export function TopNavigation() {
                 Main
               </Button>
             </Link>
-            
+
+            {user && (
+              <Link href="/dashboard">
+                <Button variant="ghost" className="flex items-center gap-2" data-testid="button-nav-dashboard">
+                  <LayoutDashboard className="h-4 w-4" />
+                  My Dashboard
+                </Button>
+              </Link>
+            )}
+
             <Link href="/human-zone-of-genius-team">
               <Button variant="ghost" className="flex items-center gap-2" data-testid="button-nav-workday">
                 <Brain className="h-4 w-4" />
