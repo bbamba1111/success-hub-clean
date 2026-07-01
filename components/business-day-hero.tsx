@@ -13,11 +13,10 @@
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
-import { FloatingPetals } from "@/components/floating-petals"
 import type { PartOfDay, SessionStatus } from "@/operating-engine"
 
 const STATUS_META: Record<SessionStatus, { label: string; icon: string; className: string }> = {
-  LIVE: { label: "LIVE NOW", icon: "🔴", className: "bg-[#E26C73] text-white" },
+  LIVE: { label: "LIVE NOW", icon: "●", className: "bg-[#2E5E3A] text-white" },
   NEXT: { label: "STARTING NEXT", icon: "🟢", className: "bg-[#7FB069] text-white" },
   NIGHT: { label: "CLOSED FOR THE NIGHT", icon: "🌙", className: "bg-[#3A3340] text-white" },
   OPEN: { label: "COMMUNITY OPEN", icon: "🌅", className: "bg-white/85 text-[#3A3340]" },
@@ -108,9 +107,6 @@ export function BusinessDayHero() {
           />
         </div>
 
-        {/* Ambient drifting petals — a calm sense of arrival */}
-        <FloatingPetals count={16} />
-
         <div className="relative z-10 mx-auto flex min-h-[560px] max-w-7xl flex-col justify-center px-6 py-16 sm:min-h-[640px] lg:py-24">
           {/* Dynamic glass card — its contents change with the phase of the day */}
           <motion.div
@@ -141,9 +137,9 @@ export function BusinessDayHero() {
                   </motion.span>
                 )}
 
-                {/* Current activity — clean short title + time range */}
-                <p className="mt-4 text-pretty font-playfair text-3xl font-medium leading-tight text-[#C13B6B] sm:text-4xl">
-                  {experience.businessDay.current.shortTitle}
+                {/* Current activity — full title in rich executive green + time range */}
+                <p className="mt-4 text-pretty font-playfair text-3xl font-medium leading-tight text-[#1F4D2E] sm:text-4xl">
+                  {experience.businessDay.current.title}
                 </p>
                 <p className="mt-1 text-base font-medium text-[#5A4A52]">
                   {experience.businessDay.current.timeLabel}
@@ -155,8 +151,8 @@ export function BusinessDayHero() {
                   <span className="font-semibold text-[#7FB069]">{experience.businessDay.countdownToNext.label}</span>
                 </p>
 
-                {/* Personalized greeting */}
-                <p className="mt-6 text-xl font-semibold text-[#3A3340] sm:text-2xl">
+                {/* Personalized greeting — editorial italic script */}
+                <p className="mt-6 font-playfair text-2xl font-medium italic text-[#3A3340] sm:text-3xl">
                   {experience.member.greeting} <span aria-hidden>{experience.member.greetingEmoji}</span>
                 </p>
 
@@ -193,7 +189,7 @@ export function BusinessDayHero() {
               <Button
                 size="lg"
                 onClick={scrollToRhythm}
-                className="bg-[#E26C73] px-8 text-base font-semibold text-white shadow-lg transition-transform hover:scale-[1.03] hover:bg-[#d65a62]"
+                className="bg-[#2E5E3A] px-8 text-base font-semibold text-white shadow-lg transition-transform hover:scale-[1.03] hover:bg-[#264d30]"
               >
                 {experience ? experience.businessDay.current.cta : "Enter Today's Business Day™"}
               </Button>
