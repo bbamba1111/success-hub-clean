@@ -15,7 +15,6 @@ import { BusinessDayHero } from "@/components/business-day-hero"
 import { BusinessDaySchedule } from "@/components/business-day-schedule"
 import { OperatingEngineProvider } from "@/components/operating-engine-provider"
 import { DeveloperToolbar } from "@/components/developer-toolbar"
-import { CommunityClosedGate } from "@/components/community-closed-gate"
 import { createBrowserClient } from "@supabase/ssr"
 
 export default function HomePage() {
@@ -76,9 +75,6 @@ export default function HomePage() {
           One provider supplies a single time-aware snapshot so the hero and the
           Business Day timeline can never disagree. This is the ONLY home hero. */}
       <OperatingEngineProvider>
-        {/* Engine-driven Community Closed lockout (members only; admins bypass via Developer Mode) */}
-        <CommunityClosedGate />
-
         {/* Single engine-driven hero - the primary Home page experience */}
         <BusinessDayHero />
 
