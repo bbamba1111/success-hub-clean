@@ -76,14 +76,12 @@ export function BusinessDayHero() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="mx-auto max-w-none"
         >
-          <h1 className="whitespace-nowrap font-montserrat text-lg font-semibold leading-tight tracking-tight text-[#78AD7D] sm:text-2xl md:text-3xl lg:text-4xl">
-            <span aria-hidden className="mr-2">
-              {invitation.emoji}
-            </span>
+          <h1 className="whitespace-nowrap font-playfair text-lg font-medium leading-tight tracking-tight text-[#78AD7D] sm:text-2xl md:text-3xl lg:text-4xl">
             {invitation.text}
           </h1>
           <p className="mt-3 font-montserrat text-base font-medium tracking-wide text-[#78AD7D] sm:text-lg">
-            {dayIntention}
+            {dayIntention.replace(/\.\s*$/, "")}{" "}
+            <span aria-hidden>{invitation.emoji}</span>
           </p>
         </motion.div>
       </div>

@@ -27,8 +27,9 @@ export function BusinessDaySchedule() {
       <div className="mx-auto max-w-7xl">
         <div className="px-6 pb-2 text-center">
           <h2 className="text-pretty text-2xl font-bold text-[#C13B6B] sm:text-3xl">
-            Today&apos;s <span className="text-[#7FB069]">Work-Life Balance Business Day™</span>
+            Live Your New 9-5 &amp; <span className="text-[#7FB069]">Nighttime Non-Negotiable SOPs</span>
           </h2>
+          <p className="mt-1 text-sm font-semibold text-[#7FB069]">(Sustainable Operating Practices)</p>
           <p className="mt-1 text-sm font-medium text-[#6B5860]">
             {experience
               ? `It's ${experience.time.dayName}. ${experience.businessDay.next.shortTitle} starts in ${experience.businessDay.countdownToNext.label}.`
