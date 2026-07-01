@@ -70,6 +70,69 @@
   }
 }
 
+/*
+ * Shared glass treatment — "luxury wellness retreat" language.
+ * Lighter + less blur than before so the background imagery is gently
+ * perceptible through the glass, while text stays the highest priority.
+ * Use `.glass-panel` for primary cards and `.glass-chip` for small pills/insets.
+ */
+.glass-panel {
+  background-color: rgba(255, 255, 255, 0.14);
+  -webkit-backdrop-filter: blur(7px) saturate(115%);
+  backdrop-filter: blur(7px) saturate(115%);
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  box-shadow: 0 10px 40px rgba(90, 74, 82, 0.12);
+}
+
+.glass-chip {
+  background-color: rgba(255, 255, 255, 0.28);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 0 2px 12px rgba(90, 74, 82, 0.08);
+}
+
+/*
+ * Floating cherry-blossom petals — a calm, ambient sense of arrival.
+ * Individual petals set their own duration/delay/offset via inline styles.
+ */
+@keyframes petal-drift {
+  0% {
+    transform: translate3d(0, -8vh, 0) rotate(0deg);
+    opacity: 0;
+  }
+  8% {
+    opacity: var(--petal-opacity, 0.6);
+  }
+  92% {
+    opacity: var(--petal-opacity, 0.6);
+  }
+  100% {
+    transform: translate3d(var(--petal-drift-x, 40px), 108vh, 0) rotate(320deg);
+    opacity: 0;
+  }
+}
+
+.petal {
+  position: absolute;
+  top: 0;
+  width: 14px;
+  height: 14px;
+  background: radial-gradient(circle at 30% 30%, #f7c9d4 0%, #e88fa2 70%, #d97a90 100%);
+  /* Asymmetric radius gives a soft petal/teardrop silhouette */
+  border-radius: 100% 0 100% 100%;
+  will-change: transform, opacity;
+  animation-name: petal-drift;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .petal {
+    display: none;
+  }
+}
+
 /* Custom progress bar styles */
 .progress-bar-green-pink [data-state="complete"] {
   background: linear-gradient(90deg, #7fb069 0%, #e26c73 100%);

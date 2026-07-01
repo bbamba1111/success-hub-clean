@@ -13,6 +13,7 @@
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
+import { FloatingPetals } from "@/components/floating-petals"
 import type { SessionStatus } from "@/operating-engine"
 
 const STATUS_META: Record<SessionStatus, { label: string; icon: string; className: string }> = {
@@ -50,59 +51,67 @@ export function BusinessDayHero() {
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(90deg, rgba(255,241,245,0.72) 0%, rgba(255,241,245,0.3) 42%, rgba(255,241,245,0) 64%)",
+              "linear-gradient(90deg, rgba(255,241,245,0.62) 0%, rgba(255,241,245,0.22) 46%, rgba(255,241,245,0) 68%)",
           }}
         />
       </div>
 
-      <div className="relative z-10 mx-auto flex min-h-[520px] max-w-7xl items-center px-6 py-16 sm:min-h-[600px] lg:py-24">
+      {/* Ambient drifting petals — a calm sense of arrival */}
+      <FloatingPetals count={16} />
+
+      <div className="relative z-10 mx-auto flex min-h-[540px] max-w-7xl flex-col justify-center px-6 py-16 sm:min-h-[620px] lg:py-24">
+        {/* Static invitation — the constant welcome into today's rhythm */}
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+          className="mb-6 max-w-2xl"
+        >
+          <span className="mb-4 inline-flex items-center gap-2 rounded-full glass-chip px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] text-[#5A4A52]">
+            <span aria-hidden>🌸</span>
+            {experience ? `${experience.time.dayName}` : "Today"}
+          </span>
+          <h1 className="text-balance font-playfair text-4xl font-medium leading-[1.1] tracking-tight text-[#5A4A52] sm:text-5xl lg:text-6xl">
+            Enter Today&apos;s <span className="text-[#C13B6B]">Work-Life Balance Business Day™</span>
+          </h1>
+          <p className="mt-4 text-base font-medium tracking-wide text-[#6B5860] sm:text-lg">
+            Live Intentionally. Work Smarter. Lead Successfully.
+          </p>
+        </motion.div>
+
+        {/* Dynamic glass card — its contents change with the phase of the day */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
-          className="w-full max-w-2xl rounded-3xl border border-white/40 bg-white/25 p-8 shadow-xl backdrop-blur-md sm:p-10"
+          transition={{ duration: 0.7, ease: "easeOut", delay: 0.12 }}
+          className="glass-panel w-full max-w-2xl rounded-3xl p-8 sm:p-10"
         >
-          {/* Dynamic day + status row */}
-          <div className="mb-6 flex flex-wrap items-center gap-3">
-            <span className="inline-flex items-center gap-2 rounded-full bg-white/70 px-4 py-1.5 text-sm font-semibold text-[#5A4A52]">
-              <span aria-hidden>🌸</span>
-              {experience ? `Today is ${experience.time.dayName}` : "Today"}
-            </span>
-            {status && (
-              <motion.span
-                key={status.label}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4 }}
-                className={`inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-[0.15em] shadow-sm ${status.className}`}
-              >
-                <span aria-hidden>{status.icon}</span>
-                {status.label}
-              </motion.span>
-            )}
-          </div>
+          {/* Live status for the current moment */}
+          {status && (
+            <motion.span
+              key={status.label}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4 }}
+              className={`mb-6 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-[0.15em] shadow-sm ${status.className}`}
+            >
+              <span aria-hidden>{status.icon}</span>
+              {status.label}
+            </motion.span>
+          )}
 
-          <h1 className="text-pretty text-4xl font-bold leading-tight text-[#C13B6B] sm:text-5xl">
-            Join Today&apos;s <span className="text-[#7FB069]">Work-Life Balance Business Day™</span>
-          </h1>
-
-          <p className="mt-4 text-lg font-semibold text-[#5A4A52]">
-            Live Intentionally. Work Smarter. Lead Successfully.
-          </p>
-
-          {/* Personalized greeting + dynamic phase message */}
+          {/* Personalized greeting (editorial serif) + dynamic phase message */}
           {experience && (
             <motion.div
               key={`${experience.member.greeting}-${experience.phase.message}`}
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="mt-5"
             >
-              <p className="text-xl font-bold text-[#C13B6B] sm:text-2xl">
+              <p className="text-pretty font-playfair text-3xl font-medium leading-tight text-[#C13B6B] sm:text-4xl">
                 {experience.member.greeting} <span aria-hidden>{experience.member.greetingEmoji}</span>
               </p>
-              <p className="mt-2 text-base leading-relaxed text-[#6B5860]">{experience.phase.message}</p>
+              <p className="mt-3 text-lg leading-relaxed text-[#5A4A52]">{experience.phase.message}</p>
             </motion.div>
           )}
 
@@ -113,7 +122,7 @@ export function BusinessDayHero() {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.15 }}
-              className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-1 rounded-2xl border border-white/50 bg-white/45 px-4 py-3 text-sm backdrop-blur-sm"
+              className="glass-chip mt-5 flex flex-wrap items-center gap-x-2 gap-y-1 rounded-2xl px-4 py-3 text-sm"
             >
               <span aria-hidden>{experience.businessDay.current.emoji}</span>
               <span className="font-semibold text-[#4A3A42]">Now: {experience.businessDay.current.shortTitle}</span>
@@ -145,7 +154,7 @@ export function BusinessDayHero() {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.25 }}
-              className="mt-6 rounded-2xl border border-[#7FB069]/30 bg-white/55 p-5 backdrop-blur-sm"
+              className="glass-chip mt-6 rounded-2xl border-[#7FB069]/30 p-5"
             >
               <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-[#5A7F46]">
                 <span aria-hidden>🌸</span>

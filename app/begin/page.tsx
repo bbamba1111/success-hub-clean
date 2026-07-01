@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Clock, ClipboardCheck, MessageCircleHeart, Sparkles } from "lucide-react"
 import { RitualTimeline } from "@/components/begin/ritual-timeline"
+import { FloatingPetals } from "@/components/floating-petals"
 
 export const metadata: Metadata = {
   title: "Welcome to Your Work-Life Balance Business Week™ | Make Time For More™",
@@ -41,10 +42,13 @@ export default function BeginPage() {
           className="absolute inset-0 h-full w-full object-cover object-center"
         />
         {/* Gentle cream overlay keeps typography readable without hiding the scene */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#F5F5F0]/70 via-[#F5F5F0]/35 to-[#F5F5F0]/85" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#F5F5F0]/55 via-[#F5F5F0]/25 to-[#F5F5F0]/80" />
 
-        <div className="relative flex min-h-[80vh] items-center justify-center px-4 py-20 sm:py-28">
-          <div className="mx-auto max-w-2xl rounded-3xl border border-white/50 bg-white/45 px-6 py-12 text-center shadow-xl backdrop-blur-md sm:px-10 sm:py-14">
+        {/* Ambient drifting petals — a calm sense of arrival */}
+        <FloatingPetals count={14} />
+
+        <div className="relative z-10 flex min-h-[80vh] items-center justify-center px-4 py-20 sm:py-28">
+          <div className="glass-panel mx-auto max-w-2xl rounded-3xl px-6 py-12 text-center sm:px-10 sm:py-14">
             <div className="mb-6 flex justify-center">
               <img
                 src="/images/logo.png"
