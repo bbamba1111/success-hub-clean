@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { CheckCircle2, Circle, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { getAuditResults } from "@/utils/audit-storage"
+import { updateRealityCheck } from "@/utils/reality-check-storage"
 import { categoryLabels } from "@/components/work-life-balance-audit"
 
 interface FocusArea {
@@ -96,6 +97,10 @@ export default function FocusAreasPage() {
   const saveFocusAreas = () => {
     const selectedAreas = focusAreas.filter((area) => area.selected).map((area) => area.id)
     localStorage.setItem("focusAreas", JSON.stringify(selectedAreas))
+
+    // Enrich this week's Reality Check record with the chosen priority areas
+    // (best-effort; no-op for anonymous visitors). Same weekly row, no duplicate.
+    void updateRealityCheck({ selectedPriorityAreas: selectedAreas })
   }
 
   return (

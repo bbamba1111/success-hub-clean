@@ -1,5 +1,68 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { isWithinBusinessHours } from "@/lib/utils/business-hours"
+import { createClient } from "@/lib/supabase/server"
+
+/**
+ * Loads the authenticated member's memory (their latest Reality Check snapshot)
+ * and formats it as a system-prompt block so Cherry Blossom opens already
+ * knowing their current state — no copy/paste required. RLS scopes the read to
+ * the signed-in user; anonymous visitors return an empty string (no memory).
+ */
+async function buildMemoryContext(): Promise<string> {
+  try {
+    const supabase = await createClient()
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+    if (!user) return ""
+
+    const { data: rc } = await supabase
+      .from("reality_checks")
+      .select(
+        "week_key, overall_score, life_value_scores, selected_priority_areas, operating_declaration, weekly_reflection, completed_at",
+      )
+      .eq("user_id", user.id)
+      .order("week_key", { ascending: false })
+      .limit(1)
+      .maybeSingle()
+
+    if (!rc) return ""
+
+    const lines: string[] = [
+      "MEMBER MEMORY — THIS IS WHAT YOU ALREADY KNOW ABOUT THIS MEMBER.",
+      "Use it naturally like a coach who remembers them. Do not ask them to repeat it.",
+      `Week of: ${rc.week_key}`,
+    ]
+
+    if (typeof rc.overall_score === "number") {
+      lines.push(`Overall Work-Life Balance score: ${rc.overall_score}%.`)
+    }
+
+    if (Array.isArray(rc.life_value_scores) && rc.life_value_scores.length > 0) {
+      const scored = rc.life_value_scores
+        .map((r: { label?: string; category?: string; percentage?: number }) => `${r.label ?? r.category}: ${r.percentage}%`)
+        .join(", ")
+      lines.push(`Life value scores — ${scored}.`)
+    }
+
+    if (Array.isArray(rc.selected_priority_areas) && rc.selected_priority_areas.length > 0) {
+      lines.push(`Chosen Priority Focus Areas this week: ${rc.selected_priority_areas.join(", ")}.`)
+    }
+
+    if (rc.operating_declaration) {
+      lines.push(`Weekly Operating Declaration: "${rc.operating_declaration}"`)
+    }
+
+    if (rc.weekly_reflection) {
+      lines.push(`Most recent Weekly Reflection: "${rc.weekly_reflection}"`)
+    }
+
+    return `\n\n---\n${lines.join("\n")}\n---\n`
+  } catch (error) {
+    console.log("[v0] buildMemoryContext skipped:", (error as Error)?.message)
+    return ""
+  }
+}
 
 const SYSTEM_PROMPT = `You are Cherry Blossom, a warm, empathetic AI work-life balance companion. Your purpose is to help people create more harmony, intention, and joy in their daily lives through the Harmony System.
 
@@ -2031,8 +2094,12 @@ export async function POST(req: NextRequest) {
     console.log("[v0] Calling OpenAI API directly with message:", message)
     console.log("[v0] Context:", context)
 
+    // Load the signed-in member's persisted Reality Check so Cherry Blossom
+    // opens already knowing them. Empty for anonymous visitors (no change).
+    const memoryContext = await buildMemoryContext()
+
     const conversationMessages = [
-      { role: "system", content: SYSTEM_PROMPT },
+      { role: "system", content: SYSTEM_PROMPT + memoryContext },
       ...messages.map((m: { role: string; content: string }) => ({
         role: m.role,
         content: m.content,

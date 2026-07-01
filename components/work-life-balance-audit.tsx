@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { ArrowRight, RotateCcw } from "lucide-react"
 import { saveAuditResults } from "@/utils/audit-storage"
+import { saveRealityCheckSnapshot } from "@/utils/reality-check-storage"
 import { useRouter } from "next/navigation"
 
 export const categoryLabels = {
@@ -172,8 +173,16 @@ export default function WorkLifeBalanceAudit({ resultsUrl = "/my-results" }: Wor
     setResults(auditResults)
     setIsComplete(true)
 
-    // Save to localStorage
+    // Save to localStorage (instant UX — unchanged)
     saveAuditResults(auditResults)
+
+    // Mirror the scored snapshot to Supabase as this week's official Reality
+    // Check record (best-effort; no-op for anonymous visitors). This is what
+    // gives Cherry Blossom memory of the completed assessment.
+    void saveRealityCheckSnapshot({
+      overallScore: auditResults.overallScore,
+      results: auditResults.results,
+    })
   }
 
   const restartAudit = () => {
