@@ -165,3 +165,36 @@ export async function getLatestRealityCheck(): Promise<RealityCheckRecord | null
     return null
   }
 }
+
+/** True if THIS week's Reality Check has been scored (the snapshot exists). */
+export async function hasCompletedThisWeeksRealityCheck(): Promise<boolean> {
+  const userId = await getUserId()
+  if (!userId) return false
+
+  try {
+    const supabase = createClient()
+    const { data } = await supabase
+      .from("reality_checks")
+      .select("scored_at, overall_score")
+      .eq("user_id", userId)
+      .eq("week_key", getWeekKey())
+      .maybeSingle()
+
+    // "Completed" = the audit was scored for the current week.
+    return Boolean(data && (data.scored_at || data.overall_score !== null))
+  } catch (error) {
+    console.log("[v0] hasCompletedThisWeeksRealityCheck skipped:", (error as Error)?.message)
+    return false
+  }
+}
+
+/**
+ * Decides where a member lands right after login, per the Phase 1 flow:
+ *   - If this week's Weekly Reality Check™ is NOT done → send to the ritual (/audit).
+ *   - If it IS done → send straight to the Success Hub Home (/).
+ * Falls back to /audit on any uncertainty (the ritual is always safe to re-enter).
+ */
+export async function getPostLoginDestination(): Promise<string> {
+  const done = await hasCompletedThisWeeksRealityCheck()
+  return done ? "/" : "/audit"
+}

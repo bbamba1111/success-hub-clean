@@ -2,6 +2,7 @@
 
 import type React from "react"
 import { createClient } from "@/lib/supabase/client"
+import { getPostLoginDestination } from "@/utils/reality-check-storage"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -31,7 +32,10 @@ export default function LoginPage() {
 
       if (error) throw error
 
-      window.location.href = "/"
+      // Returning-member routing: if this week's Weekly Reality Check™ isn't
+      // done, open the ritual (/audit); otherwise go straight to the Hub (/).
+      const destination = await getPostLoginDestination()
+      window.location.href = destination
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred")
     } finally {
