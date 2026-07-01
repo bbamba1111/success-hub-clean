@@ -25,16 +25,24 @@ export function BusinessDaySchedule() {
   return (
     <div id="todays-business-day" className="w-full scroll-mt-20 bg-gradient-to-br from-[#F5F1E8] to-white py-8">
       <div className="mx-auto max-w-7xl">
-        <div className="px-6 pb-2 text-center">
-          <h2 className="text-pretty text-2xl font-bold text-[#C13B6B] sm:text-3xl">
-            Live Your New 9-5 &amp; <span className="text-[#7FB069]">Nighttime Non-Negotiable SOPs</span>
+        <div className="px-6 pb-3 text-center">
+          <h2 className="text-pretty font-playfair text-2xl font-medium italic text-[#3A2E33] sm:text-3xl">
+            Live Your New 9-5 &amp; Nighttime <span className="text-[#C13B6B]">Non-Negotiable</span> SOPs
           </h2>
-          <p className="mt-1 text-sm font-semibold text-[#7FB069]">(Sustainable Operating Practices)</p>
-          <p className="mt-1 text-sm font-medium text-[#6B5860]">
-            {experience
-              ? `It's ${experience.time.dayName}. ${experience.businessDay.next.shortTitle} starts in ${experience.businessDay.countdownToNext.label}.`
-              : "Continue into today's rhythm."}
+          <p className="mt-1 font-montserrat text-sm font-thin italic text-[#6B5860]">
+            (Sustainable Operating Practices)
           </p>
+        </div>
+
+        {/* Frosted-glass status bar — matches the width of the cards below */}
+        <div className="px-4 pb-4 sm:px-6 lg:px-8">
+          <div className="glass-panel rounded-2xl px-6 py-5 text-center">
+            <p className="text-pretty font-playfair text-xl font-medium italic text-[#3A2E33] sm:text-2xl">
+              {experience
+                ? `${experience.time.dayName}'s ${experience.businessDay.next.shortTitle} starts in ${experience.businessDay.countdownToNext.label}...`
+                : "Continue into today's rhythm..."}
+            </p>
+          </div>
         </div>
 
         {timeline.map(({ block, state }) => (

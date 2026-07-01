@@ -85,7 +85,7 @@ export function BusinessDayBlock({
                 <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#6B5860]">{time}</span>
               </div>
 
-              <h3 className="text-xl font-bold leading-tight text-balance text-[#3A2E33] sm:text-2xl">
+              <h3 className="font-playfair text-xl font-medium italic leading-tight text-balance text-[#3A2E33] sm:text-2xl">
                 {emoji ? <span className="mr-2">{emoji}</span> : null}
                 {title}
               </h3>
