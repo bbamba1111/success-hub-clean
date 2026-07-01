@@ -20,6 +20,43 @@ interface Message {
   content: string
 }
 
+/**
+ * The Work-Life Balance Business Day™ experiences that support planning. The
+ * universal three-choice offer appears only for these activity contexts.
+ */
+const PLANNING_CONTEXTS = new Set([
+  "morning-routine",
+  "workout-window",
+  "lunch-break",
+  "ceo-workday",
+  "lifestyle-experiences",
+  "digital-detox",
+])
+
+/** Universal planning choices — three levels of coaching, same everywhere. */
+const PLANNING_OPTIONS = [
+  { id: "lets-plan-together", label: "Let's Plan Together", emoji: "✨" },
+  { id: "give-me-ideas", label: "Give Me a Few Ideas", emoji: "🌸" },
+  { id: "im-all-set", label: "No Thanks, I'm All Set", emoji: "✓" },
+] as const
+
+/**
+ * Fire-and-forget: after a real exchange, ask the server to quietly extract any
+ * meaningful long-term memories into Cherry Blossom's Memory Vault™. Never
+ * blocks the conversation and silently ignores failures.
+ */
+function rememberExchange(userMessage: string, assistantMessage: string) {
+  try {
+    void fetch("/api/cherry-blossom/remember", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userMessage, assistantMessage }),
+    }).catch(() => {})
+  } catch {
+    // ignore — memory is best-effort
+  }
+}
+
 function formatMessage(content: string) {
   // Split into lines
   const lines = content.split("\n")
@@ -64,6 +101,7 @@ export function SimpleChatModal({ isOpen, onClose, context, title }: SimpleChatM
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [showPlanning, setShowPlanning] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const lastAssistantMessageRef = useRef<HTMLDivElement>(null)
 
@@ -77,6 +115,7 @@ export function SimpleChatModal({ isOpen, onClose, context, title }: SimpleChatM
 
       setMessages([])
       setInput("")
+      setShowPlanning(false)
 
       // Send automatic welcome message
       const sendWelcomeMessage = async () => {
@@ -95,6 +134,10 @@ export function SimpleChatModal({ isOpen, onClose, context, title }: SimpleChatM
           const data = await response.json()
           if (data.message) {
             setMessages([{ role: "assistant", content: data.message }])
+            // Offer the universal planning choices for activity experiences.
+            if (PLANNING_CONTEXTS.has(context)) {
+              setShowPlanning(true)
+            }
           }
         } catch (error) {
           console.error("[v0] Welcome message error:", error)
@@ -122,6 +165,7 @@ export function SimpleChatModal({ isOpen, onClose, context, title }: SimpleChatM
     setMessages((prev) => [...prev, userMessage])
     setInput("")
     setIsLoading(true)
+    setShowPlanning(false)
 
     try {
       console.log("[v0] Sending message to API:", { message: input, context })
@@ -151,6 +195,8 @@ export function SimpleChatModal({ isOpen, onClose, context, title }: SimpleChatM
 
       if (data.message) {
         setMessages((prev) => [...prev, { role: "assistant", content: data.message }])
+        // Quietly grow the Memory Vault™ from this genuine exchange.
+        rememberExchange(userMessage.content, data.message)
       } else if (data.error) {
         console.error("[v0] API error:", data.error)
         setMessages((prev) => [...prev, { role: "assistant", content: `Error: ${data.error}` }])
@@ -159,6 +205,48 @@ export function SimpleChatModal({ isOpen, onClose, context, title }: SimpleChatM
       }
     } catch (error) {
       console.error("[v0] Chat error:", error)
+      setMessages((prev) => [...prev, { role: "assistant", content: "Sorry, there was an error." }])
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  /**
+   * Sends one of the universal planning choices. Shows a friendly user bubble,
+   * asks the API to steer coaching accordingly, and persists the member's
+   * preferred style server-side. Choice is never removed — members can pick a
+   * different level on any day.
+   */
+  const sendPlanningChoice = async (option: (typeof PLANNING_OPTIONS)[number]) => {
+    if (isLoading) return
+    setShowPlanning(false)
+
+    const userBubble: Message = { role: "user", content: option.label }
+    const priorMessages = messages
+    setMessages((prev) => [...prev, userBubble])
+    setIsLoading(true)
+
+    try {
+      const response = await fetch("/api/cherry-blossom-chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: `[PLANNING_CHOICE: ${option.id}]`,
+          messages: priorMessages.map((m) => ({ role: m.role, content: m.content })),
+          context,
+        }),
+      })
+
+      const data = await response.json()
+      if (data.message) {
+        setMessages((prev) => [...prev, { role: "assistant", content: data.message }])
+      } else if (data.error) {
+        setMessages((prev) => [...prev, { role: "assistant", content: `Error: ${data.error}` }])
+      } else {
+        setMessages((prev) => [...prev, { role: "assistant", content: "Sorry, I couldn't process that request." }])
+      }
+    } catch (error) {
+      console.error("[v0] Planning choice error:", error)
       setMessages((prev) => [...prev, { role: "assistant", content: "Sorry, there was an error." }])
     } finally {
       setIsLoading(false)
@@ -214,6 +302,29 @@ export function SimpleChatModal({ isOpen, onClose, context, title }: SimpleChatM
             <div className="flex justify-start">
               <div className="bg-white border border-[#E26C73]/20 rounded-lg p-3 shadow-sm">
                 <Loader2 className="h-4 w-4 animate-spin text-[#E26C73]" />
+              </div>
+            </div>
+          )}
+
+          {showPlanning && !isLoading && (
+            <div className="flex flex-col gap-2 pt-1">
+              <p className="text-sm font-medium text-[#5A4A52]">
+                Would you like a little help planning today&apos;s experience?
+              </p>
+              <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+                {PLANNING_OPTIONS.map((option) => (
+                  <Button
+                    key={option.id}
+                    onClick={() => sendPlanningChoice(option)}
+                    variant="outline"
+                    className="justify-start border-[#7FB069]/40 bg-white text-[#4A6B38] hover:bg-[#7FB069]/10 hover:text-[#4A6B38] sm:flex-1"
+                  >
+                    <span aria-hidden className="mr-2">
+                      {option.emoji}
+                    </span>
+                    {option.label}
+                  </Button>
+                ))}
               </div>
             </div>
           )}
