@@ -16,7 +16,7 @@ import { useOperatingEngine } from "@/components/operating-engine-provider"
 import type { PartOfDay, SessionStatus } from "@/operating-engine"
 
 const STATUS_META: Record<SessionStatus, { label: string; icon: string; className: string }> = {
-  LIVE: { label: "LIVE NOW", icon: "●", className: "bg-[#2E5E3A] text-white" },
+  LIVE: { label: "In Session", icon: "●", className: "bg-[#7FB069] text-white" },
   NEXT: { label: "STARTING NEXT", icon: "🟢", className: "bg-[#7FB069] text-white" },
   NIGHT: { label: "CLOSED FOR THE NIGHT", icon: "🌙", className: "bg-[#3A3340] text-white" },
   OPEN: { label: "COMMUNITY OPEN", icon: "🌅", className: "bg-white/85 text-[#3A3340]" },
@@ -76,7 +76,7 @@ export function BusinessDayHero() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="mx-auto max-w-4xl"
         >
-          <h1 className="text-balance font-playfair text-3xl font-medium leading-[1.1] tracking-tight text-[#3A3340] sm:text-4xl lg:text-5xl">
+          <h1 className="text-balance font-playfair text-3xl font-medium leading-[1.1] tracking-tight text-[#4A6B38] sm:text-4xl lg:text-5xl">
             <span aria-hidden className="mr-2">
               {invitation.emoji}
             </span>
@@ -137,8 +137,8 @@ export function BusinessDayHero() {
                   </motion.span>
                 )}
 
-                {/* Current activity — full title in rich executive green + time range */}
-                <p className="mt-4 text-pretty font-playfair text-3xl font-medium leading-tight text-[#1F4D2E] sm:text-4xl">
+                {/* Current activity — full title in signature coral + time range */}
+                <p className="mt-4 text-pretty font-playfair text-3xl font-medium leading-tight text-[#C13B6B] sm:text-4xl">
                   {experience.businessDay.current.title}
                 </p>
                 <p className="mt-1 text-base font-medium text-[#5A4A52]">
@@ -151,8 +151,8 @@ export function BusinessDayHero() {
                   <span className="font-semibold text-[#7FB069]">{experience.businessDay.countdownToNext.label}</span>
                 </p>
 
-                {/* Personalized greeting — editorial italic script */}
-                <p className="mt-6 font-playfair text-2xl font-medium italic text-[#3A3340] sm:text-3xl">
+                {/* Personalized greeting — editorial italic script in sage */}
+                <p className="mt-6 font-playfair text-2xl font-medium italic text-[#4A6B38] sm:text-3xl">
                   {experience.member.greeting} <span aria-hidden>{experience.member.greetingEmoji}</span>
                 </p>
 
@@ -189,7 +189,7 @@ export function BusinessDayHero() {
               <Button
                 size="lg"
                 onClick={scrollToRhythm}
-                className="bg-[#2E5E3A] px-8 text-base font-semibold text-white shadow-lg transition-transform hover:scale-[1.03] hover:bg-[#264d30]"
+                className="bg-[#7FB069] px-8 text-base font-semibold text-white shadow-lg transition-transform hover:scale-[1.03] hover:bg-[#6FA055]"
               >
                 {experience ? experience.businessDay.current.cta : "Enter Today's Business Day™"}
               </Button>
