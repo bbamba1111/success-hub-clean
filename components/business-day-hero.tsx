@@ -14,18 +14,46 @@ import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
 import { FloatingPetals } from "@/components/floating-petals"
-import type { SessionStatus } from "@/operating-engine"
+import type { PartOfDay, SessionStatus } from "@/operating-engine"
 
 const STATUS_META: Record<SessionStatus, { label: string; icon: string; className: string }> = {
   LIVE: { label: "LIVE NOW", icon: "🔴", className: "bg-[#E26C73] text-white" },
   NEXT: { label: "STARTING NEXT", icon: "🟢", className: "bg-[#7FB069] text-white" },
-  NIGHT: { label: "CLOSED FOR THE NIGHT", icon: "🌙", className: "bg-[#2E2A3A] text-white" },
-  OPEN: { label: "COMMUNITY OPEN", icon: "🌅", className: "bg-white/85 text-[#5A4A52]" },
+  NIGHT: { label: "CLOSED FOR THE NIGHT", icon: "🌙", className: "bg-[#3A3340] text-white" },
+  OPEN: { label: "COMMUNITY OPEN", icon: "🌅", className: "bg-white/85 text-[#3A3340]" },
 }
 
 function scrollToRhythm() {
   const el = document.getElementById("todays-business-day")
   if (el) el.scrollIntoView({ behavior: "smooth", block: "start" })
+}
+
+/**
+ * The invitation evolves with the week so the platform feels like a living
+ * operating system rather than a static page:
+ *   Sun → enter the Business Week · Mon–Thu → enter that day's Business Day
+ *   Fri → Time Freedom begins · Sat → Time Freedom continues
+ * 0 = Sunday … 6 = Saturday.
+ */
+function getInvitation(dayOfWeek: number, dayName: string): { emoji: string; text: string } {
+  if (dayOfWeek === 0) return { emoji: "🌸", text: "Enter Your Work-Life Balance Business Week™" }
+  if (dayOfWeek === 5) return { emoji: "🌿", text: "Welcome to Time Freedom™" }
+  if (dayOfWeek === 6) return { emoji: "🌿", text: "Continue Your Time Freedom™" }
+  return { emoji: "🌸", text: `Enter ${dayName}'s Work-Life Balance Business Day™` }
+}
+
+/** A short, dynamic line that reinforces the rhythm of the current phase. */
+function getDayIntention(part: PartOfDay): string {
+  switch (part) {
+    case "morning":
+      return "Today is for intentional beginnings."
+    case "ceo":
+      return "Today is for focused execution."
+    case "evening":
+      return "Today is for restoration."
+    default:
+      return "Today is for intentional living."
+  }
 }
 
 export function BusinessDayHero() {
@@ -34,21 +62,28 @@ export function BusinessDayHero() {
   // Stable fallback background before the first client tick.
   const backgroundImage = experience?.theme.backgroundImage ?? "/images/business-day-hero-bg.png"
   const status = experience ? STATUS_META[experience.businessDay.status] : null
+  const invitation = experience
+    ? getInvitation(experience.time.dayOfWeek, experience.time.dayName)
+    : { emoji: "🌸", text: "Enter Your Work-Life Balance Business Day™" }
+  const dayIntention = experience ? getDayIntention(experience.phase.part) : "Today is for intentional living."
 
   return (
     <section className="relative w-full overflow-hidden">
-      {/* Invitation band — sits ABOVE the imagery on the warm logo-cream color */}
-      <div className="w-full bg-[#F3EBDD] px-6 py-8 text-center sm:py-10">
+      {/* Invitation — floats on a soft linen band above the imagery (no heavy color block) */}
+      <div className="w-full bg-[#FBF7F0] px-6 py-7 text-center sm:py-9">
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="mx-auto max-w-4xl"
         >
-          <h1 className="text-balance font-playfair text-3xl font-medium leading-[1.1] tracking-tight text-[#7FB069] sm:text-4xl lg:text-5xl">
-            Enter Today&apos;s Work-Life Balance Business Day™
+          <h1 className="text-balance font-playfair text-3xl font-medium leading-[1.1] tracking-tight text-[#3A3340] sm:text-4xl lg:text-5xl">
+            <span aria-hidden className="mr-2">
+              {invitation.emoji}
+            </span>
+            {invitation.text}
           </h1>
-          <p className="mt-3 font-playfair text-lg italic text-[#A9885E] sm:text-xl">Where We Make Time For More™</p>
+          <p className="mt-3 text-base font-medium tracking-wide text-[#7FB069] sm:text-lg">{dayIntention}</p>
         </motion.div>
       </div>
 
@@ -83,11 +118,16 @@ export function BusinessDayHero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
             className="glass-panel w-full max-w-2xl rounded-3xl p-8 sm:p-10"
-            style={{ backgroundColor: "rgba(255, 255, 255, 0.7)" }}
+            style={{ backgroundColor: "rgba(253, 250, 245, 0.9)" }}
           >
-            {/* Status + Day of Week (large editorial serif) */}
             {experience && (
-              <div className="flex flex-wrap items-center gap-4">
+              <motion.div
+                key={`${experience.businessDay.current.id}-${experience.member.greeting}`}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.12 }}
+              >
+                {/* Live status */}
                 {status && (
                   <motion.span
                     key={status.label}
@@ -100,37 +140,28 @@ export function BusinessDayHero() {
                     {status.label}
                   </motion.span>
                 )}
-                <span className="font-playfair text-3xl font-medium leading-none text-[#5A4A52] sm:text-4xl">
-                  {experience.time.dayName}
-                </span>
-              </div>
-            )}
 
-            {experience && (
-              <motion.div
-                key={`${experience.businessDay.current.id}-${experience.member.greeting}`}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.12 }}
-              >
-                {/* Current activity */}
-                <p className="mt-5 text-pretty font-playfair text-2xl font-medium leading-tight text-[#C13B6B] sm:text-3xl">
-                  Your {experience.businessDay.current.title}
+                {/* Current activity — clean short title + time range */}
+                <p className="mt-4 text-pretty font-playfair text-3xl font-medium leading-tight text-[#C13B6B] sm:text-4xl">
+                  {experience.businessDay.current.shortTitle}
+                </p>
+                <p className="mt-1 text-base font-medium text-[#5A4A52]">
+                  {experience.businessDay.current.timeLabel}
                 </p>
 
                 {/* Up next countdown — directly under the current activity */}
-                <p className="mt-2 text-sm font-medium text-[#6B5860]">
-                  Up next: {experience.businessDay.next.shortTitle} in{" "}
-                  <span className="font-semibold text-[#5A7F46]">{experience.businessDay.countdownToNext.label}</span>
+                <p className="mt-2 text-sm font-medium text-[#5A4A52]">
+                  Up next: {experience.businessDay.next.shortTitle} ·{" "}
+                  <span className="font-semibold text-[#7FB069]">{experience.businessDay.countdownToNext.label}</span>
                 </p>
 
                 {/* Personalized greeting */}
-                <p className="mt-5 text-xl font-semibold text-[#5A4A52] sm:text-2xl">
+                <p className="mt-6 text-xl font-semibold text-[#3A3340] sm:text-2xl">
                   {experience.member.greeting} <span aria-hidden>{experience.member.greetingEmoji}</span>
                 </p>
 
                 {/* Encouraging message about the activity at hand */}
-                <p className="mt-2 text-base leading-relaxed text-[#5A4A52]">{experience.phase.message}</p>
+                <p className="mt-2 text-base leading-relaxed text-[#4A3A42]">{experience.phase.message}</p>
               </motion.div>
             )}
 
