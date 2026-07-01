@@ -70,6 +70,30 @@
   }
 }
 
+/* Glowing cherry-blossom indicator light — soft pulsing halo */
+@keyframes blossom-pulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 2px rgba(232, 143, 162, 0.7)) drop-shadow(0 0 5px rgba(232, 143, 162, 0.5));
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 6px rgba(232, 143, 162, 0.95)) drop-shadow(0 0 12px rgba(232, 143, 162, 0.7));
+    transform: scale(1.12);
+  }
+}
+
+.blossom-glow {
+  display: inline-block;
+  animation: blossom-pulse 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blossom-glow {
+    animation: none;
+  }
+}
+
 /*
  * Shared glass treatment — "luxury wellness retreat" language.
  * Lighter + less blur than before so the background imagery is gently
