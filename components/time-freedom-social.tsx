@@ -45,7 +45,7 @@ async function fetchNames(
   userIds: string[],
 ): Promise<Map<string, string>> {
   const map = new Map<string, string>()
-  const unique = [...new Set(userIds)].filter(Boolean)
+  const unique = Array.from(new Set(userIds)).filter(Boolean)
   if (unique.length === 0) return map
   const { data } = await supabase.from("user_profiles").select("id, name").in("id", unique)
   for (const row of data ?? []) {
@@ -448,10 +448,15 @@ function PostCard({
     setLoadingComments(true)
     const { data } = await supabase
       .from("community_comments")
-      .select("id, post_id, user_id, content, created_at, user_profiles(name)")
+      .select("id, post_id, user_id, content, created_at")
       .eq("post_id", post.id)
       .order("created_at", { ascending: true })
-    setComments((data ?? []) as SocialComment[])
+    const rows = data ?? []
+    const nameById = await fetchNames(
+      supabase,
+      rows.map((c) => c.user_id),
+    )
+    setComments(rows.map((c) => ({ ...c, author_name: nameById.get(c.user_id) })) as SocialComment[])
     setLoadingComments(false)
   }, [supabase, post.id])
 
@@ -543,7 +548,7 @@ function PostCard({
           ) : (
             <div className="flex flex-col gap-3">
               {comments.map((c) => {
-                const cName = authorName(c.user_profiles)
+                const cName = displayName(c.author_name)
                 return (
                   <div key={c.id} className="flex items-start gap-2.5">
                     <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#7FB069]/80 text-xs font-semibold text-white">
