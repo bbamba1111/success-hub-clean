@@ -1,8 +1,10 @@
 "use client"
 
-import type { ReactNode } from "react"
-import { motion } from "framer-motion"
+import { useState, type ReactNode } from "react"
+import { AnimatePresence, motion } from "framer-motion"
+import { ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { CherryBlossomWorkstation } from "@/components/cherry-blossom-workstation"
 
 export type BlockStatus = "current" | "upcoming" | "completed"
 
@@ -24,6 +26,12 @@ export interface BusinessDayBlockProps {
   /** External link for the CTA. When provided, the button renders as a link. */
   href?: string
   onAction?: () => void
+  /**
+   * Chat context key for Cherry Blossom's inline planning workstation
+   * (e.g. "lunch-break"). When provided on the current block, an expandable
+   * workstation appears below the card.
+   */
+  chatContext?: string
 }
 
 const STATUS_LABEL: Record<BlockStatus, string> = {
@@ -51,9 +59,15 @@ export function BusinessDayBlock({
   children,
   href,
   onAction,
+  chatContext,
 }: BusinessDayBlockProps) {
   const isCompleted = status === "completed"
   const isCurrent = status === "current"
+
+  // The inline planning workstation is offered only on the block that's
+  // happening right now, and only when a chat context is available.
+  const hasWorkstation = isCurrent && Boolean(chatContext)
+  const [workstationOpen, setWorkstationOpen] = useState(false)
 
   return (
     <section id={sectionId} aria-label={title} className="scroll-mt-24 w-full px-4 py-3 sm:px-6 lg:px-8">
@@ -94,7 +108,7 @@ export function BusinessDayBlock({
 
               {children}
 
-              <div className="mt-4">
+              <div className="mt-4 flex flex-wrap items-center gap-2.5">
                 {href && !isCompleted ? (
                   <Button
                     asChild
@@ -113,6 +127,24 @@ export function BusinessDayBlock({
                     className="bg-[#7FB069] text-white hover:bg-[#6FA058] disabled:opacity-50"
                   >
                     {buttonText}
+                  </Button>
+                )}
+
+                {hasWorkstation && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setWorkstationOpen((open) => !open)}
+                    aria-expanded={workstationOpen}
+                    className="border-[#7FB069]/40 bg-white/70 text-[#4A6B38] hover:bg-[#7FB069]/10 hover:text-[#4A6B38]"
+                  >
+                    <span className="mr-1.5">🌸</span>
+                    {workstationOpen ? "Close Planning" : "Plan with Cherry Blossom"}
+                    <ChevronDown
+                      className={`ml-1.5 h-4 w-4 transition-transform duration-300 ${
+                        workstationOpen ? "rotate-180" : ""
+                      }`}
+                    />
                   </Button>
                 )}
               </div>
@@ -134,6 +166,27 @@ export function BusinessDayBlock({
             />
           </div>
         </div>
+
+        {/* Inline planning workstation — expands/collapses below the current activity */}
+        {hasWorkstation && (
+          <AnimatePresence initial={false}>
+            {workstationOpen && (
+              <motion.div
+                key="workstation"
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.35, ease: "easeInOut" }}
+                className="relative z-10 overflow-hidden"
+                style={{ backgroundColor: `rgb(${tint})` }}
+              >
+                <div className="px-5 pb-6 pt-2 sm:px-8 md:px-10">
+                  <CherryBlossomWorkstation context={chatContext as string} active={workstationOpen} />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        )}
       </motion.div>
     </section>
   )

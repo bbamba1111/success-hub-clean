@@ -12,7 +12,21 @@
 
 import { BusinessDayBlock } from "@/components/business-day-block"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
-import { SCHEDULE } from "@/operating-engine"
+import { SCHEDULE, type BlockId } from "@/operating-engine"
+
+/**
+ * Maps each schedule block to the chat context key understood by Cherry
+ * Blossom's planning workstation. Blocks omitted here (early-access,
+ * digital-detox) do not offer inline planning.
+ */
+const BLOCK_CHAT_CONTEXT: Partial<Record<BlockId, string>> = {
+  "morning-given": "morning-routine",
+  "movement-window": "workout-window",
+  "lunch-break": "lunch-break",
+  "ceo-workday": "ceo-workday",
+  "time-freedom": "lifestyle-experiences",
+  "power-down": "digital-detox",
+}
 
 export function BusinessDaySchedule() {
   const experience = useOperatingEngine()
@@ -58,6 +72,7 @@ export function BusinessDaySchedule() {
             status={state}
             href={block.href}
             description={block.description}
+            chatContext={BLOCK_CHAT_CONTEXT[block.id]}
           />
         ))}
       </div>
