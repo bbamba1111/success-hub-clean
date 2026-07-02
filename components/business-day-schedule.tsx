@@ -51,8 +51,8 @@ export function BusinessDaySchedule() {
     <div id="todays-business-day" className="w-full scroll-mt-20 bg-gradient-to-br from-[#F5F1E8] to-white py-8">
       <div className="mx-auto max-w-7xl">
         <div className="px-6 pb-3 text-center">
-          <h2 className="text-pretty font-playfair text-2xl font-medium text-[#5B835F] sm:text-3xl">
-            Live Your New 9-5 &amp; Nighttime <span className="text-[#C13B6B]">Non-Negotiable</span> SOPs
+          <h2 className="text-pretty font-playfair text-3xl font-medium text-[#5B835F] sm:text-4xl">
+            Live Your New 9-5 &amp; Nighttime <span className="italic text-[#C13B6B]">Non-Negotiable</span> SOPs
           </h2>
           <p className="mt-1 font-montserrat text-sm font-thin italic text-[#6B5860]">
             (Sustainable Operating Practices)

@@ -35,11 +35,31 @@ function scrollToRhythm() {
  *   Fri → Time Freedom begins · Sat → Time Freedom continues
  * 0 = Sunday … 6 = Saturday.
  */
-function getInvitation(dayOfWeek: number, dayName: string): { emoji: string; text: string } {
+function getInvitation(dayOfWeek: number, dayName: string): { emoji: string; text: string; accent?: string } {
   if (dayOfWeek === 0) return { emoji: "🌸", text: "Enter Your Work-Life Balance Business Week™" }
   if (dayOfWeek === 5) return { emoji: "🌿", text: "Welcome to Time Freedom™" }
   if (dayOfWeek === 6) return { emoji: "🌿", text: "Continue Your Time Freedom™" }
-  return { emoji: "🌸", text: `Enter ${dayName}'s Work-Life Balance Business Day™` }
+  return {
+    emoji: "🌸",
+    text: `Enter ${dayName}'s Work-Life Balance Business Day™`,
+    accent: `${dayName}'s`,
+  }
+}
+
+/**
+ * Renders a headline with one accent phrase highlighted in the signature coral
+ * italic, so key words (e.g. the day name) stand out against a black title.
+ */
+function AccentedTitle({ text, accent }: { text: string; accent?: string }) {
+  if (!accent || !text.includes(accent)) return <>{text}</>
+  const [before, after] = text.split(accent)
+  return (
+    <>
+      {before}
+      <span className="italic text-[#C13B6B]">{accent}</span>
+      {after}
+    </>
+  )
 }
 
 /** A short, dynamic line that reinforces the rhythm of the current phase. */
@@ -77,8 +97,8 @@ export function BusinessDayHero() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="mx-auto max-w-none"
         >
-          <h1 className="text-balance font-playfair text-3xl font-medium leading-tight tracking-tight text-[#5B835F] sm:text-4xl">
-            {invitation.text}
+          <h1 className="text-balance font-playfair text-4xl font-semibold leading-tight tracking-tight text-[#1C161A] sm:text-5xl">
+            <AccentedTitle text={invitation.text} accent={invitation.accent} />
           </h1>
           <p className="mt-3 font-montserrat text-base font-medium tracking-wide text-[#78AD7D] sm:text-lg">
             {dayIntention.replace(/\.\s*$/, "")}{" "}
