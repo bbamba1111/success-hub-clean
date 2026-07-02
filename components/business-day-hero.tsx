@@ -76,7 +76,7 @@ export function BusinessDayHero() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="mx-auto max-w-none"
         >
-          <h1 className="whitespace-nowrap font-playfair text-lg font-medium italic leading-tight tracking-tight text-[#78AD7D] sm:text-2xl md:text-3xl lg:text-4xl">
+          <h1 className="text-balance font-playfair text-3xl font-medium leading-tight tracking-tight text-[#5B835F] sm:text-4xl">
             {invitation.text}
           </h1>
           <p className="mt-3 font-montserrat text-base font-medium tracking-wide text-[#78AD7D] sm:text-lg">
@@ -140,7 +140,7 @@ export function BusinessDayHero() {
                 )}
 
                 {/* Current activity — full title in signature coral (the one non-sage headline) */}
-                <p className="mt-4 text-pretty font-playfair text-3xl font-medium italic leading-tight text-[#C13B6B] sm:text-4xl">
+                <p className="mt-4 text-pretty font-playfair text-3xl font-medium leading-tight text-[#C13B6B] sm:text-4xl">
                   {experience.businessDay.current.title}
                 </p>
                 <p className="mt-1 text-base font-medium text-[#5A4A52]">
