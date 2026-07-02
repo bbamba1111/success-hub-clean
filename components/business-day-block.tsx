@@ -2,9 +2,10 @@
 
 import { useState, type ReactNode } from "react"
 import { AnimatePresence, motion } from "framer-motion"
-import { ChevronDown } from "lucide-react"
+import { ChevronDown, Users } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { CherryBlossomWorkstation } from "@/components/cherry-blossom-workstation"
+import { TimeFreedomSocial } from "@/components/time-freedom-social"
 
 export type BlockStatus = "current" | "upcoming" | "completed"
 
@@ -32,6 +33,11 @@ export interface BusinessDayBlockProps {
    * workstation appears below the card.
    */
   chatContext?: string
+  /**
+   * When true on the current block, an expandable "Time Freedom Social Media
+   * Sharing" community feed (photos + short videos) appears below the card.
+   */
+  socialSharing?: boolean
 }
 
 const STATUS_LABEL: Record<BlockStatus, string> = {
@@ -60,6 +66,7 @@ export function BusinessDayBlock({
   href,
   onAction,
   chatContext,
+  socialSharing = false,
 }: BusinessDayBlockProps) {
   const isCompleted = status === "completed"
   const isCurrent = status === "current"
@@ -68,6 +75,10 @@ export function BusinessDayBlock({
   // happening right now, and only when a chat context is available.
   const hasWorkstation = isCurrent && Boolean(chatContext)
   const [workstationOpen, setWorkstationOpen] = useState(false)
+
+  // Time Freedom Social Media Sharing — community feed under the current block.
+  const hasSocial = isCurrent && socialSharing
+  const [socialOpen, setSocialOpen] = useState(false)
 
   return (
     <section id={sectionId} aria-label={title} className="scroll-mt-24 w-full px-4 py-3 sm:px-6 lg:px-8">
@@ -147,6 +158,24 @@ export function BusinessDayBlock({
                     />
                   </Button>
                 )}
+
+                {hasSocial && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setSocialOpen((open) => !open)}
+                    aria-expanded={socialOpen}
+                    className="border-[#7FB069]/40 bg-white/70 text-[#4A6B38] hover:bg-[#7FB069]/10 hover:text-[#4A6B38]"
+                  >
+                    <Users className="mr-1.5 h-4 w-4" />
+                    {socialOpen ? "Close Sharing" : "Social Media Sharing"}
+                    <ChevronDown
+                      className={`ml-1.5 h-4 w-4 transition-transform duration-300 ${
+                        socialOpen ? "rotate-180" : ""
+                      }`}
+                    />
+                  </Button>
+                )}
               </div>
             </div>
           </div>
@@ -182,6 +211,35 @@ export function BusinessDayBlock({
               >
                 <div className="px-5 pb-6 pt-2 sm:px-8 md:px-10">
                   <CherryBlossomWorkstation context={chatContext as string} active={workstationOpen} />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        )}
+
+        {/* Time Freedom Social Media Sharing — community feed below the current activity */}
+        {hasSocial && (
+          <AnimatePresence initial={false}>
+            {socialOpen && (
+              <motion.div
+                key="social"
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.35, ease: "easeInOut" }}
+                className="relative z-10 overflow-hidden border-t border-[#7FB069]/20"
+                style={{ backgroundColor: `rgb(${tint})` }}
+              >
+                <div className="px-5 pb-6 pt-4 sm:px-8 md:px-10">
+                  <div className="mb-4">
+                    <h4 className="font-playfair text-lg font-medium italic text-[#3A2E33]">
+                      Time Freedom Social Media Sharing
+                    </h4>
+                    <p className="mt-0.5 text-sm text-[#5C4F55]">
+                      Share how you&apos;re spending your Time Freedom and connect with the community.
+                    </p>
+                  </div>
+                  <TimeFreedomSocial active={socialOpen} />
                 </div>
               </motion.div>
             )}

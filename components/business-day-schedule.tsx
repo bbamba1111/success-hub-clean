@@ -73,6 +73,7 @@ export function BusinessDaySchedule() {
             href={block.href}
             description={block.description}
             chatContext={BLOCK_CHAT_CONTEXT[block.id]}
+            socialSharing={block.id === "time-freedom"}
           />
         ))}
       </div>
