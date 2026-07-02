@@ -12,7 +12,6 @@ import { SimpleChatModal } from "@/components/simple-chat-modal"
 import { CherryBlossomCoGuide } from "@/components/cherry-blossom-co-guide"
 import { WeeklyRealityCheck } from "@/components/weekly-reality-check"
 import { BusinessDayHero } from "@/components/business-day-hero"
-import { QuickAccessLauncher } from "@/components/quick-access-launcher"
 import { BusinessDaySchedule } from "@/components/business-day-schedule"
 import { OperatingEngineProvider } from "@/components/operating-engine-provider"
 import { DeveloperToolbar } from "@/components/developer-toolbar"
@@ -76,12 +75,9 @@ export default function HomePage() {
           One provider supplies a single time-aware snapshot so the hero and the
           Business Day timeline can never disagree. This is the ONLY home hero. */}
       <OperatingEngineProvider>
-        {/* Single engine-driven hero - the primary Home page experience */}
+        {/* Single engine-driven hero - the primary Home page experience.
+            The hero surfaces the in-session segment's planner + tools inline. */}
         <BusinessDayHero />
-
-        {/* Quick-access launcher - reach every segment planner and dashboard tool
-            without scrolling the full page */}
-        <QuickAccessLauncher onPlan={openChat} />
 
         {/* Today's Work-Life Balance Business Day™ - full daily rhythm of time-block cards */}
         <BusinessDaySchedule />

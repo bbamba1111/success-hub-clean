@@ -95,6 +95,33 @@
 }
 
 /*
+ * Segment breathing — a slow, gentle scale on the segment currently in
+ * session so it "breathes" and draws the eye. Only transform is animated
+ * (never box-shadow) so it never fights the card's ring or hover shadow.
+ */
+@keyframes segment-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.012);
+  }
+}
+
+.segment-breathing {
+  animation: segment-breathe 5s ease-in-out infinite;
+  transform-origin: center;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .segment-breathing {
+    animation: none;
+  }
+}
+
+/*
  * Shared glass treatment — "luxury wellness retreat" language.
  * Lighter + less blur than before so the background imagery is gently
  * perceptible through the glass, while text stays the highest priority.

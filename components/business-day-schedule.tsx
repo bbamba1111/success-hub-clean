@@ -12,20 +12,31 @@
 
 import { BusinessDayBlock } from "@/components/business-day-block"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
-import { SCHEDULE, type BlockId } from "@/operating-engine"
+import { SCHEDULE, type BlockConfig } from "@/operating-engine"
 
 /**
- * Maps each schedule block to the chat context key understood by Cherry
- * Blossom's planning workstation. Blocks omitted here (early-access,
- * digital-detox) do not offer inline planning.
+ * Elapsed progress (0–100) and a human "time left" label for a segment,
+ * given the current minutes-since-midnight. Handles the block that wraps
+ * past midnight (end <= start).
  */
-const BLOCK_CHAT_CONTEXT: Partial<Record<BlockId, string>> = {
-  "morning-given": "morning-routine",
-  "movement-window": "workout-window",
-  "lunch-break": "lunch-break",
-  "ceo-workday": "ceo-workday",
-  "time-freedom": "lifestyle-experiences",
-  "power-down": "digital-detox",
+function segmentTiming(block: BlockConfig, minutes: number): { progress: number; remaining: string } {
+  let start = block.startMinutes
+  let end = block.endMinutes
+  let now = minutes
+  if (end <= start) {
+    end += 24 * 60
+    if (now < start) now += 24 * 60
+  }
+  const span = end - start
+  const elapsed = Math.min(span, Math.max(0, now - start))
+  const progress = span > 0 ? Math.round((elapsed / span) * 100) : 0
+
+  const minsLeft = Math.max(0, end - now)
+  const hrs = Math.floor(minsLeft / 60)
+  const mins = minsLeft % 60
+  const remaining = hrs > 0 ? `${hrs}h ${String(mins).padStart(2, "0")}m left` : `${mins}m left`
+
+  return { progress, remaining }
 }
 
 export function BusinessDaySchedule() {
@@ -59,23 +70,30 @@ export function BusinessDaySchedule() {
           </div>
         </div>
 
-        {timeline.map(({ block, state }) => (
-          <BusinessDayBlock
-            key={block.id}
-            sectionId={block.sectionId}
-            backgroundImage={block.backgroundImage}
-            tint={block.tint}
-            emoji={block.emoji}
-            time={block.timeLabel}
-            title={block.title}
-            buttonText={block.cta}
-            status={state}
-            href={block.href}
-            description={block.description}
-            chatContext={BLOCK_CHAT_CONTEXT[block.id]}
-            socialSharing={block.id === "time-freedom"}
-          />
-        ))}
+        {timeline.map(({ block, state }) => {
+          const timing =
+            state === "current" && experience
+              ? segmentTiming(block, experience.time.minutesSinceMidnight)
+              : null
+          return (
+            <BusinessDayBlock
+              key={block.id}
+              sectionId={block.sectionId}
+              backgroundImage={block.backgroundImage}
+              tint={block.tint}
+              emoji={block.emoji}
+              time={block.timeLabel}
+              title={block.title}
+              buttonText={block.cta}
+              status={state}
+              href={block.href}
+              description={block.description}
+              blockId={block.id}
+              segmentProgress={timing?.progress}
+              segmentRemaining={timing?.remaining}
+            />
+          )
+        })}
       </div>
     </div>
   )

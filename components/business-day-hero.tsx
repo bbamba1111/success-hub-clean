@@ -13,6 +13,7 @@
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
+import { SegmentWorkspace } from "@/components/segment-workspace"
 import type { PartOfDay, SessionStatus } from "@/operating-engine"
 
 const STATUS_META: Record<SessionStatus, { label: string; icon: string; className: string; glow?: boolean }> = {
@@ -184,6 +185,17 @@ export function BusinessDayHero() {
                   ))}
                 </ul>
               </motion.div>
+            )}
+
+            {/* Appropriate planner + tools for the segment in session — same
+                collapsible workspace used on the activity card below ("as above
+                so below"), so members reach it without scrolling. */}
+            {experience && (
+              <SegmentWorkspace
+                blockId={experience.businessDay.current.id}
+                isCurrent
+                tint={experience.businessDay.current.tint}
+              />
             )}
 
             {/* Enter button at the bottom — label adapts to the current block */}

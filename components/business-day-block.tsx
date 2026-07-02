@@ -1,11 +1,10 @@
 "use client"
 
-import { useState, type ReactNode } from "react"
-import { AnimatePresence, motion } from "framer-motion"
-import { ChevronDown, Users } from "lucide-react"
+import { type ReactNode } from "react"
+import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import { CherryBlossomWorkstation } from "@/components/cherry-blossom-workstation"
-import { TimeFreedomSocial } from "@/components/time-freedom-social"
+import { SegmentWorkspace, segmentHasWorkspace } from "@/components/segment-workspace"
+import type { BlockId } from "@/operating-engine"
 
 export type BlockStatus = "current" | "upcoming" | "completed"
 
@@ -28,16 +27,14 @@ export interface BusinessDayBlockProps {
   href?: string
   onAction?: () => void
   /**
-   * Chat context key for Cherry Blossom's inline planning workstation
-   * (e.g. "lunch-break"). When provided on the current block, an expandable
-   * workstation appears below the card.
+   * The engine block id. Drives the shared SegmentWorkspace (planner + segment
+   * tool + social sharing) that appears when this block is in session.
    */
-  chatContext?: string
-  /**
-   * When true on the current block, an expandable "Time Freedom Social Media
-   * Sharing" community feed (photos + short videos) appears below the card.
-   */
-  socialSharing?: boolean
+  blockId?: BlockId
+  /** Elapsed progress (0–100) through the current segment. Drives the bar. */
+  segmentProgress?: number
+  /** Human label for time left in the segment, e.g. "22m left". */
+  segmentRemaining?: string
 }
 
 const STATUS_LABEL: Record<BlockStatus, string> = {
@@ -65,36 +62,46 @@ export function BusinessDayBlock({
   children,
   href,
   onAction,
-  chatContext,
-  socialSharing = false,
+  blockId,
+  segmentProgress,
+  segmentRemaining,
 }: BusinessDayBlockProps) {
   const isCompleted = status === "completed"
   const isCurrent = status === "current"
-
-  // The inline planning workstation is offered only on the block that's
-  // happening right now, and only when a chat context is available.
-  const hasWorkstation = isCurrent && Boolean(chatContext)
-  const [workstationOpen, setWorkstationOpen] = useState(false)
-
-  // Time Freedom Social Media Sharing — community feed under the current block.
-  const hasSocial = isCurrent && socialSharing
-  const [socialOpen, setSocialOpen] = useState(false)
+  const showProgress = isCurrent && typeof segmentProgress === "number"
 
   return (
     <section id={sectionId} aria-label={title} className="scroll-mt-24 w-full px-4 py-3 sm:px-6 lg:px-8">
       <motion.div
-        initial={{ opacity: 0, y: 6 }}
-        whileInView={{ opacity: isCompleted ? 0.65 : 1, y: 0 }}
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
         viewport={{ once: true, amount: 0.3 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
         whileHover={{ boxShadow: "0 24px 50px -12px rgba(28,22,26,0.35)" }}
         className={`relative w-full overflow-hidden rounded-3xl shadow-lg ${
-          isCurrent ? "ring-2 ring-[#7FB069] ring-offset-2 ring-offset-[#F5F1E8]" : ""
+          isCurrent ? "segment-breathing ring-2 ring-[#7FB069] ring-offset-2 ring-offset-[#F5F1E8]" : ""
         }`}
         style={{ backgroundColor: `rgb(${tint})` }}
       >
-        {/* Two-column experience layout: clean content panel (~36%) + dominant photography (~64%) */}
-        <div className="relative z-10 flex min-h-[280px] flex-col md:min-h-[300px] md:flex-row">
+        {/* Segment progress — thin bar showing how much of the in-session block remains */}
+        {showProgress && (
+          <div className="absolute inset-x-0 top-0 z-20 h-1.5 bg-[#7FB069]/15">
+            <motion.div
+              className="h-full bg-[#7FB069]"
+              initial={{ width: 0 }}
+              animate={{ width: `${Math.min(100, Math.max(0, segmentProgress as number))}%` }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            />
+          </div>
+        )}
+
+        {/* Two-column experience layout: clean content panel (~36%) + dominant photography (~64%).
+            The in-session card is ~1/3 taller so it clearly stands out. */}
+        <div
+          className={`relative z-10 flex flex-col md:flex-row ${
+            isCurrent ? "min-h-[380px] md:min-h-[420px]" : "min-h-[280px] md:min-h-[300px]"
+          }`}
+        >
           {/* Left content panel — 42% tablet, 34–38% desktop, capped at 600px */}
           <div
             className="flex items-center px-5 py-6 sm:px-8 md:w-[42%] md:max-w-[600px] md:px-10 lg:w-[36%]"
@@ -108,6 +115,11 @@ export function BusinessDayBlock({
                   {STATUS_LABEL[status]}
                 </span>
                 <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#6B5860]">{time}</span>
+                {isCurrent && segmentRemaining && (
+                  <span className="inline-flex items-center rounded-full bg-[#7FB069]/15 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#5A7A45]">
+                    {segmentRemaining}
+                  </span>
+                )}
               </div>
 
               <h3 className="font-playfair text-xl font-medium italic leading-tight text-balance text-[#3A2E33] sm:text-2xl">
@@ -121,11 +133,7 @@ export function BusinessDayBlock({
 
               <div className="mt-4 flex flex-wrap items-center gap-2.5">
                 {href && !isCompleted ? (
-                  <Button
-                    asChild
-                    size="sm"
-                    className="bg-[#7FB069] text-white hover:bg-[#6FA058]"
-                  >
+                  <Button asChild size="sm" className="bg-[#7FB069] text-white hover:bg-[#6FA058]">
                     <a href={href} target="_blank" rel="noopener noreferrer">
                       {buttonText}
                     </a>
@@ -138,42 +146,6 @@ export function BusinessDayBlock({
                     className="bg-[#7FB069] text-white hover:bg-[#6FA058] disabled:opacity-50"
                   >
                     {buttonText}
-                  </Button>
-                )}
-
-                {hasWorkstation && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => setWorkstationOpen((open) => !open)}
-                    aria-expanded={workstationOpen}
-                    className="border-[#7FB069]/40 bg-white/70 text-[#4A6B38] hover:bg-[#7FB069]/10 hover:text-[#4A6B38]"
-                  >
-                    <span className="mr-1.5">🌸</span>
-                    {workstationOpen ? "Close Planning" : "Plan with Cherry Blossom"}
-                    <ChevronDown
-                      className={`ml-1.5 h-4 w-4 transition-transform duration-300 ${
-                        workstationOpen ? "rotate-180" : ""
-                      }`}
-                    />
-                  </Button>
-                )}
-
-                {hasSocial && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => setSocialOpen((open) => !open)}
-                    aria-expanded={socialOpen}
-                    className="border-[#7FB069]/40 bg-white/70 text-[#4A6B38] hover:bg-[#7FB069]/10 hover:text-[#4A6B38]"
-                  >
-                    <Users className="mr-1.5 h-4 w-4" />
-                    {socialOpen ? "Close Sharing" : "Social Media Sharing"}
-                    <ChevronDown
-                      className={`ml-1.5 h-4 w-4 transition-transform duration-300 ${
-                        socialOpen ? "rotate-180" : ""
-                      }`}
-                    />
                   </Button>
                 )}
               </div>
@@ -196,54 +168,15 @@ export function BusinessDayBlock({
           </div>
         </div>
 
-        {/* Inline planning workstation — expands/collapses below the current activity */}
-        {hasWorkstation && (
-          <AnimatePresence initial={false}>
-            {workstationOpen && (
-              <motion.div
-                key="workstation"
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.35, ease: "easeInOut" }}
-                className="relative z-10 overflow-hidden"
-                style={{ backgroundColor: `rgb(${tint})` }}
-              >
-                <div className="px-5 pb-6 pt-2 sm:px-8 md:px-10">
-                  <CherryBlossomWorkstation context={chatContext as string} active={workstationOpen} />
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        )}
-
-        {/* Time Freedom Social Media Sharing — community feed below the current activity */}
-        {hasSocial && (
-          <AnimatePresence initial={false}>
-            {socialOpen && (
-              <motion.div
-                key="social"
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.35, ease: "easeInOut" }}
-                className="relative z-10 overflow-hidden border-t border-[#7FB069]/20"
-                style={{ backgroundColor: `rgb(${tint})` }}
-              >
-                <div className="px-5 pb-6 pt-4 sm:px-8 md:px-10">
-                  <div className="mb-4">
-                    <h4 className="font-playfair text-lg font-medium italic text-[#3A2E33]">
-                      Time Freedom Social Media Sharing
-                    </h4>
-                    <p className="mt-0.5 text-sm text-[#5C4F55]">
-                      Share how you&apos;re spending your Time Freedom and connect with the community.
-                    </p>
-                  </div>
-                  <TimeFreedomSocial active={socialOpen} />
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+        {/* Shared planner + segment tool + social sharing — appears only when
+            this segment is in session (identical to the Hero, "as above so below") */}
+        {blockId && isCurrent && segmentHasWorkspace(blockId) && (
+          <div
+            className="relative z-10 border-t border-[#7FB069]/15 px-5 pb-6 pt-1 sm:px-8 md:px-10"
+            style={{ backgroundColor: `rgb(${tint})` }}
+          >
+            <SegmentWorkspace blockId={blockId} isCurrent={isCurrent} tint={tint} />
+          </div>
         )}
       </motion.div>
     </section>
