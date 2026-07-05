@@ -79,7 +79,7 @@ export function BusinessDayBlock({
         transition={{ duration: 0.6, ease: "easeOut" }}
         whileHover={{ boxShadow: "0 24px 50px -12px rgba(28,22,26,0.35)" }}
         className={`relative w-full overflow-hidden rounded-3xl shadow-lg ${
-          isCurrent ? "segment-breathing ring-2 ring-[#7FB069] ring-offset-2 ring-offset-[#F5F1E8]" : ""
+          isCurrent ? "ring-2 ring-[#7FB069] ring-offset-2 ring-offset-[#F5F1E8]" : ""
         }`}
         style={{ backgroundColor: `rgb(${tint})` }}
       >
