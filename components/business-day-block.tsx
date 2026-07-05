@@ -122,7 +122,7 @@ export function BusinessDayBlock({
                 )}
               </div>
 
-              <h3 className="font-playfair text-xl font-medium italic leading-tight text-balance text-[#3A2E33] sm:text-2xl">
+              <h3 className="font-playfair text-xl font-medium leading-tight text-balance text-[#3A2E33] sm:text-2xl">
                 {emoji ? <span className="mr-2">{emoji}</span> : null}
                 {title}
               </h3>
