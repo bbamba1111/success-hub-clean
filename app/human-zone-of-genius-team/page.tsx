@@ -5,9 +5,9 @@ import Link from "next/link"
 import { ArrowLeft, Clock } from "lucide-react"
 import { CollapsibleSection } from "@/components/founder-os/collapsible-section"
 import { ExecutiveBriefing } from "@/components/founder-os/executive-briefing"
+import { BusinessFoundationWorkspace } from "@/components/founder-os/business-foundation-workspace"
 import { AIAugmentationHour } from "@/components/founder-os/ai-augmentation-hour"
 import { HumanZoneOfGenius } from "@/components/founder-os/human-zone-of-genius"
-import { AITransformationExecutive } from "@/components/founder-os/ai-transformation-executive"
 import { AIExecutiveLeadershipTeam } from "@/components/founder-os/ai-executive-leadership-team"
 import { ExecutionCenter } from "@/components/founder-os/execution-center"
 
@@ -17,13 +17,15 @@ import { ExecutionCenter } from "@/components/founder-os/execution-center"
  * A sequenced, collapsible executive command center that opens at 1:00 PM:
  * understand → prepare → prioritize → execute → review.
  *   1. 🌸 Executive Briefing (daily AI briefing)
- *   2. 🤖 AI Augmentation Hour™ (first visit: Business Foundation Assessment™;
- *      thereafter: Eliminate / Systemize / Automate / Delegate)
- *   3. 🎯 Human Zone of Genius™
- *   4. 🤖 AI Transformation Executive™ (Chief AI Officer command center)
+ *   2. 🌱 Business Foundation Assessment™ (the Blueprint — set once, refine anytime)
+ *   3. 🤖 AI Augmentation Hour™ (Eliminate / Systemize / Automate / Delegate +
+ *      the AI Transformation Executive™ / Chief AI Officer)
+ *   4. 🎯 Human Zone of Genius™
  *   5. 👥 Your AI Executive Leadership Team™ (Strategy / Growth / Execution councils)
  *   6. 🚀 Execution Center™
  *   7. ▼ Business Language University™ + CEO Reflection (placeholders)
+ *
+ * Each workspace is a color-coded tab with its own soft, tinted background.
  */
 export default function CEODashboardPage() {
   return (
@@ -44,12 +46,12 @@ export default function CEODashboardPage() {
       </header>
 
       {/* Dynamic Hero */}
-      <section className="bg-gradient-to-b from-[#5D9D61]/10 to-transparent">
+      <section className="bg-gradient-to-b from-[#C13B6B]/10 to-transparent">
         <div className="mx-auto max-w-5xl px-6 py-12 text-center">
-          <span className="mb-4 inline-block rounded-full bg-[#E26C73]/10 px-4 py-1.5 text-sm font-semibold text-[#E26C73]">
+          <span className="mb-4 inline-block rounded-full bg-[#C13B6B]/10 px-4 py-1.5 text-sm font-semibold text-[#C13B6B]">
             Founder Operating System™
           </span>
-          <h1 className="text-balance text-4xl font-bold leading-tight text-[#5D9D61] md:text-5xl">
+          <h1 className="text-balance text-4xl font-bold leading-tight text-[#C13B6B] md:text-5xl">
             4-Hour Focused CEO Dashboard™
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground">
@@ -67,16 +69,27 @@ export default function CEODashboardPage() {
           title="Executive Briefing"
           subtitle="Cherry Blossom's daily read on your business and your week"
           badge="Step 1 of 6"
+          accent="#C13B6B"
           defaultOpen
         >
           <ExecutiveBriefing />
         </CollapsibleSection>
 
         <CollapsibleSection
+          emoji="🌱"
+          title="Business Foundation Assessment™"
+          subtitle="The Blueprint that personalizes everything — set once, refine anytime"
+          badge="Step 2 of 6"
+          accent="#5D9D61"
+        >
+          <BusinessFoundationWorkspace />
+        </CollapsibleSection>
+
+        <CollapsibleSection
           emoji="🤖"
           title="AI Augmentation Hour™"
-          subtitle="Lighten your load before the workday: eliminate, systemize, automate, delegate"
-          badge="Step 2 of 6"
+          subtitle="Lighten your load — eliminate, systemize, automate, delegate — with your AI Transformation Executive™"
+          badge="Step 3 of 6"
           accent="#E26C73"
         >
           <AIAugmentationHour />
@@ -86,29 +99,18 @@ export default function CEODashboardPage() {
           emoji="🎯"
           title="Human Zone of Genius™"
           subtitle="The irreplaceable 20% only you can do"
-          badge="Step 3 of 6"
+          badge="Step 4 of 6"
+          accent="#C99A3B"
         >
           <HumanZoneOfGenius />
         </CollapsibleSection>
-
-        <div id="ai-transformation-executive" className="scroll-mt-6">
-          <CollapsibleSection
-            emoji="🤖"
-            title="AI Transformation Executive™"
-            subtitle="Your Chief AI Officer: AI opportunities, adoption metrics, and roadmap — always your decision"
-            badge="Step 4 of 6"
-            accent="#E26C73"
-          >
-            <AITransformationExecutive />
-          </CollapsibleSection>
-        </div>
 
         <CollapsibleSection
           emoji="👥"
           title="Your AI Executive Leadership Team™"
           subtitle="Three councils — Strategy, Growth, Execution — that educate, recommend, and (soon) build for your approval"
           badge="Step 5 of 6"
-          accent="#E26C73"
+          accent="#3D8B8B"
         >
           <AIExecutiveLeadershipTeam />
         </CollapsibleSection>
@@ -118,6 +120,7 @@ export default function CEODashboardPage() {
           title="Execution Center™"
           subtitle="Where approved work flows from draft to published"
           badge="Step 6 of 6"
+          accent="#B4632F"
         >
           <ExecutionCenter />
         </CollapsibleSection>
@@ -126,8 +129,9 @@ export default function CEODashboardPage() {
           emoji="🎓"
           title="Business Language University™"
           subtitle="Build fluency in the language of business, on your terms"
+          accent="#4A7A54"
         >
-          <div className="rounded-xl border border-[#5D9D61]/20 bg-white/70 p-5">
+          <div className="rounded-xl border border-[#4A7A54]/20 bg-white/70 p-5">
             <p className="text-[#3A2E33] leading-relaxed">
               {
                 "Coming soon. Short, founder-friendly lessons tailored to the topics you chose in your Business Foundation™ — pricing, marketing, sales, operations, finance, leadership, and AI — so every recommendation makes more sense over time."
@@ -140,8 +144,9 @@ export default function CEODashboardPage() {
           emoji="🪷"
           title="CEO Reflection"
           subtitle="Close your workday with a moment of intention"
+          accent="#B56576"
         >
-          <div className="rounded-xl border border-[#5D9D61]/20 bg-white/70 p-5">
+          <div className="rounded-xl border border-[#B56576]/20 bg-white/70 p-5">
             <p className="text-[#3A2E33] leading-relaxed">
               {
                 "Coming soon. A gentle end-of-workday reflection to capture what moved forward, what you learned, and what matters most tomorrow — feeding directly into your next Executive Briefing."
