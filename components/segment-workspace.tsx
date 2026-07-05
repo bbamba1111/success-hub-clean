@@ -53,10 +53,10 @@ const SEGMENT_TOOLS: Partial<Record<BlockId, SegmentTool>> = {
     description: "Plan and track today's movement.",
   },
   "ceo-workday": {
-    label: "CEO Workday Dashboard",
+    label: "4-Hour Focused CEO Dashboard™",
     href: "/human-zone-of-genius-team",
     icon: Briefcase,
-    description: "Your focused execution command center.",
+    description: "Your Founder Operating System™ command center.",
   },
   "power-down": {
     label: "Sleep Tracker",
