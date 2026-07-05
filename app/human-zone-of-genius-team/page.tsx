@@ -7,6 +7,7 @@ import { CollapsibleSection } from "@/components/founder-os/collapsible-section"
 import { ExecutiveBriefing } from "@/components/founder-os/executive-briefing"
 import { AIAugmentationHour } from "@/components/founder-os/ai-augmentation-hour"
 import { HumanZoneOfGenius } from "@/components/founder-os/human-zone-of-genius"
+import { AITransformationExecutive } from "@/components/founder-os/ai-transformation-executive"
 import { AIExecutiveLeadershipTeam } from "@/components/founder-os/ai-executive-leadership-team"
 import { ExecutionCenter } from "@/components/founder-os/execution-center"
 
@@ -19,9 +20,10 @@ import { ExecutionCenter } from "@/components/founder-os/execution-center"
  *   2. 🤖 AI Augmentation Hour™ (first visit: Business Foundation Assessment™;
  *      thereafter: Eliminate / Systemize / Automate / Delegate)
  *   3. 🎯 Human Zone of Genius™
- *   4. 👥 Your AI Executive Leadership Team™
- *   5. 🚀 Execution Center™
- *   6. ▼ Business Language University™ + CEO Reflection (placeholders)
+ *   4. 🤖 AI Transformation Executive™ (Chief AI Officer command center)
+ *   5. 👥 Your AI Executive Leadership Team™ (Strategy / Growth / Execution councils)
+ *   6. 🚀 Execution Center™
+ *   7. ▼ Business Language University™ + CEO Reflection (placeholders)
  */
 export default function CEODashboardPage() {
   return (
@@ -64,7 +66,7 @@ export default function CEODashboardPage() {
           emoji="🌸"
           title="Executive Briefing"
           subtitle="Cherry Blossom's daily read on your business and your week"
-          badge="Step 1 of 5"
+          badge="Step 1 of 6"
           defaultOpen
         >
           <ExecutiveBriefing />
@@ -74,7 +76,7 @@ export default function CEODashboardPage() {
           emoji="🤖"
           title="AI Augmentation Hour™"
           subtitle="Lighten your load before the workday: eliminate, systemize, automate, delegate"
-          badge="Step 2 of 5"
+          badge="Step 2 of 6"
           accent="#E26C73"
         >
           <AIAugmentationHour />
@@ -84,16 +86,28 @@ export default function CEODashboardPage() {
           emoji="🎯"
           title="Human Zone of Genius™"
           subtitle="The irreplaceable 20% only you can do"
-          badge="Step 3 of 5"
+          badge="Step 3 of 6"
         >
           <HumanZoneOfGenius />
         </CollapsibleSection>
 
+        <div id="ai-transformation-executive" className="scroll-mt-6">
+          <CollapsibleSection
+            emoji="🤖"
+            title="AI Transformation Executive™"
+            subtitle="Your Chief AI Officer: AI opportunities, adoption metrics, and roadmap — always your decision"
+            badge="Step 4 of 6"
+            accent="#E26C73"
+          >
+            <AITransformationExecutive />
+          </CollapsibleSection>
+        </div>
+
         <CollapsibleSection
           emoji="👥"
           title="Your AI Executive Leadership Team™"
-          subtitle="Functions that educate, recommend, and (soon) build deliverables for your approval"
-          badge="Step 4 of 5"
+          subtitle="Three councils — Strategy, Growth, Execution — that educate, recommend, and (soon) build for your approval"
+          badge="Step 5 of 6"
           accent="#E26C73"
         >
           <AIExecutiveLeadershipTeam />
@@ -103,7 +117,7 @@ export default function CEODashboardPage() {
           emoji="🚀"
           title="Execution Center™"
           subtitle="Where approved work flows from draft to published"
-          badge="Step 5 of 5"
+          badge="Step 6 of 6"
         >
           <ExecutionCenter />
         </CollapsibleSection>

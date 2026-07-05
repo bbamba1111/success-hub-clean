@@ -35,6 +35,39 @@ UNIVERSALITY — this is critical:
 
 FORMATTING: Use **bold** for emphasis and bullet points (•) for lists. Do NOT use markdown headers (#, ##, ###). Keep paragraphs to 2-3 sentences.`
 
+/**
+ * The AI Transformation Executive™ (Chief AI Officer) voice — a specialized,
+ * strategic member of the AI Executive Leadership Team™. Distinct from Cherry
+ * Blossom: focused on AI adoption strategy, but NEVER pushy about it.
+ */
+const CAIO_VOICE_RULES = `You are the AI Transformation Executive™ — the Chief AI Officer (CAIO) inside the Founder Operating System™, a trusted, strategic member of the founder's AI Executive Leadership Team™. Cherry Blossom is the Executive Advisor & Chief of Staff; you specialize in AI transformation strategy.
+
+Your mission: help the founder strategically identify opportunities to eliminate, systemize, automate, augment, and delegate work — while keeping them focused inside their Human Zone of Genius™. You help them increase Founder Capacity™, reduce Founder Risk™, and adopt AI responsibly.
+
+NEVER PUSH AI — follow strictly:
+- NEVER say "You should use…" or issue commands. You inform and advise; the founder always decides.
+- Use permission-based coaching: "There are AI tools designed to support this type of work.", "If you're interested, I can recommend several options.", "Would you like to compare AI solutions for this workflow?".
+- Explain the category or concept first; only offer specific tools after the founder asks.
+- Always name where HUMAN judgment should remain — protect the work that creates the greatest value.
+- Recommendations are informational only. Never imply you have already taken an action.
+- Warm, calm, premium, strategic — a Fortune 500 advisor, not an AI salesperson.
+
+UNIVERSALITY: The Founder Operating System™ serves EVERY kind of business (services, products, SaaS, retail, e-commerce, healthcare, professional services, manufacturing, nonprofits, franchises, creators, and more). Never assume the founder is a coach or any specific profession unless their Business Foundation™ data says so. Personalize to WHO they are, WHAT they do, WHERE they are, and WHERE they want to go.
+
+FORMATTING: Use **bold** for emphasis and bullet points (•) for lists. Do NOT use markdown headers (#, ##, ###). Keep paragraphs to 2-3 sentences.`
+
+function aiOpportunityInstruction(): string {
+  return `Write **Today's Highest-Leverage AI Opportunity™** for this founder — a single, personalized, informational recommendation (not a list). Ground it in their Business Foundation™ (industry, stage, size, AI readiness), their stated bottlenecks, and their current week if known.
+
+Structure it as:
+**Today's Highest-Leverage AI Opportunity™**
+Then 2-3 short sentences naming ONE opportunity across eliminate / systemize / automate / augment / delegate, and roughly how much time or founder capacity it could reclaim (give a gentle estimate, e.g. "approximately 2-3 hours each week").
+Then one sentence noting where the founder's human judgment should remain.
+Close with a permission-based invitation (e.g. "If you're interested, I can walk you through the options — no pressure at all.").
+
+Keep it under ~130 words. Remember: inform, never push.`
+}
+
 function summaryInstruction(): string {
   return `Write this member's one-time **Executive Summary**, produced immediately after they completed their Business Foundation Assessment™. Summarize what you have LEARNED about them — do not simply repeat their answers. Use these six short sections, each introduced with a bold label on its own line:
 
@@ -134,18 +167,21 @@ function buildContextPackage(params: {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json().catch(() => ({}))
-    const mode: "executive-summary" | "daily-briefing" =
-      body?.mode === "executive-summary" ? "executive-summary" : "daily-briefing"
+    const requested = body?.mode
+    const mode: "executive-summary" | "daily-briefing" | "ai-opportunity" =
+      requested === "executive-summary" || requested === "ai-opportunity" ? requested : "daily-briefing"
 
     if (!process.env.OPENAI_API_KEY) {
       // Graceful fallback so the UI always renders something warm.
-      return NextResponse.json({
-        mode,
-        message:
-          mode === "executive-summary"
-            ? "**Welcome** — Your Business Foundation™ is saved. Once your coach connection is configured, I'll synthesize everything I've learned about you here."
-            : "**Welcome** — Good afternoon. Your Daily Executive Briefing will appear here once your coach connection is configured. For now, take a breath and choose the one thing that would move your business forward today.",
-      })
+      const fallbacks: Record<typeof mode, string> = {
+        "executive-summary":
+          "**Welcome** — Your Business Foundation™ is saved. Once your coach connection is configured, I'll synthesize everything I've learned about you here.",
+        "daily-briefing":
+          "**Welcome** — Good afternoon. Your Daily Executive Briefing will appear here once your coach connection is configured. For now, take a breath and choose the one thing that would move your business forward today.",
+        "ai-opportunity":
+          "**Today's Highest-Leverage AI Opportunity™** — Once your coach connection is configured, I'll surface one personalized, informational AI opportunity here each day — always your decision, never a push.",
+      }
+      return NextResponse.json({ mode, message: fallbacks[mode] })
     }
 
     const supabase = await createClient()
@@ -194,7 +230,15 @@ export async function POST(req: NextRequest) {
     })
 
     const dayName = new Date().toLocaleDateString("en-US", { weekday: "long", timeZone: "America/New_York" })
-    const instruction = mode === "executive-summary" ? summaryInstruction() : briefingInstruction(dayName)
+    const instruction =
+      mode === "executive-summary"
+        ? summaryInstruction()
+        : mode === "ai-opportunity"
+          ? aiOpportunityInstruction()
+          : briefingInstruction(dayName)
+    // The AI Transformation Executive™ speaks in the CAIO voice; the summary
+    // and daily briefing stay in Cherry Blossom's voice.
+    const systemVoice = mode === "ai-opportunity" ? CAIO_VOICE_RULES : VOICE_RULES
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -205,7 +249,7 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
-          { role: "system", content: VOICE_RULES },
+          { role: "system", content: systemVoice },
           { role: "user", content: `${contextPackage}\n\n---\n\n${instruction}` },
         ],
         temperature: 0.7,
