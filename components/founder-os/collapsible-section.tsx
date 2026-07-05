@@ -41,22 +41,23 @@ export function CollapsibleSection({
   const [open, setOpen] = useState(defaultOpen)
   const contentId = `section-${title.replace(/\s+/g, "-").toLowerCase()}`
 
-  // Each step's accent drives a soft, tinted panel so every workspace reads as
-  // its own color-coded tab.
-  const softBg = `${accent}12` // ~7% tint
+  // Each step's accent is a descending shade of sage green. Only the header is
+  // softly tinted; the content sits on a clean white background for the text.
+  const softHeaderBg = `${accent}12` // ~7% tint
   const softBorder = `${accent}33` // ~20% border
 
   return (
     <div
-      className="rounded-2xl border shadow-sm backdrop-blur-sm overflow-hidden"
-      style={{ backgroundColor: softBg, borderColor: softBorder }}
+      className="rounded-2xl border bg-white shadow-sm overflow-hidden"
+      style={{ borderColor: softBorder }}
     >
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-controls={contentId}
-        className="flex w-full items-center gap-4 px-5 py-5 text-left transition-colors hover:bg-[#3A2E33]/5 md:px-6"
+        className="flex w-full items-center gap-4 px-5 py-5 text-left transition-colors hover:brightness-[0.98] md:px-6"
+        style={{ backgroundColor: softHeaderBg }}
       >
         {emoji && (
           <span className="text-2xl md:text-3xl" aria-hidden="true">
@@ -95,7 +96,7 @@ export function CollapsibleSection({
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="overflow-hidden"
           >
-            <div className="border-t px-5 py-6 md:px-6" style={{ borderColor: softBorder }}>
+            <div className="border-t bg-white px-5 py-6 md:px-6" style={{ borderColor: softBorder }}>
               {children}
             </div>
           </motion.div>

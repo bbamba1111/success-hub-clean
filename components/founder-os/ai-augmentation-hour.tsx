@@ -1,21 +1,20 @@
 "use client"
 
 import { useState } from "react"
-import useSWR from "swr"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Loader2, Trash2, Workflow, Bot, UserCheck, ArrowDown } from "lucide-react"
+import { Trash2, Workflow, Bot, UserCheck } from "lucide-react"
 import CherryBlossomChatModal from "@/components/cherry-blossom-chat-modal"
 import { AITransformationExecutive } from "@/components/founder-os/ai-transformation-executive"
-import { getBusinessFoundation, type BusinessFoundationRecord } from "@/utils/business-foundation-storage"
+import { AIExecutiveLeadershipTeam } from "@/components/founder-os/ai-executive-leadership-team"
 
 /**
- * Workspace 3 — 🤖 AI Augmentation Hour™.
+ * 🤖 AI Augmentation Hour™.
  *
  * The daily Eliminate / Systemize / Automate / Delegate session, each launching
  * Cherry Blossom with a tailored prefill. The AI Transformation Executive™
- * (Chief AI Officer) lives inside this workspace. If the Business Foundation™
- * (Step 2) isn't set yet, we gently point the founder back to it first.
+ * (Chief AI Officer) command center and the AI Executive Leadership Team™ both
+ * live inside this workspace.
  */
 
 const ESAD = [
@@ -54,42 +53,10 @@ const ESAD = [
 ] as const
 
 export function AIAugmentationHour() {
-  const { data, isLoading } = useSWR<BusinessFoundationRecord | null>("business-foundation", getBusinessFoundation, {
-    revalidateOnFocus: false,
-  })
   const [chat, setChat] = useState<(typeof ESAD)[number] | null>(null)
 
-  const hasCompleted = Boolean(data?.completedAt)
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center gap-3 py-6 text-muted-foreground">
-        <Loader2 className="h-5 w-5 animate-spin text-[#5D9D61]" />
-        <span>Loading your AI Augmentation Hour™…</span>
-      </div>
-    )
-  }
-
-  // Foundation not set yet → gently point back to Step 2.
-  if (!hasCompleted) {
-    return (
-      <div className="flex flex-col items-start gap-3 rounded-xl border border-[#E26C73]/20 bg-[#E26C73]/5 p-5">
-        <p className="text-[#3A2E33] leading-relaxed">
-          {"To personalize your AI Augmentation Hour™, let's set your "}
-          <strong>Business Foundation™</strong>
-          {" first — it only takes a few minutes, and you'll never have to do it again."}
-        </p>
-        <div className="flex items-center gap-2 text-sm font-medium text-[#E26C73]">
-          <ArrowDown className="h-4 w-4" />
-          <span>Open Step 2 · Business Foundation Assessment™ above</span>
-        </div>
-      </div>
-    )
-  }
-
-  // Returning member → the daily Eliminate / Systemize / Automate / Delegate session.
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       <div className="space-y-4">
         <p className="text-[#3A2E33] leading-relaxed">
           {"Before today's CEO Workday, let's lighten your load. Choose one lever — "}
@@ -102,7 +69,7 @@ export function AIAugmentationHour() {
           {ESAD.map((item) => (
             <Card
               key={item.id}
-              className="cursor-pointer border-2 border-[#5D9D61]/25 transition-all hover:border-[#E26C73]"
+              className="cursor-pointer border-2 border-[#5D9D61]/25 transition-all hover:border-[#5D9D61]"
               onClick={() => setChat(item)}
             >
               <CardHeader>
@@ -113,7 +80,7 @@ export function AIAugmentationHour() {
                 <CardDescription className="leading-relaxed">{item.description}</CardDescription>
               </CardHeader>
               <CardContent>
-                <Button className="w-full bg-[#E26C73] text-white hover:bg-[#E26C73]/90">
+                <Button className="w-full bg-[#5D9D61] text-white hover:bg-[#5D9D61]/90">
                   Start with Cherry Blossom
                 </Button>
               </CardContent>
@@ -122,9 +89,14 @@ export function AIAugmentationHour() {
         </div>
       </div>
 
-      {/* AI Transformation Executive™ — the Chief AI Officer lives inside the Hour. */}
-      <div id="ai-transformation-executive" className="scroll-mt-6 border-t border-[#E26C73]/15 pt-8">
+      {/* AI Transformation Executive™ — the Chief AI Officer command center. */}
+      <div id="ai-transformation-executive" className="scroll-mt-6 border-t border-[#5D9D61]/15 pt-8">
         <AITransformationExecutive />
+      </div>
+
+      {/* AI Executive Leadership Team™ — Strategy / Growth / Execution councils. */}
+      <div id="ai-executive-leadership-team" className="scroll-mt-6 border-t border-[#5D9D61]/15 pt-8">
+        <AIExecutiveLeadershipTeam />
       </div>
 
       {chat && (
