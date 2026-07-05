@@ -29,11 +29,14 @@ const GROWTH_OPTIONS = ["Solo / Lifestyle", "Steady growth", "Aggressive scaling
 const FUNDING_OPTIONS = ["Bootstrapped", "Revenue-funded", "Investor-backed", "Grants / Other"]
 const REVENUE_STAGE_OPTIONS = ["Pre-revenue", "Under $100k", "$100k–$500k", "$500k–$1M", "$1M+"]
 const REVENUE_MODEL_OPTIONS = [
-  "1:1 Coaching / Consulting",
-  "Group programs",
-  "Courses / Digital products",
-  "Memberships / Subscriptions",
-  "Done-for-you services",
+  "Services (1:1 or done-for-you)",
+  "Products (physical or digital)",
+  "Subscriptions / Memberships",
+  "Programs / Cohorts",
+  "Retail / E-commerce",
+  "Licensing / Franchise / Royalties",
+  "Advertising / Sponsorship",
+  "Donations / Grants",
   "Multiple revenue streams",
 ]
 const SIZE_OPTIONS = ["Just me", "Me + contractors", "Small team (2–5)", "Growing team (6–15)", "15+"]
@@ -59,7 +62,7 @@ const CHALLENGE_OPTIONS = [
 const KNOWLEDGE_OPTIONS = [
   "Offers & pricing",
   "Marketing & content",
-  "Sales & enrollment",
+  "Sales & revenue",
   "Operations & systems",
   "Finance & profit",
   "Leadership & delegation",
@@ -249,10 +252,10 @@ export function BusinessFoundationAssessment({ onComplete, initial }: BusinessFo
       {step === 1 && (
         <div className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="identity">What does your business do, in one sentence?</Label>
+            <Label htmlFor="identity">Who are you, and what does your business do? (one sentence)</Label>
             <Input
               id="identity"
-              placeholder="e.g. I coach women executives through career transitions."
+              placeholder="e.g. We're a 6-person design agency, or I run a family HVAC company, or I'm a SaaS founder…"
               value={form.businessIdentity ?? ""}
               onChange={(e) => set("businessIdentity", e.target.value)}
             />

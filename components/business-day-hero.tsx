@@ -35,8 +35,19 @@ function scrollToRhythm() {
  *   Fri → Time Freedom begins · Sat → Time Freedom continues
  * 0 = Sunday … 6 = Saturday.
  */
-function getInvitation(dayOfWeek: number, dayName: string): { emoji: string; text: string; accent?: string } {
+function getInvitation(
+  dayOfWeek: number,
+  dayName: string,
+): { emoji: string; text: string; accent?: string; subheading?: string } {
   if (dayOfWeek === 0) return { emoji: "🌸", text: "Enter Your Work-Life Balance Business Week™" }
+  // Monday marks the intentional beginning of a new weekly rhythm — not just another workday.
+  if (dayOfWeek === 1)
+    return {
+      emoji: "🌸",
+      text: "Welcome to Your Work-Life Balance Business Week™",
+      accent: "Business Week™",
+      subheading: "Your Redesigned Entry Into the Workweek.",
+    }
   if (dayOfWeek === 5) return { emoji: "🌿", text: "Welcome to Time Freedom™" }
   if (dayOfWeek === 6) return { emoji: "🌿", text: "Continue Your Time Freedom™" }
   return {
@@ -101,7 +112,7 @@ export function BusinessDayHero() {
             <AccentedTitle text={invitation.text} accent={invitation.accent} />
           </h1>
           <p className="mt-3 font-montserrat text-base font-medium tracking-wide text-[#78AD7D] sm:text-lg">
-            {dayIntention.replace(/\.\s*$/, "")}{" "}
+            {(invitation.subheading ?? dayIntention).replace(/\.\s*$/, "")}{" "}
             <span aria-hidden>{invitation.emoji}</span>
           </p>
         </motion.div>
