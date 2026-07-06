@@ -33,84 +33,84 @@ const questions = [
     id: 1,
     category: "spiritual",
     question:
-      "In the past 30 days, how often have you connected to your spiritual life through prayer, study, fellowship, praise, music, meditation, nature, etc...?",
+      "In the past 7 days, how often have you connected to your spiritual life through prayer, study, fellowship, praise, music, meditation, nature, etc...?",
   },
   {
     id: 2,
     category: "mental",
     question:
-      "In the past 30 days, how often have you effectively managed stress, made clear decisions, and maintained good mental health?",
+      "In the past 7 days, how often have you effectively managed stress, made clear decisions, and maintained good mental health?",
   },
   {
     id: 3,
     category: "physicalMovement",
-    question: "In the past 30 days, how often have you engaged in intentional movement or exercise?",
+    question: "In the past 7 days, how often have you engaged in intentional movement or exercise?",
   },
   {
     id: 4,
     category: "physicalNourishment",
-    question: "In the past 30 days, how often have you nourished your body with adequate hydration and healthy meals?",
+    question: "In the past 7 days, how often have you nourished your body with adequate hydration and healthy meals?",
   },
   {
     id: 5,
     category: "physicalSleep",
-    question: "In the past 30 days, how often have you gone to bed on time and gotten 8 hours of restorative sleep?",
+    question: "In the past 7 days, how often have you gone to bed on time and gotten 8 hours of restorative sleep?",
   },
   {
     id: 6,
     category: "emotional",
-    question: "In the past 30 days, how often have you felt happy, balanced, peaceful, and joyful emotionally?",
+    question: "In the past 7 days, how often have you felt happy, balanced, peaceful, and joyful emotionally?",
   },
   {
     id: 7,
     category: "personal",
-    question: "In the past 30 days, how often have you made time for self-care and personal growth activities?",
+    question: "In the past 7 days, how often have you made time for self-care and personal growth activities?",
   },
   {
     id: 8,
     category: "intellectual",
-    question: "In the past 30 days, how often have you engaged in learning something new or a skill-building activity?",
+    question: "In the past 7 days, how often have you engaged in learning something new or a skill-building activity?",
   },
   {
     id: 9,
     category: "professional",
     question:
-      "In the past 30 days, how often have you shared your expertise through partnerships, collaboration, public speaking or publishing and/or expanded your professional visibility through media, podcast interviews or publicity?",
+      "In the past 7 days, how often have you shared your expertise through partnerships, collaboration, public speaking or publishing and/or expanded your professional visibility through media, podcast interviews or publicity?",
   },
   {
     id: 10,
     category: "financial",
     question:
-      "In the past 30 days, how often have you focused intentionally on income/revenue generation, financial planning, retirement planning, business valuation and/or exit planning?",
+      "In the past 7 days, how often have you focused intentionally on income/revenue generation, financial planning, retirement planning, business valuation and/or exit planning?",
   },
   {
     id: 11,
     category: "environmental",
     question:
-      "In the past 30 days, how often have you made effort to create beauty, balance, or order in your home or office environment?",
+      "In the past 7 days, how often have you made effort to create beauty, balance, or order in your home or office environment?",
   },
   {
     id: 12,
     category: "relational",
     question:
-      "In the past 30 days, how often have you been attentive and present with your loved ones and in your closest relationships?",
+      "In the past 7 days, how often have you been attentive and present with your loved ones and in your closest relationships?",
   },
   {
     id: 13,
     category: "social",
     question:
-      "In the past 30 days, how often have you engaged with your friends or supportive, like-minded individuals?",
+      "In the past 7 days, how often have you engaged with your friends or supportive, like-minded individuals?",
   },
   {
     id: 14,
     category: "recreational",
-    question: "In the past 30 days, how often have you created space for joy, creativity, vacation, travel or play?",
+    question: "In the past 7 days, how often have you created space for joy, creativity, vacation, travel or play?",
   },
   {
     id: 15,
     category: "charitable",
     question:
-      "In the past 30 days, how often have you contributed to supporting or inspiring others through donating, charity, volunteering or other philanthropic endeavors?",
+      "In the past 7 days, how often have you contributed to supporting or inspiring others through donating, charity, volunteering or other philanthropic endeavors?",
   },
 ]
 
