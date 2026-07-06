@@ -7,6 +7,7 @@ import { CollapsibleSection } from "@/components/founder-os/collapsible-section"
 import { ExecutiveBriefing } from "@/components/founder-os/executive-briefing"
 import { BusinessFoundationWorkspace } from "@/components/founder-os/business-foundation-workspace"
 import { AIAugmentationHour } from "@/components/founder-os/ai-augmentation-hour"
+import { AIExecutiveLeadershipTeam } from "@/components/founder-os/ai-executive-leadership-team"
 import { HumanZoneOfGenius } from "@/components/founder-os/human-zone-of-genius"
 import { ExecutionCenter } from "@/components/founder-os/execution-center"
 
@@ -17,12 +18,12 @@ import { ExecutionCenter } from "@/components/founder-os/execution-center"
  * understand → prepare → prioritize → execute → review.
  *   1. 🌸 Executive Briefing (daily AI briefing)
  *   2. 🌱 Business Foundation Assessment™ (the Blueprint — set once, refine anytime)
- *   3. 🤖 AI Augmentation Hour™ (introduced by the AI Transformation Executive™ /
- *      Chief AI Officer, then Eliminate / Systemize / Automate / Delegate, then
- *      the AI Executive Leadership Team™)
- *   4. 🎯 Human Zone of Genius™
- *   5. 🚀 Execution Center™
- *   6. ▼ Business Language University™ + CEO Reflection (placeholders)
+ *   3. 🤖 AI Augmentation Hour™ (AI Augmentation™ intro → Choose One Lever →
+ *      the AI Transformation Executive™ / Chief AI Officer command center)
+ *   4. 👥 Your AI Executive Leadership Team™ (Cherry Blossom + 8 executives)
+ *   5. 🎯 Human Zone of Genius™
+ *   6. 🚀 Execution Center™
+ *   7. ▼ Business Language University™ + CEO Reflection (placeholders)
  *
  * Each workspace is a tab in a descending shade of sage green, with white
  * content backgrounds for readable text.
@@ -68,7 +69,7 @@ export default function CEODashboardPage() {
           emoji="🌸"
           title="Executive Briefing"
           subtitle="Cherry Blossom's daily read on your business and your week"
-          badge="Step 1 of 5"
+          badge="Step 1 of 6"
           accent="#2F5A3A"
           defaultOpen
         >
@@ -79,8 +80,8 @@ export default function CEODashboardPage() {
           emoji="🌱"
           title="Business Foundation Assessment™"
           subtitle="The Blueprint™ that personalizes everything — set once, refine anytime"
-          badge="Step 2 of 5"
-          accent="#3A6845"
+          badge="Step 2 of 6"
+          accent="#38623F"
         >
           <BusinessFoundationWorkspace />
         </CollapsibleSection>
@@ -88,19 +89,29 @@ export default function CEODashboardPage() {
         <CollapsibleSection
           emoji="🤖"
           title="AI Augmentation Hour™"
-          subtitle="Lighten your load — eliminate, systemize, automate, delegate — with your AI Transformation Executive™ and AI Executive Leadership Team™"
-          badge="Step 3 of 5"
-          accent="#477850"
+          subtitle="Eliminate, systemize, automate, delegate — with your AI Transformation Executive™ (Chief AI Officer)"
+          badge="Step 3 of 6"
+          accent="#427049"
         >
           <AIAugmentationHour />
+        </CollapsibleSection>
+
+        <CollapsibleSection
+          emoji="👥"
+          title="Your AI Executive Leadership Team™"
+          subtitle="Cherry Blossom coordinates eight executives who educate, recommend, and — soon — build for your approval"
+          badge="Step 4 of 6"
+          accent="#4C7E54"
+        >
+          <AIExecutiveLeadershipTeam />
         </CollapsibleSection>
 
         <CollapsibleSection
           emoji="🎯"
           title="Human Zone of Genius™"
           subtitle="The irreplaceable 20% only you can do"
-          badge="Step 4 of 5"
-          accent="#54885B"
+          badge="Step 5 of 6"
+          accent="#568C5D"
         >
           <HumanZoneOfGenius />
         </CollapsibleSection>
@@ -109,7 +120,7 @@ export default function CEODashboardPage() {
           emoji="🚀"
           title="Execution Center™"
           subtitle="Where approved work flows from draft to published"
-          badge="Step 5 of 5"
+          badge="Step 6 of 6"
           accent="#5D9D61"
         >
           <ExecutionCenter />

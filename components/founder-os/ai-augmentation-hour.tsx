@@ -6,15 +6,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Trash2, Workflow, Bot, UserCheck } from "lucide-react"
 import CherryBlossomChatModal from "@/components/cherry-blossom-chat-modal"
 import { AITransformationExecutive } from "@/components/founder-os/ai-transformation-executive"
-import { AIExecutiveLeadershipTeam } from "@/components/founder-os/ai-executive-leadership-team"
 
 /**
  * 🤖 AI Augmentation Hour™.
  *
- * The AI Transformation Executive™ (Chief AI Officer) introduces the hour,
- * followed by the daily Eliminate / Systemize / Automate / Delegate levers —
- * each launching Cherry Blossom with a tailored prefill — and finally the AI
- * Executive Leadership Team™.
+ * Opens with the AI Augmentation™ intro, then the daily "Choose One Lever"
+ * (Eliminate / Systemize / Automate / Delegate) cards — each launching Cherry
+ * Blossom with a tailored prefill — positioned above the AI Transformation
+ * Executive™ command center (which holds the AI Adoption Dashboard™ and the rest
+ * of the Chief AI Officer workspace).
  */
 
 const ESAD = [
@@ -57,15 +57,21 @@ export function AIAugmentationHour() {
 
   return (
     <div className="space-y-10">
-      {/* AI Transformation Executive™ introduces the hour. */}
-      <div id="ai-transformation-executive" className="scroll-mt-6">
-        <AITransformationExecutive />
+      {/* AI Augmentation™ intro */}
+      <div className="space-y-2">
+        <h3 className="font-playfair text-2xl font-medium text-[#3A2E33]">AI Augmentation™</h3>
+        <p className="text-[#3A2E33] leading-relaxed">
+          {
+            "As you prepare for today's CEO Workday, let's identify what tasks can be eliminated, systemized, automated, or delegated to make the most of your time and resources."
+          }
+        </p>
       </div>
 
-      <div className="space-y-4 border-t border-[#5D9D61]/15 pt-8">
-        <h3 className="font-playfair text-2xl font-medium text-[#3A2E33]">Choose One Lever</h3>
+      {/* Choose One Lever — sits above the AI Adoption Dashboard™ */}
+      <div className="space-y-4">
+        <h4 className="font-playfair text-xl font-medium text-[#3A2E33]">Choose One Lever</h4>
         <p className="text-[#3A2E33] leading-relaxed">
-          {"Before today's CEO Workday, let's lighten your load. Choose one lever — "}
+          {"Pick one — "}
           <strong>Eliminate</strong>, <strong>Systemize</strong>, <strong>Automate</strong>, or{" "}
           <strong>Delegate</strong>
           {" — and I'll coach you through it."}
@@ -95,9 +101,9 @@ export function AIAugmentationHour() {
         </div>
       </div>
 
-      {/* AI Executive Leadership Team™. */}
-      <div id="ai-executive-leadership-team" className="scroll-mt-6 border-t border-[#5D9D61]/15 pt-8">
-        <AIExecutiveLeadershipTeam />
+      {/* AI Transformation Executive™ command center (AI Adoption Dashboard™ lives inside). */}
+      <div id="ai-transformation-executive" className="scroll-mt-6 border-t border-[#5D9D61]/15 pt-8">
+        <AITransformationExecutive />
       </div>
 
       {chat && (
