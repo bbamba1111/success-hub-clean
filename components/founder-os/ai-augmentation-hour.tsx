@@ -11,10 +11,10 @@ import { AIExecutiveLeadershipTeam } from "@/components/founder-os/ai-executive-
 /**
  * 🤖 AI Augmentation Hour™.
  *
- * The daily Eliminate / Systemize / Automate / Delegate session, each launching
- * Cherry Blossom with a tailored prefill. The AI Transformation Executive™
- * (Chief AI Officer) command center and the AI Executive Leadership Team™ both
- * live inside this workspace.
+ * The AI Transformation Executive™ (Chief AI Officer) introduces the hour,
+ * followed by the daily Eliminate / Systemize / Automate / Delegate levers —
+ * each launching Cherry Blossom with a tailored prefill — and finally the AI
+ * Executive Leadership Team™.
  */
 
 const ESAD = [
@@ -57,7 +57,13 @@ export function AIAugmentationHour() {
 
   return (
     <div className="space-y-10">
-      <div className="space-y-4">
+      {/* AI Transformation Executive™ introduces the hour. */}
+      <div id="ai-transformation-executive" className="scroll-mt-6">
+        <AITransformationExecutive />
+      </div>
+
+      <div className="space-y-4 border-t border-[#5D9D61]/15 pt-8">
+        <h3 className="font-playfair text-2xl font-medium text-[#3A2E33]">Choose One Lever</h3>
         <p className="text-[#3A2E33] leading-relaxed">
           {"Before today's CEO Workday, let's lighten your load. Choose one lever — "}
           <strong>Eliminate</strong>, <strong>Systemize</strong>, <strong>Automate</strong>, or{" "}
@@ -89,12 +95,7 @@ export function AIAugmentationHour() {
         </div>
       </div>
 
-      {/* AI Transformation Executive™ — the Chief AI Officer command center. */}
-      <div id="ai-transformation-executive" className="scroll-mt-6 border-t border-[#5D9D61]/15 pt-8">
-        <AITransformationExecutive />
-      </div>
-
-      {/* AI Executive Leadership Team™ — Strategy / Growth / Execution councils. */}
+      {/* AI Executive Leadership Team™. */}
       <div id="ai-executive-leadership-team" className="scroll-mt-6 border-t border-[#5D9D61]/15 pt-8">
         <AIExecutiveLeadershipTeam />
       </div>

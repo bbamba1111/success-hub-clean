@@ -5,6 +5,7 @@ import Link from "next/link"
 import { ArrowLeft, Clock } from "lucide-react"
 import { CollapsibleSection } from "@/components/founder-os/collapsible-section"
 import { ExecutiveBriefing } from "@/components/founder-os/executive-briefing"
+import { BusinessFoundationWorkspace } from "@/components/founder-os/business-foundation-workspace"
 import { AIAugmentationHour } from "@/components/founder-os/ai-augmentation-hour"
 import { HumanZoneOfGenius } from "@/components/founder-os/human-zone-of-genius"
 import { ExecutionCenter } from "@/components/founder-os/execution-center"
@@ -15,12 +16,13 @@ import { ExecutionCenter } from "@/components/founder-os/execution-center"
  * A sequenced, collapsible executive command center that opens at 1:00 PM:
  * understand → prepare → prioritize → execute → review.
  *   1. 🌸 Executive Briefing (daily AI briefing)
- *   2. 🤖 AI Augmentation Hour™ (Eliminate / Systemize / Automate / Delegate +
- *      the AI Transformation Executive™ / Chief AI Officer and the AI Executive
- *      Leadership Team™ / Strategy · Growth · Execution councils)
- *   3. 🎯 Human Zone of Genius™
- *   4. 🚀 Execution Center™
- *   5. ▼ Business Language University™ + CEO Reflection (placeholders)
+ *   2. 🌱 Business Foundation Assessment™ (the Blueprint — set once, refine anytime)
+ *   3. 🤖 AI Augmentation Hour™ (introduced by the AI Transformation Executive™ /
+ *      Chief AI Officer, then Eliminate / Systemize / Automate / Delegate, then
+ *      the AI Executive Leadership Team™)
+ *   4. 🎯 Human Zone of Genius™
+ *   5. 🚀 Execution Center™
+ *   6. ▼ Business Language University™ + CEO Reflection (placeholders)
  *
  * Each workspace is a tab in a descending shade of sage green, with white
  * content backgrounds for readable text.
@@ -66,7 +68,7 @@ export default function CEODashboardPage() {
           emoji="🌸"
           title="Executive Briefing"
           subtitle="Cherry Blossom's daily read on your business and your week"
-          badge="Step 1 of 4"
+          badge="Step 1 of 5"
           accent="#2F5A3A"
           defaultOpen
         >
@@ -74,11 +76,21 @@ export default function CEODashboardPage() {
         </CollapsibleSection>
 
         <CollapsibleSection
+          emoji="🌱"
+          title="Business Foundation Assessment™"
+          subtitle="The Blueprint™ that personalizes everything — set once, refine anytime"
+          badge="Step 2 of 5"
+          accent="#3A6845"
+        >
+          <BusinessFoundationWorkspace />
+        </CollapsibleSection>
+
+        <CollapsibleSection
           emoji="🤖"
           title="AI Augmentation Hour™"
           subtitle="Lighten your load — eliminate, systemize, automate, delegate — with your AI Transformation Executive™ and AI Executive Leadership Team™"
-          badge="Step 2 of 4"
-          accent="#3F7049"
+          badge="Step 3 of 5"
+          accent="#477850"
         >
           <AIAugmentationHour />
         </CollapsibleSection>
@@ -87,8 +99,8 @@ export default function CEODashboardPage() {
           emoji="🎯"
           title="Human Zone of Genius™"
           subtitle="The irreplaceable 20% only you can do"
-          badge="Step 3 of 4"
-          accent="#508759"
+          badge="Step 4 of 5"
+          accent="#54885B"
         >
           <HumanZoneOfGenius />
         </CollapsibleSection>
@@ -97,7 +109,7 @@ export default function CEODashboardPage() {
           emoji="🚀"
           title="Execution Center™"
           subtitle="Where approved work flows from draft to published"
-          badge="Step 4 of 4"
+          badge="Step 5 of 5"
           accent="#5D9D61"
         >
           <ExecutionCenter />
