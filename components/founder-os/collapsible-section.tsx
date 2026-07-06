@@ -41,9 +41,9 @@ export function CollapsibleSection({
   const [open, setOpen] = useState(defaultOpen)
   const contentId = `section-${title.replace(/\s+/g, "-").toLowerCase()}`
 
-  // Each step's accent is a descending shade of sage green. Only the header is
-  // softly tinted; the content sits on a clean white background for the text.
-  const softHeaderBg = `${accent}12` // ~7% tint
+  // Each step's accent is a descending shade of sage green. The header is
+  // painted with the SOLID accent so the descending order is clearly visible;
+  // the content sits on a clean white background for readable text.
   const softBorder = `${accent}33` // ~20% border
 
   return (
@@ -56,8 +56,8 @@ export function CollapsibleSection({
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-controls={contentId}
-        className="flex w-full items-center gap-4 px-5 py-5 text-left transition-colors hover:brightness-[0.98] md:px-6"
-        style={{ backgroundColor: softHeaderBg }}
+        className="flex w-full items-center gap-4 px-5 py-5 text-left text-white transition-colors hover:brightness-[0.95] md:px-6"
+        style={{ backgroundColor: accent }}
       >
         {emoji && (
           <span className="text-2xl md:text-3xl" aria-hidden="true">
@@ -65,22 +65,17 @@ export function CollapsibleSection({
           </span>
         )}
         <span className="flex-1 min-w-0">
-          <span className="block text-lg font-bold leading-tight md:text-xl" style={{ color: accent }}>
-            {title}
-          </span>
-          {subtitle && <span className="mt-0.5 block text-sm text-muted-foreground text-pretty">{subtitle}</span>}
+          <span className="block text-lg font-bold leading-tight text-white md:text-xl">{title}</span>
+          {subtitle && <span className="mt-0.5 block text-sm leading-snug text-white/85 text-pretty">{subtitle}</span>}
         </span>
         {badge && (
-          <span
-            className="hidden shrink-0 rounded-full px-3 py-1 text-xs font-semibold sm:inline-block"
-            style={{ backgroundColor: `${accent}1A`, color: accent }}
-          >
+          <span className="hidden shrink-0 rounded-full bg-white/20 px-3 py-1 text-xs font-semibold text-white sm:inline-block">
             {badge}
           </span>
         )}
         <ChevronDown
-          className="h-5 w-5 shrink-0 transition-transform duration-300"
-          style={{ color: accent, transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
+          className="h-5 w-5 shrink-0 text-white transition-transform duration-300"
+          style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
           aria-hidden="true"
         />
       </button>

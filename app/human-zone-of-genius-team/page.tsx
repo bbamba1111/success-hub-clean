@@ -52,7 +52,7 @@ export default function CEODashboardPage() {
           <span className="mb-4 inline-block rounded-full bg-[#5D9D61]/10 px-4 py-1.5 text-sm font-semibold text-[#5D9D61]">
             Founder Operating System™
           </span>
-          <h1 className="text-balance text-4xl font-bold leading-tight text-[#5D9D61] md:text-5xl">
+          <h1 className="text-balance text-4xl font-bold leading-tight text-[#2F5A3A] md:text-5xl">
             4-Hour Focused CEO Dashboard™
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground">
