@@ -10,6 +10,7 @@ import { AIAugmentationHour } from "@/components/founder-os/ai-augmentation-hour
 import { AIExecutiveLeadershipTeam } from "@/components/founder-os/ai-executive-leadership-team"
 import { HumanZoneOfGenius } from "@/components/founder-os/human-zone-of-genius"
 import { ExecutionCenter } from "@/components/founder-os/execution-center"
+import { WeeklyRhythmGate } from "@/components/founder-os/weekly-rhythm-gate"
 
 /**
  * 4-Hour Focused CEO Dashboard™ — the Founder Operating System™ headquarters.
@@ -46,6 +47,10 @@ export default function CEODashboardPage() {
         </div>
       </header>
 
+      {/* Day-aware: the full workday experience renders only on unlocked
+          business days; Sunday, Time Freedom, and locked days render their own
+          experiences via the gate. */}
+      <WeeklyRhythmGate>
       {/* Dynamic Hero */}
       <section className="bg-gradient-to-b from-[#5D9D61]/10 to-transparent">
         <div className="mx-auto max-w-5xl px-6 py-12 text-center">
@@ -156,6 +161,7 @@ export default function CEODashboardPage() {
           </div>
         </CollapsibleSection>
       </main>
+      </WeeklyRhythmGate>
     </div>
   )
 }
