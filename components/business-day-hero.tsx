@@ -31,7 +31,8 @@ function scrollToRhythm() {
 /**
  * The invitation evolves with the week so the platform feels like a living
  * operating system rather than a static page:
- *   Sun → enter the Business Week · Mon–Thu → enter that day's Business Day
+ *   Sun → Sunday Design Day™ (a ~20-min ritual within Time Freedom™)
+ *   Mon–Thu → enter that day's Business Day
  *   Fri → Time Freedom begins · Sat → Time Freedom continues
  * 0 = Sunday … 6 = Saturday.
  */
@@ -39,7 +40,15 @@ function getInvitation(
   dayOfWeek: number,
   dayName: string,
 ): { emoji: string; text: string; accent?: string; subheading?: string } {
-  if (dayOfWeek === 0) return { emoji: "🌸", text: "Enter Your Work-Life Balance Business Week™" }
+  // Sunday is NOT a workday — it remains part of the 3-Day Time Freedom™ Weekend.
+  // The Design Day is a ~20-minute intentional ritual, not the focus of the day.
+  if (dayOfWeek === 0)
+    return {
+      emoji: "🌸",
+      text: "Sunday Design Day™",
+      accent: "Design Day™",
+      subheading: "Still your Time Freedom™ — spend about 20 intentional minutes designing the week ahead, then get back to your Sunday.",
+    }
   // Monday marks the intentional beginning of a new weekly rhythm — not just another workday.
   if (dayOfWeek === 1)
     return {
