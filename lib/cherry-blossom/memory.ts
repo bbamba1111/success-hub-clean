@@ -20,7 +20,12 @@ export type MemoryType =
 
 export type MemoryConfidence = "low" | "medium" | "high"
 
-export type MemorySource = "conversation" | "monthly_checkin" | "planning_choice" | "reality_check"
+export type MemorySource =
+  | "conversation"
+  | "monthly_checkin"
+  | "planning_choice"
+  | "reality_check"
+  | "time_freedom_moment"
 
 export interface MemoryInput {
   memory_type: MemoryType

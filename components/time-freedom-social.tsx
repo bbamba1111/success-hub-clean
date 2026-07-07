@@ -372,9 +372,11 @@ export function TimeFreedomSocial({ active }: { active: boolean }) {
       } = await supabase.auth.getUser()
       if (!user) throw new Error("Please sign in to share.")
 
+      const caption = content.trim()
+
       const { error } = await supabase.from("community_posts").insert({
         user_id: user.id,
-        content: content.trim(),
+        content: caption,
         post_type: POST_TYPE,
         media_pathname: media?.pathname ?? null,
         media_type: media?.mediaType ?? null,
@@ -382,6 +384,17 @@ export function TimeFreedomSocial({ active }: { active: boolean }) {
         media_duration: media?.duration ?? null,
       })
       if (error) throw new Error(error.message)
+
+      // Fire-and-forget: let Cherry Blossom quietly learn meaningful details
+      // (favorite activities, the people they love, places, celebrations) from
+      // this Moment. Never blocks or fails the share.
+      if (caption.length >= 8) {
+        void fetch("/api/time-freedom-moments/remember", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ caption, dayTheme: dayTheme(new Date().toISOString()) }),
+        }).catch(() => {})
+      }
 
       setContent("")
       clearFile()
