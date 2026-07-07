@@ -16,7 +16,7 @@
  *                support planning; early-access & digital-detox do not)
  *   • Tool     — the segment's dashboard/resource (Workout Planner → Movement
  *                Window, Sleep Tracker → Power Down, CEO Dashboard → CEO Workday)
- *   • Social   — Time Freedom Social Media Sharing (Time Freedom only)
+ *   • Social   — Time Freedom Moments™ community feed (Time Freedom only)
  */
 
 import { useState } from "react"
@@ -143,7 +143,7 @@ export function SegmentWorkspace({ blockId, isCurrent, tint = "255 255 255" }: S
             className={TOGGLE_CLASS}
           >
             <Users className="mr-1.5 h-4 w-4" aria-hidden />
-            {openPanel === "social" ? "Close Sharing" : "Social Media Sharing"}
+                {openPanel === "social" ? "Close Moments" : "Time Freedom Moments"}
             <ChevronDown
               className={`ml-1.5 h-4 w-4 transition-transform duration-300 ${openPanel === "social" ? "rotate-180" : ""}`}
             />
@@ -220,14 +220,6 @@ export function SegmentWorkspace({ blockId, isCurrent, tint = "255 255 255" }: S
             className="overflow-hidden"
           >
             <div className="pt-4">
-              <div className="mb-4">
-                <h4 className="font-playfair text-lg font-medium italic text-[#3A2E33]">
-                  Time Freedom Social Media Sharing
-                </h4>
-                <p className="mt-0.5 text-sm text-[#5C4F55]">
-                  Share how you&apos;re spending your Time Freedom and connect with the community.
-                </p>
-              </div>
               <TimeFreedomSocial active={openPanel === "social"} />
             </div>
           </motion.div>
