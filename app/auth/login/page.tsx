@@ -33,7 +33,7 @@ export default function LoginPage() {
       if (error) throw error
 
       // Returning-member routing: if this week's Weekly Reality Check™ isn't
-      // done, open the ritual (/audit); otherwise go straight to the Hub (/).
+      // done, open the onboarding ritual (/begin); otherwise land on Live Today™.
       const destination = await getPostLoginDestination()
       window.location.href = destination
     } catch (error: unknown) {

@@ -1,16 +1,19 @@
 "use client"
 
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Home, Brain, LogIn, LogOut, LayoutDashboard, Compass } from 'lucide-react'
+import { LogIn, LogOut } from 'lucide-react'
 import { createClient } from "@/lib/supabase/client"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
+import { PRIMARY_DESTINATIONS } from "@/lib/navigation/primary-nav"
 
 export function TopNavigation() {
   const [user, setUser] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
+  const pathname = usePathname()
   const supabase = createClient()
 
   useEffect(() => {
@@ -35,11 +38,13 @@ export function TopNavigation() {
     router.push("/")
   }
 
+  const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`)
+
   return (
     <nav className="bg-white border-b shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-6 py-4">
-        <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
+        <div className="flex items-center justify-between gap-4">
+          <Link href={user ? "/live-today" : "/"} className="flex items-center gap-2 shrink-0">
             <img
               src="/images/logo.png"
               alt="Make Time For More Logo"
@@ -48,60 +53,53 @@ export function TopNavigation() {
               className="rounded-full shadow-md"
             />
           </Link>
-          
-          <div className="flex items-center gap-4">
-            <Link href="/">
-              <Button variant="ghost" className="flex items-center gap-2" data-testid="button-nav-home">
-                <Home className="h-4 w-4" />
-                Main
-              </Button>
-            </Link>
 
-            {user && (
-              <Link href="/headquarters">
-                <Button variant="ghost" className="flex items-center gap-2" data-testid="button-nav-headquarters">
-                  <Compass className="h-4 w-4" />
-                  Headquarters
-                </Button>
-              </Link>
-            )}
+          {/* Primary 4-section navigation (Live Today / Lead / Share / Grow) */}
+          {user && (
+            <div className="flex items-center gap-1 sm:gap-2">
+              {PRIMARY_DESTINATIONS.map(({ id, navLabel, href, icon: Icon }) => {
+                const active = isActive(href)
+                return (
+                  <Link key={id} href={href}>
+                    <Button
+                      variant="ghost"
+                      className={`flex items-center gap-2 ${
+                        active
+                          ? "bg-[#5D9D61]/10 text-[#3A2E33] font-semibold"
+                          : "text-[#5C4F55] hover:text-[#3A2E33]"
+                      }`}
+                      data-testid={`button-nav-${id}`}
+                    >
+                      <Icon className={`h-4 w-4 ${active ? "text-[#5D9D61]" : ""}`} />
+                      <span className="hidden sm:inline">{navLabel}</span>
+                    </Button>
+                  </Link>
+                )
+              })}
+            </div>
+          )}
 
-            {user && (
-              <Link href="/dashboard">
-                <Button variant="ghost" className="flex items-center gap-2" data-testid="button-nav-dashboard">
-                  <LayoutDashboard className="h-4 w-4" />
-                  My Dashboard
-                </Button>
-              </Link>
-            )}
-
-            <Link href="/human-zone-of-genius-team">
-              <Button variant="ghost" className="flex items-center gap-2" data-testid="button-nav-workday">
-                <Brain className="h-4 w-4" />
-                4-Hour Focused CEO Workday
-              </Button>
-            </Link>
-
+          <div className="flex items-center gap-3 shrink-0">
             {!loading && (
               <>
                 {user ? (
                   <div className="flex items-center gap-3">
-                    <span className="text-sm text-muted-foreground">
+                    <span className="hidden md:inline text-sm text-muted-foreground">
                       {user.email}
                     </span>
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       onClick={handleLogout}
                       className="flex items-center gap-2"
                       data-testid="button-logout"
                     >
                       <LogOut className="h-4 w-4" />
-                      Log Out
+                      <span className="hidden sm:inline">Log Out</span>
                     </Button>
                   </div>
                 ) : (
                   <Link href="/auth/login">
-                    <Button 
+                    <Button
                       className="flex items-center gap-2 bg-gradient-to-r from-[#5D9D61] to-[#E26C73] text-white hover:opacity-90"
                       data-testid="button-login"
                     >
