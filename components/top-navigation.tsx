@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Home, Brain, LogIn, LogOut, LayoutDashboard } from 'lucide-react'
+import { Home, Brain, LogIn, LogOut, LayoutDashboard, Compass } from 'lucide-react'
 import { createClient } from "@/lib/supabase/client"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
@@ -56,6 +56,15 @@ export function TopNavigation() {
                 Main
               </Button>
             </Link>
+
+            {user && (
+              <Link href="/headquarters">
+                <Button variant="ghost" className="flex items-center gap-2" data-testid="button-nav-headquarters">
+                  <Compass className="h-4 w-4" />
+                  Headquarters
+                </Button>
+              </Link>
+            )}
 
             {user && (
               <Link href="/dashboard">
