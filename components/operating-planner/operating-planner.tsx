@@ -152,7 +152,7 @@ export function OperatingPlanner({ blockId }: OperatingPlannerProps) {
         >
           <span>
             <span className="ds-eyebrow">Operating Planner™</span>
-            <span className="mt-0.5 block font-display text-xl font-semibold tracking-tight text-brand-green sm:text-2xl">
+            <span className="mt-0.5 block font-display text-2xl font-semibold tracking-tight text-brand-green sm:text-3xl">
               {config.title}
             </span>
           </span>

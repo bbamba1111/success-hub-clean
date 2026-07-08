@@ -24,9 +24,9 @@ export function OperatingPlannerSection() {
   if (!segmentHasPlanner(blockId)) return null
 
   return (
-    // Wall-to-wall extra-soft sage wall behind the planner. It reveals a calm
-    // full-width band of sage when the planner is expanded (dropped down).
-    <div id="operating-planner" className="w-full scroll-mt-24 bg-[#EFF5EA]">
+    // Wall-to-wall darker leaf-green band behind the planner. The deeper green
+    // contrasts with the softer sections below and makes the white planner pop.
+    <div id="operating-planner" className="w-full scroll-mt-24 bg-[#4F8B54]">
       <OperatingPlanner blockId={blockId} />
     </div>
   )
