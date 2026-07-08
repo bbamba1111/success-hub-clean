@@ -31,7 +31,13 @@
     --border: 20 15% 90%;
     --input: 20 15% 90%;
     --ring: 123 26% 49%;
-    --radius: 0.75rem;
+    /*
+     * Harmony Lane™ radius hierarchy (restrained luxury — not pill, not square).
+     * Base 10px drives the shared scale so all primitives inherit shape order:
+     *   sm 6px (forms) · md 8px (buttons/inputs) · lg 10px (cards) ·
+     *   xl 14px (workspace panels) · 2xl 18px (hero / major surfaces).
+     */
+    --radius: 0.625rem;
     --chart-1: 123 26% 49%;
     --chart-2: 356 67% 66%;
     --chart-3: 43 74% 66%;
@@ -150,12 +156,13 @@
   }
 
   /* ---- Cards ------------------------------------------------------------- */
+  /* Standard cards sit at the card tier of the shape hierarchy (10px). */
   .ds-card {
-    @apply rounded-2xl border border-border bg-card text-card-foreground
+    @apply rounded-lg border border-border bg-card text-card-foreground
       shadow-ds transition-all duration-200 ease-out;
   }
   .ds-card-interactive {
-    @apply ds-card hover:-translate-y-1 hover:shadow-ds-md;
+    @apply ds-card hover:-translate-y-0.5 hover:shadow-ds-md;
   }
   .ds-card-pad {
     @apply p-5 sm:p-6;
@@ -175,6 +182,49 @@
     -webkit-backdrop-filter: blur(4px);
     backdrop-filter: blur(4px);
     border: 1px solid rgba(255, 255, 255, 0.25);
+  }
+
+  /* ---- Harmony Lane™ material system ------------------------------------- */
+  /*
+   * The standard building blocks for every future page. Compose these instead
+   * of hand-rolling glass/borders/radii so the platform stays one calm,
+   * editorial visual language. Softness comes from glass, generous whitespace,
+   * and refined borders — never from oversized rounded corners.
+   */
+
+  /* Harmony Surface™ — a premium solid surface for content that sits on the page. */
+  .harmony-surface {
+    @apply rounded-lg border border-black/[0.06] bg-card text-card-foreground shadow-ds-sm;
+  }
+
+  /* Harmony Panel™ — a workspace panel: architectural, one tier above cards. */
+  .harmony-panel {
+    @apply rounded-xl border border-black/[0.06] bg-card text-card-foreground shadow-ds;
+  }
+
+  /* Harmony Workspace™ — the largest container: a focused room for a segment. */
+  .harmony-workspace {
+    @apply rounded-2xl border border-white/70 bg-card text-card-foreground shadow-ds-md;
+  }
+
+  /* Harmony Glass™ — refined frosted glass; the primary translucent material. */
+  .harmony-glass {
+    background-color: rgba(255, 255, 255, 0.16);
+    -webkit-backdrop-filter: blur(9px) saturate(118%);
+    backdrop-filter: blur(9px) saturate(118%);
+    border: 1px solid rgba(255, 255, 255, 0.42);
+    box-shadow: 0 12px 40px rgba(58, 46, 51, 0.1);
+    border-radius: calc(var(--radius) + 4px);
+  }
+
+  /* Harmony Divider™ — an elegant hairline for separating content. */
+  .harmony-divider {
+    @apply h-px w-full border-0 bg-gradient-to-r from-transparent via-black/[0.08] to-transparent;
+  }
+
+  /* Harmony Section™ — consistent, generous vertical rhythm between sections. */
+  .harmony-section {
+    @apply py-12 sm:py-16 lg:py-20;
   }
 
   /* ---- Motion ------------------------------------------------------------ */

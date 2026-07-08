@@ -93,12 +93,13 @@ const config: Config = {
           ring: "hsl(var(--sidebar-ring))",
         },
       },
+      // Harmony Lane™ shape hierarchy: forms → buttons → cards → panels → hero.
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
-        xl: "calc(var(--radius) + 4px)",
-        "2xl": "calc(var(--radius) + 12px)",
+        lg: "var(--radius)" /* 10px — standard cards */,
+        md: "calc(var(--radius) - 2px)" /* 8px — buttons / inputs */,
+        sm: "calc(var(--radius) - 4px)" /* 6px — form controls */,
+        xl: "calc(var(--radius) + 4px)" /* 14px — workspace panels */,
+        "2xl": "calc(var(--radius) + 8px)" /* 18px — hero / major surfaces */,
       },
       // Standardized elevation scale — warm, soft shadows tuned to the brand ink.
       boxShadow: {

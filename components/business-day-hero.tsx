@@ -153,7 +153,7 @@ export function BusinessDayHero() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
-            className="glass-panel w-full max-w-2xl rounded-3xl p-8 sm:p-10"
+            className="glass-panel w-full max-w-2xl rounded-2xl p-8 sm:p-10"
             style={{ backgroundColor: "rgba(253, 250, 245, 0.9)" }}
           >
             {experience && (
@@ -210,7 +210,7 @@ export function BusinessDayHero() {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="mt-6 rounded-2xl border border-[#7FB069]/30 bg-white/55 p-5"
+                className="mt-6 rounded-xl border border-[#7FB069]/30 bg-white/55 p-5"
               >
                 <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-[#78AD7D]">
                   <span aria-hidden>🌸</span>

@@ -41,7 +41,7 @@ export function TopNavigation() {
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`)
 
   return (
-    <nav className="bg-white border-b shadow-sm sticky top-0 z-50">
+    <nav className="sticky top-0 z-50 border-b border-black/[0.06] bg-white/95 shadow-ds-sm backdrop-blur-sm">
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between gap-4">
           <Link href={user ? "/live-today" : "/"} className="flex items-center gap-2 shrink-0">
@@ -100,7 +100,7 @@ export function TopNavigation() {
                 ) : (
                   <Link href="/auth/login">
                     <Button
-                      className="flex items-center gap-2 bg-gradient-to-r from-[#5D9D61] to-[#E26C73] text-white hover:opacity-90"
+                      className="flex items-center gap-2 bg-brand-green text-white hover:bg-brand-green-dark"
                       data-testid="button-login"
                     >
                       <LogIn className="h-4 w-4" />
