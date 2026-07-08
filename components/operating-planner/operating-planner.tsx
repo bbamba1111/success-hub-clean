@@ -130,45 +130,69 @@ function CeoBlocks({ blocks }: { blocks: NonNullable<ReturnType<() => typeof PLA
 
 export function OperatingPlanner({ blockId }: OperatingPlannerProps) {
   const config = PLANNER_CONFIG[blockId]
+  const [open, setOpen] = useState(true)
   if (!config) return null
 
   const isCeo = blockId === "ceo-workday"
 
   return (
     <div className="ds-container py-8 sm:py-10">
-      {/* Workspace header */}
-      <div className="mb-5">
-        <p className="ds-eyebrow">Operating Planner™</p>
-        <h2 className="ds-page-title mt-1">{config.title}</h2>
-      </div>
+      {/* Collapsible planner panel — a calm room tinted with the segment's own
+          soft surface, distinct from the page / schedule space behind it. */}
+      <div
+        className="overflow-hidden rounded-3xl border border-black/5 shadow-ds transition-colors"
+        style={{ backgroundColor: config.surface }}
+      >
+        {/* Header doubles as the collapse toggle */}
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          aria-controls={`operating-planner-body-${blockId}`}
+          className="flex w-full items-center justify-between gap-3 px-5 py-5 text-left sm:px-7"
+        >
+          <span>
+            <span className="ds-eyebrow">Operating Planner™</span>
+            <span className="ds-page-title mt-1 block">{config.title}</span>
+          </span>
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/70 text-brand-ink-soft">
+            <ChevronDown className={`ds-icon transition-transform ${open ? "rotate-180" : ""}`} aria-hidden />
+            <span className="sr-only">{open ? "Collapse planner" : "Expand planner"}</span>
+          </span>
+        </button>
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        {/* 1 · Cherry Blossom Guidance™ */}
-        <PlannerSection icon={Sparkles} eyebrow="Cherry Blossom Guidance™" title="Your guidance for this segment">
-          <p className="font-serif text-[15px] italic leading-relaxed text-brand-ink-soft">{config.guidance}</p>
-        </PlannerSection>
+        {open && (
+          <div id={`operating-planner-body-${blockId}`} className="px-5 pb-6 sm:px-7">
+            <div className="grid gap-4 lg:grid-cols-2">
+              {/* 1 · Cherry Blossom Guidance™ */}
+              <PlannerSection icon={Sparkles} eyebrow="Cherry Blossom Guidance™" title="Your guidance for this segment">
+                <p className="font-serif text-[15px] italic leading-relaxed text-brand-ink-soft">{config.guidance}</p>
+              </PlannerSection>
 
-        {/* 2 · Today's Operating Rule™ (persisted) — spans its own cell */}
-        <div className="lg:row-span-2">
-          <OperatingRuleCard segmentId={blockId} defaultRuleType={config.defaultRuleType} allowAllTypes={isCeo} />
-        </div>
+              {/* 2 · Today's Operating Rule™ (persisted) — spans its own cell */}
+              <div className="lg:row-span-2">
+                <OperatingRuleCard segmentId={blockId} defaultRuleType={config.defaultRuleType} allowAllTypes={isCeo} />
+              </div>
 
-        {/* 3 · Operating Planner™ (checklist, + CEO blocks) */}
-        <PlannerSection icon={CheckCircle2} eyebrow="Operating Planner™" title="Plan this segment">
-          <PlannerChecklist items={config.checklist} />
-          {isCeo && <CeoBlocks blocks={config.ceoBlocks} />}
-        </PlannerSection>
-      </div>
+              {/* 3 · Operating Planner™ (checklist, + CEO blocks) */}
+              <PlannerSection icon={CheckCircle2} eyebrow="Operating Planner™" title="Plan this segment">
+                <PlannerChecklist items={config.checklist} />
+                {isCeo && <CeoBlocks blocks={config.ceoBlocks} />}
+              </PlannerSection>
+            </div>
 
-      {/* 4 & 5 · placeholders, full width below */}
-      <div className="mt-4 grid gap-4 lg:grid-cols-2">
-        <PlannerSection icon={Music} eyebrow="Harmony Soundscapes™" title="Set the mood">
-          <ComingSoon>Curated soundscapes to help you find focus and flow arrive in a later pass.</ComingSoon>
-        </PlannerSection>
+            {/* 4 & 5 · placeholders, full width below */}
+            <div className="mt-4 grid gap-4 lg:grid-cols-2">
+              <PlannerSection icon={Music} eyebrow="Harmony Soundscapes™" title="Set the mood">
+                <ComingSoon>Curated soundscapes to help you find focus and flow arrive in a later pass.</ComingSoon>
+              </PlannerSection>
 
-        <PlannerSection icon={Trophy} eyebrow="Win the Segment™" title="Close with a win">
-          <ComingSoon>A short reflection to capture your win for this segment is coming soon.</ComingSoon>
-        </PlannerSection>
+              <PlannerSection icon={Trophy} eyebrow="Win the Segment™" title="Close with a win">
+                <ComingSoon>A short reflection to capture your win for this segment is coming soon.</ComingSoon>
+              </PlannerSection>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
