@@ -140,10 +140,10 @@
       text-xs font-medium;
   }
   .ds-badge-green {
-    @apply ds-badge bg-brand-green/12 text-brand-green-dark;
+    @apply ds-badge bg-brand-green/10 text-brand-green-dark;
   }
   .ds-badge-coral {
-    @apply ds-badge bg-brand-coral/12 text-brand-coral-dark;
+    @apply ds-badge bg-brand-coral/10 text-brand-coral-dark;
   }
   .ds-badge-neutral {
     @apply ds-badge bg-muted text-muted-foreground;

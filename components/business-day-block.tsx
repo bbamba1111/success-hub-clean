@@ -3,7 +3,6 @@
 import { type ReactNode } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import { SegmentWorkspace, segmentHasWorkspace } from "@/components/segment-workspace"
 import type { BlockId } from "@/operating-engine"
 
 export type BlockStatus = "current" | "upcoming" | "completed"
@@ -168,16 +167,9 @@ export function BusinessDayBlock({
           </div>
         </div>
 
-        {/* Shared planner + segment tool + social sharing — appears only when
-            this segment is in session (identical to the Hero, "as above so below") */}
-        {blockId && isCurrent && segmentHasWorkspace(blockId) && (
-          <div
-            className="relative z-10 border-t border-[#7FB069]/15 px-5 pb-6 pt-1 sm:px-8 md:px-10"
-            style={{ backgroundColor: `rgb(${tint})` }}
-          >
-            <SegmentWorkspace blockId={blockId} isCurrent={isCurrent} tint={tint} />
-          </div>
-        )}
+        {/* Phase 3B.1: the in-session workspace now lives once, full-width,
+            in the Operating Planner™ below the hero — not repeated on each
+            schedule card. These cards are a clean visual timeline only. */}
       </motion.div>
     </section>
   )

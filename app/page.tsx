@@ -14,6 +14,7 @@ import { WeeklyRealityCheck } from "@/components/weekly-reality-check"
 import { BusinessDayHero } from "@/components/business-day-hero"
 import { BusinessDaySchedule } from "@/components/business-day-schedule"
 import { OperatingEngineProvider } from "@/components/operating-engine-provider"
+import { OperatingPlannerSection } from "@/components/operating-planner/operating-planner-section"
 import { DeveloperToolbar } from "@/components/developer-toolbar"
 import { createBrowserClient } from "@supabase/ssr"
 
@@ -76,8 +77,13 @@ export default function HomePage() {
           Business Day timeline can never disagree. This is the ONLY home hero. */}
       <OperatingEngineProvider>
         {/* Single engine-driven hero - the primary Home page experience.
-            The hero surfaces the in-session segment's planner + tools inline. */}
+            The hero is orientation only; the workspace lives below it. */}
         <BusinessDayHero />
+
+        {/* Operating Planner™ (Phase 3B.1) — the ONE reusable workspace for the
+            segment currently in session, opened full-width directly below the
+            hero. This replaces the old inline hero/card workspaces. */}
+        <OperatingPlannerSection />
 
         {/* Today's Work-Life Balance Business Day™ - full daily rhythm of time-block cards */}
         <BusinessDaySchedule />
