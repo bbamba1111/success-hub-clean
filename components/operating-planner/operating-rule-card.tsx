@@ -135,79 +135,85 @@ export function OperatingRuleCard({ segmentId, defaultRuleType, allowAllTypes = 
   const heading = useMemo(() => "Today's Operating Rule™", [])
 
   return (
-    <div className="rounded-2xl border border-border bg-card p-5 shadow-ds-sm">
+    // The centerpiece commitment — a glass moment, not just another card.
+    <section className="harmony-glass p-6 sm:p-8">
       <div className="flex items-center justify-between gap-3">
-        <div>
-          <h3 className="ds-section-title text-base">{heading}</h3>
-          <p className="mt-0.5 text-xs text-muted-foreground">
-            One clear rule to operate by. It stays in effect until you refine or replace it.
-          </p>
-        </div>
-        {!isComposing && (
-          <Button size="sm" onClick={startAdd} className="ds-btn-primary shrink-0">
-            <Plus className="ds-icon-sm" aria-hidden />
-            Set Rule
-          </Button>
+        <p className="ds-eyebrow text-brand-green-dark/80">{heading}</p>
+        {!isComposing && rules.length > 0 && (
+          <button
+            type="button"
+            onClick={() => startEdit(rules[0])}
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-brand-green-dark hover:text-brand-green"
+          >
+            <Pencil className="h-3.5 w-3.5" aria-hidden />
+            Refine Rule
+          </button>
         )}
       </div>
 
-      {/* Existing active rules */}
-      <div className="mt-4 space-y-2.5">
+      {/* Body */}
+      <div className="mt-4">
         {loading ? (
-          <div className="flex items-center gap-2 py-4 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2 py-6 text-sm text-muted-foreground">
             <Loader2 className="ds-icon-sm animate-spin" aria-hidden />
-            Loading your rules…
+            Loading your rule…
           </div>
         ) : signedOut ? (
-          <p className="rounded-xl bg-muted px-4 py-3 text-sm text-muted-foreground">
+          <p className="py-4 font-serif text-[15px] leading-relaxed text-brand-ink-soft">
             Sign in to set and save your Operating Rules™.
           </p>
         ) : rules.length === 0 && !isComposing ? (
-          <p className="rounded-xl bg-muted px-4 py-3 text-sm text-muted-foreground">
-            No rule set yet. Set one clear rule to operate by for this segment.
-          </p>
+          <div className="py-2">
+            <p className="font-serif text-lg leading-relaxed text-brand-ink-soft text-pretty">
+              A single, clear rule to operate by — one commitment that protects how you work this segment.
+            </p>
+            <Button size="sm" onClick={startAdd} className="ds-btn-primary mt-4">
+              <Plus className="ds-icon-sm" aria-hidden />
+              Set Your Operating Rule
+            </Button>
+          </div>
         ) : (
-          rules.map((rule) => (
-            <div key={rule.id} className="rounded-xl border border-border bg-background p-3.5">
-              <p className="font-serif text-[15px] italic leading-relaxed text-brand-ink">{rule.ruleText}</p>
-              <div className="mt-2.5 flex flex-wrap items-center gap-2">
-                <span className="ds-badge-green">{RULE_TYPE_LABELS[rule.ruleType]}</span>
-                <span className="ds-badge-neutral">{RULE_SCOPE_LABELS[rule.ruleScope]}</span>
-                <div className="ml-auto flex items-center gap-1">
-                  <button
-                    type="button"
-                    onClick={() => startEdit(rule)}
-                    className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium text-brand-ink-soft hover:bg-brand-green/10"
-                  >
-                    <Pencil className="h-3.5 w-3.5" aria-hidden />
-                    Refine
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleReplace(rule)}
-                    className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium text-brand-ink-soft hover:bg-brand-green/10"
-                  >
-                    <RefreshCw className="h-3.5 w-3.5" aria-hidden />
-                    Replace
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleDelete(rule)}
-                    aria-label="Remove rule"
-                    className="inline-flex items-center rounded-lg px-2 py-1 text-xs font-medium text-brand-coral-dark hover:bg-brand-coral/10"
-                  >
-                    <X className="h-3.5 w-3.5" aria-hidden />
-                  </button>
+          <div className="space-y-6">
+            {rules.map((rule) => (
+              <div key={rule.id}>
+                {/* The rule, stated large and elegant, like a commitment */}
+                <p className="font-display text-2xl leading-snug text-brand-ink text-pretty sm:text-[28px]">
+                  {rule.ruleText}
+                </p>
+                <p className="mt-3 text-sm leading-relaxed text-brand-ink-soft">
+                  This rule stays active until you intentionally change it.
+                </p>
+                <div className="mt-4 flex flex-wrap items-center gap-2">
+                  <span className="ds-badge-green">{RULE_TYPE_LABELS[rule.ruleType]}</span>
+                  <span className="ds-badge-neutral">{RULE_SCOPE_LABELS[rule.ruleScope]}</span>
+                  <div className="ml-auto flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => handleReplace(rule)}
+                      className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-brand-ink-soft hover:bg-white/50"
+                    >
+                      <RefreshCw className="h-3.5 w-3.5" aria-hidden />
+                      Replace
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(rule)}
+                      aria-label="Remove rule"
+                      className="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium text-brand-coral-dark hover:bg-brand-coral/10"
+                    >
+                      <X className="h-3.5 w-3.5" aria-hidden />
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
+            ))}
+          </div>
         )}
       </div>
 
       {/* Composer */}
       {isComposing && (
-        <div className="mt-3 rounded-xl border border-brand-green/30 bg-brand-green/[0.04] p-3.5">
+        <div className="mt-5 rounded-lg border border-brand-green/25 bg-white/50 p-4">
           <Textarea
             value={draftText}
             onChange={(e) => setDraftText(e.target.value)}
@@ -261,12 +267,11 @@ export function OperatingRuleCard({ segmentId, defaultRuleType, allowAllTypes = 
               {editingId ? "Save changes" : "Save rule"}
             </Button>
             <Button size="sm" variant="ghost" onClick={resetDraft} disabled={saving}>
-              Cancel
-            </Button>
-          </div>
+            Cancel
+          </Button>
         </div>
       )}
-    </div>
+    </section>
   )
 }
 
