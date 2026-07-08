@@ -136,11 +136,13 @@ export function OperatingPlanner({ blockId }: OperatingPlannerProps) {
   const isCeo = blockId === "ceo-workday"
 
   return (
-    <div className="ds-container py-8 sm:py-10">
+    // Same max width as the panoramic segment cards below (max-w-7xl), pulled
+    // up so the planner attaches to the bottom of the Hero background card.
+    <div className="relative z-10 mx-auto -mt-8 max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
       {/* Collapsible planner panel — a calm room tinted with the segment's own
-          soft surface, distinct from the page / schedule space behind it. */}
+          soft surface, framed by a white border where it meets the hero. */}
       <div
-        className="overflow-hidden rounded-3xl border border-black/5 shadow-ds transition-colors"
+        className="overflow-hidden rounded-3xl border-2 border-white shadow-ds-md transition-colors"
         style={{ backgroundColor: config.surface }}
       >
         {/* Header doubles as the collapse toggle */}

@@ -24,7 +24,9 @@ export function OperatingPlannerSection() {
   if (!segmentHasPlanner(blockId)) return null
 
   return (
-    <div id="operating-planner" className="w-full scroll-mt-24">
+    // Wall-to-wall extra-soft sage wall behind the planner. It reveals a calm
+    // full-width band of sage when the planner is expanded (dropped down).
+    <div id="operating-planner" className="w-full scroll-mt-24 bg-[#EFF5EA]">
       <OperatingPlanner blockId={blockId} />
     </div>
   )
