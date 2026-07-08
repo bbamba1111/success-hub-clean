@@ -13,12 +13,35 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
+        // Design System (Phase 2A):
+        //   sans (default/body/UI) → Montserrat
+        //   display (hero + page titles ONLY) → Playfair Display
+        //   serif (quotes / affirmations / intentions) → Lora
+        sans: ['var(--font-montserrat)', 'sans-serif'],
+        display: ['var(--font-playfair)', 'Georgia', 'serif'],
         playfair: ['var(--font-playfair)', 'serif'],
-        poppins: ['var(--font-poppins)', 'sans-serif'],
         montserrat: ['var(--font-montserrat)', 'sans-serif'],
+        serif: ['var(--font-lora)', 'Georgia', 'serif'],
+        lora: ['var(--font-lora)', 'Georgia', 'serif'],
+        // Legacy fonts — retained for marketing/landing until the page-migration pass.
+        poppins: ['var(--font-poppins)', 'sans-serif'],
         'great-vibes': ['var(--font-great-vibes)', 'cursive'],
       },
       colors: {
+        // Brand palette — the single source of truth for on-brand color.
+        // Use `brand-*` utilities (e.g. text-brand-green, bg-brand-blush) in
+        // place of scattered inline hex values.
+        brand: {
+          green: "#5D9D61",
+          "green-dark": "#4A7D4E",
+          "green-soft": "#8AC28E",
+          coral: "#E26C73",
+          "coral-dark": "#C9545B",
+          blush: "#F6E4E7",
+          ink: "#3A2E33",
+          "ink-soft": "#5C4F55",
+          cream: "#FBF7F4",
+        },
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
@@ -74,6 +97,16 @@ const config: Config = {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        xl: "calc(var(--radius) + 4px)",
+        "2xl": "calc(var(--radius) + 12px)",
+      },
+      // Standardized elevation scale — warm, soft shadows tuned to the brand ink.
+      boxShadow: {
+        "ds-sm": "0 1px 2px rgba(58, 46, 51, 0.06)",
+        "ds": "0 4px 16px rgba(58, 46, 51, 0.08)",
+        "ds-md": "0 10px 30px rgba(58, 46, 51, 0.10)",
+        "ds-lg": "0 20px 50px rgba(58, 46, 51, 0.12)",
+        "ds-glow": "0 10px 30px rgba(93, 157, 97, 0.22)",
       },
       keyframes: {
         "accordion-down": {
