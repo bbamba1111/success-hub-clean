@@ -156,10 +156,13 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
   "time-freedom": {
     title: "Time Freedom™",
     workspaceLabel: "Your Time Freedom Space",
-    atmosphere: "Open · Relaxed · Expansive",
-    surface: "#ECF3F4",
+    atmosphere: "Golden · Spacious · Free",
+    // Golden-hour warmth — sunset sand, not a cool spa. Time Freedom™ is the
+    // reward at the end of a beautifully lived Business Day™: work is finished,
+    // life begins now.
+    surface: "#F7EDDD",
     guidance:
-      "This is the life your business exists to support. Put work down and be fully here — with the people and experiences that matter most. Presence is the real success.",
+      "Good evening. You've protected your work — now protect your life with the same intention. Set it down, step outside, and be fully here. Presence is today's greatest achievement.",
     defaultRuleType: "human",
     prompts: [
       "How do you want to spend this freedom?",
