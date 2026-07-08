@@ -136,26 +136,25 @@ export function OperatingPlanner({ blockId }: OperatingPlannerProps) {
   const isCeo = blockId === "ceo-workday"
 
   return (
-    // Same max width as the panoramic segment cards below (max-w-7xl), pulled
-    // up so the planner attaches to the bottom of the Hero background card.
-    <div className="relative z-10 mx-auto -mt-8 max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
-      {/* Collapsible planner panel — a calm room tinted with the segment's own
-          soft surface, framed by a white border where it meets the hero. */}
-      <div
-        className="overflow-hidden rounded-3xl border-2 border-white shadow-ds-md transition-colors"
-        style={{ backgroundColor: config.surface }}
-      >
+    // Same max width as the panoramic segment cards below (max-w-7xl). Sits
+    // fully BELOW the hero inside the soft sage band — no overlap.
+    <div className="relative z-10 mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      {/* Collapsible planner panel — a clean white card resting in the sage
+          band, so it never competes with the hero or the headings around it. */}
+      <div className="overflow-hidden rounded-3xl border border-black/5 bg-white shadow-ds">
         {/* Header doubles as the collapse toggle */}
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-controls={`operating-planner-body-${blockId}`}
-          className="flex w-full items-center justify-between gap-3 px-5 py-5 text-left sm:px-7"
+          className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left sm:px-7"
         >
           <span>
             <span className="ds-eyebrow">Operating Planner™</span>
-            <span className="ds-page-title mt-1 block">{config.title}</span>
+            <span className="mt-0.5 block font-display text-xl font-semibold tracking-tight text-brand-green sm:text-2xl">
+              {config.title}
+            </span>
           </span>
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/70 text-brand-ink-soft">
             <ChevronDown className={`ds-icon transition-transform ${open ? "rotate-180" : ""}`} aria-hidden />
