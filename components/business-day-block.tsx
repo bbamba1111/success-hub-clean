@@ -3,7 +3,6 @@
 import { type ReactNode } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import type { BlockId } from "@/operating-engine"
 
 export type BlockStatus = "current" | "upcoming" | "completed"
 
@@ -22,18 +21,14 @@ export interface BusinessDayBlockProps {
   status?: BlockStatus
   /** Optional extra content rendered inside the panel (e.g. a featured sub-card). */
   children?: ReactNode
-  /** External link for the CTA. When provided, the button renders as a link. */
-  href?: string
+  /** Fired when the member enters the live segment (opens the Operating Planner™). */
   onAction?: () => void
-  /**
-   * The engine block id. Drives the shared SegmentWorkspace (planner + segment
-   * tool + social sharing) that appears when this block is in session.
-   */
-  blockId?: BlockId
   /** Elapsed progress (0–100) through the current segment. Drives the bar. */
   segmentProgress?: number
   /** Human label for time left in the segment, e.g. "22m left". */
   segmentRemaining?: string
+  /** Preview of this segment's active Operating Rule™ (shown on the card). */
+  operatingRulePreview?: string
 }
 
 const STATUS_LABEL: Record<BlockStatus, string> = {
@@ -59,13 +54,11 @@ export function BusinessDayBlock({
   tint = "248 243 236",
   status = "upcoming",
   children,
-  href,
   onAction,
-  blockId,
   segmentProgress,
   segmentRemaining,
+  operatingRulePreview,
 }: BusinessDayBlockProps) {
-  const isCompleted = status === "completed"
   const isCurrent = status === "current"
   const showProgress = isCurrent && typeof segmentProgress === "number"
 
@@ -128,26 +121,35 @@ export function BusinessDayBlock({
 
               <div className="mt-2 line-clamp-2 text-pretty text-sm leading-relaxed text-[#5C4F55]">{description}</div>
 
+              {/* Today's Operating Rule™ preview — the single commitment guiding
+                  this segment. Keeps the card informative without a workspace. */}
+              {operatingRulePreview && (
+                <div className="mt-3 rounded-xl border border-[#7FB069]/20 bg-white/60 px-3 py-2">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#5B835F]">
+                    {"Today's Operating Rule™"}
+                  </p>
+                  <p className="mt-0.5 line-clamp-2 font-serif text-sm italic leading-snug text-[#3A2E33]">
+                    {operatingRulePreview}
+                  </p>
+                </div>
+              )}
+
               {children}
 
-              <div className="mt-4 flex flex-wrap items-center gap-2.5">
-                {href && !isCompleted ? (
-                  <Button asChild size="sm" className="bg-[#7FB069] text-white hover:bg-[#6FA058]">
-                    <a href={href} target="_blank" rel="noopener noreferrer">
-                      {buttonText}
-                    </a>
-                  </Button>
-                ) : (
+              {/* One clear next action: only the live segment invites the member
+                  into the Operating Planner™ workspace below the hero. Upcoming
+                  and completed segments stay calm and action-free. */}
+              {isCurrent && (
+                <div className="mt-4 flex flex-wrap items-center gap-2.5">
                   <Button
                     size="sm"
                     onClick={onAction}
-                    disabled={isCompleted}
-                    className="bg-[#7FB069] text-white hover:bg-[#6FA058] disabled:opacity-50"
+                    className="bg-[#7FB069] text-white hover:bg-[#6FA058]"
                   >
                     {buttonText}
                   </Button>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </div>
 

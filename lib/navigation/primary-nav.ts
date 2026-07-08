@@ -151,9 +151,9 @@ export const PRIMARY_NAV: PrimarySection[] = [
     tagline: "The Time Freedom™ community — celebrate contained work and expanded life.",
     workspaces: [
       {
-        label: "Cherry Blossom Garden™",
-        href: "/garden",
-        description: "The community garden and Time Freedom Moments™ feed.",
+        label: "Time Freedom Moments™",
+        href: "/time-freedom-moments",
+        description: "Share and celebrate the life you're reclaiming with the community.",
       },
     ],
   },

@@ -151,6 +151,34 @@ export async function getActiveRulesForSegment(
 }
 
 /**
+ * Fetch ALL active Operating Rules for the current member across every
+ * segment (one query). Used by the lightweight schedule cards to show each
+ * segment's current Operating Rule™ preview. Results are ordered newest-first,
+ * so the first rule seen per segment is the one currently in effect.
+ */
+export async function getActiveRules(): Promise<OperatingRule[]> {
+  const supabase = createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return []
+
+  const { data, error } = await supabase
+    .from("operating_rules")
+    .select("*")
+    .eq("user_id", user.id)
+    .eq("status", "active")
+    .order("effective_date", { ascending: false })
+    .order("created_at", { ascending: false })
+
+  if (error) {
+    console.log("[v0] getActiveRules error:", error.message)
+    return []
+  }
+  return (data as OperatingRuleRow[]).map(mapRow)
+}
+
+/**
  * Create a new active Operating Rule. Does not touch existing rules; use
  * `replaceRule` when the member explicitly replaces one.
  */

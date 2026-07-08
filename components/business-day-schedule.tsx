@@ -10,9 +10,17 @@
  * engine's timeline into cards — it owns no schedule data or time logic.
  */
 
+import { useMemo } from "react"
+import useSWR from "swr"
 import { BusinessDayBlock } from "@/components/business-day-block"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
+import { getActiveRules } from "@/lib/operating-rules/storage"
 import { SCHEDULE, type BlockConfig } from "@/operating-engine"
+
+/** Smoothly bring the member to the Operating Planner™ workspace below the hero. */
+function scrollToOperatingPlanner() {
+  document.getElementById("operating-planner")?.scrollIntoView({ behavior: "smooth", block: "start" })
+}
 
 /**
  * Elapsed progress (0–100) and a human "time left" label for a segment,
@@ -41,6 +49,17 @@ function segmentTiming(block: BlockConfig, minutes: number): { progress: number;
 
 export function BusinessDaySchedule() {
   const experience = useOperatingEngine()
+
+  // Each segment's current Operating Rule™, loaded once (newest-first) and
+  // mapped by segment so every card can preview its guiding commitment.
+  const { data: activeRules } = useSWR("operating-rules:active", getActiveRules)
+  const ruleBySegment = useMemo(() => {
+    const map: Record<string, string> = {}
+    for (const rule of activeRules ?? []) {
+      if (!map[rule.operatingSegment]) map[rule.operatingSegment] = rule.ruleText
+    }
+    return map
+  }, [activeRules])
 
   // Before the first client tick, render the schedule with no active highlight
   // (every block "upcoming") so the markup is stable and SSR-safe.
@@ -84,13 +103,13 @@ export function BusinessDaySchedule() {
               emoji={block.emoji}
               time={block.timeLabel}
               title={block.title}
-              buttonText={block.cta}
+              buttonText="Continue Segment™"
               status={state}
-              href={block.href}
               description={block.description}
-              blockId={block.id}
+              onAction={scrollToOperatingPlanner}
               segmentProgress={timing?.progress}
               segmentRemaining={timing?.remaining}
+              operatingRulePreview={ruleBySegment[block.id]}
             />
           )
         })}
