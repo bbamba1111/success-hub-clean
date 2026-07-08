@@ -267,8 +267,9 @@ export function OperatingRuleCard({ segmentId, defaultRuleType, allowAllTypes = 
               {editingId ? "Save changes" : "Save rule"}
             </Button>
             <Button size="sm" variant="ghost" onClick={resetDraft} disabled={saving}>
-            Cancel
-          </Button>
+              Cancel
+            </Button>
+          </div>
         </div>
       )}
     </section>
