@@ -138,7 +138,7 @@ export function OperatingPlanner({ blockId }: OperatingPlannerProps) {
   return (
     // Same max width as the panoramic segment cards below (max-w-7xl). Sits
     // fully BELOW the hero inside the soft sage band — no overlap.
-    <div className="relative z-10 mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <div className="relative z-10 mx-auto max-w-7xl px-4 pb-12 pt-8 sm:px-6 lg:px-8">
       {/* Collapsible planner panel — an ultra-light soft sage card resting on
           the white band, so it never competes with the hero or nearby headings. */}
       <div className="overflow-hidden rounded-3xl border border-black/5 bg-[#F2F7EF] shadow-ds">

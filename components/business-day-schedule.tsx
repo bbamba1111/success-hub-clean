@@ -67,7 +67,7 @@ export function BusinessDaySchedule() {
     experience?.businessDay.timeline ?? SCHEDULE.map((block) => ({ block, state: "upcoming" as const }))
 
   return (
-    <div id="todays-business-day" className="w-full scroll-mt-20 bg-gradient-to-br from-[#F5F1E8] to-white py-8">
+    <div id="todays-business-day" className="w-full scroll-mt-20 bg-gradient-to-br from-[#F5F1E8] to-white pb-8 pt-12">
       <div className="mx-auto max-w-7xl">
         <div className="px-6 pb-3 text-center">
           <h2 className="text-pretty font-playfair text-3xl font-medium text-[#5B835F] sm:text-4xl">
