@@ -1,15 +1,16 @@
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
-import { getSection, type PrimarySectionId } from "@/lib/navigation/primary-nav"
+import { getSection, type SectionId } from "@/lib/navigation/primary-nav"
 
 /**
- * SectionHub — Pass 1 landing page for a primary IA section (Lead / Share / Grow).
+ * SectionHub — landing page for an IA section.
  *
  * Composes the section's EXISTING workspaces into a single, clear home. No
  * feature is redesigned here; each card links to the workspace's current route.
+ * Still used by the developer-only legacy module hubs (Lead / Share / Grow).
  */
-export function SectionHub({ sectionId }: { sectionId: PrimarySectionId }) {
+export function SectionHub({ sectionId }: { sectionId: SectionId }) {
   const section = getSection(sectionId)
   if (!section) return null
 

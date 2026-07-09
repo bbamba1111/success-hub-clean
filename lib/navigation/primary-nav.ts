@@ -1,30 +1,42 @@
 /**
- * Primary Information Architecture — Pass 1 (Navigation + IA)
- * ------------------------------------------------------------
- * Single source of truth for the four-section platform navigation.
+ * Primary Information Architecture — Pass 4A.1 (Operating System IA Reset)
+ * ------------------------------------------------------------------------
+ * Single source of truth for the platform's authenticated navigation.
  *
- *   🌸 Live Today  → /live-today          (daily operating experiences)
- *   💼 Lead        → /lead                (business execution workspaces)
- *   🌿 Share       → /share               (Time Freedom™ community)
- *   🌸 Grow        → /my-work-lifestyle   (profile, results, progress, growth)
+ * The app is now organized around the Work-Life Balance Operating System™.
+ * The visible navigation contains only four permanent destinations:
  *
- * Nav labels stay short; URLs stay descriptive and brand-aligned.
+ *   🌸 Sunday Design Day™ → /sunday-design-day  (weekly installation experience)
+ *   ☀️ Live Today™        → /live-today         (primary daily operating workspace)
+ *   🌿 Time Freedom™      → /time-freedom        (the life your business supports)
+ *   🌸 My Harmony™        → /my-harmony          (results, memory, profile, growth)
  *
- * IMPORTANT (Pass 1 rule): this only REORGANIZES. Every workspace below points
- * at an EXISTING, still-operational route. No legacy route is deleted or
- * redirected in this pass. Later passes handle redesign, consolidation, and
- * legacy cleanup.
+ * IMPORTANT (Pass 4A.1 rules):
+ *   - This pass only REORGANIZES. No functionality is built or deleted.
+ *   - The legacy Lead™ / Share™ / Grow™ sections are removed from the nav but
+ *     preserved as developer-only INTERNAL_MODULES. Their routes and components
+ *     remain fully operational and will be embedded into the four workspaces
+ *     above in later passes.
  */
 
 import {
+  CalendarCheck,
   Sunrise,
-  Briefcase,
   Leaf,
+  Flower2,
+  Briefcase,
   Sprout,
   type LucideIcon,
 } from "lucide-react"
 
-export type PrimarySectionId = "live-today" | "lead" | "share" | "grow"
+/** The four permanent, user-facing destinations. */
+export type PrimarySectionId = "sunday-design-day" | "live-today" | "time-freedom" | "my-harmony"
+
+/** Developer-only module groups (not shown in navigation). */
+export type InternalModuleId = "lead" | "share" | "grow"
+
+/** Any addressable section — primary destination or internal module. */
+export type SectionId = PrimarySectionId | InternalModuleId
 
 export interface Workspace {
   /** Display name of the feature/workspace. */
@@ -36,7 +48,7 @@ export interface Workspace {
 }
 
 export interface PrimarySection {
-  id: PrimarySectionId
+  id: SectionId
   /** Short navigation label. */
   navLabel: string
   /** Full brand name for hub headers. */
@@ -47,73 +59,119 @@ export interface PrimarySection {
   icon: LucideIcon
   /** One-line orientation for the hub header. */
   tagline: string
+  /** Whether this destination is built yet (false → "Coming Soon" placeholder). */
+  built: boolean
   /** Existing workspaces grouped under this section. */
   workspaces: Workspace[]
 }
 
+/**
+ * PRIMARY_NAV — the four permanent destinations that appear in the navigation,
+ * in their intended order: Sunday Design Day™ → Live Today™ → Time Freedom™ →
+ * My Harmony™.
+ */
 export const PRIMARY_NAV: PrimarySection[] = [
+  {
+    id: "sunday-design-day",
+    navLabel: "Sunday Design Day",
+    title: "Sunday Design Day™",
+    href: "/sunday-design-day",
+    icon: CalendarCheck,
+    tagline: "Design Tomorrow. Live It Tomorrow.™ — your weekly installation experience.",
+    built: true,
+    workspaces: [
+      {
+        label: "The Weekly Installation Experience™",
+        href: "/sunday-design-day",
+        description: "Reality Check™ → Download & Delegate™ → Design Tomorrow™ → Commit & Prepare™.",
+      },
+    ],
+  },
   {
     id: "live-today",
     navLabel: "Live Today",
     title: "Live Today™",
     href: "/live-today",
     icon: Sunrise,
-    tagline: "Your daily rhythm — what today looks like and your next best step.",
+    tagline: "Today's Work-Life Balance Business Day™ — your daily operating workspace.",
+    built: true,
     workspaces: [
       {
-        label: "Today's Business Day™",
-        href: "/",
+        label: "Today's Work-Life Balance Business Day™",
+        href: "/live-today",
         description: "Your engine-driven daily rhythm of Operating Experiences™.",
-      },
-      {
-        label: "Weekly Operating Center™",
-        href: "/dashboard",
-        description: "Reality Check score, Weekly Intention, and focus areas.",
-      },
-      {
-        label: "Founder Command Center™",
-        href: "/headquarters",
-        description: "Today's next best step and your Cherry Blossom Executive Brief™.",
-      },
-      {
-        label: "Make Time For More on Mondays™",
-        href: "/make-time-for-more-mondays",
-        description: "Start the week grounded and intentional.",
-      },
-      {
-        label: "Sunday Design Day™",
-        href: "/sunday-shift",
-        description: "A 20-minute weekly design ritual for the week ahead.",
-      },
-      {
-        label: "Focus Areas™",
-        href: "/focus-areas",
-        description: "Your selected priority life areas for the week.",
-      },
-      {
-        label: "Wellness Dashboard™",
-        href: "/wellness-dashboard",
-        description: "Your recovery and well-being at a glance.",
-      },
-      {
-        label: "Sleep Tracker™",
-        href: "/sleep-tracker",
-        description: "Measure rest, consistency, and recovery over time.",
-      },
-      {
-        label: "Movement & Workouts™",
-        href: "/workout-planner",
-        description: "Plan movement that fits your day.",
       },
     ],
   },
+  {
+    id: "time-freedom",
+    navLabel: "Time Freedom",
+    title: "Time Freedom™",
+    href: "/time-freedom",
+    icon: Leaf,
+    tagline: "The life your business exists to support — celebrate contained work and expanded life.",
+    built: false,
+    workspaces: [
+      {
+        label: "Time Freedom Moments™",
+        href: "/time-freedom-moments",
+        description: "Share and celebrate the life you're reclaiming with the community.",
+      },
+    ],
+  },
+  {
+    id: "my-harmony",
+    navLabel: "My Harmony",
+    title: "My Harmony™",
+    href: "/my-harmony",
+    icon: Flower2,
+    tagline: "Your results, memory, milestones, and long-term Human Sustainability™ — all in one place.",
+    built: false,
+    workspaces: [
+      {
+        label: "My Results™",
+        href: "/my-results",
+        description: "Your Reality Check™ results and trends over time.",
+      },
+      {
+        label: "Cherry Blossom Memory Vault™",
+        href: "/cherry-blossom",
+        description: "What Cherry Blossom remembers about your journey.",
+      },
+      {
+        label: "Preview Results™",
+        href: "/preview-results",
+        description: "A preview of your assessment outcomes.",
+      },
+      {
+        label: "Welcome & Onboarding™",
+        href: "/welcome",
+        description: "Revisit your onboarding journey and getting-started steps.",
+      },
+    ],
+  },
+]
+
+/**
+ * INTERNAL_MODULES — the legacy Lead™ / Share™ / Grow™ groupings. These are no
+ * longer user-facing destinations and do NOT appear in the navigation. They are
+ * preserved so nothing is lost: every route and component still works, and each
+ * module will be embedded into its proper workspace in a later pass.
+ *
+ * Eventual homes:
+ *   - CEO modules      → Live Today™ ▸ 4-Hour Focused CEO Workday™
+ *   - Progress modules → My Harmony™
+ *   - Community module → Time Freedom™
+ */
+export const INTERNAL_MODULES: PrimarySection[] = [
   {
     id: "lead",
     navLabel: "Lead",
     title: "Lead",
     href: "/lead",
     icon: Briefcase,
-    tagline: "Your business execution workspaces for the 4-Hour Focused CEO Workday™.",
+    tagline: "Business execution modules — destined for the 4-Hour Focused CEO Workday™.",
+    built: true,
     workspaces: [
       {
         label: "4-Hour Focused CEO Workday™",
@@ -123,7 +181,7 @@ export const PRIMARY_NAV: PrimarySection[] = [
       {
         label: "AI Executive Team™",
         href: "/ai-executive-team",
-        description: "Your AI-augmented executive support.",
+        description: "Your AI-augmented executive support (→ AI Executive Leadership Team™).",
       },
       {
         label: "Cherry Blossom Intentions™",
@@ -131,14 +189,14 @@ export const PRIMARY_NAV: PrimarySection[] = [
         description: "Set intentional business focus with Cherry Blossom.",
       },
       {
-        label: "Business Audit™",
+        label: "Business Foundation Assessment™",
         href: "/audit",
-        description: "Assess and strengthen your business foundation.",
+        description: "Assess your business foundation (→ Sunday Design Day™ ▸ Reality Check™, new members).",
       },
       {
-        label: "Cherry Blossom Chat™",
+        label: "Cherry Blossom Business Chat™",
         href: "/chat",
-        description: "Talk with Cherry Blossom about your business.",
+        description: "Talk with Cherry Blossom (→ embedded contextually in every workspace).",
       },
     ],
   },
@@ -148,7 +206,8 @@ export const PRIMARY_NAV: PrimarySection[] = [
     title: "Share",
     href: "/share",
     icon: Leaf,
-    tagline: "The Time Freedom™ community — celebrate contained work and expanded life.",
+    tagline: "The Time Freedom™ community — destined for the Time Freedom™ workspace.",
+    built: true,
     workspaces: [
       {
         label: "Time Freedom Moments™",
@@ -163,7 +222,8 @@ export const PRIMARY_NAV: PrimarySection[] = [
     title: "Grow",
     href: "/my-work-lifestyle",
     icon: Sprout,
-    tagline: "Your profile, results, progress, memory, and long-term growth.",
+    tagline: "Profile, results, progress, and memory — destined for My Harmony™.",
+    built: true,
     workspaces: [
       {
         label: "My Results™",
@@ -190,18 +250,20 @@ export const PRIMARY_NAV: PrimarySection[] = [
 ]
 
 /** Convenience lookup for the four primary destinations (for nav rendering). */
-export const PRIMARY_DESTINATIONS = PRIMARY_NAV.map(({ id, navLabel, title, href, icon, tagline }) => ({
+export const PRIMARY_DESTINATIONS = PRIMARY_NAV.map(({ id, navLabel, title, href, icon, tagline, built }) => ({
   id,
   navLabel,
   title,
   href,
   icon,
   tagline,
+  built,
 }))
 
 /** The post-login home for returning members. */
 export const LIVE_TODAY_HREF = "/live-today"
 
-export function getSection(id: PrimarySectionId): PrimarySection | undefined {
-  return PRIMARY_NAV.find((s) => s.id === id)
+/** Look up a section by id across both primary destinations and internal modules. */
+export function getSection(id: SectionId): PrimarySection | undefined {
+  return [...PRIMARY_NAV, ...INTERNAL_MODULES].find((s) => s.id === id)
 }
