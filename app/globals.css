@@ -12,18 +12,24 @@
      * Ink #3A2E33 (foreground) · Blush #F6E4E7 (secondary) · warm neutrals.
      * shadcn primitives (Button, Badge, Card, Input) inherit these directly.
      */
+    /*
+     * Visual Design System™ (Phase 5.4.2) — WHITE canvas + near-black body text.
+     * Readability is prioritized over aesthetic softness: text on white uses
+     * near-black (#1A1A1A ≈ 0 0% 10%). Warmth comes from photography, blossom
+     * accents, glass, and shadow — never from beige/cream page backgrounds.
+     */
     --background: 0 0% 100%;
-    --foreground: 335 11% 20%;
+    --foreground: 0 0% 10%;
     --card: 0 0% 100%;
-    --card-foreground: 335 11% 20%;
+    --card-foreground: 0 0% 10%;
     --popover: 0 0% 100%;
-    --popover-foreground: 335 11% 20%;
+    --popover-foreground: 0 0% 10%;
     --primary: 123 26% 49%;
     --primary-foreground: 0 0% 100%;
     --secondary: 347 47% 93%;
-    --secondary-foreground: 335 11% 22%;
+    --secondary-foreground: 0 0% 13%;
     --muted: 20 16% 96%;
-    --muted-foreground: 335 6% 42%;
+    --muted-foreground: 0 0% 32%;
     --accent: 123 30% 92%;
     --accent-foreground: 125 25% 28%;
     --destructive: 356 67% 60%;
@@ -107,18 +113,18 @@
     font-size: clamp(1.6rem, 3.5vw, 2.4rem);
     line-height: 1.15;
   }
-  /* Section headings + all other headings use Montserrat. */
+  /* Section + sub headings (H2–H4) use Montserrat Bold. */
   .ds-section-title {
-    @apply font-sans font-semibold text-brand-ink;
+    @apply font-sans font-bold text-brand-ink;
     font-size: clamp(1.15rem, 2vw, 1.5rem);
     line-height: 1.25;
   }
   .ds-eyebrow {
     @apply font-sans text-xs font-semibold uppercase tracking-[0.14em] text-brand-green;
   }
-  /* Lora — quotes, affirmations, Weekly Intentions. */
+  /* Playfair Display italic — editorial quotes, affirmations, intentions. */
   .ds-affirmation {
-    @apply font-serif italic text-brand-ink-soft;
+    @apply font-serif italic text-brand-ink;
     line-height: 1.6;
   }
 

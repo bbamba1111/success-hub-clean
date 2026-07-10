@@ -13,16 +13,18 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        // Design System (Phase 2A):
-        //   sans (default/body/UI) → Montserrat
-        //   display (hero + page titles ONLY) → Playfair Display
-        //   serif (quotes / affirmations / intentions) → Lora
+        // Visual Design System™ (Phase 5.4.2) — three families only:
+        //   sans  (body / UI / labels / nav)          → Montserrat
+        //   display (H1: hero + primary page titles)   → Playfair Display
+        //   serif  (editorial quotes / affirmations)   → Playfair Display
+        // Lora has been fully removed; `serif`/`lora` now resolve to Playfair so
+        // any remaining editorial-italic usage stays elegant and on-system.
         sans: ['var(--font-montserrat)', 'sans-serif'],
         display: ['var(--font-playfair)', 'Georgia', 'serif'],
         playfair: ['var(--font-playfair)', 'serif'],
         montserrat: ['var(--font-montserrat)', 'sans-serif'],
-        serif: ['var(--font-lora)', 'Georgia', 'serif'],
-        lora: ['var(--font-lora)', 'Georgia', 'serif'],
+        serif: ['var(--font-playfair)', 'Georgia', 'serif'],
+        lora: ['var(--font-playfair)', 'Georgia', 'serif'],
         // Legacy fonts — retained for marketing/landing until the page-migration pass.
         poppins: ['var(--font-poppins)', 'sans-serif'],
         'great-vibes': ['var(--font-great-vibes)', 'cursive'],
@@ -38,9 +40,13 @@ const config: Config = {
           coral: "#E26C73",
           "coral-dark": "#C9545B",
           blush: "#F6E4E7",
-          ink: "#3A2E33",
-          "ink-soft": "#5C4F55",
-          cream: "#FBF7F4",
+          // Visual Design System™ (Phase 5.4.2): near-black text for readability.
+          // ink = primary body/headings, ink-soft = secondary (still high-contrast).
+          ink: "#1A1A1A",
+          "ink-soft": "#3A3A3A",
+          // "cream" is now WHITE — the platform canvas is white everywhere.
+          // Kept as a token so existing bg-brand-cream markup stays valid.
+          cream: "#FFFFFF",
         },
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",

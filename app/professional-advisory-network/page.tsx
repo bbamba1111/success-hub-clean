@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { BackLink } from "@/components/navigation/page-nav"
 import { AdvisorCard } from "@/components/advisory-network/advisor-card"
 import { ADVISORY_NETWORK } from "@/lib/advisory-network/advisor-registry"
 
@@ -23,6 +24,9 @@ export default function ProfessionalAdvisoryNetworkPage() {
   return (
     <main className="min-h-screen bg-brand-cream">
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+        <div className="pt-8">
+          <BackLink href="/executive-leadership-team" label="Back to Executive Leadership Team" />
+        </div>
         {/* Hero */}
         <header className="harmony-section text-center">
           <p className="ds-eyebrow">The Harmony Lane™ Leadership Ecosystem</p>

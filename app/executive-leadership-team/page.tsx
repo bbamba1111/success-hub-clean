@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import { BackLink } from "@/components/navigation/page-nav"
 import { ConductorPanel } from "@/components/executive-team/conductor-panel"
 import { ExecutiveCard } from "@/components/executive-team/executive-card"
 import { EXECUTIVE_TEAM } from "@/lib/executive-team/executive-registry"
@@ -24,6 +25,9 @@ export default function ExecutiveLeadershipTeamPage() {
   return (
     <main className="min-h-screen bg-brand-cream">
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+        <div className="pt-8">
+          <BackLink href="/live-today" label="Back to Live Today" />
+        </div>
         {/* Hero */}
         <header className="harmony-section text-center">
           <p className="ds-eyebrow">The Harmony Lane™ Operating System</p>

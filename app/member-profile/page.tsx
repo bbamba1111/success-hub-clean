@@ -1,5 +1,7 @@
 import type { Metadata } from "next"
 import { BusinessStageCard } from "@/components/business-stage/business-stage-card"
+import { CherryGuidance } from "@/components/cherry-blossom/cherry-guidance"
+import { BackLink } from "@/components/navigation/page-nav"
 
 export const metadata: Metadata = {
   title: "Member Profile | Make Time For More",
@@ -20,6 +22,9 @@ export default function MemberProfilePage() {
   return (
     <main className="min-h-screen bg-brand-cream">
       <div className="mx-auto w-full max-w-3xl px-4 sm:px-6">
+        <div className="pt-8">
+          <BackLink href="/live-today" label="Back to Live Today" />
+        </div>
         {/* Hero */}
         <header className="harmony-section text-center">
           <p className="ds-eyebrow">The Harmony Lane™ Operating System</p>
@@ -32,6 +37,15 @@ export default function MemberProfilePage() {
             are.
           </p>
         </header>
+
+        {/* Cherry Blossom introduces the choice — the focal point of the page. */}
+        <section className="harmony-section pt-0">
+          <CherryGuidance tone="spotlight" title="Let's meet you where you are.">
+            Your Business Stage™ tells me how to guide you — the priorities to protect, the executives to bring in
+            first, and the deliverables that matter most right now. It never changes what you can access; it only shapes
+            my guidance. You&apos;re always in control, so set the stage that feels true today.
+          </CherryGuidance>
+        </section>
 
         {/* Business Stage */}
         <section className="harmony-section pt-0" aria-labelledby="stage-section-heading">

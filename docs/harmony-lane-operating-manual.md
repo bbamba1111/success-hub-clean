@@ -443,6 +443,59 @@ only by their own choice. The whole platform is designed to become
   Cherry Blossom™ guidance, Business Comprehension™, and the Academy™ content layer
   are later phases.
 
+### 8.7 Visual Design System™ `[BUILT]` (Phase 5.4.2)
+
+The platform-wide visual language. Every design decision serves one goal:
+**reduce cognitive load** so members spend their energy building sustainable
+businesses — not decoding the interface. The reference feeling is Aman Resort,
+Apple, and Japanese architecture: calm, editorial, luxurious — never generic SaaS.
+
+- **Typography — three families only.** Configured in
+  `app/layout.tsx` + `tailwind.config.ts`; **Lora has been fully removed.**
+  - **Playfair Display** (`font-display`, and `.ds-hero-title` / `.ds-page-title`)
+    — primary page headers (H1): hero, workspace, and page titles. Elegant,
+    editorial, high-contrast.
+  - **Montserrat Bold** (`.ds-section-title`, `font-sans font-bold`) — section and
+    sub headers (H2–H4): executive names, card titles, planner sections.
+  - **Montserrat** (`font-sans`, the body default) — paragraphs, labels, forms,
+    navigation, lists.
+  - The `serif`/`lora` font utilities now resolve to Playfair, so any remaining
+    editorial-italic quote (e.g. `.ds-affirmation`) stays on-system.
+- **Color hierarchy — readability first.** Body text on white uses near-black
+  (`--foreground: 0 0% 10%` ≈ **#1A1A1A**); `brand.ink` = **#1A1A1A**,
+  `brand.ink-soft` = **#3A3A3A** for secondary text. Gray body copy is avoided.
+  Brand green (**#5D9D61**) is the primary accent; coral (**#E26C73**) is the
+  secondary/warmth accent; blush (**#F6E4E7**) is a soft fill. No purple.
+- **Background hierarchy — white canvas.** White is the primary canvas everywhere
+  in the Operating System (`brand.cream` is now **#FFFFFF**). Warmth comes from
+  photography, cherry blossom accents, glass panels, and soft shadows — **never**
+  from beige/cream page backgrounds. (Marketing/landing pages retain their own
+  warm treatment and are out of this system's scope.)
+- **Cherry Blossom™ presentation.** Whenever she speaks she must **stand out** as a
+  trusted executive mentor and never blend in. The single reusable surface is
+  `components/cherry-blossom/cherry-guidance.tsx` (`<CherryGuidance>`): a
+  blossom-marked avatar, a blossom accent line, strong type hierarchy, and
+  generous spacing on white (`tone="surface"`) or elevated glass
+  (`tone="spotlight"`). Use it for every Cherry Blossom message.
+- **Navigation standards.** Consistent wayfinding via
+  `components/navigation/page-nav.tsx`: **`<BackLink>`** (← Back) whenever
+  navigation moves down a level, and **`<CloseButton>`** (✕) for overlays,
+  full-screen planners, dialogs, and modals.
+- **Card philosophy.** Luxury Japanese hospitality, not modern SaaS. Prefer clean
+  rectangles with a soft radius (the Harmony shape hierarchy: forms → buttons →
+  cards → panels → hero), refined hairline borders, and frosted glass only where
+  it adds emphasis. Reduce oversized pills and excessive rounding.
+- **Spacing philosophy.** Generous, intentional whitespace (`.harmony-section`
+  rhythm) so every screen feels calm and restorative. Avoid crowded layouts.
+- **Visual hierarchy per screen.** In order: (1) Cherry Blossom™, (2) current
+  Workspace, (3) current Operating Segment, (4) main action, (5) supporting
+  content. No visual competition.
+- **Accessibility.** High-contrast text, consistent sizing, comfortable line
+  height (body ~1.6), clear focus states (`focus-visible` ring on interactive
+  controls), readable form labels, and accessible navigation.
+- **This pass = the shared visual system.** It is design-token and
+  component-level, so it propagates across the platform without per-page rewrites.
+
 ---
 
 ## 9. Live Today™ — Living the Design (Mon–Thu)
@@ -589,6 +642,12 @@ by the authenticated user; use parameterized queries and RLS.
   Engine™ hooks, registry integration (executives/advisors/deliverables), Harmony
   Academy™ placeholders, and the Business Stage™ card on `/member-profile`. Signal
   + wiring only; stage-aware recommendations are a later phase.
+- **5.4.2 `[DONE]`** — Visual Design System™ (§8.7): the platform-wide UI polish
+  pass. Removed Lora and standardized on Playfair Display (H1) + Montserrat Bold
+  (H2–H4) + Montserrat (body); moved to a white canvas with near-black body text
+  for readability; added the reusable `<CherryGuidance>` focal surface and the
+  `<BackLink>` / `<CloseButton>` navigation primitives. Token- and
+  component-level, so it propagates across the platform. No new functionality.
 - **4B.3 / Next `[NEXT]`** — Cross-device persistence; 28-day cycle logic; Mon–Thu
   end-of-segment planning windows; deeper Cherry Blossom & AI Executive
   intelligence; reflection/coaching; reconciliation notes flagged in §5.

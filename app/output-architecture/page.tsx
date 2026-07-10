@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { FileStack, Layers, Send, Archive } from "lucide-react"
+import { BackLink } from "@/components/navigation/page-nav"
 import { DeliverablePreview } from "@/components/output-architecture/deliverable-preview"
 import { DELIVERABLES } from "@/lib/output-architecture/deliverable-registry"
 import { RENDERERS } from "@/lib/output-architecture/render-engine"
@@ -50,6 +51,9 @@ export default function OutputArchitecturePage() {
   return (
     <main className="min-h-screen bg-brand-cream">
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+        <div className="pt-8">
+          <BackLink href="/live-today" label="Back to Live Today" />
+        </div>
         {/* Hero */}
         <header className="harmony-section text-center">
           <p className="ds-eyebrow">The Harmony Lane™ Operating System</p>
