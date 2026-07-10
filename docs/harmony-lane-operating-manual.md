@@ -698,6 +698,50 @@ knowledge from which every other system learns.
   knowledge editing, lesson generation, adaptive Cherry Blossom™, deliverable
   generation, workflow execution. Those belong to future intelligence phases.
 
+### 8.12 Founder Intelligence™ `[BUILT — deterministic orchestration]` (Phase 5.9)
+
+The **activation** of the Operating System. Where §8.1–§8.11 built the
+registries and signals, Founder Intelligence™ is the first layer that *reads all
+of them at once* and produces a single, personalized **Operating Brief™** — the
+moment Harmony Lane™ stops being a collection of systems and starts behaving like
+one intelligent Operating System.
+
+- **What it is.** A deterministic orchestration engine
+  (`lib/founder-intelligence/founder-intelligence.ts`) that takes the live
+  Harmony Context™ (installed week + Business Stage™ + Business Comprehension™ +
+  Preferred Language™ + time of day) and assembles a prioritized brief: the
+  Operating Segment™ in focus, the Executives™ and Advisors™ to lean on today, one
+  Executive Insight™, and the most relevant Deliverables™ — each with a plain,
+  human **reason**.
+- **Deterministic, not AI.** No model calls, no randomness. The same context
+  always produces the same brief. It is pure, synchronous, and testable — the
+  trustworthy substrate a future adaptive Cherry Blossom™ will *narrate*, not
+  replace. Cherry Blossom™ remains the personality/interface; Founder
+  Intelligence™ is the reasoning it speaks from.
+- **Reads, never writes.** The engine consumes registries and signals; it never
+  mutates them. It introduces no new source of truth — every recommendation is a
+  reference (by id) into an existing registry (Executives™, Advisors™, Academy™,
+  Deliverables™, Business Concepts™), honoring the Canonical Knowledge
+  Principle (§8.11).
+- **Explainable by design.** The brief includes a "How Cherry Blossom™ Assembled
+  This" disclosure enumerating the signals used, so guidance is never a black box.
+  Adapts tone via Business Comprehension™ and framing via time of day — WHAT is
+  recommended never changes, only HOW it's expressed.
+- **Graceful empty state.** With no installed week yet, the brief invites the
+  founder into Sunday Design Day™ rather than fabricating urgency.
+- **Surface.** Rendered at the top of Live Today™ (`/live-today`) via
+  `components/founder-intelligence/operating-brief.tsx`, above Today's Operating
+  System™.
+- **Out of scope this phase:** AI generation, learning from behavior, cross-device
+  persistence, notifications, and any write-back. Those belong to later
+  intelligence phases.
+
+**Architecture milestone.** Phase 5.9 closes the foundational architecture arc
+(§8.1–§8.12): every core registry and contextual signal now exists AND is read
+together by a single orchestration layer. Subsequent phases layer adaptive AI,
+translation, and persistence *on top of* this deterministic core — they do not
+rebuild it.
+
 ---
 
 ## 9. Live Today™ — Living the Design (Mon–Thu)
@@ -890,7 +934,19 @@ by the authenticated user; use parameterized queries and RLS.
   explicitly consumes rather than owns knowledge. Internal editorial workspace at
   `/excellence-intelligence-engine`. Architecture only — no AI, search,
   recommendations, or editing.
-- **5.9 `[NEXT]`** — Adaptive Cherry Blossom™ (personality-preserving, non-literal
+- **5.9 `[DONE]`** — Founder Intelligence™ (§8.12): the activation of the
+  Operating System. A deterministic, explainable orchestration engine
+  (`lib/founder-intelligence/`) that reads the entire live Harmony Context™
+  (installed week + Business Stage™ + Business Comprehension™ + Preferred
+  Language™ + time of day) and assembles a single prioritized Operating Brief™ —
+  the Operating Segment™ in focus plus the Executives™, Advisors™, one Executive
+  Insight™, and Deliverables™ to lean on today, each with a plain reason and a
+  "How Cherry Blossom™ Assembled This" disclosure. Reads registries, never writes;
+  no AI, no randomness; same context → same brief. Surfaced atop Live Today™
+  (`/live-today`). **Closes the foundational architecture arc (§8.1–§8.12):** every
+  registry and signal now exists and is read together. Later phases layer adaptive
+  AI, translation, and persistence on top of this core.
+- **5.10 `[NEXT]`** — Adaptive Cherry Blossom™ (personality-preserving, non-literal
   translation) and Deliverables™ that render the same Structured Business Content™
   per Preferred Language™ + Communication Style™. Language + comprehension precede
   full personalization.
