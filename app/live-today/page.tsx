@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { OperatingEngineProvider } from "@/components/operating-engine-provider"
+import { HarmonyProvider } from "@/components/harmony-context/harmony-context-provider"
 import { BusinessDayHero } from "@/components/business-day-hero"
 import { BusinessDaySchedule } from "@/components/business-day-schedule"
 import { DeveloperToolbar } from "@/components/developer-toolbar"
@@ -22,17 +23,21 @@ export default function LiveTodayPage() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white">
       <OperatingEngineProvider>
-        {/* Engine-driven hero — the in-session Operating Experience™ + tools */}
-        <BusinessDayHero />
+        {/* Harmony Context Engine™ — the single operating-context layer that
+            composes the engine snapshot with Sunday's installed week. */}
+        <HarmonyProvider>
+          {/* Engine-driven hero — the in-session Operating Experience™ + tools */}
+          <BusinessDayHero />
 
-        {/* Today's Operating System™ — Sunday's Operating Rules™ + Daily Non-Negotiables™ */}
-        <TodaysOperatingSystem />
+          {/* Today's Operating System™ — Cherry Blossom's context-aware guidance */}
+          <TodaysOperatingSystem />
 
-        {/* Today's Work-Life Balance Business Day™ — full daily rhythm */}
-        <BusinessDaySchedule />
+          {/* Today's Work-Life Balance Business Day™ — full daily rhythm */}
+          <BusinessDaySchedule />
 
-        {/* Admin-only Developer Toolbar (renders nothing for regular members) */}
-        <DeveloperToolbar />
+          {/* Admin-only Developer Toolbar (renders nothing for regular members) */}
+          <DeveloperToolbar />
+        </HarmonyProvider>
       </OperatingEngineProvider>
     </main>
   )

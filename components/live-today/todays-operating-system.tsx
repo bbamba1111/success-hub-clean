@@ -1,23 +1,29 @@
 "use client"
 
 /**
- * Today's Operating System™ (Phase 4B.1.5).
+ * Today's Operating System™ (Phase 4B.2).
  *
- * Surfaces the week the member designed on Sunday inside Live Today™. For each
- * operating segment it shows Today's Operating Rule™ (the strategic standard)
- * and Today's Non-Negotiable™ (the commitment lived today), plus a lightweight
- * end-of-segment accountability check.
+ * The intelligence surface of Live Today™. Cherry Blossom™ — the Executive
+ * Operating Guide™ — reads the shared Harmony Context Engine™ to know exactly
+ * where the member is inside the Operating System and reinforces what they
+ * intentionally designed on Sunday. She never asks what to do today; the
+ * Operating System already knows.
  *
- * SESSION-ONLY this pass: reads the installed week and writes honor responses to
- * sessionStorage. No scoring, coaching, journaling, streaks, or DB persistence —
- * those belong to Phase 4B.2.
+ * Shows: a context-aware greeting, the current Operating Segment™ with Today's
+ * Operating Rule™ + Non-Negotiable™, the Weekly Intention™, Priority Focus
+ * Areas™, the full designed day (current segment highlighted, with a
+ * lightweight honor check), and an AI Executive Leadership Team™ placeholder.
+ *
+ * SESSION-ONLY this pass: context and honor responses live in sessionStorage.
+ * No scoring, coaching, journaling, streaks, AI chat, or DB persistence.
  */
 
 import Link from "next/link"
-import { useEffect, useMemo, useState } from "react"
-import { Sparkles, ArrowRight } from "lucide-react"
-import { DESIGN_SEGMENTS } from "@/components/sunday-design-day/sdd-config"
-import { getInstalledWeek, type InstalledWeek } from "@/lib/sunday-design-day/installed-week"
+import { useEffect, useState } from "react"
+import { Sparkles, ArrowRight, Compass, Users } from "lucide-react"
+import { useHarmonyContext } from "@/components/harmony-context/harmony-context-provider"
+import { getCherryBlossomGuidance } from "@/lib/harmony-context/cherry-blossom-guidance"
+import type { HarmonySegment } from "@/lib/harmony-context/types"
 import {
   HONOR_OPTIONS,
   getTodayResponses,
@@ -25,54 +31,13 @@ import {
   type HonorResponse,
 } from "@/lib/sunday-design-day/non-negotiable-log"
 
-/** Cherry Blossom™ time-of-day greeting. */
-function greetingFor(date: Date): string {
-  const h = date.getHours()
-  if (h < 12) return "Good Morning"
-  if (h < 17) return "Good Afternoon"
-  if (h < 21) return "Good Evening"
-  return "Good Night"
-}
-
-interface SurfacedSegment {
-  id: string
-  title: string
-  rule: string
-  nonNegotiable: string
-}
-
 export function TodaysOperatingSystem() {
-  // Session/browser-only data: read after mount to keep SSR markup stable.
-  const [installed, setInstalled] = useState<InstalledWeek | null>(null)
-  const [greeting, setGreeting] = useState("Welcome")
-  const [ready, setReady] = useState(false)
+  const ctx = useHarmonyContext()
 
-  useEffect(() => {
-    setInstalled(getInstalledWeek())
-    setGreeting(greetingFor(new Date()))
-    setReady(true)
-  }, [])
+  // Avoid rendering context-dependent markup until the engine + session are ready.
+  if (!ctx.ready) return null
 
-  // Order segments by the canonical lived sequence, keep only those with a rule,
-  // and fall back to the suggested Non-Negotiable™ when the member left it blank.
-  const segments = useMemo<SurfacedSegment[]>(() => {
-    if (!installed) return []
-    const byId = new Map(installed.segments.map((s) => [s.id, s]))
-    return DESIGN_SEGMENTS.flatMap((cfg) => {
-      const s = byId.get(cfg.id)
-      if (!s || !s.rule) return []
-      return [
-        {
-          id: cfg.id,
-          title: cfg.title,
-          rule: s.rule,
-          nonNegotiable: s.nonNegotiable || cfg.defaultNonNegotiable,
-        },
-      ]
-    })
-  }, [installed])
-
-  if (!ready) return null
+  const guidance = getCherryBlossomGuidance(ctx)
 
   return (
     <section
@@ -80,6 +45,7 @@ export function TodaysOperatingSystem() {
       className="w-full bg-gradient-to-br from-[#F5F1E8] to-white px-4 pt-12 sm:px-6 lg:px-8"
     >
       <div className="mx-auto max-w-3xl">
+        {/* Cherry Blossom™ greeting — context-aware, reinforcing, never robotic. */}
         <div className="text-center">
           <p className="inline-flex items-center gap-2 font-montserrat text-xs font-medium uppercase tracking-[0.18em] text-[#5B835F]">
             <Sparkles className="h-4 w-4" aria-hidden />
@@ -89,26 +55,120 @@ export function TodaysOperatingSystem() {
             id="todays-os-heading"
             className="mt-2 text-pretty font-playfair text-3xl font-medium text-[#3A2E33] sm:text-4xl"
           >
-            {greeting}.
+            {guidance.greeting}
           </h2>
-          <p className="mt-2 text-pretty font-montserrat text-sm leading-relaxed text-[#6B5860]">
-            {installed
-              ? "Here is the Operating System™ you designed on Sunday. Live it one segment at a time."
-              : "Your week hasn't been designed yet."}
+          <p className="mx-auto mt-3 max-w-2xl text-pretty font-montserrat text-[15px] leading-relaxed text-[#6B5860]">
+            {guidance.message}
           </p>
         </div>
 
-        {installed ? (
-          <div className="mt-8 space-y-4">
-            {segments.map((seg) => (
-              <SegmentCard key={seg.id} segment={seg} />
-            ))}
-          </div>
+        {ctx.hasDesignedWeek ? (
+          <>
+            <RightNowPanel ctx={ctx} />
+
+            <div className="mt-8">
+              <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.14em] text-[#6B5860]">
+                Today&apos;s Operating System™
+              </p>
+              <div className="mt-4 space-y-4">
+                {ctx.segments.map((seg) => (
+                  <SegmentCard
+                    key={seg.id}
+                    segment={seg}
+                    isCurrent={ctx.currentSegment?.id === seg.id}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <AiExecutiveTeamPanel />
+          </>
         ) : (
           <EmptyState />
         )}
       </div>
     </section>
+  )
+}
+
+/** "Today, Right Now" — the single glance that reflects Sunday's design. */
+function RightNowPanel({ ctx }: { ctx: ReturnType<typeof useHarmonyContext> }) {
+  const seg = ctx.currentSegment
+  return (
+    <div className="mt-8 rounded-2xl border border-[#5B835F]/20 bg-white/70 px-6 py-6 shadow-sm">
+      <div className="flex items-center gap-2">
+        <Compass className="h-4 w-4 text-[#5B835F]" aria-hidden />
+        <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.14em] text-[#5B835F]">
+          Current Operating Segment™
+        </p>
+      </div>
+      <p className="mt-1.5 font-playfair text-2xl font-medium text-[#3A2E33]">
+        {seg ? seg.title : ctx.currentBlockTitle || "Resting"}
+      </p>
+
+      {seg ? (
+        <div className="mt-5 grid gap-4 sm:grid-cols-2">
+          <Field label="Today's Operating Rule™" tone="ink">
+            {seg.rule}
+          </Field>
+          <Field label="Today's Non-Negotiable™" tone="rose">
+            {seg.nonNegotiable}
+          </Field>
+        </div>
+      ) : (
+        <p className="mt-3 font-montserrat text-[15px] leading-relaxed text-[#6B5860]">
+          You&apos;re between designed segments right now. Rest easy — tomorrow is already designed.
+        </p>
+      )}
+
+      <div className="mt-5 border-t border-black/[0.06] pt-5">
+        {ctx.weeklyIntention && (
+          <Field label="Weekly Intention™" tone="ink">
+            {ctx.weeklyIntention}
+          </Field>
+        )}
+        {ctx.focusAreas.length > 0 && (
+          <div className="mt-4">
+            <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.14em] text-[#6B5860]">
+              Priority Focus Areas™
+            </p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {ctx.focusAreas.map((area) => (
+                <span
+                  key={area}
+                  className="rounded-full bg-[#5B835F]/10 px-3 py-1 font-montserrat text-sm font-medium text-[#4c6f50]"
+                >
+                  {area}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function Field({
+  label,
+  tone,
+  children,
+}: {
+  label: string
+  tone: "ink" | "rose"
+  children: React.ReactNode
+}) {
+  return (
+    <div>
+      <p
+        className={`font-montserrat text-xs font-semibold uppercase tracking-[0.14em] ${
+          tone === "rose" ? "text-[#C13B6B]" : "text-[#6B5860]"
+        }`}
+      >
+        {label}
+      </p>
+      <p className="mt-1 font-montserrat text-[15px] leading-relaxed text-[#3A2E33]">{children}</p>
+    </div>
   )
 }
 
@@ -133,7 +193,7 @@ function EmptyState() {
   )
 }
 
-function SegmentCard({ segment }: { segment: SurfacedSegment }) {
+function SegmentCard({ segment, isCurrent }: { segment: HarmonySegment; isCurrent: boolean }) {
   const [response, setResponse] = useState<HonorResponse | null>(null)
 
   useEffect(() => {
@@ -146,8 +206,19 @@ function SegmentCard({ segment }: { segment: SurfacedSegment }) {
   }
 
   return (
-    <article className="glass-panel rounded-2xl px-6 py-5">
-      <h3 className="font-playfair text-xl font-medium text-[#5B835F]">{segment.title}</h3>
+    <article
+      className={`glass-panel rounded-2xl px-6 py-5 ${
+        isCurrent ? "ring-2 ring-[#5B835F]/50" : ""
+      }`}
+    >
+      <div className="flex items-center justify-between gap-3">
+        <h3 className="font-playfair text-xl font-medium text-[#5B835F]">{segment.title}</h3>
+        {isCurrent && (
+          <span className="shrink-0 rounded-full bg-[#5B835F] px-3 py-1 font-montserrat text-xs font-semibold uppercase tracking-[0.12em] text-white">
+            Now
+          </span>
+        )}
+      </div>
 
       <div className="mt-4 space-y-4">
         <div>
@@ -187,6 +258,24 @@ function SegmentCard({ segment }: { segment: SurfacedSegment }) {
         </div>
       </div>
     </article>
+  )
+}
+
+/** AI Executive Leadership Team™ — placeholder panel (no recommendation logic yet). */
+function AiExecutiveTeamPanel() {
+  return (
+    <div className="mt-8 rounded-2xl border border-dashed border-[#5B835F]/30 bg-white/50 px-6 py-6 text-center">
+      <div className="inline-flex items-center gap-2">
+        <Users className="h-4 w-4 text-[#5B835F]" aria-hidden />
+        <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.14em] text-[#5B835F]">
+          AI Executive Leadership Team™
+        </p>
+      </div>
+      <p className="mx-auto mt-2 max-w-lg font-montserrat text-sm leading-relaxed text-[#6B5860]">
+        Based on your CEO priorities, Cherry Blossom™ will soon recommend the most relevant AI Executive Advisor™ for
+        research, planning, decision support, education, and deliverables.
+      </p>
+    </div>
   )
 }
 

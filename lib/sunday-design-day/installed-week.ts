@@ -17,12 +17,26 @@ export interface InstalledSegment {
   committed: boolean
 }
 
+/**
+ * CEO Workday™ context captured during Design Tomorrow™. Keys mirror the
+ * CeoSection ids in sdd-config.ts. `priorities` is the ceo-workday planner
+ * ("the ONE outcome that would make tomorrow a win").
+ */
+export interface InstalledCeoContext {
+  priorities: string
+  aiAugmentation: string
+  businessOperatingRule: string
+  humanZoneOfGenius: string
+  executionFriction: string
+}
+
 export interface InstalledWeek {
   installedAt: string
   intention: string
   declaration: string
   focusAreas: string[]
   segments: InstalledSegment[]
+  ceo: InstalledCeoContext
 }
 
 /**
@@ -43,10 +57,12 @@ export function getInstalledWeek(): InstalledWeek | null {
           string,
           { rule?: string; planner?: string; nonNegotiable?: string; committed?: boolean }
         >
+        ceo?: Record<string, string>
       }
     }
     const data = parsed.data
     if (!data?.installedAt) return null
+    const ceo = data.ceo ?? {}
     return {
       installedAt: data.installedAt,
       intention: data.weekly?.intention?.trim() ?? "",
@@ -59,6 +75,14 @@ export function getInstalledWeek(): InstalledWeek | null {
         nonNegotiable: s.nonNegotiable?.trim() ?? "",
         committed: Boolean(s.committed),
       })),
+      ceo: {
+        // CEO Priorities™ = the ceo-workday planner ("ONE outcome that would make tomorrow a win").
+        priorities: data.segments?.["ceo-workday"]?.planner?.trim() ?? "",
+        aiAugmentation: ceo["ai-augmentation-hour"]?.trim() ?? "",
+        businessOperatingRule: ceo["business-operating-rule"]?.trim() ?? "",
+        humanZoneOfGenius: ceo["human-zone-of-genius"]?.trim() ?? "",
+        executionFriction: ceo["execution-friction"]?.trim() ?? "",
+      },
     }
   } catch {
     return null
