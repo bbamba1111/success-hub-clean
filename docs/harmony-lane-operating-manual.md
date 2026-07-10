@@ -594,6 +594,52 @@ vocabulary, framing, and examples change.
 - **This pass = the signal + reference library only.** Adaptive AI responses,
   automatic detection, and per-style Deliverable rendering are later phases.
 
+### 8.10 Harmony Business Academy™ `[BUILT — architecture only]` (Phase 5.7)
+
+The **Executive Education Layer™** of the Operating System. It is **not** a
+Learning Management System (LMS), a course catalog, or a video library.
+
+- **Learning finds the founder.** The Academy is contextual, not catalog-driven.
+  Cherry Blossom™, the Executive Leadership Team™, Professional Advisors™,
+  Business Concepts™, Deliverables™, and future AI workflows recommend the right
+  knowledge at the right moment — the founder never searches through courses.
+- **Every lesson leads to execution.** Each learning experience answers three
+  questions: what should the founder understand, what should they be able to DO
+  afterward, and what real business outcome should result. If learning does not
+  lead to execution, it does not belong in the Academy.
+- **Teaches executive thinking; adapts explanations via Business Comprehension™**
+  (§8.9). WHAT is taught never changes — only HOW it's explained.
+- **The Five Colleges™**, each owned by an executive (§8.4): College of
+  Business™ (Strategy Executive™), College of Human Sustainability™ (People &
+  Culture Executive™), College of AI™ (Innovation Executive™), College of
+  Entrepreneurship™ (Growth Executive™), and College of Influence™ (Marketing &
+  Brand Executive™).
+- **Single source of truth:** `lib/harmony-academy/academy-registry.ts` —
+  `COLLEGES`, `LEARNING_OBJECT_TYPES` (Executive Insight™, Business Concept™,
+  Framework™, Playbook™, and more), `ACADEMY_ITEMS` (each declaring
+  `executiveOwner`, `advisorOwner`, `businessConcepts`, `businessStages`,
+  `communicationStyles`, `supportedLanguages`, `learningObjectives`,
+  `competencies`, `relatedDeliverables`, `relatedOperatingSegments`,
+  `prerequisites`, `recommendedNextLessons`, `futureLessonType`), and
+  `EXECUTIVE_INSIGHTS` (short-form, 3–12 min, execution-prep learning).
+- **Learning Paths™:** `lib/harmony-academy/learning-paths.ts` — outcome-based
+  journeys (Launch Your Business™, Hire Your First Employee™, Become a Thought
+  Leader™, Implement AI™). Named for the outcome, not the topics.
+- **Competency Framework™:** `lib/harmony-academy/competencies.ts` — demonstrated
+  capability (Delegation™, Pricing™, Leadership™, …), each with `relatedLessons`
+  and reserved `futureAssessment`/`futureBadge`. **No scoring, progress, badges,
+  or gamification** this phase.
+- **Business Concepts™ never duplicated.** Every lesson references the canonical
+  registry (§8.9) so founders learn one business language everywhere.
+- **Cherry Blossom™ prepared, not wired.** `LearningRecommendationPreview`
+  illustrates the "Learn First / Skip & Implement" pattern. **No recommendation
+  engine yet** — architecture only.
+- **UX:** premium, editorial, calm — never an LMS. Route:
+  `/harmony-business-academy`. Components in `components/harmony-academy/`.
+- **Out of scope this phase:** videos, audio, lesson content, AI teaching,
+  recommendation engine, competency tracking, quizzes, certificates, progress
+  dashboards, adaptive recommendations. Those belong to future phases.
+
 ---
 
 ## 9. Live Today™ — Living the Design (Mon–Thu)
@@ -763,7 +809,18 @@ by the authenticated user; use parameterized queries and RLS.
   Business Comprehension™ card (with live preview) on `/member-profile`. Signal +
   reference library only; adaptive AI responses are a later phase. Independent of
   Business Stage™; never an assessment.
-- **5.7 `[NEXT]`** — Adaptive Cherry Blossom™ (personality-preserving, non-literal
+- **5.7 `[DONE]`** — Harmony Business Academy™ (§8.10): the Executive Education
+  Layer™ — not an LMS. Established the Academy Registry as the single source of
+  truth (`lib/harmony-academy/`): the Five Colleges™ (each owned by an executive),
+  `LEARNING_OBJECT_TYPES`, `ACADEMY_ITEMS` + `EXECUTIVE_INSIGHTS` (each declaring
+  every Harmony Context™ signal), outcome-based `LEARNING_PATHS`, and the
+  `COMPETENCIES` framework (no scoring/badges). Connected to Business Concepts™,
+  Business Stage™, Business Comprehension™, Language™, Executives™, Advisors™, and
+  Deliverables™; Cherry Blossom™ architecturally prepared to recommend learning
+  (`LearningRecommendationPreview`). Premium editorial workspace at
+  `/harmony-business-academy`. Architecture only — no lessons, media, quizzes,
+  progress, or recommendation engine.
+- **5.8 `[NEXT]`** — Adaptive Cherry Blossom™ (personality-preserving, non-literal
   translation) and Deliverables™ that render the same Structured Business Content™
   per Preferred Language™ + Communication Style™. Language + comprehension precede
   full personalization.
