@@ -1,60 +1,82 @@
 "use client"
 
-import { useState } from "react"
-import { Check, ChevronDown, Sparkles, ArrowRight, Lock } from "lucide-react"
+import { Check, ChevronDown, ArrowRight, Lock, Sparkles } from "lucide-react"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import {
-  PHASES,
-  REALITY_CHECK_ITEMS,
-  DELEGATION_CATEGORIES,
-  DESIGN_SEGMENTS,
-  COMMIT_SUMMARY,
-  CLOSING_GUIDANCE,
-  type PhaseId,
-  type PlaceholderItem,
-  type SegmentCard,
-} from "@/components/sunday-design-day/sdd-config"
+import { PHASES, type PhaseId } from "@/components/sunday-design-day/sdd-config"
+import { SddProvider, useSdd, canCompletePhase } from "@/components/sunday-design-day/sdd-state"
+import { RealityCheckPhase } from "@/components/sunday-design-day/phases/reality-check-phase"
+import { DownloadDelegatePhase } from "@/components/sunday-design-day/phases/download-delegate-phase"
+import { DesignTomorrowPhase } from "@/components/sunday-design-day/phases/design-tomorrow-phase"
+import { CommitPreparePhase } from "@/components/sunday-design-day/phases/commit-prepare-phase"
 
 export function SundayDesignDayFlow() {
-  // The phase currently expanded. Members move forward one phase at a time.
-  const [activeIndex, setActiveIndex] = useState(0)
-  // Phases the member has completed (advanced past).
-  const [completed, setCompleted] = useState<Set<number>>(new Set())
-  const [finished, setFinished] = useState(false)
+  return (
+    <SddProvider>
+      <div className="ds-container max-w-5xl py-10 sm:py-14">
+        <FlowHeader />
+        <FlowBody />
+      </div>
+    </SddProvider>
+  )
+}
 
-  function advance(index: number) {
-    setCompleted((prev) => new Set(prev).add(index))
-    if (index < PHASES.length - 1) {
-      setActiveIndex(index + 1)
-    } else {
-      setFinished(true)
-    }
-  }
+function FlowBody() {
+  const { state, dispatch } = useSdd()
+  const installed = Boolean(state.data.installedAt)
 
   return (
-    <div className="ds-container max-w-5xl py-10 sm:py-14">
-      <FlowHeader />
-
-      <ProgressSpine activeIndex={activeIndex} completed={completed} onSelect={setActiveIndex} />
+    <>
+      <ProgressSpine />
 
       <div className="mt-8 space-y-4">
-        {PHASES.map((phase, index) => (
-          <PhaseSection
-            key={phase.id}
-            index={index}
-            open={activeIndex === index}
-            isComplete={completed.has(index)}
-            isLocked={index > activeIndex && !completed.has(index)}
-            onToggle={() => setActiveIndex(index)}
-            onAdvance={() => advance(index)}
-          >
-            <PhaseBody id={phase.id} />
-          </PhaseSection>
-        ))}
+        {PHASES.map((phase) => {
+          const status = state.status[phase.id]
+          const open = state.activePhase === phase.id
+          const isLocked = status === "not-started"
+          const isFinal = phase.id === "commit-prepare"
+          const canComplete = canCompletePhase(phase.id, state.data)
+
+          return (
+            <PhaseSection
+              key={phase.id}
+              phaseId={phase.id}
+              open={open}
+              isComplete={status === "complete"}
+              isLocked={isLocked}
+              onToggle={() => !isLocked && dispatch({ type: "SET_ACTIVE", phase: phase.id })}
+            >
+              <PhaseBody id={phase.id} />
+
+              <div className="mt-8 flex flex-col items-end gap-2">
+                {!canComplete && <PhaseHint id={phase.id} />}
+                {isFinal ? (
+                  <Button
+                    onClick={() => dispatch({ type: "INSTALL_WEEK" })}
+                    className="ds-btn-primary"
+                    disabled={installed}
+                  >
+                    {installed ? "Week Installed" : phase.cta}
+                    {!installed && <ArrowRight className="ds-icon-sm" aria-hidden />}
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => dispatch({ type: "COMPLETE_PHASE", phase: phase.id })}
+                    className="ds-btn-primary"
+                    disabled={!canComplete}
+                  >
+                    {phase.cta}
+                    <ArrowRight className="ds-icon-sm" aria-hidden />
+                  </Button>
+                )}
+              </div>
+            </PhaseSection>
+          )
+        })}
       </div>
 
-      {finished && <FinishedNote />}
-    </div>
+      {installed && <InstalledNote />}
+    </>
   )
 }
 
@@ -77,27 +99,21 @@ function FlowHeader() {
 
 /* ---- Progress spine ----------------------------------------------------- */
 
-function ProgressSpine({
-  activeIndex,
-  completed,
-  onSelect,
-}: {
-  activeIndex: number
-  completed: Set<number>
-  onSelect: (i: number) => void
-}) {
+function ProgressSpine() {
+  const { state, dispatch } = useSdd()
   return (
     <nav aria-label="Sunday Design Day progress" className="mt-10">
       <ol className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-2">
         {PHASES.map((phase, index) => {
-          const isComplete = completed.has(index)
-          const isActive = activeIndex === index
-          const reachable = isComplete || index <= activeIndex
+          const status = state.status[phase.id]
+          const isComplete = status === "complete"
+          const isActive = state.activePhase === phase.id
+          const reachable = status !== "not-started"
           return (
             <li key={phase.id} className="flex flex-1 items-center gap-2">
               <button
                 type="button"
-                onClick={() => reachable && onSelect(index)}
+                onClick={() => reachable && dispatch({ type: "SET_ACTIVE", phase: phase.id })}
                 disabled={!reachable}
                 aria-current={isActive ? "step" : undefined}
                 className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-left transition-colors ${
@@ -120,9 +136,7 @@ function ProgressSpine({
                   {isComplete ? <Check className="h-3.5 w-3.5" aria-hidden /> : index + 1}
                 </span>
                 <span
-                  className={`text-sm font-medium leading-tight ${
-                    isActive ? "text-brand-ink" : "text-brand-ink-soft"
-                  }`}
+                  className={`text-sm font-medium leading-tight ${isActive ? "text-brand-ink" : "text-brand-ink-soft"}`}
                 >
                   {phase.label}
                 </span>
@@ -141,23 +155,22 @@ function ProgressSpine({
 /* ---- Phase section (accordion) ------------------------------------------ */
 
 function PhaseSection({
-  index,
+  phaseId,
   open,
   isComplete,
   isLocked,
   onToggle,
-  onAdvance,
   children,
 }: {
-  index: number
+  phaseId: PhaseId
   open: boolean
   isComplete: boolean
   isLocked: boolean
   onToggle: () => void
-  onAdvance: () => void
   children: React.ReactNode
 }) {
-  const phase = PHASES[index]
+  const phase = PHASES.find((p) => p.id === phaseId)!
+  const index = PHASES.findIndex((p) => p.id === phaseId)
   return (
     <section className="harmony-panel overflow-hidden">
       <button
@@ -196,78 +209,15 @@ function PhaseSection({
 
       {open && (
         <div className="border-t border-black/[0.06] px-5 pb-7 pt-6 sm:px-7">
-          {/* Cherry Blossom Guidance™ */}
-          <GuidanceNote>{phase.guidance}</GuidanceNote>
-
+          <GuidanceIntro>{phase.guidance}</GuidanceIntro>
           <div className="mt-6">{children}</div>
-
-          <div className="mt-8 flex justify-end">
-            <Button onClick={onAdvance} className="ds-btn-primary">
-              {phase.cta}
-              <ArrowRight className="ds-icon-sm" aria-hidden />
-            </Button>
-          </div>
         </div>
       )}
     </section>
   )
 }
 
-/* ---- Phase bodies ------------------------------------------------------- */
-
-function PhaseBody({ id }: { id: PhaseId }) {
-  switch (id) {
-    case "reality-check":
-      return (
-        <div className="grid gap-4 sm:grid-cols-2">
-          {REALITY_CHECK_ITEMS.map((item) => (
-            <PlaceholderCard key={item.title} item={item} />
-          ))}
-        </div>
-      )
-    case "download-delegate":
-      return (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {DELEGATION_CATEGORIES.map((item) => (
-            <PlaceholderCard key={item.title} item={item} hideAction />
-          ))}
-        </div>
-      )
-    case "design-tomorrow":
-      return (
-        <div className="space-y-4">
-          {DESIGN_SEGMENTS.map((segment) => (
-            <SegmentPlaceholder key={segment.title} segment={segment} />
-          ))}
-        </div>
-      )
-    case "commit-prepare":
-      return (
-        <div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {COMMIT_SUMMARY.map((item) => (
-              <PlaceholderCard key={item.title} item={item} hideAction />
-            ))}
-          </div>
-          <div className="harmony-glass mt-6 p-6 sm:p-7">
-            <div className="flex items-center gap-2 text-brand-green-dark">
-              <Sparkles className="ds-icon-sm" aria-hidden />
-              <span className="ds-eyebrow text-brand-green-dark/80">Cherry Blossom Guidance™</span>
-            </div>
-            <p className="mt-3 font-serif text-lg italic leading-relaxed text-brand-ink text-pretty">
-              {CLOSING_GUIDANCE}
-            </p>
-          </div>
-        </div>
-      )
-    default:
-      return null
-  }
-}
-
-/* ---- Building blocks ---------------------------------------------------- */
-
-function GuidanceNote({ children }: { children: React.ReactNode }) {
+function GuidanceIntro({ children }: { children: React.ReactNode }) {
   return (
     <div className="harmony-glass p-5">
       <div className="flex items-center gap-2 text-brand-green-dark">
@@ -279,69 +229,54 @@ function GuidanceNote({ children }: { children: React.ReactNode }) {
   )
 }
 
-function PlaceholderCard({ item, hideAction }: { item: PlaceholderItem; hideAction?: boolean }) {
-  return (
-    <div className="harmony-surface flex flex-col p-5">
-      <div className="flex items-start justify-between gap-2">
-        <h3 className="font-display text-base font-semibold text-brand-ink text-pretty">{item.title}</h3>
-        {item.tag && <span className="ds-badge-neutral shrink-0">{item.tag}</span>}
-      </div>
-      <p className="mt-2 flex-1 text-sm leading-relaxed text-brand-ink-soft">{item.description}</p>
-      {!hideAction && (
-        <span className="mt-4 inline-flex w-fit items-center gap-1.5 rounded-md bg-muted px-2.5 py-1 text-xs font-medium text-brand-ink-soft">
-          Coming Next
-        </span>
-      )}
-    </div>
-  )
+/* ---- Phase bodies ------------------------------------------------------- */
+
+function PhaseBody({ id }: { id: PhaseId }) {
+  switch (id) {
+    case "reality-check":
+      return <RealityCheckPhase />
+    case "download-delegate":
+      return <DownloadDelegatePhase />
+    case "design-tomorrow":
+      return <DesignTomorrowPhase />
+    case "commit-prepare":
+      return <CommitPreparePhase />
+    default:
+      return null
+  }
 }
 
-function SegmentPlaceholder({ segment }: { segment: SegmentCard }) {
-  const isCeo = Boolean(segment.ceoBlocks)
-  return (
-    <div className={`harmony-surface p-5 sm:p-6 ${isCeo ? "border-brand-green/25 bg-brand-green/[0.04]" : ""}`}>
-      <h3 className="font-display text-lg font-semibold text-brand-ink text-pretty">{segment.title}</h3>
-
-      <div className="mt-3 flex flex-wrap gap-2">
-        {segment.modules.map((module) => (
-          <span
-            key={module}
-            className="inline-flex items-center rounded-md border border-black/[0.06] bg-card px-2.5 py-1 text-xs font-medium text-brand-ink-soft"
-          >
-            {module}
-          </span>
-        ))}
-      </div>
-
-      {segment.ceoBlocks && (
-        <ol className="mt-5 space-y-2.5 border-t border-black/[0.06] pt-5">
-          {segment.ceoBlocks.map((block, i) => (
-            <li key={block.title} className="flex gap-3">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-green/10 text-xs font-semibold text-brand-green-dark">
-                {i + 1}
-              </span>
-              <span>
-                <span className="block text-sm font-semibold text-brand-ink">{block.title}</span>
-                <span className="block text-sm leading-relaxed text-brand-ink-soft">{block.description}</span>
-              </span>
-            </li>
-          ))}
-        </ol>
-      )}
-    </div>
-  )
+function PhaseHint({ id }: { id: PhaseId }) {
+  const hints: Record<PhaseId, string> = {
+    "reality-check": "Add your wins, intention, declaration, and at least one Priority Focus Area™ to continue.",
+    "download-delegate": "Capture at least one item and give every item a destination to continue.",
+    "design-tomorrow": "Set an Operating Rule™ for each segment to continue.",
+    "commit-prepare": "",
+  }
+  const hint = hints[id]
+  if (!hint) return null
+  return <p className="text-sm text-brand-ink-soft">{hint}</p>
 }
 
-function FinishedNote() {
+function InstalledNote() {
   return (
     <div className="harmony-glass mt-6 p-6 text-center sm:p-8">
       <div className="flex items-center justify-center gap-2 text-brand-green-dark">
         <Check className="ds-icon-sm" aria-hidden />
-        <span className="ds-eyebrow text-brand-green-dark/80">Sunday Design Day™ Complete</span>
+        <span className="ds-eyebrow text-brand-green-dark/80">Your Week Is Installed™</span>
       </div>
       <p className="mx-auto mt-3 max-w-xl font-serif text-lg italic leading-relaxed text-brand-ink text-pretty">
-        Your week is designed. Honor tonight&apos;s Power Down &amp; Unplug™, and arrive Monday ready to live it.
+        Your week is designed and installed. Honor tonight&apos;s Power Down &amp; Unplug™, and arrive Monday ready to
+        live what you&apos;ve intentionally created.
       </p>
+      <div className="mt-5 flex justify-center">
+        <Link href="/live-today">
+          <Button className="ds-btn-primary">
+            Go to Live Today™
+            <ArrowRight className="ds-icon-sm" aria-hidden />
+          </Button>
+        </Link>
+      </div>
     </div>
   )
 }
