@@ -1,12 +1,13 @@
 import type { Metadata } from "next"
 import { BusinessStageCard } from "@/components/business-stage/business-stage-card"
+import { LanguageRegionCard } from "@/components/i18n/language-region-card"
 import { CherryGuidance } from "@/components/cherry-blossom/cherry-guidance"
 import { BackLink } from "@/components/navigation/page-nav"
 
 export const metadata: Metadata = {
   title: "Member Profile | Make Time For More",
   description:
-    "Your Member Profile — including your Business Stage™, the contextual signal that helps Harmony Lane™ adapt its guidance to where you are in your journey.",
+    "Your Member Profile — set your Business Stage™ and your Preferred Language™ & Region so Harmony Lane™ can meet you where you are, in your language and part of the world.",
 }
 
 /**
@@ -53,6 +54,22 @@ export default function MemberProfilePage() {
             Business Stage
           </h2>
           <BusinessStageCard />
+        </section>
+
+        {/* Language & Region — Global Language Architecture™ */}
+        <section className="harmony-section pt-0" aria-labelledby="language-section-heading">
+          <h2 id="language-section-heading" className="sr-only">
+            Language and Region
+          </h2>
+          <CherryGuidance title="Every entrepreneur, everywhere.">
+            Harmony Lane™ is being built to meet you in your language and your part of the world — because access
+            shouldn&apos;t depend on where you live. Choose how you&apos;d like to work and how information should
+            appear. Translation is still on its way, so the interface stays in English for now, but your region
+            settings take effect right away.
+          </CherryGuidance>
+          <div className="mt-6">
+            <LanguageRegionCard />
+          </div>
         </section>
 
         {/* Reassurance note */}

@@ -496,6 +496,54 @@ Apple, and Japanese architecture: calm, editorial, luxurious — never generic S
 - **This pass = the shared visual system.** It is design-token and
   component-level, so it propagates across the platform without per-page rewrites.
 
+### 8.8 Global Language Architecture™ `[BUILT]` (Phase 5.5A)
+
+Makes the Operating System™ **language-ready** so it can serve every founder,
+everywhere — because language is accessibility, not a feature. This phase builds
+the **architecture** and defers translation until V1 copy stabilizes (English
+stays the working language during active development, avoiding the cost of
+re-translating copy that is still changing).
+
+- **The core separation — Language vs. Localization.** Two independent concerns,
+  modeled separately so either can change without a redesign:
+  - **Language** answers *"what language should I communicate in?"* — the single
+    source of truth is `lib/i18n/language.ts` (`SUPPORTED_LANGUAGES`): 13 options
+    (English US/UK, Spanish, French, Portuguese, German, Italian, Japanese,
+    Korean, Simplified/Traditional Chinese, Arabic, Hindi), each with endonym,
+    text direction (Arabic = `rtl`), a default locale, and a translation status.
+  - **Localization** answers *"how should information be presented?"* —
+    `lib/i18n/localization.ts` covers date format, time format, number format,
+    currency, measurement system, and time zone, with **sensible per-language
+    defaults that the member can override independently.** A founder can read
+    Spanish with USD + imperial, or English (UK) with metric + DD/MM/YYYY.
+    Pure `Intl`-based formatters (`formatDate/Time/Number/Currency`) read a
+    resolved preference. Regional holidays are noted as future, not modeled yet.
+- **Preferred Language™ is a Harmony Context Signal™.** It joins Business Stage™
+  in the founder's operating context. Session store `lib/i18n/
+  locale-preferences-store.ts` mirrors the Business Stage™ store (sessionStorage
+  now, swappable to Supabase later without changing the contract) and the Harmony
+  Context Engine™ (§8.1) now exposes `preferredLanguage`, `languageName`,
+  `textDirection`, `isTranslationActive`, and the resolved `localization`
+  (`preferredLocale`, `preferredDateFormat`, `preferredTimeFormat`,
+  `preferredNumberFormat`, `preferredCurrency`, `preferredMeasurementSystem`,
+  `preferredTimeZone`) plus setters. The founder is always in control.
+- **i18n resource seam.** `locales/` holds the working dictionary (`en-US.ts`)
+  and a `t(key, language)` resolver (`locales/index.ts`) that falls back to
+  English so the app is fully functional in every language today. Planned
+  languages are reserved with empty dictionaries — adding real translations later
+  is a drop-in, no consumer changes. The convention: no hardcoded UI strings.
+- **Member surface.** `components/i18n/language-region-card.tsx`
+  (`<LanguageRegionCard>`) on the Member Profile: choose the language, adjust each
+  localization dimension independently, see a live preview, and reset to language
+  defaults. Choosing a not-yet-translated language keeps the UI in English (with a
+  calm "coming soon" note) while region settings apply immediately.
+- **Downstream hooks (reserved, not built).** Harmony Business Academy™
+  (`lib/harmony-academy/academy.ts`) reserves `PLANNED_LOCALIZATION_ASSETS`
+  (subtitles, transcripts, translated articles/templates/checklists). Adaptive
+  Cherry Blossom™ (personality-preserving, non-literal translation) and
+  Deliverables™ rendering per language + Business Comprehension™ are sequenced
+  next (see roadmap 5.6 / 5.7).
+
 ---
 
 ## 9. Live Today™ — Living the Design (Mon–Thu)
@@ -648,6 +696,18 @@ by the authenticated user; use parameterized queries and RLS.
   for readability; added the reusable `<CherryGuidance>` focal surface and the
   `<BackLink>` / `<CloseButton>` navigation primitives. Token- and
   component-level, so it propagates across the platform. No new functionality.
+- **5.5A `[DONE]`** — Global Language Architecture™ (§8.8): made the platform
+  language-ready without translating it yet. Separated **Language** (13-language
+  registry, `lib/i18n/language.ts`) from **Localization** (date/time/number/
+  currency/measurement/time zone, independently overridable, `localization.ts`);
+  added the locale preferences session store, `locales/` i18n resource seam with
+  a fallback `t()` resolver, Harmony Context Engine™ hooks, the
+  `<LanguageRegionCard>` on `/member-profile`, and reserved Academy™ localization
+  assets. Architecture only — English remains the working language.
+- **5.6 / 5.7 `[NEXT]`** — Business Comprehension™ (adapt guidance depth: Simple
+  & Clear ↔ Executive), then Adaptive Cherry Blossom™ (personality-preserving,
+  non-literal translation) and Deliverables™ that render per Preferred Language™ +
+  Business Comprehension™. Language + comprehension precede full personalization.
 - **4B.3 / Next `[NEXT]`** — Cross-device persistence; 28-day cycle logic; Mon–Thu
   end-of-segment planning windows; deeper Cherry Blossom & AI Executive
   intelligence; reflection/coaching; reconciliation notes flagged in §5.

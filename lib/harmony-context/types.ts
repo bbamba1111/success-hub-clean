@@ -14,6 +14,15 @@
  */
 
 import type { BusinessStage } from "@/lib/business-stage/business-stage"
+import type { LanguageCode, TextDirection } from "@/lib/i18n/language"
+import type {
+  DateFormat,
+  LocalizationOverrides,
+  LocalizationPreference,
+  MeasurementSystem,
+  NumberFormat,
+  TimeFormat,
+} from "@/lib/i18n/localization"
 
 export type TimeOfDay = "Morning" | "Afternoon" | "Evening" | "Night"
 
@@ -86,4 +95,38 @@ export interface HarmonyContextValue {
   recommendedAdvisors: string[]
   /** Update the founder's stage (session-only this phase). */
   setBusinessStage: (stage: BusinessStage) => void
+
+  /* -- Global Language Architecture™ (Phase 5.5A) ----------------------- */
+  /**
+   * Language answers "what language should I communicate in?"; Localization
+   * answers "how should information be presented?" — modeled separately so a
+   * member can, e.g., read Spanish while seeing USD + imperial units. These are
+   * architecture hooks: the UI is not translated yet (English stays the working
+   * language), but every surface can already READ the member's preferences.
+   */
+  /** The member's Preferred Language™ code (e.g. "en-US", "es"). */
+  preferredLanguage: LanguageCode
+  /** The language's own name (endonym), for display. */
+  languageName: string
+  /** Reading direction — drives future `dir`/layout mirroring (rtl for Arabic). */
+  textDirection: TextDirection
+  /** Whether the chosen language is fully translated yet (else English fallback). */
+  isTranslationActive: boolean
+
+  /** The fully-resolved presentation preference (language defaults + overrides). */
+  localization: LocalizationPreference
+  preferredLocale: string
+  preferredDateFormat: DateFormat
+  preferredTimeFormat: TimeFormat
+  preferredNumberFormat: NumberFormat
+  preferredCurrency: string
+  preferredMeasurementSystem: MeasurementSystem
+  preferredTimeZone: string
+
+  /** Set the Preferred Language™ (resets localization to the new defaults). */
+  setPreferredLanguage: (language: LanguageCode) => void
+  /** Override one or more presentation dimensions independently. */
+  setLocalizationOverrides: (overrides: LocalizationOverrides) => void
+  /** Clear localization overrides, returning to the language defaults. */
+  resetLocalization: () => void
 }

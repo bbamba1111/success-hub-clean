@@ -33,6 +33,16 @@ import {
   getBusinessStage as readBusinessStage,
   setBusinessStage as writeBusinessStage,
 } from "@/lib/business-stage/business-stage-store"
+import { DEFAULT_LANGUAGE, getLanguage, type LanguageCode } from "@/lib/i18n/language"
+import { resolveLocalization, type LocalizationOverrides } from "@/lib/i18n/localization"
+import {
+  LOCALE_PREFERENCES_EVENT,
+  getLocalePreferences,
+  resetLocalization as writeResetLocalization,
+  setLocalizationOverrides as writeLocalizationOverrides,
+  setPreferredLanguage as writePreferredLanguage,
+  type LocalePreferences,
+} from "@/lib/i18n/locale-preferences-store"
 import type { HarmonyContextValue, HarmonySegment, TimeOfDay } from "@/lib/harmony-context/types"
 
 /** id → human label / config lookups (built once). */
@@ -69,20 +79,47 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
   // The founder is always in control; this only changes via setBusinessStage.
   const [businessStage, setStage] = useState<BusinessStage>(DEFAULT_BUSINESS_STAGE)
 
+  // Locale preferences (language + localization overrides) — session state.
+  const [localePrefs, setLocalePrefs] = useState<LocalePreferences>({
+    language: DEFAULT_LANGUAGE,
+    localization: {},
+  })
+
   useEffect(() => {
     setInstalled(getInstalledWeek())
     setStage(readBusinessStage())
+    setLocalePrefs(getLocalePreferences())
     setLoaded(true)
 
-    // Keep in sync if the stage changes elsewhere in this tab.
+    // Keep in sync if either signal changes elsewhere in this tab.
     const onStageChange = () => setStage(readBusinessStage())
+    const onLocaleChange = () => setLocalePrefs(getLocalePreferences())
     window.addEventListener(BUSINESS_STAGE_EVENT, onStageChange)
-    return () => window.removeEventListener(BUSINESS_STAGE_EVENT, onStageChange)
+    window.addEventListener(LOCALE_PREFERENCES_EVENT, onLocaleChange)
+    return () => {
+      window.removeEventListener(BUSINESS_STAGE_EVENT, onStageChange)
+      window.removeEventListener(LOCALE_PREFERENCES_EVENT, onLocaleChange)
+    }
   }, [])
 
   const setBusinessStage = useCallback((stage: BusinessStage) => {
     writeBusinessStage(stage)
     setStage(stage)
+  }, [])
+
+  const setPreferredLanguage = useCallback((language: LanguageCode) => {
+    writePreferredLanguage(language)
+    setLocalePrefs(getLocalePreferences())
+  }, [])
+
+  const setLocalizationOverrides = useCallback((overrides: LocalizationOverrides) => {
+    writeLocalizationOverrides(overrides)
+    setLocalePrefs(getLocalePreferences())
+  }, [])
+
+  const resetLocalization = useCallback(() => {
+    writeResetLocalization()
+    setLocalePrefs(getLocalePreferences())
   }, [])
 
   const value = useMemo<HarmonyContextValue>(() => {
@@ -122,6 +159,11 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
     const stageDef = getBusinessStageDef(businessStage)
     const recommendedFocusAreas = stageDef.recommendedFocusAreas.map((id) => FOCUS_LABEL.get(id) ?? id)
 
+    // Global Language Architecture™ derivations. Language and localization are
+    // resolved separately, then localization is layered defaults + overrides.
+    const languageDef = getLanguage(localePrefs.language)
+    const localization = resolveLocalization(localePrefs.language, localePrefs.localization)
+
     return {
       ready,
       hasDesignedWeek: Boolean(installed),
@@ -142,8 +184,34 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
       recommendedExecutives: stageDef.recommendedExecutives,
       recommendedAdvisors: stageDef.recommendedAdvisors,
       setBusinessStage,
+      // Global Language Architecture™
+      preferredLanguage: localePrefs.language,
+      languageName: languageDef.nativeName,
+      textDirection: languageDef.direction,
+      isTranslationActive: languageDef.translationStatus === "active",
+      localization,
+      preferredLocale: localization.locale,
+      preferredDateFormat: localization.dateFormat,
+      preferredTimeFormat: localization.timeFormat,
+      preferredNumberFormat: localization.numberFormat,
+      preferredCurrency: localization.currency,
+      preferredMeasurementSystem: localization.measurementSystem,
+      preferredTimeZone: localization.timeZone,
+      setPreferredLanguage,
+      setLocalizationOverrides,
+      resetLocalization,
     }
-  }, [engine, installed, loaded, businessStage, setBusinessStage])
+  }, [
+    engine,
+    installed,
+    loaded,
+    businessStage,
+    setBusinessStage,
+    localePrefs,
+    setPreferredLanguage,
+    setLocalizationOverrides,
+    resetLocalization,
+  ])
 
   return <HarmonyContext.Provider value={value}>{children}</HarmonyContext.Provider>
 }

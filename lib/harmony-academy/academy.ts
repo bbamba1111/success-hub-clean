@@ -56,3 +56,19 @@ export const ACADEMY_TRACKS: AcademyTrack[] = ALL_BUSINESS_STAGES.map((stage) =>
 export function getAcademyTrack(stage: BusinessStage): AcademyTrack | undefined {
   return ACADEMY_TRACKS.find((t) => t.businessStage === stage)
 }
+
+/**
+ * PLANNED_LOCALIZATION_ASSETS — reserved, per Global Language Architecture™
+ * (Phase 5.5A). Future Academy lessons should support these localized assets so
+ * learning is accessible in a founder's Preferred Language™. Structure only —
+ * nothing is produced this phase.
+ */
+export const PLANNED_LOCALIZATION_ASSETS = [
+  "subtitles",
+  "transcripts",
+  "translated articles",
+  "translated templates",
+  "translated checklists",
+] as const
+
+export type PlannedLocalizationAsset = (typeof PLANNED_LOCALIZATION_ASSETS)[number]
