@@ -143,7 +143,8 @@ function CeoSections({
                   onChange={(e) => dispatch({ type: "SET_CEO", sectionId: section.id, value: e.target.value })}
                   readOnly={readOnly}
                   rows={2}
-                  placeholder="Design this block…"
+                  aria-label={section.title}
+                  placeholder={`Design your ${section.title}…`}
                   className="mt-2 w-full resize-y rounded-lg border border-black/[0.08] bg-card px-3 py-2 text-sm leading-relaxed text-brand-ink placeholder:text-brand-ink-soft/50 focus:border-brand-green focus:outline-none focus:ring-2 focus:ring-brand-green/20"
                 />
               )}
