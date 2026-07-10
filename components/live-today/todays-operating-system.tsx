@@ -261,21 +261,28 @@ function SegmentCard({ segment, isCurrent }: { segment: HarmonySegment; isCurren
   )
 }
 
-/** AI Executive Leadership Team™ — placeholder panel (no recommendation logic yet). */
+/** Executive Leadership Team™ — entry point to the boardroom (recommendation logic arrives later). */
 function AiExecutiveTeamPanel() {
   return (
-    <div className="mt-8 rounded-2xl border border-dashed border-[#5B835F]/30 bg-white/50 px-6 py-6 text-center">
+    <Link
+      href="/executive-leadership-team"
+      className="group mt-8 block rounded-2xl border border-dashed border-[#5B835F]/30 bg-white/50 px-6 py-6 text-center ds-transition hover:border-[#5B835F]/50 hover:bg-white/70"
+    >
       <div className="inline-flex items-center gap-2">
         <Users className="h-4 w-4 text-[#5B835F]" aria-hidden />
         <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.14em] text-[#5B835F]">
-          AI Executive Leadership Team™
+          Executive Leadership Team™
         </p>
       </div>
       <p className="mx-auto mt-2 max-w-lg font-montserrat text-sm leading-relaxed text-[#6B5860]">
-        Based on your CEO priorities, Cherry Blossom™ will soon recommend the most relevant AI Executive Advisor™ for
-        research, planning, decision support, education, and deliverables.
+        Based on your CEO priorities, Cherry Blossom™ will soon bring in the most relevant executive for research,
+        planning, decision support, and deliverables.
       </p>
-    </div>
+      <span className="mt-3 inline-flex items-center gap-1.5 font-montserrat text-sm font-semibold text-[#5B835F]">
+        Meet your Executive Leadership Team™
+        <ArrowRight className="h-4 w-4 ds-transition group-hover:translate-x-0.5" aria-hidden />
+      </span>
+    </Link>
   )
 }
 
