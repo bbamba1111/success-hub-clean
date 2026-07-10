@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 import { ConductorPanel } from "@/components/executive-team/conductor-panel"
 import { ExecutiveCard } from "@/components/executive-team/executive-card"
 import { EXECUTIVE_TEAM } from "@/lib/executive-team/executive-registry"
@@ -67,6 +68,17 @@ export default function ExecutiveLeadershipTeamPage() {
             <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-brand-ink-soft">
               This page is here for reference and trust. In your day-to-day work, Cherry Blossom™ orchestrates the
               Executive Leadership Team™ on your behalf — bringing in each executive based on your Harmony Context™.
+            </p>
+            <p className="mx-auto mt-6 max-w-2xl text-sm leading-relaxed text-brand-ink-soft">
+              The executives run your business. To see the advisors who help{" "}
+              <span className="italic">protect</span> it, visit your{" "}
+              <Link
+                href="/professional-advisory-network"
+                className="font-semibold text-brand-green underline-offset-4 hover:underline"
+              >
+                Professional Advisory Network™
+              </Link>
+              .
             </p>
           </div>
         </section>

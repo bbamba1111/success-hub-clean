@@ -326,6 +326,38 @@ Cherry Blossom™ **conducts** on the member's behalf.
   CEO priorities to the right executive) and per-executive conversation are later
   phases. The Live Today™ panel links into the boardroom as the entry point.
 
+### 8.4 The Professional Advisory Network™ `[BUILT — architecture]` (Phase 5.2)
+
+The second layer of the Harmony Lane™ Leadership Ecosystem. The defining
+distinction from §8.3: **the executives run the business; the advisors protect
+it.** Advisors are trusted specialists Cherry Blossom™ and the executives bring
+in when legal, financial, funding, insurance, or compliance expertise is needed.
+Members do **not** browse advisors during normal workflow — Cherry Blossom™
+introduces them contextually.
+
+- **Five advisors, on call:** **AI Legal Advisor™**, **Tax Advisor™**, **Business
+  Credit Advisor™**, **Insurance Advisor™**, and **Compliance Advisor™** — each
+  covering an area that protects a founder-led business.
+- **Education & drafting, not licensed advice.** Every advisor carries a
+  **Professional Review Notice** that must accompany its outputs. Advisors help
+  founders understand, prepare, and get ready — then hand off to a licensed
+  professional. This is a protection layer, not a substitute for counsel.
+- **Executive integration:** each advisor declares `relatedExecutives` (e.g. Legal
+  ↔ People & Culture / Operations / Strategy; Business Credit ↔ Finance /
+  Strategy; Tax ↔ Finance; Compliance ↔ People & Culture / Operations; Insurance
+  ↔ Operations / Finance). Advisors are brought in **by** the executives.
+- **Single source of truth:** `lib/advisory-network/advisor-registry.ts`. Each
+  advisor declares `mission`, `primaryResponsibilities`, `typicalFounderQuestions`,
+  `availableDeliverables`, `professionalReviewNotice`, `recommendationTriggers`,
+  `relatedExecutives`, and a reserved `futureAiEndpoint`.
+- **Network page:** `/professional-advisory-network` — an editorial, on-brand
+  presentation matching the Executive boardroom's visual language. Component:
+  `components/advisory-network/advisor-card.tsx`. The Executive Leadership Team™
+  page cross-links to it as a companion layer.
+- **This pass = architecture + presentation only.** No AI conversations,
+  deliverable generation, Business Stage™/Comprehension™ adaptation, or the
+  Specialist/Partner Networks™ — those belong to later phases.
+
 ---
 
 ## 9. Live Today™ — Living the Design (Mon–Thu)
@@ -456,11 +488,19 @@ by the authenticated user; use parameterized queries and RLS.
   week; Cherry Blossom™ context-aware guidance (§8.2); and the upgraded Today's
   Operating System™ surface in Live Today™ (context greeting, Current Operating
   Segment™, full designed day, AI Executive Team™ placeholder). Session-only.
-- **4B.3 `[NEXT]`** — Cross-device persistence; 28-day cycle logic; Mon–Thu
+- **5.1 `[DONE]`** — The Executive Leadership Team™ (§8.3): centralized executive
+  registry (Cherry Blossom™ Conductor + nine executive functions) and the
+  editorial boardroom at `/executive-leadership-team`. Architecture + presentation.
+- **5.2 `[DONE]`** — The Professional Advisory Network™ (§8.4): centralized advisor
+  registry (Legal, Tax, Business Credit, Insurance, Compliance), executive linkage,
+  Professional Review Notices, and the network page at
+  `/professional-advisory-network`. Architecture + presentation.
+- **4B.3 / Next `[NEXT]`** — Cross-device persistence; 28-day cycle logic; Mon–Thu
   end-of-segment planning windows; deeper Cherry Blossom & AI Executive
   intelligence; reflection/coaching; reconciliation notes flagged in §5.
-- **Later** — Time Freedom™ & My Harmony™ full builds; AI Executive Leadership
-  Team™ wiring; Quarter/Year layers; embedded Cherry Blossom chat everywhere.
+- **Later** — Specialist Network™ & Deliverables Engine™; Business Stage™ &
+  Business Comprehension™ adaptation; AI conversations across the ecosystem; Time
+  Freedom™ & My Harmony™ full builds; Quarter/Year layers.
 
 ---
 
