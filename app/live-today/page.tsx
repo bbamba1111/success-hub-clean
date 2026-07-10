@@ -5,6 +5,7 @@ import { BusinessDayHero } from "@/components/business-day-hero"
 import { BusinessDaySchedule } from "@/components/business-day-schedule"
 import { DeveloperToolbar } from "@/components/developer-toolbar"
 import { TodaysOperatingSystem } from "@/components/live-today/todays-operating-system"
+import { OperatingBrief } from "@/components/founder-intelligence/operating-brief"
 
 export const metadata: Metadata = {
   title: "Live Today™ | Make Time For More™",
@@ -28,6 +29,10 @@ export default function LiveTodayPage() {
         <HarmonyProvider>
           {/* Engine-driven hero — the in-session Operating Experience™ + tools */}
           <BusinessDayHero />
+
+          {/* Operating Brief™ — Founder Intelligence™ orchestrates today's team,
+              insight, and deliverables from live Harmony Context™. */}
+          <OperatingBrief />
 
           {/* Today's Operating System™ — Cherry Blossom's context-aware guidance */}
           <TodaysOperatingSystem />
