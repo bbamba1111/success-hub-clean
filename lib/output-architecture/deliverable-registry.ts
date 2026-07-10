@@ -25,6 +25,7 @@
 import type { RendererType } from "./render-engine"
 import type { DistributionMethod } from "./distribution-engine"
 import type { ExecutionPath } from "./execution-engine"
+import type { BusinessStage } from "@/lib/business-stage/business-stage"
 
 /** Who owns a deliverable. Specialists arrive in a future phase. */
 export type OwnerType = "executive" | "advisor" | "specialist"
@@ -108,6 +109,12 @@ export interface Deliverable {
   distributionOptions: DistributionMethod[]
   /** Supported execution paths (who does the work). */
   executionOptions: ExecutionPath[]
+  /**
+   * Business Stages™ where this deliverable is MOST relevant. It remains
+   * available at every stage — this only declares emphasis for a future phase.
+   * See lib/business-stage.
+   */
+  recommendedBusinessStages: BusinessStage[]
   /** The Structured Business Content™, when authored (future). */
   content?: StructuredBusinessContent
   /** Reserved generator endpoint for a future AI phase. Not wired now. */
@@ -136,6 +143,7 @@ export const DELIVERABLES: Deliverable[] = [
     recommendedRenderer: "editable-document",
     distributionOptions: ["download", "print", "email", "copy", "save-to-library", "share-with-team"],
     executionOptions: ["diy", "ai-assisted", "done-for-you"],
+    recommendedBusinessStages: ["growth", "scale"],
     futureGenerator: "generate/job-description",
     status: "architecture",
   },
@@ -153,6 +161,7 @@ export const DELIVERABLES: Deliverable[] = [
     recommendedRenderer: "slack-message",
     distributionOptions: ["slack", "teams", "share-with-team", "save-to-library", "download", "print"],
     executionOptions: ["diy", "ai-assisted"],
+    recommendedBusinessStages: ["growth", "scale"],
     futureGenerator: "generate/meeting-rules",
     status: "architecture",
   },
@@ -170,6 +179,7 @@ export const DELIVERABLES: Deliverable[] = [
     recommendedRenderer: "editable-document",
     distributionOptions: ["download", "email", "copy", "save-to-library", "share-with-team"],
     executionOptions: ["diy", "ai-assisted", "done-with-you", "done-for-you"],
+    recommendedBusinessStages: ["growth", "scale", "legacy"],
     futureGenerator: "generate/press-release",
     status: "architecture",
   },
@@ -187,6 +197,7 @@ export const DELIVERABLES: Deliverable[] = [
     recommendedRenderer: "spreadsheet",
     distributionOptions: ["download", "email", "save-to-library", "share-with-team"],
     executionOptions: ["diy", "ai-assisted", "done-with-you"],
+    recommendedBusinessStages: ["growth", "scale", "legacy"],
     futureGenerator: "generate/annual-budget",
     status: "architecture",
   },
@@ -204,6 +215,7 @@ export const DELIVERABLES: Deliverable[] = [
     recommendedRenderer: "pdf",
     distributionOptions: ["download", "print", "email", "save-to-library", "share-with-team", "notion"],
     executionOptions: ["diy", "ai-assisted", "done-with-you", "done-for-you"],
+    recommendedBusinessStages: ["launch", "growth", "scale", "legacy"],
     futureGenerator: "generate/strategic-plan",
     status: "architecture",
   },
@@ -221,6 +233,7 @@ export const DELIVERABLES: Deliverable[] = [
     recommendedRenderer: "calendar",
     distributionOptions: ["download", "save-to-library", "share-with-team", "email"],
     executionOptions: ["diy", "ai-assisted"],
+    recommendedBusinessStages: ["launch", "growth"],
     futureGenerator: "generate/launch-timeline",
     status: "architecture",
   },
@@ -238,6 +251,7 @@ export const DELIVERABLES: Deliverable[] = [
     recommendedRenderer: "checklist",
     distributionOptions: ["download", "print", "share-with-team", "save-to-library", "notion"],
     executionOptions: ["diy", "ai-assisted"],
+    recommendedBusinessStages: ["growth", "scale"],
     futureGenerator: "generate/onboarding-checklist",
     status: "architecture",
   },
@@ -257,6 +271,7 @@ export const DELIVERABLES: Deliverable[] = [
     recommendedRenderer: "editable-document",
     distributionOptions: ["download", "email", "save-to-library"],
     executionOptions: ["diy", "ai-assisted", "done-with-you"],
+    recommendedBusinessStages: ["launch", "growth"],
     futureGenerator: "generate/service-agreement",
     status: "architecture",
   },
@@ -275,6 +290,7 @@ export const DELIVERABLES: Deliverable[] = [
     recommendedRenderer: "checklist",
     distributionOptions: ["download", "print", "email", "save-to-library"],
     executionOptions: ["diy", "ai-assisted"],
+    recommendedBusinessStages: ["growth", "scale", "legacy"],
     futureGenerator: "generate/tax-prep-checklist",
     status: "architecture",
   },
@@ -294,6 +310,7 @@ export const DELIVERABLES: Deliverable[] = [
     recommendedRenderer: "checklist",
     distributionOptions: ["download", "print", "save-to-library", "share-with-team", "notion"],
     executionOptions: ["diy", "ai-assisted", "done-with-you"],
+    recommendedBusinessStages: ["scale", "legacy"],
     futureGenerator: "generate/compliance-checklist",
     status: "architecture",
   },

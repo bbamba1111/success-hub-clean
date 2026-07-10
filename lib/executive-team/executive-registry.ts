@@ -18,6 +18,8 @@
  * and a reserved `futureAiEndpoint`.
  */
 
+import { ALL_BUSINESS_STAGES, type BusinessStage } from "@/lib/business-stage/business-stage"
+
 /**
  * Lifecycle of an executive within the architecture.
  *   - "conductor"    → Cherry Blossom™: live, primary, never replaced or hidden.
@@ -52,6 +54,12 @@ export interface Executive {
   recommendationTriggers: string[]
   /** Future Specialist Network™ roles that report into this executive. */
   relatedSpecialists: string[]
+  /**
+   * Business Stages™ this executive supports. EVERY executive supports EVERY
+   * stage — the founder always has the full team. A future phase will vary
+   * emphasis (not availability) by stage. See lib/business-stage.
+   */
+  supportedBusinessStages: BusinessStage[]
   /** Reserved endpoint for future AI conversations. Not wired this phase. */
   futureAiEndpoint: string
   /** Lifecycle status within the architecture. */
@@ -91,6 +99,7 @@ export const CHERRY_BLOSSOM: Executive = {
   ],
   recommendationTriggers: ["always-present"],
   relatedSpecialists: [],
+  supportedBusinessStages: ALL_BUSINESS_STAGES,
   futureAiEndpoint: "/api/executives/cherry-blossom",
   status: "conductor",
 }
@@ -132,6 +141,7 @@ export const EXECUTIVE_TEAM: Executive[] = [
     recommendationTriggers: ["strategy", "vision", "positioning", "offer", "decision", "quarterly-planning"],
     relatedSpecialists: ["Positioning Specialist™", "Offer Design Specialist™", "Decision Support Specialist™"],
     futureAiEndpoint: "/api/executives/strategy",
+    supportedBusinessStages: ALL_BUSINESS_STAGES,
     status: "architecture",
   },
   {
@@ -168,6 +178,7 @@ export const EXECUTIVE_TEAM: Executive[] = [
     recommendationTriggers: ["marketing", "brand", "visibility", "content", "launch", "pr", "social", "website"],
     relatedSpecialists: ["Content Specialist™", "PR & Media Specialist™", "Personal Brand Specialist™"],
     futureAiEndpoint: "/api/executives/marketing-brand",
+    supportedBusinessStages: ALL_BUSINESS_STAGES,
     status: "architecture",
   },
   {
@@ -198,6 +209,7 @@ export const EXECUTIVE_TEAM: Executive[] = [
     recommendationTriggers: ["sales", "revenue", "conversion", "proposal", "partnership", "client-acquisition"],
     relatedSpecialists: ["Sales Copy Specialist™", "Partnership Specialist™", "Proposal Specialist™"],
     futureAiEndpoint: "/api/executives/sales",
+    supportedBusinessStages: ALL_BUSINESS_STAGES,
     status: "architecture",
   },
   {
@@ -231,6 +243,7 @@ export const EXECUTIVE_TEAM: Executive[] = [
     recommendationTriggers: ["operations", "delegation", "automation", "sop", "workflow", "efficiency", "overload"],
     relatedSpecialists: ["Automation Specialist™", "SOP Specialist™", "Systems Specialist™"],
     futureAiEndpoint: "/api/executives/operations",
+    supportedBusinessStages: ALL_BUSINESS_STAGES,
     status: "architecture",
   },
   {
@@ -261,6 +274,7 @@ export const EXECUTIVE_TEAM: Executive[] = [
     recommendationTriggers: ["finance", "pricing", "cash-flow", "profit", "forecast", "budget", "kpi"],
     relatedSpecialists: ["Pricing Specialist™", "Bookkeeping Specialist™", "Forecasting Specialist™"],
     futureAiEndpoint: "/api/executives/finance",
+    supportedBusinessStages: ALL_BUSINESS_STAGES,
     status: "architecture",
   },
   {
@@ -297,6 +311,7 @@ export const EXECUTIVE_TEAM: Executive[] = [
     recommendationTriggers: ["hiring", "team", "culture", "burnout", "capacity", "leadership", "organizational-design"],
     relatedSpecialists: ["Hiring Specialist™", "Team Ops Specialist™", "Culture Specialist™"],
     futureAiEndpoint: "/api/executives/people-culture",
+    supportedBusinessStages: ALL_BUSINESS_STAGES,
     status: "architecture",
   },
   {
@@ -327,6 +342,7 @@ export const EXECUTIVE_TEAM: Executive[] = [
     recommendationTriggers: ["client-success", "onboarding", "retention", "community", "experience", "testimonials"],
     relatedSpecialists: ["Onboarding Specialist™", "Community Specialist™", "Retention Specialist™"],
     futureAiEndpoint: "/api/executives/client-success",
+    supportedBusinessStages: ALL_BUSINESS_STAGES,
     status: "architecture",
   },
   {
@@ -357,6 +373,7 @@ export const EXECUTIVE_TEAM: Executive[] = [
     recommendationTriggers: ["ai-strategy", "ai-adoption", "research", "emerging-tech", "tools", "automation"],
     relatedSpecialists: ["AI Tools Specialist™", "Prompt Specialist™", "Research Specialist™"],
     futureAiEndpoint: "/api/executives/innovation",
+    supportedBusinessStages: ALL_BUSINESS_STAGES,
     status: "architecture",
   },
   {
@@ -390,6 +407,7 @@ export const EXECUTIVE_TEAM: Executive[] = [
     recommendationTriggers: ["growth", "leadership", "speaking", "publishing", "course", "thought-leadership"],
     relatedSpecialists: ["Publishing Specialist™", "Speaking Specialist™", "Course Design Specialist™"],
     futureAiEndpoint: "/api/executives/growth",
+    supportedBusinessStages: ALL_BUSINESS_STAGES,
     status: "architecture",
   },
 ]

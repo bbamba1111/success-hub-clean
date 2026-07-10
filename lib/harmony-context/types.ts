@@ -13,6 +13,8 @@
  * Leadership Team™) never need to be refactored.
  */
 
+import type { BusinessStage } from "@/lib/business-stage/business-stage"
+
 export type TimeOfDay = "Morning" | "Afternoon" | "Evening" | "Night"
 
 /** A single operating segment, resolved to the member's designed values. */
@@ -66,4 +68,22 @@ export interface HarmonyContextValue {
 
   /* -- CEO context ------------------------------------------------------ */
   ceo: HarmonyCeoContext
+
+  /* -- Business Stage™ (Phase 5.4) -------------------------------------- */
+  /**
+   * The founder's current Business Stage™ — a CONTEXTUAL signal, not a tier.
+   * The founder is always in control (changed only via setBusinessStage).
+   * No recommendation logic reads these yet; they are architecture hooks.
+   */
+  businessStage: BusinessStage
+  /** Human-readable description of the current stage. */
+  businessStageDescription: string
+  /** Priority Focus Area™ labels emphasized at this stage. */
+  recommendedFocusAreas: string[]
+  /** Executive ids a future phase may surface first at this stage. */
+  recommendedExecutives: string[]
+  /** Advisor ids a future phase may surface first at this stage. */
+  recommendedAdvisors: string[]
+  /** Update the founder's stage (session-only this phase). */
+  setBusinessStage: (stage: BusinessStage) => void
 }

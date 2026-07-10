@@ -18,11 +18,21 @@
  * contract, and therefore every consumer, stays exactly the same.
  */
 
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react"
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
 import { getInstalledWeek, type InstalledWeek } from "@/lib/sunday-design-day/installed-week"
 import { DESIGN_SEGMENTS, FOCUS_AREA_OPTIONS } from "@/components/sunday-design-day/sdd-config"
 import { sddSegmentIdFor } from "@/lib/harmony-context/segment-map"
+import {
+  DEFAULT_BUSINESS_STAGE,
+  getBusinessStage as getBusinessStageDef,
+  type BusinessStage,
+} from "@/lib/business-stage/business-stage"
+import {
+  BUSINESS_STAGE_EVENT,
+  getBusinessStage as readBusinessStage,
+  setBusinessStage as writeBusinessStage,
+} from "@/lib/business-stage/business-stage-store"
 import type { HarmonyContextValue, HarmonySegment, TimeOfDay } from "@/lib/harmony-context/types"
 
 /** id → human label / config lookups (built once). */
@@ -55,9 +65,24 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
   const [installed, setInstalled] = useState<InstalledWeek | null>(null)
   const [loaded, setLoaded] = useState(false)
 
+  // Business Stage™ is session state too — default until the member chooses.
+  // The founder is always in control; this only changes via setBusinessStage.
+  const [businessStage, setStage] = useState<BusinessStage>(DEFAULT_BUSINESS_STAGE)
+
   useEffect(() => {
     setInstalled(getInstalledWeek())
+    setStage(readBusinessStage())
     setLoaded(true)
+
+    // Keep in sync if the stage changes elsewhere in this tab.
+    const onStageChange = () => setStage(readBusinessStage())
+    window.addEventListener(BUSINESS_STAGE_EVENT, onStageChange)
+    return () => window.removeEventListener(BUSINESS_STAGE_EVENT, onStageChange)
+  }, [])
+
+  const setBusinessStage = useCallback((stage: BusinessStage) => {
+    writeBusinessStage(stage)
+    setStage(stage)
   }, [])
 
   const value = useMemo<HarmonyContextValue>(() => {
@@ -93,6 +118,10 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
 
     const focusAreas = (installed?.focusAreas ?? []).map((id) => FOCUS_LABEL.get(id) ?? id)
 
+    // Business Stage™ derivations (architecture hooks — no logic reads these yet).
+    const stageDef = getBusinessStageDef(businessStage)
+    const recommendedFocusAreas = stageDef.recommendedFocusAreas.map((id) => FOCUS_LABEL.get(id) ?? id)
+
     return {
       ready,
       hasDesignedWeek: Boolean(installed),
@@ -107,8 +136,14 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
       focusAreas,
       segments,
       ceo: installed?.ceo ?? EMPTY_CEO,
+      businessStage,
+      businessStageDescription: stageDef.description,
+      recommendedFocusAreas,
+      recommendedExecutives: stageDef.recommendedExecutives,
+      recommendedAdvisors: stageDef.recommendedAdvisors,
+      setBusinessStage,
     }
-  }, [engine, installed, loaded])
+  }, [engine, installed, loaded, businessStage, setBusinessStage])
 
   return <HarmonyContext.Provider value={value}>{children}</HarmonyContext.Provider>
 }

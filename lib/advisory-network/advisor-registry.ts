@@ -21,6 +21,8 @@
  * reserved `futureAiEndpoint`.
  */
 
+import type { BusinessStage } from "@/lib/business-stage/business-stage"
+
 /**
  * Lifecycle of an advisor within the architecture.
  *   - "architecture" → defined and presented; AI conversations arrive later.
@@ -66,6 +68,12 @@ export interface Advisor {
    * the executives; these ids reference lib/executive-team/executive-registry.
    */
   relatedExecutives: string[]
+  /**
+   * Business Stages™ where this advisor is MOST valuable. Advisors remain
+   * available at every stage — this only declares where a future phase may
+   * emphasize them. See lib/business-stage.
+   */
+  recommendedBusinessStages: BusinessStage[]
   /** Reserved endpoint for future AI conversations. Not wired this phase. */
   futureAiEndpoint: string
   /** Lifecycle status within the architecture. */
@@ -116,7 +124,8 @@ export const ADVISORY_NETWORK: Advisor[] = [
       "All legal outputs are educational or drafting assistance and should be reviewed by a licensed attorney before implementation.",
     recommendationTriggers: ["contract", "agreement", "trademark", "intellectual-property", "hiring", "website-legal", "risk"],
     relatedExecutives: ["people-culture", "operations", "strategy"],
-    futureAiEndpoint: "/api/advisors/legal",
+    recommendedBusinessStages: ["launch", "growth", "scale", "legacy"],
+  futureAiEndpoint: "/api/advisors/legal",
     status: "architecture",
   },
   {
@@ -151,7 +160,8 @@ export const ADVISORY_NETWORK: Advisor[] = [
       "Tax guidance is educational and should be reviewed by a qualified tax professional.",
     recommendationTriggers: ["taxes", "estimated-tax", "bookkeeping", "payroll", "deductions", "tax-readiness"],
     relatedExecutives: ["finance"],
-    futureAiEndpoint: "/api/advisors/tax",
+    recommendedBusinessStages: ["growth", "scale", "legacy"],
+  futureAiEndpoint: "/api/advisors/tax",
     status: "architecture",
   },
   {
@@ -186,7 +196,8 @@ export const ADVISORY_NETWORK: Advisor[] = [
       "Recommendations are educational and should be verified with lenders or qualified advisors before making financial commitments.",
     recommendationTriggers: ["business-credit", "funding", "capital", "banking", "ein", "duns", "vendor-credit"],
     relatedExecutives: ["finance", "strategy"],
-    futureAiEndpoint: "/api/advisors/business-credit",
+    recommendedBusinessStages: ["launch", "growth"],
+  futureAiEndpoint: "/api/advisors/business-credit",
     status: "architecture",
   },
   {
@@ -217,7 +228,8 @@ export const ADVISORY_NETWORK: Advisor[] = [
       "Insurance recommendations should be confirmed with licensed insurance professionals.",
     recommendationTriggers: ["insurance", "liability", "risk-management", "cyber", "workers-comp", "coverage"],
     relatedExecutives: ["operations", "finance"],
-    futureAiEndpoint: "/api/advisors/insurance",
+    recommendedBusinessStages: ["growth", "scale", "legacy"],
+  futureAiEndpoint: "/api/advisors/insurance",
     status: "architecture",
   },
   {
@@ -251,7 +263,8 @@ export const ADVISORY_NETWORK: Advisor[] = [
       "Compliance requirements vary by jurisdiction and industry and should be verified before implementation.",
     recommendationTriggers: ["compliance", "privacy", "accessibility", "ai-governance", "hr-policy", "regulations"],
     relatedExecutives: ["people-culture", "operations"],
-    futureAiEndpoint: "/api/advisors/compliance",
+    recommendedBusinessStages: ["scale", "legacy"],
+  futureAiEndpoint: "/api/advisors/compliance",
     status: "architecture",
   },
 ]
