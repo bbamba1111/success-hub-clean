@@ -302,6 +302,30 @@ they want to do.
 - **Tone:** premium, calm, editorial, encouraging — never punitive, never robotic.
   Reflection, memory, and true conversational chat arrive in a later phase.
 
+### 8.3 The Executive Leadership Team™ `[BUILT — architecture]` (Phase 4B.2)
+
+A permanent, private executive team for the founder-led business. It is **not** a
+directory of assistants the member browses — it is a leadership structure that
+Cherry Blossom™ **conducts** on the member's behalf.
+
+- **Cherry Blossom™ = Chief of Staff & Executive Conductor™.** She is the member's
+  only primary guide. She reads the Harmony Context Engine™ (§8.1) to know where
+  the founder is, then introduces the right executive at the right moment. The
+  founder never has to choose or manage a roster.
+- **Nine executive functions, always in residence:** each represents a permanent
+  leadership function (Strategy, Marketing & Brand, Sales, Operations, Finance,
+  People & Culture, plus additional functions) with a title, mandate,
+  responsibilities, and example deliverables.
+- **Single source of truth:** `lib/executive-team/executive-registry.ts`. Every
+  surface (the boardroom page, Live Today™ recommendations, future chat) reads the
+  same registry so the team stays consistent everywhere.
+- **Boardroom page:** `/executive-leadership-team` — an editorial, on-brand
+  presentation of the Conductor + the executives. Components:
+  `components/executive-team/executive-card.tsx` and `conductor-panel.tsx`.
+- **This pass = architecture + presentation only.** Recommendation logic (matching
+  CEO priorities to the right executive) and per-executive conversation are later
+  phases. The Live Today™ panel links into the boardroom as the entry point.
+
 ---
 
 ## 9. Live Today™ — Living the Design (Mon–Thu)
