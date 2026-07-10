@@ -151,6 +151,18 @@ export default function HarmonyBusinessAcademyPage() {
                 concepts, each explained in all five Communication Styles™. Definitions are never duplicated, so you
                 learn the same language everywhere in Harmony Lane™.
               </p>
+              <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-brand-ink-soft">
+                The Academy is the Executive Education Layer™ — it{" "}
+                <span className="font-semibold text-brand-ink">consumes</span> knowledge rather than owning it. All
+                enduring principles live in the{" "}
+                <Link
+                  href="/excellence-intelligence-engine"
+                  className="font-semibold text-brand-green underline-offset-4 hover:underline"
+                >
+                  Excellence Intelligence Engine™
+                </Link>
+                , the Canonical Knowledge Layer™ from which every lesson learns.
+              </p>
             </div>
             <div className="mt-8 flex flex-wrap justify-center gap-2">
               {BUSINESS_CONCEPTS.map((concept) => (

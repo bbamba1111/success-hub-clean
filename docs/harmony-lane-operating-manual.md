@@ -640,6 +640,64 @@ Learning Management System (LMS), a course catalog, or a video library.
   recommendation engine, competency tracking, quizzes, certificates, progress
   dashboards, adaptive recommendations. Those belong to future phases.
 
+### 8.11 Excellence Intelligence Engine™ `[BUILT — architecture only]` (Phase 5.8)
+
+The **Canonical Knowledge Layer™** of the Operating System — one of its
+permanent foundational systems. It is **not** an AI engine, a search engine, or
+a content library. It is the single, curated body of executive business
+knowledge from which every other system learns.
+
+- **Purpose.** Curate, synthesize, and operationalize enduring business
+  knowledge into ONE canonical source that powers Cherry Blossom™, the Executive
+  Leadership Team™, the Professional Advisory Network™, Harmony Business
+  Academy™, Deliverables™, the AI Augmentation Hour™, and every future AI
+  capability — without duplicating knowledge across the platform.
+- **Core philosophy.** Harmony Lane™ does not teach personalities; it teaches
+  **enduring business principles.** The PRINCIPLE stays constant for every
+  founder regardless of industry, Business Stage™, size, Business Comprehension™,
+  language, or location. The Harmony Context Engine™ adapts HOW it is explained.
+- **The Four Knowledge Domains™** (`KNOWLEDGE_DOMAINS`): Evidence-Based
+  Research™ (research-supported foundations), Enduring Business Principles™
+  (timeless fundamentals like 80/20, financial discipline, systems before
+  complexity), Executive Practice Patterns™ (patterns observed among healthy,
+  high-performing founder-led businesses — synthesized patterns, never celebrity
+  habits or copies of any individual), and Harmony Lane™ Methodology™ (the
+  proprietary IP — Sunday Design Day™, Human Sustainability™, AI Augmentation
+  Hour™, and more).
+- **Single source of truth:** `lib/excellence-intelligence/
+  excellence-intelligence-registry.ts` — `KNOWLEDGE_DOMAINS`, `KNOWLEDGE_OBJECTS`
+  (each declaring `knowledgeDomain`, `sourceType`, `evidenceLevel`,
+  `keyPrinciples`, and cross-references to `businessConcepts`,
+  `relatedExecutives`, `relatedAdvisors`, `relatedAcademyItems`,
+  `relatedDeliverables`, `relatedOperatingSegments`, plus the Harmony Context™
+  signals `businessStages` / `communicationStyles` / `supportedLanguages`), and
+  `CHERRY_BLOSSOM_REASONING_HIERARCHY`.
+- **The Canonical Knowledge Principle.** No duplicated knowledge. Concept
+  definitions always reference the Business Concepts Registry™ (§8.9); executives,
+  advisors, academy items, and deliverables are referenced by id. Everything
+  points to one source.
+- **Relationship to Harmony Business Academy™ (§8.10).** The Academy is the
+  **Executive Education Layer™**; the Engine is the **Canonical Knowledge
+  Layer™.** The Academy now clearly **consumes** the Engine rather than owning
+  business knowledge — no duplicated educational content.
+- **Relationship to Cherry Blossom™.** Documents the future **Reasoning
+  Hierarchy™**: Harmony Context Engine™ → Excellence Intelligence Engine™ →
+  Business Concepts Registry™ → Executive Leadership Team™ → Professional Advisory
+  Network™ → Harmony Business Academy™ → Deliverables™ → AI Augmentation Hour™ →
+  Founder Recommendation. **Architecture only — no reasoning is implemented.**
+- **Relationship to Deliverables™.** Future deliverables inherit their knowledge
+  from the Engine, then adapt through Business Stage™, Business Comprehension™,
+  Preferred Language™, and Localization™.
+- **Relationship to the AI Augmentation Hour™.** Future executive/advisor
+  recommendations, specialists, workflows, and execution paths will be informed
+  by the Engine. Not implemented — architecture only.
+- **UX:** an internal architectural view (not a public learning center) — calm,
+  minimal, editorial, trustworthy. Route: `/excellence-intelligence-engine`.
+  Components in `components/excellence-intelligence/`.
+- **Out of scope this phase:** AI reasoning, dynamic recommendations, search,
+  knowledge editing, lesson generation, adaptive Cherry Blossom™, deliverable
+  generation, workflow execution. Those belong to future intelligence phases.
+
 ---
 
 ## 9. Live Today™ — Living the Design (Mon–Thu)
@@ -820,7 +878,19 @@ by the authenticated user; use parameterized queries and RLS.
   (`LearningRecommendationPreview`). Premium editorial workspace at
   `/harmony-business-academy`. Architecture only — no lessons, media, quizzes,
   progress, or recommendation engine.
-- **5.8 `[NEXT]`** — Adaptive Cherry Blossom™ (personality-preserving, non-literal
+- **5.8 `[DONE]`** — Excellence Intelligence Engine™ (§8.11): the Canonical
+  Knowledge Layer™ — not an AI/search engine or content library. Established the
+  registry as the single source of enduring business knowledge
+  (`lib/excellence-intelligence/`): the Four Knowledge Domains™ (Evidence-Based
+  Research™, Enduring Business Principles™, Executive Practice Patterns™, Harmony
+  Lane™ Methodology™), cross-referenced `KNOWLEDGE_OBJECTS` (connecting to
+  Business Concepts™, Executives™, Advisors™, Academy™, Deliverables™, Operating
+  Segments™ + Business Stage™ / Comprehension™ / Language™ signals), and the
+  documented `CHERRY_BLOSSOM_REASONING_HIERARCHY`. Harmony Business Academy™ now
+  explicitly consumes rather than owns knowledge. Internal editorial workspace at
+  `/excellence-intelligence-engine`. Architecture only — no AI, search,
+  recommendations, or editing.
+- **5.9 `[NEXT]`** — Adaptive Cherry Blossom™ (personality-preserving, non-literal
   translation) and Deliverables™ that render the same Structured Business Content™
   per Preferred Language™ + Communication Style™. Language + comprehension precede
   full personalization.
