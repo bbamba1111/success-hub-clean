@@ -26,6 +26,10 @@ import type { RendererType } from "./render-engine"
 import type { DistributionMethod } from "./distribution-engine"
 import type { ExecutionPath } from "./execution-engine"
 import type { BusinessStage } from "@/lib/business-stage/business-stage"
+import {
+  ALL_COMMUNICATION_STYLES,
+  type CommunicationStyle,
+} from "@/lib/business-comprehension/business-comprehension"
 
 /** Who owns a deliverable. Specialists arrive in a future phase. */
 export type OwnerType = "executive" | "advisor" | "specialist"
@@ -115,6 +119,14 @@ export interface Deliverable {
    * See lib/business-stage.
    */
   recommendedBusinessStages: BusinessStage[]
+  /**
+   * Business Comprehension™ Communication Styles™ this deliverable can adapt to.
+   * EVERY deliverable supports EVERY style — the business content stays the
+   * same; only the INSTRUCTIONAL text (how it's explained) adapts. A future
+   * phase will render the same Structured Business Content™ with wording tuned
+   * to the founder's chosen style. See lib/business-comprehension.
+   */
+  supportedCommunicationStyles: CommunicationStyle[]
   /** The Structured Business Content™, when authored (future). */
   content?: StructuredBusinessContent
   /** Reserved generator endpoint for a future AI phase. Not wired now. */
@@ -144,6 +156,7 @@ export const DELIVERABLES: Deliverable[] = [
     distributionOptions: ["download", "print", "email", "copy", "save-to-library", "share-with-team"],
     executionOptions: ["diy", "ai-assisted", "done-for-you"],
     recommendedBusinessStages: ["growth", "scale"],
+    supportedCommunicationStyles: ALL_COMMUNICATION_STYLES,
     futureGenerator: "generate/job-description",
     status: "architecture",
   },
@@ -162,6 +175,7 @@ export const DELIVERABLES: Deliverable[] = [
     distributionOptions: ["slack", "teams", "share-with-team", "save-to-library", "download", "print"],
     executionOptions: ["diy", "ai-assisted"],
     recommendedBusinessStages: ["growth", "scale"],
+    supportedCommunicationStyles: ALL_COMMUNICATION_STYLES,
     futureGenerator: "generate/meeting-rules",
     status: "architecture",
   },
@@ -180,6 +194,7 @@ export const DELIVERABLES: Deliverable[] = [
     distributionOptions: ["download", "email", "copy", "save-to-library", "share-with-team"],
     executionOptions: ["diy", "ai-assisted", "done-with-you", "done-for-you"],
     recommendedBusinessStages: ["growth", "scale", "legacy"],
+    supportedCommunicationStyles: ALL_COMMUNICATION_STYLES,
     futureGenerator: "generate/press-release",
     status: "architecture",
   },
@@ -198,6 +213,7 @@ export const DELIVERABLES: Deliverable[] = [
     distributionOptions: ["download", "email", "save-to-library", "share-with-team"],
     executionOptions: ["diy", "ai-assisted", "done-with-you"],
     recommendedBusinessStages: ["growth", "scale", "legacy"],
+    supportedCommunicationStyles: ALL_COMMUNICATION_STYLES,
     futureGenerator: "generate/annual-budget",
     status: "architecture",
   },
@@ -216,6 +232,7 @@ export const DELIVERABLES: Deliverable[] = [
     distributionOptions: ["download", "print", "email", "save-to-library", "share-with-team", "notion"],
     executionOptions: ["diy", "ai-assisted", "done-with-you", "done-for-you"],
     recommendedBusinessStages: ["launch", "growth", "scale", "legacy"],
+    supportedCommunicationStyles: ALL_COMMUNICATION_STYLES,
     futureGenerator: "generate/strategic-plan",
     status: "architecture",
   },
@@ -234,6 +251,7 @@ export const DELIVERABLES: Deliverable[] = [
     distributionOptions: ["download", "save-to-library", "share-with-team", "email"],
     executionOptions: ["diy", "ai-assisted"],
     recommendedBusinessStages: ["launch", "growth"],
+    supportedCommunicationStyles: ALL_COMMUNICATION_STYLES,
     futureGenerator: "generate/launch-timeline",
     status: "architecture",
   },
@@ -252,6 +270,7 @@ export const DELIVERABLES: Deliverable[] = [
     distributionOptions: ["download", "print", "share-with-team", "save-to-library", "notion"],
     executionOptions: ["diy", "ai-assisted"],
     recommendedBusinessStages: ["growth", "scale"],
+    supportedCommunicationStyles: ALL_COMMUNICATION_STYLES,
     futureGenerator: "generate/onboarding-checklist",
     status: "architecture",
   },
@@ -272,6 +291,7 @@ export const DELIVERABLES: Deliverable[] = [
     distributionOptions: ["download", "email", "save-to-library"],
     executionOptions: ["diy", "ai-assisted", "done-with-you"],
     recommendedBusinessStages: ["launch", "growth"],
+    supportedCommunicationStyles: ALL_COMMUNICATION_STYLES,
     futureGenerator: "generate/service-agreement",
     status: "architecture",
   },
@@ -291,6 +311,7 @@ export const DELIVERABLES: Deliverable[] = [
     distributionOptions: ["download", "print", "email", "save-to-library"],
     executionOptions: ["diy", "ai-assisted"],
     recommendedBusinessStages: ["growth", "scale", "legacy"],
+    supportedCommunicationStyles: ALL_COMMUNICATION_STYLES,
     futureGenerator: "generate/tax-prep-checklist",
     status: "architecture",
   },
@@ -311,6 +332,7 @@ export const DELIVERABLES: Deliverable[] = [
     distributionOptions: ["download", "print", "save-to-library", "share-with-team", "notion"],
     executionOptions: ["diy", "ai-assisted", "done-with-you"],
     recommendedBusinessStages: ["scale", "legacy"],
+    supportedCommunicationStyles: ALL_COMMUNICATION_STYLES,
     futureGenerator: "generate/compliance-checklist",
     status: "architecture",
   },

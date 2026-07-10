@@ -14,6 +14,7 @@
  */
 
 import type { BusinessStage } from "@/lib/business-stage/business-stage"
+import type { CommunicationStyle } from "@/lib/business-comprehension/business-comprehension"
 import type { LanguageCode, TextDirection } from "@/lib/i18n/language"
 import type {
   DateFormat,
@@ -95,6 +96,27 @@ export interface HarmonyContextValue {
   recommendedAdvisors: string[]
   /** Update the founder's stage (session-only this phase). */
   setBusinessStage: (stage: BusinessStage) => void
+
+  /* -- Business Comprehension™ (Phase 5.6) ------------------------------ */
+  /**
+   * How the founder prefers business concepts to be EXPLAINED — a communication
+   * preference, NOT an assessment, education level, or measure of intelligence.
+   * It is independent of Business Stage™. Adapting the explanation never changes
+   * the underlying recommendation. Architecture hook: no adaptive logic reads
+   * this yet; the founder is always in control (changed only via
+   * setCommunicationStyle).
+   */
+  communicationStyle: CommunicationStyle
+  /** Brand name of the current style (e.g. "Business Builder™"). */
+  communicationStyleName: string
+  /** Human-readable description of the current communication style. */
+  communicationStyleDescription: string
+  /** The kind of examples this style favors (architecture hook). */
+  preferredExamples: string
+  /** The vocabulary register this style uses (architecture hook). */
+  preferredVocabulary: string
+  /** Update the founder's Communication Style™ (session-only this phase). */
+  setCommunicationStyle: (style: CommunicationStyle) => void
 
   /* -- Global Language Architecture™ (Phase 5.5A) ----------------------- */
   /**

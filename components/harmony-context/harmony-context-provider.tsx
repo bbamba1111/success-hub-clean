@@ -33,6 +33,16 @@ import {
   getBusinessStage as readBusinessStage,
   setBusinessStage as writeBusinessStage,
 } from "@/lib/business-stage/business-stage-store"
+import {
+  DEFAULT_COMMUNICATION_STYLE,
+  getCommunicationStyle as getCommunicationStyleDef,
+  type CommunicationStyle,
+} from "@/lib/business-comprehension/business-comprehension"
+import {
+  BUSINESS_COMPREHENSION_EVENT,
+  getCommunicationStyle as readCommunicationStyle,
+  setCommunicationStyle as writeCommunicationStyle,
+} from "@/lib/business-comprehension/business-comprehension-store"
 import { DEFAULT_LANGUAGE, getLanguage, type LanguageCode } from "@/lib/i18n/language"
 import { resolveLocalization, type LocalizationOverrides } from "@/lib/i18n/localization"
 import {
@@ -79,6 +89,11 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
   // The founder is always in control; this only changes via setBusinessStage.
   const [businessStage, setStage] = useState<BusinessStage>(DEFAULT_BUSINESS_STAGE)
 
+  // Business Comprehension™ (Communication Style™) — session state. A
+  // communication preference, independent of Business Stage™; changed only by
+  // the member via setCommunicationStyle.
+  const [communicationStyle, setStyle] = useState<CommunicationStyle>(DEFAULT_COMMUNICATION_STYLE)
+
   // Locale preferences (language + localization overrides) — session state.
   const [localePrefs, setLocalePrefs] = useState<LocalePreferences>({
     language: DEFAULT_LANGUAGE,
@@ -88,16 +103,20 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     setInstalled(getInstalledWeek())
     setStage(readBusinessStage())
+    setStyle(readCommunicationStyle())
     setLocalePrefs(getLocalePreferences())
     setLoaded(true)
 
-    // Keep in sync if either signal changes elsewhere in this tab.
+    // Keep in sync if any signal changes elsewhere in this tab.
     const onStageChange = () => setStage(readBusinessStage())
+    const onStyleChange = () => setStyle(readCommunicationStyle())
     const onLocaleChange = () => setLocalePrefs(getLocalePreferences())
     window.addEventListener(BUSINESS_STAGE_EVENT, onStageChange)
+    window.addEventListener(BUSINESS_COMPREHENSION_EVENT, onStyleChange)
     window.addEventListener(LOCALE_PREFERENCES_EVENT, onLocaleChange)
     return () => {
       window.removeEventListener(BUSINESS_STAGE_EVENT, onStageChange)
+      window.removeEventListener(BUSINESS_COMPREHENSION_EVENT, onStyleChange)
       window.removeEventListener(LOCALE_PREFERENCES_EVENT, onLocaleChange)
     }
   }, [])
@@ -105,6 +124,11 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
   const setBusinessStage = useCallback((stage: BusinessStage) => {
     writeBusinessStage(stage)
     setStage(stage)
+  }, [])
+
+  const setCommunicationStyle = useCallback((style: CommunicationStyle) => {
+    writeCommunicationStyle(style)
+    setStyle(style)
   }, [])
 
   const setPreferredLanguage = useCallback((language: LanguageCode) => {
@@ -159,6 +183,10 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
     const stageDef = getBusinessStageDef(businessStage)
     const recommendedFocusAreas = stageDef.recommendedFocusAreas.map((id) => FOCUS_LABEL.get(id) ?? id)
 
+    // Business Comprehension™ derivations (architecture hook — no adaptive logic
+    // reads these yet). Independent of Business Stage™.
+    const styleDef = getCommunicationStyleDef(communicationStyle)
+
     // Global Language Architecture™ derivations. Language and localization are
     // resolved separately, then localization is layered defaults + overrides.
     const languageDef = getLanguage(localePrefs.language)
@@ -184,6 +212,13 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
       recommendedExecutives: stageDef.recommendedExecutives,
       recommendedAdvisors: stageDef.recommendedAdvisors,
       setBusinessStage,
+      // Business Comprehension™
+      communicationStyle,
+      communicationStyleName: styleDef.name,
+      communicationStyleDescription: styleDef.description,
+      preferredExamples: styleDef.preferredExamples,
+      preferredVocabulary: styleDef.preferredVocabulary,
+      setCommunicationStyle,
       // Global Language Architecture™
       preferredLanguage: localePrefs.language,
       languageName: languageDef.nativeName,
@@ -207,6 +242,8 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
     loaded,
     businessStage,
     setBusinessStage,
+    communicationStyle,
+    setCommunicationStyle,
     localePrefs,
     setPreferredLanguage,
     setLocalizationOverrides,

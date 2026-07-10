@@ -22,6 +22,10 @@
  */
 
 import type { BusinessStage } from "@/lib/business-stage/business-stage"
+import {
+  ALL_COMMUNICATION_STYLES,
+  type CommunicationStyle,
+} from "@/lib/business-comprehension/business-comprehension"
 
 /**
  * Lifecycle of an advisor within the architecture.
@@ -74,6 +78,13 @@ export interface Advisor {
    * emphasize them. See lib/business-stage.
    */
   recommendedBusinessStages: BusinessStage[]
+  /**
+   * Business Comprehension™ Communication Styles™ this advisor can express.
+   * EVERY advisor supports EVERY style — the guidance never changes, only how
+   * it's explained. A future phase will adapt the explanation to the founder's
+   * chosen style. See lib/business-comprehension.
+   */
+  supportedCommunicationStyles: CommunicationStyle[]
   /** Reserved endpoint for future AI conversations. Not wired this phase. */
   futureAiEndpoint: string
   /** Lifecycle status within the architecture. */
@@ -125,7 +136,8 @@ export const ADVISORY_NETWORK: Advisor[] = [
     recommendationTriggers: ["contract", "agreement", "trademark", "intellectual-property", "hiring", "website-legal", "risk"],
     relatedExecutives: ["people-culture", "operations", "strategy"],
     recommendedBusinessStages: ["launch", "growth", "scale", "legacy"],
-  futureAiEndpoint: "/api/advisors/legal",
+    futureAiEndpoint: "/api/advisors/legal",
+    supportedCommunicationStyles: ALL_COMMUNICATION_STYLES,
     status: "architecture",
   },
   {
@@ -161,7 +173,8 @@ export const ADVISORY_NETWORK: Advisor[] = [
     recommendationTriggers: ["taxes", "estimated-tax", "bookkeeping", "payroll", "deductions", "tax-readiness"],
     relatedExecutives: ["finance"],
     recommendedBusinessStages: ["growth", "scale", "legacy"],
-  futureAiEndpoint: "/api/advisors/tax",
+    futureAiEndpoint: "/api/advisors/tax",
+    supportedCommunicationStyles: ALL_COMMUNICATION_STYLES,
     status: "architecture",
   },
   {
@@ -197,7 +210,8 @@ export const ADVISORY_NETWORK: Advisor[] = [
     recommendationTriggers: ["business-credit", "funding", "capital", "banking", "ein", "duns", "vendor-credit"],
     relatedExecutives: ["finance", "strategy"],
     recommendedBusinessStages: ["launch", "growth"],
-  futureAiEndpoint: "/api/advisors/business-credit",
+    futureAiEndpoint: "/api/advisors/business-credit",
+    supportedCommunicationStyles: ALL_COMMUNICATION_STYLES,
     status: "architecture",
   },
   {
@@ -229,7 +243,8 @@ export const ADVISORY_NETWORK: Advisor[] = [
     recommendationTriggers: ["insurance", "liability", "risk-management", "cyber", "workers-comp", "coverage"],
     relatedExecutives: ["operations", "finance"],
     recommendedBusinessStages: ["growth", "scale", "legacy"],
-  futureAiEndpoint: "/api/advisors/insurance",
+    futureAiEndpoint: "/api/advisors/insurance",
+    supportedCommunicationStyles: ALL_COMMUNICATION_STYLES,
     status: "architecture",
   },
   {
@@ -264,7 +279,8 @@ export const ADVISORY_NETWORK: Advisor[] = [
     recommendationTriggers: ["compliance", "privacy", "accessibility", "ai-governance", "hr-policy", "regulations"],
     relatedExecutives: ["people-culture", "operations"],
     recommendedBusinessStages: ["scale", "legacy"],
-  futureAiEndpoint: "/api/advisors/compliance",
+    futureAiEndpoint: "/api/advisors/compliance",
+    supportedCommunicationStyles: ALL_COMMUNICATION_STYLES,
     status: "architecture",
   },
 ]

@@ -19,6 +19,10 @@
  */
 
 import { ALL_BUSINESS_STAGES, type BusinessStage } from "@/lib/business-stage/business-stage"
+import {
+  ALL_COMMUNICATION_STYLES,
+  type CommunicationStyle,
+} from "@/lib/business-comprehension/business-comprehension"
 
 /**
  * Lifecycle of an executive within the architecture.
@@ -60,6 +64,14 @@ export interface Executive {
    * emphasis (not availability) by stage. See lib/business-stage.
    */
   supportedBusinessStages: BusinessStage[]
+  /**
+   * Business Comprehension™ Communication Styles™ this executive can express.
+   * EVERY executive supports EVERY style — the recommendation never changes,
+   * only how it's explained. A future phase will adapt the explanation's
+   * vocabulary and examples to the founder's chosen style. See
+   * lib/business-comprehension.
+   */
+  supportedCommunicationStyles: CommunicationStyle[]
   /** Reserved endpoint for future AI conversations. Not wired this phase. */
   futureAiEndpoint: string
   /** Lifecycle status within the architecture. */
@@ -100,6 +112,7 @@ export const CHERRY_BLOSSOM: Executive = {
   recommendationTriggers: ["always-present"],
   relatedSpecialists: [],
   supportedBusinessStages: ALL_BUSINESS_STAGES,
+  supportedCommunicationStyles: ALL_COMMUNICATION_STYLES,
   futureAiEndpoint: "/api/executives/cherry-blossom",
   status: "conductor",
 }
@@ -142,6 +155,7 @@ export const EXECUTIVE_TEAM: Executive[] = [
     relatedSpecialists: ["Positioning Specialist™", "Offer Design Specialist™", "Decision Support Specialist™"],
     futureAiEndpoint: "/api/executives/strategy",
     supportedBusinessStages: ALL_BUSINESS_STAGES,
+    supportedCommunicationStyles: ALL_COMMUNICATION_STYLES,
     status: "architecture",
   },
   {
@@ -179,6 +193,7 @@ export const EXECUTIVE_TEAM: Executive[] = [
     relatedSpecialists: ["Content Specialist™", "PR & Media Specialist™", "Personal Brand Specialist™"],
     futureAiEndpoint: "/api/executives/marketing-brand",
     supportedBusinessStages: ALL_BUSINESS_STAGES,
+    supportedCommunicationStyles: ALL_COMMUNICATION_STYLES,
     status: "architecture",
   },
   {
@@ -210,6 +225,7 @@ export const EXECUTIVE_TEAM: Executive[] = [
     relatedSpecialists: ["Sales Copy Specialist™", "Partnership Specialist™", "Proposal Specialist™"],
     futureAiEndpoint: "/api/executives/sales",
     supportedBusinessStages: ALL_BUSINESS_STAGES,
+    supportedCommunicationStyles: ALL_COMMUNICATION_STYLES,
     status: "architecture",
   },
   {
@@ -244,6 +260,7 @@ export const EXECUTIVE_TEAM: Executive[] = [
     relatedSpecialists: ["Automation Specialist™", "SOP Specialist™", "Systems Specialist™"],
     futureAiEndpoint: "/api/executives/operations",
     supportedBusinessStages: ALL_BUSINESS_STAGES,
+    supportedCommunicationStyles: ALL_COMMUNICATION_STYLES,
     status: "architecture",
   },
   {
@@ -275,6 +292,7 @@ export const EXECUTIVE_TEAM: Executive[] = [
     relatedSpecialists: ["Pricing Specialist™", "Bookkeeping Specialist™", "Forecasting Specialist™"],
     futureAiEndpoint: "/api/executives/finance",
     supportedBusinessStages: ALL_BUSINESS_STAGES,
+    supportedCommunicationStyles: ALL_COMMUNICATION_STYLES,
     status: "architecture",
   },
   {
@@ -312,6 +330,7 @@ export const EXECUTIVE_TEAM: Executive[] = [
     relatedSpecialists: ["Hiring Specialist™", "Team Ops Specialist™", "Culture Specialist™"],
     futureAiEndpoint: "/api/executives/people-culture",
     supportedBusinessStages: ALL_BUSINESS_STAGES,
+    supportedCommunicationStyles: ALL_COMMUNICATION_STYLES,
     status: "architecture",
   },
   {
@@ -343,6 +362,7 @@ export const EXECUTIVE_TEAM: Executive[] = [
     relatedSpecialists: ["Onboarding Specialist™", "Community Specialist™", "Retention Specialist™"],
     futureAiEndpoint: "/api/executives/client-success",
     supportedBusinessStages: ALL_BUSINESS_STAGES,
+    supportedCommunicationStyles: ALL_COMMUNICATION_STYLES,
     status: "architecture",
   },
   {
@@ -374,6 +394,7 @@ export const EXECUTIVE_TEAM: Executive[] = [
     relatedSpecialists: ["AI Tools Specialist™", "Prompt Specialist™", "Research Specialist™"],
     futureAiEndpoint: "/api/executives/innovation",
     supportedBusinessStages: ALL_BUSINESS_STAGES,
+    supportedCommunicationStyles: ALL_COMMUNICATION_STYLES,
     status: "architecture",
   },
   {
@@ -408,6 +429,7 @@ export const EXECUTIVE_TEAM: Executive[] = [
     relatedSpecialists: ["Publishing Specialist™", "Speaking Specialist™", "Course Design Specialist™"],
     futureAiEndpoint: "/api/executives/growth",
     supportedBusinessStages: ALL_BUSINESS_STAGES,
+    supportedCommunicationStyles: ALL_COMMUNICATION_STYLES,
     status: "architecture",
   },
 ]
