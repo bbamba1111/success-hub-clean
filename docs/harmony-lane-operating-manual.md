@@ -408,6 +408,41 @@ Executive / Advisor → Deliverable Engine™ → Structured Business Content™
   distribution, or persistence. Every future deliverable plugs in **without a
   redesign**.
 
+### 8.6 Business Stage™ `[BUILT — signal]` (Phase 5.4)
+
+A first-class **contextual signal** describing where the founder-led business is
+in its journey. It is **not** a plan tier, an upsell, or a gate — **the member is
+always in control**, sees the full team and every capability, and changes stage
+only by their own choice. The whole platform is designed to become
+**stage-aware** so guidance can adapt to the founder's reality.
+
+- **The four stages:** **Launch™** (0–1 yr — build the foundation), **Growth™**
+  (1–3 yr — gain traction & first hires), **Scale™** (3–7 yr — systemize & lead a
+  team), **Legacy™** (7+ yr — optimize, protect, and transfer). Each is a
+  contextual lens, never a ranking.
+- **Single source of truth:** `lib/business-stage/business-stage.ts` —
+  `BusinessStage` union, `ALL_BUSINESS_STAGES`, and per-stage definitions
+  (`label`, `tagline`, `yearsRange`, `description`, `focus`,
+  `recommendedFocusAreas`, `recommendedExecutives`, `recommendedAdvisors`). Stage
+  selection is session-only via `business-stage-store.ts` (default **Growth™**),
+  which broadcasts a change event so all surfaces stay in sync.
+- **Harmony Context Engine™ integration (§8.1):** the engine now exposes
+  `businessStage`, `businessStageDescription`, `recommendedFocusAreas`,
+  `recommendedExecutives`, `recommendedAdvisors`, and `setBusinessStage`. These are
+  **architecture hooks** — no recommendation logic consumes them yet.
+- **Registry integration:** every Executive™ carries
+  `supportedBusinessStages` (**all executives support all stages** — the founder
+  always has the full team); every Advisor™ carries `recommendedBusinessStages`
+  (emphasis, not availability); every Deliverable™ carries
+  `recommendedBusinessStages` (relevance, not restriction).
+- **Harmony Academy™ placeholders:** `lib/harmony-academy/academy.ts` maps future
+  learning tracks to each stage. Structure only — **no lessons or content yet.**
+- **UX:** `components/business-stage/business-stage-card.tsx` lets the founder view
+  and change their stage; hosted on the Member Profile™ page at `/member-profile`.
+- **This pass = the signal + wiring only.** Stage-aware recommendations, adaptive
+  Cherry Blossom™ guidance, Business Comprehension™, and the Academy™ content layer
+  are later phases.
+
 ---
 
 ## 9. Live Today™ — Living the Design (Mon–Thu)
@@ -549,6 +584,11 @@ by the authenticated user; use parameterized queries and RLS.
   model (Deliverable, Render, Distribution, Storage), Structured Business Content™,
   the deliverable registry, execution paths, the reusable Deliverable Preview, and
   the reference page at `/output-architecture`. Architecture only.
+- **5.4 `[DONE]`** — Business Stage™ (§8.6): the contextual stage signal (Launch,
+  Growth, Scale, Legacy), the stage registry + session store, Harmony Context
+  Engine™ hooks, registry integration (executives/advisors/deliverables), Harmony
+  Academy™ placeholders, and the Business Stage™ card on `/member-profile`. Signal
+  + wiring only; stage-aware recommendations are a later phase.
 - **4B.3 / Next `[NEXT]`** — Cross-device persistence; 28-day cycle logic; Mon–Thu
   end-of-segment planning windows; deeper Cherry Blossom & AI Executive
   intelligence; reflection/coaching; reconciliation notes flagged in §5.
