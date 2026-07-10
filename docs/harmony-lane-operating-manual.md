@@ -544,6 +544,56 @@ re-translating copy that is still changing).
   Deliverables™ rendering per language + Business Comprehension™ are sequenced
   next (see roadmap 5.6 / 5.7).
 
+### 8.9 Business Comprehension™ `[BUILT — signal + reference library]` (Phase 5.6)
+
+A first-class **contextual signal** describing HOW a founder prefers business
+concepts to be **explained**. Its guiding principle: **adapt the EXPLANATION,
+never the PRINCIPLE** — the recommendation is identical for everyone; only the
+vocabulary, framing, and examples change.
+
+- **It is a communication preference — NOT an assessment.** Business
+  Comprehension™ is never a test, education level, or measure of intelligence or
+  experience. Every surface carries the reassurance copy
+  (`COMPREHENSION_REASSURANCE`), and the founder is always in control.
+- **Independent of Business Stage™.** Where a founder is in their journey (Stage)
+  is a separate question from how they like concepts explained (Comprehension). A
+  first-year founder may choose Executive Strategy™; a veteran may choose Simple &
+  Clear™. The two signals never derive from one another.
+- **The five Communication Styles™.** Simple & Clear™ (`foundation`), Practical
+  Business™ (`small_business`), Business Builder™ (`business_owner`, the default —
+  a balanced middle), Executive Strategy™ (`executive`), and Boardroom &
+  Enterprise™ (`boardroom`). Ordered by vocabulary complexity for **display
+  only** — they are preferences, never rankings, and none is "better."
+- **Single source of truth:** `lib/business-comprehension/
+  business-comprehension.ts` (`CommunicationStyle` union, `ALL_COMMUNICATION_STYLES`,
+  per-style `name`, `tagline`, `description`, `characteristics`,
+  `preferredExamples`, `preferredVocabulary`). Session selection lives in
+  `business-comprehension-store.ts` (default **Business Builder™**), which
+  broadcasts `BUSINESS_COMPREHENSION_EVENT` so every surface stays in sync.
+- **Business Concepts™ canonical library:** `lib/business-concepts/
+  business-concepts-registry.ts` — the reference architecture that proves the
+  principle. **11 core concepts** (Finance, Operations, People & Leadership,
+  Growth), each with ONE `canonicalDefinition` plus **one explanation per style**
+  (55 explanations total), typed as `Record<CommunicationStyle, string>` so all
+  five variants are guaranteed. `getConceptExplanation(conceptId, style)` is the
+  canonical read path every future consumer will use.
+- **Harmony Context Engine™ integration (§8.1):** exposes `communicationStyle`,
+  `communicationStyleName`, `communicationStyleDescription`, `preferredExamples`,
+  `preferredVocabulary`, and `setCommunicationStyle`. Architecture hooks — no
+  adaptive logic consumes them yet.
+- **Registry integration:** every Executive™, Advisor™, and Deliverable™ carries
+  `supportedCommunicationStyles` — **all support all five styles.** For
+  executives/advisors the guidance is unchanged and only the explanation adapts;
+  for deliverables the Structured Business Content™ is identical and only the
+  instructional wording adapts. Harmony Academy™ reserves
+  `PLANNED_COMPREHENSION_VARIANTS` (same lesson per style).
+- **UX:** `components/business-comprehension/business-comprehension-card.tsx`
+  lets the founder view and change their style, with a **live preview** showing
+  the same concept ("Margin") re-explained in the selected style. Hosted on the
+  Member Profile™ at `/member-profile`.
+- **This pass = the signal + reference library only.** Adaptive AI responses,
+  automatic detection, and per-style Deliverable rendering are later phases.
+
 ---
 
 ## 9. Live Today™ — Living the Design (Mon–Thu)
@@ -704,10 +754,19 @@ by the authenticated user; use parameterized queries and RLS.
   a fallback `t()` resolver, Harmony Context Engine™ hooks, the
   `<LanguageRegionCard>` on `/member-profile`, and reserved Academy™ localization
   assets. Architecture only — English remains the working language.
-- **5.6 / 5.7 `[NEXT]`** — Business Comprehension™ (adapt guidance depth: Simple
-  & Clear ↔ Executive), then Adaptive Cherry Blossom™ (personality-preserving,
-  non-literal translation) and Deliverables™ that render per Preferred Language™ +
-  Business Comprehension™. Language + comprehension precede full personalization.
+- **5.6 `[DONE]`** — Business Comprehension™ (§8.9): the contextual signal for HOW
+  concepts are explained (five Communication Styles™ from Simple & Clear™ →
+  Boardroom & Enterprise™), the style registry + session store, the canonical
+  Business Concepts™ library (11 concepts × 5 variants = 55 explanations),
+  Harmony Context Engine™ hooks, `supportedCommunicationStyles` across
+  executives/advisors/deliverables, Academy™ variant placeholders, and the
+  Business Comprehension™ card (with live preview) on `/member-profile`. Signal +
+  reference library only; adaptive AI responses are a later phase. Independent of
+  Business Stage™; never an assessment.
+- **5.7 `[NEXT]`** — Adaptive Cherry Blossom™ (personality-preserving, non-literal
+  translation) and Deliverables™ that render the same Structured Business Content™
+  per Preferred Language™ + Communication Style™. Language + comprehension precede
+  full personalization.
 - **4B.3 / Next `[NEXT]`** — Cross-device persistence; 28-day cycle logic; Mon–Thu
   end-of-segment planning windows; deeper Cherry Blossom & AI Executive
   intelligence; reflection/coaching; reconciliation notes flagged in §5.

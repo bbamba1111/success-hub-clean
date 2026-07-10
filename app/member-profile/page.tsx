@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { BusinessStageCard } from "@/components/business-stage/business-stage-card"
+import { BusinessComprehensionCard } from "@/components/business-comprehension/business-comprehension-card"
 import { LanguageRegionCard } from "@/components/i18n/language-region-card"
 import { CherryGuidance } from "@/components/cherry-blossom/cherry-guidance"
 import { BackLink } from "@/components/navigation/page-nav"
@@ -7,7 +8,7 @@ import { BackLink } from "@/components/navigation/page-nav"
 export const metadata: Metadata = {
   title: "Member Profile | Make Time For More",
   description:
-    "Your Member Profile — set your Business Stage™ and your Preferred Language™ & Region so Harmony Lane™ can meet you where you are, in your language and part of the world.",
+    "Your Member Profile — set your Business Stage™, Communication Style™, and Preferred Language™ & Region so Harmony Lane™ can meet you where you are and explain things the way you understand best.",
 }
 
 /**
@@ -54,6 +55,22 @@ export default function MemberProfilePage() {
             Business Stage
           </h2>
           <BusinessStageCard />
+        </section>
+
+        {/* Business Comprehension™ — how concepts are explained */}
+        <section className="harmony-section pt-0" aria-labelledby="comprehension-section-heading">
+          <h2 id="comprehension-section-heading" className="sr-only">
+            Business Comprehension
+          </h2>
+          <CherryGuidance title="However it clicks best for you.">
+            Some founders want plain language and everyday examples; others want executive strategy and financial
+            terms. Your Communication Style™ tells me how to explain business concepts — the advice itself never
+            changes, only how I put it. This isn&apos;t a test or a measure of experience, so choose whatever helps
+            things click, and change it any time.
+          </CherryGuidance>
+          <div className="mt-6">
+            <BusinessComprehensionCard />
+          </div>
         </section>
 
         {/* Language & Region — Global Language Architecture™ */}

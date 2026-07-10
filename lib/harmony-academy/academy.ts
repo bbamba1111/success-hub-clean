@@ -72,3 +72,21 @@ export const PLANNED_LOCALIZATION_ASSETS = [
 ] as const
 
 export type PlannedLocalizationAsset = (typeof PLANNED_LOCALIZATION_ASSETS)[number]
+
+/**
+ * PLANNED_COMPREHENSION_VARIANTS — reserved, per Business Comprehension™
+ * (Phase 5.6). Future Academy lessons should offer the same lesson at each
+ * Communication Style™ so the teaching adapts to how a founder prefers concepts
+ * explained — never changing WHAT is taught, only HOW. Structure only; nothing
+ * is produced this phase. Mirrors the per-style variants in
+ * lib/business-concepts/business-concepts-registry.ts.
+ */
+export const PLANNED_COMPREHENSION_VARIANTS = [
+  "simple-clear",
+  "business-builder",
+  "executive",
+  "story-driven",
+  "visual-first",
+] as const
+
+export type PlannedComprehensionVariant = (typeof PLANNED_COMPREHENSION_VARIANTS)[number]
