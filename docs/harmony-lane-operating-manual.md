@@ -264,6 +264,44 @@ reinforces behavior through practice and repetition, never guilt.
   their Operating Rules™ (**Keep · Refine · Replace**), then author new Daily
   Non-Negotiables™ for the upcoming Work-Life Balance Business Week™.
 
+### 8.1 The Harmony Context Engine™ `[BUILT]` (Phase 4B.2)
+
+The single, centralized operating-context layer that every workspace consumes.
+It is the reason the platform can feel like one intelligent Operating System
+rather than a set of disconnected pages. Any surface — Live Today™, Cherry
+Blossom™, the AI Executive Leadership Team™, My Harmony™ — asks the same engine
+"where is this member right now, and what did they design?" and gets one
+normalized answer.
+
+- **What it composes:** it merges the live **operating-engine** snapshot (current
+  day, current segment/block, time of day, greeting, member first name) with the
+  **installed week** from Sunday Design Day™ (Weekly Intention™, Priority Focus
+  Areas™, per-segment Operating Rules™ + Daily Non-Negotiables™, and CEO Workday™
+  context) into a single typed context object.
+- **What it exposes:** `ready`, `hasDesignedWeek`, `firstName`, `timeOfDay`,
+  `currentSegment` (mapped to the designed segment), `segments[]`,
+  `weeklyIntention`, `focusAreas[]`, and `ceo` priorities.
+- **Files:** provider `components/harmony-context/harmony-context-provider.tsx`;
+  types `lib/harmony-context/types.ts`; block↔segment mapping
+  `lib/harmony-context/segment-map.ts`. It reads the installed week via
+  `lib/sunday-design-day/installed-week.ts`.
+- **Design intent:** workspaces should **never** re-derive time-of-day, current
+  segment, or Sunday's design on their own. They consume the engine so the whole
+  system stays consistent. Session-only this pass; cross-device persistence is a
+  later phase.
+
+### 8.2 Cherry Blossom™ as the Executive Operating Guide™ `[BUILT]` (Phase 4B.2)
+
+Cherry Blossom™ is context-aware, not a generic chatbot. Given the Harmony
+Context Engine™, she reinforces the member's own design instead of asking what
+they want to do.
+
+- **Guidance module:** `lib/harmony-context/cherry-blossom-guidance.ts` — a pure
+  function mapping the context (time of day, whether the week is designed, the
+  active segment) to a warm, reinforcing greeting + message.
+- **Tone:** premium, calm, editorial, encouraging — never punitive, never robotic.
+  Reflection, memory, and true conversational chat arrive in a later phase.
+
 ---
 
 ## 9. Live Today™ — Living the Design (Mon–Thu)
@@ -272,17 +310,28 @@ reinforces behavior through practice and repetition, never guilt.
   Experiences™. Route: `/live-today`. `[BUILT]`
 - Members **do not redesign the week here** — they live the operating system
   they designed on Sunday.
-- **Today's Operating System™ `[BUILT]` (Phase 4B.1.5):** Live Today™ surfaces
-  the week installed on Sunday. Under a Cherry Blossom™ time-of-day greeting, each
-  segment displays **Today's Operating Rule™** (the strategic standard) and
-  **Today's Non-Negotiable™** (the commitment lived today).
-  - Component: `components/live-today/todays-operating-system.tsx`. It reads the
-    installed week via `lib/sunday-design-day/installed-week.ts` (session-only).
+- **Today's Operating System™ `[BUILT]` (Phase 4B.2):** the intelligence surface
+  of Live Today™. Cherry Blossom™ reads the **Harmony Context Engine™** (see §8.1)
+  to know exactly where the member is inside the Operating System and reinforces
+  what they designed on Sunday. She never asks what to do today — the Operating
+  System already knows.
+  - **Context-aware greeting:** a time-of-day greeting that uses the member's real
+    first name (never a placeholder) and adapts to whether the week is designed and
+    which segment is active.
+  - **Current Operating Segment™ ("Today, Right Now"):** the active segment with
+    **Today's Operating Rule™** (the strategic standard) and **Today's
+    Non-Negotiable™** (the commitment lived today), plus the **Weekly Intention™**
+    and **Priority Focus Areas™** carried from Sunday.
+  - **Full designed day:** every segment with its Rule™ + Non-Negotiable™, the
+    current one highlighted with a **Now** badge.
+  - **AI Executive Leadership Team™:** placeholder panel — recommendation logic
+    (matching CEO priorities to an AI Executive Advisor™) arrives later.
+  - Component: `components/live-today/todays-operating-system.tsx`.
   - **End-of-segment accountability check:** at the close of each segment, members
     answer *"Did you honor today's Non-Negotiable™?"* — **Yes / Partially / Not
     Yet**. No scoring, coaching, journaling, or streaks; the response is simply
     captured (`lib/sunday-design-day/non-negotiable-log.ts`, session-only) for
-    later phases. Reflection & coaching arrive in Phase 4B.2.
+    later phases. Reflection & coaching arrive in a later phase.
 - **End-of-segment planning window (5–7 minutes) `[PLANNED]`:** at the close of
   each segment, members may refine *tomorrow's* corresponding segment.
   - Monday designs Tuesday · Tuesday designs Wednesday · Wednesday designs
@@ -378,9 +427,14 @@ by the authenticated user; use parameterized queries and RLS.
   captured the Non-Negotiable™ per segment on Sunday, surfaced Today's Operating
   Rule™ + Non-Negotiable™ in Live Today™, and added the end-of-segment honor
   check (see §8, §9). Session-only; anchoring resolved in §1.
-- **4B.2 `[NEXT]`** — Cross-device persistence; 28-day cycle logic; Mon–Thu
-  end-of-segment planning windows; Cherry Blossom & AI Executive intelligence;
-  reflection/coaching; reconciliation notes flagged in §5.
+- **4B.2 `[DONE]`** — The Harmony Context Engine™ (§8.1): one centralized
+  operating-context layer composing the engine snapshot with Sunday's installed
+  week; Cherry Blossom™ context-aware guidance (§8.2); and the upgraded Today's
+  Operating System™ surface in Live Today™ (context greeting, Current Operating
+  Segment™, full designed day, AI Executive Team™ placeholder). Session-only.
+- **4B.3 `[NEXT]`** — Cross-device persistence; 28-day cycle logic; Mon–Thu
+  end-of-segment planning windows; deeper Cherry Blossom & AI Executive
+  intelligence; reflection/coaching; reconciliation notes flagged in §5.
 - **Later** — Time Freedom™ & My Harmony™ full builds; AI Executive Leadership
   Team™ wiring; Quarter/Year layers; embedded Cherry Blossom chat everywhere.
 
