@@ -358,6 +358,56 @@ introduces them contextually.
   deliverable generation, Business Stage™/Comprehension™ adaptation, or the
   Specialist/Partner Networks™ — those belong to later phases.
 
+### 8.5 The Deliverable Output Architecture™ `[BUILT — architecture]` (Phase 5.3)
+
+The universal output layer every Executive™, Advisor™, Specialist™, and future AI
+generator publishes through. Built as **infrastructure, not a document feature.**
+
+**Core principle:** a deliverable **exists once** as **Structured Business
+Content™** and is **rendered many ways**. A PDF is simply one possible output —
+nothing is ever tied to a single file type. The flow is:
+
+```
+Executive / Advisor → Deliverable Engine™ → Structured Business Content™
+→ Render Engine™ → Distribution Engine™
+```
+
+**The four engines:**
+
+1. **Deliverable Engine™** — creates and manages structured business content.
+   Deliverables are structured **fields** (sections + typed content blocks), not
+   static text. Files: `lib/output-architecture/deliverable-registry.ts` (the
+   single source of truth — `StructuredBusinessContent`, `Deliverable`, and a
+   representative seed set spanning both executives and advisors).
+2. **Render Engine™** — transforms one content model into many formats. Thirteen
+   renderers: PDF, Editable Document, Email, Presentation, Spreadsheet, Dashboard
+   Card, Checklist, Calendar, Web Page, Markdown, Slack, Teams, Notion. New
+   renderers are added by appending to the catalog. File:
+   `lib/output-architecture/render-engine.ts`.
+3. **Distribution Engine™** — delivers rendered output to the right destination:
+   Download, Print, Email, Copy, Save to Harmony Library™, Share with Team, Slack,
+   Teams, Notion, and future integrations. Decoupled from rendering. File:
+   `lib/output-architecture/distribution-engine.ts`.
+4. **Storage Engine™** — owns templates, drafts, revisions, final versions, and
+   (future) version history. Types only this phase. File:
+   `lib/output-architecture/storage-engine.ts`.
+
+- **Execution paths (delivery levels):** every deliverable declares one or more of
+  **DIY · AI Assisted · Done With You · Done For You · Certified Partner**
+  (`lib/output-architecture/execution-engine.ts`). No workflow logic this phase.
+- **Deliverable definition fields:** `id`, `name`, `category`, `ownerType`,
+  `ownerId`, `description`, `deliveryLevel`, `estimatedTime`,
+  `requiresProfessionalReview`, `professionalNotice`, `supportedRenderers[]`,
+  `recommendedRenderer`, `distributionOptions[]`, `executionOptions[]`, optional
+  `content`, `futureGenerator`, `status`.
+- **Reusable preview:** `components/output-architecture/deliverable-preview.tsx`
+  shows name, owner, description, delivery level, recommended + available
+  renderers, distribution options, and a Professional Review badge — **no
+  generation, no download buttons.** Reference page: `/output-architecture`.
+- **This pass = architecture only.** No AI generation, real rendering, live
+  distribution, or persistence. Every future deliverable plugs in **without a
+  redesign**.
+
 ---
 
 ## 9. Live Today™ — Living the Design (Mon–Thu)
@@ -495,12 +545,18 @@ by the authenticated user; use parameterized queries and RLS.
   registry (Legal, Tax, Business Credit, Insurance, Compliance), executive linkage,
   Professional Review Notices, and the network page at
   `/professional-advisory-network`. Architecture + presentation.
+- **5.3 `[DONE]`** — The Deliverable Output Architecture™ (§8.5): the four-engine
+  model (Deliverable, Render, Distribution, Storage), Structured Business Content™,
+  the deliverable registry, execution paths, the reusable Deliverable Preview, and
+  the reference page at `/output-architecture`. Architecture only.
 - **4B.3 / Next `[NEXT]`** — Cross-device persistence; 28-day cycle logic; Mon–Thu
   end-of-segment planning windows; deeper Cherry Blossom & AI Executive
   intelligence; reflection/coaching; reconciliation notes flagged in §5.
-- **Later** — Specialist Network™ & Deliverables Engine™; Business Stage™ &
-  Business Comprehension™ adaptation; AI conversations across the ecosystem; Time
-  Freedom™ & My Harmony™ full builds; Quarter/Year layers.
+- **Later** — The Deliverables Engine™ generation layer (AI-authored Structured
+  Business Content™) + real renderers/distribution integrations (Google Docs, Word,
+  PDF, Slack, Teams, Notion, Harmony Library™); Specialist & Partner Networks™;
+  Business Stage™ & Business Comprehension™ adaptation; AI conversations across the
+  ecosystem; Time Freedom™ & My Harmony™ full builds; Quarter/Year layers.
 
 ---
 
