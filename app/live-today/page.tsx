@@ -3,7 +3,6 @@ import { OperatingEngineProvider } from "@/components/operating-engine-provider"
 import { BusinessDayHero } from "@/components/business-day-hero"
 import { BusinessDaySchedule } from "@/components/business-day-schedule"
 import { DeveloperToolbar } from "@/components/developer-toolbar"
-import { WeeklyRealityCheck } from "@/components/weekly-reality-check"
 import { TodaysOperatingSystem } from "@/components/live-today/todays-operating-system"
 
 export const metadata: Metadata = {
@@ -35,9 +34,6 @@ export default function LiveTodayPage() {
         {/* Admin-only Developer Toolbar (renders nothing for regular members) */}
         <DeveloperToolbar />
       </OperatingEngineProvider>
-
-      {/* Weekly Work-Life Balance Reality Check™ */}
-      <WeeklyRealityCheck />
     </main>
   )
 }
