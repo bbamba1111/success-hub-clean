@@ -29,8 +29,11 @@ export interface DelegationItem {
 }
 
 export interface SegmentDesign {
+  /** The strategic standard — "how will I operate?" (persists across the week). */
   rule: string
   planner: string
+  /** The Daily Non-Negotiable™ — "what will I absolutely honor tomorrow?" */
+  nonNegotiable: string
   committed: boolean
 }
 
@@ -58,7 +61,7 @@ type Action =
   | { type: "ADD_ITEM"; text: string }
   | { type: "SET_ITEM_CATEGORY"; id: string; category: string | null }
   | { type: "REMOVE_ITEM"; id: string }
-  | { type: "SET_SEGMENT"; segmentId: string; key: "rule" | "planner"; value: string }
+  | { type: "SET_SEGMENT"; segmentId: string; key: "rule" | "planner" | "nonNegotiable"; value: string }
   | { type: "TOGGLE_SEGMENT_COMMIT"; segmentId: string }
   | { type: "SET_CEO"; sectionId: string; value: string }
   | { type: "COMPLETE_PHASE"; phase: PhaseId }
@@ -67,7 +70,7 @@ type Action =
 
 function emptyData(): SddData {
   const segments: Record<string, SegmentDesign> = {}
-  for (const s of DESIGN_SEGMENTS) segments[s.id] = { rule: "", planner: "", committed: false }
+  for (const s of DESIGN_SEGMENTS) segments[s.id] = { rule: "", planner: "", nonNegotiable: "", committed: false }
   return {
     weekly: { wins: "", lessons: "", gratitude: "", rulesReview: "", intention: "", declaration: "" },
     focusAreas: [],

@@ -27,7 +27,7 @@ function SegmentDesigner({
 }) {
   const { state, dispatch } = useSdd()
   const [open, setOpen] = useState(defaultOpen)
-  const design = state.data.segments[segment.id] ?? { rule: "", planner: "", committed: false }
+  const design = state.data.segments[segment.id] ?? { rule: "", planner: "", nonNegotiable: "", committed: false }
   const isCeo = Boolean(segment.ceoSections)
   const hasRule = Boolean(design.rule.trim())
 
@@ -81,6 +81,16 @@ function SegmentDesigner({
             placeholder="Design this segment in advance…"
             value={design.planner}
             onChange={(v) => dispatch({ type: "SET_SEGMENT", segmentId: segment.id, key: "planner", value: v })}
+            readOnly={readOnly}
+            rows={2}
+          />
+
+          <ReflectField
+            label="Daily Non-Negotiable™"
+            prompt={segment.nonNegotiablePrompt}
+            placeholder={segment.defaultNonNegotiable}
+            value={design.nonNegotiable ?? ""}
+            onChange={(v) => dispatch({ type: "SET_SEGMENT", segmentId: segment.id, key: "nonNegotiable", value: v })}
             readOnly={readOnly}
             rows={2}
           />

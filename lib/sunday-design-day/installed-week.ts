@@ -13,6 +13,7 @@ export interface InstalledSegment {
   id: string
   rule: string
   planner: string
+  nonNegotiable: string
   committed: boolean
 }
 
@@ -38,7 +39,10 @@ export function getInstalledWeek(): InstalledWeek | null {
         installedAt?: string | null
         weekly?: { intention?: string; declaration?: string }
         focusAreas?: string[]
-        segments?: Record<string, { rule?: string; planner?: string; committed?: boolean }>
+        segments?: Record<
+          string,
+          { rule?: string; planner?: string; nonNegotiable?: string; committed?: boolean }
+        >
       }
     }
     const data = parsed.data
@@ -52,6 +56,7 @@ export function getInstalledWeek(): InstalledWeek | null {
         id,
         rule: s.rule?.trim() ?? "",
         planner: s.planner?.trim() ?? "",
+        nonNegotiable: s.nonNegotiable?.trim() ?? "",
         committed: Boolean(s.committed),
       })),
     }

@@ -43,10 +43,11 @@ Every **fourth Sunday** includes a deeper **Operating System Review** that:
 The 28-day review **enhances** the weekly rhythm; it never replaces it. The
 weekly rhythm continues uninterrupted underneath it.
 
-> **Open architectural decision (blocks Phase 4B):** how is "week 1 / Sunday 1"
-> anchored per member? Candidates: membership start date, first completed Sunday
-> Design Day™, or a global program epoch. This determines cycle-day math and
-> "every fourth Sunday" detection and must be decided before the engine is built.
+> **Architectural decision (resolved):** each member's cycle is anchored to
+> their **first completed Sunday Design Day™**. Cycle-day math and "every fourth
+> Sunday" detection count forward from that date. Missed weeks are **non-punitive**
+> — the rhythm resumes without penalty on the member's next Sunday Design Day™.
+> Full cycle engine implementation is Phase 4B.2.
 
 ---
 
@@ -227,21 +228,70 @@ Guidance™, and its Operating Rule™ centerpiece.
 
 ---
 
-## 8. Live Today™ — Living the Design (Mon–Thu)
+## 8. The Behavior Installation Model™
+
+This is the core methodology of the Harmony Lane™ Operating System — and one of
+its defining pieces of intellectual property. It explains **how** the platform
+transforms principles into sustainable founder behavior. Every layer feeds the
+next.
+
+1. **Principles™** — The beliefs that guide how we operate: Human
+   Sustainability™, 80/20 Thinking, the Progress Principle™, and Time Freedom™.
+   *(Why we operate the way we do.)*
+2. **Operating Rules™** — The strategic standards founders establish during
+   Sunday Design Day™. They answer **"How will I operate?"** and persist across
+   the week until intentionally revised on a future Sunday. *(The standard.)*
+3. **Daily Non-Negotiables™** — The specific daily commitments that bring each
+   Operating Rule™ to life. They answer **"What will I absolutely honor today?"**
+   and are practiced one day at a time. *(The commitment.)*
+4. **Practice & Repetition™** — Consistently honoring those Non-Negotiables™
+   Monday through Thursday. Live Today™ surfaces each day's rule + non-negotiable
+   and captures a lightweight honor check at the end of every segment. *(The reps.)*
+5. **Identity Installation™** — Over time, repeated behaviors become habits, and
+   habits become the founder's natural way of operating. The operating system is
+   no longer something they *use* — it is who they have *become*. *(The outcome.)*
+
+**The distinction that anchors the model:** Operating Rules™ are the *standard*
+("how will I operate?"); Daily Non-Negotiables™ are the *practice* ("what will I
+absolutely honor today?"). Rules are designed on Sunday and are durable;
+Non-Negotiables are lived daily and are what actually install the identity.
+
+The experience must always feel warm, encouraging, premium, calm, and
+editorial — an executive guide, never a punitive productivity tracker. The model
+reinforces behavior through practice and repetition, never guilt.
+
+- **Sunday Review of the model:** During each Sunday Design Day™, members review
+  their Operating Rules™ (**Keep · Refine · Replace**), then author new Daily
+  Non-Negotiables™ for the upcoming Work-Life Balance Business Week™.
+
+---
+
+## 9. Live Today™ — Living the Design (Mon–Thu)
 
 - The primary daily operating workspace. Engine-driven daily rhythm of Operating
   Experiences™. Route: `/live-today`. `[BUILT]`
 - Members **do not redesign the week here** — they live the operating system
   they designed on Sunday.
-- **End-of-segment planning window (5–7 minutes):** at the close of each segment,
-  members may refine *tomorrow's* corresponding segment.
+- **Today's Operating System™ `[BUILT]` (Phase 4B.1.5):** Live Today™ surfaces
+  the week installed on Sunday. Under a Cherry Blossom™ time-of-day greeting, each
+  segment displays **Today's Operating Rule™** (the strategic standard) and
+  **Today's Non-Negotiable™** (the commitment lived today).
+  - Component: `components/live-today/todays-operating-system.tsx`. It reads the
+    installed week via `lib/sunday-design-day/installed-week.ts` (session-only).
+  - **End-of-segment accountability check:** at the close of each segment, members
+    answer *"Did you honor today's Non-Negotiable™?"* — **Yes / Partially / Not
+    Yet**. No scoring, coaching, journaling, or streaks; the response is simply
+    captured (`lib/sunday-design-day/non-negotiable-log.ts`, session-only) for
+    later phases. Reflection & coaching arrive in Phase 4B.2.
+- **End-of-segment planning window (5–7 minutes) `[PLANNED]`:** at the close of
+  each segment, members may refine *tomorrow's* corresponding segment.
   - Monday designs Tuesday · Tuesday designs Wednesday · Wednesday designs
     Thursday · Thursday concludes the week.
 - Operating Rules™ carry forward untouched unless changed in one of these windows.
 
 ---
 
-## 9. Time Freedom™ (Fri–Sat + the reward at each day's end)
+## 10. Time Freedom™ (Fri–Sat + the reward at each day's end)
 
 - The life the business exists to support. Route: `/time-freedom`. `[SCAFFOLD]`
 - Friday and Saturday are **not workdays** — they are dedicated to recovery,
@@ -252,7 +302,7 @@ Guidance™, and its Operating Rule™ centerpiece.
 
 ---
 
-## 10. My Harmony™ (Results, Memory, Growth)
+## 11. My Harmony™ (Results, Memory, Growth)
 
 - The member's long arc: results, memory, milestones, and **Human Sustainability™**.
   Route: `/my-harmony`. `[SCAFFOLD]`
@@ -262,7 +312,7 @@ Guidance™, and its Operating Rule™ centerpiece.
 
 ---
 
-## 11. Cherry Blossom™ — The Guiding Intelligence
+## 12. Cherry Blossom™ — The Guiding Intelligence
 
 Cherry Blossom is the platform's calm, concierge voice and memory.
 
@@ -276,7 +326,7 @@ Cherry Blossom is the platform's calm, concierge voice and memory.
 
 ---
 
-## 12. The AI Executive Leadership Team™
+## 13. The AI Executive Leadership Team™
 
 - A set of AI executive advisors consulted during the CEO Workday™ for strategy
   and decisions (migrated from the legacy AI Executive Team™ module).
@@ -286,7 +336,7 @@ Cherry Blossom is the platform's calm, concierge voice and memory.
 
 ---
 
-## 13. Design Language — The Harmony Lane™
+## 14. Design Language — The Harmony Lane™
 
 Established in the foundation pass; every workspace inherits it by composition.
 
@@ -304,7 +354,7 @@ Established in the foundation pass; every workspace inherits it by composition.
 
 ---
 
-## 14. Data & Persistence (current)
+## 15. Data & Persistence (current)
 
 Backed by Supabase. Known tables/fields relevant to the operating system:
 - `reality_checks` — declaration, weekly reflection, selected priority areas,
@@ -318,13 +368,19 @@ by the authenticated user; use parameterized queries and RLS.
 
 ---
 
-## 15. Implementation Roadmap (living)
+## 16. Implementation Roadmap (living)
 
 - **4A `[DONE]`** — Sunday Design Day™ architecture/scaffold (placeholders).
 - **4A.1 `[DONE]`** — Operating System IA reset to the four pillars.
-- **4B `[NEXT]`** — Build the operating rhythm: weekly vs. 28-day cycle logic,
-  functional phases, Mon–Thu end-of-segment planning windows, persistence, and
-  reconciliation notes flagged in §5. Requires the anchoring decision in §1.
+- **4B.1 `[DONE]`** — Functional Sunday Design Day™ engine (four phases,
+  validation-gated, session-only persistence).
+- **4B.1.5 `[DONE]`** — Install Operating Rules™ & Daily Non-Negotiables™:
+  captured the Non-Negotiable™ per segment on Sunday, surfaced Today's Operating
+  Rule™ + Non-Negotiable™ in Live Today™, and added the end-of-segment honor
+  check (see §8, §9). Session-only; anchoring resolved in §1.
+- **4B.2 `[NEXT]`** — Cross-device persistence; 28-day cycle logic; Mon–Thu
+  end-of-segment planning windows; Cherry Blossom & AI Executive intelligence;
+  reflection/coaching; reconciliation notes flagged in §5.
 - **Later** — Time Freedom™ & My Harmony™ full builds; AI Executive Leadership
   Team™ wiring; Quarter/Year layers; embedded Cherry Blossom chat everywhere.
 

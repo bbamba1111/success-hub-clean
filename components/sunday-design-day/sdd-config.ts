@@ -197,10 +197,14 @@ export interface SegmentCard {
   title: string
   /** Cherry Blossom Guidance™ for this segment. */
   guidance: string
-  /** Prompt for the segment's single Operating Rule™. */
+  /** Prompt for the segment's single Operating Rule™ (the strategic standard). */
   rulePrompt: string
   /** Prompt for the segment's planner note. */
   plannerPrompt: string
+  /** Prompt for the segment's Daily Non-Negotiable™ (the commitment lived tomorrow). */
+  nonNegotiablePrompt: string
+  /** A suggested Daily Non-Negotiable™ shown as a starting point (never forced). */
+  defaultNonNegotiable: string
   /** CEO Workday only — the five planning sections. */
   ceoSections?: CeoSection[]
 }
@@ -212,6 +216,8 @@ export const DESIGN_SEGMENTS: SegmentCard[] = [
     guidance: "The day hasn't asked anything of you yet. Set the tone before it does.",
     rulePrompt: "Your Operating Rule™ for easing in with clarity.",
     plannerPrompt: "How will you spend these first unhurried minutes?",
+    nonNegotiablePrompt: "What will you absolutely honor tomorrow morning?",
+    defaultNonNegotiable: "I will protect my first waking minutes before reaching for my phone.",
   },
   {
     id: "morning-given",
@@ -219,6 +225,8 @@ export const DESIGN_SEGMENTS: SegmentCard[] = [
     guidance: "Lead yourself before you lead your business — Gratitude, Invitation, Vision, Emotion, Nurture.",
     rulePrompt: "Your Operating Rule™ for grounding yourself each morning.",
     plannerPrompt: "What will your GIV•EN™ routine include tomorrow?",
+    nonNegotiablePrompt: "What will you absolutely honor tomorrow?",
+    defaultNonNegotiable: "I will complete GIV•EN™ before opening email or social media.",
   },
   {
     id: "movement",
@@ -226,6 +234,8 @@ export const DESIGN_SEGMENTS: SegmentCard[] = [
     guidance: "Care for the body that carries your vision. Thirty intentional minutes.",
     rulePrompt: "Your Operating Rule™ for moving your body.",
     plannerPrompt: "How will you move tomorrow?",
+    nonNegotiablePrompt: "What movement will you absolutely honor tomorrow?",
+    defaultNonNegotiable: "I will take a 10-minute outdoor walk.",
   },
   {
     id: "lunch",
@@ -233,6 +243,8 @@ export const DESIGN_SEGMENTS: SegmentCard[] = [
     guidance: "Nourishment is productive. Step fully away and return restored.",
     rulePrompt: "Your Operating Rule™ for a genuine midday break.",
     plannerPrompt: "How will you nourish and reconnect at midday?",
+    nonNegotiablePrompt: "What will you absolutely honor at midday tomorrow?",
+    defaultNonNegotiable: "I will eat lunch away from my desk.",
   },
   {
     id: "ceo-workday",
@@ -241,6 +253,8 @@ export const DESIGN_SEGMENTS: SegmentCard[] = [
       "Your protected execution window. The priority isn't doing more — it's protecting uninterrupted thinking.",
     rulePrompt: "Your Business Operating Rule™ for protecting deep work.",
     plannerPrompt: "What is the ONE outcome that would make tomorrow a win?",
+    nonNegotiablePrompt: "What will you absolutely honor during tomorrow's CEO Workday™?",
+    defaultNonNegotiable: "I will begin with AI Augmentation Hour™ before entering Human Zone of Genius™ work.",
     ceoSections: [
       { id: "ai-augmentation-hour", title: "AI Augmentation Hour™", description: "Partner with AI to accelerate your highest-leverage work." },
       {
@@ -260,6 +274,8 @@ export const DESIGN_SEGMENTS: SegmentCard[] = [
     guidance: "The life your business exists to support. Protect it with the same intention as your work.",
     rulePrompt: "Your Operating Rule™ for protecting your Time Freedom™.",
     plannerPrompt: "What life moments are you protecting tomorrow?",
+    nonNegotiablePrompt: "What life moment will you absolutely honor tomorrow?",
+    defaultNonNegotiable: "I will fully unplug from work to be present with the people and life I love.",
   },
   {
     id: "power-down",
@@ -267,6 +283,8 @@ export const DESIGN_SEGMENTS: SegmentCard[] = [
     guidance: "Let the day come to a gentle close so your mind can finally slow.",
     rulePrompt: "Your Operating Rule™ for powering down.",
     plannerPrompt: "How will you transition from productivity to rest?",
+    nonNegotiablePrompt: "What will you absolutely honor as the day ends tomorrow?",
+    defaultNonNegotiable: "I will begin Power Down & Unplug™ by 9:00 PM.",
   },
 ]
 

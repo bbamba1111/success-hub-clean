@@ -4,6 +4,7 @@ import { BusinessDayHero } from "@/components/business-day-hero"
 import { BusinessDaySchedule } from "@/components/business-day-schedule"
 import { DeveloperToolbar } from "@/components/developer-toolbar"
 import { WeeklyRealityCheck } from "@/components/weekly-reality-check"
+import { TodaysOperatingSystem } from "@/components/live-today/todays-operating-system"
 
 export const metadata: Metadata = {
   title: "Live Today™ | Make Time For More™",
@@ -24,6 +25,9 @@ export default function LiveTodayPage() {
       <OperatingEngineProvider>
         {/* Engine-driven hero — the in-session Operating Experience™ + tools */}
         <BusinessDayHero />
+
+        {/* Today's Operating System™ — Sunday's Operating Rules™ + Daily Non-Negotiables™ */}
+        <TodaysOperatingSystem />
 
         {/* Today's Work-Life Balance Business Day™ — full daily rhythm */}
         <BusinessDaySchedule />

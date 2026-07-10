@@ -17,9 +17,11 @@ export function CommitPreparePhase() {
     .map((id) => FOCUS_AREA_OPTIONS.find((a) => a.id === id)?.label)
     .filter(Boolean) as string[]
 
-  const rules = DESIGN_SEGMENTS.map((s) => ({ title: s.title, rule: segments[s.id]?.rule?.trim() })).filter(
-    (r) => r.rule,
-  )
+  const rules = DESIGN_SEGMENTS.map((s) => ({
+    title: s.title,
+    rule: segments[s.id]?.rule?.trim(),
+    nonNegotiable: segments[s.id]?.nonNegotiable?.trim() || s.defaultNonNegotiable,
+  })).filter((r) => r.rule)
 
   const ceoSection = DESIGN_SEGMENTS.find((s) => s.ceoSections)
   const ceoPriorities =
@@ -66,12 +68,16 @@ export function CommitPreparePhase() {
           </p>
         </SummaryCard>
 
-        <SummaryCard title="Operating Rules™" empty={rules.length === 0} full>
-          <ul className="space-y-2">
+        <SummaryCard title="Operating Rules™ & Daily Non-Negotiables™" empty={rules.length === 0} full>
+          <ul className="space-y-3">
             {rules.map((r) => (
               <li key={r.title} className="text-sm leading-relaxed">
-                <span className="font-semibold text-brand-ink">{r.title}: </span>
-                <span className="text-brand-ink-soft">{r.rule}</span>
+                <span className="font-semibold text-brand-ink">{r.title}</span>
+                <span className="mt-0.5 block text-brand-ink-soft">{r.rule}</span>
+                <span className="mt-1 block text-brand-ink-soft">
+                  <span className="font-medium text-brand-coral-dark">Non-Negotiable™: </span>
+                  {r.nonNegotiable}
+                </span>
               </li>
             ))}
           </ul>
