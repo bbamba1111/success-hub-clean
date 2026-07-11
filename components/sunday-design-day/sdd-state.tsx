@@ -72,7 +72,7 @@ function emptyData(): SddData {
   const segments: Record<string, SegmentDesign> = {}
   for (const s of DESIGN_SEGMENTS) segments[s.id] = { rule: "", planner: "", nonNegotiable: "", committed: false }
   return {
-    weekly: { wins: "", lessons: "", gratitude: "", rulesReview: "", intention: "", declaration: "" },
+    weekly: { wins: "", lessons: "", gratitude: "", rulesReview: "", declaration: "" },
     focusAreas: [],
     delegationItems: [],
     segments,
@@ -237,7 +237,7 @@ export function useSdd() {
 
 export function isRealityCheckComplete(data: SddData): boolean {
   const { weekly, focusAreas } = data
-  const hasCoreReflections = Boolean(weekly.wins.trim() && weekly.intention.trim() && weekly.declaration.trim())
+  const hasCoreReflections = Boolean(weekly.wins.trim() && weekly.declaration.trim())
   return hasCoreReflections && focusAreas.length >= 1
 }
 

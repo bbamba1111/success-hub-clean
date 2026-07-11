@@ -70,7 +70,7 @@ export const PHASES: PhaseMeta[] = [
  * ------------------------------------------------------------------ */
 
 /** Weekly Review™ free-text reflection fields (active this pass). */
-export type WeeklyReviewFieldId = "wins" | "lessons" | "gratitude" | "rulesReview" | "intention" | "declaration"
+export type WeeklyReviewFieldId = "wins" | "lessons" | "gratitude" | "rulesReview" | "declaration"
 
 export interface WeeklyReviewField {
   id: WeeklyReviewFieldId
@@ -105,16 +105,10 @@ export const WEEKLY_REVIEW_FIELDS: WeeklyReviewField[] = [
     placeholder: "What's working, what's slipping, what you'll adjust…",
   },
   {
-    id: "intention",
-    label: "Weekly Intention™",
-    prompt: "How do you want to feel and operate across the week ahead?",
-    placeholder: "The energy and posture you're choosing for the week…",
-  },
-  {
     id: "declaration",
-    label: "Weekly Declaration™",
-    prompt: "Put your intention into a clear, first-person statement you'll operate from.",
-    placeholder: "This week, I…",
+    label: "Weekly Intention Declaration™",
+    prompt: "How do you want to feel and operate across the week ahead? Put it into one clear, first-person statement you'll operate from.",
+    placeholder: "This week, I choose to…",
   },
 ]
 
