@@ -1,16 +1,10 @@
-import type { Metadata } from "next"
-import { SundayDesignDayFlow } from "@/components/sunday-design-day/sunday-design-day-flow"
+import { redirect } from "next/navigation"
 
-export const metadata: Metadata = {
-  title: "Sunday Design Day™ | The Harmony Lane™",
-  description:
-    "The Weekly Installation Experience for the Work-Life Balance Business Week™. Design tomorrow, live it tomorrow.",
-}
-
+/**
+ * The Sunday Design Day™ experience now lives at /begin as one unified,
+ * page-turning ritual (Phase 5.10). This route permanently redirects there so
+ * there is a single canonical URL and no duplicate experience.
+ */
 export default function SundayDesignDayPage() {
-  return (
-    <main className="min-h-screen bg-background">
-      <SundayDesignDayFlow />
-    </main>
-  )
+  redirect("/begin")
 }
