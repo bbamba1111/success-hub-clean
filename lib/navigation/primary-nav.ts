@@ -75,14 +75,14 @@ export const PRIMARY_NAV: PrimarySection[] = [
     id: "sunday-design-day",
     navLabel: "Sunday Design Day",
     title: "Sunday Design Day™",
-    href: "/sunday-design-day",
+    href: "/begin",
     icon: CalendarCheck,
     tagline: "Design Tomorrow. Live It Tomorrow.™ — your weekly installation experience.",
     built: true,
     workspaces: [
       {
         label: "The Weekly Installation Experience™",
-        href: "/sunday-design-day",
+        href: "/begin",
         description: "Reality Check™ → Download & Delegate™ → Design Tomorrow™ → Commit & Prepare™.",
       },
     ],
