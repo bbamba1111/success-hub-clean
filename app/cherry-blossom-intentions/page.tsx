@@ -8,7 +8,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import SimpleChatModal from "@/components/simple-chat-modal"
+import { CherryBlossomGuidance } from "@/components/cherry-blossom/cherry-blossom-guidance"
+import { CherryBlossomConversation } from "@/components/cherry-blossom/cherry-blossom-conversation"
 import {
   Target,
   Heart,
@@ -28,7 +29,6 @@ import {
   Gift,
   Edit,
   Check,
-  Sparkles,
 } from "lucide-react"
 import Link from "next/link"
 import { getAuditResults } from "@/utils/audit-storage"
@@ -86,7 +86,6 @@ export default function CherryBlossomIntentions() {
   const [auditData, setAuditData] = useState<AuditData | null>(null)
   const [selectedFocusAreas, setSelectedFocusAreas] = useState<string[]>([])
   const [userName, setUserName] = useState("")
-  const [isChatOpen, setIsChatOpen] = useState(false)
 
   // Weekly Operating Declaration capture (persists to reality_checks).
   const [declaration, setDeclaration] = useState("")
@@ -134,19 +133,17 @@ export default function CherryBlossomIntentions() {
 
   if (!auditData) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-green-50 p-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center py-12">
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">No Reality Check Found</h1>
-            <p className="text-gray-600 mb-8">
-              Please complete your Weekly Reality Check first to set your intentions.
+      <div className="min-h-screen bg-background p-4">
+        <div className="mx-auto max-w-3xl pt-12">
+          <CherryBlossomGuidance
+            greeting="Let&apos;s start with your Reality Check&trade;."
+            primaryAction={{ label: "Begin Weekly Reality Check", href: "/audit" }}
+          >
+            <p>
+              Before we can design your intention, I need to understand where your life feels balanced right now.
+              Let&apos;s complete your Reality Check&trade; first, and then we&apos;ll craft this together.
             </p>
-            <Link href="/audit">
-              <Button className="bg-gradient-to-r from-[#E26C73] to-[#7FB069] hover:from-[#D55A60] hover:to-[#6FA055] text-white">
-                Begin Weekly Reality Check
-              </Button>
-            </Link>
-          </div>
+          </CherryBlossomGuidance>
         </div>
       </div>
     )
@@ -162,62 +159,70 @@ export default function CherryBlossomIntentions() {
     }
   })
 
+  const focusAreaNames = selectedAreas.map((a) => a.name)
+  const focusList =
+    focusAreaNames.length <= 1
+      ? focusAreaNames[0]
+      : `${focusAreaNames.slice(0, -1).join(", ")} and ${focusAreaNames[focusAreaNames.length - 1]}`
+
   return (
-    <div className="min-h-screen bg-[#F5F5F0]">
+    <div className="min-h-screen bg-background">
       {/* Header with Logo */}
-      <div className="text-center mb-8 pt-8">
-        <div className="flex justify-center mb-6">
+      <div className="pt-10 text-center">
+        <div className="flex justify-center">
           <img
             src="/images/logo.png"
             alt="Make Time For More Logo"
-            width={80}
-            height={80}
+            width={72}
+            height={72}
             className="rounded-full shadow-lg"
           />
         </div>
+        <h1 className="mx-auto mt-6 max-w-2xl px-4 font-display text-4xl font-bold tracking-tight text-brand-ink text-balance">
+          Your Weekly Operating Declaration&trade;
+        </h1>
       </div>
 
-      {/* Pink Header Section */}
-      <div className="bg-[#E26C73] text-white text-center py-9 px-4">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold mb-4">Your Weekly Operating Declaration</h1>
-          <p className="text-xl opacity-90">
-            Cherry Blossom already knows your Reality Check scores and focus areas. Set your intention together, then
-            lock it in — she&apos;ll coach you around it all week.
+      <div className="mx-auto max-w-3xl space-y-8 p-4 pb-16 pt-8">
+        {/* Cherry Blossom opens from context — no generic greeting. */}
+        <CherryBlossomGuidance greeting={userName ? `Welcome back, ${userName}.` : "Welcome back."}>
+          <p>I&apos;ve already reviewed your Reality Check&trade; and the Focus Areas&trade; you selected.</p>
+          <p>
+            Today we&apos;ll craft one simple intention that supports the areas you chose. Let&apos;s take this one step
+            at a time.
           </p>
-        </div>
-      </div>
+        </CherryBlossomGuidance>
 
-      <div className="max-w-4xl mx-auto p-4 -mt-8">
-        {/* Focus Areas Section */}
-        <Card className="mb-8 bg-gradient-to-r from-[#E26C73]/20 to-[#7FB069]/20 border-[#E26C73]/30 rounded-2xl">
+        {/* Selected Focus Areas */}
+        <Card className="rounded-2xl border-brand-blush bg-card shadow-ds">
           <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-2">
-              <h2 className="text-2xl font-bold text-[#E26C73]">Your Selected Focus Areas</h2>
+            <div className="mb-2 flex items-center justify-between gap-4">
+              <h2 className="font-display text-xl font-semibold tracking-tight text-brand-ink">
+                Your Focus Areas&trade;
+              </h2>
               <Link href="/focus-areas">
                 <Button
                   variant="outline"
                   size="sm"
-                  className="flex items-center gap-2 border-[#E26C73] text-[#E26C73] hover:bg-[#E26C73] hover:text-white bg-transparent"
+                  className="flex items-center gap-2 border-brand-coral/40 bg-transparent text-brand-coral-dark hover:bg-brand-blush/50"
                 >
-                  <Edit className="w-4 h-4" />
-                  Change Focus Areas
+                  <Edit className="h-4 w-4" />
+                  Change
                 </Button>
               </Link>
             </div>
-            <p className="text-gray-700 mb-6">These are the areas you&apos;ll be working on with Cherry Blossom</p>
 
             {selectedAreas.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {selectedAreas.map((area) => {
                   const IconComponent = area.icon
                   return (
-                    <div key={area.id} className="bg-white rounded-lg p-4 border border-[#E26C73]/20">
-                      <div className="flex items-center gap-3 mb-2">
-                        <IconComponent className="w-5 h-5 text-[#E26C73]" />
-                        <h3 className="font-semibold text-gray-900">{area.name}</h3>
+                    <div key={area.id} className="rounded-xl border border-brand-blush bg-background p-4">
+                      <div className="mb-2 flex items-center gap-3">
+                        <IconComponent className="h-5 w-5 text-brand-coral" />
+                        <h3 className="font-semibold text-brand-ink">{area.name}</h3>
                       </div>
-                      <div className="inline-block bg-[#E26C73]/10 text-[#E26C73] px-3 py-1 rounded-full text-sm font-medium border border-[#E26C73]/30">
+                      <div className="inline-block rounded-full border border-brand-coral/30 bg-brand-coral/10 px-3 py-1 text-sm font-medium text-brand-coral-dark">
                         Current Score: {area.score}%
                       </div>
                     </div>
@@ -225,14 +230,16 @@ export default function CherryBlossomIntentions() {
                 })}
               </div>
             ) : (
-              <div className="text-center py-8">
-                <Target className="w-16 h-16 text-[#E26C73]/50 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">No Focus Areas Selected</h3>
-                <p className="text-gray-600 mb-6">
-                  Please go back and select 1-3 focus areas to create your personalized transformation plan.
+              <div className="py-8 text-center">
+                <Target className="mx-auto mb-4 h-16 w-16 text-brand-coral/40" />
+                <h3 className="mb-4 text-xl font-semibold text-brand-ink">No Focus Areas selected yet</h3>
+                <p className="mx-auto mb-6 max-w-md leading-relaxed text-brand-ink-soft">
+                  Choose one to three focus areas and I&apos;ll build your intention around them.
                 </p>
                 <Link href="/focus-areas">
-                  <Button className="bg-[#E26C73] hover:bg-[#D55A60] text-white px-8 py-3">Select Focus Areas</Button>
+                  <Button className="bg-brand-green px-8 py-3 text-white hover:bg-brand-green-dark">
+                    Select Focus Areas
+                  </Button>
                 </Link>
               </div>
             )}
@@ -241,71 +248,58 @@ export default function CherryBlossomIntentions() {
 
         {selectedAreas.length > 0 && (
           <>
-            {/* Craft with Cherry Blossom */}
-            <Card className="bg-white rounded-2xl mb-8">
-              <CardContent className="p-8">
-                <div className="flex items-center gap-3 mb-4">
-                  <img
-                    src="/images/logo.png"
-                    alt="Make Time For More Logo"
-                    width={48}
-                    height={48}
-                    className="rounded-full shadow-lg"
-                  />
-                  <h2 className="text-2xl font-bold text-[#E26C73]">Craft Your Intention with Cherry Blossom</h2>
-                </div>
-                <p className="text-gray-600 mb-6">
-                  Open the conversation and Cherry Blossom will guide you through the GIVEN framework using the focus
-                  areas and scores she already has — no copying or pasting.
-                </p>
+            {/* Cherry Blossom leads into the conversation from context. */}
+            <CherryBlossomGuidance greeting="Let&apos;s design your intention together.">
+              <p>
+                I&apos;ll guide you through the GIV&bull;EN&trade; framework using {focusList} &mdash; the focus areas I
+                already have. There&apos;s nothing to copy or paste. Just talk with me below, and we&apos;ll shape a
+                Weekly Intention&trade; that feels like yours.
+              </p>
+            </CherryBlossomGuidance>
 
-                {/* Optional name personalization */}
-                <div className="mb-6">
-                  <Label htmlFor="name" className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-                    <User className="w-4 h-4" />
-                    Your first name (optional)
-                  </Label>
-                  <Input
-                    id="name"
-                    type="text"
-                    placeholder="Enter your name"
-                    value={userName}
-                    onChange={handleNameChange}
-                    className="w-full max-w-sm"
-                  />
-                </div>
+            {/* Optional name personalization */}
+            <div className="max-w-sm">
+              <Label htmlFor="name" className="mb-2 flex items-center gap-2 text-sm font-medium text-brand-ink-soft">
+                <User className="h-4 w-4" />
+                Your first name (optional)
+              </Label>
+              <Input
+                id="name"
+                type="text"
+                placeholder="Enter your name"
+                value={userName}
+                onChange={handleNameChange}
+                className="w-full border-brand-blush focus:border-brand-green/50"
+              />
+            </div>
 
-                <Button
-                  onClick={() => setIsChatOpen(true)}
-                  className="w-full bg-gradient-to-r from-[#E26C73] to-[#7FB069] hover:from-[#D55A60] hover:to-[#6FA055] text-white py-4 text-lg font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-3"
-                >
-                  <Sparkles className="w-5 h-5" />
-                  Set Your Intention with Cherry Blossom
-                </Button>
-              </CardContent>
-            </Card>
+            {/* The page itself is the conversation — no popup window. */}
+            <CherryBlossomConversation context="intention-setting" />
 
             {/* Lock in the Weekly Operating Declaration */}
-            <Card className="bg-white rounded-2xl mb-8 border-[#7FB069]/40">
-              <CardContent className="p-8">
-                <h2 className="text-2xl font-bold text-[#7FB069] mb-2">Lock In Your Weekly Intention Declaration</h2>
-                <p className="text-gray-600 mb-4">
-                  Once you and Cherry Blossom have crafted your one-sentence Weekly Intention Declaration, save it here.
-                  She&apos;ll remember it and coach you around it throughout your Work-Life Balance Business Week.
+            <Card className="rounded-2xl border-brand-green/40 bg-card shadow-ds">
+              <CardContent className="p-6 sm:p-8">
+                <h2 className="mb-2 font-display text-xl font-semibold tracking-tight text-brand-green-dark">
+                  Lock In Your Weekly Intention&trade;
+                </h2>
+                <p className="mb-4 leading-relaxed text-brand-ink-soft">
+                  When your intention feels right, capture it here in one sentence. I&apos;ll remember it and coach you
+                  around it all week &mdash; and you can always refine it or generate a fresh one with me above.
                 </p>
                 <Textarea
                   value={declaration}
                   onChange={(e) => setDeclaration(e.target.value)}
                   placeholder="e.g. I protect my energy so I can lead with excellence."
-                  className="w-full min-h-[90px] border-[#7FB069]/40 focus:border-[#7FB069] mb-4"
+                  className="mb-4 min-h-[90px] w-full border-brand-green/40 focus:border-brand-green"
+                  aria-label="Your Weekly Intention declaration"
                 />
                 <Button
                   onClick={handleSaveDeclaration}
                   disabled={!declaration.trim() || savingDeclaration}
-                  className="bg-[#7FB069] hover:bg-[#6FA055] text-white px-6 py-2 flex items-center gap-2"
+                  className="flex items-center gap-2 bg-brand-green px-6 py-2 text-white hover:bg-brand-green-dark"
                 >
-                  {declarationSaved ? <Check className="w-4 h-4" /> : null}
-                  {savingDeclaration ? "Saving..." : declarationSaved ? "Saved!" : "Save My Weekly Intention"}
+                  {declarationSaved ? <Check className="h-4 w-4" /> : null}
+                  {savingDeclaration ? "Saving..." : declarationSaved ? "Saved!" : "Accept & Save My Intention"}
                 </Button>
               </CardContent>
             </Card>
@@ -313,42 +307,33 @@ export default function CherryBlossomIntentions() {
         )}
 
         {/* Navigation */}
-        <div className="mt-8 mb-8">
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/focus-areas">
-              <Button
-                variant="outline"
-                className="flex items-center gap-2 border-[#E26C73] text-[#E26C73] hover:bg-[#E26C73] hover:text-white bg-white px-6 py-2"
-              >
-                Back to Focus Areas
-              </Button>
-            </Link>
-            <Link href="/my-results">
-              <Button
-                variant="outline"
-                className="flex items-center gap-2 border-[#7FB069] text-[#7FB069] hover:bg-[#7FB069] hover:text-white bg-white px-6 py-2"
-              >
-                Back to My Results
-              </Button>
-            </Link>
-            <Link href="/">
-              <Button
-                variant="outline"
-                className="flex items-center gap-2 border-gray-400 text-gray-600 hover:bg-gray-100 hover:text-gray-800 bg-white px-6 py-2"
-              >
-                Enter the Success Hub
-              </Button>
-            </Link>
-          </div>
+        <div className="flex flex-col justify-center gap-4 pt-2 sm:flex-row">
+          <Link href="/focus-areas">
+            <Button
+              variant="outline"
+              className="flex items-center gap-2 border-brand-coral/40 bg-card px-6 py-2 text-brand-coral-dark hover:bg-brand-blush/50"
+            >
+              Back to Focus Areas
+            </Button>
+          </Link>
+          <Link href="/my-results">
+            <Button
+              variant="outline"
+              className="flex items-center gap-2 border-brand-green/40 bg-card px-6 py-2 text-brand-green-dark hover:bg-brand-green/10"
+            >
+              Back to My Results
+            </Button>
+          </Link>
+          <Link href="/">
+            <Button
+              variant="outline"
+              className="flex items-center gap-2 border-black/10 bg-card px-6 py-2 text-brand-ink-soft hover:bg-black/5"
+            >
+              Enter the Success Hub
+            </Button>
+          </Link>
         </div>
       </div>
-
-      <SimpleChatModal
-        isOpen={isChatOpen}
-        onClose={() => setIsChatOpen(false)}
-        context="intention-setting"
-        title="Set Your Weekly Intention"
-      />
     </div>
   )
 }

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import SimpleChatModal from "@/components/simple-chat-modal"
 import {
@@ -27,6 +27,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { getAuditResults } from "@/utils/audit-storage"
+import { CherryBlossomGuidance } from "@/components/cherry-blossom/cherry-blossom-guidance"
 
 interface AuditResult {
   category: string
@@ -118,6 +119,14 @@ export default function MyResultsPage() {
       icon: categoryIcons[result.category as keyof typeof categoryIcons],
     }))
 
+  // Dynamic context for Cherry Blossom's reflection on the results.
+  const strengthName = categoryLabels[sortedResults[0].category as keyof typeof categoryLabels]
+  const growthNames = recommendations.map((rec) => rec.name)
+  const growthList =
+    growthNames.length <= 1
+      ? growthNames[0]
+      : `${growthNames.slice(0, -1).join(", ")} and ${growthNames[growthNames.length - 1]}`
+
   const getScoreMessage = (score: number) => {
     if (score >= 80) return "Excellent balance"
     if (score >= 70) return "Good balance"
@@ -165,6 +174,24 @@ export default function MyResultsPage() {
           <p className="text-lg text-gray-600 mb-2">{getScoreMessage(auditData.overallScore)}</p>
         </div>
 
+        {/* Cherry Blossom reflects on the results — the software shows the
+            numbers; she interprets them and points toward the next 28 days. */}
+        <div className="mb-12">
+          <CherryBlossomGuidance
+            greeting="I&apos;ve reviewed your Reality Check&trade;."
+            primaryAction={{ label: "Design my next 28 days", href: "/focus-areas" }}
+          >
+            <p>
+              Here&apos;s what stands out. You already have real strength in {strengthName} &mdash; that&apos;s a
+              foundation we&apos;ll build on.
+            </p>
+            <p>
+              I also notice a few areas &mdash; {growthList} &mdash; where small, consistent changes could create
+              meaningful improvement. Let&apos;s use those to design your next 28 days together.
+            </p>
+          </CherryBlossomGuidance>
+        </div>
+
         {/* Category Breakdown */}
         <div className="mb-12">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Category Breakdown</h2>
@@ -196,270 +223,6 @@ export default function MyResultsPage() {
           </div>
         </div>
 
-        {/* Top 3 Recommendations */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Top 3 Recommendations</h2>
-          <div className="space-y-6">
-            {recommendations.map((rec, index) => {
-              const IconComponent = rec.icon
-              return (
-                <Card key={rec.category} className="border-2 border-gray-200">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-3 text-[#7FB069]">
-                      <IconComponent className="w-6 h-6" />
-                      Maintain Your {rec.name}
-                    </CardTitle>
-                    <p className="text-[#E26C73]">Current score: {rec.percentage}%</p>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-2">
-                      {rec.category === "environmental" && (
-                        <>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Organize your living space</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Create a comfortable work environment</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Reduce clutter regularly</span>
-                          </li>
-                        </>
-                      )}
-                      {rec.category === "spiritual" && (
-                        <>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Start a daily 5-minute meditation practice</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Reduce clutter regularly</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Practice gratitude journaling</span>
-                          </li>
-                        </>
-                      )}
-                      {rec.category === "mental" && (
-                        <>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Practice stress management techniques</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Set healthy boundaries with work</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Take regular mental health breaks</span>
-                          </li>
-                        </>
-                      )}
-                      {rec.category === "physicalMovement" && (
-                        <>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Add 30 minutes of daily movement</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Take walking breaks during work</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Try a new physical activity weekly</span>
-                          </li>
-                        </>
-                      )}
-                      {rec.category === "physicalNourishment" && (
-                        <>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Plan healthy meals in advance</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Stay hydrated throughout the day</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Eat mindfully without distractions</span>
-                          </li>
-                        </>
-                      )}
-                      {rec.category === "physicalSleep" && (
-                        <>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Establish a consistent bedtime routine</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Limit screen time before bed</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Create a comfortable sleep environment</span>
-                          </li>
-                        </>
-                      )}
-                      {rec.category === "emotional" && (
-                        <>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Practice emotional awareness daily</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Express feelings in healthy ways</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Seek support when needed</span>
-                          </li>
-                        </>
-                      )}
-                      {rec.category === "personal" && (
-                        <>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Set personal development goals</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Dedicate time to hobbies and interests</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Reflect on personal values regularly</span>
-                          </li>
-                        </>
-                      )}
-                      {rec.category === "intellectual" && (
-                        <>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Read for 20 minutes daily</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Learn a new skill monthly</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Engage in stimulating conversations</span>
-                          </li>
-                        </>
-                      )}
-                      {rec.category === "professional" && (
-                        <>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Set clear work-life boundaries</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Pursue professional development</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Communicate effectively with colleagues</span>
-                          </li>
-                        </>
-                      )}
-                      {rec.category === "financial" && (
-                        <>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Create and stick to a budget</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Build an emergency fund</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Review financial goals monthly</span>
-                          </li>
-                        </>
-                      )}
-                      {rec.category === "social" && (
-                        <>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Schedule regular social activities</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Reach out to friends and family</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Join community groups or clubs</span>
-                          </li>
-                        </>
-                      )}
-                      {rec.category === "recreational" && (
-                        <>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Schedule regular fun activities</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Try new hobbies and experiences</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Make time for play and relaxation</span>
-                          </li>
-                        </>
-                      )}
-                      {rec.category === "relational" && (
-                        <>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Invest quality time in relationships</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Practice active listening</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Express appreciation regularly</span>
-                          </li>
-                        </>
-                      )}
-                      {rec.category === "charitable" && (
-                        <>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Volunteer for causes you care about</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Make regular charitable donations</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-[#7FB069]">•</span>
-                            <span>Help others in your community</span>
-                          </li>
-                        </>
-                      )}
-                    </ul>
-                  </CardContent>
-                </Card>
-              )
-            })}
-          </div>
-        </div>
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
@@ -474,13 +237,9 @@ export default function MyResultsPage() {
         {/* Cherry Blossom Audit Review Section */}
         <div className="mb-12">
           <div className="text-center mb-8">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <img src="/images/logo.png" alt="Cherry Blossom Logo" className="w-12 h-12 rounded-full" />
-              <h2 className="text-2xl font-bold text-gray-900">Get Deeper Insights with Cherry Blossom AI</h2>
-            </div>
-            <p className="text-gray-600 mb-6">
-              Share your audit results with Cherry Blossom AI for personalized insights and recommendations
-            </p>
+            <h2 className="font-display text-2xl font-bold tracking-tight text-brand-ink">
+              Talk it through with Cherry Blossom&trade;
+            </h2>
           </div>
 
           <Card className="border-2 border-[#E26C73]/20">
