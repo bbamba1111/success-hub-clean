@@ -9,7 +9,7 @@
  * logic yet — those arrive in Phase 4B.2.
  */
 
-import { createContext, useContext, useEffect, useReducer, type ReactNode } from "react"
+import { createContext, useContext, useEffect, useReducer, useRef, type ReactNode } from "react"
 import {
   PHASES,
   MAX_FOCUS_AREAS,
@@ -205,8 +205,18 @@ export function SddProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
-  // Persist on every change.
+  // Persist on every change — but skip the very first run. On mount the reducer
+  // starts from an empty initialState(); the hydrate effect above dispatches
+  // HYDRATE on the same commit. If we wrote on this first pass we'd clobber a
+  // saved in-progress ritual with the empty baseline BEFORE hydration lands.
+  // Skipping run #1 lets hydration re-render first, so we only ever persist real
+  // state (fixing loss of progress on refresh mid-ritual).
+  const skipFirstPersist = useRef(true)
   useEffect(() => {
+    if (skipFirstPersist.current) {
+      skipFirstPersist.current = false
+      return
+    }
     try {
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state))
     } catch {
