@@ -109,6 +109,44 @@ export interface GpsContext {
    * How the founder prefers to receive guidance.
    */
   businessComprehension: string | null
+
+  /**
+   * WHOLE-LIFE SIGNALS (Phase 6.1)
+   * Life context the GPS will eventually balance against business priorities.
+   * Architecture only — no GPS logic reads these yet.
+   */
+
+  /** Number of active Life Non-Negotiables™ the founder has committed to. */
+  nonNegotiablesCount: number
+
+  /** Number of upcoming life events within the current awareness window. */
+  upcomingLifeEventsCount: number
+
+  /** Whether any upcoming life event requires preparation (gift, planning, booking). */
+  hasEventRequiringPreparation: boolean
+
+  /** Whether the founder has defined any Personal Goals™. */
+  hasPersonalGoals: boolean
+
+  /** Number of active personal goals currently being pursued. */
+  activePersonalGoalsCount: number
+
+  /** Whether the founder has defined Relationship Intelligence™ entries. */
+  hasRelationships: boolean
+
+  /**
+   * Days until the next significant life event (high or life-defining).
+   * Null if no such event is approaching within the GPS awareness window.
+   * Architecture hook — GPS will protect surrounding days when this is < 7.
+   */
+  daysUntilNextSignificantEvent: number | null
+
+  /**
+   * Whether the GPS should currently be in "life protection mode" — i.e. a
+   * life-defining or high-significance event is within 3 days.
+   * Architecture hook — when true, GPS prioritizes Non-Negotiable protection.
+   */
+  inLifeProtectionMode: boolean
 }
 
 /** A point-in-time snapshot of Business Performance™ signals. */
@@ -185,6 +223,13 @@ export type GpsSignalId =
   | "no-delegation"
   | "launch-stage-no-offer-clarity"
   | "growth-stage-no-systems"
+  // Whole-Life signals (Phase 6.1)
+  | "life-defining-event-imminent"   // life-defining event within 3 days
+  | "high-significance-event-soon"   // high-significance event within 7 days
+  | "event-requires-preparation"     // an upcoming event needs gift/planning
+  | "no-non-negotiables-defined"     // no life non-negotiables registered
+  | "no-personal-goals-defined"      // no personal goals registered
+  | "no-relationships-defined"       // relationship intelligence is empty
 
 export interface GpsSignalWeight {
   signalId: GpsSignalId
@@ -276,6 +321,49 @@ export const GPS_SIGNAL_WEIGHTS: GpsSignalWeight[] = [
     description: "Financial Intelligence™ is the weakest ESA pillar.",
     status: "architecture",
   },
+  // Whole-Life signals (Phase 6.1)
+  {
+    signalId: "life-defining-event-imminent",
+    priority: 2, // Second only to non-negotiables-at-risk — life comes first
+    urgentOutcome: "honor-non-negotiables",
+    description: "A life-defining event (wedding, graduation, etc.) is within 3 days — GPS enters life protection mode.",
+    status: "architecture",
+  },
+  {
+    signalId: "high-significance-event-soon",
+    priority: 4,
+    urgentOutcome: "honor-non-negotiables",
+    description: "A high-significance life event is within 7 days — GPS adjusts surrounding recommendations.",
+    status: "architecture",
+  },
+  {
+    signalId: "event-requires-preparation",
+    priority: 5,
+    urgentOutcome: "honor-non-negotiables",
+    description: "An upcoming life event requires preparation — Cherry Blossom™ will offer to help plan.",
+    status: "architecture",
+  },
+  {
+    signalId: "no-non-negotiables-defined",
+    priority: 12,
+    urgentOutcome: "honor-non-negotiables",
+    description: "No Life Non-Negotiables™ have been defined — GPS cannot protect what hasn't been declared.",
+    status: "architecture",
+  },
+  {
+    signalId: "no-personal-goals-defined",
+    priority: 13,
+    urgentOutcome: "build-compounding-assets",
+    description: "No Personal Goals™ defined — GPS is missing the founder's life vision.",
+    status: "architecture",
+  },
+  {
+    signalId: "no-relationships-defined",
+    priority: 14,
+    urgentOutcome: "honor-non-negotiables",
+    description: "Relationship Intelligence™ is empty — Cherry Blossom™ cannot support the founder's most important relationships.",
+    status: "architecture",
+  },
 ]
 
 /* ===========================================================================
@@ -284,6 +372,93 @@ export const GPS_SIGNAL_WEIGHTS: GpsSignalWeight[] = [
  * The learning-to-execution loop every future assignment follows.
  * Architecture only — no assignment engine this phase.
  * ======================================================================== */
+
+/* ===========================================================================
+ * Founder GPS Reasoning Pipeline™
+ * ---------------------------------------------------------------------------
+ * Documents the complete reasoning chain the Founder GPS™ follows to produce
+ * its ONE highest-leverage recommendation. Architecture only — the engine
+ * that executes this pipeline is deferred to a future phase.
+ *
+ *   Harmony Context Engine™
+ *     ↓  (identity, language, communication style)
+ *   Business Context™
+ *     ↓  (stage, model, performance)
+ *   Life Context™
+ *     ↓  (commitments, events, goals, relationships)
+ *   Current Operating Segment™
+ *     ↓  (what was designed for this moment)
+ *   Business Stage™
+ *     ↓  (launch → growth → scale → legacy)
+ *   Business Model™
+ *     ↓  (service, product, coaching, agency, etc.)
+ *   Business Performance™
+ *     ↓  (revenue, cash flow, capacity, retention)
+ *   Work-Life Balance™
+ *     ↓  (human sustainability baseline)
+ *   Entrepreneur Success™
+ *     ↓  (8-pillar operating health)
+ *   Excellence Intelligence™
+ *     ↓  (domain competency signals)
+ *   Founder GPS™ Signal Weights
+ *     ↓  (ranked by urgency using GPS_SIGNAL_WEIGHTS)
+ *   ONE Highest-Leverage Recommendation™
+ *     ↓  (GpsRecommendation — one turn, one reason, one CTA)
+ *   Executive Assignment™
+ *     ↓  (which Executive™ executes the next turn)
+ *   Business Asset™
+ *     ↓  (what Compounding Asset™ will be built)
+ *   Time Freedom™
+ *     ↓  (the life that is being protected throughout)
+ *
+ * Three invariants this pipeline ALWAYS respects:
+ *   1. Honor Life's Non-Negotiables™  — life is never sacrificed for work
+ *   2. Build Compounding Business Assets™ — every turn builds lasting value
+ *   3. Reduce Execution Friction™ — the founder does less, better
+ * ======================================================================== */
+
+/**
+ * The three GPS Outcomes™ — every recommendation supports at least one.
+ * Already declared in entrepreneur-success/types.ts; re-documented here
+ * for developer clarity without re-importing.
+ *
+ * 1. "honor-non-negotiables"    — protect life, health, relationships, sleep
+ * 2. "build-compounding-assets" — build lasting, leverageable business assets
+ * 3. "reduce-execution-friction" — delegate, automate, systemize
+ */
+export const GPS_OUTCOME_DESCRIPTIONS = {
+  "honor-non-negotiables": {
+    label: "Honor Life's Non-Negotiables™",
+    description: "Protect sleep, health, relationships, recovery, family, and Time Freedom™.",
+    examples: ["Sleep", "Health", "Relationships", "Recovery", "Family", "Time Freedom™"],
+  },
+  "build-compounding-assets": {
+    label: "Build Compounding Business Assets™",
+    description: "Every action should build something that compounds — not just complete a task.",
+    examples: [
+      "Signature Talks™",
+      "Evergreen Webinars™",
+      "SOPs™",
+      "Referral Systems™",
+      "Hiring Systems™",
+      "AI Workflows™",
+      "Marketing Funnels™",
+      "Books™",
+      "Frameworks™",
+      "Templates™",
+    ],
+  },
+  "reduce-execution-friction": {
+    label: "Reduce Execution Friction™",
+    description: "Every system installed should reduce how much the founder has to think, decide, or do manually.",
+    examples: ["Delegation", "AI", "Automation", "Business Operating Rules™", "Templates", "Checklists", "Decision Frameworks", "Systems"],
+  },
+} as const
+
+/**
+ * The CEO Workday Assignment Loop™ — the seven phases of every assignment.
+ * Already declared in this file; re-exported here for discoverability.
+ */
 
 /**
  * The seven phases of the CEO Workday Assignment Loop™.
