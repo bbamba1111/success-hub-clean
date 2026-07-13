@@ -67,7 +67,7 @@ export function CherryBlossomGuidance({
           <span className="relative inline-flex h-11 w-11 shrink-0 overflow-hidden rounded-full border border-brand-blush shadow-sm">
             <img src={avatarSrc || "/placeholder.svg"} alt="Cherry Blossom" className="h-full w-full object-cover" />
           </span>
-          <span className="ds-eyebrow text-brand-coral-dark">Cherry Blossom&trade;</span>
+          <span className="text-xs font-bold uppercase tracking-[0.22em] text-brand-coral">Cherry Blossom&trade;</span>
         </div>
 
         {greeting && (
@@ -81,8 +81,8 @@ export function CherryBlossomGuidance({
         )}
 
         <div
-          className={`${greeting ? "mt-2" : "mt-4"} space-y-3 font-serif italic leading-relaxed text-brand-ink-soft text-pretty ${
-            size === "lg" ? "text-lg" : "text-base"
+          className={`${greeting ? "mt-2" : "mt-4"} space-y-3 font-sans font-medium leading-relaxed text-brand-ink-soft text-pretty ${
+            size === "lg" ? "text-[17px]" : "text-[15px]"
           }`}
         >
           {children}

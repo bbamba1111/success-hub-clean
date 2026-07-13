@@ -10,13 +10,13 @@ import {
   BookOpen,
   Check,
   ChevronRight,
-  Clock,
   Loader2,
   Lock,
   Star,
   Users,
 } from "lucide-react"
 import { FloatingPetals } from "@/components/floating-petals"
+import { CherryBlossomScene, CherryBlossomSceneCard } from "@/components/cherry-blossom/cherry-blossom-scene"
 import { PHASES, FOCUS_AREA_OPTIONS, type PhaseId } from "@/components/sunday-design-day/sdd-config"
 import { SddProvider, useSdd, canCompletePhase } from "@/components/sunday-design-day/sdd-state"
 import { RealityCheckPhase } from "@/components/sunday-design-day/phases/reality-check-phase"
@@ -115,79 +115,29 @@ function WelcomeScreen({
 
   return (
     <main className="min-h-screen bg-brand-cream">
-      {/* Hero */}
-      <section className="relative isolate overflow-hidden">
-        <img
-          src="/images/business-day-hero-bg.png"
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover object-center"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-brand-cream/55 via-brand-cream/25 to-brand-cream/80" />
-        <FloatingPetals count={14} />
-
-        <div className="relative z-10 flex min-h-[80vh] items-center justify-center px-4 py-20 sm:py-28">
-          <div className="glass-panel mx-auto max-w-2xl rounded-3xl px-6 py-12 text-center sm:px-10 sm:py-14">
-            <div className="mb-6 flex justify-center">
-              <img
-                src="/images/logo.png"
-                alt="Make Time For More logo"
-                width={80}
-                height={80}
-                className="rounded-full border-4 border-white/70 shadow-lg"
-              />
-            </div>
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-brand-coral">
-              Make Time For More™
+      <CherryBlossomScene variant="garden" minHeight="min-h-screen">
+        <CherryBlossomSceneCard
+          title={isFirst ? "Welcome to Your First Work-Life Balance Business Week™" : "Welcome Back to Your Work-Life Balance Business Week™"}
+          time={isFirst ? "5 mins" : "About 15–20 minutes"}
+        >
+          <p>{welcome}</p>
+          {isReview && (
+            <p className="font-semibold text-brand-coral">
+              28-Day Operating System Review™ — today&apos;s reflection covers the full past 28 days.
             </p>
-            <h1 className="font-playfair text-balance text-4xl font-bold leading-tight text-brand-ink sm:text-5xl">
-              {isFirst ? "Welcome to Your First Work-Life Balance Business Week™" : "Welcome to Your Next Work-Life Balance Business Week™"}
-            </h1>
-
-            {/* Cherry Blossom contextual welcome */}
-            <div className="mt-8 rounded-2xl border border-brand-green/15 bg-white/70 px-6 py-5 text-left">
-              <div className="flex items-center gap-2 mb-3">
-                <img
-                  src="/images/logo.png"
-                  alt="Cherry Blossom"
-                  width={32}
-                  height={32}
-                  className="rounded-full border border-white/80 shadow-sm"
-                />
-                <span className="text-xs font-semibold uppercase tracking-widest text-brand-green-dark/70">
-                  Cherry Blossom™
-                </span>
-              </div>
-              <p className="font-serif text-[15px] italic leading-relaxed text-pretty text-brand-ink-soft">
-                {welcome}
-              </p>
-            </div>
-
-            {isReview && (
-              <div className="mt-4 rounded-xl border border-brand-coral/20 bg-brand-coral/5 px-5 py-3">
-                <p className="text-sm font-medium text-brand-coral">
-                  28-Day Operating System Review™ — today&apos;s reflection covers the full past 28 days.
-                </p>
-              </div>
-            )}
-
-            <div className="mt-10 flex flex-col items-center gap-3">
-              <Button
-                size="lg"
-                onClick={onBegin}
-                className="bg-brand-coral px-8 py-6 text-lg font-semibold text-white shadow-lg transition-all hover:bg-brand-coral-dark hover:shadow-xl"
-              >
-                {isFirst ? "Begin My Work-Life Balance Audit™" : "Design My Next Work-Life Balance Business Week™"}
-                <ArrowRight className="ml-2 h-5 w-5" aria-hidden />
-              </Button>
-              <span className="flex items-center gap-2 text-sm text-brand-ink-soft">
-                <Clock className="h-4 w-4" />
-                {isFirst ? "5 mins" : "About 15–20 minutes"}
-              </span>
-            </div>
+          )}
+          <div className="mt-4">
+            <Button
+              size="lg"
+              onClick={onBegin}
+              className="bg-brand-coral px-8 py-5 text-base font-bold text-white shadow-lg transition-all hover:bg-brand-coral-dark hover:shadow-xl w-full sm:w-auto"
+            >
+              {isFirst ? "Begin My Work-Life Balance Audit™" : "Design My Next Work-Life Balance Business Week™"}
+              <ArrowRight className="ml-2 h-5 w-5" aria-hidden />
+            </Button>
           </div>
-        </div>
-      </section>
+        </CherryBlossomSceneCard>
+      </CherryBlossomScene>
     </main>
   )
 }
