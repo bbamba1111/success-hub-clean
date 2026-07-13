@@ -86,12 +86,12 @@ export function getCherryBlossomWelcome(ctx: CycleContext): string {
   const name = ctx.firstName ? `, ${ctx.firstName}` : ""
   switch (ctx.mode) {
     case "first-sunday":
-      return `Welcome${name}. Today we're establishing the foundation for your Work-Life Balance Operating System™.`
+      return `Welcome${name}. I'm Cherry Blossom™, your Work-Life Balance Executive Guide. Today we'll begin designing your First Work-Life Balance Business Week™ together. First, let's understand how your life and business have been operating over the past 30 days. From there, I'll guide you through every next step.`
     case "review-28":
-      return `${ctx.firstName ?? "You"}'ve completed another 28-day cycle. Today we'll step back, measure your transformation, celebrate your progress, and design the next chapter.`
+      return `${ctx.firstName ?? "You"}'ve completed another 28-day cycle. Today we'll step back, measure your transformation, celebrate your progress, and design your Next Work-Life Balance Business Week™.`
     case "weekly":
     default:
-      return `Welcome back${name}. Before we design the week ahead, let's reflect on the past seven days.`
+      return `Welcome back${name}. Before we design your Next Work-Life Balance Business Week™, let's take a pulse on the past 7 days.`
   }
 }
 
@@ -108,11 +108,11 @@ export function getWeeklyGuidance(phaseId: string): string | null {
     "reality-check":
       "Welcome back. You've done this before — let's tell the honest truth about the week that just ended, and carry only what serves us forward.",
     "download-delegate":
-      "What's still in your head from last week? Let's empty it out, sort it, and start Monday lighter than you ended Friday.",
+      "What's still in your head from last week? Let's empty it out, sort it, and start this week lighter than you ended the last.",
     "design-tomorrow":
       "You already know how this works. Walk each segment and refine your operating rules for the week ahead.",
     "commit-prepare":
-      "You've designed another week. Let's review it, then install it — so Monday is already designed when it arrives.",
+      "You've designed another Work-Life Balance Business Week™. Let's review it, then install it — so the week is already designed before it begins.",
   }
   return overrides[phaseId] ?? null
 }

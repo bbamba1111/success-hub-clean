@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/client"
+import type { AssessmentType } from "@/lib/assessment-cadence"
 
 /**
  * Reality Check persistence layer (Phase 1 memory layer).
@@ -34,6 +35,8 @@ interface AuditResultRow {
 interface AuditSnapshot {
   overallScore: number
   results: AuditResultRow[]
+  /** Assessment cadence metadata — persisted so Cherry Blossom™ and Founder GPS™ can read it. */
+  assessmentType?: AssessmentType
 }
 
 /** Shape of the progressive weekly enrichment fields. */
@@ -82,6 +85,7 @@ export async function saveRealityCheckSnapshot(snapshot: AuditSnapshot): Promise
         week_key: weekKey,
         overall_score: snapshot.overallScore,
         life_value_scores: snapshot.results,
+        assessment_type: snapshot.assessmentType ?? "baseline_30_day",
         scored_at: now,
         completed_at: now,
         updated_at: now,

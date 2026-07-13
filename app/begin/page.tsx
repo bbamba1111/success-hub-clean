@@ -6,13 +6,13 @@ import { OperatingEngineProvider } from "@/components/operating-engine-provider"
 import { HarmonyProvider } from "@/components/harmony-context/harmony-context-provider"
 
 export const metadata: Metadata = {
-  title: "Sunday Design Day™ | Make Time For More™",
+  title: "Design Your Work-Life Balance Business Week™ | Make Time For More™",
   description:
     "Design Tomorrow. Live It Tomorrow.™ Move through one calm weekly ritual — Reality Check, Download & Delegate, Design Tomorrow, and Commit & Prepare — one page at a time.",
 }
 
 /**
- * /begin — Sunday Design Day™ entry point (Phase 6.1).
+ * /begin — Work-Life Balance Business Week™ entry point (Phase 7.2).
  *
  * Server Component: fetches the founder's personal installation cycle from
  * Supabase and passes it down to the client ritual shell. No DB call happens

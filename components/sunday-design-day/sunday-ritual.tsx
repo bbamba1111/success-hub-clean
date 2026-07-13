@@ -73,12 +73,22 @@ function RitualShell({
   const [started, setStarted] = useState(false)
   const installed = Boolean(state.data.installedAt)
   const mode = cycleContext?.mode ?? "first-sunday"
+  const router = useRouter()
+
+  const handleBegin = () => {
+    if (mode === "first-sunday") {
+      // First-time founders start with the two assessments before ritual phases.
+      router.push("/audit")
+    } else {
+      setStarted(true)
+    }
+  }
 
   if (installed) {
     return <InstallBriefScreen cycleContext={cycleContext} userId={userId} />
   }
   if (!started) {
-    return <WelcomeScreen mode={mode} cycleContext={cycleContext} onBegin={() => setStarted(true)} />
+    return <WelcomeScreen mode={mode} cycleContext={cycleContext} onBegin={handleBegin} />
   }
   return (
     <PhaseScreen
@@ -112,9 +122,9 @@ const JOURNEY_CARDS = [
   },
 ]
 
-/** First Sunday™ — richer chapter cards showing what the full installation covers. */
+/** First-Time Founder™ — richer chapter cards showing what the full installation covers. */
 const FIRST_SUNDAY_CHAPTERS = [
-  { label: "Chapter 1", title: "Discover™", body: "30-Day Work-Life Balance Audit™ and Business Foundation Assessment™ establish your baseline." },
+  { label: "Chapter 1", title: "Discover™", body: "30-Day Work-Life Balance Audit™ and Entrepreneur Success Assessment™ establish your baseline." },
   { label: "Chapter 2", title: "Cherry Blossom Review™", body: "Cherry Blossom reads your baseline and opens the conversation." },
   { label: "Chapter 3", title: "Priority Focus Areas™", body: "Select the 1–3 life areas that deserve your focused energy this week." },
   { label: "Chapter 4", title: "Weekly Intention Declaration™", body: "One clear first-person statement you'll operate from all week." },
@@ -165,7 +175,7 @@ function WelcomeScreen({
               Make Time For More™
             </p>
             <h1 className="font-playfair text-balance text-4xl font-bold leading-tight text-brand-ink sm:text-5xl">
-              Sunday Design Day™
+              {isFirst ? "Welcome to Your First Work-Life Balance Business Week™" : "Welcome to Your Next Work-Life Balance Business Week™"}
             </h1>
 
             {/* Cherry Blossom contextual welcome */}
@@ -201,7 +211,7 @@ function WelcomeScreen({
                 onClick={onBegin}
                 className="bg-brand-coral px-8 py-6 text-lg font-semibold text-white shadow-lg transition-all hover:bg-brand-coral-dark hover:shadow-xl"
               >
-                {isFirst ? "Begin My Sunday Design Day™" : "Begin This Week's Ritual"}
+                {isFirst ? "Begin My Work-Life Balance Audit™" : "Design My Next Work-Life Balance Business Week™"}
                 <ArrowRight className="ml-2 h-5 w-5" aria-hidden />
               </Button>
               <span className="flex items-center gap-2 text-sm text-brand-ink-soft">
@@ -217,7 +227,7 @@ function WelcomeScreen({
       {isFirst ? (
         <section className="mx-auto max-w-5xl px-4 py-16 sm:py-20">
           <h2 className="mb-10 text-center font-playfair text-3xl font-bold text-balance text-brand-ink">
-            Your Installation Journey
+            Your Work-Life Balance Business Week™ Journey
           </h2>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {FIRST_SUNDAY_CHAPTERS.map(({ label, title, body }) => (
@@ -263,7 +273,7 @@ function WelcomeScreen({
               onClick={onBegin}
               className="bg-brand-coral px-8 py-6 text-lg font-semibold text-white shadow-md transition-all hover:bg-brand-coral-dark hover:shadow-lg"
             >
-              {isFirst ? "Begin My Sunday Design Day™" : "Begin This Week's Ritual"}
+              {isFirst ? "Begin My Work-Life Balance Audit™" : "Design My Next Work-Life Balance Business Week™"}
               <ArrowRight className="ml-2 h-5 w-5" aria-hidden />
             </Button>
           </div>
@@ -314,7 +324,7 @@ function PhaseScreen({
     <main className="min-h-screen bg-brand-cream">
       <div className="mx-auto max-w-3xl px-4 py-10 sm:py-14">
         <header className="text-center">
-          <p className="ds-eyebrow text-brand-green">Sunday Design Day™</p>
+          <p className="ds-eyebrow text-brand-green">Work-Life Balance Business Week™</p>
           <p className="mt-1 font-serif text-sm italic text-brand-green-dark">Design Tomorrow. Live It Tomorrow.™</p>
         </header>
 
@@ -384,7 +394,7 @@ function PhaseScreen({
 function ProgressSpine() {
   const { state, dispatch } = useSdd()
   return (
-    <nav aria-label="Sunday Design Day progress" className="mt-8">
+      <nav aria-label="Work-Life Balance Business Week progress" className="mt-8">
       <ol className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-2">
         {PHASES.map((phase, index) => {
           const status = state.status[phase.id]
@@ -521,7 +531,7 @@ function InstallBriefScreen({
       <div className="relative z-10 mx-auto max-w-3xl px-4 py-14 sm:py-20">
         {/* Header */}
         <header className="text-center mb-10">
-          <p className="ds-eyebrow text-brand-green">Sunday Design Day™</p>
+          <p className="ds-eyebrow text-brand-green">Work-Life Balance Business Week™</p>
           <h1 className="mt-3 font-playfair text-4xl font-bold leading-tight text-balance text-brand-ink sm:text-5xl">
             Your Week Has Been Installed™
           </h1>

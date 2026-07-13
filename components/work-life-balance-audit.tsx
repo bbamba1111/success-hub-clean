@@ -9,6 +9,7 @@ import { ArrowRight, RotateCcw } from "lucide-react"
 import { saveAuditResults } from "@/utils/audit-storage"
 import { saveRealityCheckSnapshot } from "@/utils/reality-check-storage"
 import { useRouter } from "next/navigation"
+import { getTimePhrase, saveAssessmentMeta, type AssessmentWindow, type AssessmentType } from "@/lib/assessment-cadence"
 
 export const categoryLabels = {
   spiritual: "Spiritual Well-being",
@@ -28,102 +29,53 @@ export const categoryLabels = {
   charitable: "Charitable Giving",
 }
 
-const questions = [
-  {
-    id: 1,
-    category: "spiritual",
-    question:
-      "In the past 7 days, how often have you connected to your spiritual life through prayer, study, fellowship, praise, music, meditation, nature, etc...?",
-  },
-  {
-    id: 2,
-    category: "mental",
-    question:
-      "In the past 7 days, how often have you effectively managed stress, made clear decisions, and maintained good mental health?",
-  },
-  {
-    id: 3,
-    category: "physicalMovement",
-    question: "In the past 7 days, how often have you engaged in intentional movement or exercise?",
-  },
-  {
-    id: 4,
-    category: "physicalNourishment",
-    question: "In the past 7 days, how often have you nourished your body with adequate hydration and healthy meals?",
-  },
-  {
-    id: 5,
-    category: "physicalSleep",
-    question: "In the past 7 days, how often have you gone to bed on time and gotten 8 hours of restorative sleep?",
-  },
-  {
-    id: 6,
-    category: "emotional",
-    question: "In the past 7 days, how often have you felt happy, balanced, peaceful, and joyful emotionally?",
-  },
-  {
-    id: 7,
-    category: "personal",
-    question: "In the past 7 days, how often have you made time for self-care and personal growth activities?",
-  },
-  {
-    id: 8,
-    category: "intellectual",
-    question: "In the past 7 days, how often have you engaged in learning something new or a skill-building activity?",
-  },
-  {
-    id: 9,
-    category: "professional",
-    question:
-      "In the past 7 days, how often have you shared your expertise through partnerships, collaboration, public speaking or publishing and/or expanded your professional visibility through media, podcast interviews or publicity?",
-  },
-  {
-    id: 10,
-    category: "financial",
-    question:
-      "In the past 7 days, how often have you focused intentionally on income/revenue generation, financial planning, retirement planning, business valuation and/or exit planning?",
-  },
-  {
-    id: 11,
-    category: "environmental",
-    question:
-      "In the past 7 days, how often have you made effort to create beauty, balance, or order in your home or office environment?",
-  },
-  {
-    id: 12,
-    category: "relational",
-    question:
-      "In the past 7 days, how often have you been attentive and present with your loved ones and in your closest relationships?",
-  },
-  {
-    id: 13,
-    category: "social",
-    question:
-      "In the past 7 days, how often have you engaged with your friends or supportive, like-minded individuals?",
-  },
-  {
-    id: 14,
-    category: "recreational",
-    question: "In the past 7 days, how often have you created space for joy, creativity, vacation, travel or play?",
-  },
-  {
-    id: 15,
-    category: "charitable",
-    question:
-      "In the past 7 days, how often have you contributed to supporting or inspiring others through donating, charity, volunteering or other philanthropic endeavors?",
-  },
+/**
+ * Question bodies without a time prefix — the prefix is injected at render time
+ * based on the current assessment window ("Over the past 7 days" or "30 days").
+ */
+const questionBodies = [
+  { id: 1, category: "spiritual",           body: "how often have you connected to your spiritual life through prayer, study, fellowship, praise, music, meditation, nature, etc...?" },
+  { id: 2, category: "mental",              body: "how often have you effectively managed stress, made clear decisions, and maintained good mental health?" },
+  { id: 3, category: "physicalMovement",    body: "how often have you engaged in intentional movement or exercise?" },
+  { id: 4, category: "physicalNourishment", body: "how often have you nourished your body with adequate hydration and healthy meals?" },
+  { id: 5, category: "physicalSleep",       body: "how often have you gone to bed on time and gotten 8 hours of restorative sleep?" },
+  { id: 6, category: "emotional",           body: "how often have you felt happy, balanced, peaceful, and joyful emotionally?" },
+  { id: 7, category: "personal",            body: "how often have you made time for self-care and personal growth activities?" },
+  { id: 8, category: "intellectual",        body: "how often have you engaged in learning something new or a skill-building activity?" },
+  { id: 9, category: "professional",        body: "how often have you shared your expertise through partnerships, collaboration, public speaking or publishing and/or expanded your professional visibility through media, podcast interviews or publicity?" },
+  { id: 10, category: "financial",          body: "how often have you focused intentionally on income/revenue generation, financial planning, retirement planning, business valuation and/or exit planning?" },
+  { id: 11, category: "environmental",      body: "how often have you made effort to create beauty, balance, or order in your home or office environment?" },
+  { id: 12, category: "relational",         body: "how often have you been attentive and present with your loved ones and in your closest relationships?" },
+  { id: 13, category: "social",             body: "how often have you engaged with your friends or supportive, like-minded individuals?" },
+  { id: 14, category: "recreational",       body: "how often have you created space for joy, creativity, vacation, travel or play?" },
+  { id: 15, category: "charitable",         body: "how often have you contributed to supporting or inspiring others through donating, charity, volunteering or other philanthropic endeavors?" },
 ]
 
 interface WorkLifeBalanceAuditProps {
   resultsUrl?: string
+  /** Assessment window — controls question time phrasing. Defaults to "30-day" for new founders. */
+  assessmentWindow?: AssessmentWindow
+  /** Assessment type metadata — persisted with every submission. */
+  assessmentType?: AssessmentType
 }
 
-export default function WorkLifeBalanceAudit({ resultsUrl = "/my-results" }: WorkLifeBalanceAuditProps) {
+export default function WorkLifeBalanceAudit({
+  resultsUrl = "/my-results",
+  assessmentWindow = "30-day",
+  assessmentType = "baseline_30_day",
+}: WorkLifeBalanceAuditProps) {
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState<Record<number, number>>({})
   const [isComplete, setIsComplete] = useState(false)
   const [results, setResults] = useState<any>(null)
   const router = useRouter()
+
+  // Build questions with the correct time prefix for this cadence.
+  const timePhrase = getTimePhrase(assessmentWindow)
+  const questions = questionBodies.map((q) => ({
+    ...q,
+    question: `${timePhrase}, ${q.body}`,
+  }))
 
   const handleAnswer = (questionId: number, score: number) => {
     const newAnswers = { ...answers, [questionId]: score }
@@ -168,20 +120,27 @@ export default function WorkLifeBalanceAudit({ resultsUrl = "/my-results" }: Wor
       overallScore,
       results: categoryResults,
       timestamp: Date.now(),
+      assessmentType,
     }
 
     setResults(auditResults)
     setIsComplete(true)
 
-    // Save to localStorage (instant UX — unchanged)
+    // Persist assessment cadence metadata to localStorage.
+    saveAssessmentMeta({
+      assessmentType,
+      assessmentWindow,
+      submittedAt: auditResults.timestamp,
+    })
+
+    // Save results to localStorage (instant UX).
     saveAuditResults(auditResults)
 
-    // Mirror the scored snapshot to Supabase as this week's official Reality
-    // Check record (best-effort; no-op for anonymous visitors). This is what
-    // gives Cherry Blossom memory of the completed assessment.
+    // Mirror the scored snapshot to Supabase — includes assessment_type metadata.
     void saveRealityCheckSnapshot({
       overallScore: auditResults.overallScore,
       results: auditResults.results,
+      assessmentType,
     })
   }
 

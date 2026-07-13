@@ -2,13 +2,9 @@
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import SimpleChatModal from "@/components/simple-chat-modal"
 import {
   ArrowLeft,
   RotateCcw,
-  Target,
   Heart,
   Brain,
   Dumbbell,
@@ -27,7 +23,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { getAuditResults } from "@/utils/audit-storage"
-import { CherryBlossomGuidance } from "@/components/cherry-blossom/cherry-blossom-guidance"
+import { CherryBlossomTransitionCard } from "@/components/cherry-blossom/cherry-blossom-transition-card"
 
 interface AuditResult {
   category: string
@@ -41,7 +37,7 @@ interface AuditData {
   timestamp: number
 }
 
-const categoryLabels = {
+const categoryLabels: Record<string, string> = {
   spiritual: "Spiritual Well-being",
   mental: "Mental Health",
   physicalMovement: "Physical Movement",
@@ -59,7 +55,7 @@ const categoryLabels = {
   charitable: "Charitable Giving",
 }
 
-const categoryIcons = {
+const categoryIcons: Record<string, React.ElementType> = {
   spiritual: Heart,
   mental: Brain,
   physicalMovement: Dumbbell,
@@ -77,17 +73,18 @@ const categoryIcons = {
   charitable: Gift,
 }
 
+function getScoreMessage(score: number): string {
+  if (score >= 80) return "Excellent balance"
+  if (score >= 70) return "Good balance"
+  if (score >= 60) return "Fair balance"
+  return "Needs attention"
+}
+
 export default function MyResultsPage() {
   const [auditData, setAuditData] = useState<AuditData | null>(null)
-  const [userName, setUserName] = useState("")
-  const [isChatOpen, setIsChatOpen] = useState(false)
-  const [chatContext, setChatContext] = useState("")
-  const [chatTitle, setChatTitle] = useState("")
 
   useEffect(() => {
-    const data = getAuditResults()
-    console.log("Retrieved audit data:", data)
-    setAuditData(data)
+    setAuditData(getAuditResults())
   }, [])
 
   if (!auditData) {
@@ -106,44 +103,14 @@ export default function MyResultsPage() {
     )
   }
 
-  // Sort results by percentage (highest first)
+  // Sort results by percentage descending for display.
   const sortedResults = [...auditData.results].sort((a, b) => b.percentage - a.percentage)
-
-  // Get top 3 recommendations (lowest scoring areas)
-  const recommendations = [...auditData.results]
-    .sort((a, b) => a.percentage - b.percentage)
-    .slice(0, 3)
-    .map((result) => ({
-      ...result,
-      name: categoryLabels[result.category as keyof typeof categoryLabels],
-      icon: categoryIcons[result.category as keyof typeof categoryIcons],
-    }))
-
-  // Dynamic context for Cherry Blossom's reflection on the results.
-  const strengthName = categoryLabels[sortedResults[0].category as keyof typeof categoryLabels]
-  const growthNames = recommendations.map((rec) => rec.name)
-  const growthList =
-    growthNames.length <= 1
-      ? growthNames[0]
-      : `${growthNames.slice(0, -1).join(", ")} and ${growthNames[growthNames.length - 1]}`
-
-  const getScoreMessage = (score: number) => {
-    if (score >= 80) return "Excellent balance"
-    if (score >= 70) return "Good balance"
-    if (score >= 60) return "Fair balance"
-    return "Needs attention"
-  }
-
-  const openChat = (context: string, title: string) => {
-    setChatContext(context)
-    setChatTitle(title)
-    setIsChatOpen(true)
-  }
 
   return (
     <div className="min-h-screen bg-white p-4">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
+
+        {/* Header nav */}
         <div className="flex items-center justify-between mb-8">
           <Link href="/">
             <Button variant="outline" className="flex items-center gap-2 bg-transparent">
@@ -162,7 +129,7 @@ export default function MyResultsPage() {
         {/* Logo and Title */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mx-auto mb-4">
-            <img src="/images/logo.png" alt="Logo" className="w-36 h-36 rounded-full" />
+            <img src="/images/logo.png" alt="Make Time For More logo" className="w-36 h-36 rounded-full" />
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Work-Life Balance Results</h1>
           <p className="text-gray-600">Completed on {new Date(auditData.timestamp).toLocaleDateString()}</p>
@@ -170,26 +137,10 @@ export default function MyResultsPage() {
 
         {/* Overall Score */}
         <div className="text-center mb-8">
-          <div className="text-6xl font-bold text-gray-900 mb-2">Overall Score: {auditData.overallScore}%</div>
-          <p className="text-lg text-gray-600 mb-2">{getScoreMessage(auditData.overallScore)}</p>
-        </div>
-
-        {/* Cherry Blossom reflects on the results — the software shows the
-            numbers; she interprets them and points toward the next 28 days. */}
-        <div className="mb-12">
-          <CherryBlossomGuidance
-            greeting="I&apos;ve reviewed your Reality Check&trade;."
-            primaryAction={{ label: "Design my next 28 days", href: "/focus-areas" }}
-          >
-            <p>
-              Here&apos;s what stands out. You already have real strength in {strengthName} &mdash; that&apos;s a
-              foundation we&apos;ll build on.
-            </p>
-            <p>
-              I also notice a few areas &mdash; {growthList} &mdash; where small, consistent changes could create
-              meaningful improvement. Let&apos;s use those to design your next 28 days together.
-            </p>
-          </CherryBlossomGuidance>
+          <div className="text-6xl font-bold text-gray-900 mb-2">
+            Overall Score: {auditData.overallScore}%
+          </div>
+          <p className="text-lg text-gray-600">{getScoreMessage(auditData.overallScore)}</p>
         </div>
 
         {/* Category Breakdown */}
@@ -197,13 +148,13 @@ export default function MyResultsPage() {
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Category Breakdown</h2>
           <div className="space-y-4">
             {sortedResults.map((result) => {
-              const IconComponent = categoryIcons[result.category as keyof typeof categoryIcons]
-              const categoryName = categoryLabels[result.category as keyof typeof categoryLabels]
+              const IconComponent = categoryIcons[result.category]
+              const categoryName = categoryLabels[result.category] ?? result.category
 
               return (
                 <div key={result.category} className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
                   <div className="w-8 h-8 flex items-center justify-center">
-                    <IconComponent className="w-6 h-6 text-black" />
+                    {IconComponent && <IconComponent className="w-6 h-6 text-black" aria-hidden />}
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center justify-between mb-2">
@@ -214,7 +165,7 @@ export default function MyResultsPage() {
                       <div
                         className="h-3 rounded-full bg-gradient-to-r from-[#E26C73] to-[#7FB069]"
                         style={{ width: `${result.percentage}%` }}
-                      ></div>
+                      />
                     </div>
                   </div>
                 </div>
@@ -223,128 +174,30 @@ export default function MyResultsPage() {
           </div>
         </div>
 
-
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-          <Link href="/focus-areas">
-            <Button className="bg-[#7FB069] hover:bg-[#6FA055] text-white px-8 py-3">
-              Set Your Focus Areas
-              <Target className="ml-2 h-5 w-5" />
-            </Button>
-          </Link>
+        {/* Cherry Blossom Transition Card — the only thing below the breakdown */}
+        <div className="mb-16">
+          <CherryBlossomTransitionCard
+            greeting="Thank you."
+            ctaLabel="Continue to Entrepreneur Success Assessment™"
+            ctaHref="/entrepreneur-success"
+          >
+            <p>
+              We now understand how your life has been operating over the past 30 days.
+            </p>
+            <p>
+              These results become the first half of your Harmony Blueprint™.
+            </p>
+            <p>
+              Next we&apos;ll discover how your business has been operating during those same 30 days.
+            </p>
+            <p>
+              Together these two assessments allow me to personalize every recommendation
+              you&apos;ll receive inside Harmony Lane™.
+            </p>
+          </CherryBlossomTransitionCard>
         </div>
 
-        {/* Cherry Blossom Audit Review Section */}
-        <div className="mb-12">
-          <div className="text-center mb-8">
-            <h2 className="font-display text-2xl font-bold tracking-tight text-brand-ink">
-              Talk it through with Cherry Blossom&trade;
-            </h2>
-          </div>
-
-          <Card className="border-2 border-[#E26C73]/20">
-            <CardContent className="p-6">
-              <div className="space-y-4">
-                {/* Name Input */}
-                <div className="mb-6">
-                  <label htmlFor="userName" className="block text-sm font-medium text-gray-700 mb-2">
-                    Your Name (Optional)
-                  </label>
-                  <Input
-                    id="userName"
-                    type="text"
-                    placeholder="Enter your name for personalized chat"
-                    value={userName}
-                    onChange={(e) => setUserName(e.target.value)}
-                    className="w-full border-[#E26C73]/30 focus:border-[#E26C73] focus:ring-[#E26C73]"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    Adding your name will personalize your conversation with Cherry Blossom AI
-                  </p>
-                </div>
-
-                <div className="flex items-center justify-between mb-4">
-                  <h4 className="text-lg font-semibold text-[#E26C73]">Your Audit Summary:</h4>
-                </div>
-
-                <div className="bg-gray-50 p-4 rounded-lg max-h-48 overflow-y-auto">
-                  <div className="text-sm text-gray-700 space-y-2">
-                    {userName.trim() && (
-                      <div className="font-medium text-[#E26C73] mb-2">
-                        Hi Cherry Blossom! My name is {userName.trim()}.
-                      </div>
-                    )}
-                    <div className="font-semibold">Overall Score: {auditData.overallScore}%</div>
-                    <div className="text-xs text-gray-500">
-                      Completed: {new Date(auditData.timestamp).toLocaleDateString()}
-                    </div>
-
-                    <div className="mt-4">
-                      <div className="font-medium mb-2">Category Breakdown:</div>
-                      <div className="space-y-1">
-                        {sortedResults.slice(0, 5).map((result) => {
-                          const categoryName = categoryLabels[result.category as keyof typeof categoryLabels]
-                          return (
-                            <div key={result.category} className="flex justify-between">
-                              <span>• {categoryName}</span>
-                              <span>{result.percentage}%</span>
-                            </div>
-                          )
-                        })}
-                        {sortedResults.length > 5 && (
-                          <div className="text-xs text-gray-500 italic">
-                            ...and {sortedResults.length - 5} more categories
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="mt-4">
-                      <div className="font-medium mb-2">Top Areas for Improvement:</div>
-                      <div className="space-y-1">
-                        {recommendations.map((rec, index) => {
-                          const categoryName = categoryLabels[rec.category as keyof typeof categoryLabels]
-                          return (
-                            <div key={rec.category} className="flex justify-between">
-                              <span>
-                                {index + 1}. {categoryName}
-                              </span>
-                              <span>{rec.percentage}%</span>
-                            </div>
-                          )
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="rounded-lg bg-[#7FB069]/10 border border-[#7FB069]/30 p-4 text-center">
-                  <p className="text-gray-700">
-                    Cherry Blossom already has your results and remembers your previous weeks. Just start the
-                    conversation — no copying or pasting needed.
-                  </p>
-                </div>
-
-                <div className="flex justify-center pt-4">
-                  <Button
-                    onClick={() => openChat("audit-review", "Review Your Audit with Cherry Blossom")}
-                    className="bg-gradient-to-r from-[#E26C73] to-[#7FB069] hover:from-[#D55A60] hover:to-[#6FA055] text-white px-8 py-3"
-                  >
-                    Review My Results with Cherry Blossom
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
       </div>
-
-      <SimpleChatModal
-        isOpen={isChatOpen}
-        onClose={() => setIsChatOpen(false)}
-        context={chatContext}
-        title={chatTitle}
-      />
     </div>
   )
 }
