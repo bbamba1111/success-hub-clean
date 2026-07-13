@@ -4,56 +4,44 @@
  * CherryBlossomScene™
  *
  * Full-bleed photographic scene backdrops that travel with Cherry Blossom™
- * as the founder advances through onboarding. Each scene is a distinct
- * real-world environment — the setting changes, Cherry Blossom's glass
- * card remains a consistent, beautiful presence.
+ * as the founder advances through onboarding. All images are local assets —
+ * no external dependencies.
  *
  * Scenes:
- *   garden      — Cherry blossom garden with torii gate at dawn (used on /begin)
- *   pond        — Serene Japanese koi pond with lanterns (used on /audit WLB)
- *   executive   — Japanese executive study / shoji screens (used on /audit ESA)
+ *   garden     — Cherry blossom garden at golden hour (/begin)
+ *   pond       — Women with tea under cherry blossoms (/audit WLB)
+ *   executive  — CEO at desk with cherry blossoms (/audit ESA)
  */
 
 import React from "react"
 
 // ---------------------------------------------------------------------------
-// Photo backgrounds — high-quality Unsplash images, each with brand overlay
+// Scene config — local public images
 // ---------------------------------------------------------------------------
 
 const SCENE_CONFIG = {
   garden: {
-    // Cherry blossom / torii gate at Fushimi Inari
-    url: "https://images.unsplash.com/photo-1522383225653-ed111181a951?w=1920&q=85&auto=format&fit=crop",
-    // Warm pink-to-green overlay matching brand palette
-    overlay: "bg-gradient-to-b from-[#FAD4DC]/60 via-[#FAF3EE]/30 to-[#EEF5EE]/50",
-    ariaLabel: "Cherry blossom garden with torii gate at dawn",
+    src: "/images/business-day-hero-bg.png",
+    overlay: "bg-gradient-to-b from-[#FAD4DC]/50 via-[#FFF8F5]/20 to-[#FAF0E6]/55",
+    ariaLabel: "Cherry blossom garden at golden hour with bridge and reflection",
   },
   pond: {
-    // Japanese garden with stone lanterns and water
-    url: "https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=1920&q=85&auto=format&fit=crop",
-    // Soft green-teal overlay
-    overlay: "bg-gradient-to-b from-[#D4EAE0]/55 via-[#EEF5EE]/25 to-[#D4E8D4]/45",
-    ariaLabel: "Serene Japanese koi pond garden with stone lanterns",
+    src: "/images/hero-women-tea-cherry-blossoms-new.png",
+    overlay: "bg-gradient-to-b from-[#FAD4DC]/45 via-white/10 to-[#F5EDE4]/50",
+    ariaLabel: "Women enjoying tea together under cherry blossom trees",
   },
   executive: {
-    // Japanese interior / tea house or executive study
-    url: "https://images.unsplash.com/photo-1540587659271-5a67e8db4ce4?w=1920&q=85&auto=format&fit=crop",
-    // Warm parchment overlay
-    overlay: "bg-gradient-to-b from-[#FAF0E6]/65 via-[#F5EDE4]/30 to-[#EDE4D8]/50",
-    ariaLabel: "Japanese executive study with shoji screens and cherry blossom view",
+    src: "/images/ceo-workday-focused.png",
+    overlay: "bg-gradient-to-b from-[#F5E6EA]/55 via-white/15 to-[#EDE4D8]/50",
+    ariaLabel: "Executive woman working at her desk with cherry blossoms",
   },
 } as const
-
-// ---------------------------------------------------------------------------
-// Main exported component
-// ---------------------------------------------------------------------------
 
 export type SceneVariant = "garden" | "pond" | "executive"
 
 interface CherryBlossomSceneProps {
   variant: SceneVariant
   children: React.ReactNode
-  /** Minimum height of the scene panel — defaults to 70vh */
   minHeight?: string
 }
 
@@ -73,19 +61,19 @@ export function CherryBlossomScene({
       <div
         aria-hidden
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url('${scene.url}')` }}
+        style={{ backgroundImage: `url('${scene.src}')` }}
       />
 
-      {/* Brand-tone colour overlay — softens the photo, ensures legibility */}
+      {/* Brand-tone overlay — softens photo, ensures readability */}
       <div aria-hidden className={`absolute inset-0 ${scene.overlay}`} />
 
-      {/* Subtle vignette so glass card always stands out */}
+      {/* Soft vignette so glass card pops */}
       <div
         aria-hidden
-        className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(0,0,0,0.18)_100%)]"
+        className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,rgba(0,0,0,0.15)_100%)]"
       />
 
-      {/* Content layer — always centered, consistent padding */}
+      {/* Content layer */}
       <div className="relative z-10 flex flex-col items-center justify-center px-4 py-16 sm:py-20 min-h-[inherit]">
         {children}
       </div>
@@ -94,19 +82,14 @@ export function CherryBlossomScene({
 }
 
 // ---------------------------------------------------------------------------
-// CherryBlossomSceneCard — the frosted glass card Cherry Blossom appears in.
-// This is the single canonical glass panel used inside every scene.
-// Fixed width so she always looks the same regardless of page position.
+// CherryBlossomSceneCard — canonical frosted glass card.
+// Fixed max-w-2xl. Same size everywhere, regardless of page position.
 // ---------------------------------------------------------------------------
 
 interface SceneCardProps {
-  /** Avatar image src — defaults to the brand logo */
   avatarSrc?: string
-  /** Card title (large) */
   title: string
-  /** Cherry Blossom's message — can include <strong> and <em> for emphasis */
   children: React.ReactNode
-  /** Optional time indicator, e.g. "5 mins" */
   time?: string
 }
 
@@ -121,37 +104,37 @@ export function CherryBlossomSceneCard({
       className="
         w-full max-w-2xl
         rounded-3xl
-        bg-white/82 backdrop-blur-md
+        bg-white/85 backdrop-blur-md
         border border-white/60
-        shadow-[0_8px_40px_rgba(0,0,0,0.14)]
+        shadow-[0_8px_40px_rgba(0,0,0,0.13)]
         px-8 py-10 sm:px-12 sm:py-12
         flex flex-col items-center text-center
       "
     >
       {/* Avatar */}
-      <div className="mb-4 h-16 w-16 overflow-hidden rounded-full border-2 border-brand-blush shadow-sm">
+      <div className="mb-4 h-16 w-16 overflow-hidden rounded-full border-2 border-brand-blush shadow-sm shrink-0">
         <img src={avatarSrc} alt="Cherry Blossom" className="h-full w-full object-cover" />
       </div>
 
-      {/* Eyebrow — always brand pink */}
-      <p className="mb-4 text-xs font-bold uppercase tracking-[0.22em] text-brand-coral">
+      {/* Eyebrow — always brand pink/coral */}
+      <p className="mb-4 font-sans text-xs font-bold uppercase tracking-[0.22em] text-brand-coral">
         Cherry Blossom&trade;
       </p>
 
-      {/* Title — Playfair Display */}
+      {/* Title — Playfair Display, large */}
       <h1 className="font-playfair text-3xl sm:text-4xl font-bold leading-tight text-balance text-brand-ink mb-5">
         {title}
       </h1>
 
-      {/* Body — Montserrat Medium, upright, selectively emboldened/italicised */}
-      <div className="font-sans font-medium text-base sm:text-[17px] leading-relaxed text-brand-ink/80 text-pretty space-y-3 text-left w-full">
+      {/* Body — Montserrat medium, upright */}
+      <div className="font-sans font-medium text-[15px] sm:text-[17px] leading-relaxed text-brand-ink/80 text-pretty space-y-3 text-left w-full">
         {children}
       </div>
 
       {/* Time indicator */}
       {time && (
-        <div className="mt-7 flex items-center gap-2 text-sm font-medium text-brand-coral">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+        <div className="mt-7 flex items-center gap-2 text-sm font-semibold text-brand-coral font-sans">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
             <circle cx="12" cy="12" r="10"/>
             <polyline points="12 6 12 12 16 14"/>
           </svg>

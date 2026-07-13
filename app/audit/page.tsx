@@ -32,8 +32,8 @@ export default async function AuditPage() {
   return (
     <div className="min-h-screen bg-brand-cream">
 
-      {/* ── Scene 1: Cherry Blossom Garden / Torii Gate ───────────────── */}
-      <CherryBlossomScene variant="garden" minHeight="min-h-[70vh]">
+      {/* ── Scene 2: Women with Tea under Cherry Blossoms ─────────────── */}
+      <CherryBlossomScene variant="pond" minHeight="min-h-[70vh]">
         <CherryBlossomSceneCard
           title={is30Day ? "Your 30-Day Work-Life Balance Audit™" : "Your 7-Day Work-Life Pulse™"}
           time="5 mins"
