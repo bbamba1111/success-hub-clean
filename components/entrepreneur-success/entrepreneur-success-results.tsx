@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { ArrowLeft, RotateCcw } from "lucide-react"
+import { ArrowLeft, ArrowRight, RotateCcw } from "lucide-react"
 import { getEsaResults } from "@/lib/entrepreneur-success/esa-storage"
 import { scoreLabel, scoreColor } from "@/lib/entrepreneur-success/scoring"
 import { getOperatingPillar, OPERATING_PILLARS } from "@/lib/entrepreneur-success/esa-registry"
