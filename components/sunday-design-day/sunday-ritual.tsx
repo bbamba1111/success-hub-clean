@@ -4,24 +4,19 @@ import { useState, useTransition } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
 import {
   ArrowLeft,
   ArrowRight,
   BookOpen,
   Check,
   ChevronRight,
-  ClipboardCheck,
   Clock,
   Loader2,
   Lock,
-  MessageCircleHeart,
-  Sparkles,
   Star,
   Users,
 } from "lucide-react"
 import { FloatingPetals } from "@/components/floating-petals"
-import { RitualTimeline } from "@/components/begin/ritual-timeline"
 import { PHASES, FOCUS_AREA_OPTIONS, type PhaseId } from "@/components/sunday-design-day/sdd-config"
 import { SddProvider, useSdd, canCompletePhase } from "@/components/sunday-design-day/sdd-state"
 import { RealityCheckPhase } from "@/components/sunday-design-day/phases/reality-check-phase"
@@ -104,35 +99,6 @@ function RitualShell({
  * Welcome screen — three voices, one page title
  * ======================================================================= */
 
-const JOURNEY_CARDS = [
-  {
-    icon: ClipboardCheck,
-    title: "Reality Check™",
-    body: "Take a gentle snapshot of the week you just lived — your wins, your lessons, and the areas that matter most. It's what makes intentional design possible.",
-  },
-  {
-    icon: MessageCircleHeart,
-    title: "Download, Delegate & Design™",
-    body: "Move everything out of your head, decide what only you should hold, then design each segment of your Work-Life Balance Business Day™ in advance.",
-  },
-  {
-    icon: Sparkles,
-    title: "Commit & Install Your Week™",
-    body: "Review the week you've created and consciously install it — activating the operating system you just designed, ready to live on Monday.",
-  },
-]
-
-/** First-Time Founder™ — richer chapter cards showing what the full installation covers. */
-const FIRST_SUNDAY_CHAPTERS = [
-  { label: "Chapter 1", title: "Discover™", body: "30-Day Work-Life Balance Audit™ and Entrepreneur Success Assessment™ establish your baseline." },
-  { label: "Chapter 2", title: "Cherry Blossom Review™", body: "Cherry Blossom reads your baseline and opens the conversation." },
-  { label: "Chapter 3", title: "Priority Focus Areas™", body: "Select the 1–3 life areas that deserve your focused energy this week." },
-  { label: "Chapter 4", title: "Weekly Intention Declaration™", body: "One clear first-person statement you'll operate from all week." },
-  { label: "Chapter 5", title: "Download & Delegate™", body: "Empty your head, classify every item, and reduce overload before Monday." },
-  { label: "Chapter 6", title: "Design Tomorrow™", body: "Walk each segment of your Work-Life Balance Business Day™ and design it in advance." },
-  { label: "Chapter 7", title: "Commit & Prepare™", body: "Review what you've designed, then consciously commit to it." },
-  { label: "Chapter 8", title: "Install My Week™", body: "Cherry Blossom assembles your Operating Brief™ and your week is officially installed." },
-]
 
 function WelcomeScreen({
   mode,
@@ -216,66 +182,9 @@ function WelcomeScreen({
               </Button>
               <span className="flex items-center gap-2 text-sm text-brand-ink-soft">
                 <Clock className="h-4 w-4" />
-                {isFirst ? "About 20–30 minutes" : "About 15–20 minutes"}
+                {isFirst ? "5 mins" : "About 15–20 minutes"}
               </span>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* First Sunday: chapter overview — Weekly/Review: compact journey cards */}
-      {isFirst ? (
-        <section className="mx-auto max-w-5xl px-4 py-16 sm:py-20">
-          <h2 className="mb-10 text-center font-playfair text-3xl font-bold text-balance text-brand-ink">
-            Your Work-Life Balance Business Week™ Journey
-          </h2>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {FIRST_SUNDAY_CHAPTERS.map(({ label, title, body }) => (
-              <div key={title} className="rounded-2xl border border-brand-coral/12 bg-white p-5 shadow-sm">
-                <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-brand-coral/70">{label}</p>
-                <h3 className="mb-2 font-playfair text-lg font-bold text-balance text-brand-ink">{title}</h3>
-                <p className="text-sm leading-relaxed text-pretty text-brand-ink-soft">{body}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-      ) : (
-        <section className="mx-auto max-w-5xl px-4 py-16 sm:py-20">
-          <h2 className="mb-10 text-center font-playfair text-3xl font-bold text-balance text-brand-ink">
-            What This Ritual Holds
-          </h2>
-          <div className="grid gap-6 md:grid-cols-3">
-            {JOURNEY_CARDS.map(({ icon: Icon, title, body }) => (
-              <Card key={title} className="rounded-2xl border-brand-coral/15 bg-white shadow-sm">
-                <CardContent className="flex h-full flex-col p-6">
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-brand-green/15">
-                    <Icon className="h-6 w-6 text-brand-green" />
-                  </div>
-                  <h3 className="mb-2 text-xl font-bold text-balance text-brand-ink">{title}</h3>
-                  <p className="text-pretty leading-relaxed text-brand-ink-soft">{body}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Ritual timeline — shown for all modes */}
-      <section className="px-4 pb-24">
-        <div className="mx-auto max-w-xl rounded-2xl bg-white p-8 shadow-sm ring-1 ring-brand-coral/10 sm:p-10">
-          <h2 className="mb-8 text-center font-playfair text-2xl font-bold text-balance text-brand-ink">
-            Your Weekly Ritual, Start to Finish
-          </h2>
-          <RitualTimeline />
-          <div className="mt-10 text-center">
-            <Button
-              size="lg"
-              onClick={onBegin}
-              className="bg-brand-coral px-8 py-6 text-lg font-semibold text-white shadow-md transition-all hover:bg-brand-coral-dark hover:shadow-lg"
-            >
-              {isFirst ? "Begin My Work-Life Balance Audit™" : "Design My Next Work-Life Balance Business Week™"}
-              <ArrowRight className="ml-2 h-5 w-5" aria-hidden />
-            </Button>
           </div>
         </div>
       </section>
