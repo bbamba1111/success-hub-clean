@@ -20,9 +20,9 @@
 
 import Link from "next/link"
 import { useEffect, useState } from "react"
-import { Sparkles, ArrowRight, Compass, Users } from "lucide-react"
+import { ArrowRight, Compass, Users } from "lucide-react"
 import { useHarmonyContext } from "@/components/harmony-context/harmony-context-provider"
-import { getCherryBlossomGuidance } from "@/lib/harmony-context/cherry-blossom-guidance"
+import { assembleMorningExecutiveBrief } from "@/lib/cherry-blossom/executive-brief"
 import type { HarmonySegment } from "@/lib/harmony-context/types"
 import {
   HONOR_OPTIONS,
@@ -37,29 +37,92 @@ export function TodaysOperatingSystem() {
   // Avoid rendering context-dependent markup until the engine + session are ready.
   if (!ctx.ready) return null
 
-  const guidance = getCherryBlossomGuidance(ctx)
+  const brief = assembleMorningExecutiveBrief(ctx)
 
   return (
     <section
       aria-labelledby="todays-os-heading"
-      className="w-full bg-gradient-to-br from-[#F5F1E8] to-white px-4 pt-12 sm:px-6 lg:px-8"
+      className="w-full bg-white px-4 pt-12 sm:px-6 lg:px-8"
     >
       <div className="mx-auto max-w-3xl">
-        {/* Cherry Blossom™ greeting — context-aware, reinforcing, never robotic. */}
-        <div className="text-center">
-          <p className="inline-flex items-center gap-2 font-montserrat text-xs font-medium uppercase tracking-[0.18em] text-[#5B835F]">
-            <Sparkles className="h-4 w-4" aria-hidden />
-            Cherry Blossom™
-          </p>
-          <h2
-            id="todays-os-heading"
-            className="mt-2 text-pretty font-playfair text-3xl font-medium text-[#3A2E33] sm:text-4xl"
-          >
-            {guidance.greeting}
-          </h2>
-          <p className="mx-auto mt-3 max-w-2xl text-pretty font-montserrat text-[15px] leading-relaxed text-[#6B5860]">
-            {guidance.message}
-          </p>
+        {/* Cherry Blossom™ Executive Brief entry card */}
+        <div className="relative overflow-hidden rounded-2xl border border-[#E26C73]/25 bg-[#FDF6F6] shadow-sm">
+          {/* Coral left spine */}
+          <div aria-hidden className="absolute inset-y-0 left-0 w-[3px] bg-[#E26C73]" />
+
+          <div className="px-7 py-6">
+            {/* CB identity row */}
+            <div className="flex items-center gap-3">
+              <div className="h-9 w-9 overflow-hidden rounded-full border border-[#E26C73]/30 shadow-sm shrink-0">
+                <img src="/images/logo.png" alt="Cherry Blossom" className="h-full w-full object-cover" />
+              </div>
+              <div>
+                <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.18em] text-[#E26C73]">
+                  Cherry Blossom™
+                </p>
+                <p className="font-montserrat text-[11px] text-[#6B5860]/70">
+                  Chief of Staff &amp; Executive Conductor™
+                </p>
+              </div>
+            </div>
+
+            {/* Greeting + opening statement */}
+            <h2
+              id="todays-os-heading"
+              className="mt-4 font-playfair text-2xl font-medium leading-tight text-[#1A1A1A] text-balance sm:text-3xl"
+            >
+              {brief.greeting}
+            </h2>
+            <p className="mt-2 font-montserrat text-[14px] leading-relaxed text-[#3A2E33] text-pretty">
+              {brief.openingStatement}
+            </p>
+
+            {/* Today's focus — the single sentence that defines the day */}
+            <div className="mt-5 rounded-xl border border-[#5B835F]/20 bg-white/70 px-5 py-4">
+              <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.14em] text-[#5B835F]">
+                Today&apos;s Executive Focus™
+              </p>
+              <p className="mt-1 font-montserrat text-[14px] leading-relaxed text-[#3A2E33] text-pretty">
+                {brief.executiveFocus.statement}
+              </p>
+            </div>
+
+            {/* Highest leverage outcome + assigned executive — two-col */}
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              <div className="rounded-xl border border-black/[0.06] bg-white/70 px-4 py-4">
+                <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.14em] text-[#6B5860]">
+                  Highest-Leverage Outcome™
+                </p>
+                <p className="mt-1 font-montserrat text-[13px] font-medium leading-snug text-[#1A1A1A]">
+                  {brief.highestLeverageOutcome.title}
+                </p>
+              </div>
+              {brief.assignedExecutive && (
+                <div className="rounded-xl border border-black/[0.06] bg-white/70 px-4 py-4">
+                  <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.14em] text-[#6B5860]">
+                    Today&apos;s Executive™
+                  </p>
+                  <p className="mt-1 font-montserrat text-[13px] font-medium leading-snug text-[#1A1A1A]">
+                    {brief.assignedExecutive.name}
+                  </p>
+                  <p className="font-montserrat text-[11px] text-[#E26C73]">
+                    {brief.assignedExecutive.title}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* CTA — full brief */}
+            <div className="mt-5">
+              <Link
+                href="/cherry-blossom"
+                className="inline-flex items-center gap-2 font-montserrat text-sm font-semibold text-[#E26C73] transition-colors hover:text-[#C13B6B]"
+              >
+                Read your full Executive Brief™
+                <ArrowRight className="h-4 w-4" aria-hidden />
+              </Link>
+            </div>
+          </div>
         </div>
 
         {ctx.hasDesignedWeek ? (
