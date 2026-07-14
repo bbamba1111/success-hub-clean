@@ -15,6 +15,8 @@ export interface InstalledSegment {
   planner: string
   nonNegotiable: string
   committed: boolean
+  /** Intention Declaration™ — Cherry Blossom's identity-based statement, shown as Practice™ cue in Live Today™. */
+  declaration?: string
 }
 
 /**
@@ -63,6 +65,12 @@ export function getInstalledWeek(): InstalledWeek | null {
     const data = parsed.data
     if (!data?.installedAt) return null
     const ceo = data.ceo ?? {}
+    // Design My Week™ declarations are persisted separately under "dmw:v1"
+    let dmwDeclarations: Record<string, string> = {}
+    try {
+      const dmwRaw = window.sessionStorage.getItem("dmw:v1")
+      if (dmwRaw) dmwDeclarations = JSON.parse(dmwRaw) as Record<string, string>
+    } catch { /* best-effort */ }
     return {
       installedAt: data.installedAt,
       intention: data.weekly?.intention?.trim() ?? "",
@@ -74,6 +82,7 @@ export function getInstalledWeek(): InstalledWeek | null {
         planner: s.planner?.trim() ?? "",
         nonNegotiable: s.nonNegotiable?.trim() ?? "",
         committed: Boolean(s.committed),
+        declaration: dmwDeclarations[id]?.trim() || undefined,
       })),
       ceo: {
         // CEO Priorities™ = the ceo-workday planner ("ONE outcome that would make tomorrow a win").

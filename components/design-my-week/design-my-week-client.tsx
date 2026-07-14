@@ -328,12 +328,21 @@ export function DesignMyWeekClient() {
   }
 
   function handleConfirm() {
+    const confirmedDeclaration = states[current.id].declaration ?? ""
     // 1. Mark confirmed immediately so chips refresh
     setStates((prev) => ({
       ...prev,
       [current.id]: { ...prev[current.id], confirmed: true },
     }))
-    // 2. Advance step (unless last)
+    // 2. Persist declaration to dmw:v1 so Live Today™ Practice™ panels can read it
+    try {
+      const existing: Record<string, string> = JSON.parse(
+        window.sessionStorage.getItem("dmw:v1") ?? "{}"
+      )
+      existing[current.id] = confirmedDeclaration
+      window.sessionStorage.setItem("dmw:v1", JSON.stringify(existing))
+    } catch { /* best-effort */ }
+    // 3. Advance step (unless last)
     if (step < SEGMENTS.length - 1) {
       setStep((s) => s + 1)
       setTimeout(() => scrollToCard(), 80)

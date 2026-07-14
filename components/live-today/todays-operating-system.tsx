@@ -274,8 +274,9 @@ function SegmentCard({ segment, isCurrent }: { segment: HarmonySegment; isCurren
         isCurrent ? "ring-2 ring-[#5B835F]/50" : ""
       }`}
     >
+      {/* Header */}
       <div className="flex items-center justify-between gap-3">
-        <h3 className="font-playfair text-xl font-medium text-[#5B835F]">{segment.title}</h3>
+        <h3 className="font-montserrat text-lg font-bold text-[#5B835F]">{segment.title}</h3>
         {isCurrent && (
           <span className="shrink-0 rounded-full bg-[#5B835F] px-3 py-1 font-montserrat text-xs font-semibold uppercase tracking-[0.12em] text-white">
             Now
@@ -283,6 +284,22 @@ function SegmentCard({ segment, isCurrent }: { segment: HarmonySegment; isCurren
         )}
       </div>
 
+      {/* Practice™ — Intention Declaration shown as operating cue when segment is active */}
+      {isCurrent && segment.declaration && (
+        <div className="mt-4 rounded-xl border border-[#5B835F]/25 bg-[#5B835F]/[0.05] px-5 py-4">
+          <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.16em] text-[#5B835F]">
+            Practice™ — Your Intention Declaration™
+          </p>
+          <p className="mt-2 font-montserrat text-[15px] font-medium italic leading-relaxed text-[#3A2E33] text-pretty">
+            &ldquo;{segment.declaration}&rdquo;
+          </p>
+          <p className="mt-2 font-montserrat text-[11px] leading-relaxed text-[#6B5860]/80">
+            This is the operating standard you committed to. It defines how you will show up during this segment today.
+          </p>
+        </div>
+      )}
+
+      {/* Rule + Non-Negotiable */}
       <div className="mt-4 space-y-4">
         <div>
           <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.14em] text-[#6B5860]">
@@ -299,9 +316,12 @@ function SegmentCard({ segment, isCurrent }: { segment: HarmonySegment; isCurren
         </div>
       </div>
 
+      {/* Follow-Through™ — exact brief language, non-judgement framing */}
       <div className="mt-5 border-t border-black/[0.06] pt-4">
-        <p className="font-montserrat text-sm font-medium text-[#3A2E33]">Did you honor today&apos;s Non-Negotiable™?</p>
-        <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label={`Honor check for ${segment.title}`}>
+        <p className="font-montserrat text-sm font-semibold text-[#3A2E33]">
+          Did you keep this commitment today?
+        </p>
+        <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label={`Follow-through check for ${segment.title}`}>
           {HONOR_OPTIONS.map((opt) => {
             const selected = response === opt.value
             return (
@@ -319,6 +339,15 @@ function SegmentCard({ segment, isCurrent }: { segment: HarmonySegment; isCurren
             )
           })}
         </div>
+        {response && (
+          <p className="mt-3 font-montserrat text-[12px] leading-relaxed text-[#6B5860]/80 text-pretty">
+            {response === "yes"
+              ? "Cherry Blossom\u2122 has recorded this. Consistent honoring of this commitment builds it into your operating default."
+              : response === "partial"
+              ? "Cherry Blossom\u2122 has recorded this. Partial honoring is still practice. Each repetition strengthens the pattern."
+              : "Cherry Blossom\u2122 has recorded this without judgment. The purpose is learning, not perfection. Tomorrow is another opportunity to practice."}
+          </p>
+        )}
       </div>
     </article>
   )

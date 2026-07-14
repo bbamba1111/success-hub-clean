@@ -36,6 +36,12 @@ export interface HarmonySegment {
   rule: string
   /** Daily Non-Negotiable™ — the commitment lived today ("what will I honor?"). */
   nonNegotiable: string
+  /**
+   * Intention Declaration™ — the identity-based present-tense statement Cherry
+   * Blossom™ generated from the founder's commitment during Design My Week™.
+   * Shown as the Practice™ cue when the founder enters this segment in Live Today™.
+   */
+  declaration?: string
 }
 
 /** CEO Workday™ context designed on Sunday. */

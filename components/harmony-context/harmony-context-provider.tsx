@@ -166,6 +166,7 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
           title: cfg.title,
           rule: s.rule,
           nonNegotiable: s.nonNegotiable || cfg.defaultNonNegotiable,
+          declaration: s.declaration || undefined,
         },
       ]
     })
