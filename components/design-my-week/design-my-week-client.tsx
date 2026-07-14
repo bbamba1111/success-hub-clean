@@ -90,12 +90,12 @@ const SEGMENTS = [
     description:
       "Your protected, high-leverage CEO execution window. Four focused hours dedicated exclusively to the most important work that moves your business forward.",
     examples: [
-      "Complete my keynote presentation",
-      "Record today\u2019s podcast",
-      "Lead one leveraged sales conversation",
-      "Build my webinar",
-      "Review AI delegation queue",
-      "Finish client proposal",
+      "Meetings require an agenda, owner, and decision",
+      "AI drafts first; I review and approve",
+      "Every recurring process becomes an SOP after the third repetition",
+      "Client proposals are sent within 24 hours",
+      "Every CEO Workday begins by reviewing my Executive Brief\u2122",
+      "One leveraged sales conversation per day",
     ],
   },
   {
@@ -253,9 +253,33 @@ type InstallState = {
 }
 
 const TYPE_LABEL: Record<string, string> = {
-  flex: "Flex Time",
-  life: "Daily Non-Negotiable\u2122",
-  business: "Business Operating Rule\u2122",
+  flex: "Flex Time™",
+  life: "Daily Non-Negotiable™",
+  business: "Business Operating Rule™",
+}
+
+const TYPE_INPUT_LABEL: Record<string, string> = {
+  flex: "My Flex Time™ Commitment",
+  life: "My Daily Non-Negotiable™",
+  business: "My Operating Rule™",
+}
+
+const TYPE_DECLARATION_LABEL: Record<string, string> = {
+  flex: "Your Flex Time™ Declaration",
+  life: "Your Daily Non-Negotiable™",
+  business: "Your Operating Rule™",
+}
+
+const TYPE_COLOR: Record<string, string> = {
+  flex: "text-brand-coral",
+  life: "text-brand-green",
+  business: "text-[#5B835F]",
+}
+
+const TYPE_CHIP_COLOR: Record<string, string> = {
+  flex: "bg-brand-coral/10 text-brand-coral",
+  life: "bg-brand-green/10 text-brand-green",
+  business: "bg-[#5B835F]/10 text-[#5B835F]",
 }
 
 const TYPE_COLOR: Record<string, string> = {
@@ -370,10 +394,11 @@ export function DesignMyWeekClient() {
             {SEGMENTS.filter((s) => states[s.id].confirmed).map((s) => (
               <span
                 key={s.id}
-                className="flex items-center gap-1.5 rounded-full bg-brand-green/10 px-3 py-1 font-sans text-xs font-semibold text-brand-green"
+                className={`flex items-center gap-1.5 rounded-full px-3 py-1 font-sans text-xs font-semibold ${TYPE_CHIP_COLOR[s.type]}`}
               >
                 <CheckCircle2 className="h-3.5 w-3.5" aria-hidden />
                 {s.title}
+                <span className="ml-0.5 opacity-60">· {TYPE_LABEL[s.type]}</span>
               </span>
             ))}
           </div>
@@ -491,7 +516,7 @@ export function DesignMyWeekClient() {
                       htmlFor={`input-${current.id}`}
                       className="block font-sans text-sm font-bold text-brand-ink mb-3"
                     >
-                      My Non-Negotiable™
+                      {TYPE_INPUT_LABEL[current.type]}
                     </label>
                     <div className="flex items-start rounded-xl border border-brand-blush bg-brand-cream/40 focus-within:border-brand-green focus-within:ring-2 focus-within:ring-brand-green/20 transition-all overflow-hidden">
                       <span className="shrink-0 px-4 pt-3.5 font-sans text-[15px] font-semibold text-brand-green select-none">
@@ -535,8 +560,8 @@ export function DesignMyWeekClient() {
                 /* ── Declaration state ── */
                 <div className="space-y-6">
                   <div className="rounded-2xl border border-brand-green/20 bg-brand-green/5 px-6 py-5">
-                    <p className="font-sans text-xs font-bold uppercase tracking-[0.2em] text-brand-green mb-3">
-                      Your Intention Declaration™
+                    <p className={`font-sans text-xs font-bold uppercase tracking-[0.2em] mb-3 ${TYPE_COLOR[current.type]}`}>
+                      {TYPE_DECLARATION_LABEL[current.type]}
                     </p>
                     <p className="font-sans text-lg font-semibold leading-relaxed text-brand-ink text-balance">
                       &ldquo;{state.declaration}&rdquo;
@@ -584,24 +609,26 @@ export function DesignMyWeekClient() {
                 </span>
               </div>
               <p className="font-sans font-bold text-xl text-brand-ink mb-4">
-                Your week is installed.
+                Harmony Lane™ is now installed.
               </p>
               <div className="font-sans font-medium text-[15px] leading-relaxed text-brand-ink-soft space-y-3 text-pretty mb-7">
                 <p>
-                  All seven of your <strong className="text-brand-ink">Operating Segments™</strong>{" "}
-                  are now active as{" "}
-                  <strong className="text-brand-ink">Intention Declarations™</strong> you will
-                  operate from every single day.
+                  You have just installed <strong className="text-brand-ink">two operating systems simultaneously</strong>.
                 </p>
                 <p>
-                  Your <strong className="text-brand-ink">Life Operating System™</strong> protects
-                  what matters most. Your{" "}
-                  <strong className="text-brand-ink">Business Operating System™</strong> builds
-                  what you have committed to creating.
+                  Your <strong className="text-brand-ink">Life Operating System™</strong> is built
+                  from your <strong className="text-brand-ink">Daily Non-Negotiables™</strong> — the
+                  commitments that protect your health, relationships, recovery, and Time Freedom™.
                 </p>
                 <p>
-                  Harmony Lane™ is now synchronizing you into today&apos;s operating segment.{" "}
-                  <em>Let&apos;s begin living the week you just designed.</em>
+                  Your <strong className="text-brand-ink">Business Operating System™</strong> is
+                  built from your <strong className="text-brand-ink">Business Operating Rules™</strong> — the
+                  rules that reduce execution friction, improve decision-making, leverage AI and
+                  delegation, and build compounding business assets.
+                </p>
+                <p>
+                  Together they create what Harmony Lane™ ultimately delivers:{" "}
+                  <em>a business that supports the life you want to live, instead of a life that revolves around the business.</em>
                 </p>
               </div>
               <Link
