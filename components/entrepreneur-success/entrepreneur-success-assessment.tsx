@@ -80,7 +80,7 @@ export default function EntrepreneurSuccessAssessment({
   }, [currentIndex])
 
   return (
-    <div className="w-full max-w-2xl mx-auto px-4 py-10" ref={cardRef}>
+    <div className="w-full max-w-4xl mx-auto px-4 py-10" ref={cardRef}>
       {/* Progress header */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-2">

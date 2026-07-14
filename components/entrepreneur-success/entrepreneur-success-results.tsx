@@ -168,7 +168,7 @@ export default function EntrepreneurSuccessResults() {
                   ? "You demonstrate strong operating practices across the Eight Pillars™."
                   : results.overallScore >= 55
                   ? "Your foundation is in place. Targeted practice in key pillars will accelerate your operating excellence."
-                  : "This is your starting point. Every high-performing founder began here. Let&apos;s build."}
+                  : "This is your starting point. Every high-performing founder began here. Let\u2019s build."}
               </p>
             </div>
           </div>

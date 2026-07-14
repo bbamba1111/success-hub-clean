@@ -125,7 +125,7 @@ export default function WorkLifeBalanceAudit({
 
   if (isComplete && results) {
     return (
-      <div className="w-full max-w-2xl mx-auto px-4 py-10" ref={cardRef}>
+      <div className="w-full max-w-4xl mx-auto px-4 py-10" ref={cardRef}>
         <div className="rounded-3xl bg-white border border-brand-blush shadow-lg overflow-hidden">
           <div className="bg-brand-blush/40 px-8 py-6 text-center">
             <p className="font-sans text-xs font-bold uppercase tracking-[0.22em] text-brand-coral mb-2">
@@ -167,7 +167,7 @@ export default function WorkLifeBalanceAudit({
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto px-4 py-10" ref={cardRef}>
+    <div className="w-full max-w-4xl mx-auto px-4 py-10" ref={cardRef}>
       {/* Progress header */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-2">

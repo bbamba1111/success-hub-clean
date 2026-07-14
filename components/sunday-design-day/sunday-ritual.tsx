@@ -126,11 +126,11 @@ function WelcomeScreen({
               28-Day Operating System Review™ — today&apos;s reflection covers the full past 28 days.
             </p>
           )}
-          <div className="mt-4">
+          <div className="mt-4 flex justify-center">
             <Button
               size="lg"
               onClick={onBegin}
-              className="bg-brand-coral px-8 py-5 text-base font-bold text-white shadow-lg transition-all hover:bg-brand-coral-dark hover:shadow-xl w-full sm:w-auto"
+              className="bg-brand-coral px-8 py-5 text-base font-bold text-white shadow-lg transition-all hover:bg-brand-coral-dark hover:shadow-xl"
             >
               {isFirst ? "Begin My Work-Life Balance Audit™" : "Design My Next Work-Life Balance Business Week™"}
               <ArrowRight className="ml-2 h-5 w-5" aria-hidden />
