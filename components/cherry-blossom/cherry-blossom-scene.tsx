@@ -26,14 +26,14 @@ const SCENE_CONFIG = {
     ariaLabel: "Cherry blossom garden at golden hour with bridge and reflection",
   },
   pond: {
-    src: "/images/hero-women-tea-cherry-blossoms-new.png",
-    overlay: "bg-gradient-to-b from-[#FAD4DC]/45 via-white/10 to-[#F5EDE4]/50",
-    ariaLabel: "Women enjoying tea together under cherry blossom trees",
+    src: "/images/reality-check-zen-bg.png",
+    overlay: "bg-gradient-to-b from-[#FAD4DC]/35 via-white/5 to-[#FFF0F2]/40",
+    ariaLabel: "Zen stones and cherry blossom branch with golden light",
   },
   executive: {
-    src: "/images/ceo-workday-focused.png",
-    overlay: "bg-gradient-to-b from-[#F5E6EA]/55 via-white/15 to-[#EDE4D8]/50",
-    ariaLabel: "Executive woman working at her desk with cherry blossoms",
+    src: "/images/coming-soon-retreat-simple.png",
+    overlay: "bg-gradient-to-b from-[#F5EDE8]/40 via-white/10 to-[#EDE8E0]/45",
+    ariaLabel: "Women meditating in a cherry blossom garden with Japanese pagoda",
   },
 } as const
 
