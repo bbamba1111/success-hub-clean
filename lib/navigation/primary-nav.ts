@@ -6,10 +6,10 @@
  * The app is now organized around the Work-Life Balance Operating System™.
  * The visible navigation contains only four permanent destinations:
  *
- *   🌸 Sunday Design Day™ → /sunday-design-day  (weekly installation experience)
- *   ☀️ Live Today™        → /live-today         (primary daily operating workspace)
- *   🌿 Time Freedom™      → /time-freedom        (the life your business supports)
- *   🌸 My Harmony™        → /my-harmony          (results, memory, profile, growth)
+ *   Design My Week™  → /begin         (weekly installation experience)
+ *   Live Today™      → /live-today    (primary daily operating workspace)
+ *   Time Freedom™    → /time-freedom  (the life your business supports)
+ *   My Harmony™      → /my-harmony    (results, memory, profile, growth)
  *
  * IMPORTANT (Pass 4A.1 rules):
  *   - This pass only REORGANIZES. No functionality is built or deleted.
@@ -73,23 +73,23 @@ export interface PrimarySection {
 export const PRIMARY_NAV: PrimarySection[] = [
   {
     id: "sunday-design-day",
-    navLabel: "Sunday Design Day",
-    title: "Sunday Design Day™",
+    navLabel: "Design My Week™",
+    title: "Design My Week™",
     href: "/begin",
     icon: CalendarCheck,
-    tagline: "Design Tomorrow. Live It Tomorrow.™ — your weekly installation experience.",
+    tagline: "Install your Work-Life Balance Business Week™ — your weekly operating system design experience.",
     built: true,
     workspaces: [
       {
-        label: "The Weekly Installation Experience™",
+        label: "Design My Week™",
         href: "/begin",
-        description: "Reality Check™ → Download & Delegate™ → Design Tomorrow™ → Commit & Prepare™.",
+        description: "Install your Daily Non-Negotiables™, Intention Declarations™, and weekly operating rhythm.",
       },
     ],
   },
   {
     id: "live-today",
-    navLabel: "Live Today",
+    navLabel: "Live Today™",
     title: "Live Today™",
     href: "/live-today",
     icon: Sunrise,
@@ -105,7 +105,7 @@ export const PRIMARY_NAV: PrimarySection[] = [
   },
   {
     id: "time-freedom",
-    navLabel: "Time Freedom",
+    navLabel: "Time Freedom™",
     title: "Time Freedom™",
     href: "/time-freedom",
     icon: Leaf,
@@ -121,7 +121,7 @@ export const PRIMARY_NAV: PrimarySection[] = [
   },
   {
     id: "my-harmony",
-    navLabel: "My Harmony",
+    navLabel: "My Harmony™",
     title: "My Harmony™",
     href: "/my-harmony",
     icon: Flower2,

@@ -248,14 +248,14 @@ function EmptyBrief() {
         Your brief begins with a designed week.
       </p>
       <p className="mx-auto mt-2 max-w-md font-montserrat text-sm leading-relaxed text-[#6B5860]">
-        Once you complete Sunday Design Day™, Founder Intelligence™ will prepare a daily Operating Brief™ — your
+        Once you design your week, Founder Intelligence™ will prepare a daily Operating Brief™ — your
         executive team, today&apos;s insight, and the deliverables that fit your stage.
       </p>
       <Link
-        href="/sunday-design-day"
+        href="/begin"
         className="mt-5 inline-flex items-center gap-2 rounded-lg bg-[#5B835F] px-5 py-2.5 font-montserrat text-sm font-semibold text-white transition-colors hover:bg-[#4c6f50]"
       >
-        Begin Sunday Design Day™
+        Design My Week™
         <ArrowRight className="h-4 w-4" aria-hidden />
       </Link>
     </div>

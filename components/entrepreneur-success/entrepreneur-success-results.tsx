@@ -214,16 +214,16 @@ export default function EntrepreneurSuccessResults() {
         {/* ── Cherry Blossom Transition Card — single CTA into the journey ── */}
         <div className="mb-16">
           <CherryBlossomTransitionCard
-            greeting="Excellent."
-            ctaLabel="Continue"
-            ctaHref="/begin"
+            greeting="Your Harmony Blueprint™ is ready."
+            ctaLabel="View Your Harmony Blueprint™"
+            ctaHref="/harmony-blueprint"
           >
             <p>
-              We now understand how your business has been operating during the past 30 days.
+              We now have both your life baseline and your business baseline — the complete picture.
             </p>
             <p>
-              Combined with your Work-Life Balance Audit™, I now have everything I need to personalize
-              your journey through Harmony Lane™.
+              Together these form your personal <strong>Harmony Blueprint™</strong>. From this point forward,
+              every recommendation I make will be personalized to you.
             </p>
             <p>
               Next we&apos;ll begin installing the operating practices that will help you build your business

@@ -39,14 +39,13 @@ function getInvitation(
   dayOfWeek: number,
   dayName: string,
 ): { emoji: string; text: string; accent?: string; subheading?: string } {
-  // Sunday is NOT a workday — it remains part of the 3-Day Time Freedom™ Weekend.
-  // The Design Day is a ~20-minute intentional ritual, not the focus of the day.
+  // Sunday is part of the 3-Day Time Freedom™ Weekend — Design My Week™ is a ~20-min intentional ritual.
   if (dayOfWeek === 0)
     return {
       emoji: "🌸",
-      text: "Sunday Design Day™",
-      accent: "Design Day™",
-      subheading: "Still your Time Freedom™ — spend about 20 intentional minutes designing the week ahead, then get back to your Sunday.",
+      text: "Design My Week™",
+      accent: "Design My Week™",
+      subheading: "Still your Time Freedom™ — spend about 20 intentional minutes designing the week ahead, then get back to your day.",
     }
   // Monday marks the intentional beginning of a new weekly rhythm — not just another workday.
   if (dayOfWeek === 1)

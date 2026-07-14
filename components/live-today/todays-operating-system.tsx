@@ -242,14 +242,14 @@ function EmptyState() {
         Design tomorrow, then live it tomorrow.
       </p>
       <p className="mx-auto mt-2 max-w-md font-montserrat text-sm leading-relaxed text-[#6B5860]">
-        Complete Sunday Design Day™ to install your Operating Rules™ and Daily Non-Negotiables™. They&apos;ll appear
+        Design your week to install your Operating Rules™ and Daily Non-Negotiables™. They&apos;ll appear
         here to guide each segment of your day.
       </p>
       <Link
-        href="/sunday-design-day"
+        href="/begin"
         className="mt-5 inline-flex items-center gap-2 rounded-lg bg-[#5B835F] px-5 py-2.5 font-montserrat text-sm font-semibold text-white transition-colors hover:bg-[#4c6f50]"
       >
-        Begin Sunday Design Day™
+        Design My Week™
         <ArrowRight className="h-4 w-4" aria-hidden />
       </Link>
     </div>

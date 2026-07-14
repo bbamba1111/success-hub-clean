@@ -362,15 +362,13 @@ function BriefConfirmation({ brief }: { brief: MorningExecutiveBrief }) {
 
   const primaryHref = isCeoWorkday
     ? "/executive-leadership-team"
-    : brief.weekDesigned
-      ? "/sunday-design-day"
-      : "/sunday-design-day"
+    : "/begin"
 
   const primaryLabel = isCeoWorkday
     ? "Begin CEO Workday™"
     : brief.weekDesigned
-      ? "Continue Sunday Design Day™"
-      : "Design Your Week™"
+      ? "Design My Week™"
+      : "Design My Week™"
 
   return (
     <div className="border-t border-black/[0.08] pt-6">

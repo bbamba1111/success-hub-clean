@@ -111,8 +111,8 @@ function SundayInvitation({ day }: { day: DayDefinition }) {
       </div>
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         <Button asChild className="bg-[#78AD7D] px-6 font-semibold text-white hover:bg-[#6a9c6f]">
-          <Link href="/sunday-shift">
-            Begin Sunday Design Day™
+          <Link href="/begin">
+            Design My Week™
             <ArrowRight className="ml-1.5 h-4 w-4" aria-hidden />
           </Link>
         </Button>
