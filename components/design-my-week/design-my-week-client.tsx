@@ -15,12 +15,12 @@ const SEGMENTS = [
     description:
       "A protected 2-hour flexibility buffer at the start of every day — designed to absorb life's unavoidable demands without ever touching your CEO Workday™.",
     examples: [
-      "School drop-off",
-      "Breakfast meeting",
-      "Doctor appointment",
-      "Morning walk",
-      "Coffee networking",
-      "Personal errands",
+      "school drop-off every weekday morning",
+      "attending my networking breakfast every Tuesday",
+      "scheduling all medical appointments in this window",
+      "taking a morning walk before my day begins",
+      "connecting over coffee with one person each week",
+      "handling personal errands so they never touch my CEO Workday\u2122",
     ],
     flexNote: {
       default: "2 hours available by default.",
@@ -40,12 +40,12 @@ const SEGMENTS = [
     description:
       "Your morning ritual — the intentional practice that grounds your mind, raises your energy, and sets the tone for everything that follows.",
     examples: [
-      "Gratitude practice",
-      "Prayer",
-      "Visualization",
-      "Reading",
-      "Journaling",
-      "Meditation",
+      "beginning every morning with gratitude and prayer",
+      "spending 20 minutes in prayer before anything else",
+      "visualizing my ideal day before it begins",
+      "reading 10 pages of a growth book every morning",
+      "journaling my intentions and insights each morning",
+      "meditating for 15 minutes to center my mind",
     ],
     borrowNote: "Up to 1 hour of this segment may be temporarily reallocated to Flex Time\u2122 when life requires it.",
   },
@@ -57,12 +57,12 @@ const SEGMENTS = [
     description:
       "Your dedicated movement practice — non-negotiable for your sustained energy, mental clarity, and long-term health.",
     examples: [
-      "Strength training",
-      "Yoga",
-      "Stretching",
-      "Walking",
-      "Dance",
-      "Cycling",
+      "lifting weights for 45 minutes every weekday",
+      "practicing yoga for 30 minutes each morning",
+      "stretching for 20 minutes to start every day",
+      "walking for 30 minutes every weekday",
+      "dancing for 30 minutes as my daily movement practice",
+      "cycling for 45 minutes before my CEO Workday\u2122",
     ],
   },
   {
@@ -73,12 +73,12 @@ const SEGMENTS = [
     description:
       "A nourishing midday pause that refuels your body, creates a natural rhythm break, and prepares you for your most important work.",
     examples: [
-      "Eat away from my desk",
-      "Outdoor walk",
-      "Lunch with a friend",
-      "Meal prep",
-      "Hydrate",
-      "Midday reset",
+      "eating lunch away from my desk every day",
+      "taking an outdoor walk during my lunch break",
+      "having lunch with a friend or colleague once a week",
+      "preparing a healthy meal so I control what I eat",
+      "drinking at least 64 oz of water by midday",
+      "taking a full midday pause away from all screens",
     ],
     borrowNote: "Up to 1 hour of this segment may be temporarily reallocated to Flex Time\u2122 when life requires it.",
   },
@@ -90,12 +90,12 @@ const SEGMENTS = [
     description:
       "Your protected, high-leverage CEO execution window. Four focused hours dedicated exclusively to the most important work that moves your business forward.",
     examples: [
-      "Meetings require an agenda, owner, and decision",
-      "AI drafts first; I review and approve",
-      "Every recurring process becomes an SOP after the third repetition",
-      "Client proposals are sent within 24 hours",
-      "Every CEO Workday begins by reviewing my Executive Brief\u2122",
-      "One leveraged sales conversation per day",
+      "only scheduling meetings that have an agenda, owner, and clear decision",
+      "having AI draft first and reviewing before I send anything",
+      "turning every recurring process into an SOP after the third time I do it",
+      "sending every client proposal within 24 hours of the conversation",
+      "beginning every CEO Workday\u2122 by reviewing my Executive Brief\u2122",
+      "having one leveraged sales conversation every working day",
     ],
   },
   {
@@ -106,12 +106,12 @@ const SEGMENTS = [
     description:
       "The protected life your business exists to support. This is your time — fully present, fully free, fully yours.",
     examples: [
-      "Attend my child\u2019s soccer game",
-      "Read for pleasure",
-      "Date night",
-      "Gardening",
-      "Volunteer",
-      "Family movie night",
+      "being fully present with my family every evening",
+      "attending every one of my child\u2019s activities this week",
+      "reading for pleasure for at least 30 minutes each evening",
+      "spending quality time with my partner at least twice this week",
+      "gardening and reconnecting with nature after work",
+      "volunteering my time to a cause that matters to me",
     ],
   },
   {
@@ -122,12 +122,12 @@ const SEGMENTS = [
     description:
       "A clear, intentional close to every business day — so your rest is deep, restorative, and truly your own.",
     examples: [
-      "Devices off by 9 PM",
-      "Evening reflection",
-      "Read a book",
-      "Stretch",
-      "Prepare for tomorrow",
-      "Lights out by 10 PM",
+      "turning off all devices by 9:00 PM every night",
+      "spending 10 minutes in evening reflection before bed",
+      "reading a book instead of scrolling before sleep",
+      "stretching for 15 minutes to release the day",
+      "preparing tomorrow\u2019s intentions before I go to sleep",
+      "being in bed with lights out by 10:00 PM",
     ],
   },
 ]
@@ -280,12 +280,6 @@ const TYPE_CHIP_COLOR: Record<string, string> = {
   flex: "bg-brand-coral/10 text-brand-coral",
   life: "bg-brand-green/10 text-brand-green",
   business: "bg-[#5B835F]/10 text-[#5B835F]",
-}
-
-const TYPE_COLOR: Record<string, string> = {
-  flex: "text-brand-coral",
-  life: "text-brand-green",
-  business: "text-[#5B835F]",
 }
 
 /* ── Component ──────────────────────────────────────────────────────────── */
