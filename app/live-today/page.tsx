@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { OperatingEngineProvider } from "@/components/operating-engine-provider"
 import { HarmonyProvider } from "@/components/harmony-context/harmony-context-provider"
 import { TodaysOperatingSystem } from "@/components/live-today/todays-operating-system"
 import { DeveloperToolbar } from "@/components/developer-toolbar"
@@ -21,10 +22,12 @@ export const metadata: Metadata = {
 export default function LiveTodayPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#F5F1E8] to-white">
-      <HarmonyProvider>
-        <TodaysOperatingSystem />
-        <DeveloperToolbar />
-      </HarmonyProvider>
+      <OperatingEngineProvider>
+        <HarmonyProvider>
+          <TodaysOperatingSystem />
+          <DeveloperToolbar />
+        </HarmonyProvider>
+      </OperatingEngineProvider>
     </main>
   )
 }
