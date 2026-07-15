@@ -20,7 +20,7 @@
 
 import Link from "next/link"
 import { useEffect, useState } from "react"
-import { ArrowRight, Compass, Users } from "lucide-react"
+import { ArrowRight, ChevronDown, Compass, MapPin, Users, Zap } from "lucide-react"
 import { useHarmonyContext } from "@/components/harmony-context/harmony-context-provider"
 import { assembleMorningExecutiveBrief } from "@/lib/cherry-blossom/executive-brief"
 import type { HarmonySegment } from "@/lib/harmony-context/types"
@@ -257,7 +257,15 @@ function EmptyState() {
 }
 
 function SegmentCard({ segment, isCurrent }: { segment: HarmonySegment; isCurrent: boolean }) {
+  // Active segment auto-expands; others start collapsed
+  const [expanded, setExpanded] = useState(isCurrent)
   const [response, setResponse] = useState<HonorResponse | null>(null)
+  const [showLearnMore, setShowLearnMore] = useState(false)
+
+  // Sync expanded state when isCurrent changes (e.g. time advances)
+  useEffect(() => {
+    if (isCurrent) setExpanded(true)
+  }, [isCurrent])
 
   useEffect(() => {
     setResponse(getTodayResponses()[segment.id] ?? null)
@@ -270,85 +278,156 @@ function SegmentCard({ segment, isCurrent }: { segment: HarmonySegment; isCurren
 
   return (
     <article
-      className={`glass-panel rounded-2xl px-6 py-5 ${
-        isCurrent ? "ring-2 ring-[#5B835F]/50" : ""
+      className={`glass-panel rounded-2xl overflow-hidden transition-shadow ${
+        isCurrent ? "ring-2 ring-[#5B835F]/50 shadow-md" : "shadow-sm"
       }`}
     >
-      {/* Header */}
-      <div className="flex items-center justify-between gap-3">
-        <h3 className="font-montserrat text-lg font-bold text-[#5B835F]">{segment.title}</h3>
-        {isCurrent && (
-          <span className="shrink-0 rounded-full bg-[#5B835F] px-3 py-1 font-montserrat text-xs font-semibold uppercase tracking-[0.12em] text-white">
-            Now
-          </span>
-        )}
-      </div>
+      {/* Collapsible header row */}
+      <button
+        type="button"
+        onClick={() => setExpanded((v) => !v)}
+        className="flex w-full items-center justify-between gap-3 px-6 py-5 text-left"
+        aria-expanded={expanded}
+      >
+        <div className="flex items-center gap-3 min-w-0">
+          {isCurrent && (
+            <span className="shrink-0 rounded-full bg-[#5B835F] px-2.5 py-0.5 font-montserrat text-[10px] font-bold uppercase tracking-[0.14em] text-white">
+              Now
+            </span>
+          )}
+          <h3 className="font-montserrat text-base font-bold text-[#3A2E33] truncate">{segment.title}</h3>
+        </div>
+        <ChevronDown
+          className={`shrink-0 h-4 w-4 text-[#6B5860] transition-transform duration-200 ${expanded ? "rotate-180" : ""}`}
+          aria-hidden
+        />
+      </button>
 
-      {/* Practice™ — Intention Declaration shown as operating cue when segment is active */}
-      {isCurrent && segment.declaration && (
-        <div className="mt-4 rounded-xl border border-[#5B835F]/25 bg-[#5B835F]/[0.05] px-5 py-4">
-          <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.16em] text-[#5B835F]">
-            Practice™ — Your Intention Declaration™
-          </p>
-          <p className="mt-2 font-montserrat text-[15px] font-medium italic leading-relaxed text-[#3A2E33] text-pretty">
-            &ldquo;{segment.declaration}&rdquo;
-          </p>
-          <p className="mt-2 font-montserrat text-[11px] leading-relaxed text-[#6B5860]/80">
-            This is the operating standard you committed to. It defines how you will show up during this segment today.
-          </p>
+      {/* Expanded workspace */}
+      {expanded && (
+        <div className="px-6 pb-6 space-y-5 border-t border-black/[0.05]">
+
+          {/* Practice™ — Intention Declaration (all segments, not just active) */}
+          {segment.declaration && (
+            <div className="mt-5 rounded-xl border border-[#5B835F]/25 bg-[#5B835F]/[0.05] px-5 py-4">
+              <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.16em] text-[#5B835F]">
+                Practice™ — Your Intention Declaration™
+              </p>
+              <p className="mt-2 font-montserrat text-[15px] font-medium italic leading-relaxed text-[#3A2E33] text-pretty">
+                &ldquo;{segment.declaration}&rdquo;
+              </p>
+              {isCurrent && (
+                <p className="mt-2 font-montserrat text-[11px] leading-relaxed text-[#6B5860]/80">
+                  This is the operating standard you committed to. It defines how you will show up during this segment today.
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* Installed Rule + Non-Negotiable */}
+          <div className="mt-4 space-y-3">
+            <div className="rounded-xl border border-black/[0.06] bg-white/60 px-4 py-3">
+              <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.14em] text-[#6B5860]">
+                Today&apos;s Operating Rule™
+              </p>
+              <p className="mt-1 font-montserrat text-[14px] leading-relaxed text-[#3A2E33]">{segment.rule}</p>
+            </div>
+            <div className="rounded-xl border border-[#C13B6B]/15 bg-[#C13B6B]/[0.04] px-4 py-3">
+              <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.14em] text-[#C13B6B]">
+                Today&apos;s Non-Negotiable™
+              </p>
+              <p className="mt-1 font-montserrat text-[14px] leading-relaxed text-[#3A2E33]">{segment.nonNegotiable}</p>
+            </div>
+          </div>
+
+          {/* Founder GPS™ — placeholder for future adaptive coaching */}
+          <div className="rounded-xl border border-dashed border-[#5B835F]/25 bg-transparent px-4 py-3">
+            <div className="flex items-center gap-2 mb-1">
+              <MapPin className="h-3.5 w-3.5 text-[#5B835F]/60" aria-hidden />
+              <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.14em] text-[#5B835F]/70">
+                Founder GPS™
+              </p>
+            </div>
+            <p className="font-montserrat text-[12px] text-[#6B5860]/60 italic">
+              Adaptive coaching based on your reflection patterns — coming soon.
+            </p>
+          </div>
+
+          {/* Executive Assignment™ — placeholder for future AI executive integration */}
+          <div className="rounded-xl border border-dashed border-[#E26C73]/20 bg-transparent px-4 py-3">
+            <div className="flex items-center gap-2 mb-1">
+              <Zap className="h-3.5 w-3.5 text-[#E26C73]/60" aria-hidden />
+              <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.14em] text-[#E26C73]/70">
+                Executive Assignment™
+              </p>
+            </div>
+            <p className="font-montserrat text-[12px] text-[#6B5860]/60 italic">
+              Your AI Executive Leadership Team™ will assign a recommendation for this segment.
+            </p>
+          </div>
+
+          {/* Learn More About This Segment™ */}
+          <div className="rounded-xl border border-black/[0.06] overflow-hidden">
+            <button
+              type="button"
+              onClick={() => setShowLearnMore((v) => !v)}
+              className="flex w-full items-center justify-between px-4 py-3 text-left bg-white/40 hover:bg-white/60 transition-colors"
+              aria-expanded={showLearnMore}
+            >
+              <p className="font-montserrat text-xs font-semibold text-[#6B5860]">
+                Learn More About This Segment™
+              </p>
+              <ChevronDown
+                className={`h-3.5 w-3.5 text-[#6B5860]/60 transition-transform duration-200 ${showLearnMore ? "rotate-180" : ""}`}
+                aria-hidden
+              />
+            </button>
+            {showLearnMore && (
+              <div className="px-4 py-4 bg-white/20 space-y-1.5 font-montserrat text-[12px] leading-relaxed text-[#6B5860]">
+                <p>
+                  Open <Link href="/design-my-week" className="font-semibold text-[#5B835F] underline underline-offset-2">Design My Week™</Link> to
+                  review the full purpose, scientific foundation, business value, and Cherry Blossom™ tips for this segment.
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* Reflection — Follow-Through™ */}
+          <div className="border-t border-black/[0.06] pt-4">
+            <p className="font-montserrat text-sm font-semibold text-[#3A2E33]">
+              Did you keep this commitment today?
+            </p>
+            <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label={`Follow-through check for ${segment.title}`}>
+              {HONOR_OPTIONS.map((opt) => {
+                const selected = response === opt.value
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    aria-pressed={selected}
+                    onClick={() => choose(opt.value)}
+                    className={`rounded-full px-4 py-1.5 font-montserrat text-sm font-medium transition-colors ${
+                      selected ? toneSelected(opt.tone) : "bg-white/70 text-[#6B5860] hover:bg-white"
+                    } ${selected ? "" : "ring-1 ring-black/[0.06]"}`}
+                  >
+                    {opt.label}
+                  </button>
+                )
+              })}
+            </div>
+            {response && (
+              <p className="mt-3 font-montserrat text-[12px] leading-relaxed text-[#6B5860]/80 text-pretty">
+                {response === "yes"
+                  ? "Cherry Blossom\u2122 has recorded this. Consistent honoring of this commitment builds it into your operating default."
+                  : response === "partial"
+                  ? "Cherry Blossom\u2122 has recorded this. Partial honoring is still practice. Each repetition strengthens the pattern."
+                  : "Cherry Blossom\u2122 has recorded this without judgment. The purpose is learning, not perfection. Tomorrow is another opportunity to practice."}
+              </p>
+            )}
+          </div>
+
         </div>
       )}
-
-      {/* Rule + Non-Negotiable */}
-      <div className="mt-4 space-y-4">
-        <div>
-          <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.14em] text-[#6B5860]">
-            Today&apos;s Operating Rule™
-          </p>
-          <p className="mt-1 font-montserrat text-[15px] leading-relaxed text-[#3A2E33]">{segment.rule}</p>
-        </div>
-
-        <div className="rounded-xl border border-[#C13B6B]/15 bg-[#C13B6B]/[0.04] px-4 py-3">
-          <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.14em] text-[#C13B6B]">
-            Today&apos;s Non-Negotiable™
-          </p>
-          <p className="mt-1 font-montserrat text-[15px] leading-relaxed text-[#3A2E33]">{segment.nonNegotiable}</p>
-        </div>
-      </div>
-
-      {/* Follow-Through™ — exact brief language, non-judgement framing */}
-      <div className="mt-5 border-t border-black/[0.06] pt-4">
-        <p className="font-montserrat text-sm font-semibold text-[#3A2E33]">
-          Did you keep this commitment today?
-        </p>
-        <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label={`Follow-through check for ${segment.title}`}>
-          {HONOR_OPTIONS.map((opt) => {
-            const selected = response === opt.value
-            return (
-              <button
-                key={opt.value}
-                type="button"
-                aria-pressed={selected}
-                onClick={() => choose(opt.value)}
-                className={`rounded-full px-4 py-1.5 font-montserrat text-sm font-medium transition-colors ${
-                  selected ? toneSelected(opt.tone) : "bg-white/70 text-[#6B5860] hover:bg-white"
-                } ${selected ? "" : "ring-1 ring-black/[0.06]"}`}
-              >
-                {opt.label}
-              </button>
-            )
-          })}
-        </div>
-        {response && (
-          <p className="mt-3 font-montserrat text-[12px] leading-relaxed text-[#6B5860]/80 text-pretty">
-            {response === "yes"
-              ? "Cherry Blossom\u2122 has recorded this. Consistent honoring of this commitment builds it into your operating default."
-              : response === "partial"
-              ? "Cherry Blossom\u2122 has recorded this. Partial honoring is still practice. Each repetition strengthens the pattern."
-              : "Cherry Blossom\u2122 has recorded this without judgment. The purpose is learning, not perfection. Tomorrow is another opportunity to practice."}
-          </p>
-        )}
-      </div>
     </article>
   )
 }

@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
-import { ArrowRight, CheckCircle2, Clock, Info } from "lucide-react"
+import { ArrowRight, CheckCircle2, ChevronDown, Clock, Info } from "lucide-react"
 import { CherryBlossomScene, CherryBlossomSceneCard } from "@/components/cherry-blossom/cherry-blossom-scene"
 
 /* ── Segments ──────────────────────────────────────────────────────────── */
@@ -22,6 +22,23 @@ const SEGMENTS = [
       "connecting over coffee with one person each week",
       "handling personal errands so they never touch my CEO Workday\u2122",
     ],
+    learnMore: {
+      purpose: "Early Entry / Flex Time\u2122 is a deliberately engineered buffer — not wasted time. It exists so that life\u2019s unavoidable demands never spill into your CEO Workday\u2122 or eliminate your Daily Non-Negotiables\u2122.",
+      whyItMatters: "Without a protected flexibility window, life events become fires. The CEO Workday\u2122 gets stolen. Commitments get broken. Flex Time\u2122 is how high-performing founders stay anchored to their schedule even when life is unpredictable.",
+      science: "Research in cognitive load and decision fatigue shows that unplanned interruptions during deep work windows reduce overall productivity by up to 40%. Pre-scheduling a flex buffer reduces reactive decision-making and protects the cognitive resources reserved for the CEO Workday\u2122.",
+      businessValue: "Every hour you protect your CEO Workday\u2122 is an hour available for your highest-leverage business work. Flex Time\u2122 is the front-line defense that makes that protection possible — even during busy or unpredictable weeks.",
+      commonMistakes: [
+        "Allowing Flex Time\u2122 to expand beyond 4 hours on a regular basis.",
+        "Using borrowed Flex Time\u2122 every day rather than occasionally.",
+        "Not having a defined commitment for this window, letting it default to reactive behavior.",
+      ],
+      bestPractices: [
+        "Install one consistent anchor commitment (e.g. school drop-off, networking breakfast).",
+        "Treat borrowing as a weekly exception — not a daily routine.",
+        "Return borrowed time the next opportunity by compressing flex needs.",
+      ],
+      cbTip: "Your Flex Time\u2122 commitment is not about filling every minute. It is about knowing in advance how your morning unfolds so your CEO Workday\u2122 always begins on time, with your full energy available.",
+    },
     flexNote: {
       default: "2 hours available by default.",
       borrow: [
@@ -48,6 +65,23 @@ const SEGMENTS = [
       "meditating for 15 minutes to center my mind",
     ],
     borrowNote: "Up to 1 hour of this segment may be temporarily reallocated to Flex Time\u2122 when life requires it.",
+    learnMore: {
+      purpose: "Morning GIV\u2022EN\u2122 stands for Gratitude, Intentions, Visualization, Exercise (or Energy practice), and Nourishment. It is your intentional morning operating ritual — the daily practice that sets the tone for everything that follows.",
+      whyItMatters: "How you begin your morning determines how you execute your day. Founders who start reactively — checking email, social media, or news — spend the rest of the day in a reactive state. Morning GIV\u2022EN\u2122 installs a proactive, intentional operating mode before external demands arrive.",
+      science: "Behavioral science research confirms that morning routines activate the prefrontal cortex and reduce cortisol spikes associated with reactive decision-making. Studies on habit formation (Duhigg, Clear) show that anchoring practices to a consistent time dramatically increases follow-through rates.",
+      businessValue: "Founders who protect their morning ritual report higher focus during their CEO Workday\u2122, clearer decision-making, and a stronger sense of purpose and agency. Morning GIV\u2022EN\u2122 is not indulgence — it is operational preparation for your highest-leverage work.",
+      commonMistakes: [
+        "Checking email or social media before completing the morning ritual.",
+        "Skipping Morning GIV\u2022EN\u2122 when time is tight — it is when you need it most.",
+        "Making the ritual so complex it becomes unsustainable.",
+      ],
+      bestPractices: [
+        "Keep your practice to 30\u201360 minutes. Depth matters more than duration.",
+        "Complete your ritual before opening any device-based communication.",
+        "Choose one anchor practice and build consistency before adding more.",
+      ],
+      cbTip: "The most powerful morning rituals are simple, repeatable, and non-negotiable. One consistent practice performed daily builds more compounding value than an elaborate routine performed occasionally.",
+    },
   },
   {
     id: "workout",
@@ -64,6 +98,23 @@ const SEGMENTS = [
       "dancing for 30 minutes as my daily movement practice",
       "cycling for 45 minutes before my CEO Workday\u2122",
     ],
+    learnMore: {
+      purpose: "The Workout Window\u2122 is your non-negotiable daily movement practice — a protected block dedicated to physical health, mental clarity, and sustained energy.",
+      whyItMatters: "Exercise is the single highest-ROI habit available to a founder. It directly improves cognitive performance, emotional regulation, stress resilience, and sleep quality — all of which are prerequisites for high-level executive decision-making.",
+      science: "Neuroscience research (Ratey, Harvard Medical School) demonstrates that aerobic exercise increases BDNF (Brain-Derived Neurotrophic Factor), which accelerates learning, improves memory consolidation, and enhances creative problem-solving. Even 30 minutes of moderate movement produces measurable cognitive benefits that last 4\u20136 hours.",
+      businessValue: "Founders who exercise consistently report 23% higher self-reported productivity and significantly reduced decision fatigue during their CEO Workday\u2122. The Workout Window\u2122 is not separate from your business — it is the engine that powers it.",
+      commonMistakes: [
+        "Treating exercise as optional and sacrificing it when work pressures build.",
+        "Starting with an unsustainable intensity that leads to injury or burnout.",
+        "Exercising at inconsistent times, reducing habit formation.",
+      ],
+      bestPractices: [
+        "Schedule your workout at the same time each day to build automaticity.",
+        "Choose a form of movement you genuinely enjoy — consistency beats intensity.",
+        "Protect this window as fiercely as you protect your CEO Workday\u2122.",
+      ],
+      cbTip: "Physical movement is not a reward for good work — it is preparation for great work. The hour you invest in your body returns multiple hours of enhanced cognitive performance during your CEO Workday\u2122.",
+    },
   },
   {
     id: "healthy-lunch",
@@ -81,6 +132,23 @@ const SEGMENTS = [
       "taking a full midday pause away from all screens",
     ],
     borrowNote: "Up to 1 hour of this segment may be temporarily reallocated to Flex Time\u2122 when life requires it.",
+    learnMore: {
+      purpose: "Healthy Hybrid Lunch\u2122 is your nourishing midday pause — a deliberate break that refuels your body, transitions your mind from morning commitments, and prepares you for your most important work of the day.",
+      whyItMatters: "Most founders work through lunch, believing it demonstrates dedication. In reality, it depletes the mental resources needed for high-quality CEO Workday\u2122 execution. The pause is not a cost — it is an investment in the quality of your afternoon.",
+      science: "Research in chronobiology confirms a natural post-lunch cognitive dip between 1:00 PM and 3:00 PM when blood glucose regulation causes reduced alertness. A genuine midday break with intentional nutrition and movement counteracts this dip, improving afternoon performance by 20\u201335%.",
+      businessValue: "Founders who take a genuine lunch break report higher afternoon focus, better quality decisions during their CEO Workday\u2122, and lower rates of late-day exhaustion. Protecting this window is one of the most underrated performance practices available.",
+      commonMistakes: [
+        "Eating at the desk while continuing to work.",
+        "Skipping lunch entirely and running on caffeine into the CEO Workday\u2122.",
+        "Using the lunch window reactively — responding to emails or attending calls.",
+      ],
+      bestPractices: [
+        "Step fully away from your workspace, even if only for 20 minutes.",
+        "Include a brief movement element — a short walk, stretching, or fresh air.",
+        "Eat with intention: prioritize protein and healthy fats over high-glycemic carbohydrates.",
+      ],
+      cbTip: "Think of Healthy Hybrid Lunch\u2122 as the bridge between your morning commitments and your CEO Workday\u2122. What happens in this window directly determines the quality of work you do in the four hours that follow.",
+    },
   },
   {
     id: "ceo-workday",
@@ -97,6 +165,23 @@ const SEGMENTS = [
       "beginning every CEO Workday\u2122 by reviewing my Executive Brief\u2122",
       "having one leveraged sales conversation every working day",
     ],
+    learnMore: {
+      purpose: "The 4-Hour CEO Workday\u2122 is your protected high-leverage execution window — four focused hours dedicated exclusively to the most important work that moves your business forward.",
+      whyItMatters: "Most founders believe they need to work more hours to produce better results. The research says the opposite. Deep, focused, uninterrupted work produces 4\u20135x more output than the same hours worked in reactive, fragmented mode. Four focused hours outperforms eight scattered ones.",
+      science: "Cal Newport\u2019s research on Deep Work demonstrates that knowledge workers are capable of only 4 hours of peak cognitive performance per day. Parkinson\u2019s Law confirms that work expands to fill the time available. A defined 4-hour window forces prioritization and eliminates low-leverage activity.",
+      businessValue: "Business Operating Rules\u2122 installed during the CEO Workday\u2122 are the strategic standards that reduce friction, improve decision quality, leverage AI and delegation, and build compounding business assets. They are the mechanism through which your Business Operating System\u2122 gets installed.",
+      commonMistakes: [
+        "Allowing meetings, phone calls, or email to interrupt the CEO Workday\u2122.",
+        "Starting the CEO Workday\u2122 without a clear Executive Outcome\u2122 defined.",
+        "Using CEO Workday\u2122 time for tasks that belong in delegation queues.",
+      ],
+      bestPractices: [
+        "Begin every CEO Workday\u2122 by reviewing your Executive Brief\u2122.",
+        "Define one Executive Outcome\u2122 — the single most important result for the day.",
+        "AI drafts first. Human judgment second. Never the reverse.",
+      ],
+      cbTip: "Your CEO Workday\u2122 Operating Rule\u2122 is not a task — it is a governing standard. It defines HOW you operate during this window, not just what you do. A great Operating Rule\u2122 applies to every CEO Workday\u2122 this week, next week, and every week after.",
+    },
   },
   {
     id: "time-freedom",
@@ -113,6 +198,23 @@ const SEGMENTS = [
       "gardening and reconnecting with nature after work",
       "volunteering my time to a cause that matters to me",
     ],
+    learnMore: {
+      purpose: "Time Freedom\u2122 is the protected life your business exists to support. From 5:00 PM to 8:30 PM, you are fully present — in your relationships, your passions, your rest, and your joy. The business does not follow you here.",
+      whyItMatters: "Founders who never fully disconnect from their business report higher burnout, relationship deterioration, and declining creative capacity. Time Freedom\u2122 is not a privilege earned by finishing your work — it is a non-negotiable component of sustainable high performance.",
+      science: "Research in recovery psychology (Sonnentag & Fritz) demonstrates that psychological detachment from work during off-hours is the strongest predictor of next-day job performance, engagement, and creativity. Entrepreneurs who protect non-work time outperform those who do not over a 12-month horizon.",
+      businessValue: "Time Freedom\u2122 is the entire purpose of the Work-Life Balance Business Week\u2122. Every CEO Workday\u2122, every Operating Rule\u2122, every delegation decision is in service of expanding and protecting the time and freedom in this segment. It is not the reward — it is the goal.",
+      commonMistakes: [
+        "Checking email or Slack during Time Freedom\u2122.",
+        "Taking \u2018just one more call\u2019 that erodes the boundary.",
+        "Treating Time Freedom\u2122 as optional when the business is demanding.",
+      ],
+      bestPractices: [
+        "Define what Time Freedom\u2122 looks like for you specifically.",
+        "Protect this window with the same discipline you apply to your CEO Workday\u2122.",
+        "Let the people you love know this time belongs to them.",
+      ],
+      cbTip: "The founder who can walk away from their business at 5:00 PM with a clear conscience has built something extraordinary. That clarity comes from completing meaningful work during the CEO Workday\u2122 — not from working longer hours.",
+    },
   },
   {
     id: "power-down",
@@ -129,6 +231,23 @@ const SEGMENTS = [
       "preparing tomorrow\u2019s intentions before I go to sleep",
       "being in bed with lights out by 10:00 PM",
     ],
+    learnMore: {
+      purpose: "Power Down & Unplug\u2122 is a clear, intentional close to every business day. It creates the psychological and physiological conditions for deep, restorative rest — so that tomorrow begins with full energy, clarity, and intention.",
+      whyItMatters: "Sleep quality is the single most important recovery variable for cognitive performance. Founders who do not have a deliberate wind-down practice experience poorer sleep onset, lighter sleep stages, and reduced next-day executive function. Power Down\u2122 is the operating practice that protects sleep quality.",
+      science: "Harvard sleep research (Walker, \u2018Why We Sleep\u2019) confirms that blue light exposure within 90 minutes of sleep onset reduces melatonin production by up to 50%. Cognitive arousal — from email, work content, or social media — keeps the prefrontal cortex activated and delays sleep onset by 30\u201360 minutes on average.",
+      businessValue: "A well-rested founder makes better decisions, thinks more creatively, manages emotions more skillfully, and sustains high performance over time. Power Down\u2122 is not a soft habit — it is the physiological foundation that makes every other segment in the Operating System possible.",
+      commonMistakes: [
+        "Bringing your phone to bed and scrolling before sleep.",
+        "Checking email or reviewing tomorrow\u2019s work in the hour before bed.",
+        "Not having a defined close to the business day, causing the mind to stay \u2018on\u2019.",
+      ],
+      bestPractices: [
+        "Create a clear \u2018close of business\u2019 ritual — a physical or symbolic act that signals the end of work.",
+        "Remove devices from the bedroom or place them out of reach.",
+        "End with something that feeds the mind gently: reading, reflection, gratitude.",
+      ],
+      cbTip: "The way you end today determines how you begin tomorrow. Power Down\u2122 is not the end of the operating cycle — it is the preparation for the next one.",
+    },
   },
 ]
 
@@ -291,6 +410,7 @@ export function DesignMyWeekClient() {
     )
   )
   const [showFlexInfo, setShowFlexInfo] = useState(false)
+  const [showLearnMore, setShowLearnMore] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
   const completionRef = useRef<HTMLDivElement>(null)
 
@@ -307,6 +427,12 @@ export function DesignMyWeekClient() {
       }, 120)
     }
   }, [allConfirmed])
+
+  // Collapse Learn More between segments
+  useEffect(() => {
+    setShowLearnMore(false)
+    setShowFlexInfo(false)
+  }, [step])
 
   function scrollToCard() {
     cardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
@@ -484,6 +610,57 @@ export function DesignMyWeekClient() {
                 </div>
               )}
 
+              {/* Learn More About This Segment™ */}
+              {"learnMore" in current && current.learnMore && (() => {
+                const lm = current.learnMore as {
+                  purpose: string; whyItMatters: string; science: string
+                  businessValue: string; commonMistakes: string[]
+                  bestPractices: string[]; cbTip: string
+                }
+                return (
+                  <div className="mb-6 rounded-2xl border border-brand-blush bg-brand-cream/50 overflow-hidden">
+                    <button
+                      onClick={() => setShowLearnMore((v) => !v)}
+                      className="flex w-full items-center justify-between px-5 py-4 text-left"
+                      aria-expanded={showLearnMore}
+                    >
+                      <span className="flex items-center gap-2 font-sans text-sm font-bold text-brand-ink">
+                        <Info className="h-4 w-4 text-brand-green" aria-hidden />
+                        Learn More About This Segment™
+                      </span>
+                      <ChevronDown
+                        className={`h-4 w-4 text-brand-ink-soft transition-transform duration-200 ${showLearnMore ? "rotate-180" : ""}`}
+                        aria-hidden
+                      />
+                    </button>
+                    {showLearnMore && (
+                      <div className="px-5 pb-6 space-y-5 font-sans text-[14px] leading-relaxed text-brand-ink-soft">
+                        <Section heading="Purpose" body={lm.purpose} />
+                        <Section heading="Why It Matters" body={lm.whyItMatters} />
+                        <Section heading="Scientific Foundation" body={lm.science} />
+                        <Section heading="Business Value" body={lm.businessValue} />
+                        <div>
+                          <p className="font-bold text-brand-ink mb-1.5">Common Mistakes</p>
+                          <ul className="space-y-1 list-disc ml-4">
+                            {lm.commonMistakes.map((m, i) => <li key={i}>{m}</li>)}
+                          </ul>
+                        </div>
+                        <div>
+                          <p className="font-bold text-brand-ink mb-1.5">Best Practices</p>
+                          <ul className="space-y-1 list-disc ml-4">
+                            {lm.bestPractices.map((p, i) => <li key={i}>{p}</li>)}
+                          </ul>
+                        </div>
+                        <div className="rounded-xl border border-brand-coral/20 bg-brand-coral/5 px-4 py-3">
+                          <p className="font-bold text-brand-coral mb-1">Cherry Blossom™ Tip</p>
+                          <p>{lm.cbTip}</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )
+              })()}
+
               {/* Examples */}
               <div className="mb-6">
                 <p className="font-sans text-xs font-bold uppercase tracking-[0.18em] text-brand-ink-soft mb-2">
@@ -645,6 +822,15 @@ export function DesignMyWeekClient() {
           </div>
         )}
       </div>
+    </div>
+  )
+}
+
+function Section({ heading, body }: { heading: string; body: string }) {
+  return (
+    <div>
+      <p className="font-bold text-brand-ink mb-1">{heading}</p>
+      <p>{body}</p>
     </div>
   )
 }
