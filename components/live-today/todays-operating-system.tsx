@@ -30,6 +30,7 @@ import {
   setTodayResponse,
   type HonorResponse,
 } from "@/lib/sunday-design-day/non-negotiable-log"
+import { CeoWorkdayWorkspace } from "@/components/live-today/ceo-workday-workspace"
 
 export function TodaysOperatingSystem() {
   const ctx = useHarmonyContext()
@@ -134,13 +135,21 @@ export function TodaysOperatingSystem() {
                 Today&apos;s Operating System™
               </p>
               <div className="mt-4 space-y-4">
-                {ctx.segments.map((seg) => (
-                  <SegmentCard
-                    key={seg.id}
-                    segment={seg}
-                    isCurrent={ctx.currentSegment?.id === seg.id}
-                  />
-                ))}
+                {ctx.segments.map((seg) =>
+                  seg.id === "ceo-workday" ? (
+                    <CeoWorkdayWorkspace
+                      key={seg.id}
+                      segment={seg}
+                      isCurrent={ctx.currentSegment?.id === seg.id}
+                    />
+                  ) : (
+                    <SegmentCard
+                      key={seg.id}
+                      segment={seg}
+                      isCurrent={ctx.currentSegment?.id === seg.id}
+                    />
+                  )
+                )}
               </div>
             </div>
 
