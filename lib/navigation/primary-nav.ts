@@ -6,10 +6,10 @@
  * The app is now organized around the Work-Life Balance Operating System™.
  * The visible navigation contains only four permanent destinations:
  *
- *   Design My Week™  → /begin         (weekly installation experience)
- *   Live Today™      → /live-today    (primary daily operating workspace)
- *   Time Freedom™    → /time-freedom  (the life your business supports)
- *   My Harmony™      → /my-harmony    (results, memory, profile, growth)
+ *   Design My Week™        → /begin         (weekly installation experience)
+ *   Live & Lead Today™     → /live-today    (primary daily operating workspace)
+ *   Time Freedom™          → /time-freedom  (the life your business supports)
+ *   My Work-Life Harmony™  → /my-harmony    (results, memory, profile, growth)
  *
  * IMPORTANT (Pass 4A.1 rules):
  *   - This pass only REORGANIZES. No functionality is built or deleted.
@@ -89,17 +89,17 @@ export const PRIMARY_NAV: PrimarySection[] = [
   },
   {
     id: "live-today",
-    navLabel: "Live Today™",
-    title: "Live Today™",
+    navLabel: "Live & Lead Today™",
+    title: "Live & Lead Today™",
     href: "/live-today",
     icon: Sunrise,
-    tagline: "Today's Work-Life Balance Business Day™ — your daily operating workspace.",
+    tagline: "Live your Life Operating System™ and lead your Business Operating System™ — every day.",
     built: true,
     workspaces: [
       {
-        label: "Today's Work-Life Balance Business Day™",
+        label: "Live & Lead Today™",
         href: "/live-today",
-        description: "Your engine-driven daily rhythm of Operating Experiences™.",
+        description: "Your daily operating workspace — Daily Non-Negotiables™ and the 4-Hour CEO Workday™.",
       },
     ],
   },
@@ -121,11 +121,11 @@ export const PRIMARY_NAV: PrimarySection[] = [
   },
   {
     id: "my-harmony",
-    navLabel: "My Harmony™",
-    title: "My Harmony™",
+    navLabel: "My Work-Life Harmony™",
+    title: "My Work-Life Harmony™",
     href: "/my-harmony",
     icon: Flower2,
-    tagline: "Your results, memory, milestones, and long-term Human Sustainability™ — all in one place.",
+    tagline: "Your long-term growth center — audit history, operating maturity, milestones, and whole-life progress.",
     built: false,
     workspaces: [
       {

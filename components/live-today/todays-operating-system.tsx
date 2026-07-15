@@ -1,28 +1,25 @@
 "use client"
 
 /**
- * Today's Operating System™ (Phase 4B.2).
+ * TodaysOperatingSystem™ — Live & Lead Today™ (Phase 7.4)
  *
- * The intelligence surface of Live Today™. Cherry Blossom™ — the Executive
- * Operating Guide™ — reads the shared Harmony Context Engine™ to know exactly
- * where the member is inside the Operating System and reinforces what they
- * intentionally designed on Sunday. She never asks what to do today; the
- * Operating System already knows.
+ * Single Voice Principle™: Cherry Blossom™ is the only voice.
+ * Founder Intelligence™, Founder GPS™, Harmony Context Engine™ and all other
+ * intelligence engines work behind the scenes. Cherry Blossom presents.
  *
- * Shows: a context-aware greeting, the current Operating Segment™ with Today's
- * Operating Rule™ + Non-Negotiable™, the Weekly Intention™, Priority Focus
- * Areas™, the full designed day (current segment highlighted, with a
- * lightweight honor check), and an AI Executive Leadership Team™ placeholder.
+ * Flow:
+ *   Dynamic Hero™ → Current Operating Segment™ → Cherry Blossom™ →
+ *   Daily Non-Negotiable™ → Intention Declaration™ →
+ *   Learn More About This Segment™ → Reflection
  *
- * SESSION-ONLY this pass: context and honor responses live in sessionStorage.
- * No scoring, coaching, journaling, streaks, AI chat, or DB persistence.
+ * Conditional DMW Reminder: shown Thu after CEO Workday / Fri / Sat / Sun /
+ * Mon morning when the week has NOT been designed. Hidden once installed.
  */
 
 import Link from "next/link"
 import { useEffect, useState } from "react"
-import { ArrowRight, ChevronDown, Compass, MapPin, Users, Zap } from "lucide-react"
+import { ArrowRight, ChevronDown, Flower2 } from "lucide-react"
 import { useHarmonyContext } from "@/components/harmony-context/harmony-context-provider"
-import { assembleMorningExecutiveBrief } from "@/lib/cherry-blossom/executive-brief"
 import type { HarmonySegment } from "@/lib/harmony-context/types"
 import {
   HONOR_OPTIONS,
@@ -32,231 +29,206 @@ import {
 } from "@/lib/sunday-design-day/non-negotiable-log"
 import { CeoWorkdayWorkspace } from "@/components/live-today/ceo-workday-workspace"
 
+// ─── DMW reminder day logic ───────────────────────────────────────────────────
+
+/**
+ * Returns true when the DMW reminder should be shown.
+ * Thursday (after 5 PM) / Friday / Saturday / Sunday / Monday (before noon).
+ */
+function shouldShowDmwReminder(): boolean {
+  const now = new Date()
+  const day = now.getDay() // 0=Sun 1=Mon 2=Tue 3=Wed 4=Thu 5=Fri 6=Sat
+  const hour = now.getHours()
+  if (day === 5 || day === 6 || day === 0) return true           // Fri / Sat / Sun
+  if (day === 4 && hour >= 17) return true                        // Thu after 5 PM
+  if (day === 1 && hour < 12) return true                         // Mon before noon
+  return false
+}
+
+// ─── Main component ───────────────────────────────────────────────────────────
+
 export function TodaysOperatingSystem() {
   const ctx = useHarmonyContext()
 
-  // Avoid rendering context-dependent markup until the engine + session are ready.
   if (!ctx.ready) return null
 
-  const brief = assembleMorningExecutiveBrief(ctx)
+  const showReminder = !ctx.hasDesignedWeek && shouldShowDmwReminder()
 
   return (
-    <section
-      aria-labelledby="todays-os-heading"
-      className="w-full bg-white px-4 pt-12 sm:px-6 lg:px-8"
-    >
-      <div className="mx-auto max-w-3xl">
-        {/* Cherry Blossom™ Executive Brief entry card */}
-        <div className="relative overflow-hidden rounded-2xl border border-[#E26C73]/25 bg-[#FDF6F6] shadow-sm">
-          {/* Coral left spine */}
-          <div aria-hidden className="absolute inset-y-0 left-0 w-[3px] bg-[#E26C73]" />
+    <div className="w-full">
+      {/* Dynamic Hero™ */}
+      <DynamicHero ctx={ctx} />
 
-          <div className="px-7 py-6">
-            {/* CB identity row */}
-            <div className="flex items-center gap-3">
-              <div className="h-9 w-9 overflow-hidden rounded-full border border-[#E26C73]/30 shadow-sm shrink-0">
-                <img src="/images/logo.png" alt="Cherry Blossom" className="h-full w-full object-cover" />
-              </div>
-              <div>
-                <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.18em] text-[#E26C73]">
-                  Cherry Blossom™
-                </p>
-                <p className="font-montserrat text-[11px] text-[#6B5860]/70">
-                  Chief of Staff &amp; Executive Conductor™
-                </p>
-              </div>
-            </div>
-
-            {/* Greeting + opening statement */}
-            <h2
-              id="todays-os-heading"
-              className="mt-4 font-playfair text-2xl font-medium leading-tight text-[#1A1A1A] text-balance sm:text-3xl"
-            >
-              {brief.greeting}
-            </h2>
-            <p className="mt-2 font-montserrat text-[14px] leading-relaxed text-[#3A2E33] text-pretty">
-              {brief.openingStatement}
-            </p>
-
-            {/* Today's focus — the single sentence that defines the day */}
-            <div className="mt-5 rounded-xl border border-[#5B835F]/20 bg-white/70 px-5 py-4">
-              <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.14em] text-[#5B835F]">
-                Today&apos;s Executive Focus™
-              </p>
-              <p className="mt-1 font-montserrat text-[14px] leading-relaxed text-[#3A2E33] text-pretty">
-                {brief.executiveFocus.statement}
-              </p>
-            </div>
-
-            {/* Highest leverage outcome + assigned executive — two-col */}
-            <div className="mt-4 grid gap-4 sm:grid-cols-2">
-              <div className="rounded-xl border border-black/[0.06] bg-white/70 px-4 py-4">
-                <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.14em] text-[#6B5860]">
-                  Highest-Leverage Outcome™
-                </p>
-                <p className="mt-1 font-montserrat text-[13px] font-medium leading-snug text-[#1A1A1A]">
-                  {brief.highestLeverageOutcome.title}
-                </p>
-              </div>
-              {brief.assignedExecutive && (
-                <div className="rounded-xl border border-black/[0.06] bg-white/70 px-4 py-4">
-                  <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.14em] text-[#6B5860]">
-                    Today&apos;s Executive™
-                  </p>
-                  <p className="mt-1 font-montserrat text-[13px] font-medium leading-snug text-[#1A1A1A]">
-                    {brief.assignedExecutive.name}
-                  </p>
-                  <p className="font-montserrat text-[11px] text-[#E26C73]">
-                    {brief.assignedExecutive.title}
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {/* CTA — full brief */}
-            <div className="mt-5">
-              <Link
-                href="/cherry-blossom"
-                className="inline-flex items-center gap-2 font-montserrat text-sm font-semibold text-[#E26C73] transition-colors hover:text-[#C13B6B]"
-              >
-                Read your full Executive Brief™
-                <ArrowRight className="h-4 w-4" aria-hidden />
-              </Link>
-            </div>
-          </div>
-        </div>
+      <div className="mx-auto max-w-3xl px-4 pb-16 sm:px-6">
+        {/* Conditional DMW Reminder — only when week not designed and day is right */}
+        {showReminder && <DmwReminder />}
 
         {ctx.hasDesignedWeek ? (
+          <div className="mt-8 space-y-4">
+            {ctx.segments.map((seg) =>
+              seg.id === "ceo-workday" ? (
+                <CeoWorkdayWorkspace
+                  key={seg.id}
+                  segment={seg}
+                  isCurrent={ctx.currentSegment?.id === seg.id}
+                />
+              ) : (
+                <SegmentCard
+                  key={seg.id}
+                  segment={seg}
+                  isCurrent={ctx.currentSegment?.id === seg.id}
+                />
+              )
+            )}
+          </div>
+        ) : (
+          !showReminder && <NoWeekState />
+        )}
+      </div>
+    </div>
+  )
+}
+
+// ─── Dynamic Hero™ ────────────────────────────────────────────────────────────
+
+function DynamicHero({ ctx }: { ctx: ReturnType<typeof useHarmonyContext> }) {
+  const seg = ctx.currentSegment
+
+  return (
+    <header className="relative overflow-hidden bg-[#2C3E2D] px-6 py-10 sm:py-14">
+      {/* Subtle texture overlay */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 bg-[url('/images/executive-suite.jpg')] bg-cover bg-center opacity-[0.08]" />
+
+      <div className="relative mx-auto max-w-3xl">
+        {/* Cherry Blossom identity */}
+        <div className="flex items-center gap-3 mb-6">
+          <div className="h-10 w-10 overflow-hidden rounded-full border-2 border-white/20 shadow-lg shrink-0">
+            <img src="/images/logo.png" alt="Cherry Blossom" className="h-full w-full object-cover" />
+          </div>
+          <div>
+            <p className="font-montserrat text-xs font-bold uppercase tracking-[0.2em] text-[#E8C4A0]">
+              Cherry Blossom™
+            </p>
+            <p className="font-montserrat text-[11px] text-white/50">
+              Your Harmony Lane™ Operating Guide
+            </p>
+          </div>
+        </div>
+
+        {/* Current segment status */}
+        {seg ? (
           <>
-            <RightNowPanel ctx={ctx} />
-
-            <div className="mt-8">
-              <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.14em] text-[#6B5860]">
-                Today&apos;s Operating System™
-              </p>
-              <div className="mt-4 space-y-4">
-                {ctx.segments.map((seg) =>
-                  seg.id === "ceo-workday" ? (
-                    <CeoWorkdayWorkspace
-                      key={seg.id}
-                      segment={seg}
-                      isCurrent={ctx.currentSegment?.id === seg.id}
-                    />
-                  ) : (
-                    <SegmentCard
-                      key={seg.id}
-                      segment={seg}
-                      isCurrent={ctx.currentSegment?.id === seg.id}
-                    />
-                  )
-                )}
-              </div>
-            </div>
-
-            <AiExecutiveTeamPanel />
+            <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.18em] text-white/50 mb-2">
+              Current Operating Segment™
+            </p>
+            <h1 className="font-playfair text-3xl font-medium text-white leading-tight text-balance sm:text-4xl">
+              {seg.title}
+            </h1>
+            <p className="mt-3 font-montserrat text-[14px] leading-relaxed text-white/70 text-pretty max-w-xl">
+              {cbSegmentIntro(seg)}
+            </p>
           </>
         ) : (
-          <EmptyState />
-        )}
-      </div>
-    </section>
-  )
-}
-
-/** "Today, Right Now" — the single glance that reflects Sunday's design. */
-function RightNowPanel({ ctx }: { ctx: ReturnType<typeof useHarmonyContext> }) {
-  const seg = ctx.currentSegment
-  return (
-    <div className="mt-8 rounded-2xl border border-[#5B835F]/20 bg-white/70 px-6 py-6 shadow-sm">
-      <div className="flex items-center gap-2">
-        <Compass className="h-4 w-4 text-[#5B835F]" aria-hidden />
-        <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.14em] text-[#5B835F]">
-          Current Operating Segment™
-        </p>
-      </div>
-      <p className="mt-1.5 font-playfair text-2xl font-medium text-[#3A2E33]">
-        {seg ? seg.title : ctx.currentBlockTitle || "Resting"}
-      </p>
-
-      {seg ? (
-        <div className="mt-5 grid gap-4 sm:grid-cols-2">
-          <Field label="Today's Operating Rule™" tone="ink">
-            {seg.rule}
-          </Field>
-          <Field label="Today's Non-Negotiable™" tone="rose">
-            {seg.nonNegotiable}
-          </Field>
-        </div>
-      ) : (
-        <p className="mt-3 font-montserrat text-[15px] leading-relaxed text-[#6B5860]">
-          You&apos;re between designed segments right now. Rest easy — tomorrow is already designed.
-        </p>
-      )}
-
-      <div className="mt-5 border-t border-black/[0.06] pt-5">
-        {ctx.weeklyIntention && (
-          <Field label="Weekly Intention™" tone="ink">
-            {ctx.weeklyIntention}
-          </Field>
-        )}
-        {ctx.focusAreas.length > 0 && (
-          <div className="mt-4">
-            <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.14em] text-[#6B5860]">
-              Priority Focus Areas™
+          <>
+            <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.18em] text-white/50 mb-2">
+              Live &amp; Lead Today™
             </p>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {ctx.focusAreas.map((area) => (
-                <span
-                  key={area}
-                  className="rounded-full bg-[#5B835F]/10 px-3 py-1 font-montserrat text-sm font-medium text-[#4c6f50]"
-                >
-                  {area}
-                </span>
-              ))}
-            </div>
-          </div>
+            <h1 className="font-playfair text-3xl font-medium text-white leading-tight sm:text-4xl">
+              {ctx.hasDesignedWeek
+                ? "Your week is installed and ready."
+                : "Design your week to begin."}
+            </h1>
+            <p className="mt-3 font-montserrat text-[14px] leading-relaxed text-white/70 text-pretty max-w-xl">
+              {ctx.hasDesignedWeek
+                ? "You are between designed segments right now. Rest easy — your next segment is waiting."
+                : "Design My Week™ installs your Daily Non-Negotiables™ and Business Operating Rules™. They appear here to guide each segment of your day."}
+            </p>
+          </>
         )}
+
+        {/* Two-OS badge row */}
+        <div className="mt-6 flex flex-wrap gap-2">
+          <span className="rounded-full border border-[#5B835F]/60 bg-[#5B835F]/20 px-3 py-1 font-montserrat text-[11px] font-semibold uppercase tracking-[0.14em] text-[#A8C4AA]">
+            Life Operating System™
+          </span>
+          <span className="rounded-full border border-[#C13B6B]/40 bg-[#C13B6B]/15 px-3 py-1 font-montserrat text-[11px] font-semibold uppercase tracking-[0.14em] text-[#E8A0B4]">
+            Business Operating System™
+          </span>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+/** Cherry Blossom's segment-specific intro line. */
+function cbSegmentIntro(seg: HarmonySegment): string {
+  const map: Record<string, string> = {
+    "early-entry": "Your flexibility buffer is active. Use this time for what matters before the day truly begins.",
+    "morning-given": "Your morning ritual sets the tone for everything that follows. Honor it fully.",
+    "workout": "Your Workout Window™ is a non-negotiable investment in the engine that powers your business.",
+    "healthy-lunch": "Step away, nourish yourself, and prepare for your highest-leverage work.",
+    "ceo-workday": "You are now inside your 4-Hour CEO Workday™. This is your Business Operating System™.",
+    "time-freedom": "The business does not follow you here. This time belongs to the life you are building.",
+    "power-down": "Close the day with intention. How you end today shapes how you begin tomorrow.",
+  }
+  return map[seg.id] ?? "You are inside a designed segment. Follow the commitment you installed."
+}
+
+// ─── Conditional DMW Reminder ─────────────────────────────────────────────────
+
+function DmwReminder() {
+  return (
+    <div className="mt-8 overflow-hidden rounded-2xl border border-[#E26C73]/25 bg-[#FDF6F6] shadow-sm">
+      <div aria-hidden className="h-[3px] bg-[#E26C73]" />
+      <div className="px-6 py-6">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="h-9 w-9 overflow-hidden rounded-full border border-[#E26C73]/30 shrink-0">
+            <img src="/images/logo.png" alt="Cherry Blossom" className="h-full w-full object-cover" />
+          </div>
+          <div>
+            <p className="font-montserrat text-xs font-bold uppercase tracking-[0.18em] text-[#E26C73]">
+              Cherry Blossom™
+            </p>
+            <p className="font-montserrat text-[11px] text-[#6B5860]/70">Your Harmony Lane™ Operating Guide</p>
+          </div>
+        </div>
+
+        <p className="font-playfair text-xl font-medium text-[#1A1A1A] leading-snug text-balance">
+          Your next Work-Life Balance Business Week™ has not been designed yet.
+        </p>
+        <p className="mt-2 font-montserrat text-[14px] leading-relaxed text-[#3A2E33] text-pretty">
+          Before your next CEO Workday™ begins, let&apos;s install your Daily Non-Negotiables™ and
+          Business Operating Rules™ for the week ahead.
+        </p>
+
+        <Link
+          href="/design-my-week"
+          className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[#5B835F] px-5 py-3 font-montserrat text-sm font-semibold text-white transition-colors hover:bg-[#4c6f50]"
+        >
+          Design My Week™
+          <ArrowRight className="h-4 w-4" aria-hidden />
+        </Link>
       </div>
     </div>
   )
 }
 
-function Field({
-  label,
-  tone,
-  children,
-}: {
-  label: string
-  tone: "ink" | "rose"
-  children: React.ReactNode
-}) {
-  return (
-    <div>
-      <p
-        className={`font-montserrat text-xs font-semibold uppercase tracking-[0.14em] ${
-          tone === "rose" ? "text-[#C13B6B]" : "text-[#6B5860]"
-        }`}
-      >
-        {label}
-      </p>
-      <p className="mt-1 font-montserrat text-[15px] leading-relaxed text-[#3A2E33]">{children}</p>
-    </div>
-  )
-}
+// ─── No week / outside reminder window ───────────────────────────────────────
 
-function EmptyState() {
+function NoWeekState() {
   return (
-    <div className="glass-panel mt-8 rounded-2xl px-6 py-8 text-center">
-      <p className="text-pretty font-playfair text-xl font-medium italic text-[#3A2E33]">
-        Design tomorrow, then live it tomorrow.
+    <div className="mt-8 rounded-2xl border border-[#5B835F]/20 bg-white/70 px-6 py-8 text-center shadow-sm">
+      <Flower2 className="mx-auto h-8 w-8 text-[#5B835F]/40 mb-3" aria-hidden />
+      <p className="font-playfair text-xl font-medium italic text-[#3A2E33] text-balance">
+        Design your week. Then live it.
       </p>
       <p className="mx-auto mt-2 max-w-md font-montserrat text-sm leading-relaxed text-[#6B5860]">
-        Design your week to install your Operating Rules™ and Daily Non-Negotiables™. They&apos;ll appear
-        here to guide each segment of your day.
+        Install your Daily Non-Negotiables™ and Business Operating Rules™ on Sunday, and they will
+        guide every segment of your week from here.
       </p>
       <Link
-        href="/begin"
-        className="mt-5 inline-flex items-center gap-2 rounded-lg bg-[#5B835F] px-5 py-2.5 font-montserrat text-sm font-semibold text-white transition-colors hover:bg-[#4c6f50]"
+        href="/design-my-week"
+        className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[#5B835F] px-5 py-3 font-montserrat text-sm font-semibold text-white transition-colors hover:bg-[#4c6f50]"
       >
         Design My Week™
         <ArrowRight className="h-4 w-4" aria-hidden />
@@ -265,13 +237,13 @@ function EmptyState() {
   )
 }
 
+// ─── SegmentCard (Life Operating System™ segments only) ──────────────────────
+
 function SegmentCard({ segment, isCurrent }: { segment: HarmonySegment; isCurrent: boolean }) {
-  // Active segment auto-expands; others start collapsed
   const [expanded, setExpanded] = useState(isCurrent)
   const [response, setResponse] = useState<HonorResponse | null>(null)
   const [showLearnMore, setShowLearnMore] = useState(false)
 
-  // Sync expanded state when isCurrent changes (e.g. time advances)
   useEffect(() => {
     if (isCurrent) setExpanded(true)
   }, [isCurrent])
@@ -287,11 +259,13 @@ function SegmentCard({ segment, isCurrent }: { segment: HarmonySegment; isCurren
 
   return (
     <article
-      className={`glass-panel rounded-2xl overflow-hidden transition-shadow ${
-        isCurrent ? "ring-2 ring-[#5B835F]/50 shadow-md" : "shadow-sm"
+      className={`overflow-hidden rounded-2xl border bg-white/80 backdrop-blur-sm shadow-sm transition-shadow ${
+        isCurrent
+          ? "border-[#5B835F]/40 shadow-md ring-1 ring-[#5B835F]/20"
+          : "border-black/[0.06]"
       }`}
     >
-      {/* Collapsible header row */}
+      {/* Collapsible header */}
       <button
         type="button"
         onClick={() => setExpanded((v) => !v)}
@@ -304,7 +278,7 @@ function SegmentCard({ segment, isCurrent }: { segment: HarmonySegment; isCurren
               Now
             </span>
           )}
-          <h3 className="font-montserrat text-base font-bold text-[#3A2E33] truncate">{segment.title}</h3>
+          <h2 className="font-montserrat text-base font-bold text-[#3A2E33] truncate">{segment.title}</h2>
         </div>
         <ChevronDown
           className={`shrink-0 h-4 w-4 text-[#6B5860] transition-transform duration-200 ${expanded ? "rotate-180" : ""}`}
@@ -314,73 +288,41 @@ function SegmentCard({ segment, isCurrent }: { segment: HarmonySegment; isCurren
 
       {/* Expanded workspace */}
       {expanded && (
-        <div className="px-6 pb-6 space-y-5 border-t border-black/[0.05]">
+        <div className="border-t border-black/[0.05] px-6 pb-6 space-y-5">
 
-          {/* Practice™ — Intention Declaration (all segments, not just active) */}
+          {/* Cherry Blossom™ — Intention Declaration™ (Practice™) */}
           {segment.declaration && (
             <div className="mt-5 rounded-xl border border-[#5B835F]/25 bg-[#5B835F]/[0.05] px-5 py-4">
-              <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.16em] text-[#5B835F]">
-                Practice™ — Your Intention Declaration™
+              <p className="font-montserrat text-xs font-bold uppercase tracking-[0.16em] text-[#5B835F]">
+                Your Intention Declaration™
               </p>
               <p className="mt-2 font-montserrat text-[15px] font-medium italic leading-relaxed text-[#3A2E33] text-pretty">
                 &ldquo;{segment.declaration}&rdquo;
               </p>
               {isCurrent && (
-                <p className="mt-2 font-montserrat text-[11px] leading-relaxed text-[#6B5860]/80">
-                  This is the operating standard you committed to. It defines how you will show up during this segment today.
+                <p className="mt-2 font-montserrat text-[11px] leading-relaxed text-[#6B5860]/70">
+                  This is the operating standard you committed to. It defines how you show up during this segment today.
                 </p>
               )}
             </div>
           )}
 
-          {/* Installed Rule + Non-Negotiable */}
-          <div className="mt-4 space-y-3">
-            <div className="rounded-xl border border-black/[0.06] bg-white/60 px-4 py-3">
-              <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.14em] text-[#6B5860]">
-                Today&apos;s Operating Rule™
-              </p>
-              <p className="mt-1 font-montserrat text-[14px] leading-relaxed text-[#3A2E33]">{segment.rule}</p>
-            </div>
-            <div className="rounded-xl border border-[#C13B6B]/15 bg-[#C13B6B]/[0.04] px-4 py-3">
-              <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.14em] text-[#C13B6B]">
-                Today&apos;s Non-Negotiable™
-              </p>
-              <p className="mt-1 font-montserrat text-[14px] leading-relaxed text-[#3A2E33]">{segment.nonNegotiable}</p>
-            </div>
-          </div>
-
-          {/* Founder GPS™ — placeholder for future adaptive coaching */}
-          <div className="rounded-xl border border-dashed border-[#5B835F]/25 bg-transparent px-4 py-3">
-            <div className="flex items-center gap-2 mb-1">
-              <MapPin className="h-3.5 w-3.5 text-[#5B835F]/60" aria-hidden />
-              <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.14em] text-[#5B835F]/70">
-                Founder GPS™
-              </p>
-            </div>
-            <p className="font-montserrat text-[12px] text-[#6B5860]/60 italic">
-              Adaptive coaching based on your reflection patterns — coming soon.
+          {/* Daily Non-Negotiable™ */}
+          <div className="rounded-xl border border-[#C13B6B]/20 bg-[#C13B6B]/[0.04] px-4 py-3">
+            <p className="font-montserrat text-xs font-bold uppercase tracking-[0.14em] text-[#C13B6B]">
+              My Daily Non-Negotiable™
             </p>
-          </div>
-
-          {/* Executive Assignment™ — placeholder for future AI executive integration */}
-          <div className="rounded-xl border border-dashed border-[#E26C73]/20 bg-transparent px-4 py-3">
-            <div className="flex items-center gap-2 mb-1">
-              <Zap className="h-3.5 w-3.5 text-[#E26C73]/60" aria-hidden />
-              <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.14em] text-[#E26C73]/70">
-                Executive Assignment™
-              </p>
-            </div>
-            <p className="font-montserrat text-[12px] text-[#6B5860]/60 italic">
-              Your AI Executive Leadership Team™ will assign a recommendation for this segment.
+            <p className="mt-1 font-montserrat text-[14px] leading-relaxed text-[#3A2E33]">
+              {segment.nonNegotiable}
             </p>
           </div>
 
           {/* Learn More About This Segment™ */}
-          <div className="rounded-xl border border-black/[0.06] overflow-hidden">
+          <div className="overflow-hidden rounded-xl border border-black/[0.06]">
             <button
               type="button"
               onClick={() => setShowLearnMore((v) => !v)}
-              className="flex w-full items-center justify-between px-4 py-3 text-left bg-white/40 hover:bg-white/60 transition-colors"
+              className="flex w-full items-center justify-between bg-white/40 px-4 py-3 text-left transition-colors hover:bg-white/60"
               aria-expanded={showLearnMore}
             >
               <p className="font-montserrat text-xs font-semibold text-[#6B5860]">
@@ -392,10 +334,16 @@ function SegmentCard({ segment, isCurrent }: { segment: HarmonySegment; isCurren
               />
             </button>
             {showLearnMore && (
-              <div className="px-4 py-4 bg-white/20 space-y-1.5 font-montserrat text-[12px] leading-relaxed text-[#6B5860]">
+              <div className="bg-white/20 px-4 py-4 font-montserrat text-[12px] leading-relaxed text-[#6B5860]">
                 <p>
-                  Open <Link href="/design-my-week" className="font-semibold text-[#5B835F] underline underline-offset-2">Design My Week™</Link> to
-                  review the full purpose, scientific foundation, business value, and Cherry Blossom™ tips for this segment.
+                  Open{" "}
+                  <Link
+                    href="/design-my-week"
+                    className="font-semibold text-[#5B835F] underline underline-offset-2"
+                  >
+                    Design My Week™
+                  </Link>{" "}
+                  to review the full purpose, scientific foundation, business value, and Cherry Blossom™ tips for this segment.
                 </p>
               </div>
             )}
@@ -406,7 +354,11 @@ function SegmentCard({ segment, isCurrent }: { segment: HarmonySegment; isCurren
             <p className="font-montserrat text-sm font-semibold text-[#3A2E33]">
               Did you keep this commitment today?
             </p>
-            <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label={`Follow-through check for ${segment.title}`}>
+            <div
+              className="mt-3 flex flex-wrap gap-2"
+              role="group"
+              aria-label={`Follow-through check for ${segment.title}`}
+            >
               {HONOR_OPTIONS.map((opt) => {
                 const selected = response === opt.value
                 return (
@@ -416,8 +368,8 @@ function SegmentCard({ segment, isCurrent }: { segment: HarmonySegment; isCurren
                     aria-pressed={selected}
                     onClick={() => choose(opt.value)}
                     className={`rounded-full px-4 py-1.5 font-montserrat text-sm font-medium transition-colors ${
-                      selected ? toneSelected(opt.tone) : "bg-white/70 text-[#6B5860] hover:bg-white"
-                    } ${selected ? "" : "ring-1 ring-black/[0.06]"}`}
+                      selected ? toneSelected(opt.tone) : "bg-white/70 text-[#6B5860] ring-1 ring-black/[0.06] hover:bg-white"
+                    }`}
                   >
                     {opt.label}
                   </button>
@@ -434,45 +386,18 @@ function SegmentCard({ segment, isCurrent }: { segment: HarmonySegment; isCurren
               </p>
             )}
           </div>
-
         </div>
       )}
     </article>
   )
 }
 
-/** Executive Leadership Team™ — entry point to the boardroom (recommendation logic arrives later). */
-function AiExecutiveTeamPanel() {
-  return (
-    <Link
-      href="/executive-leadership-team"
-      className="group mt-8 block rounded-2xl border border-dashed border-[#5B835F]/30 bg-white/50 px-6 py-6 text-center ds-transition hover:border-[#5B835F]/50 hover:bg-white/70"
-    >
-      <div className="inline-flex items-center gap-2">
-        <Users className="h-4 w-4 text-[#5B835F]" aria-hidden />
-        <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.14em] text-[#5B835F]">
-          Executive Leadership Team™
-        </p>
-      </div>
-      <p className="mx-auto mt-2 max-w-lg font-montserrat text-sm leading-relaxed text-[#6B5860]">
-        Based on your CEO priorities, Cherry Blossom™ will soon bring in the most relevant executive for research,
-        planning, decision support, and deliverables.
-      </p>
-      <span className="mt-3 inline-flex items-center gap-1.5 font-montserrat text-sm font-semibold text-[#5B835F]">
-        Meet your Executive Leadership Team™
-        <ArrowRight className="h-4 w-4 ds-transition group-hover:translate-x-0.5" aria-hidden />
-      </span>
-    </Link>
-  )
-}
+// ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function toneSelected(tone: "green" | "amber" | "rose"): string {
   switch (tone) {
-    case "green":
-      return "bg-[#5B835F] text-white"
-    case "amber":
-      return "bg-[#C9A24B] text-white"
-    case "rose":
-      return "bg-[#C13B6B] text-white"
+    case "green": return "bg-[#5B835F] text-white"
+    case "amber": return "bg-amber-500 text-white"
+    case "rose":  return "bg-[#C13B6B] text-white"
   }
 }

@@ -203,7 +203,8 @@ export function CeoWorkdayWorkspace({
           icon={Brain}
           open={state.phase1Open}
           onToggle={() => togglePhase("phase1Open")}
-          cherryBlossomQuote="This hour is for executive thinking, reviewing, approving, prioritizing, and preparing — not reacting."
+          executiveQuestion="What is today's highest-leverage opportunity?"
+          cherryBlossomQuote="Before we begin executing, let's make sure we're working on the opportunity that creates the greatest long-term value."
         >
           {/* Today's Operating Rule™ */}
           <InstalledField
@@ -267,7 +268,8 @@ export function CeoWorkdayWorkspace({
           icon={Target}
           open={state.phase2Open}
           onToggle={() => togglePhase("phase2Open")}
-          cherryBlossomQuote="Your greatest value is not completing more tasks. It is creating meaningful outcomes only you can create."
+          executiveQuestion="What is the one meaningful outcome only I can create today?"
+          cherryBlossomQuote="This is your Human Zone of Genius™. Protect it. Everything else can wait."
         >
           {/* Today's One Executive Outcome™ */}
           <div>
@@ -301,7 +303,7 @@ export function CeoWorkdayWorkspace({
             </div>
           </div>
 
-          {/* Business Asset™ */}
+          {/* Business Asset™ — horizontal progression */}
           <div>
             <p className="font-montserrat text-xs font-bold uppercase tracking-[0.18em] text-[#6B5860] mb-2">
               Business Asset™ Being Created
@@ -313,11 +315,28 @@ export function CeoWorkdayWorkspace({
               placeholder="What compounding asset does this outcome create?"
               className="w-full rounded-xl border border-black/[0.1] bg-white/80 px-4 py-3 font-montserrat text-[14px] text-[#1A1A1A] placeholder:text-[#6B5860]/50 focus:border-[#C13B6B]/40 focus:outline-none focus:ring-2 focus:ring-[#C13B6B]/15"
             />
+            {/* Horizontal Outcome → Asset progression */}
             {state.executiveOutcome && state.businessAsset && (
-              <div className="mt-2 flex items-center gap-2 text-[12px] font-montserrat text-[#6B5860]">
-                <span className="font-medium text-[#1A1A1A]">{state.executiveOutcome}</span>
-                <ArrowRight className="h-3 w-3 shrink-0 text-[#C13B6B]" aria-hidden />
-                <span className="font-semibold text-[#C13B6B]">{state.businessAsset}</span>
+              <div className="mt-4 flex items-stretch gap-0 overflow-hidden rounded-xl border border-[#C13B6B]/20 bg-white/60">
+                <div className="flex-1 px-4 py-3">
+                  <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.14em] text-[#6B5860]/60 mb-1">
+                    Today&apos;s Executive Outcome™
+                  </p>
+                  <p className="font-montserrat text-[13px] font-semibold text-[#1A1A1A] leading-snug">
+                    {state.executiveOutcome}
+                  </p>
+                </div>
+                <div className="flex items-center justify-center px-2 bg-[#C13B6B]/[0.06]">
+                  <ArrowRight className="h-4 w-4 text-[#C13B6B]" aria-hidden />
+                </div>
+                <div className="flex-1 px-4 py-3 bg-[#C13B6B]/[0.04]">
+                  <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.14em] text-[#C13B6B]/70 mb-1">
+                    Tomorrow&apos;s Business Asset™
+                  </p>
+                  <p className="font-montserrat text-[13px] font-semibold text-[#C13B6B] leading-snug">
+                    {state.businessAsset}
+                  </p>
+                </div>
               </div>
             )}
           </div>
@@ -386,7 +405,8 @@ export function CeoWorkdayWorkspace({
           icon={Settings2}
           open={state.phase3Open}
           onToggle={() => togglePhase("phase3Open")}
-          cherryBlossomQuote="Great founders don't simply finish work. They improve the way the business operates so tomorrow becomes easier than today."
+          executiveQuestion="What can I improve today so tomorrow becomes easier?"
+          cherryBlossomQuote="Today's work becomes tomorrow's advantage when you improve the way your business operates."
         >
           <div className="grid gap-3 sm:grid-cols-2">
             <PlaceholderBlock
@@ -494,6 +514,7 @@ function ExecutivePhase({
   icon: Icon,
   open,
   onToggle,
+  executiveQuestion,
   cherryBlossomQuote,
   children,
 }: {
@@ -505,6 +526,7 @@ function ExecutivePhase({
   icon: React.ElementType
   open: boolean
   onToggle: () => void
+  executiveQuestion: string
   cherryBlossomQuote: string
   children: React.ReactNode
 }) {
@@ -545,8 +567,19 @@ function ExecutivePhase({
       {/* Phase workspace */}
       {open && (
         <div className="px-6 pb-7 space-y-5 border-t border-black/[0.05]" style={{ background: accentLight }}>
-          {/* Cherry Blossom™ phase quote */}
-          <div className="mt-5 rounded-xl border px-5 py-3"
+
+          {/* Executive Question™ — the single focus for this phase */}
+          <div className="mt-5">
+            <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.2em] mb-2" style={{ color: `${accent}99` }}>
+              Executive Question™
+            </p>
+            <p className="font-playfair text-xl font-medium italic leading-snug text-[#1A1A1A] text-balance">
+              {executiveQuestion}
+            </p>
+          </div>
+
+          {/* Cherry Blossom™ phase guidance */}
+          <div className="rounded-xl border px-5 py-3"
             style={{ borderColor: `${accent}25`, background: `${accent}08` }}
           >
             <div className="flex items-center gap-2 mb-1.5">
