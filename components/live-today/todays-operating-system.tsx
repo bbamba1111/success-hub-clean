@@ -1,19 +1,22 @@
 "use client"
 
 /**
- * TodaysOperatingSystem™ — Live & Lead Today™ (Phase 7.4)
+ * TodaysOperatingSystem™ — Live & Lead Today™ (Phase 8.1)
  *
  * Single Voice Principle™: Cherry Blossom™ is the only voice.
  * Founder Intelligence™, Founder GPS™, Harmony Context Engine™ and all other
  * intelligence engines work behind the scenes. Cherry Blossom presents.
  *
+ * Phase 8.1 additions:
+ *   - Founder GPS™ recommendations are live in every segment card
+ *   - Every recommendation is explainable (Why This Recommendation™)
+ *   - Every recommendation assigns an Executive™
+ *   - Business Asset Intelligence™ shows the compounding value being built
+ *
  * Flow:
  *   Dynamic Hero™ → Current Operating Segment™ → Cherry Blossom™ →
- *   Daily Non-Negotiable™ → Intention Declaration™ →
- *   Learn More About This Segment™ → Reflection
- *
- * Conditional DMW Reminder: shown Thu after CEO Workday / Fri / Sat / Sun /
- * Mon morning when the week has NOT been designed. Hidden once installed.
+ *   Founder GPS™ Recommendation → Daily Non-Negotiable™ →
+ *   Intention Declaration™ → Learn More About This Segment™ → Reflection
  */
 
 import Link from "next/link"
@@ -28,6 +31,8 @@ import {
   type HonorResponse,
 } from "@/lib/sunday-design-day/non-negotiable-log"
 import { CeoWorkdayWorkspace } from "@/components/live-today/ceo-workday-workspace"
+import { GpsRecommendationCard } from "@/components/live-today/gps-recommendation-card"
+import { deriveGpsRecommendation, type SegmentId } from "@/lib/founder-gps/engine"
 
 // ─── DMW reminder day logic ───────────────────────────────────────────────────
 
@@ -174,7 +179,7 @@ function cbSegmentIntro(seg: HarmonySegment): string {
   return map[seg.id] ?? "You are inside a designed segment. Follow the commitment you installed."
 }
 
-// ─── Conditional DMW Reminder ────────────────────────────────��────────────────
+// ─── Conditional DMW Reminder ─────────────────────────────���──��────────────────
 
 function DmwReminder() {
   return (
@@ -239,7 +244,22 @@ function NoWeekState() {
 
 // ─── SegmentCard (Sustainable Operating Practices™ segments only) ────────────
 
+/** Maps SDD segment ids to GPS SegmentId values (Phase 8.1). */
+function toGpsSegmentId(id: string): SegmentId | null {
+  const map: Record<string, SegmentId> = {
+    "early-entry": "early-entry",
+    "morning-given": "morning-given",
+    "workout": "workout",
+    "healthy-lunch": "healthy-lunch",
+    "ceo-workday": "ceo-workday",
+    "time-freedom": "time-freedom",
+    "power-down": "power-down",
+  }
+  return map[id] ?? null
+}
+
 function SegmentCard({ segment, isCurrent }: { segment: HarmonySegment; isCurrent: boolean }) {
+  const ctx = useHarmonyContext()
   const [expanded, setExpanded] = useState(isCurrent)
   const [response, setResponse] = useState<HonorResponse | null>(null)
   const [showLearnMore, setShowLearnMore] = useState(false)
@@ -256,6 +276,10 @@ function SegmentCard({ segment, isCurrent }: { segment: HarmonySegment; isCurren
     setResponse(value)
     setTodayResponse(segment.id, value)
   }
+
+  // Derive Founder GPS™ recommendation for this segment
+  const gpsSegmentId = toGpsSegmentId(segment.id)
+  const gpsCard = gpsSegmentId ? deriveGpsRecommendation(gpsSegmentId, ctx) : null
 
   return (
     <article
@@ -290,9 +314,16 @@ function SegmentCard({ segment, isCurrent }: { segment: HarmonySegment; isCurren
       {expanded && (
         <div className="border-t border-black/[0.05] px-6 pb-6 space-y-5">
 
+          {/* Founder GPS™ Recommendation — Phase 8.1 */}
+          {gpsCard && (
+            <div className="mt-5">
+              <GpsRecommendationCard card={gpsCard} />
+            </div>
+          )}
+
           {/* Cherry Blossom™ — Intention Declaration™ (Practice™) */}
           {segment.declaration && (
-            <div className="mt-5 rounded-xl border border-[#5B835F]/25 bg-[#5B835F]/[0.05] px-5 py-4">
+            <div className="rounded-xl border border-[#5B835F]/25 bg-[#5B835F]/[0.05] px-5 py-4">
               <p className="font-montserrat text-xs font-bold uppercase tracking-[0.16em] text-[#5B835F]">
                 Your Intention Declaration™
               </p>

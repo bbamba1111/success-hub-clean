@@ -1,21 +1,23 @@
 "use client"
 
 /**
- * CeoWorkdayWorkspace™ — Phase 7.3
+ * CeoWorkdayWorkspace™ — Phase 8.1
  * ---------------------------------------------------------------------------
  * The Executive Operating Environment™ for the 4-Hour CEO Workday™.
  *
- * Divided into three Executive Operating Phases™:
- *   1. Executive Intelligence Hour™  (1:00 PM – 2:00 PM)
- *   2. Human Zone of Genius™         (2:00 PM – 4:00 PM)
- *   3. Business Optimization Hour™   (4:00 PM – 5:00 PM)
+ * Phase 8.1 upgrades:
+ *   - Founder GPS™ is now LIVE in all three phases (no more placeholders)
+ *   - Executive Intelligence Hour™ shows the GPS strategic recommendation
+ *   - Human Zone of Genius™ shows the GPS outcome recommendation
+ *   - Business Optimization Hour™ shows the GPS friction recommendation
+ *   - Executive AI Team™ architecture cards replace generic placeholders
+ *   - Decision Explainability™ is accessible in every GPS recommendation
+ *   - Business Asset Intelligence™ appears in every applicable recommendation
+ *   - Whole-Life Context™ awareness hook is declared
  *
- * Cherry Blossom™ speaks from her Executive Suite™ — her stained-glass card
- * floats over the panoramic executive suite background image.
- *
- * Architecture placeholders for Founder GPS™, Executive Team™, AI Delegation™,
- * Business Assets™, Operating Rules™, Decision Queue™, Executive Intelligence
- * Brief™, and Compounding Assets™ are installed but not yet active.
+ * Architecture:
+ *   deriveGpsRecommendation() → GpsRecommendationCard → visible in each phase
+ *   getExecutiveTeamCards()   → ExecutiveTeamCard row at the bottom
  */
 
 import { useState } from "react"
@@ -25,18 +27,11 @@ import {
   Brain,
   Building2,
   ChevronDown,
-  ChevronRight,
-  ClipboardList,
-  Cpu,
-  FileText,
   Layers,
-  MapPin,
   Settings2,
-  Sparkles,
   Target,
   TrendingUp,
   Users,
-  Zap,
 } from "lucide-react"
 import type { HarmonySegment } from "@/lib/harmony-context/types"
 import {
@@ -45,6 +40,12 @@ import {
   setTodayResponse,
   type HonorResponse,
 } from "@/lib/sunday-design-day/non-negotiable-log"
+import { useHarmonyContext } from "@/components/harmony-context/harmony-context-provider"
+import { GpsRecommendationCard } from "@/components/live-today/gps-recommendation-card"
+import {
+  deriveGpsRecommendation,
+  getExecutiveTeamCards,
+} from "@/lib/founder-gps/engine"
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -99,6 +100,7 @@ export function CeoWorkdayWorkspace({
   segment: HarmonySegment
   isCurrent: boolean
 }) {
+  const ctx = useHarmonyContext()
   const savedResponse = getTodayResponses()[segment.id] ?? null
 
   const [state, setState] = useState<WorkspaceState>({
@@ -111,7 +113,9 @@ export function CeoWorkdayWorkspace({
     phase3Open: false,
   })
 
-  const [outcomeStatus, setOutcomeStatus] = useState<ExecutiveOutcomeStatus>(savedResponse as ExecutiveOutcomeStatus | null)
+  const [outcomeStatus, setOutcomeStatus] = useState<ExecutiveOutcomeStatus>(
+    savedResponse as ExecutiveOutcomeStatus | null
+  )
 
   function togglePhase(phase: "phase1Open" | "phase2Open" | "phase3Open") {
     setState((s) => ({ ...s, [phase]: !s[phase] }))
@@ -121,6 +125,14 @@ export function CeoWorkdayWorkspace({
     setOutcomeStatus(value)
     setTodayResponse(segment.id, value as HonorResponse)
   }
+
+  // Live GPS recommendations for all three phases
+  const gpsPhase1 = deriveGpsRecommendation("executive-intelligence", ctx)
+  const gpsPhase2 = deriveGpsRecommendation("human-zone-of-genius", ctx)
+  const gpsPhase3 = deriveGpsRecommendation("business-optimization", ctx)
+
+  // Executive AI Team™ architecture cards
+  const execTeamCards = getExecutiveTeamCards()
 
   return (
     <article className="overflow-hidden rounded-3xl shadow-lg">
@@ -149,15 +161,22 @@ export function CeoWorkdayWorkspace({
 
         {/* Cherry Blossom stained-glass card floating over the suite */}
         <div className="relative z-10 flex flex-col items-start justify-end h-full min-h-[320px] px-6 pb-7 pt-8 sm:px-8">
-          {/* CB identity + greeting card */}
           <div className="w-full max-w-lg">
-            <div className="rounded-2xl border border-white/20 bg-white/[0.12] px-6 py-5 backdrop-blur-md shadow-lg"
-              style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.07) 100%)" }}
+            <div
+              className="rounded-2xl border border-white/20 px-6 py-5 backdrop-blur-md shadow-lg"
+              style={{
+                background:
+                  "linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.07) 100%)",
+              }}
             >
-              {/* Stained-glass coral spine */}
+              {/* CB identity */}
               <div className="flex items-center gap-3 mb-4">
                 <span className="inline-flex h-10 w-10 shrink-0 overflow-hidden rounded-full border border-white/30 shadow-sm">
-                  <img src="/images/logo.png" alt="Cherry Blossom" className="h-full w-full object-cover" />
+                  <img
+                    src="/images/logo.png"
+                    alt="Cherry Blossom"
+                    className="h-full w-full object-cover"
+                  />
                 </span>
                 <div>
                   <p className="font-montserrat text-xs font-bold uppercase tracking-[0.2em] text-[#f9a8b8]">
@@ -206,6 +225,9 @@ export function CeoWorkdayWorkspace({
           executiveQuestion="What is today's highest-leverage opportunity?"
           cherryBlossomQuote="Before we begin executing, let's make sure we're working on the opportunity that creates the greatest long-term value."
         >
+          {/* Founder GPS™ — Live Recommendation (Phase 8.1) */}
+          <GpsRecommendationCard card={gpsPhase1} />
+
           {/* Today's Operating Rule™ */}
           <InstalledField
             label="Today's Operating Rule™"
@@ -228,34 +250,6 @@ export function CeoWorkdayWorkspace({
           {segment.declaration && (
             <DeclarationPanel declaration={segment.declaration} />
           )}
-
-          {/* Placeholders */}
-          <div className="grid gap-3 sm:grid-cols-2">
-            <PlaceholderBlock
-              icon={FileText}
-              label="Executive Intelligence Brief™"
-              description="Cherry Blossom™ will prepare your daily strategic brief here."
-              accent="#5B835F"
-            />
-            <PlaceholderBlock
-              icon={Cpu}
-              label="AI & Delegation Queue™"
-              description="Tasks ready for delegation to your AI Executive Team™."
-              accent="#5B835F"
-            />
-            <PlaceholderBlock
-              icon={ClipboardList}
-              label="Decision Queue™"
-              description="Decisions awaiting your executive judgment today."
-              accent="#5B835F"
-            />
-            <PlaceholderBlock
-              icon={MapPin}
-              label="Founder GPS™"
-              description="Adaptive coaching based on your execution patterns."
-              accent="#5B835F"
-            />
-          </div>
         </ExecutivePhase>
 
         {/* ─ Phase 2: Human Zone of Genius™ ────────────────────────────── */}
@@ -271,6 +265,9 @@ export function CeoWorkdayWorkspace({
           executiveQuestion="What is the one meaningful outcome only I can create today?"
           cherryBlossomQuote="This is your Human Zone of Genius™. Protect it. Everything else can wait."
         >
+          {/* Founder GPS™ — Live Recommendation (Phase 8.1) */}
+          <GpsRecommendationCard card={gpsPhase2} />
+
           {/* Today's One Executive Outcome™ */}
           <div>
             <p className="font-montserrat text-xs font-bold uppercase tracking-[0.18em] text-[#6B5860] mb-2">
@@ -341,29 +338,6 @@ export function CeoWorkdayWorkspace({
             )}
           </div>
 
-          {/* Executive Assignment™ placeholder */}
-          <div className="rounded-xl border border-dashed border-[#E26C73]/30 bg-white/40 px-5 py-4">
-            <div className="flex items-center gap-2 mb-3">
-              <Zap className="h-4 w-4 text-[#E26C73]/70" aria-hidden />
-              <p className="font-montserrat text-xs font-bold uppercase tracking-[0.16em] text-[#E26C73]/80">
-                Executive Assignment™
-              </p>
-            </div>
-            <div className="grid gap-2 sm:grid-cols-2 font-montserrat text-[12px] text-[#6B5860]/60">
-              {[
-                "Assigned Executive™",
-                "Mission",
-                "Expected Deliverable™",
-                "Business Asset™",
-              ].map((field) => (
-                <div key={field} className="rounded-lg border border-dashed border-black/10 bg-white/30 px-3 py-2">
-                  <p className="font-semibold text-[10px] uppercase tracking-[0.14em] text-[#6B5860]/50 mb-0.5">{field}</p>
-                  <p className="italic text-[#6B5860]/40">Awaiting Founder GPS™</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
           {/* Deep Work Rules */}
           <div className="rounded-xl border border-[#C13B6B]/15 bg-[#C13B6B]/[0.04] px-5 py-4">
             <p className="font-montserrat text-xs font-bold uppercase tracking-[0.16em] text-[#C13B6B] mb-3">
@@ -386,11 +360,11 @@ export function CeoWorkdayWorkspace({
             </div>
           </div>
 
-          {/* Progress placeholder */}
-          <PlaceholderBlock
+          {/* Progress Tracking™ — Phase 7 architecture, Phase 9 data */}
+          <ArchitectureCard
             icon={TrendingUp}
             label="Progress Tracking™"
-            description="Founder GPS™ will track execution momentum across CEO Workdays here."
+            description="Founder GPS™ will track execution momentum across CEO Workdays here — streaks, completion rates, and asset velocity."
             accent="#C13B6B"
           />
         </ExecutivePhase>
@@ -408,41 +382,33 @@ export function CeoWorkdayWorkspace({
           executiveQuestion="What can I improve today so tomorrow becomes easier?"
           cherryBlossomQuote="Today's work becomes tomorrow's advantage when you improve the way your business operates."
         >
+          {/* Founder GPS™ — Live Recommendation (Phase 8.1) */}
+          <GpsRecommendationCard card={gpsPhase3} />
+
+          {/* Business Optimization architecture cards */}
           <div className="grid gap-3 sm:grid-cols-2">
-            <PlaceholderBlock
+            <ArchitectureCard
               icon={Users}
               label="Delegation Opportunities™"
               description="Identify work that belongs in your team's hands, not yours."
               accent="#C9A24B"
             />
-            <PlaceholderBlock
-              icon={Sparkles}
+            <ArchitectureCard
+              icon={Layers}
               label="AI Opportunities™"
               description="Recurring tasks ready to be delegated to AI."
               accent="#C9A24B"
             />
-            <PlaceholderBlock
+            <ArchitectureCard
               icon={BookOpen}
               label="SOP Opportunities™"
               description="Third-repetition processes ready to be documented."
               accent="#C9A24B"
             />
-            <PlaceholderBlock
-              icon={Layers}
-              label="Compounding Assets™"
-              description="Business assets created today that generate future leverage."
-              accent="#C9A24B"
-            />
-            <PlaceholderBlock
+            <ArchitectureCard
               icon={Building2}
               label="Business Operating Manual™"
               description="Your growing library of installed Business Operating Rules™."
-              accent="#C9A24B"
-            />
-            <PlaceholderBlock
-              icon={FileText}
-              label="Tomorrow Preparation™"
-              description="Executive Brief™ for tomorrow pre-populated from today's work."
               accent="#C9A24B"
             />
           </div>
@@ -499,6 +465,48 @@ export function CeoWorkdayWorkspace({
         </ExecutivePhase>
 
       </div>
+
+      {/* ── Executive AI Team™ Architecture Cards ─────────────────────────── */}
+      <div className="bg-[#F3EDE3] border-t border-black/[0.06] px-6 py-6">
+        <div className="mb-4">
+          <div className="flex items-center gap-2 mb-1">
+            <img
+              src="/images/logo.png"
+              alt=""
+              className="h-5 w-5 rounded-full object-cover border border-white/50"
+              aria-hidden
+            />
+            <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.2em] text-[#5B835F]">
+              Cherry Blossom™
+            </p>
+          </div>
+          <p className="font-montserrat text-xs font-bold uppercase tracking-[0.16em] text-[#3A2E33] mb-1">
+            Your Executive AI Team™
+          </p>
+          <p className="font-montserrat text-[12px] leading-relaxed text-[#6B5860] text-pretty">
+            Your full Executive Leadership Team™ is active in the architecture. Each executive&apos;s intelligence
+            will come online progressively as Harmony Lane™ evolves.
+          </p>
+        </div>
+        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          {execTeamCards.map((card) => (
+            <ExecutiveTeamCard key={card.executiveId} card={card} />
+          ))}
+        </div>
+      </div>
+
+      {/* ── Closed For Business™ footer ───────────────────────────────────── */}
+      <div className="bg-[#2C3E2D] px-6 py-5 text-center">
+        <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.22em] text-white/40 mb-1">
+          End of Day Protocol™
+        </p>
+        <p className="font-playfair text-lg font-medium italic text-white/90 text-balance">
+          Today&apos;s business is officially Closed For Business™.
+        </p>
+        <p className="mt-1 font-montserrat text-[12px] text-white/50">
+          Tomorrow deserves a fully restored CEO.
+        </p>
+      </div>
     </article>
   )
 }
@@ -548,13 +556,18 @@ function ExecutivePhase({
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <span className="font-montserrat text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: accent }}>
+              <span
+                className="font-montserrat text-[10px] font-bold uppercase tracking-[0.2em]"
+                style={{ color: accent }}
+              >
                 Phase {number}
               </span>
               <span className="font-montserrat text-[10px] text-[#6B5860]/50">·</span>
               <span className="font-montserrat text-[10px] text-[#6B5860]/60">{time}</span>
             </div>
-            <h3 className="font-montserrat text-base font-bold text-[#1A1A1A] leading-tight">{title}</h3>
+            <h3 className="font-montserrat text-base font-bold text-[#1A1A1A] leading-tight">
+              {title}
+            </h3>
           </div>
         </div>
         <ChevronDown
@@ -566,11 +579,16 @@ function ExecutivePhase({
 
       {/* Phase workspace */}
       {open && (
-        <div className="px-6 pb-7 space-y-5 border-t border-black/[0.05]" style={{ background: accentLight }}>
-
-          {/* Executive Question™ — the single focus for this phase */}
+        <div
+          className="px-6 pb-7 space-y-5 border-t border-black/[0.05]"
+          style={{ background: accentLight }}
+        >
+          {/* Executive Question™ */}
           <div className="mt-5">
-            <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.2em] mb-2" style={{ color: `${accent}99` }}>
+            <p
+              className="font-montserrat text-[10px] font-bold uppercase tracking-[0.2em] mb-2"
+              style={{ color: `${accent}99` }}
+            >
               Executive Question™
             </p>
             <p className="font-playfair text-xl font-medium italic leading-snug text-[#1A1A1A] text-balance">
@@ -579,12 +597,21 @@ function ExecutivePhase({
           </div>
 
           {/* Cherry Blossom™ phase guidance */}
-          <div className="rounded-xl border px-5 py-3"
+          <div
+            className="rounded-xl border px-5 py-3"
             style={{ borderColor: `${accent}25`, background: `${accent}08` }}
           >
             <div className="flex items-center gap-2 mb-1.5">
-              <img src="/images/logo.png" alt="" className="h-5 w-5 rounded-full object-cover border border-white/50" aria-hidden />
-              <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: accent }}>
+              <img
+                src="/images/logo.png"
+                alt=""
+                className="h-5 w-5 rounded-full object-cover border border-white/50"
+                aria-hidden
+              />
+              <p
+                className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em]"
+                style={{ color: accent }}
+              >
                 Cherry Blossom™
               </p>
             </div>
@@ -677,7 +704,8 @@ function ExampleChips({
   )
 }
 
-function PlaceholderBlock({
+/** Architecture card — replaces dashed placeholder blocks. */
+function ArchitectureCard({
   icon: Icon,
   label,
   description,
@@ -690,19 +718,45 @@ function PlaceholderBlock({
 }) {
   return (
     <div
-      className="rounded-xl border border-dashed bg-white/30 px-4 py-3"
-      style={{ borderColor: `${accent}30` }}
+      className="rounded-xl border bg-white/40 px-4 py-3"
+      style={{ borderColor: `${accent}25` }}
     >
       <div className="flex items-center gap-2 mb-1">
-        <Icon className="h-3.5 w-3.5" style={{ color: `${accent}80` }} aria-hidden />
+        <Icon className="h-3.5 w-3.5" style={{ color: `${accent}90` }} aria-hidden />
         <p
           className="font-montserrat text-[10px] font-bold uppercase tracking-[0.16em]"
-          style={{ color: `${accent}90` }}
+          style={{ color: `${accent}CC` }}
         >
           {label}
         </p>
       </div>
-      <p className="font-montserrat text-[11px] italic text-[#6B5860]/55">{description}</p>
+      <p className="font-montserrat text-[11px] text-[#6B5860]/70 leading-relaxed">{description}</p>
+    </div>
+  )
+}
+
+/** Executive AI Team™ card — signals readiness without claiming live AI. */
+function ExecutiveTeamCard({
+  card,
+}: {
+  card: ReturnType<typeof getExecutiveTeamCards>[number]
+}) {
+  return (
+    <div className="rounded-xl border border-[#5B835F]/15 bg-white/50 px-4 py-3">
+      <div className="flex items-start justify-between gap-2 mb-2">
+        <div className="min-w-0">
+          <p className="font-montserrat text-[11px] font-bold text-[#3A2E33] leading-tight">
+            {card.executiveName}
+          </p>
+          <p className="font-montserrat text-[9px] text-[#6B5860]/70 mt-0.5">{card.executiveTitle}</p>
+        </div>
+        <span className="shrink-0 rounded-full border border-[#5B835F]/25 px-2 py-0.5 font-montserrat text-[8px] font-bold uppercase tracking-[0.1em] text-[#5B835F]/70">
+          Architecture
+        </span>
+      </div>
+      <p className="font-montserrat text-[11px] leading-relaxed text-[#6B5860] text-pretty">
+        {card.preparing}
+      </p>
     </div>
   )
 }
