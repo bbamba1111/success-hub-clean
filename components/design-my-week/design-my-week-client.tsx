@@ -61,7 +61,7 @@ const SEGMENTS = [
     description:
       "Your 90-minute intentional morning operating ritual — grounding your mind, aligning your spirit, and setting the tone for your entire Work-Life Balance Business Day™. GIV\u2022EN\u2122 stands for: Gratitude \u2022 Invitation to Your Creator \u2022 Vision & Visualization \u2022 Emotional Embodiment \u2022 Nurture.",
     examples: [
-      "opening my heart to gratitude before anything else",
+      "opening my heart and mind to gratitude, allowing abundance, possibility, and peace to become today's starting point",
       "inviting my Creator to co-create my day with me",
       "visualizing my ideal life and business with all five senses",
       "embodying the emotions of the work-life balanced founder I am becoming",
@@ -72,7 +72,7 @@ const SEGMENTS = [
     learnMore: {
       purpose: "Morning GIV\u2022EN\u2122 is your 90-minute intentional morning operating ritual. GIV\u2022EN\u2122 stands for: Gratitude \u2022 Invitation to Your Creator \u2022 Vision & Visualization \u2022 Emotional Embodiment \u2022 Nurture. It combines spiritual alignment with scientific habit formation to create sustainable transformation from the inside out.",
       whyItMatters: "How you begin your morning determines how you execute your day. Harmony Lane\u2122 combines two powerful forces: spiritual alignment — inviting your Creator and planting seeds of intention — and scientific habit formation through neuroscience, identity-based behavior change, and the Reticular Activating System (RAS). Together they align both your beliefs and your behaviors.",
-      science: "The Reticular Activating System (RAS) in the brain acts as a filter — when you clearly visualize and emotionally embody your desired outcomes, the RAS begins directing your attention toward opportunities that match. Behavioral science research (Duhigg, Clear, Dispenza) confirms that emotional conditioning and consistent repetition rewire identity at the neurological level. Nervous system regulation through gratitude and visualization also lowers cortisol, improving executive decision-making throughout the day.",
+      science: "The Reticular Activating System (RAS) in the brain acts as a filter — when you clearly visualize and emotionally embody your desired outcomes, the RAS begins directing your attention toward opportunities that match. Behavioral science research (Duhigg, Clear, Dispenza) confirms that emotional conditioning and consistent repetition rewire identity at the neurological level. Nervous system regulation through gratitude and visualization also lowers cortisol, improving executive decision-making throughout the day. Harmony Lane™ doesn't ask you to choose between science and spirituality. It uses both to help you intentionally redesign how you live, lead, and build your business.",
       businessValue: "Founders who protect Morning GIV\u2022EN\u2122 report higher focus during their CEO Workday\u2122, clearer decision-making, stronger sense of purpose, and reduced entrepreneurial isolation. This is not indulgence — it is operational preparation. The 30-minute borrow buffer ensures you never lose this practice entirely, even on demanding days.",
       commonMistakes: [
         "Checking email or social media before completing Morning GIV\u2022EN\u2122.",
@@ -121,7 +121,7 @@ const SEGMENTS = [
         "Even the shortest movement counts. A 3-minute stretch is a kept commitment.",
         "Protect this window as fiercely as you protect your CEO Workday\u2122.",
       ],
-      cbTip: "Physical movement is not a reward for completing your work — it is preparation for doing your best work. The 30 minutes you invest in your body at 10:30 AM returns hours of enhanced cognitive performance during your CEO Workday\u2122.",
+      cbTip: "The goal of the Workout Window\u2122 is not athletic performance. The goal is movement consistency. A 3-minute stretch performed every day for a year creates more compounding value than an intense 60-minute workout performed occasionally. Physical movement is not a reward for completing your work — it is preparation for doing your best work.",
     },
   },
   {
@@ -256,7 +256,7 @@ const SEGMENTS = [
         "End with something that feeds the mind gently: reading, reflection, or gratitude.",
         "If you choose to Power Down earlier, honor it. Earlier is always encouraged.",
       ],
-      cbTip: "The way you end today determines how you begin tomorrow. Power Down\u2122 is not the end of the operating cycle — it is the preparation for the next one. A 7:00 AM reopening becomes effortless when you are fully unplugged by 11:00 PM.",
+      cbTip: "The way you end today determines how you begin tomorrow. At 11:00 PM, today's business is officially closed. Tomorrow deserves a fully restored CEO. Power Down\u2122 is not the end of the operating cycle — it is the preparation for the next one. A 7:00 AM reopening becomes effortless when you are fully unplugged by 11:00 PM.",
     },
   },
 ]
@@ -836,9 +836,9 @@ export function DesignMyWeekClient() {
                 onClick={() => goToStep(0)}
                 disabled={step === 0}
                 className="inline-flex items-center gap-1.5 rounded-full border border-brand-blush bg-white px-4 py-2.5 font-sans text-sm font-semibold text-brand-ink-soft transition-colors hover:border-brand-green/30 hover:text-brand-green disabled:opacity-30 disabled:cursor-not-allowed"
-                aria-label="Back to first segment"
+                aria-label="Review first segment"
               >
-                Back to Start
+                Review First Segment
               </button>
             </div>
 
@@ -913,24 +913,25 @@ export function DesignMyWeekClient() {
                 </span>
               </div>
               <p className="font-playfair text-2xl font-bold text-brand-ink mb-1 text-balance">
-                Your Work-Life Balance Business Week™ is now designed.
+                Your Work-Life Balance Business Week™ has now been intentionally designed.
               </p>
               <p className="font-sans text-base font-semibold text-brand-coral mb-5">Congratulations.</p>
               <div className="font-sans text-[16px] leading-relaxed text-brand-ink space-y-4 text-pretty mb-7">
                 <p>
-                  Your <strong>Daily Non-Negotiables™</strong> and{" "}
-                  <strong>Sustainable Operating Practices™</strong> will protect your health,
-                  relationships, recovery, and Time Freedom™ throughout the week.
+                  Beginning today, your <strong>Daily Non-Negotiables™</strong> become your{" "}
+                  <strong>Sustainable Operating Practices™</strong> — the New 9-to-5 &amp; Nighttime
+                  Non-Negotiable SOPs™ that protect your energy, health, relationships, recovery, and
+                  Time Freedom™.
                 </p>
                 <p>
-                  Your <strong>Business Operating Rules™</strong> will reduce execution friction,
-                  improve decision-making, increase AI leverage, strengthen delegation, and help you
-                  build business assets that continue creating value long after today&apos;s work is
-                  finished.
+                  Your <strong>Business Operating Rules™</strong> become the executive standards
+                  that reduce decision fatigue, eliminate execution friction, leverage AI and
+                  delegation, and help you build business assets that continue creating value long
+                  after today&apos;s work is finished.
                 </p>
                 <p>
-                  Together they create the business you intended to build — a business that supports
-                  your life instead of consuming it.
+                  This is how Harmony Lane™ helps founders build a business that supports the life
+                  they want to live.
                 </p>
               </div>
               <Link
