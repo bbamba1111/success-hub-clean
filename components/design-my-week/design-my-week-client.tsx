@@ -2,8 +2,46 @@
 
 import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
-import { ArrowRight, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, Clock, Info } from "lucide-react"
+import { ArrowRight, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, Clock, Info, Plus, Trash2 } from "lucide-react"
 import { CherryBlossomScene, CherryBlossomSceneCard } from "@/components/cherry-blossom/cherry-blossom-scene"
+
+/* ── Movement activities library (Part 3) ──────────────────────────────── */
+const MOVEMENT_ACTIVITIES = [
+  "Walking",
+  "Walk Away the Pounds™",
+  "Tai Chi",
+  "Yoga",
+  "Stretching",
+  "Pilates",
+  "Strength Training",
+  "Resistance Bands",
+  "Bodyweight Exercises",
+  "Dance",
+  "Zumba",
+  "Chair Exercise",
+  "Mobility",
+  "Swimming",
+  "Cycling",
+  "Running",
+  "Hiking",
+  "Elliptical",
+  "Treadmill",
+  "Rowing",
+  "Jump Rope",
+  "Meditation Walk",
+  "Rebounding",
+  "Gardening",
+  "Other",
+]
+
+const SLEEP_OPTIONS = [
+  { value: 6.5, label: "6.5 hours" },
+  { value: 7, label: "7 hours" },
+  { value: 7.5, label: "7.5 hours" },
+  { value: 8, label: "8 hours", recommended: true },
+  { value: 8.5, label: "8.5 hours" },
+  { value: 9, label: "9 hours" },
+]
 
 /* ── Segments ──────────────────────────────────────────────────────────── */
 const SEGMENTS = [
@@ -72,7 +110,7 @@ const SEGMENTS = [
     learnMore: {
       purpose: "Morning GIV\u2022EN\u2122 is your 90-minute intentional morning operating ritual. GIV\u2022EN\u2122 stands for: Gratitude \u2022 Invitation to Your Creator \u2022 Vision & Visualization \u2022 Emotional Embodiment \u2022 Nurture. It combines spiritual alignment with scientific habit formation to create sustainable transformation from the inside out.",
       whyItMatters: "How you begin your morning determines how you execute your day. Harmony Lane\u2122 combines two powerful forces: spiritual alignment — inviting your Creator and planting seeds of intention — and scientific habit formation through neuroscience, identity-based behavior change, and the Reticular Activating System (RAS). Together they align both your beliefs and your behaviors.",
-      science: "The Reticular Activating System (RAS) in the brain acts as a filter — when you clearly visualize and emotionally embody your desired outcomes, the RAS begins directing your attention toward opportunities that match. Behavioral science research (Duhigg, Clear, Dispenza) confirms that emotional conditioning and consistent repetition rewire identity at the neurological level. Nervous system regulation through gratitude and visualization also lowers cortisol, improving executive decision-making throughout the day. Harmony Lane™ doesn't ask you to choose between science and spirituality. It uses both to help you intentionally redesign how you live, lead, and build your business.",
+      science: "The Reticular Activating System (RAS) in the brain acts as a filter — when you clearly visualize and emotionally embody your desired outcomes, the RAS begins directing your attention toward opportunities that match. Behavioral science research (Duhigg, Clear, Dispenza) confirms that emotional conditioning and consistent repetition rewire identity at the neurological level. Nervous system regulation through gratitude and visualization also lowers cortisol, improving executive decision-making throughout the day. Harmony Lane\u2122 doesn\u2019t ask you to choose between science and spirituality. It uses both to help you intentionally redesign how you live, lead, and build your business.",
       businessValue: "Founders who protect Morning GIV\u2022EN\u2122 report higher focus during their CEO Workday\u2122, clearer decision-making, stronger sense of purpose, and reduced entrepreneurial isolation. This is not indulgence — it is operational preparation. The 30-minute borrow buffer ensures you never lose this practice entirely, even on demanding days.",
       commonMistakes: [
         "Checking email or social media before completing Morning GIV\u2022EN\u2122.",
@@ -82,7 +120,7 @@ const SEGMENTS = [
       ],
       bestPractices: [
         "Move through each GIV\u2022EN\u2122 element in sequence: Gratitude \u2192 Invitation \u2192 Vision \u2192 Emotional Embodiment \u2192 Nurture.",
-        "Wear comfortable clothing after Flex Time\u2122 so you flow directly into the Workout Window\u2122 at 10:30 AM.",
+        "Wear comfortable clothing after Flex Time\u2122 so you flow directly into the Movement Window\u2122 at 10:30 AM.",
         "Complete your ritual before opening any device-based communication.",
         "Depth of engagement matters more than duration. 30 focused minutes outperforms 90 distracted ones.",
       ],
@@ -91,25 +129,26 @@ const SEGMENTS = [
   },
   {
     id: "workout",
-    title: "Workout Window\u2122",
+    title: "Movement Window\u2122",
     time: "10:30 AM – 11:00 AM",
     type: "life" as const,
     description:
-      "Your protected 30-minute Movement Window\u2122 — built directly into your Work-Life Balance Business Day\u2122. Non-negotiable for sustained energy, mental clarity, and long-term health.",
+      "Your protected 30-minute Movement Window\u2122 — built directly into your Work-Life Balance Business Day\u2122. Non-negotiable for sustained energy, mental clarity, and long-term health. The goal is not athletic performance. The goal is movement consistency.",
     examples: [
       "a 3-minute stretch to open my body for the day",
       "a 5-minute walk to reset my energy",
       "a 10-minute mobility session for flexibility and recovery",
       "a 15-minute yoga flow to ground my mind and body",
+      "15 minutes of Walk Away the Pounds\u2122 followed by 15 minutes of Tai Chi",
       "a 20-minute strength circuit to build physical resilience",
       "a 25-minute brisk walk for cardiovascular health",
       "a full 30-minute workout of my choice",
     ],
     learnMore: {
-      purpose: "The Workout Window\u2122 is your protected 30-minute Movement Window\u2122 — a non-negotiable block built into the Work-Life Balance Business Day\u2122 from 10:30 AM to 11:00 AM. Examples never exceed 30 minutes. A 3-minute stretch counts. A full 30-minute workout counts. What matters is that you move.",
+      purpose: "The Movement Window\u2122 is your protected 30-minute movement practice — a non-negotiable block built into the Work-Life Balance Business Day\u2122 from 10:30 AM to 11:00 AM. Examples never exceed 30 minutes. A 3-minute stretch counts. A full 30-minute workout counts. What matters is that you move consistently.",
       whyItMatters: "Exercise is the single highest-ROI Sustainable Operating Practice\u2122 available to a founder. It directly improves cognitive performance, emotional regulation, stress resilience, hormonal balance, and sleep quality — all of which are prerequisites for high-level executive decision-making during your CEO Workday\u2122.",
       science: "Neuroscience research (Ratey, Harvard Medical School) demonstrates that aerobic exercise increases BDNF (Brain-Derived Neurotrophic Factor), which accelerates learning, improves memory consolidation, and enhances creative problem-solving. Even 15\u201330 minutes of moderate movement produces measurable cognitive benefits that last 4\u20136 hours — directly improving your 1:00 PM CEO Workday\u2122 performance.",
-      businessValue: "Founders who exercise consistently report 23% higher self-reported productivity and significantly reduced decision fatigue during their CEO Workday\u2122. Your Workout Window\u2122 is not separate from your business — it is the engine that powers it. Protecting this 30-minute window is one of the highest-leverage decisions in your entire operating day.",
+      businessValue: "Founders who exercise consistently report 23% higher self-reported productivity and significantly reduced decision fatigue during their CEO Workday\u2122. Your Movement Window\u2122 is not separate from your business — it is the engine that powers it. Protecting this 30-minute window is one of the highest-leverage decisions in your entire operating day.",
       commonMistakes: [
         "Treating movement as optional and skipping it when work pressures build — that is exactly when you need it.",
         "Planning a workout that exceeds 30 minutes and then skipping it entirely when time is short.",
@@ -121,7 +160,7 @@ const SEGMENTS = [
         "Even the shortest movement counts. A 3-minute stretch is a kept commitment.",
         "Protect this window as fiercely as you protect your CEO Workday\u2122.",
       ],
-      cbTip: "The goal of the Workout Window\u2122 is not athletic performance. The goal is movement consistency. A 3-minute stretch performed every day for a year creates more compounding value than an intense 60-minute workout performed occasionally. Physical movement is not a reward for completing your work — it is preparation for doing your best work.",
+      cbTip: "The goal of the Movement Window\u2122 is not athletic performance. The goal is movement consistency. A 3-minute stretch performed every day for a year creates more compounding value than an intense 60-minute workout performed occasionally. Physical movement is not a reward for completing your work — it is preparation for doing your best work.",
     },
   },
   {
@@ -143,8 +182,8 @@ const SEGMENTS = [
     learnMore: {
       purpose: "Healthy Hybrid Lunch\u2122 is your nourishing midday pause — a deliberate Sustainable Operating Practice\u2122 that refuels your body, transitions your mind from morning commitments, and prepares you for your most important work. It is a core part of The New 9-to-5 & Nighttime Non-Negotiable SOPs\u2122.",
       whyItMatters: "Most founders work through lunch, believing it demonstrates dedication. In reality, it depletes the mental resources needed for high-quality CEO Workday\u2122 execution. The pause is not a cost — it is an investment in the quality of your afternoon, your nervous system regulation, and your hormonal balance.",
-      science: "Research in chronobiology confirms a natural post-lunch cognitive dip between 1:00 PM and 3:00 PM when blood glucose regulation causes reduced alertness. A genuine midday break with intentional nutrition and movement counteracts this dip, improving afternoon performance by 20\u201335%. Stepping away also activates the brain\u2019s default mode network — the neural system responsible for creative insight and strategic thinking — making the CEO Workday\u2122 more productive and inventive. Consistent behavioral repetition of this practice builds it into an automatic operating default within 21\u201366 days.",
-      businessValue: "Founders who take a genuine lunch break report higher afternoon focus, better quality decisions during their CEO Workday\u2122, and lower rates of late-day exhaustion. This is one of the most underrated Sustainable Operating Practices\u2122 available. The Progress Principle confirms that small protected recovery windows compound into dramatically higher creativity and motivation over a week, month, and year.",
+      science: "Research in chronobiology confirms a natural post-lunch cognitive dip between 1:00 PM and 3:00 PM when blood glucose regulation causes reduced alertness. A genuine midday break with intentional nutrition and movement counteracts this dip, improving afternoon performance by 20\u201335%. Stepping away also activates the brain\u2019s default mode network — the neural system responsible for creative insight and strategic thinking — making the CEO Workday\u2122 more productive and inventive.",
+      businessValue: "Founders who take a genuine lunch break report higher afternoon focus, better quality decisions during their CEO Workday\u2122, and lower rates of late-day exhaustion. This is one of the most underrated Sustainable Operating Practices\u2122 available.",
       commonMistakes: [
         "Eating at the desk while continuing to work.",
         "Skipping lunch entirely and running on caffeine into the CEO Workday\u2122.",
@@ -176,8 +215,8 @@ const SEGMENTS = [
     learnMore: {
       purpose: "The 4-Hour CEO Workday\u2122 is your protected high-leverage execution window — four focused hours dedicated exclusively to the most important work that moves your business forward. It is the Business Operating System\u2122 in action.",
       whyItMatters: "Most founders believe they need to work more hours to produce better results. The research says the opposite. Deep, focused, uninterrupted work produces 4\u20135x more output than the same hours worked in reactive, fragmented mode. Four focused hours in a flow state outperforms eight scattered, interrupted ones every time.",
-      science: "Cal Newport\u2019s research on Deep Work demonstrates that knowledge workers are capable of only 4 hours of peak cognitive performance per day. Parkinson\u2019s Law confirms that work expands to fill the time available — a defined 4-hour window forces prioritization and eliminates low-leverage activity. Flow state research (Csikszentmihalyi) demonstrates that full immersion in high-challenge, high-skill work produces exponential output. The Progress Principle (Amabile & Kramer) confirms that 1% daily improvement compounds into extraordinary results — and that protecting meaningful daily progress is the strongest driver of founder motivation and engagement.",
-      businessValue: "Business Operating Rules\u2122 installed during the CEO Workday\u2122 reduce execution friction, improve decision quality, increase AI leverage, strengthen delegation, and build compounding business assets. Replacing hustle culture with a disciplined 4-hour CEO Workday\u2122 and proven Sustainable Operating Practices\u2122 is not a compromise in ambition — it is the sustainable transformation model that allows founders to build larger, more leveraged businesses without sacrificing health, relationships, or Time Freedom\u2122.",
+      science: "Cal Newport\u2019s research on Deep Work demonstrates that knowledge workers are capable of only 4 hours of peak cognitive performance per day. Parkinson\u2019s Law confirms that work expands to fill the time available — a defined 4-hour window forces prioritization and eliminates low-leverage activity. Flow state research (Csikszentmihalyi) demonstrates that full immersion in high-challenge, high-skill work produces exponential output.",
+      businessValue: "Business Operating Rules\u2122 installed during the CEO Workday\u2122 reduce execution friction, improve decision quality, increase AI leverage, strengthen delegation, and build compounding business assets.",
       commonMistakes: [
         "Allowing meetings, phone calls, or email to interrupt the CEO Workday\u2122.",
         "Starting the CEO Workday\u2122 without a clear Executive Outcome\u2122 defined.",
@@ -208,9 +247,9 @@ const SEGMENTS = [
     ],
     learnMore: {
       purpose: "Time Freedom\u2122 is the protected life your business exists to support. From 5:00 PM to 10:00 PM, you are fully present — in your relationships, your passions, your rest, and your joy. This is a core Sustainable Operating Practice\u2122. The business does not follow you here.",
-      whyItMatters: "Founders who never fully disconnect report higher burnout, relationship deterioration, declining creative capacity, and accelerated entrepreneurial isolation. Time Freedom\u2122 is not a privilege earned by finishing work — it is a non-negotiable component of sustainable high performance and the direct antidote to hustle culture. Accountability to this practice, and community connection within Harmony Lane\u2122, are what sustain it over time.",
-      science: "Research in recovery psychology (Sonnentag & Fritz) demonstrates that psychological detachment from work during off-hours is the strongest predictor of next-day job performance, engagement, and creativity. Entrepreneurs who protect non-work time outperform those who do not over a 12-month horizon. Weekly reflection and monthly recalibration within Time Freedom\u2122 also activate the brain\u2019s default mode network — producing the strategic insights and creative breakthroughs that are impossible in reactive work mode. Behavioral repetition of this boundary builds it into an automatic operating default through habit formation and identity-based behavior change.",
-      businessValue: "Time Freedom\u2122 is the entire purpose of the Work-Life Balance Business Week\u2122. Every CEO Workday\u2122, every Operating Rule\u2122, every AI leverage and delegation decision is in service of expanding and protecting this segment. It is not the reward — it is the goal. A business that consistently delivers Time Freedom\u2122 is a business that is working. The New 9-to-5 & Nighttime Non-Negotiable SOPs\u2122 exist precisely to protect this outcome.",
+      whyItMatters: "Founders who never fully disconnect report higher burnout, relationship deterioration, declining creative capacity, and accelerated entrepreneurial isolation. Time Freedom\u2122 is not a privilege earned by finishing work — it is a non-negotiable component of sustainable high performance.",
+      science: "Research in recovery psychology (Sonnentag & Fritz) demonstrates that psychological detachment from work during off-hours is the strongest predictor of next-day job performance, engagement, and creativity.",
+      businessValue: "Time Freedom\u2122 is the entire purpose of the Work-Life Balance Business Week\u2122. Every CEO Workday\u2122, every Operating Rule\u2122, every AI leverage and delegation decision is in service of expanding and protecting this segment.",
       commonMistakes: [
         "Checking email or Slack during Time Freedom\u2122.",
         "Taking \u2018just one more call\u2019 that erodes the boundary.",
@@ -226,11 +265,11 @@ const SEGMENTS = [
   },
   {
     id: "power-down",
-    title: "Power Down & Unplug\u2122",
-    time: "10:00 PM – 11:00 PM \u2022 Closed at 11:00 PM",
+    title: "Power Down\u2122",
+    time: "10:00 PM – 11:00 PM",
     type: "life" as const,
     description:
-      "The intentional close to every Work-Life Balance Business Day\u2122. Power Down\u2122 begins at 10:00 PM. Unplug\u2122 at 11:00 PM. The business day officially closes and does not reopen until 7:00 AM. Founders may Power Down earlier — Harmony Lane\u2122 does not have a minimum. But the standard operating rhythm closes at 11:00 PM.",
+      "The intentional close to every Work-Life Balance Business Day\u2122. Power Down\u2122 begins at 10:00 PM. You are fully winding down — transitioning away from screens, releasing the day, and preparing your mind and body for deep, restorative rest.",
     examples: [
       "beginning my Power Down\u2122 ritual at 10:00 PM every night",
       "placing all devices out of reach by 10:00 PM",
@@ -238,12 +277,18 @@ const SEGMENTS = [
       "reading a book instead of scrolling before sleep",
       "stretching to release the day from my body",
       "reviewing my intentions for tomorrow before I rest",
+      "a skincare routine and gentle self-care ritual",
+      "quiet conversation with someone I love",
+      "light music and candlelight relaxation",
+      "preparing tomorrow's clothes and laying out workout wear",
+      "prayer or meditation to close the day",
+      "deep breathing to signal rest to my nervous system",
     ],
     learnMore: {
-      purpose: "Power Down & Unplug\u2122 is the intentional close to every Work-Life Balance Business Day\u2122. Power Down\u2122 begins at 10:00 PM. Unplug\u2122 is complete by 11:00 PM. The Work-Life Balance Business Day\u2122 is officially Closed For Business\u2122 and does not reopen until 7:00 AM. Founders may choose to Power Down earlier — Harmony Lane\u2122 encourages it — but the standard operating rhythm is 10:00 PM to 11:00 PM.",
-      whyItMatters: "Sleep quality is the single most important recovery variable for cognitive performance. Founders who do not have a deliberate wind-down practice experience poorer sleep onset, lighter sleep stages, and reduced next-day executive function. Power Down\u2122 is the Sustainable Operating Practice\u2122 that protects sleep quality and makes every other segment in the operating day possible.",
-      science: "Harvard sleep research (Walker, \u2018Why We Sleep\u2019) confirms that blue light exposure within 90 minutes of sleep onset reduces melatonin production by up to 50%. Cognitive arousal — from email, work content, or social media — keeps the prefrontal cortex activated and delays sleep onset by 30\u201360 minutes on average. Nervous system regulation and hormonal rebalancing also require consistent sleep onset timing to maintain cortisol and melatonin cycles.",
-      businessValue: "A well-rested founder makes better decisions, thinks more creatively, manages emotions more skillfully, and sustains high performance over time. Power Down\u2122 is not a soft habit — it is the physiological foundation of the entire Work-Life Balance Business Day\u2122. Protect it the same way you protect your CEO Workday\u2122.",
+      purpose: "Power Down\u2122 is your intentional evening ritual — the 60-minute transition between Time Freedom\u2122 and Unplug\u2122. It begins at 10:00 PM and prepares your mind and body for deep, restorative sleep. The business day closes at 11:00 PM sharp.",
+      whyItMatters: "Sleep quality is the single most important recovery variable for cognitive performance. Founders who do not have a deliberate wind-down practice experience poorer sleep onset, lighter sleep stages, and reduced next-day executive function.",
+      science: "Harvard sleep research (Walker, \u2018Why We Sleep\u2019) confirms that blue light exposure within 90 minutes of sleep onset reduces melatonin production by up to 50%. Cognitive arousal from email, work content, or social media keeps the prefrontal cortex activated and delays sleep onset by 30\u201360 minutes on average.",
+      businessValue: "A well-rested founder makes better decisions, thinks more creatively, manages emotions more skillfully, and sustains high performance over time. Power Down\u2122 is not a soft habit — it is the physiological foundation of the entire Work-Life Balance Business Day\u2122.",
       commonMistakes: [
         "Bringing your phone to bed and scrolling after 10:00 PM.",
         "Checking email or reviewing work in the Power Down\u2122 window.",
@@ -252,16 +297,48 @@ const SEGMENTS = [
       ],
       bestPractices: [
         "Create a clear \u2018close of business\u2019 ritual at 10:00 PM — a physical or symbolic act that signals the end of the business day.",
-        "Place all devices out of reach by 10:00 PM. Unplug\u2122 means fully unplugged by 11:00 PM.",
+        "Place all devices out of reach by 10:00 PM.",
         "End with something that feeds the mind gently: reading, reflection, or gratitude.",
         "If you choose to Power Down earlier, honor it. Earlier is always encouraged.",
       ],
       cbTip: "The way you end today determines how you begin tomorrow. At 11:00 PM, today's business is officially closed. Tomorrow deserves a fully restored CEO. Power Down\u2122 is not the end of the operating cycle — it is the preparation for the next one. A 7:00 AM reopening becomes effortless when you are fully unplugged by 11:00 PM.",
     },
   },
+  {
+    id: "unplug",
+    title: "Unplug\u2122",
+    time: "11:00 PM \u2022 Closed For Business\u2122",
+    type: "life" as const,
+    description:
+      "The official close of the Work-Life Balance Business Day\u2122. At 11:00 PM, Harmony Lane\u2122 is Closed For Business\u2122. All devices are away. The community is closed. You are in full rest. Tomorrow deserves a fully restored CEO.",
+    examples: [
+      "fully unplugged from all devices by 11:00 PM every night",
+      "asleep or in bed with no screens by 11:00 PM",
+      "honoring the close of business every night at 11:00 PM",
+      "protecting my restorative sleep as a non-negotiable CEO investment",
+      "trusting that Harmony Lane\u2122 will be here at 7:00 AM — rested and ready",
+    ],
+    learnMore: {
+      purpose: "Unplug\u2122 is the 8th Operating Segment\u2122 — the official close of the Work-Life Balance Business Day\u2122. At 11:00 PM, the business day is Closed For Business\u2122. There is no partial unplugging. This commitment protects the restorative sleep that makes everything else in your operating day possible.",
+      whyItMatters: "Sleep onset, sleep depth, and sleep consistency are directly governed by the signals you send your nervous system between 10:00 PM and 11:00 PM. Unplug\u2122 installs the final boundary that makes true recovery possible.",
+      science: "Consistent sleep timing regulates the circadian clock, which governs cortisol, melatonin, growth hormone, and immune function simultaneously. Even a single night of disrupted sleep reduces next-day executive decision-making by a measurable margin.",
+      businessValue: "Tomorrow\u2019s CEO Workday\u2122 performance is built tonight. Every hour of quality sleep compounds into clearer thinking, faster decisions, better emotional regulation, and more creative problem-solving the following day.",
+      commonMistakes: [
+        "Telling yourself \u2018just five more minutes\u2019 — that is how 11:00 PM becomes 1:00 AM.",
+        "Keeping your phone on your nightstand within reach.",
+        "Treating Unplug\u2122 as optional on high-stress nights — those are exactly the nights you need it most.",
+      ],
+      bestPractices: [
+        "Make Unplug\u2122 a physical act: put the phone in another room.",
+        "Your Power Down\u2122 ritual should lead you naturally into Unplug\u2122 without willpower.",
+        "If you wake during the night, do not reach for your phone.",
+      ],
+      cbTip: "Your business is now Closed For Business\u2122. Tomorrow deserves a fully restored CEO. Unplug\u2122 is not a restriction — it is the highest form of executive self-respect. Sleep well.",
+    },
+  },
 ]
 
-/* ── Intention Declaration generator ───────────────────────────────────── */
+/* ── Intention Declaration generator (Part 1 — full commitment preserved) ── */
 function elevateDeclaration(segmentId: string, rawInput: string): string {
   const input = rawInput.trim()
   if (!input) return ""
@@ -274,7 +351,67 @@ function elevateDeclaration(segmentId: string, rawInput: string): string {
 
   const lower = clean.toLowerCase()
 
-  // Segment-aware elevation patterns
+  // ── Workout segment: preserve ALL activities mentioned ───────────────────
+  if (segmentId === "workout") {
+    // Build activity list from the raw input so nothing is dropped
+    const hasWalkAwayPounds = /walk away the pounds/i.test(clean)
+    const hasTaiChi = /tai chi/i.test(clean)
+    const hasYoga = /yoga/i.test(clean)
+    const hasWalk = /\bwalk\b/i.test(clean) && !hasWalkAwayPounds
+    const hasDance = /danc/i.test(clean)
+    const hasStrength = /strength|lift|weight/i.test(clean)
+    const hasCycl = /cycl|bike/i.test(clean)
+    const hasStretch = /stretch/i.test(clean)
+    const hasPilates = /pilates/i.test(clean)
+    const hasZumba = /zumba/i.test(clean)
+    const hasRun = /\brun\b|\brunning\b/i.test(clean)
+
+    // Multiple distinct activities detected — generate a compound declaration
+    const activities: string[] = []
+    if (hasWalkAwayPounds) activities.push("Walk Away the Pounds\u2122")
+    if (hasTaiChi) activities.push("Tai Chi")
+    if (hasYoga) activities.push("yoga")
+    if (hasWalk) activities.push("walking")
+    if (hasDance) activities.push("dance")
+    if (hasStrength) activities.push("strength training")
+    if (hasCycl) activities.push("cycling")
+    if (hasStretch) activities.push("stretching")
+    if (hasPilates) activities.push("Pilates")
+    if (hasZumba) activities.push("Zumba")
+    if (hasRun) activities.push("running")
+
+    if (activities.length >= 2) {
+      // Build natural language list: "A, B, and C"
+      const list =
+        activities.length === 2
+          ? `${activities[0]} and ${activities[1]}`
+          : activities.slice(0, -1).join(", ") + `, and ${activities[activities.length - 1]}`
+
+      return `Today I honor my body by completing both my ${list} during my Movement Window\u2122. Every minute of intentional movement strengthens my energy, supports my health, and prepares me to lead with greater focus and vitality.`
+    }
+
+    // Single activity — original precise patterns
+    if (hasWalkAwayPounds)
+      return `I honor my body and energize my morning through my Walk Away the Pounds\u2122 routine, building the physical foundation that powers my CEO Workday\u2122.`
+    if (hasTaiChi)
+      return `I center my mind and strengthen my body through my daily Tai Chi practice, arriving at each CEO Workday\u2122 grounded, focused, and fully present.`
+    if (hasYoga)
+      return `I restore my body and center my mind through a daily yoga practice, arriving at each day flexible, grounded, and energized.`
+    if (hasWalk)
+      return `I strengthen my body and renew my energy through a daily walk, honoring my health as the non-negotiable foundation of everything I build.`
+    if (hasDance)
+      return `I move my body joyfully through dance, celebrating the energy and vitality that fuels everything I create.`
+    if (hasStrength)
+      return `I build physical strength daily, knowing that a strong body creates the sustained energy and resilience my vision requires.`
+    if (hasCycl)
+      return `I build endurance and mental clarity through cycling, arriving at every CEO Workday\u2122 with energy to execute at my highest level.`
+    if (hasStretch)
+      return `I honor my body with a daily stretching practice, maintaining the flexibility and recovery that high performance demands.`
+
+    return `I protect my body through ${lower}, treating my physical health as the irreplaceable engine that powers everything I am building.`
+  }
+
+  // ── Segment-aware elevation patterns (all other segments) ────────────────
   switch (segmentId) {
     case "early-entry":
       if (/school|drop.?off|kids|children/i.test(clean))
@@ -299,21 +436,6 @@ function elevateDeclaration(segmentId: string, rawInput: string): string {
       if (/read/i.test(clean))
         return `I begin every morning with purposeful reading, feeding my mind with wisdom that compounds into extraordinary results over time.`
       return `I begin every morning with ${lower}, creating the intentional foundation from which my most productive and fulfilling days are built.`
-
-    case "workout":
-      if (/walk/i.test(clean))
-        return `I strengthen my body and renew my energy through a daily walk, honoring my health as the non-negotiable foundation of everything I build.`
-      if (/yoga/i.test(clean))
-        return `I restore my body and center my mind through a daily yoga practice, arriving at each day flexible, grounded, and energized.`
-      if (/strength|lift|weight/i.test(clean))
-        return `I build physical strength daily, knowing that a strong body creates the sustained energy and resilience my vision requires.`
-      if (/danc/i.test(clean))
-        return `I move my body joyfully through dance, celebrating the energy and vitality that fuels everything I create.`
-      if (/cycl|bike/i.test(clean))
-        return `I build endurance and mental clarity through cycling, arriving at every CEO Workday\u2122 with energy to execute at my highest level.`
-      if (/stretch/i.test(clean))
-        return `I honor my body with a daily stretching practice, maintaining the flexibility and recovery that high performance demands.`
-      return `I protect my body through ${lower}, treating my physical health as the irreplaceable engine that powers everything I am building.`
 
     case "healthy-lunch":
       if (/away.*(desk|screen|computer)/i.test(clean) || /desk/i.test(clean))
@@ -357,17 +479,24 @@ function elevateDeclaration(segmentId: string, rawInput: string): string {
       return `I protect my Time Freedom\u2122 as the sacred, non-negotiable reward for doing disciplined, high-value work during my CEO Workday\u2122 — so I can be fully present for ${lower}.`
 
     case "power-down":
-      if (/phone|device|screen|9\s*pm|10\s*pm|11\s*pm/i.test(clean))
+      if (/phone|device|screen/i.test(clean))
         return `I end each business day by unplugging completely, creating the space for deep, restorative rest that makes tomorrow's performance possible.`
       if (/reflect|journal/i.test(clean))
         return `I close each day with intentional reflection, acknowledging what I accomplished, what I learned, and what I am grateful for.`
       if (/read|book/i.test(clean))
         return `I transition into rest each evening through reading, stepping away from screens and allowing my mind to decompress and restore.`
-      if (/stretch|yoga|meditat/i.test(clean))
+      if (/stretch|yoga|meditat|breath/i.test(clean))
         return `I prepare my body and mind for deep rest each evening through movement and stillness, honoring the recovery that high performance requires.`
-      if (/prepare|tomorrow|plan/i.test(clean))
+      if (/prayer|gratitude/i.test(clean))
+        return `I close each day in gratitude and prayer, releasing the day with a peaceful heart and welcoming tomorrow with an open one.`
+      if (/prepare|tomorrow|plan|clothes/i.test(clean))
         return `I close each day with calm preparation for tomorrow — reviewing my intentions, organizing my space, and entering rest with a clear and peaceful mind.`
+      if (/skincare|self.care/i.test(clean))
+        return `I honor my body each evening with intentional self-care, transitioning from the business day into the rest that restores me.`
       return `I create a clear and intentional end to every business day by ${lower}, protecting the rest that makes tomorrow's focus, energy, and leadership possible.`
+
+    case "unplug":
+      return `At 11:00 PM, my business is Closed For Business\u2122. I am fully unplugged, fully rested, and fully prepared to lead again tomorrow. My commitment to restorative sleep is an investment in every CEO Workday\u2122 yet to come.`
 
     default:
       return `I am committed to ${lower}.`
@@ -375,10 +504,22 @@ function elevateDeclaration(segmentId: string, rawInput: string): string {
 }
 
 /* ── Types ──────────────────────────────────────────────────────────────── */
+type PlannedActivity = {
+  id: string
+  activity: string
+  minutes: number
+  isCustom: boolean
+  customActivity: string
+}
+
 type InstallState = {
   input: string
   declaration: string | null
   confirmed: boolean
+  // Movement Window planner (workout segment)
+  plannedActivities: PlannedActivity[]
+  // Power Down sleep goal
+  plannedSleepHours: number | null
 }
 
 const TYPE_LABEL: Record<string, string> = {
@@ -411,12 +552,202 @@ const TYPE_CHIP_COLOR: Record<string, string> = {
   business: "bg-[#5B835F]/10 text-[#5B835F]",
 }
 
+/* ── Movement Window Planner (Part 3) ───────────────────────────────────── */
+function MovementPlanner({
+  activities,
+  onChange,
+}: {
+  activities: PlannedActivity[]
+  onChange: (activities: PlannedActivity[]) => void
+}) {
+  const totalMinutes = activities.reduce((sum, a) => sum + a.minutes, 0)
+
+  function addActivity() {
+    onChange([
+      ...activities,
+      {
+        id: crypto.randomUUID(),
+        activity: MOVEMENT_ACTIVITIES[0],
+        minutes: 15,
+        isCustom: false,
+        customActivity: "",
+      },
+    ])
+  }
+
+  function removeActivity(id: string) {
+    onChange(activities.filter((a) => a.id !== id))
+  }
+
+  function updateActivity(id: string, patch: Partial<PlannedActivity>) {
+    onChange(activities.map((a) => (a.id === id ? { ...a, ...patch } : a)))
+  }
+
+  return (
+    <div className="mb-6 rounded-2xl border border-brand-green/20 bg-brand-green/[0.04] overflow-hidden">
+      <div className="px-5 py-4 border-b border-brand-green/10">
+        <p className="font-sans text-sm font-bold text-brand-green">
+          Planned Movement™ <span className="font-normal text-brand-ink-soft">(optional)</span>
+        </p>
+        <p className="mt-0.5 font-sans text-xs text-brand-ink-soft">
+          Build your 30-minute movement plan. Cherry Blossom™ will track your consistency over time.
+        </p>
+      </div>
+
+      <div className="px-5 py-4 space-y-3">
+        {activities.length === 0 && (
+          <p className="font-sans text-sm text-brand-ink-soft italic">
+            No activities added yet. Add one below, or skip and use the free-text commitment above.
+          </p>
+        )}
+
+        {activities.map((act, idx) => (
+          <div key={act.id} className="flex items-start gap-3 flex-wrap">
+            <div className="flex-1 min-w-[180px]">
+              <label className="sr-only">Activity {idx + 1}</label>
+              <select
+                value={act.isCustom ? "Other" : act.activity}
+                onChange={(e) => {
+                  const val = e.target.value
+                  updateActivity(act.id, {
+                    activity: val,
+                    isCustom: val === "Other",
+                  })
+                }}
+                className="w-full rounded-xl border border-brand-blush bg-white px-3 py-2.5 font-sans text-sm text-brand-ink focus:border-brand-green focus:outline-none focus:ring-2 focus:ring-brand-green/20"
+              >
+                {MOVEMENT_ACTIVITIES.map((a) => (
+                  <option key={a} value={a}>{a}</option>
+                ))}
+              </select>
+              {act.isCustom && (
+                <input
+                  type="text"
+                  placeholder="Describe your activity..."
+                  value={act.customActivity}
+                  onChange={(e) => updateActivity(act.id, { customActivity: e.target.value })}
+                  className="mt-2 w-full rounded-xl border border-brand-blush bg-white px-3 py-2.5 font-sans text-sm text-brand-ink placeholder:text-brand-ink-soft/50 focus:border-brand-green focus:outline-none focus:ring-2 focus:ring-brand-green/20"
+                />
+              )}
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <select
+                value={act.minutes}
+                onChange={(e) => updateActivity(act.id, { minutes: Number(e.target.value) })}
+                className="rounded-xl border border-brand-blush bg-white px-3 py-2.5 font-sans text-sm text-brand-ink focus:border-brand-green focus:outline-none focus:ring-2 focus:ring-brand-green/20"
+              >
+                {[3, 5, 10, 15, 20, 25, 30].map((m) => (
+                  <option key={m} value={m}>{m} min</option>
+                ))}
+              </select>
+              <button
+                type="button"
+                onClick={() => removeActivity(act.id)}
+                className="rounded-lg p-2 text-brand-ink-soft hover:text-brand-coral transition-colors"
+                aria-label={`Remove activity ${idx + 1}`}
+              >
+                <Trash2 className="h-4 w-4" aria-hidden />
+              </button>
+            </div>
+          </div>
+        ))}
+
+        <button
+          type="button"
+          onClick={addActivity}
+          disabled={totalMinutes >= 30}
+          className="inline-flex items-center gap-2 rounded-full border border-brand-green/30 bg-white px-4 py-2 font-sans text-sm font-semibold text-brand-green transition-colors hover:bg-brand-green/5 disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          <Plus className="h-4 w-4" aria-hidden />
+          Add Activity
+        </button>
+      </div>
+
+      {activities.length > 0 && (
+        <div className="px-5 py-4 border-t border-brand-green/10 flex items-center justify-between">
+          <p className="font-sans text-sm font-bold text-brand-green">
+            Today&apos;s Planned Movement™
+          </p>
+          <span className={`font-sans text-base font-bold ${totalMinutes > 30 ? "text-brand-coral" : "text-brand-green"}`}>
+            {totalMinutes} {totalMinutes === 1 ? "Minute" : "Minutes"}
+            {totalMinutes > 30 && " — over 30 min"}
+            {totalMinutes === 30 && " — perfect"}
+          </span>
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* ── Sleep Planner (Part 5) ─────────────────────────────────────────────── */
+function SleepPlanner({
+  value,
+  onChange,
+}: {
+  value: number | null
+  onChange: (hours: number) => void
+}) {
+  return (
+    <div className="mb-6 rounded-2xl border border-brand-green/20 bg-brand-green/[0.04] overflow-hidden">
+      <div className="px-5 py-4 border-b border-brand-green/10">
+        <p className="font-sans text-sm font-bold text-brand-green">
+          Sleep Planning™
+        </p>
+        <p className="mt-0.5 font-sans text-xs text-brand-ink-soft">
+          How many hours of restorative sleep are you committed to getting each night?
+        </p>
+      </div>
+      <div className="px-5 py-4 space-y-3">
+        <div className="flex flex-wrap gap-2">
+          {SLEEP_OPTIONS.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => onChange(opt.value)}
+              className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2 font-sans text-sm font-semibold transition-colors ${
+                value === opt.value
+                  ? "bg-brand-green text-white"
+                  : "border border-brand-blush bg-white text-brand-ink-soft hover:border-brand-green/40 hover:text-brand-green"
+              }`}
+            >
+              {opt.label}
+              {opt.recommended && (
+                <span className={`text-[10px] font-bold uppercase tracking-wide ${value === opt.value ? "text-white/80" : "text-brand-coral"}`}>
+                  Recommended
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+        {value !== null && (
+          <div className="rounded-xl border border-brand-green/20 bg-white/60 px-4 py-3">
+            <p className="font-sans text-sm font-medium text-brand-ink">
+              <strong className="text-brand-green">{value} hours</strong> of restorative sleep committed.{" "}
+              {value < 7
+                ? "Harmony Lane\u2122 recommends 8 hours for peak executive performance, but honors your current season of life."
+                : value === 8
+                ? "Harmony Lane\u2122 recommends exactly 8 hours — you are honoring the science of sustainable peak performance."
+                : "This commitment supports the deep recovery your CEO performance requires."}
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 /* ── Component ──────────────────────────────────────────────────────────── */
 export function DesignMyWeekClient() {
   const [step, setStep] = useState(0)
   const [states, setStates] = useState<Record<string, InstallState>>(
     Object.fromEntries(
-      SEGMENTS.map((s) => [s.id, { input: "", declaration: null, confirmed: false }])
+      SEGMENTS.map((s) => [s.id, {
+        input: "",
+        declaration: null,
+        confirmed: false,
+        plannedActivities: [],
+        plannedSleepHours: null,
+      }])
     )
   )
   const [showFlexInfo, setShowFlexInfo] = useState(false)
@@ -429,12 +760,10 @@ export function DesignMyWeekClient() {
   const confirmedCount = SEGMENTS.filter((s) => states[s.id].confirmed).length
   const allConfirmed = confirmedCount === SEGMENTS.length
 
-  // Scroll to top on initial mount so the hero is always visible first
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" })
   }, [])
 
-  // Auto-scroll to completion card after final install
   useEffect(() => {
     if (allConfirmed && completionRef.current) {
       setTimeout(() => {
@@ -443,7 +772,6 @@ export function DesignMyWeekClient() {
     }
   }, [allConfirmed])
 
-  // Collapse Learn More between segments
   useEffect(() => {
     setShowLearnMore(false)
     setShowFlexInfo(false)
@@ -474,17 +802,27 @@ export function DesignMyWeekClient() {
       ...states,
       [current.id]: { ...states[current.id], confirmed: true },
     }
-    // 1. Mark confirmed immediately so chips refresh
     setStates(nextStates)
-    // 2. Persist declaration to dmw:v1 so Live Today™ Practice™ panels can read it
     try {
       const existing: Record<string, string> = JSON.parse(
         window.sessionStorage.getItem("dmw:v1") ?? "{}"
       )
       existing[current.id] = confirmedDeclaration
+      // Persist planned activities and sleep for Progress Intelligence™
+      if (current.id === "workout" && nextStates[current.id].plannedActivities.length > 0) {
+        window.sessionStorage.setItem(
+          "dmw:movement:v1",
+          JSON.stringify(nextStates[current.id].plannedActivities)
+        )
+      }
+      if (current.id === "power-down" && nextStates[current.id].plannedSleepHours !== null) {
+        window.sessionStorage.setItem(
+          "dmw:sleep:v1",
+          JSON.stringify({ plannedHours: nextStates[current.id].plannedSleepHours })
+        )
+      }
       window.sessionStorage.setItem("dmw:v1", JSON.stringify(existing))
     } catch { /* best-effort */ }
-    // 3. If this confirmation completes the week, write sdd:v1 so hasDesignedWeek becomes true
     const allNowConfirmed = SEGMENTS.every((s) => nextStates[s.id].confirmed)
     if (allNowConfirmed) {
       try {
@@ -507,15 +845,12 @@ export function DesignMyWeekClient() {
           },
         }
         window.sessionStorage.setItem("sdd:v1", JSON.stringify(sddPayload))
-        // Ensure dmw:v1 is complete at this point
         window.sessionStorage.setItem("dmw:v1", JSON.stringify(dmwDecls))
       } catch { /* best-effort */ }
     }
-    // 4. Advance step (unless last)
     if (step < SEGMENTS.length - 1) {
       goToStep(step + 1)
     }
-    // allConfirmed useEffect handles scroll to completion
   }
 
   function handleEdit() {
@@ -526,15 +861,17 @@ export function DesignMyWeekClient() {
   }
 
   const isFlex = current.type === "flex"
+  const isWorkout = current.id === "workout"
+  const isPowerDown = current.id === "power-down"
+  const isUnplug = current.id === "unplug"
   const flexSegment = SEGMENTS.find((s) => s.id === "early-entry")!
 
   return (
     <div className="min-h-screen bg-brand-cream">
-      {/* Scene header */}
       <CherryBlossomScene variant="pond" minHeight="min-h-[55vh]">
         <CherryBlossomSceneCard title="Design My Week™" time="Approx. 10 mins">
           <p>
-            Now we install your seven <strong>Operating Segments™</strong> — the daily structure
+            Now we install your eight <strong>Operating Segments™</strong> — the daily structure
             that protects your life <em>and</em> builds your business simultaneously.
           </p>
           <p>
@@ -544,7 +881,6 @@ export function DesignMyWeekClient() {
         </CherryBlossomSceneCard>
       </CherryBlossomScene>
 
-      {/* Installation card */}
       <div className="w-full max-w-4xl mx-auto px-4 py-10" ref={cardRef}>
 
         {/* Progress bar */}
@@ -565,7 +901,7 @@ export function DesignMyWeekClient() {
           </div>
         </div>
 
-        {/* Installed segment chips — all confirmed segments always shown */}
+        {/* Installed segment chips */}
         {confirmedCount > 0 && (
           <div className="mb-6 flex flex-wrap gap-2">
             {SEGMENTS.filter((s) => states[s.id].confirmed).map((s) => (
@@ -595,6 +931,11 @@ export function DesignMyWeekClient() {
                   <Clock className="h-3 w-3" aria-hidden />
                   {current.time}
                 </span>
+                {isUnplug && (
+                  <span className="rounded-full bg-brand-coral/10 px-2.5 py-0.5 font-sans text-[10px] font-bold uppercase tracking-[0.16em] text-brand-coral">
+                    Segment 8
+                  </span>
+                )}
               </div>
 
               <h2 className="font-playfair text-3xl font-bold text-brand-ink mb-2 text-balance">
@@ -603,6 +944,20 @@ export function DesignMyWeekClient() {
               <p className="font-sans text-[17px] font-medium leading-relaxed text-brand-ink text-pretty mb-6">
                 {current.description}
               </p>
+
+              {/* Unplug™ — special CB message */}
+              {isUnplug && (
+                <div className="mb-6 rounded-2xl border border-brand-coral/20 bg-brand-coral/[0.04] px-5 py-4">
+                  <p className="font-sans text-xs font-bold uppercase tracking-[0.16em] text-brand-coral mb-2">
+                    Cherry Blossom™ says:
+                  </p>
+                  <p className="font-sans text-[15px] font-medium leading-relaxed text-brand-ink italic">
+                    &ldquo;Your business is now{" "}
+                    <strong className="not-italic">Closed For Business™</strong>. Tomorrow deserves
+                    a fully restored CEO.&rdquo;
+                  </p>
+                </div>
+              )}
 
               {/* Flex Time™ info panel */}
               {isFlex && (
@@ -647,7 +1002,7 @@ export function DesignMyWeekClient() {
                 </div>
               )}
 
-              {/* Borrow note for Morning GIV•EN and Healthy Hybrid Lunch */}
+              {/* Borrow note */}
               {"borrowNote" in current && current.borrowNote && (
                 <div className="mb-6 flex items-start gap-2 rounded-xl border border-brand-blush bg-brand-cream/50 px-4 py-3">
                   <Info className="h-4 w-4 mt-0.5 shrink-0 text-brand-ink-soft" aria-hidden />
@@ -709,10 +1064,39 @@ export function DesignMyWeekClient() {
                 )
               })()}
 
-              {/* Examples */}
+              {/* Movement Planner — workout segment only (Part 3) */}
+              {isWorkout && (
+                <MovementPlanner
+                  activities={state.plannedActivities}
+                  onChange={(acts) =>
+                    setStates((prev) => ({
+                      ...prev,
+                      [current.id]: { ...prev[current.id], plannedActivities: acts },
+                    }))
+                  }
+                />
+              )}
+
+              {/* Sleep Planner — power-down segment only (Part 5) */}
+              {isPowerDown && (
+                <SleepPlanner
+                  value={state.plannedSleepHours}
+                  onChange={(h) =>
+                    setStates((prev) => ({
+                      ...prev,
+                      [current.id]: { ...prev[current.id], plannedSleepHours: h },
+                    }))
+                  }
+                />
+              )}
+
+              {/* Examples — Part 2: "Choose one... or create your own." */}
               <div className="mb-6">
-                <p className="font-sans text-xs font-bold uppercase tracking-[0.18em] text-brand-ink-soft mb-2">
-                  Examples
+                <p className="font-sans text-sm font-semibold text-brand-ink mb-1">
+                  Choose one&hellip; or create your own.
+                </p>
+                <p className="font-sans text-xs text-brand-ink-soft mb-3">
+                  Click any example to use it, then customize it as you like.
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {current.examples.map((ex) => (
@@ -737,7 +1121,6 @@ export function DesignMyWeekClient() {
               </div>
 
               {!state.declaration ? (
-                /* ── Input state ── */
                 <div className="space-y-5">
                   <div>
                     <label
@@ -785,7 +1168,6 @@ export function DesignMyWeekClient() {
                   </button>
                 </div>
               ) : (
-                /* ── Declaration state ── */
                 <div className="space-y-6">
                   <div className="rounded-2xl border border-brand-green/20 bg-brand-green/5 px-6 py-5">
                     <p className={`font-sans text-xs font-bold uppercase tracking-[0.2em] mb-3 ${TYPE_COLOR[current.type]}`}>
@@ -816,10 +1198,9 @@ export function DesignMyWeekClient() {
           </div>
         )}
 
-        {/* Prev / Next / Back / Continue navigation */}
+        {/* Prev / Next navigation */}
         {!allConfirmed && (
           <div className="mt-6 flex items-center justify-between gap-3 flex-wrap">
-            {/* Left side — Previous / Back */}
             <div className="flex items-center gap-2">
               <button
                 type="button"
@@ -841,10 +1222,7 @@ export function DesignMyWeekClient() {
                 Review First Segment
               </button>
             </div>
-
-            {/* Right side — Next / Continue */}
             <div className="flex items-center gap-2">
-              {/* Jump to a confirmed segment */}
               {states[current.id].confirmed && step < SEGMENTS.length - 1 && (
                 <button
                   type="button"
@@ -892,7 +1270,7 @@ export function DesignMyWeekClient() {
           </div>
         )}
 
-        {/* Completion — Cherry Blossom confirmation. Shown after all confirmed. */}
+        {/* Completion card */}
         {allConfirmed && (
           <div
             ref={completionRef}
