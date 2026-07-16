@@ -91,14 +91,14 @@ export const PRIMARY_NAV: PrimarySection[] = [
     id: "live-today",
     navLabel: "Live & Lead Today™",
     title: "Live & Lead Today™",
-    href: "/live-today",
+    href: "/",
     icon: Sunrise,
     tagline: "Live your Sustainable Operating Practices™ and lead your Business Operating System™ — every day.",
     built: true,
     workspaces: [
       {
         label: "Live & Lead Today™",
-        href: "/live-today",
+        href: "/",
         description: "Your daily operating workspace — Daily Non-Negotiables™ and the 4-Hour CEO Workday™.",
       },
     ],
@@ -261,7 +261,7 @@ export const PRIMARY_DESTINATIONS = PRIMARY_NAV.map(({ id, navLabel, title, href
 }))
 
 /** The post-login home for returning members. */
-export const LIVE_TODAY_HREF = "/live-today"
+export const LIVE_TODAY_HREF = "/"
 
 /** Look up a section by id across both primary destinations and internal modules. */
 export function getSection(id: SectionId): PrimarySection | undefined {
