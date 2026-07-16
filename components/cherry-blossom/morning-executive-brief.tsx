@@ -381,7 +381,7 @@ function BriefConfirmation({ brief }: { brief: MorningExecutiveBrief }) {
           <ArrowRight className="h-4 w-4" aria-hidden />
         </a>
         <a
-          href="/live-today"
+          href="/"
           className="inline-flex items-center justify-center gap-2 rounded-full border border-[#E26C73]/40 px-7 py-3.5 font-montserrat text-sm font-semibold text-[#C13B6B] transition-colors hover:bg-[#F6E4E7]/50"
         >
           View Today&apos;s Full Design

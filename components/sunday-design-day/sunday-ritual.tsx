@@ -380,7 +380,7 @@ function InstallBriefScreen({
           setInstallError("Your week was designed — we just had trouble saving it. You can continue to Live Today™.")
         }
       }
-      router.push("/live-today")
+      router.push("/")
     })
   }
 

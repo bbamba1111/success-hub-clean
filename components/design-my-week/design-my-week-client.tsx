@@ -1313,7 +1313,7 @@ export function DesignMyWeekClient() {
                 </p>
               </div>
               <Link
-                href="/live-today"
+                href="/"
                 className="inline-flex items-center gap-2 rounded-full bg-brand-green px-8 py-4 font-sans text-sm font-bold text-white shadow-ds transition-colors hover:bg-brand-green-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/30"
               >
                 Now Go Live, Lead &amp; Love Today!™

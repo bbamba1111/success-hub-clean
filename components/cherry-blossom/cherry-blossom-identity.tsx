@@ -22,7 +22,7 @@ export function CherryBlossomIdentitySection() {
       <div className="mx-auto max-w-3xl">
         {/* Back navigation */}
         <Link
-          href="/live-today"
+          href="/"
           className="inline-flex items-center gap-2 font-montserrat text-xs font-semibold uppercase tracking-[0.16em] text-[#5B835F] transition-colors hover:text-[#4c6f50]"
         >
           <ArrowLeft className="h-3.5 w-3.5" aria-hidden />

@@ -25,7 +25,7 @@ export default function MemberProfilePage() {
     <main className="min-h-screen bg-brand-cream">
       <div className="mx-auto w-full max-w-3xl px-4 sm:px-6">
         <div className="pt-8">
-          <BackLink href="/live-today" label="Back to Live Today" />
+          <BackLink href="/" label="Back to Live Today" />
         </div>
         {/* Hero */}
         <header className="harmony-section text-center">

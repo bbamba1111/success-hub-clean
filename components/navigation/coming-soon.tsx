@@ -52,7 +52,7 @@ export function ComingSoon({
         </section>
 
         <Link
-          href="/live-today"
+          href="/"
           className="mt-8 inline-flex items-center gap-2 self-start text-sm font-medium text-brand-ink-soft transition-colors hover:text-brand-green"
         >
           <ArrowLeft className="h-4 w-4" aria-hidden />

@@ -44,7 +44,7 @@ export function TopNavigation() {
     <nav className="sticky top-0 z-50 border-b border-black/[0.06] bg-white/95 shadow-ds-sm backdrop-blur-sm">
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between gap-4">
-          <Link href={user ? "/live-today" : "/"} className="flex items-center gap-2 shrink-0">
+          <Link href="/" className="flex items-center gap-2 shrink-0">
             <img
               src="/images/logo.png"
               alt="Make Time For More Logo"
