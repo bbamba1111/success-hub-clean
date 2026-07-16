@@ -99,13 +99,13 @@ export default function MyWorkLifeHarmonyPage() {
           ]} />
         </Section>
 
-        {/* Life Operating System™ */}
+        {/* Sustainable Operating Practices™ */}
         <Section
           icon={Heart}
           color="green"
-          title="Life Operating System™"
-          description="Your Daily Non-Negotiables™ — the commitments that protect your health, relationships, recovery, and Time Freedom™."
-          badge="Life OS™"
+          title="Sustainable Operating Practices™"
+          description="Your Daily Non-Negotiables™ — the commitments that protect your health, relationships, recovery, and Time Freedom™. Installed through The New 9-to-5 & Nighttime Non-Negotiable SOPs™."
+          badge="Daily Non-Negotiables™"
         >
           <PlaceholderGrid items={[
             { label: "Morning GIV\u2022EN™", icon: Sparkles },

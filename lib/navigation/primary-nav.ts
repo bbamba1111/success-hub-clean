@@ -93,7 +93,7 @@ export const PRIMARY_NAV: PrimarySection[] = [
     title: "Live & Lead Today™",
     href: "/live-today",
     icon: Sunrise,
-    tagline: "Live your Life Operating System™ and lead your Business Operating System™ — every day.",
+    tagline: "Live your Sustainable Operating Practices™ and lead your Business Operating System™ — every day.",
     built: true,
     workspaces: [
       {

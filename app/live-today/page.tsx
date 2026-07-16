@@ -7,7 +7,7 @@ import { DeveloperToolbar } from "@/components/developer-toolbar"
 export const metadata: Metadata = {
   title: "Live & Lead Today™ | Harmony Lane™",
   description:
-    "Live your Life Operating System™ and lead your Business Operating System™ — your daily operating workspace.",
+    "Live your Sustainable Operating Practices™ and lead your Business Operating System™ — your daily operating workspace.",
 }
 
 /**

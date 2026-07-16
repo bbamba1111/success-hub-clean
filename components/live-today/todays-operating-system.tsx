@@ -149,7 +149,7 @@ function DynamicHero({ ctx }: { ctx: ReturnType<typeof useHarmonyContext> }) {
         {/* Two-OS badge row */}
         <div className="mt-6 flex flex-wrap gap-2">
           <span className="rounded-full border border-[#5B835F]/60 bg-[#5B835F]/20 px-3 py-1 font-montserrat text-[11px] font-semibold uppercase tracking-[0.14em] text-[#A8C4AA]">
-            Life Operating System™
+            Sustainable Operating Practices™
           </span>
           <span className="rounded-full border border-[#C13B6B]/40 bg-[#C13B6B]/15 px-3 py-1 font-montserrat text-[11px] font-semibold uppercase tracking-[0.14em] text-[#E8A0B4]">
             Business Operating System™
@@ -174,7 +174,7 @@ function cbSegmentIntro(seg: HarmonySegment): string {
   return map[seg.id] ?? "You are inside a designed segment. Follow the commitment you installed."
 }
 
-// ─── Conditional DMW Reminder ─────────────────────────────────────────────────
+// ─── Conditional DMW Reminder ────────────────────────────────��────────────────
 
 function DmwReminder() {
   return (
@@ -237,7 +237,7 @@ function NoWeekState() {
   )
 }
 
-// ─── SegmentCard (Life Operating System™ segments only) ──────────────────────
+// ─── SegmentCard (Sustainable Operating Practices™ segments only) ────────────
 
 function SegmentCard({ segment, isCurrent }: { segment: HarmonySegment; isCurrent: boolean }) {
   const [expanded, setExpanded] = useState(isCurrent)
