@@ -22,6 +22,7 @@
 
 import type { HarmonyContextValue } from "@/lib/harmony-context/types"
 import { EXECUTIVE_TEAM } from "@/lib/executive-team/executive-registry"
+import { deriveProgressSummary, type ProgressSummary } from "@/lib/founder-gps/progress-intelligence"
 
 /* ===========================================================================
  * Output types
@@ -143,6 +144,11 @@ export function assembleMorningExecutiveBrief(ctx: HarmonyContextValue): Morning
   const segTitle = seg?.title ?? ctx.currentBlockTitle ?? "Your Day"
   const weekDesigned = ctx.hasDesignedWeek
 
+  // Progress Intelligence™ — read real operating behavior (Phase 9.0)
+  // Safe on server: deriveProgressSummary returns an empty summary when
+  // sessionStorage is unavailable (typeof window === "undefined" guard).
+  const progress = deriveProgressSummary()
+
   // -------------------------------------------------------------------------
   // Select the executive and focus based on business stage + context signals
   // -------------------------------------------------------------------------
@@ -153,7 +159,7 @@ export function assembleMorningExecutiveBrief(ctx: HarmonyContextValue): Morning
   // -------------------------------------------------------------------------
   // Opening statement — Cherry Blossom's voice. Proactive, contextual, calm.
   // -------------------------------------------------------------------------
-  const openingStatement = buildOpeningStatement(ctx, name, focus)
+  const openingStatement = buildOpeningStatement(ctx, name, focus, progress)
 
   // -------------------------------------------------------------------------
   // Life Protection™ notices
@@ -163,17 +169,17 @@ export function assembleMorningExecutiveBrief(ctx: HarmonyContextValue): Morning
   // -------------------------------------------------------------------------
   // Celebration™ — meaningful progress recognized without gamification
   // -------------------------------------------------------------------------
-  const celebration = buildCelebration(ctx)
+  const celebration = buildCelebration(ctx, progress)
 
   // -------------------------------------------------------------------------
   // Gentle Intervention™ — quiet attention to what matters
   // -------------------------------------------------------------------------
-  const gentleIntervention = buildGentleIntervention(ctx)
+  const gentleIntervention = buildGentleIntervention(ctx, progress)
 
   // -------------------------------------------------------------------------
   // Explainability™ — why this brief was assembled this way
   // -------------------------------------------------------------------------
-  const explainability = buildExplainability(ctx, focus, executive)
+  const explainability = buildExplainability(ctx, focus, executive, progress)
 
   return {
     greeting,
@@ -197,7 +203,8 @@ export function assembleMorningExecutiveBrief(ctx: HarmonyContextValue): Morning
 function buildOpeningStatement(
   ctx: HarmonyContextValue,
   name: string | null,
-  focus: ExecutiveFocus
+  focus: ExecutiveFocus,
+  progress: ProgressSummary,
 ): string {
   const nameClause = name ? `${name}, ` : ""
 
@@ -210,16 +217,37 @@ function buildOpeningStatement(
     return `${nameClause}the day is complete. Tomorrow has already been designed — let the evening belong to you.`
   }
 
-  // Segment-specific opening statements
+  // Segment-specific opening statements — context-aware with progress (Phase 9.0)
   switch (seg.id) {
-    case "morning-given":
-      return `${nameClause}before we lead the business, we lead ourselves. Your Morning GIV•EN™ is where the day begins on your terms.`
-    case "ceo-workday":
-      return `${nameClause}your CEO Workday™ is ready. I have reviewed your priorities, your focus areas, and this week's design. ${focus.statement}`
-    case "time-freedom":
-      return `${nameClause}you have earned this time. The business is designed. The day is behind you. Be fully present with the life your work exists to support.`
-    case "power-down":
-      return `${nameClause}the day is closing well. Honor your Power Down™ commitment and let tomorrow begin strong.`
+    case "morning-given": {
+      // Acknowledge yesterday's execution if we have data
+      const winClause =
+        progress.lastExecutiveOutcome
+          ? ` You made progress on "${progress.lastExecutiveOutcome}" yesterday.`
+          : ""
+      return `${nameClause}before we lead the business, we lead ourselves. Your Morning GIV\u2022EN\u2122 is where the day begins on your terms.${winClause}`
+    }
+    case "ceo-workday": {
+      // Surface the week's intention if set, otherwise use focus
+      const anchorClause = ctx.weeklyIntention
+        ? `This week's intention — "${ctx.weeklyIntention}" — guides your work today.`
+        : focus.statement
+      return `${nameClause}your CEO Workday™ is ready. ${anchorClause}`
+    }
+    case "time-freedom": {
+      const streakClause =
+        progress.nonNegotiableStreak >= 3
+          ? ` You have protected your evening ${progress.nonNegotiableStreak} days in a row.`
+          : ""
+      return `${nameClause}you have earned this time. The business is designed. Be fully present with the life your work exists to support.${streakClause}`
+    }
+    case "power-down": {
+      const streakClause =
+        progress.nonNegotiableStreak >= 3
+          ? ` ${progress.nonNegotiableStreak} consecutive evenings protected. Consistency creates sustainable success.`
+          : ""
+      return `${nameClause}the day is closing well. Honor your Power Down\u2122 commitment and let tomorrow begin strong.${streakClause}`
+    }
     default:
       return `${nameClause}${focus.statement}`
   }
@@ -448,20 +476,67 @@ function buildLifeProtectionNotices(
   return notices
 }
 
-function buildCelebration(ctx: HarmonyContextValue): CelebrationNotice | null {
-  // Architecture hook — celebration logic will read from achievement history
-  // once Supabase persistence tracks completed Non-Negotiables™ and milestones.
-  // For now: celebrate a designed week existing (first real milestone).
+function buildCelebration(ctx: HarmonyContextValue, progress: ProgressSummary): CelebrationNotice | null {
+  // Phase 9.0: celebrate real operating behavior from Progress Intelligence™
+
+  // Meaningful Non-Negotiable streak
+  if (progress.nonNegotiableStreak >= 7) {
+    return {
+      achievement: `${progress.nonNegotiableStreak} consecutive days of honoring your commitments.`,
+      message: "Seven or more days of consistent Daily Non-Negotiables™ is not a streak — it is the beginning of an identity. You are becoming the executive you designed yourself to be.",
+    }
+  }
+  if (progress.nonNegotiableStreak >= 3) {
+    return {
+      achievement: `${progress.nonNegotiableStreak} consecutive days of commitment.`,
+      message: "Consistency is how Sustainable Operating Practices™ become permanent. You are building real executive discipline.",
+    }
+  }
+
+  // Workout streak
+  if (progress.workoutStreak >= 5) {
+    return {
+      achievement: `Workout Window™ honored ${progress.workoutStreak} days in a row.`,
+      message: "Physical consistency is the foundation of executive energy. Every session compounds into the capacity that drives your business.",
+    }
+  }
+
+  // Business Asset creation
+  if (progress.totalAssetsIdentified >= 3) {
+    return {
+      achievement: `${progress.totalAssetsIdentified} Business Assets™ identified.`,
+      message: "Each Business Asset™ you create continues producing value after your CEO Workday™ ends. You are building compounding equity in your business.",
+    }
+  }
+
+  // Executive Outcomes completed this week
+  if (progress.executiveOutcomesCompletedThisWeek >= 3) {
+    return {
+      achievement: `${progress.executiveOutcomesCompletedThisWeek} Executive Outcomes™ completed this week.`,
+      message: "Three or more completed executive outcomes in a week reflects real business momentum. This is how Work-Life Balance Business™ works.",
+    }
+  }
+
+  // SOPs created
+  if (progress.totalSopsCreated >= 2) {
+    return {
+      achievement: `${progress.totalSopsCreated} SOPs created.`,
+      message: "Every SOP you build reduces execution friction permanently and moves your business closer to true delegation.",
+    }
+  }
+
+  // Fallback: celebrate a designed week (first real milestone)
   if (ctx.hasDesignedWeek && ctx.segments.length >= 3) {
     return {
       achievement: "Your week has been designed.",
       message: "You have defined Operating Rules™, Non-Negotiables™, and Priority Focus Areas™. That is an act of executive leadership.",
     }
   }
+
   return null
 }
 
-function buildGentleIntervention(ctx: HarmonyContextValue): GentleIntervention | null {
+function buildGentleIntervention(ctx: HarmonyContextValue, progress: ProgressSummary): GentleIntervention | null {
   // No week designed — the most important intervention
   if (!ctx.hasDesignedWeek) {
     return {
@@ -471,12 +546,32 @@ function buildGentleIntervention(ctx: HarmonyContextValue): GentleIntervention |
     }
   }
 
-  // CEO priorities empty
+  // CEO priorities empty during CEO Workday™
   if (ctx.currentSegment?.id === "ceo-workday" && !ctx.ceo.priorities?.trim()) {
     return {
       concern: "No CEO priorities have been defined for this week.",
       message: "Undefined priorities invite the day to define itself. A single clear CEO priority protects your most valuable time.",
       suggestedAction: "Add your CEO priorities in Sunday Design Day™",
+    }
+  }
+
+  // Phase 9.0: Pattern-based gentle interventions from Progress Intelligence™
+
+  // Skipped Morning GIV•EN™ repeatedly (tracked via nonNegotiablesHonored)
+  // Architecture hook — will read the specific segment key once GPS pattern
+  // tracking is connected to the detail-level honoring data.
+
+  // No business assets created yet — gentle nudge during CEO Workday
+  if (
+    ctx.currentSegment?.id === "ceo-workday" &&
+    progress.totalAssetsIdentified === 0 &&
+    progress.executiveOutcomesCompletedThisWeek === 0 &&
+    progress.todayBusinessEntryExists === false
+  ) {
+    return {
+      concern: "No Business Assets™ have been identified yet.",
+      message: "Every CEO Workday™ should either build a Business Asset™ or advance one. Assets are the difference between a busy day and a compounding business.",
+      suggestedAction: "Identify today's Business Asset™ before beginning execution.",
     }
   }
 
@@ -486,7 +581,8 @@ function buildGentleIntervention(ctx: HarmonyContextValue): GentleIntervention |
 function buildExplainability(
   ctx: HarmonyContextValue,
   focus: ExecutiveFocus,
-  executive: AssignedExecutive | null
+  executive: AssignedExecutive | null,
+  progress: ProgressSummary,
 ): BriefExplainability {
   const signals: string[] = []
 
@@ -497,7 +593,7 @@ function buildExplainability(
     signals.push(`Priority Focus Areas™: ${ctx.focusAreas.slice(0, 3).join(", ")}`)
   }
   if (ctx.weeklyIntention) {
-    signals.push(`Weekly Intention Declaration™: "${ctx.weeklyIntention.slice(0, 60)}${ctx.weeklyIntention.length > 60 ? "…" : ""}"`)
+    signals.push(`Weekly Intention Declaration™: "${ctx.weeklyIntention.slice(0, 60)}${ctx.weeklyIntention.length > 60 ? "\u2026" : ""}"`)
   }
   if (ctx.currentSegment) {
     signals.push(`Current Segment™: ${ctx.currentSegment.title}`)
@@ -507,6 +603,19 @@ function buildExplainability(
   }
   if (ctx.communicationStyle) {
     signals.push(`Communication Style™: ${ctx.communicationStyleName}`)
+  }
+  // Progress Intelligence™ signals (Phase 9.0)
+  if (progress.nonNegotiableStreak > 0) {
+    signals.push(`Non-Negotiable Streak™: ${progress.nonNegotiableStreak} consecutive days`)
+  }
+  if (progress.workoutStreak > 0) {
+    signals.push(`Workout Streak™: ${progress.workoutStreak} consecutive days`)
+  }
+  if (progress.executiveOutcomesCompletedThisWeek > 0) {
+    signals.push(`Executive Outcomes™ this week: ${progress.executiveOutcomesCompletedThisWeek}`)
+  }
+  if (progress.totalAssetsIdentified > 0) {
+    signals.push(`Business Assets™ identified: ${progress.totalAssetsIdentified}`)
   }
 
   const governingPrinciple =

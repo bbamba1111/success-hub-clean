@@ -14,6 +14,7 @@ import {
   TrendingUp,
   Users,
 } from "lucide-react"
+import { ExecutivePerformanceDashboard } from "@/components/live-today/executive-performance-dashboard"
 
 export const metadata: Metadata = {
   title: "My Work-Life Harmony™ | Harmony Lane™",
@@ -99,40 +100,16 @@ export default function MyWorkLifeHarmonyPage() {
           ]} />
         </Section>
 
-        {/* Sustainable Operating Practices™ */}
+        {/* Executive Performance Dashboard™ — Phase 9.0 / Part 6 */}
+        {/* Replaces the placeholder grids for SOP + Business OS with live Progress Intelligence™ */}
         <Section
-          icon={Heart}
+          icon={TrendingUp}
           color="green"
-          title="Sustainable Operating Practices™"
-          description="Your Daily Non-Negotiables™ — the commitments that protect your health, relationships, recovery, and Time Freedom™. Installed through The New 9-to-5 & Nighttime Non-Negotiable SOPs™."
-          badge="Daily Non-Negotiables™"
+          title="Executive Performance Dashboard™"
+          description="Your real operating behavior — Daily Non-Negotiables™ honored, Business Assets™ built, and Executive Outcomes™ completed. This data updates as you use Live Today™."
+          badge="Progress Intelligence™"
         >
-          <PlaceholderGrid items={[
-            { label: "Morning GIV\u2022EN™", icon: Sparkles },
-            { label: "Workout Window™", icon: Activity },
-            { label: "Healthy Hybrid Lunch™", icon: Heart },
-            { label: "Time Freedom™", icon: Flower2 },
-            { label: "Power Down & Unplug™", icon: Layers },
-            { label: "Daily Non-Negotiables™", icon: Award },
-          ]} />
-        </Section>
-
-        {/* Business Operating System™ */}
-        <Section
-          icon={Cpu}
-          color="rose"
-          title="Business Operating System™"
-          description="Your Business Operating Rules™ — the standards that reduce execution friction, leverage AI, and build compounding business assets."
-          badge="Business OS™"
-        >
-          <PlaceholderGrid items={[
-            { label: "Business Operating Rules™", icon: Layers },
-            { label: "Executive Outcomes™", icon: Award },
-            { label: "Business Assets™", icon: BookOpen },
-            { label: "Delegation", icon: Users },
-            { label: "AI Leverage", icon: Cpu },
-            { label: "SOPs", icon: BookOpen },
-          ]} />
+          <ExecutivePerformanceDashboard />
         </Section>
 
         {/* Milestones™ */}

@@ -45,6 +45,10 @@ export {
   DEFAULT_AWARENESS_WINDOWS,
 } from "./types"
 
+// Phase 9.0 — Bridge: converts LifeEvent[] to the UpcomingLifeEvent[] shape
+// that cherry-blossom-guidance.ts accepts for proactive awareness signals.
+export { deriveUpcomingCherryBlossomEvents } from "./bridge"
+
 // Storage
 export {
   getFounderProfile,

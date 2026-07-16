@@ -20,6 +20,7 @@ import {
   BUSINESS_ASSET_REGISTRY,
   type BusinessAssetId,
 } from "@/lib/executive-decision-engine"
+import type { ProgressSummary } from "@/lib/founder-gps/progress-intelligence"
 
 /* ===========================================================================
  * Output types
@@ -330,24 +331,76 @@ export function gpsForMorningGiven(ctx: HarmonyContextValue): GpsRecommendationC
 
 // ─── Workout Window™ ─────────────────────────────────────────────────────────
 
-export function gpsForWorkout(ctx: HarmonyContextValue): GpsRecommendationCard {
+export function gpsForWorkout(
+  ctx: HarmonyContextValue,
+  progress?: ProgressSummary | null,
+): GpsRecommendationCard {
+  // Rule: streak ≥ 5 → celebrate and reinforce the habit
+  if (progress && progress.workoutStreak >= 5) {
+    return {
+      id: "workout--celebrate-streak",
+      question: "How can you best prepare your mind and body for your CEO Workday\u2122 today?",
+      cbFraming:
+        `You have honored your Workout Window\u2122 ${progress.workoutStreak} days in a row. This is the consistency that creates sustainable executive energy.`,
+      recommendation:
+        "Today's Workout Window\u2122: honor the movement that is already working. Whatever you have been doing for ${progress.workoutStreak} consecutive days — do it again. Consistency beats intensity every time.",
+      triggeredBy: ["workout-streak-5plus", "workout-segment-active"],
+      primaryOutcome: "honor-non-negotiables",
+      why: `A ${progress.workoutStreak}-day workout streak is real executive discipline. Your body is adapting. Your CEO Workday\u2122 readiness is compounding with each session.`,
+      executive: getExecutiveById("people-culture"),
+      businessAsset: null,
+      explainability: {
+        constitutionalPrinciple: "Long-term sustainability over short-term busyness. Physical consistency compounds into leadership capacity.",
+        reasoningRule: "When a workout streak of 5+ days is detected, the GPS celebrates consistency and reinforces the existing habit rather than introducing variation.",
+        supportingContext: `Workout streak: ${progress.workoutStreak} consecutive days.`,
+        expectedOutcome: "A maintained streak that reinforces the Workout Window\u2122 as a permanent Sustainable Operating Practice\u2122.",
+      },
+      cta: null,
+    }
+  }
+
+  // Rule: streak broken recently → encourage re-entry without judgment
+  if (progress && progress.workoutStreak === 0 && progress.todayLifeEntryExists) {
+    return {
+      id: "workout--gentle-reentry",
+      question: "How can you best prepare your mind and body for your CEO Workday\u2122 today?",
+      cbFraming:
+        "The goal is not athletic performance. The goal is showing up. Today is a new opportunity to honor your Workout Window\u2122.",
+      recommendation:
+        "Start with 10 minutes. A short walk, a stretch, or any physical movement that breaks your sedentary pattern counts fully. Consistency begins with showing up, not with intensity.",
+      triggeredBy: ["workout-streak-reset", "workout-segment-active"],
+      primaryOutcome: "honor-non-negotiables",
+      why: "A 10-minute movement practice done consistently every day compounds more value than an intense workout done occasionally. Today\u2019s goal is simply showing up.",
+      executive: getExecutiveById("people-culture"),
+      businessAsset: null,
+      explainability: {
+        constitutionalPrinciple: "Long-term sustainability over short-term busyness. Re-entry without judgment is more valuable than a perfect streak.",
+        reasoningRule: "When a streak has been broken, the GPS prescribes the lowest barrier to re-entry — reducing the activation energy required to restart the habit.",
+        supportingContext: "No consecutive workout days currently tracked.",
+        expectedOutcome: "One Workout Window\u2122 honored today — beginning the next streak.",
+      },
+      cta: null,
+    }
+  }
+
+  // Default: standard performance-readiness recommendation
   return {
     id: "workout--optimize-ceo-readiness",
-    question: "How can you best prepare your mind and body for your CEO Workday™ today?",
+    question: "How can you best prepare your mind and body for your CEO Workday\u2122 today?",
     cbFraming:
       "Your Workout Window\u2122 is not optional self-care. It is a performance investment. A founder who enters their CEO Workday\u2122 having moved their body makes better decisions.",
     recommendation:
       "30-minute outdoor walk. Move at a comfortable pace. No phone calls. Allow your mind to defragment before your execution window begins.",
     triggeredBy: ["workout-segment-active", "ceo-workday-approaching"],
     primaryOutcome: "honor-non-negotiables",
-    why: "Research consistently confirms that moderate movement before deep work increases focus duration, decision quality, and stress resilience. You are not exercising — you are upgrading your operating system before the day\u2019s most important work.",
+    why: "Research consistently confirms that moderate movement before deep work increases focus duration, decision quality, and stress resilience. You are not exercising \u2014 you are upgrading your operating system before the day\u2019s most important work.",
     executive: getExecutiveById("people-culture"),
     businessAsset: null,
     explainability: {
       constitutionalPrinciple: "Long-term sustainability over short-term busyness. A founder who protects recovery and movement compounds their leadership capacity.",
-      reasoningRule: "The Workout Window\u2122 optimizes for CEO Workday\u2122 readiness — prescribe movement that builds readiness without depleting energy.",
+      reasoningRule: "The Workout Window\u2122 optimizes for CEO Workday\u2122 readiness \u2014 prescribe movement that builds readiness without depleting energy.",
       supportingContext: "Your CEO Workday\u2122 begins at 1:00 PM. Physical movement before execution increases cognitive capacity.",
-      expectedOutcome: "A CEO Workday\u2122 entered from physical readiness — more focus, better decisions, lower decision fatigue.",
+      expectedOutcome: "A CEO Workday\u2122 entered from physical readiness \u2014 more focus, better decisions, lower decision fatigue.",
     },
     cta: null,
   }
@@ -595,15 +648,20 @@ export function gpsForBusinessOptimization(ctx: HarmonyContextValue): GpsRecomme
  *
  * Given a segment id and the current HarmonyContextValue, returns the
  * highest-leverage recommendation for that segment. Always deterministic.
+ *
+ * Phase 9.0: accepts an optional ProgressSummary so behavior-aware rules
+ * (streak celebrations, pattern-based interventions) can fire when progress
+ * data is available. Passing null degrades gracefully to context-only rules.
  */
 export function deriveGpsRecommendation(
   segmentId: SegmentId,
-  ctx: HarmonyContextValue
+  ctx: HarmonyContextValue,
+  progress?: ProgressSummary | null,
 ): GpsRecommendationCard {
   switch (segmentId) {
     case "early-entry":       return gpsForEarlyEntry(ctx)
     case "morning-given":     return gpsForMorningGiven(ctx)
-    case "workout":           return gpsForWorkout(ctx)
+    case "workout":           return gpsForWorkout(ctx, progress)
     case "healthy-lunch":     return gpsForHealthyLunch(ctx)
     case "time-freedom":      return gpsForTimeFreedom(ctx)
     case "power-down":        return gpsForPowerDown(ctx)

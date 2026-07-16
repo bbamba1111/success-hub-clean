@@ -33,6 +33,9 @@ import {
 import { CeoWorkdayWorkspace } from "@/components/live-today/ceo-workday-workspace"
 import { GpsRecommendationCard } from "@/components/live-today/gps-recommendation-card"
 import { deriveGpsRecommendation, type SegmentId } from "@/lib/founder-gps/engine"
+import { getCherryBlossomGuidance } from "@/lib/harmony-context/cherry-blossom-guidance"
+import { deriveProgressSummary } from "@/lib/founder-gps/progress-intelligence"
+import { deriveUpcomingCherryBlossomEvents } from "@/lib/whole-life-context"
 
 // ─── DMW reminder day logic ───────────────────────────────────────────────────
 
@@ -94,10 +97,19 @@ export function TodaysOperatingSystem() {
   )
 }
 
-// ─── Dynamic Hero™ ────────────────────────────────────────────────────────────
+// ─── Dynamic Hero™ (Phase 9.0 — Living Intelligence™) ────────────────────────
+//
+// Cherry Blossom's hero now speaks from real context:
+//   getCherryBlossomGuidance() reads HarmonyContextValue + ProgressSummary.
+// The static cbSegmentIntro() lookup is retired. She now gives a personalized
+// message that changes based on streaks, intentions, CEO context, and upcoming
+// life events.
 
 function DynamicHero({ ctx }: { ctx: ReturnType<typeof useHarmonyContext> }) {
   const seg = ctx.currentSegment
+  const progress = deriveProgressSummary()
+  const upcomingEvents = deriveUpcomingCherryBlossomEvents(14)
+  const guidance = getCherryBlossomGuidance(ctx, progress, upcomingEvents)
 
   return (
     <header className="relative overflow-hidden bg-[#2C3E2D] px-6 py-10 sm:py-14">
@@ -129,9 +141,6 @@ function DynamicHero({ ctx }: { ctx: ReturnType<typeof useHarmonyContext> }) {
             <h1 className="font-playfair text-3xl font-medium text-white leading-tight text-balance sm:text-4xl">
               {seg.title}
             </h1>
-            <p className="mt-3 font-montserrat text-[14px] leading-relaxed text-white/70 text-pretty max-w-xl">
-              {cbSegmentIntro(seg)}
-            </p>
           </>
         ) : (
           <>
@@ -143,12 +152,19 @@ function DynamicHero({ ctx }: { ctx: ReturnType<typeof useHarmonyContext> }) {
                 ? "Your week is installed and ready."
                 : "Design your week to begin."}
             </h1>
-            <p className="mt-3 font-montserrat text-[14px] leading-relaxed text-white/70 text-pretty max-w-xl">
-              {ctx.hasDesignedWeek
-                ? "You are between designed segments right now. Rest easy — your next segment is waiting."
-                : "Design My Week™ installs your Daily Non-Negotiables™ and Business Operating Rules™. They appear here to guide each segment of your day."}
-            </p>
           </>
+        )}
+
+        {/* Context-aware Cherry Blossom™ message — Phase 9.0 */}
+        <p className="mt-3 font-montserrat text-[14px] leading-relaxed text-white/75 text-pretty max-w-xl">
+          {guidance.message}
+        </p>
+
+        {/* Observation — streak celebration, asset notice, or life event (when present) */}
+        {guidance.observation && (
+          <p className="mt-2 font-montserrat text-[13px] leading-relaxed text-[#E8C4A0]/80 text-pretty max-w-xl">
+            {guidance.observation}
+          </p>
         )}
 
         {/* Two-OS badge row */}
@@ -163,20 +179,6 @@ function DynamicHero({ ctx }: { ctx: ReturnType<typeof useHarmonyContext> }) {
       </div>
     </header>
   )
-}
-
-/** Cherry Blossom's segment-specific intro line. */
-function cbSegmentIntro(seg: HarmonySegment): string {
-  const map: Record<string, string> = {
-    "early-entry": "Your flexibility buffer is active. Use this time for what matters before the day truly begins.",
-    "morning-given": "Your morning ritual sets the tone for everything that follows. Honor it fully.",
-    "workout": "Your Workout Window™ is a non-negotiable investment in the engine that powers your business.",
-    "healthy-lunch": "Step away, nourish yourself, and prepare for your highest-leverage work.",
-    "ceo-workday": "You are now inside your 4-Hour CEO Workday™. This is your Business Operating System™.",
-    "time-freedom": "The business does not follow you here. This time belongs to the life you are building.",
-    "power-down": "Close the day with intention. How you end today shapes how you begin tomorrow.",
-  }
-  return map[seg.id] ?? "You are inside a designed segment. Follow the commitment you installed."
 }
 
 // ─── Conditional DMW Reminder ─────────────────────────────���──��────────────────
@@ -277,9 +279,10 @@ function SegmentCard({ segment, isCurrent }: { segment: HarmonySegment; isCurren
     setTodayResponse(segment.id, value)
   }
 
-  // Derive Founder GPS™ recommendation for this segment
+  // Derive Founder GPS™ recommendation for this segment (Phase 9.0: progress-aware)
   const gpsSegmentId = toGpsSegmentId(segment.id)
-  const gpsCard = gpsSegmentId ? deriveGpsRecommendation(gpsSegmentId, ctx) : null
+  const gpsProgress = deriveProgressSummary()
+  const gpsCard = gpsSegmentId ? deriveGpsRecommendation(gpsSegmentId, ctx, gpsProgress) : null
 
   return (
     <article
