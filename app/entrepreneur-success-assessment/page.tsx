@@ -16,6 +16,7 @@ export default function EntrepreneurSuccessAssessmentPage() {
         <CherryBlossomSceneCard
           title="Entrepreneur Success Assessment™"
           time="Approx. 10 mins"
+          scrollPrompt="Begin Entrepreneur Success Assessment™"
         >
           <p>
             During the past 30 days you&apos;ve developed habits, routines, and business practices —{" "}

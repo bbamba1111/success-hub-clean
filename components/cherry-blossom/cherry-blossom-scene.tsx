@@ -14,6 +14,7 @@
  */
 
 import React from "react"
+import { ChevronDown } from "lucide-react"
 
 // ---------------------------------------------------------------------------
 // Scene config — local public images
@@ -91,6 +92,8 @@ interface SceneCardProps {
   title: string
   children: React.ReactNode
   time?: string
+  /** Optional animated scroll prompt displayed beneath the card. */
+  scrollPrompt?: string
 }
 
 export function CherryBlossomSceneCard({
@@ -98,11 +101,13 @@ export function CherryBlossomSceneCard({
   title,
   children,
   time,
+  scrollPrompt,
 }: SceneCardProps) {
   return (
+    <div className="flex flex-col items-center gap-6 w-full max-w-2xl">
     <div
       className="
-        w-full max-w-2xl
+        w-full
         rounded-3xl
         bg-white/85 backdrop-blur-md
         border border-white/60
@@ -141,6 +146,20 @@ export function CherryBlossomSceneCard({
           {time}
         </div>
       )}
+    </div>
+
+    {/* Animated scroll prompt — invites the founder to scroll into the experience */}
+    {scrollPrompt && (
+      <div className="flex flex-col items-center gap-2 text-white/90 select-none pointer-events-none" aria-hidden>
+        <span className="font-sans text-sm font-semibold tracking-wide drop-shadow-sm">
+          {scrollPrompt}
+        </span>
+        <ChevronDown
+          className="h-6 w-6 animate-bounce opacity-80"
+          strokeWidth={2.5}
+        />
+      </div>
+    )}
     </div>
   )
 }

@@ -37,6 +37,7 @@ export default async function AuditPage() {
         <CherryBlossomSceneCard
           title={is30Day ? "Your 30-Day Work-Life Balance Audit™" : "Your 7-Day Work-Life Pulse™"}
           time="5 mins"
+          scrollPrompt={is30Day ? "Take My Work-Life Balance Audit™" : "Begin My Work-Life Pulse™"}
         >
           <p>
             {is30Day

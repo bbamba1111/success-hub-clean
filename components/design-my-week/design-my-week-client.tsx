@@ -869,9 +869,9 @@ export function DesignMyWeekClient() {
   return (
     <div className="min-h-screen bg-brand-cream">
       <CherryBlossomScene variant="pond" minHeight="min-h-[55vh]">
-        <CherryBlossomSceneCard title="Design My Week™" time="Approx. 10 mins">
+        <CherryBlossomSceneCard title="Design My Week™" time="Approx. 10 mins" scrollPrompt="Design My Week™">
           <p>
-            Now we install your eight <strong>Operating Segments™</strong> — the daily structure
+            Now we design your eight <strong>Operating Segments™</strong> — the daily structure
             that protects your life <em>and</em> builds your business simultaneously.
           </p>
           <p>
@@ -890,7 +890,7 @@ export function DesignMyWeekClient() {
               Operating Segments™
             </span>
             <span className="font-sans text-xs font-medium text-brand-ink-soft">
-              {confirmedCount} of {SEGMENTS.length} installed
+              {confirmedCount} of {SEGMENTS.length} designed
             </span>
           </div>
           <div className="h-2 w-full rounded-full bg-brand-green/10 overflow-hidden">
@@ -1291,32 +1291,32 @@ export function DesignMyWeekClient() {
                 </span>
               </div>
               <p className="font-playfair text-2xl font-bold text-brand-ink mb-1 text-balance">
-                Your Work-Life Balance Business Week™ has now been intentionally designed.
+                Your Work-Life Balance Business Week™ Has Been Designed.
               </p>
               <p className="font-sans text-base font-semibold text-brand-coral mb-5">Congratulations.</p>
               <div className="font-sans text-[16px] leading-relaxed text-brand-ink space-y-4 text-pretty mb-7">
                 <p>
-                  Beginning today, your <strong>Daily Non-Negotiables™</strong> become your{" "}
-                  <strong>Sustainable Operating Practices™</strong> — the New 9-to-5 &amp; Nighttime
-                  Non-Negotiable SOPs™ that protect your energy, health, relationships, recovery, and
-                  Time Freedom™.
+                  Beginning Monday, Harmony Lane™ will help you live each{" "}
+                  <strong>Operating Segment™</strong>, reinforce your{" "}
+                  <strong>Sustainable Operating Practices™</strong>, and gradually install the
+                  behaviors that create lasting <strong>Work-Life Harmony™</strong>.
                 </p>
                 <p>
-                  Your <strong>Business Operating Rules™</strong> become the executive standards
-                  that reduce decision fatigue, eliminate execution friction, leverage AI and
-                  delegation, and help you build business assets that continue creating value long
-                  after today&apos;s work is finished.
+                  Your <strong>Daily Non-Negotiables™</strong> protect your energy, health,
+                  relationships, recovery, and Time Freedom™. Your{" "}
+                  <strong>Business Operating Rules™</strong> reduce decision fatigue, eliminate
+                  execution friction, and build business assets that create value long after
+                  today&apos;s work is finished.
                 </p>
                 <p>
-                  This is how Harmony Lane™ helps founders build a business that supports the life
-                  they want to live.
+                  Installation happens through behavior — one Operating Segment™ at a time.
                 </p>
               </div>
               <Link
                 href="/"
                 className="inline-flex items-center gap-2 rounded-full bg-brand-green px-8 py-4 font-sans text-sm font-bold text-white shadow-ds transition-colors hover:bg-brand-green-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/30"
               >
-                Now Go Live, Lead &amp; Love Today!™
+                Go Live, Lead &amp; Love Today!™
                 <ArrowRight className="h-4 w-4" aria-hidden />
               </Link>
             </div>

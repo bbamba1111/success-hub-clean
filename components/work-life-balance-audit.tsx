@@ -72,6 +72,15 @@ export default function WorkLifeBalanceAudit({
   const [results, setResults] = useState<any>(null)
   const router = useRouter()
   const cardRef = useRef<HTMLDivElement>(null)
+  const completionRef = useRef<HTMLDivElement>(null)
+  // Only scroll to the question card after the founder has answered Q1.
+  // On initial page load the hero is visible and the founder scrolls down naturally.
+  const hasAnsweredRef = useRef(false)
+
+  // Hero-first: always start at the top of the page on mount.
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" })
+  }, [])
 
   const timePhrase = getTimePhrase(assessmentWindow)
   const questions = questionBodies.map((q) => ({
@@ -79,12 +88,24 @@ export default function WorkLifeBalanceAudit({
     question: `${timePhrase}, ${q.body}`,
   }))
 
-  // Scroll to top of card on every question change
+  // Scroll to the question card on every question change — but NOT on the initial
+  // mount so the hero section is visible when the page first loads.
   useEffect(() => {
+    if (!hasAnsweredRef.current) return
     cardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
   }, [currentQuestion])
 
+  // Scroll to Cherry Blossom's completion message when the audit finishes.
+  useEffect(() => {
+    if (isComplete && completionRef.current) {
+      setTimeout(() => {
+        completionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+      }, 120)
+    }
+  }, [isComplete])
+
   const handleAnswer = (questionId: number, score: number) => {
+    hasAnsweredRef.current = true
     const newAnswers = { ...answers, [questionId]: score }
     setAnswers(newAnswers)
     if (currentQuestion < questions.length - 1) {
@@ -125,7 +146,7 @@ export default function WorkLifeBalanceAudit({
 
   if (isComplete && results) {
     return (
-      <div className="w-full max-w-4xl mx-auto px-4 py-10" ref={cardRef}>
+      <div className="w-full max-w-4xl mx-auto px-4 py-10" ref={completionRef}>
         <div className="rounded-3xl bg-white border border-brand-blush shadow-lg overflow-hidden">
           <div className="bg-brand-blush/40 px-8 py-6 text-center">
             <p className="font-sans text-xs font-bold uppercase tracking-[0.22em] text-brand-coral mb-2">

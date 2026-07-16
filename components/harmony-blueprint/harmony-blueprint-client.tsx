@@ -86,6 +86,8 @@ export function HarmonyBlueprintClient() {
   const [ready, setReady] = useState(false)
 
   useEffect(() => {
+    // Hero-first: always begin at the top of the page.
+    window.scrollTo({ top: 0, behavior: "instant" })
     setLifeData(getAuditResults())
     setBizData(getEsaResults())
     setReady(true)
@@ -105,7 +107,7 @@ export function HarmonyBlueprintClient() {
     <div className="min-h-screen bg-brand-cream">
       {/* ── Scene: warm cherry blossom garden matching /begin ───────────── */}
       <CherryBlossomScene variant="garden" minHeight="min-h-[65vh]">
-        <CherryBlossomSceneCard title="Your Harmony Blueprint™" time={undefined}>
+        <CherryBlossomSceneCard title="My Work-Life Harmony Blueprint™" scrollPrompt="Review My Work-Life Harmony Blueprint™">
           <p>
             Beautiful. We now understand how both your <strong>life</strong> and your{" "}
             <strong>business</strong> have been operating over the past 30 days.

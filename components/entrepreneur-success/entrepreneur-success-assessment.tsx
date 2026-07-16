@@ -41,6 +41,14 @@ export default function EntrepreneurSuccessAssessment({
   const [currentIndex, setCurrentIndex] = useState(0)
   const [responses, setResponses] = useState<Record<string, number>>({})
   const cardRef = useRef<HTMLDivElement>(null)
+  // Only scroll to the question card after the founder answers the first question.
+  // This preserves the hero-first experience on initial page load.
+  const hasAnsweredRef = useRef(false)
+
+  // Hero-first: always start at the top of the page on mount.
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" })
+  }, [])
 
   const question = ORDERED_QUESTIONS[currentIndex]
   const pillar = OPERATING_PILLARS.find((p) => p.id === question.pillarId)
@@ -55,13 +63,16 @@ export default function EntrepreneurSuccessAssessment({
 
   const globalProgress = (currentIndex / TOTAL) * 100
 
-  // Scroll to top of card on every question change
+  // Scroll to the question card on every question change — but NOT on the initial
+  // mount so the hero section is visible when the page first loads.
   useEffect(() => {
+    if (!hasAnsweredRef.current) return
     cardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
   }, [currentIndex])
 
   const handleAnswer = useCallback(
     (value: ResponseValue) => {
+      hasAnsweredRef.current = true
       const updated = { ...responses, [question.id]: value }
       setResponses(updated)
       if (currentIndex < TOTAL - 1) {

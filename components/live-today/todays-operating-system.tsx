@@ -21,7 +21,7 @@
 
 import Link from "next/link"
 import { useEffect, useState } from "react"
-import { ArrowRight, ChevronDown, Flower2 } from "lucide-react"
+import { ArrowRight, ChevronDown, Flower2, ChevronsDown } from "lucide-react"
 import { useHarmonyContext } from "@/components/harmony-context/harmony-context-provider"
 import type { HarmonySegment } from "@/lib/harmony-context/types"
 import {
@@ -40,17 +40,27 @@ import { deriveUpcomingCherryBlossomEvents } from "@/lib/whole-life-context"
 // ─── DMW reminder day logic ───────────────────────────────────────────────────
 
 /**
- * Returns true when the DMW reminder should be shown.
- * Thursday (after 5 PM) / Friday / Saturday / Sunday / Monday (before noon).
+ * Returns true when Design My Week™ is available and the reminder should show.
+ *
+ * Available windows (Phase 9.4):
+ *   Friday, Saturday, Sunday  — all day
+ *   Monday 7:00 AM – 9:00 AM  — Early Entry / Flex Time™ grace period
+ *
+ * At 9:00 AM Monday the design phase closes; the founder begins living the week.
  */
 function shouldShowDmwReminder(): boolean {
   const now = new Date()
   const day = now.getDay() // 0=Sun 1=Mon 2=Tue 3=Wed 4=Thu 5=Fri 6=Sat
   const hour = now.getHours()
-  if (day === 5 || day === 6 || day === 0) return true           // Fri / Sat / Sun
-  if (day === 4 && hour >= 17) return true                        // Thu after 5 PM
-  if (day === 1 && hour < 12) return true                         // Mon before noon
+  if (day === 5 || day === 6 || day === 0) return true           // Fri / Sat / Sun — all day
+  if (day === 1 && hour >= 7 && hour < 9) return true            // Mon 7:00–8:59 AM grace period
   return false
+}
+
+/** Returns true if today is a Time Freedom™ day (Fri / Sat / Sun). */
+function isTimeFreedomDay(): boolean {
+  const day = new Date().getDay()
+  return day === 5 || day === 6 || day === 0
 }
 
 // ─── Main component ───────────────────────────────────────────────────────────
@@ -133,7 +143,16 @@ function DynamicHero({ ctx }: { ctx: ReturnType<typeof useHarmonyContext> }) {
         </div>
 
         {/* Current segment status */}
-        {seg ? (
+        {isTimeFreedomDay() && !seg ? (
+          <>
+            <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.18em] text-[#E8C4A0]/80 mb-2">
+              Time Freedom™
+            </p>
+            <h1 className="font-playfair text-3xl font-medium text-white leading-tight text-balance sm:text-4xl">
+              Your business is resting. Life is the priority.
+            </h1>
+          </>
+        ) : seg ? (
           <>
             <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.18em] text-white/50 mb-2">
               Current Operating Segment™
@@ -149,7 +168,7 @@ function DynamicHero({ ctx }: { ctx: ReturnType<typeof useHarmonyContext> }) {
             </p>
             <h1 className="font-playfair text-3xl font-medium text-white leading-tight sm:text-4xl">
               {ctx.hasDesignedWeek
-                ? "Your week is installed and ready."
+                ? "Your week is designed and ready."
                 : "Design your week to begin."}
             </h1>
           </>
@@ -176,6 +195,14 @@ function DynamicHero({ ctx }: { ctx: ReturnType<typeof useHarmonyContext> }) {
             Business Operating System™
           </span>
         </div>
+
+        {/* Animated scroll prompt */}
+        <div className="mt-8 flex flex-col items-start gap-1.5 select-none pointer-events-none" aria-hidden>
+          <span className="font-montserrat text-sm font-semibold text-white/70 tracking-wide">
+            Go Live, Lead &amp; Love Today!™
+          </span>
+          <ChevronsDown className="h-5 w-5 text-white/50 animate-bounce" strokeWidth={2} />
+        </div>
       </div>
     </header>
   )
@@ -184,6 +211,9 @@ function DynamicHero({ ctx }: { ctx: ReturnType<typeof useHarmonyContext> }) {
 // ─── Conditional DMW Reminder ─────────────────────────────���──��────────────────
 
 function DmwReminder() {
+  const timeFreedom = isTimeFreedomDay()
+  const isMonday = new Date().getDay() === 1
+
   return (
     <div className="mt-8 overflow-hidden rounded-2xl border border-[#E26C73]/25 bg-[#FDF6F6] shadow-sm">
       <div aria-hidden className="h-[3px] bg-[#E26C73]" />
@@ -200,13 +230,28 @@ function DmwReminder() {
           </div>
         </div>
 
-        <p className="font-playfair text-xl font-medium text-[#1A1A1A] leading-snug text-balance">
-          Your next Work-Life Balance Business Week™ has not been designed yet.
-        </p>
-        <p className="mt-2 font-montserrat text-[14px] leading-relaxed text-[#3A2E33] text-pretty">
-          Before your next CEO Workday™ begins, let&apos;s install your Daily Non-Negotiables™ and
-          Business Operating Rules™ for the week ahead.
-        </p>
+        {timeFreedom ? (
+          <>
+            <p className="font-playfair text-xl font-medium text-[#1A1A1A] leading-snug text-balance">
+              Time Freedom™ is active. Your business is resting.
+            </p>
+            <p className="mt-2 font-montserrat text-[14px] leading-relaxed text-[#3A2E33] text-pretty">
+              Use this weekend to design your upcoming <strong>Work-Life Balance Business Week™</strong>.
+              Design My Week™ closes at <strong>11:00 PM Sunday</strong>.
+            </p>
+          </>
+        ) : (
+          <>
+            <p className="font-playfair text-xl font-medium text-[#1A1A1A] leading-snug text-balance">
+              Your next Work-Life Balance Business Week™ has not been designed yet.
+            </p>
+            <p className="mt-2 font-montserrat text-[14px] leading-relaxed text-[#3A2E33] text-pretty">
+              {isMonday
+                ? "Design My Week™ closes at 9:00 AM. Make your final adjustments before your CEO Workday™ begins."
+                : "Before your next CEO Workday™ begins, design your Daily Non-Negotiables™ and Business Operating Rules™ for the week ahead."}
+            </p>
+          </>
+        )}
 
         <Link
           href="/design-my-week"
@@ -230,8 +275,8 @@ function NoWeekState() {
         Design your week. Then live it.
       </p>
       <p className="mx-auto mt-2 max-w-md font-montserrat text-sm leading-relaxed text-[#6B5860]">
-        Install your Daily Non-Negotiables™ and Business Operating Rules™ on Sunday, and they will
-        guide every segment of your week from here.
+        Design your Daily Non-Negotiables™ and Business Operating Rules™ during Time Freedom™ weekend,
+        and they will guide every Operating Segment™ of your week.
       </p>
       <Link
         href="/design-my-week"
