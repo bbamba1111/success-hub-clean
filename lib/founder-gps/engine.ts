@@ -274,30 +274,6 @@ export function gpsForEarlyEntry(ctx: HarmonyContextValue): GpsRecommendationCar
     cta: { label: "Design My Week\u2122", href: "/design-my-week" },
   }
 }
-  }
-
-  // Rule: week not designed → recommend Design My Week™ immediately
-  return {
-    id: "early-entry--design-week-first",
-    question: "What deserves flexibility today?",
-    cbFraming:
-      "Before your Flex Time™ can serve you, your week needs to be designed. A designed week tells Cherry Blossom™ exactly what to protect.",
-    recommendation:
-      "Design your week first. It takes about 20 minutes and installs the operating framework that makes every segment intelligent.",
-    triggeredBy: ["week-not-designed"],
-    primaryOutcome: "reduce-execution-friction",
-    why: "Without a designed week, Flex Time™ becomes reactive time — no different from a day without structure. Design My Week™ installs the operating context that makes every hour intentional.",
-    executive: getExecutiveById("strategy"),
-    businessAsset: getAsset("decision-framework"),
-    explainability: {
-      constitutionalPrinciple: "Reduce execution friction by installing operating frameworks before the week begins.",
-      reasoningRule: "When no weekly design is detected, the highest-leverage action is always completing Sunday Design Day™ first.",
-      supportingContext: "No installed week was found for this week.",
-      expectedOutcome: "An installed week that gives every operating segment intelligent context.",
-    },
-    cta: { label: "Design My Week™", href: "/design-my-week" },
-  }
-}
 
 // ─── Morning GIV•EN™ ─────────────────────────────────────────────────────────
 

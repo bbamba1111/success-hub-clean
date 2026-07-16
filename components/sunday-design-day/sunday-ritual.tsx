@@ -12,6 +12,7 @@ import {
   ChevronRight,
   Loader2,
   Lock,
+  Sparkles,
   Star,
   Users,
 } from "lucide-react"
