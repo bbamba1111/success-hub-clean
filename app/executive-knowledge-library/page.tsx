@@ -31,7 +31,7 @@ interface KnowledgeDomain {
   label: string
   executiveOwner: string
   description: string
-  icon: React.ComponentType<{ className?: string }>
+  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties; "aria-hidden"?: boolean | "true" | "false" }>
   accentColor: string
   briefingTopics: ExecutiveBriefingTopicId[]
 }

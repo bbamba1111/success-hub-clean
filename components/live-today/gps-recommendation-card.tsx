@@ -40,6 +40,7 @@ import {
   type SkipReason,
 } from "@/lib/founder-gps/history/recommendation-history-store"
 import { ExecutiveBriefCard } from "@/components/executive-office/executive-brief-card"
+import { ExecutiveBriefingTrigger } from "@/components/executive-capability/executive-briefing-trigger"
 
 // ─── Outcome colors ───────────────────────────────────────────────────────────
 
@@ -251,6 +252,15 @@ export function GpsRecommendationCard({
         {card.confidence && (
           <ConfidencePanel
             confidence={card.confidence}
+            outcomeColor={outcomeConfig.color}
+            outcomeBorder={outcomeConfig.border}
+          />
+        )}
+
+        {/* Executive Capability Briefing™ — Phase 10.4 */}
+        {card.capabilityBriefing && (
+          <ExecutiveBriefingTrigger
+            topicId={card.capabilityBriefing}
             outcomeColor={outcomeConfig.color}
             outcomeBorder={outcomeConfig.border}
           />

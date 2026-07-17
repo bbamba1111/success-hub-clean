@@ -8,6 +8,7 @@ import {
   Calendar,
   Cpu,
   Flower2,
+  GraduationCap,
   Heart,
   Layers,
   MapPin,
@@ -18,6 +19,7 @@ import {
 import { ExecutivePerformanceDashboard } from "@/components/live-today/executive-performance-dashboard"
 import { MyHarmonyContextSections } from "@/components/my-harmony/my-harmony-client"
 import { ExecutiveOfficePanelClient } from "@/components/executive-office/executive-office-panel-client"
+import { CapabilitySectionClient } from "@/components/executive-capability/capability-section-client"
 
 export const metadata: Metadata = {
   title: "My Work-Life Harmony™ | Harmony Lane™",
@@ -127,6 +129,17 @@ export default function MyWorkLifeHarmonyPage() {
           badge="Executive Intelligence™"
         >
           <ExecutiveOfficePanelClient />
+        </Section>
+
+        {/* Executive Capability Intelligence™ — Phase 10.4 */}
+        <Section
+          icon={GraduationCap}
+          color="rose"
+          title="Executive Capability Intelligence™"
+          description="Track your mastery across 9 executive domains. Every GPS recommendation surfaces the right briefing at the right moment — so capability grows through action, not separate study sessions."
+          badge="Learn Before You Launch™"
+        >
+          <CapabilitySectionClient />
         </Section>
 
         {/* Milestones™ */}

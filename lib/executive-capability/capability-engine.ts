@@ -105,13 +105,13 @@ export function detectCapabilityGap(
   if (agg.businessCredit === "no-credit" || agg.businessCredit === null) {
     add("business-credit", 95)
   }
-  if (agg.capitalStrategy.length === 0 || agg.capitalStrategy.includes("bootstrapping")) {
+  if (agg.capitalStrategy.length === 0 || agg.capitalStrategy.includes("bootstrapped")) {
     add("cash-flow", 80)
   }
   if (agg.wealthBuildingInterests.length > 0) {
     add("wealth-building", 75)
   }
-  if (agg.capitalStrategy.includes("investor-funding") || agg.capitalStrategy.includes("bank-loan")) {
+  if (agg.capitalStrategy.includes("angel") || agg.capitalStrategy.includes("venture") || agg.capitalStrategy.includes("sba-loan")) {
     add("capital-strategy", 85)
   }
 
@@ -129,8 +129,8 @@ export function detectCapabilityGap(
 
   // Challenge gaps
   if (agg.biggestChallenges.includes("cash-flow")) add("cash-flow", 90)
-  if (agg.biggestChallenges.includes("hiring")) add("hiring", 78)
-  if (agg.biggestChallenges.includes("systems")) add("sops", 82)
+  if (agg.biggestChallenges.includes("team")) add("hiring", 78)
+  if (agg.biggestChallenges.includes("tech-systems")) add("sops", 82)
 
   // Revenue stage gaps
   if (agg.revenueStage === "pre-revenue") {

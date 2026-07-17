@@ -41,7 +41,7 @@ function BriefingSection({
   defaultOpen = false,
   accentColor = "#C9A96E",
 }: {
-  icon: React.ComponentType<{ className?: string }>
+  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>
   title: string
   children: React.ReactNode
   defaultOpen?: boolean

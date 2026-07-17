@@ -218,6 +218,45 @@ export default function HarmonyBusinessAcademyPage() {
           </div>
         </section>
 
+        {/* Executive Knowledge Library™ — Phase 10.4 entry point */}
+        <section className="harmony-section pt-0" aria-labelledby="ekl-heading">
+          <div className="harmony-panel mx-auto max-w-4xl p-8 sm:p-10">
+            <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start sm:gap-10">
+              <div className="flex-1 text-center sm:text-left">
+                <p className="ds-eyebrow">Executive Capability Intelligence™</p>
+                <h2 id="ekl-heading" className="ds-page-title mt-3">
+                  Executive Knowledge Library™
+                </h2>
+                <p className="mx-auto mt-3 max-w-2xl text-base leading-relaxed text-brand-ink-soft sm:mx-0">
+                  Browse all 15 executive briefing topics across 9 capability dimensions. Each briefing is available in
+                  all five Communication Styles™ — so you learn in the way you actually understand. These same briefings
+                  surface automatically inside your GPS recommendations when a capability gap is detected.
+                </p>
+                <Link
+                  href="/executive-knowledge-library"
+                  className="mt-6 inline-flex items-center gap-2 rounded-xl bg-brand-ink px-6 py-3 font-montserrat text-sm font-semibold text-white transition-opacity hover:opacity-90"
+                >
+                  Open the Library
+                </Link>
+              </div>
+              <div className="grid w-full shrink-0 grid-cols-3 gap-2 sm:w-64">
+                {[
+                  "Strategy", "Marketing", "Sales",
+                  "Finance", "Operations", "Technology",
+                  "Leadership", "Investment", "Mindset",
+                ].map((domain) => (
+                  <div
+                    key={domain}
+                    className="rounded-lg border border-black/[0.07] bg-card px-2 py-2 text-center text-xs font-medium text-brand-ink-soft"
+                  >
+                    {domain}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Closing note */}
         <section className="harmony-section pt-0">
           <div className="harmony-surface mx-auto max-w-3xl p-8 text-center sm:p-10">
