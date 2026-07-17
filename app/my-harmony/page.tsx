@@ -21,6 +21,7 @@ import { MyHarmonyContextSections } from "@/components/my-harmony/my-harmony-cli
 import { ExecutiveOfficePanelClient } from "@/components/executive-office/executive-office-panel-client"
 import { CapabilitySectionClient } from "@/components/executive-capability/capability-section-client"
 import { FounderEvolutionDashboard } from "@/components/harmony-memory/founder-evolution-dashboard"
+import { AdaptiveWorkspaceSectionClient } from "@/components/adaptive-workspace/adaptive-workspace-section-client"
 
 export const metadata: Metadata = {
   title: "My Work-Life Harmony™ | Harmony Lane™",
@@ -154,6 +155,18 @@ export default function MyWorkLifeHarmonyPage() {
           <FounderEvolutionDashboard />
         </Section>
 
+        {/* Adaptive Workspace™ — Phase 10.6 */}
+        <Section
+          id="adaptive-workspace"
+          icon={Cpu}
+          color="green"
+          title="Adaptive Workspace™"
+          description="Your operating system adapts automatically based on your business stage, behavioral patterns, and life context. Operating Mode™, Workspace Profile™, personalized rituals, and the full adaptation history live here."
+          badge="Harmony OS™"
+        >
+          <AdaptiveWorkspaceSectionClient />
+        </Section>
+
         {/* Whole-Life Context™ */}
         <Section
           icon={Calendar}
@@ -181,6 +194,7 @@ export default function MyWorkLifeHarmonyPage() {
 type SectionColor = "green" | "rose" | "gold"
 
 function Section({
+  id,
   icon: Icon,
   color,
   title,
@@ -188,6 +202,7 @@ function Section({
   badge,
   children,
 }: {
+  id?: string
   icon: React.ComponentType<{ className?: string }>
   color: SectionColor
   title: string
@@ -202,7 +217,7 @@ function Section({
   }[color]
 
   return (
-    <section className={`rounded-2xl border ${accent.border} ${accent.bg} px-6 py-6`}>
+    <section id={id} className={`rounded-2xl border ${accent.border} ${accent.bg} px-6 py-6`}>
       <div className="flex items-start gap-3 mb-1">
         <Icon className={`h-5 w-5 shrink-0 mt-0.5 ${accent.icon}`} aria-hidden />
         <div className="flex-1 min-w-0">

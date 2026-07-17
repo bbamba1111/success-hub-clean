@@ -37,6 +37,8 @@ import { getCherryBlossomGuidance } from "@/lib/harmony-context/cherry-blossom-g
 import { deriveProgressSummary } from "@/lib/founder-gps/progress-intelligence"
 import { deriveUpcomingCherryBlossomEvents } from "@/lib/whole-life-context"
 import { assembleHarmonyContext } from "@/lib/founder-gps/context/harmony-context-aggregator"
+import { FounderPresenceBanner } from "@/components/adaptive-workspace/founder-presence-banner"
+import { OperatingModeCard } from "@/components/adaptive-workspace/operating-mode-card"
 
 // ─── DMW reminder day logic ───────────────────────────────────────────────────
 
@@ -75,12 +77,18 @@ export function TodaysOperatingSystem() {
 
   return (
     <div className="w-full">
+      {/* Founder Presence Banner™ — Phase 10.6: thin contextual layer above hero */}
+      <FounderPresenceBanner />
+
       {/* Dynamic Hero™ */}
       <DynamicHero ctx={ctx} />
 
       <div className="mx-auto max-w-3xl px-4 pb-16 sm:px-6">
         {/* Conditional DMW Reminder — only when week not designed and day is right */}
         {showReminder && <DmwReminder />}
+
+        {/* Operating Mode Card™ — Phase 10.6: shown when week is designed */}
+        {ctx.hasDesignedWeek && <OperatingModeCard />}
 
         {ctx.hasDesignedWeek ? (
           <div className="mt-8 space-y-4">

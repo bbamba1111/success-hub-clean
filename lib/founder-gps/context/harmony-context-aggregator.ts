@@ -128,6 +128,18 @@ export interface HarmonyContextAggregate {
    * environments where the pattern engine hasn't been loaded yet.
    */
   patternSignals?: import("@/lib/harmony-memory/types").PatternSignal[]
+
+  // ── Phase 10.6 — Adaptive Workspace™ ─────────────────────────────────────
+  /**
+   * The current recommended OperatingMode. Optional — populated best-effort
+   * via require() IIFE in assembleHarmonyContext().
+   */
+  operatingMode?: import("@/lib/adaptive-workspace/types").OperatingMode
+  /**
+   * The recommended WorkspaceProfileId for this founder's current state.
+   * Optional — same best-effort derivation as operatingMode.
+   */
+  workspaceProfile?: import("@/lib/adaptive-workspace/types").WorkspaceProfileId
 }
 
 /* ===========================================================================
@@ -292,6 +304,52 @@ export function assembleHarmonyContext(
 
     // Behavior
     platformEngagementDays,
+
+    // Phase 10.6 — Adaptive Workspace™ (best-effort, graceful require())
+    operatingMode: (() => {
+      try {
+        const { deriveOperatingMode } = require("@/lib/adaptive-workspace/operating-mode-engine")
+        // Recursive call safe because operatingMode is not used inside deriveOperatingMode
+        const result = deriveOperatingMode({
+          businessStage: ctx.businessStage,
+          teamSize: ctx.businessContext?.teamSize ?? null,
+          revenueStage: ctx.businessContext?.revenueStage ?? null,
+          inLifeProtectionMode: ctx.inLifeProtectionMode ?? false,
+          consecutiveCompletions: 0,
+          hasMomentum: false,
+          upcomingLifeEvents: ctx.upcomingLifeEvents ?? [],
+          daysUntilNextSignificantEvent: ctx.daysUntilNextSignificantEvent ?? null,
+          biggestOpportunities: ctx.businessContext?.biggestOpportunities ?? [],
+          biggestGoals: ctx.businessContext?.biggestGoals ?? [],
+        } as Parameters<typeof deriveOperatingMode>[0])
+        return result.mode
+      } catch {
+        return undefined
+      }
+    })() as import("@/lib/adaptive-workspace/types").OperatingMode | undefined,
+
+    workspaceProfile: (() => {
+      try {
+        const { deriveWorkspaceConfig } = require("@/lib/adaptive-workspace/workspace-intelligence-engine")
+        // Build a minimal aggregate for profile derivation (no recursion risk)
+        const miniAgg = {
+          businessStage: ctx.businessStage,
+          teamSize: ctx.businessContext?.teamSize ?? null,
+          revenueStage: ctx.businessContext?.revenueStage ?? null,
+          inLifeProtectionMode: ctx.inLifeProtectionMode ?? false,
+          consecutiveCompletions: 0,
+          hasMomentum: false,
+          upcomingLifeEvents: ctx.upcomingLifeEvents ?? [],
+          daysUntilNextSignificantEvent: ctx.daysUntilNextSignificantEvent ?? null,
+          biggestOpportunities: ctx.businessContext?.biggestOpportunities ?? [],
+          biggestGoals: ctx.businessContext?.biggestGoals ?? [],
+        }
+        const config = deriveWorkspaceConfig(miniAgg as Parameters<typeof deriveWorkspaceConfig>[0])
+        return config.recommendedProfile
+      } catch {
+        return undefined
+      }
+    })() as import("@/lib/adaptive-workspace/types").WorkspaceProfileId | undefined,
 
     // Phase 10.5 — Harmony Memory™ pattern signals (best-effort, no required stores)
     patternSignals: (() => {
