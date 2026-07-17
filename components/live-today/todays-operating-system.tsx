@@ -36,6 +36,7 @@ import { deriveGpsRecommendation, type SegmentId } from "@/lib/founder-gps/engin
 import { getCherryBlossomGuidance } from "@/lib/harmony-context/cherry-blossom-guidance"
 import { deriveProgressSummary } from "@/lib/founder-gps/progress-intelligence"
 import { deriveUpcomingCherryBlossomEvents } from "@/lib/whole-life-context"
+import { assembleHarmonyContext } from "@/lib/founder-gps/context/harmony-context-aggregator"
 
 // ─── DMW reminder day logic ───────────────────────────────────────────────────
 
@@ -324,10 +325,13 @@ function SegmentCard({ segment, isCurrent }: { segment: HarmonySegment; isCurren
     setTodayResponse(segment.id, value)
   }
 
-  // Derive Founder GPS™ recommendation for this segment (Phase 9.0: progress-aware)
+  // Derive Founder GPS™ recommendation for this segment (Phase 10.2: aggregate-enriched)
   const gpsSegmentId = toGpsSegmentId(segment.id)
   const gpsProgress = deriveProgressSummary()
-  const gpsCard = gpsSegmentId ? deriveGpsRecommendation(gpsSegmentId, ctx, gpsProgress) : null
+  const gpsAggregate = assembleHarmonyContext(ctx)
+  const gpsCard = gpsSegmentId
+    ? deriveGpsRecommendation(gpsSegmentId, ctx, gpsProgress, gpsAggregate)
+    : null
 
   return (
     <article

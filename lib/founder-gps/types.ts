@@ -230,6 +230,29 @@ export type GpsSignalId =
   | "no-non-negotiables-defined"     // no life non-negotiables registered
   | "no-personal-goals-defined"      // no personal goals registered
   | "no-relationships-defined"       // relationship intelligence is empty
+  // Phase 10.2 — Extended signal set
+  // Human Sustainability™
+  | "morning-given-streak-broken"
+  | "workout-streak-broken"
+  | "sleep-quality-poor-trend"
+  | "time-freedom-not-protected"
+  // Business Context™
+  | "no-business-context-completed"
+  | "pre-revenue-no-offer"
+  | "cash-flow-guidance-needed"
+  | "business-credit-not-established"
+  | "wealth-building-not-started"
+  | "capital-strategy-not-defined"
+  // Progress Intelligence™
+  | "strong-streak-7plus"
+  | "executive-outcome-completed-today"
+  | "consecutive-completions-3plus"
+  | "assets-building-momentum"
+  // Adaptive Learning™
+  | "last-recommendation-skipped"
+  | "last-recommendation-deferred"
+  | "pattern-skipped-3x"
+  | "significant-event-soon"
 
 export interface GpsSignalWeight {
   signalId: GpsSignalId

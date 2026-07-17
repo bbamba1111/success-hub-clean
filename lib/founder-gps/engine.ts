@@ -21,6 +21,11 @@ import {
   type BusinessAssetId,
 } from "@/lib/executive-decision-engine"
 import type { ProgressSummary } from "@/lib/founder-gps/progress-intelligence"
+import type { HarmonyContextAggregate } from "@/lib/founder-gps/context/harmony-context-aggregator"
+import type { RecommendationConfidence } from "@/lib/founder-gps/context/confidence-engine"
+import type { BusinessAssetChain } from "@/lib/founder-gps/context/business-asset-chain-engine"
+import { computeConfidence } from "@/lib/founder-gps/context/confidence-engine"
+import { deriveAssetChain } from "@/lib/founder-gps/context/business-asset-chain-engine"
 
 /* ===========================================================================
  * Output types
@@ -97,6 +102,32 @@ export interface GpsRecommendationCard {
    * Optional CTA for the recommendation.
    */
   cta: { label: string; href: string } | null
+
+  // ── Phase 10.2 — Executive Intelligence Engine™ ──────────────────────────
+
+  /**
+   * Confidence score for this recommendation — how much context the engine
+   * had to work with. Optional with a safe default for backward compatibility.
+   */
+  confidence?: RecommendationConfidence
+  /**
+   * Whether this recommendation builds on a documented recent win.
+   */
+  buildingOnMomentum?: boolean
+  /**
+   * One-sentence description of what this recommendation builds on.
+   * Only set when buildingOnMomentum === true.
+   */
+  momentumContext?: string | null
+  /**
+   * The Business Asset Chain™ for this recommendation's asset, if applicable.
+   * Shows the downstream compounding opportunities unlocked.
+   */
+  assetChain?: BusinessAssetChain | null
+  /**
+   * Adaptive learning prompt shown when the founder skips this recommendation.
+   */
+  adaptiveLearningPrompt?: string
 }
 
 /* ===========================================================================
@@ -657,23 +688,65 @@ export function deriveGpsRecommendation(
   segmentId: SegmentId,
   ctx: HarmonyContextValue,
   progress?: ProgressSummary | null,
+  aggregate?: HarmonyContextAggregate | null,
 ): GpsRecommendationCard {
+  // Base recommendation (unchanged logic)
+  let card: GpsRecommendationCard
   switch (segmentId) {
-    case "early-entry":       return gpsForEarlyEntry(ctx)
-    case "morning-given":     return gpsForMorningGiven(ctx)
-    case "workout":           return gpsForWorkout(ctx, progress)
-    case "healthy-lunch":     return gpsForHealthyLunch(ctx)
-    case "time-freedom":      return gpsForTimeFreedom(ctx)
-    case "power-down":        return gpsForPowerDown(ctx)
-    case "executive-intelligence": return gpsForExecutiveIntelligence(ctx)
-    case "human-zone-of-genius":   return gpsForHumanZoneOfGenius(ctx)
-    case "business-optimization":  return gpsForBusinessOptimization(ctx)
+    case "early-entry":       card = gpsForEarlyEntry(ctx); break
+    case "morning-given":     card = gpsForMorningGiven(ctx); break
+    case "workout":           card = gpsForWorkout(ctx, progress); break
+    case "healthy-lunch":     card = gpsForHealthyLunch(ctx); break
+    case "time-freedom":      card = gpsForTimeFreedom(ctx); break
+    case "power-down":        card = gpsForPowerDown(ctx); break
+    case "executive-intelligence": card = gpsForExecutiveIntelligence(ctx); break
+    case "human-zone-of-genius":   card = gpsForHumanZoneOfGenius(ctx); break
+    case "business-optimization":  card = gpsForBusinessOptimization(ctx); break
     case "ceo-workday":
-      // CEO Workday defaults to showing the Executive Intelligence recommendation
-      return gpsForExecutiveIntelligence(ctx)
+      card = gpsForExecutiveIntelligence(ctx); break
     default:
-      return gpsForEarlyEntry(ctx)
+      card = gpsForEarlyEntry(ctx)
   }
+
+  // ── Phase 10.2 enrichment — only when aggregate is provided ──────────────
+  if (aggregate) {
+    // Confidence
+    const confidence = computeConfidence(aggregate)
+
+    // Momentum
+    const buildingOnMomentum = aggregate.hasMomentum
+    const momentumContext = aggregate.hasMomentum ? (aggregate.recentWin ?? null) : null
+
+    // Asset chain
+    const assetChain = card.businessAsset
+      ? deriveAssetChain(card.businessAsset.id)
+      : null
+
+    // Adaptive learning prompt (context-aware)
+    let adaptiveLearningPrompt =
+      "What got in the way today? Your answer helps your GPS route better tomorrow."
+    if (aggregate.pendingSkipReason === "low-energy") {
+      adaptiveLearningPrompt =
+        "Your GPS noticed you skipped yesterday due to low energy. Would you like a lighter path today?"
+    } else if (aggregate.pendingSkipReason === "not-enough-time") {
+      adaptiveLearningPrompt =
+        "Your GPS noticed time was limited yesterday. What\u2019s available for you today?"
+    } else if (aggregate.pendingSkipReason === "not-relevant") {
+      adaptiveLearningPrompt =
+        "Your GPS is adjusting based on your feedback. What would feel more aligned today?"
+    }
+
+    return {
+      ...card,
+      confidence,
+      buildingOnMomentum,
+      momentumContext,
+      assetChain,
+      adaptiveLearningPrompt,
+    }
+  }
+
+  return card
 }
 
 /* ===========================================================================
@@ -690,72 +763,135 @@ export interface ExecutiveTeamCard {
 
 /**
  * Returns the nine Executive AI Team™ architecture cards.
- * These anticipate future intelligence without claiming capabilities not yet built.
+ * When an aggregate is provided, preparing messages are context-aware.
+ * Falls back to generic messages when no aggregate is available (zero regressions).
  */
-export function getExecutiveTeamCards(): ExecutiveTeamCard[] {
+export function getExecutiveTeamCards(
+  aggregate?: HarmonyContextAggregate | null,
+): ExecutiveTeamCard[] {
+  const agg = aggregate ?? null
+
+  // ── Context-aware preparing messages ──────────────────────────────────────
+  const marketingPreparing = agg?.biggestOpportunities?.includes("marketing")
+    ? "Preparing marketing recommendations aligned to your declared Growth Intelligence™ priority: Marketing."
+    : agg?.biggestGoals?.includes("visibility") || agg?.biggestOpportunities?.includes("finding-ideal-customer")
+    ? "Preparing visibility and ideal customer acquisition strategies for your current stage."
+    : "Preparing campaign and visibility recommendations aligned to your current business stage."
+
+  const financePreparing =
+    agg?.businessCredit === "no-credit"
+      ? "Business credit not yet established — preparing a foundation-first credit strategy for you."
+      : agg?.businessCredit === "building"
+      ? "Your business credit is building — reviewing next steps to accelerate your profile."
+      : agg?.biggestOpportunities?.includes("business-credit")
+      ? "Business credit is on your radar — reviewing the fastest path to a strong business credit profile."
+      : "Reviewing opportunities to improve margins, pricing, and cash flow clarity."
+
+  const operationsPreparing = agg?.executionFriction
+    ? `Reviewing your declared execution friction: "${agg.executionFriction}" — identifying the fastest SOP or delegation path.`
+    : agg?.biggestOpportunities?.includes("systems-sops")
+    ? "Systems & SOPs are your declared opportunity — identifying the highest-leverage SOP to install next."
+    : "Identifying repetitive work patterns suitable for SOPs, delegation, or automation."
+
+  const salesPreparing =
+    agg?.biggestOpportunities?.includes("increasing-sales") || agg?.biggestOpportunities?.includes("pricing")
+      ? "Revenue optimization is your declared priority — reviewing pricing, conversion, and pipeline signals."
+      : agg?.revenueStage === "pre-revenue"
+      ? "Pre-revenue stage detected — preparing your first offer clarification and revenue strategy."
+      : "Reviewing pipeline signals and identifying your next highest-leverage revenue action."
+
+  const strategyPreparing = agg?.growthVision
+    ? `Evaluating today\u2019s highest-leverage opportunity against your Growth Vision\u2122: ${agg.growthVision.replace(/-/g, " ")}.`
+    : agg?.longTermVision
+    ? `Aligning today\u2019s priorities against your declared Long-Term Vision\u2122: ${String(agg.longTermVision).replace(/-/g, " ")}.`
+    : "Evaluating today\u2019s highest-leverage opportunity against your Business Stage\u2122 and installed priorities."
+
+  const innovationPreparing =
+    agg?.biggestOpportunities?.includes("ai-implementation")
+      ? "AI Implementation is your declared opportunity — preparing the highest-ROI AI workflow for your business model."
+      : "Evaluating AI adoption opportunities aligned to your current operating model."
+
+  const growthPreparing =
+    agg?.biggestOpportunities?.includes("scaling") || agg?.biggestOpportunities?.includes("leadership")
+      ? "Scaling and leadership are your declared priorities — preparing thought leadership and team development strategies."
+      : agg?.biggestOpportunities?.includes("strategic-partnerships")
+      ? "Strategic partnerships are your declared opportunity — evaluating partnership and alliance strategies."
+      : "Identifying thought leadership and founder development opportunities."
+
+  const peoplePreparing = agg?.biggestOpportunities?.includes("hiring")
+    ? "Hiring is your declared opportunity — preparing a role clarity and hiring process strategy."
+    : agg?.biggestOpportunities?.includes("delegation")
+    ? "Delegation is your declared priority — reviewing your delegation readiness and the first roles to delegate."
+    : "Monitoring founder capacity and Human Sustainability\u2122 signals across your operating rhythm."
+
+  const clientPreparing =
+    agg?.biggestOpportunities?.includes("recurring-revenue")
+      ? "Recurring revenue is your declared opportunity — identifying retention and subscription model opportunities."
+      : "Identifying client journey improvements and retention opportunities."
+
   return [
     {
       executiveId: "strategy",
-      executiveName: "Strategy Executive™",
+      executiveName: "Strategy Executive\u2122",
       executiveTitle: "Chief Strategy Officer (CSO)",
       architectureStatus: "architecture",
-      preparing: "Evaluating today\u2019s highest-leverage opportunity against your Business Stage\u2122 and installed priorities.",
+      preparing: strategyPreparing,
     },
     {
       executiveId: "marketing-brand",
-      executiveName: "Marketing & Brand Executive™",
+      executiveName: "Marketing & Brand Executive\u2122",
       executiveTitle: "Chief Marketing Officer (CMO)",
       architectureStatus: "architecture",
-      preparing: "Preparing campaign and visibility recommendations aligned to your current business stage.",
+      preparing: marketingPreparing,
     },
     {
       executiveId: "sales",
-      executiveName: "Sales Executive™",
+      executiveName: "Sales Executive\u2122",
       executiveTitle: "Chief Revenue Officer (CRO)",
       architectureStatus: "architecture",
-      preparing: "Reviewing pipeline signals and identifying your next highest-leverage revenue action.",
+      preparing: salesPreparing,
     },
     {
       executiveId: "operations",
-      executiveName: "Operations Executive™",
+      executiveName: "Operations Executive\u2122",
       executiveTitle: "Chief Operating Officer (COO)",
       architectureStatus: "architecture",
-      preparing: "Identifying repetitive work patterns suitable for SOPs, delegation, or automation.",
+      preparing: operationsPreparing,
     },
     {
       executiveId: "finance",
-      executiveName: "Finance Executive™",
+      executiveName: "Finance Executive\u2122",
       executiveTitle: "Chief Financial Officer (CFO)",
       architectureStatus: "architecture",
-      preparing: "Reviewing opportunities to improve margins, pricing, and cash flow clarity.",
+      preparing: financePreparing,
     },
     {
       executiveId: "people-culture",
-      executiveName: "People & Culture Executive™",
+      executiveName: "People & Culture Executive\u2122",
       executiveTitle: "Chief People & Culture Officer",
       architectureStatus: "architecture",
-      preparing: "Monitoring founder capacity and Human Sustainability\u2122 signals across your operating rhythm.",
+      preparing: peoplePreparing,
     },
     {
       executiveId: "client-success",
-      executiveName: "Client Success Executive™",
+      executiveName: "Client Success Executive\u2122",
       executiveTitle: "Chief Experience Officer (CXO)",
       architectureStatus: "architecture",
-      preparing: "Identifying client journey improvements and retention opportunities.",
+      preparing: clientPreparing,
     },
     {
       executiveId: "innovation",
-      executiveName: "Innovation Executive™",
+      executiveName: "Innovation Executive\u2122",
       executiveTitle: "Chief Innovation & AI Officer",
       architectureStatus: "architecture",
-      preparing: "Evaluating AI adoption opportunities aligned to your current operating model.",
+      preparing: innovationPreparing,
     },
     {
       executiveId: "growth",
-      executiveName: "Growth Executive™",
+      executiveName: "Growth Executive\u2122",
       executiveTitle: "Chief Growth & Leadership Officer",
       architectureStatus: "architecture",
-      preparing: "Identifying thought leadership and founder development opportunities.",
+      preparing: growthPreparing,
     },
   ]
 }
