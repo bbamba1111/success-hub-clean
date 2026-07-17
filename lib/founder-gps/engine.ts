@@ -151,6 +151,15 @@ export interface GpsRecommendationCard {
    * Optional — undefined when no gap is detected or the topic is already mastered.
    */
   capabilityBriefing?: import("@/lib/executive-capability/types").ExecutiveBriefingTopicId
+
+  // ── Phase 10.5 — Harmony Memory™ Pattern Context ─────────────────────────
+
+  /**
+   * A one-sentence pattern note derived from the founder's operating history.
+   * Example: "Strategic work is typically your strongest on Tuesdays."
+   * Optional — undefined when no confirmed/strong pattern matches this segment.
+   */
+  patternContext?: string | null
 }
 
 /* ===========================================================================
@@ -783,6 +792,43 @@ export function deriveGpsRecommendation(
       capabilityBriefing = undefined
     }
 
+    // ── Phase 10.5 — Harmony Memory™ Pattern Context ─────────────────────────
+    let patternContext: string | null = null
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const { analyzePatterns } = require("@/lib/harmony-memory/pattern-recognition-engine")
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const { getRecommendationHistory } = require(
+        "@/lib/founder-gps/history/recommendation-history-store",
+      )
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const { getExecutiveMemory } = require("@/lib/executive-office/executive-memory-store")
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const { getCapabilityMemory } = require(
+        "@/lib/executive-capability/capability-memory-store",
+      )
+      const patterns = analyzePatterns({
+        gpsHistory: getRecommendationHistory(),
+        execMemory: getExecutiveMemory().entries,
+        capability: getCapabilityMemory(),
+      })
+      // Find a confirmed/strong completion-cadence pattern for today's day-of-week
+      const today = new Date().getDay()
+      const DAY_NAMES = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
+      const todayName = DAY_NAMES[today]
+      const match = patterns.find(
+        (p: { category: string; contextHint?: string; strength: string }) =>
+          p.category === "completion-cadence" &&
+          p.contextHint === todayName &&
+          (p.strength === "confirmed" || p.strength === "strong"),
+      )
+      if (match) {
+        patternContext = `${todayName}s are consistently your strongest operating days — a good time for this.`
+      }
+    } catch {
+      patternContext = null
+    }
+
     return {
       ...card,
       confidence,
@@ -792,6 +838,7 @@ export function deriveGpsRecommendation(
       adaptiveLearningPrompt,
       executiveBrief,
       capabilityBriefing,
+      patternContext,
     }
   }
 

@@ -20,6 +20,7 @@ import { ExecutivePerformanceDashboard } from "@/components/live-today/executive
 import { MyHarmonyContextSections } from "@/components/my-harmony/my-harmony-client"
 import { ExecutiveOfficePanelClient } from "@/components/executive-office/executive-office-panel-client"
 import { CapabilitySectionClient } from "@/components/executive-capability/capability-section-client"
+import { FounderEvolutionDashboard } from "@/components/harmony-memory/founder-evolution-dashboard"
 
 export const metadata: Metadata = {
   title: "My Work-Life Harmony™ | Harmony Lane™",
@@ -142,31 +143,15 @@ export default function MyWorkLifeHarmonyPage() {
           <CapabilitySectionClient />
         </Section>
 
-        {/* Milestones™ */}
+        {/* Founder Evolution Dashboard™ — Phase 10.5 */}
         <Section
           icon={Award}
           color="gold"
-          title="Milestones™"
-          description="Celebrating the achievements that mark your journey toward a business that supports the life you want to live."
+          title="Founder Evolution Dashboard™"
+          description="Your long-term memory layer. Milestones earned, patterns observed, what the system predicts next, and a living timeline of every step you have taken — all derived automatically from your activity."
+          badge="Harmony Memory™"
         >
-          <div className="grid gap-3 sm:grid-cols-2">
-            {[
-              "First protected CEO Workday™",
-              "First Business Asset™ created",
-              "30 days of Morning GIV\u2022EN™",
-              "100 hours of Time Freedom™ reclaimed",
-              "First Strategic Partnership™",
-              "First fully designed Work-Life Balance Business Week™",
-            ].map((milestone) => (
-              <div
-                key={milestone}
-                className="flex items-center gap-3 rounded-xl border border-dashed border-[#C9A96E]/30 bg-[#FBF7EE] px-4 py-3"
-              >
-                <Award className="h-4 w-4 shrink-0 text-[#C9A96E]/50" aria-hidden />
-                <p className="font-montserrat text-[13px] text-[#6B5860]">{milestone}</p>
-              </div>
-            ))}
-          </div>
+          <FounderEvolutionDashboard />
         </Section>
 
         {/* Whole-Life Context™ */}
@@ -191,7 +176,7 @@ export default function MyWorkLifeHarmonyPage() {
   )
 }
 
-// ─── Sub-components ───────────────────────────────────────────────────────────
+// ─── Sub-components ────────────────────────────────────────────────────��──────
 
 type SectionColor = "green" | "rose" | "gold"
 

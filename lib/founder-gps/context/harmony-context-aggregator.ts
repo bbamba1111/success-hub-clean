@@ -121,6 +121,13 @@ export interface HarmonyContextAggregate {
   // ── Behavior ──────────────────────────────────────────────────────────────
   /** Days since first recommendation recorded — proxy for platform tenure. */
   platformEngagementDays: number
+
+  // ── Phase 10.5 — Harmony Memory™ ─────────────────────────────────────────
+  /**
+   * Top 3 PatternSignals derived from GPS history. Optional — undefined in
+   * environments where the pattern engine hasn't been loaded yet.
+   */
+  patternSignals?: import("@/lib/harmony-memory/types").PatternSignal[]
 }
 
 /* ===========================================================================
@@ -285,5 +292,27 @@ export function assembleHarmonyContext(
 
     // Behavior
     platformEngagementDays,
+
+    // Phase 10.5 — Harmony Memory™ pattern signals (best-effort, no required stores)
+    patternSignals: (() => {
+      try {
+        const { analyzePatterns } = require("@/lib/harmony-memory/pattern-recognition-engine")
+        const { getRecommendationHistory } = require(
+          "@/lib/founder-gps/history/recommendation-history-store",
+        )
+        const { getExecutiveMemory } = require("@/lib/executive-office/executive-memory-store")
+        const { getCapabilityMemory } = require(
+          "@/lib/executive-capability/capability-memory-store",
+        )
+        const patterns = analyzePatterns({
+          gpsHistory: getRecommendationHistory(),
+          execMemory: getExecutiveMemory().entries,
+          capability: getCapabilityMemory(),
+        })
+        return patterns.slice(0, 3)
+      } catch {
+        return undefined
+      }
+    })(),
   }
 }
