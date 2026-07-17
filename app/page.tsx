@@ -16,6 +16,7 @@ import { BusinessDaySchedule } from "@/components/business-day-schedule"
 import { OperatingEngineProvider } from "@/components/operating-engine-provider"
 import { OperatingPlannerSection } from "@/components/operating-planner/operating-planner-section"
 import { DeveloperToolbar } from "@/components/developer-toolbar"
+import { TimeFreedomDashboard } from "@/components/harmony-week/time-freedom-dashboard"
 import { createBrowserClient } from "@supabase/ssr"
 
 export default function HomePage() {
@@ -79,6 +80,10 @@ export default function HomePage() {
         {/* Single engine-driven hero - the primary Home page experience.
             The hero is orientation only; the workspace lives below it. */}
         <BusinessDayHero />
+
+        {/* Time Freedom™ Dashboard — Fri/Sat/Sun only. Renders itself only on
+            Time Freedom days (isTimeFreedom === true); returns null on Mon–Thu. */}
+        <TimeFreedomDashboard />
 
         {/* Operating Planner™ (Phase 3B.1) — the ONE reusable workspace for the
             segment currently in session, opened full-width directly below the

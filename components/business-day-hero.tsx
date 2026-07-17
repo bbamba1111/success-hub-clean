@@ -13,6 +13,7 @@
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
+import { useHarmonyWeek } from "@/components/harmony-week/harmony-week-provider"
 import type { PartOfDay, SessionStatus } from "@/operating-engine"
 
 const STATUS_META: Record<SessionStatus, { label: string; icon: string; className: string; glow?: boolean }> = {
@@ -96,13 +97,27 @@ function getDayIntention(part: PartOfDay): string {
 
 export function BusinessDayHero() {
   const experience = useOperatingEngine()
+  const harmonyDay = useHarmonyWeek()
 
   // Stable fallback background before the first client tick.
   const backgroundImage = experience?.theme.backgroundImage ?? "/images/business-day-hero-bg.png"
   const status = experience ? STATUS_META[experience.businessDay.status] : null
-  const invitation = experience
+
+  // Derive invitation from HarmonyWeek theme when available, fall back to
+  // the legacy getInvitation() function so the hero degrades gracefully.
+  const invitation = harmonyDay
+    ? {
+        emoji: harmonyDay.isTimeFreedom ? "🌿" : "🌸",
+        text: harmonyDay.isTimeFreedom
+          ? `Welcome to ${harmonyDay.themeName}`
+          : `Welcome to ${harmonyDay.themeName} — Your Work-Life Balance Business Day™`,
+        accent: harmonyDay.themeName,
+        subheading: harmonyDay.tagline,
+      }
+    : experience
     ? getInvitation(experience.time.dayOfWeek, experience.time.dayName)
     : { emoji: "🌸", text: "Enter Your Work-Life Balance Business Day™" }
+
   const dayIntention = experience ? getDayIntention(experience.phase.part) : "Today is for intentional living."
 
   return (
@@ -115,6 +130,26 @@ export function BusinessDayHero() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="mx-auto max-w-none"
         >
+          {/* Day theme chip — only rendered once HarmonyWeek has ticked */}
+          {harmonyDay && (
+            <div className="mb-4 flex justify-center">
+              <span
+                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-montserrat text-[10px] font-bold uppercase tracking-[0.18em]"
+                style={{
+                  backgroundColor: harmonyDay.accent.color + "18",
+                  color: harmonyDay.accent.color,
+                  border: `1px solid ${harmonyDay.accent.color}30`,
+                }}
+              >
+                <span
+                  className="h-1.5 w-1.5 rounded-full shrink-0"
+                  style={{ backgroundColor: harmonyDay.accent.color }}
+                  aria-hidden
+                />
+                {harmonyDay.themeName}
+              </span>
+            </div>
+          )}
           <h1 className="text-balance font-playfair text-4xl font-semibold leading-tight tracking-tight text-[#1C161A] sm:text-5xl">
             <AccentedTitle text={invitation.text} accent={invitation.accent} />
           </h1>

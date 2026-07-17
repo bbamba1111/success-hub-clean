@@ -11,6 +11,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { ChevronDown, Calendar, Zap, LayoutDashboard, Clock } from "lucide-react"
+import { WorkspacePriorityBar } from "@/components/harmony-week/workspace-priority-bar"
 import { deriveWorkspaceConfig } from "@/lib/adaptive-workspace/workspace-intelligence-engine"
 import { derivePersonalizedRituals } from "@/lib/adaptive-workspace/ritual-intelligence-engine"
 import { getAdaptationHistory, ADAPTATION_HISTORY_UPDATED } from "@/lib/adaptive-workspace/adaptation-store"
@@ -79,7 +80,7 @@ export function AdaptiveWorkspaceSectionClient() {
         biggestGoals: bc?.biggestGoals ?? [],
       }
 
-      const config = deriveWorkspaceConfig(miniAgg as Parameters<typeof deriveWorkspaceConfig>[0], patterns)
+      const config = deriveWorkspaceConfig(miniAgg as unknown as Parameters<typeof deriveWorkspaceConfig>[0], patterns)
       const rituals = derivePersonalizedRituals(patterns, gpsHistory)
       setDerived({ config, rituals })
     } catch {
@@ -115,6 +116,9 @@ export function AdaptiveWorkspaceSectionClient() {
 
   return (
     <div className="space-y-6">
+
+      {/* Today's Harmony Week™ workspace priorities */}
+      <WorkspacePriorityBar />
 
       {/* Operating Mode */}
       <div className="rounded-xl border border-black/[0.07] bg-card p-5">

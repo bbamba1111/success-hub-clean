@@ -3,6 +3,8 @@ import type { Metadata } from "next"
 import { Great_Vibes, Playfair_Display, Poppins, Montserrat } from 'next/font/google'
 import "./globals.css"
 import { ConditionalNav } from "@/components/conditional-nav"
+import { OperatingEngineProvider } from "@/components/operating-engine-provider"
+import { HarmonyWeekProvider } from "@/components/harmony-week/harmony-week-provider"
 
 const greatVibes = Great_Vibes({
   weight: "400",
@@ -43,8 +45,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${greatVibes.variable} ${playfair.variable} ${poppins.variable} ${montserrat.variable} font-montserrat`}>
-        <ConditionalNav />
-        {children}
+        <OperatingEngineProvider>
+          <HarmonyWeekProvider>
+            <ConditionalNav />
+            {children}
+          </HarmonyWeekProvider>
+        </OperatingEngineProvider>
       </body>
     </html>
   )
