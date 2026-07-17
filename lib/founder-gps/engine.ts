@@ -24,8 +24,13 @@ import type { ProgressSummary } from "@/lib/founder-gps/progress-intelligence"
 import type { HarmonyContextAggregate } from "@/lib/founder-gps/context/harmony-context-aggregator"
 import type { RecommendationConfidence } from "@/lib/founder-gps/context/confidence-engine"
 import type { BusinessAssetChain } from "@/lib/founder-gps/context/business-asset-chain-engine"
+import type { ExecutiveBrief } from "@/lib/executive-office/types"
 import { computeConfidence } from "@/lib/founder-gps/context/confidence-engine"
 import { deriveAssetChain } from "@/lib/founder-gps/context/business-asset-chain-engine"
+import {
+  deriveExecutiveFindings,
+  buildExecutiveBrief,
+} from "@/lib/executive-office/executive-office-engine"
 
 /* ===========================================================================
  * Output types
@@ -128,6 +133,15 @@ export interface GpsRecommendationCard {
    * Adaptive learning prompt shown when the founder skips this recommendation.
    */
   adaptiveLearningPrompt?: string
+
+  // ── Phase 10.3 — Executive Office™ Intelligence ──────────────────────────
+
+  /**
+   * The Executive Brief™ produced by the Executive Office Engine™.
+   * Shows which executives evaluated this recommendation, why it won,
+   * and which were deferred. Optional for full backward compatibility.
+   */
+  executiveBrief?: ExecutiveBrief
 }
 
 /* ===========================================================================
@@ -736,6 +750,16 @@ export function deriveGpsRecommendation(
         "Your GPS is adjusting based on your feedback. What would feel more aligned today?"
     }
 
+    // ── Phase 10.3 — Executive Office™ brief ────────────────────────────────
+    let executiveBrief: ExecutiveBrief | undefined
+    try {
+      const allFindings = deriveExecutiveFindings(aggregate)
+      executiveBrief = buildExecutiveBrief(allFindings, aggregate)
+    } catch {
+      // Engine unavailable — degrade gracefully
+      executiveBrief = undefined
+    }
+
     return {
       ...card,
       confidence,
@@ -743,6 +767,7 @@ export function deriveGpsRecommendation(
       momentumContext,
       assetChain,
       adaptiveLearningPrompt,
+      executiveBrief,
     }
   }
 

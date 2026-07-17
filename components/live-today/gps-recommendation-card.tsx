@@ -39,6 +39,7 @@ import {
   SKIP_REASON_LABELS,
   type SkipReason,
 } from "@/lib/founder-gps/history/recommendation-history-store"
+import { ExecutiveBriefCard } from "@/components/executive-office/executive-brief-card"
 
 // ─── Outcome colors ───────────────────────────────────────────────────────────
 
@@ -215,6 +216,15 @@ export function GpsRecommendationCard({
         {/* Executive Assignment™ */}
         {card.executive && (
           <ExecutiveAssignmentBadge executive={card.executive} outcomeColor={outcomeConfig.color} />
+        )}
+
+        {/* Executive Brief™ — Phase 10.3 */}
+        {card.executiveBrief && (
+          <ExecutiveBriefCard
+            brief={card.executiveBrief}
+            outcomeColor={outcomeConfig.color}
+            outcomeBorder={outcomeConfig.border}
+          />
         )}
 
         {/* Business Asset Intelligence™ with chain */}

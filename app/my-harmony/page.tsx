@@ -4,6 +4,7 @@ import {
   Award,
   BookOpen,
   Brain,
+  Building2,
   Calendar,
   Cpu,
   Flower2,
@@ -16,6 +17,7 @@ import {
 } from "lucide-react"
 import { ExecutivePerformanceDashboard } from "@/components/live-today/executive-performance-dashboard"
 import { MyHarmonyContextSections } from "@/components/my-harmony/my-harmony-client"
+import { ExecutiveOfficePanelClient } from "@/components/executive-office/executive-office-panel-client"
 
 export const metadata: Metadata = {
   title: "My Work-Life Harmony™ | Harmony Lane™",
@@ -114,6 +116,17 @@ export default function MyWorkLifeHarmonyPage() {
           badge="Progress Intelligence™"
         >
           <ExecutivePerformanceDashboard />
+        </Section>
+
+        {/* Executive Office™ — Phase 10.3 */}
+        <Section
+          icon={Building2}
+          color="green"
+          title="Executive Office™"
+          description="Your full Executive Leadership Team™ at work — live status, today's highest-leverage recommendation, and the reasoning behind every finding."
+          badge="Executive Intelligence™"
+        >
+          <ExecutiveOfficePanelClient />
         </Section>
 
         {/* Milestones™ */}
