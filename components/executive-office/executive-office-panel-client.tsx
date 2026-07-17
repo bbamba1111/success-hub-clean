@@ -3,17 +3,14 @@
 /**
  * Executive Office Panel Client™ — Phase 10.3
  * ---------------------------------------------------------------------------
- * Context-connected wrapper that:
- *   1. Reads HarmonyContext™ via useHarmonyContext hook
- *   2. Assembles the HarmonyContextAggregate via assembleHarmonyContext()
- *   3. Derives executive findings, brief, and statuses via the engine
- *   4. Passes all data to the pure ExecutiveOfficePanel component
+ * Builds HarmonyContextAggregate directly from localStorage stores — no
+ * HarmonyProvider required — then derives executive findings, brief, and
+ * statuses via the engine and passes them to the pure ExecutiveOfficePanel.
  *
  * Placed in my-harmony/page.tsx as a client island inside a server page.
  */
 
-import { useMemo } from "react"
-import { useHarmonyContext } from "@/components/harmony-context/harmony-context-provider"
+import { useState, useEffect } from "react"
 import { assembleHarmonyContext } from "@/lib/founder-gps/context/harmony-context-aggregator"
 import {
   deriveExecutiveFindings,
@@ -21,17 +18,61 @@ import {
   deriveExecutiveStatuses,
 } from "@/lib/executive-office/executive-office-engine"
 import { ExecutiveOfficePanel } from "@/components/executive-office/executive-office-panel"
+import type { ExecutiveFinding, ExecutiveBrief, ExecutiveStatusRow } from "@/lib/executive-office/types"
+
+type Derived = {
+  findings: ExecutiveFinding[]
+  brief: ExecutiveBrief
+  statuses: ExecutiveStatusRow[]
+}
 
 export function ExecutiveOfficePanelClient() {
-  const ctx = useHarmonyContext()
+  const [derived, setDerived] = useState<Derived | null>(null)
 
-  const { findings, brief, statuses } = useMemo(() => {
-    const agg = assembleHarmonyContext(ctx)
-    const findings = deriveExecutiveFindings(agg)
-    const brief = buildExecutiveBrief(findings, agg)
-    const statuses = deriveExecutiveStatuses(findings)
-    return { findings, brief, statuses }
-  }, [ctx])
+  useEffect(() => {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const { getBusinessContext } = require("@/lib/business-context/business-context-store")
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const { getBusinessStage } = require("@/lib/business-stage/business-stage-store")
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const { getRecommendationHistory } = require("@/lib/founder-gps/history/recommendation-history-store")
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const { analyzePatterns } = require("@/lib/harmony-memory/pattern-recognition-engine")
 
-  return <ExecutiveOfficePanel findings={findings} brief={brief} statuses={statuses} />
+      const bc = getBusinessContext()
+      const stage = getBusinessStage()
+      const gpsHistory = getRecommendationHistory()
+      const patterns = analyzePatterns(gpsHistory).slice(0, 3)
+
+      // Build a minimal context object that satisfies assembleHarmonyContext
+      const miniCtx = {
+        ready: true,
+        businessStage: stage,
+        businessContext: bc,
+        patternSignals: patterns,
+        hasDesignedWeek: gpsHistory.length > 0,
+      }
+
+      const agg = assembleHarmonyContext(miniCtx as Parameters<typeof assembleHarmonyContext>[0])
+      const findings = deriveExecutiveFindings(agg)
+      const brief = buildExecutiveBrief(findings, agg)
+      const statuses = deriveExecutiveStatuses(findings)
+      setDerived({ findings, brief, statuses })
+    } catch {
+      // no-op — component will render loading state
+    }
+  }, [])
+
+  if (!derived) {
+    return (
+      <div className="rounded-xl border border-black/[0.07] bg-card px-6 py-8 text-center">
+        <p className="font-montserrat text-sm text-brand-ink-soft">
+          Your Executive Office™ is building as context is loaded...
+        </p>
+      </div>
+    )
+  }
+
+  return <ExecutiveOfficePanel findings={derived.findings} brief={derived.brief} statuses={derived.statuses} />
 }
