@@ -66,6 +66,61 @@ export type RevenueStagOption =
   | "1m-5m"
   | "5m-plus"
 
+// ─── Founder Operating Environment™ (Phase 10.1.1) ───────────────────────────
+
+export type OperatingEnvironmentOption =
+  | "home-office"
+  | "dedicated-office"
+  | "coworking"
+  | "retail-storefront"
+  | "studio"
+  | "client-locations"
+  | "multiple-locations"
+  | "fully-remote-team"
+  | "traveling-nomad"
+  | "other"
+
+// ─── Founder Support Network™ (Phase 10.1.1) ─────────────────────────────────
+
+export type SupportNetworkOption =
+  | "just-me"
+  | "spouse-partner"
+  | "family-members"
+  | "virtual-assistant"
+  | "contractors-freelancers"
+  | "employees"
+  | "fractional-executives"
+  | "coach"
+  | "mentor"
+  | "mastermind-community"
+  | "board-of-advisors"
+  | "investors"
+  | "other"
+
+// ─── Biggest Opportunity™ (Phase 10.1.1) ─────────────────────────────────────
+
+export type OpportunityOption =
+  | "clarifying-idea"
+  | "finding-ideal-customer"
+  | "creating-offer"
+  | "increasing-sales"
+  | "marketing"
+  | "pricing"
+  | "recurring-revenue"
+  | "hiring"
+  | "delegation"
+  | "ai-implementation"
+  | "systems-sops"
+  | "leadership"
+  | "business-credit"
+  | "raising-capital"
+  | "strategic-partnerships"
+  | "scaling"
+  | "wealth-building"
+  | "work-life-harmony"
+  | "time-freedom"
+  | "other"
+
 // ─── Growth & Capital™ ────────────────────────────────────────────────────────
 
 export type GoalOption =
@@ -191,9 +246,15 @@ export interface BusinessContextProfile {
   teamSize: TeamSizeOption
   revenueStage: RevenueStagOption
 
-  // Goals & Challenges
+  // Goals, Challenges & Opportunities (Phase 10.1.1: operatingEnvironment, supportNetwork, biggestOpportunities added)
   biggestGoals: GoalOption[]
   biggestChallenges: ChallengeOption[]
+  /** Phase 10.1.1 — Founder Operating Environment™ */
+  operatingEnvironment?: OperatingEnvironmentOption
+  /** Phase 10.1.1 — Founder Support Network™ (multi-select) */
+  supportNetwork?: SupportNetworkOption[]
+  /** Phase 10.1.1 — Biggest Opportunity™ (multi-select, up to 3) */
+  biggestOpportunities?: OpportunityOption[]
 
   // Long-Term Vision™
   longTermVision: LongTermVision

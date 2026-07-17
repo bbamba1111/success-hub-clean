@@ -223,14 +223,25 @@ export function HarmonyBlueprintClient() {
                 </Link>
               </div>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {[
+                {([
                   { label: "Business Stage™", value: bcData.businessStage.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) },
                   { label: "Founder Role™", value: bcData.founderRole.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) },
                   { label: "Revenue Stage™", value: bcData.revenueStage.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) },
-                  { label: "Biggest Goals™", value: bcData.biggestGoals.slice(0, 2).map((g) => g.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())).join(", ") },
-                  { label: "Biggest Challenges™", value: bcData.biggestChallenges.slice(0, 2).map((c) => c.replace(/-/g, " ").replace(/\b\w/g, (c2) => c2.toUpperCase())).join(", ") },
+                  bcData.operatingEnvironment
+                    ? { label: "Operating Environment™", value: bcData.operatingEnvironment.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) }
+                    : null,
+                  bcData.supportNetwork?.length
+                    ? { label: "Support Network™", value: bcData.supportNetwork.slice(0, 3).map((s) => s.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())).join(", ") }
+                    : null,
+                  { label: "Current Goal™", value: bcData.biggestGoals.slice(0, 1).map((g) => g.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())).join("") },
+                  { label: "Current Challenge™", value: bcData.biggestChallenges.slice(0, 1).map((c) => c.replace(/-/g, " ").replace(/\b\w/g, (c2) => c2.toUpperCase())).join("") },
+                  bcData.biggestOpportunities?.length
+                    ? { label: "Greatest Opportunity™", value: bcData.biggestOpportunities.slice(0, 1).map((o) => o.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())).join("") }
+                    : null,
                   { label: "Growth Vision™", value: bcData.growthVision.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) },
-                ].map(({ label, value }) => (
+                ] as ({ label: string; value: string } | null)[])
+                  .filter((item): item is { label: string; value: string } => item !== null && !!item.value)
+                  .map(({ label, value }) => (
                   <div key={label} className="rounded-xl bg-[#FBF7EE] px-4 py-3">
                     <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.16em] text-[#C9A96E] mb-1">
                       {label}
