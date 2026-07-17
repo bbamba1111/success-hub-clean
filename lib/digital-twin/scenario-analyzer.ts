@@ -495,7 +495,6 @@ export function analyzeScenario(
     "increase-prices-vs-volume": ["Effective next client or renewal", "Next 30–60 day marketing push"],
     "expand-team-vs-improve-systems": ["6–8 weeks to hire and onboard", "4–6 weeks of system work"],
     "build-new-offer-vs-improve-existing": ["8–16 weeks to build and launch", "2–4 weeks to iterate"],
-    "launch-now-vs-wait":   ["2–4 weeks", "8–12 weeks"],
     "custom":               ["Context-dependent", "Context-dependent"],
   }
   const [horizonA, horizonB] = horizonMap[scenario.topicId] ?? ["Context-dependent", "Context-dependent"]

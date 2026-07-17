@@ -353,27 +353,46 @@ function ConfidencePanel({ analysis }: { analysis: ScenarioAnalysis }) {
 
 // ─── Main component ────────────────────────────────────────────────────────
 
+/**
+ * Primary export — accepts scenario + nullable analysis.
+ * Delegates to the full implementation once analysis is ready.
+ */
 export function ScenarioComparisonView({
+  scenario,
   analysis,
   onBack,
 }: {
-  analysis: ScenarioAnalysis
+  scenario: import("@/lib/digital-twin/types").Scenario
+  analysis: ScenarioAnalysis | null
   onBack?: () => void
 }) {
-  const [modalOpen, setModalOpen] = useState(false)
-  const [execPerspOpen, setExecPerspOpen] = useState(false)
-
-  const oA = analysis.twinProfile.businessStage // just a proxy — scenario holds the actual labels
-  const labelA = analysis.twinProfile.businessStage // will use from analysis
-  const aLabel = "Option A" // fallback — real labels come from scenario
-  const bLabel = "Option B"
-
-  // We need the scenario labels — derive from first perspective's analysis structure
-  // In practice, the client passes the scenario down; we reconstruct labels from impactScores for now.
-  // The comparison view receives analysis which embeds twinProfile but not scenario directly.
-  // Labels are inferred from the executiveSummary context. We use generic "Option A / Option B" here
-  // and rely on the calling client to pass optionALabel / optionBLabel props.
-  return null // placeholder — see full component below
+  if (!analysis) {
+    return (
+      <div className="flex flex-col items-center gap-4 py-20 text-center">
+        <p className="font-montserrat text-sm text-[#6B5860]">
+          Analysis could not be generated. This may happen when no context has been set up yet.
+        </p>
+        {onBack && (
+          <button
+            onClick={onBack}
+            className="font-montserrat text-xs font-semibold text-[#C13B6B] underline underline-offset-2"
+          >
+            Back to scenarios
+          </button>
+        )}
+      </div>
+    )
+  }
+  return (
+    <ScenarioComparisonViewFull
+      analysis={analysis}
+      optionALabel={scenario.optionA.label}
+      optionBLabel={scenario.optionB.label}
+      scenarioTitle={scenario.title}
+      scenarioQuestion={scenario.question}
+      onBack={onBack}
+    />
+  )
 }
 
 // Full implementation

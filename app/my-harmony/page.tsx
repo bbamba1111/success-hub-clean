@@ -22,6 +22,8 @@ import { ExecutiveOfficePanelClient } from "@/components/executive-office/execut
 import { CapabilitySectionClient } from "@/components/executive-capability/capability-section-client"
 import { FounderEvolutionDashboard } from "@/components/harmony-memory/founder-evolution-dashboard"
 import { AdaptiveWorkspaceSectionClient } from "@/components/adaptive-workspace/adaptive-workspace-section-client"
+import { ForesightPanel } from "@/components/decision-workspace/foresight-panel"
+import { DecisionHistoryPanel } from "@/components/decision-workspace/decision-history-panel"
 
 export const metadata: Metadata = {
   title: "My Work-Life Harmony™ | Harmony Lane™",
@@ -165,6 +167,30 @@ export default function MyWorkLifeHarmonyPage() {
           badge="Harmony OS™"
         >
           <AdaptiveWorkspaceSectionClient />
+        </Section>
+
+        {/* Decision Intelligence™ — Phase 11.0 */}
+        <Section
+          id="decision-intelligence"
+          icon={Brain}
+          color="rose"
+          title="Decision Intelligence™"
+          description="Proactive foresight signals derived from your operating patterns, capability gaps, and business stage. The system surfaces what it sees before you feel it — so you can decide from strength, not reaction."
+          badge="Founder Digital Twin™"
+        >
+          <ForesightPanel />
+        </Section>
+
+        {/* Decision History™ — Phase 11.0 */}
+        <Section
+          id="decision-history"
+          icon={TrendingUp}
+          color="gold"
+          title="Decision History™"
+          description="A living log of every decision you have run through the Decision Workspace™. Record outcomes and lessons as they unfold — the system learns your decision-making style over time."
+          badge="Decision Workspace™"
+        >
+          <DecisionHistoryPanel />
         </Section>
 
         {/* Whole-Life Context™ */}

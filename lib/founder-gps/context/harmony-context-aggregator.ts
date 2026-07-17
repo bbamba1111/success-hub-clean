@@ -140,6 +140,13 @@ export interface HarmonyContextAggregate {
    * Optional — same best-effort derivation as operatingMode.
    */
   workspaceProfile?: import("@/lib/adaptive-workspace/types").WorkspaceProfileId
+
+  // ── Phase 11.0 — Founder Digital Twin™ ───────────────────────────────────
+  /**
+   * The founder's Digital Twin profile built from all stores.
+   * Optional — populated best-effort via require() IIFE.
+   */
+  twinProfile?: import("@/lib/digital-twin/types").FounderTwinProfile
 }
 
 /* ===========================================================================
@@ -314,11 +321,11 @@ export function assembleHarmonyContext(
           businessStage: ctx.businessStage,
           teamSize: ctx.businessContext?.teamSize ?? null,
           revenueStage: ctx.businessContext?.revenueStage ?? null,
-          inLifeProtectionMode: ctx.inLifeProtectionMode ?? false,
+          inLifeProtectionMode: false,
           consecutiveCompletions: 0,
           hasMomentum: false,
-          upcomingLifeEvents: ctx.upcomingLifeEvents ?? [],
-          daysUntilNextSignificantEvent: ctx.daysUntilNextSignificantEvent ?? null,
+          upcomingLifeEvents: [],
+          daysUntilNextSignificantEvent: null,
           biggestOpportunities: ctx.businessContext?.biggestOpportunities ?? [],
           biggestGoals: ctx.businessContext?.biggestGoals ?? [],
         } as Parameters<typeof deriveOperatingMode>[0])
@@ -336,11 +343,11 @@ export function assembleHarmonyContext(
           businessStage: ctx.businessStage,
           teamSize: ctx.businessContext?.teamSize ?? null,
           revenueStage: ctx.businessContext?.revenueStage ?? null,
-          inLifeProtectionMode: ctx.inLifeProtectionMode ?? false,
+          inLifeProtectionMode: false,
           consecutiveCompletions: 0,
           hasMomentum: false,
-          upcomingLifeEvents: ctx.upcomingLifeEvents ?? [],
-          daysUntilNextSignificantEvent: ctx.daysUntilNextSignificantEvent ?? null,
+          upcomingLifeEvents: [],
+          daysUntilNextSignificantEvent: null,
           biggestOpportunities: ctx.businessContext?.biggestOpportunities ?? [],
           biggestGoals: ctx.businessContext?.biggestGoals ?? [],
         }
@@ -372,5 +379,15 @@ export function assembleHarmonyContext(
         return undefined
       }
     })(),
+
+    // Phase 11.0 — Founder Digital Twin™ (best-effort, graceful require())
+    twinProfile: (() => {
+      try {
+        const { buildFounderTwin } = require("@/lib/digital-twin/twin-builder")
+        return buildFounderTwin()
+      } catch {
+        return undefined
+      }
+    })() as import("@/lib/digital-twin/types").FounderTwinProfile | undefined,
   }
 }

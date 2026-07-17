@@ -108,7 +108,8 @@ function deriveStrongestDay(signals: PatternSignal[]): string | null {
 }
 
 function deriveDominantSegment(signals: PatternSignal[]): string | null {
-  const affinity = signals.filter((s) => s.category === "segment-affinity")
+  // Use "completion-cadence" as proxy for dominant segment — contextHint holds day-of-week or segment name
+  const affinity = signals.filter((s) => s.category === "completion-cadence")
   if (affinity.length === 0) return null
   const top = affinity.sort((a, b) => b.evidenceCount - a.evidenceCount)[0]
   return top.contextHint ?? null
