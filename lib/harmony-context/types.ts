@@ -15,6 +15,8 @@
 
 import type { BusinessStage } from "@/lib/business-stage/business-stage"
 import type { CommunicationStyle } from "@/lib/business-comprehension/business-comprehension"
+import type { BusinessContextProfile } from "@/lib/business-context/types"
+import type { FounderLearningProfile } from "@/lib/founder-learning/types"
 import type { LanguageCode, TextDirection } from "@/lib/i18n/language"
 import type {
   DateFormat,
@@ -157,4 +159,20 @@ export interface HarmonyContextValue {
   setLocalizationOverrides: (overrides: LocalizationOverrides) => void
   /** Clear localization overrides, returning to the language defaults. */
   resetLocalization: () => void
+
+  /* -- Business Context Profile™ (Phase 10.1) -------------------------- */
+  /**
+   * The founder's Business Context Profile™ — collected during onboarding.
+   * Null until the founder completes the Business Context Profile™ wizard.
+   * Architecture hook: surfaces business personalisation data to all consumers.
+   */
+  businessContext: BusinessContextProfile | null
+
+  /* -- Founder Learning Profile™ (Phase 10.1) -------------------------- */
+  /**
+   * The founder's Founder Learning Profile™ — collected alongside the
+   * Business Context Profile™. Null until the wizard is completed.
+   * Drives Learn Before You Launch™ curriculum prioritization.
+   */
+  founderLearning: FounderLearningProfile | null
 }

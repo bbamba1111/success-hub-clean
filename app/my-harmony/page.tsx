@@ -15,6 +15,7 @@ import {
   Users,
 } from "lucide-react"
 import { ExecutivePerformanceDashboard } from "@/components/live-today/executive-performance-dashboard"
+import { MyHarmonyContextSections } from "@/components/my-harmony/my-harmony-client"
 
 export const metadata: Metadata = {
   title: "My Work-Life Harmony™ | Harmony Lane™",
@@ -99,6 +100,9 @@ export default function MyWorkLifeHarmonyPage() {
             { label: "Improvements", icon: TrendingUp },
           ]} />
         </Section>
+
+        {/* Business Context™ + Executive Learning™ — Phase 10.1 */}
+        <MyHarmonyContextSections />
 
         {/* Executive Performance Dashboard™ — Phase 9.0 / Part 6 */}
         {/* Replaces the placeholder grids for SOP + Business OS with live Progress Intelligence™ */}

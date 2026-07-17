@@ -54,6 +54,16 @@ import {
   type LocalePreferences,
 } from "@/lib/i18n/locale-preferences-store"
 import type { HarmonyContextValue, HarmonySegment, TimeOfDay } from "@/lib/harmony-context/types"
+import {
+  BUSINESS_CONTEXT_EVENT,
+  getBusinessContext,
+} from "@/lib/business-context/business-context-store"
+import {
+  FOUNDER_LEARNING_EVENT,
+  getFounderLearning,
+} from "@/lib/founder-learning/founder-learning-store"
+import type { BusinessContextProfile } from "@/lib/business-context/types"
+import type { FounderLearningProfile } from "@/lib/founder-learning/types"
 
 /** id → human label / config lookups (built once). */
 const FOCUS_LABEL = new Map(FOCUS_AREA_OPTIONS.map((o) => [o.id, o.label]))
@@ -100,24 +110,37 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
     localization: {},
   })
 
+  // Business Context Profile™ + Founder Learning Profile™ — loaded from
+  // localStorage on mount, refreshed on their respective custom events.
+  const [businessContext, setBusinessContext] = useState<BusinessContextProfile | null>(null)
+  const [founderLearning, setFounderLearning] = useState<FounderLearningProfile | null>(null)
+
   useEffect(() => {
     setInstalled(getInstalledWeek())
     setStage(readBusinessStage())
     setStyle(readCommunicationStyle())
     setLocalePrefs(getLocalePreferences())
+    setBusinessContext(getBusinessContext())
+    setFounderLearning(getFounderLearning())
     setLoaded(true)
 
     // Keep in sync if any signal changes elsewhere in this tab.
     const onStageChange = () => setStage(readBusinessStage())
     const onStyleChange = () => setStyle(readCommunicationStyle())
     const onLocaleChange = () => setLocalePrefs(getLocalePreferences())
+    const onBcChange = () => setBusinessContext(getBusinessContext())
+    const onFlChange = () => setFounderLearning(getFounderLearning())
     window.addEventListener(BUSINESS_STAGE_EVENT, onStageChange)
     window.addEventListener(BUSINESS_COMPREHENSION_EVENT, onStyleChange)
     window.addEventListener(LOCALE_PREFERENCES_EVENT, onLocaleChange)
+    window.addEventListener(BUSINESS_CONTEXT_EVENT, onBcChange)
+    window.addEventListener(FOUNDER_LEARNING_EVENT, onFlChange)
     return () => {
       window.removeEventListener(BUSINESS_STAGE_EVENT, onStageChange)
       window.removeEventListener(BUSINESS_COMPREHENSION_EVENT, onStyleChange)
       window.removeEventListener(LOCALE_PREFERENCES_EVENT, onLocaleChange)
+      window.removeEventListener(BUSINESS_CONTEXT_EVENT, onBcChange)
+      window.removeEventListener(FOUNDER_LEARNING_EVENT, onFlChange)
     }
   }, [])
 
@@ -236,6 +259,9 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
       setPreferredLanguage,
       setLocalizationOverrides,
       resetLocalization,
+      // Business Context Profile™ + Founder Learning Profile™
+      businessContext,
+      founderLearning,
     }
   }, [
     engine,
@@ -249,6 +275,8 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
     setPreferredLanguage,
     setLocalizationOverrides,
     resetLocalization,
+    businessContext,
+    founderLearning,
   ])
 
   return <HarmonyContext.Provider value={value}>{children}</HarmonyContext.Provider>

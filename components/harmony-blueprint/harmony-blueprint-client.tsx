@@ -5,10 +5,12 @@ import Link from "next/link"
 import { ArrowRight, CheckCircle2 } from "lucide-react"
 import { getAuditResults } from "@/utils/audit-storage"
 import { getEsaResults } from "@/lib/entrepreneur-success/esa-storage"
+import { getBusinessContext } from "@/lib/business-context/business-context-store"
 import { scoreLabel } from "@/lib/entrepreneur-success/scoring"
 import { CherryBlossomScene, CherryBlossomSceneCard } from "@/components/cherry-blossom/cherry-blossom-scene"
 import type { AuditData } from "@/utils/audit-storage"
 import type { EsaResults } from "@/lib/entrepreneur-success/types"
+import type { BusinessContextProfile } from "@/lib/business-context/types"
 
 /* ── Thin score ring — consistent with ESA results ───────────────────────── */
 function ScoreRing({
@@ -83,6 +85,7 @@ function harmonyLabel(score: number): string {
 export function HarmonyBlueprintClient() {
   const [lifeData, setLifeData] = useState<AuditData | null>(null)
   const [bizData, setBizData] = useState<EsaResults | null>(null)
+  const [bcData, setBcData] = useState<BusinessContextProfile | null>(null)
   const [ready, setReady] = useState(false)
 
   useEffect(() => {
@@ -90,6 +93,7 @@ export function HarmonyBlueprintClient() {
     window.scrollTo({ top: 0, behavior: "instant" })
     setLifeData(getAuditResults())
     setBizData(getEsaResults())
+    setBcData(getBusinessContext())
     setReady(true)
   }, [])
 
@@ -127,10 +131,11 @@ export function HarmonyBlueprintClient() {
       <section className="mx-auto w-full max-w-4xl px-4 py-14">
 
         {/* Completion checkmarks */}
-        <div className="mb-10 flex flex-col gap-3 sm:flex-row sm:justify-center sm:gap-8">
+        <div className="mb-10 flex flex-col gap-3 sm:flex-row sm:justify-center sm:flex-wrap sm:gap-4">
           {[
             { label: "Work-Life Balance Audit™", href: "/my-results" },
             { label: "Entrepreneur Success Assessment™", href: "/my-results/entrepreneur-success" },
+            { label: "Business Context Profile™", href: "/business-context" },
           ].map(({ label, href }) => (
             <Link
               key={label}
@@ -196,6 +201,50 @@ export function HarmonyBlueprintClient() {
           </div>
         )}
 
+        {/* Business Context™ summary card — shown when BC profile is complete */}
+        {ready && bcData && (
+          <div className="rounded-3xl border border-[#C9A96E]/25 bg-white overflow-hidden mb-12 shadow-sm">
+            <div className="h-1 bg-[#C9A96E]/60" aria-hidden />
+            <div className="px-8 py-8">
+              <div className="flex items-center justify-between flex-wrap gap-3 mb-6">
+                <div>
+                  <p className="font-sans text-xs font-bold uppercase tracking-[0.22em] text-[#C9A96E] mb-1">
+                    Business Context Profile™
+                  </p>
+                  <h3 className="font-playfair text-2xl font-bold text-brand-ink">
+                    {bcData.businessName}
+                  </h3>
+                </div>
+                <Link
+                  href="/business-context"
+                  className="font-sans text-xs font-semibold text-[#C9A96E] hover:underline"
+                >
+                  Edit
+                </Link>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {[
+                  { label: "Business Stage™", value: bcData.businessStage.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) },
+                  { label: "Founder Role™", value: bcData.founderRole.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) },
+                  { label: "Revenue Stage™", value: bcData.revenueStage.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) },
+                  { label: "Biggest Goals™", value: bcData.biggestGoals.slice(0, 2).map((g) => g.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())).join(", ") },
+                  { label: "Biggest Challenges™", value: bcData.biggestChallenges.slice(0, 2).map((c) => c.replace(/-/g, " ").replace(/\b\w/g, (c2) => c2.toUpperCase())).join(", ") },
+                  { label: "Growth Vision™", value: bcData.growthVision.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) },
+                ].map(({ label, value }) => (
+                  <div key={label} className="rounded-xl bg-[#FBF7EE] px-4 py-3">
+                    <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.16em] text-[#C9A96E] mb-1">
+                      {label}
+                    </p>
+                    <p className="font-montserrat text-sm font-semibold text-[#3A2E33] leading-snug">
+                      {value}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Cherry Blossom forward guidance */}
         <div className="rounded-2xl border border-brand-blush bg-white/70 backdrop-blur-sm shadow-ds overflow-hidden relative">
           <div aria-hidden className="absolute inset-y-0 left-0 w-1 bg-brand-coral/70 rounded-l-2xl" />
@@ -212,22 +261,22 @@ export function HarmonyBlueprintClient() {
             </div>
 
             <p className="font-sans font-bold text-xl text-brand-ink mb-4">
-              Now let&apos;s install your operating system.
+              Now let&apos;s design your operating system.
             </p>
 
             <div className="font-sans font-medium text-[15px] leading-relaxed text-brand-ink-soft space-y-3 text-pretty mb-7">
               <p>
-                Now I&apos;ll guide you through installing your{" "}
-                <strong className="text-brand-ink">Daily Non-Negotiables™</strong> — the personal
-                commitments and business rhythms that will structure each day of your{" "}
-                <strong className="text-brand-ink">Work-Life Balance Business Week™</strong>.
+                We now understand your life, how you operate, and the business you are building. That
+                is the complete picture — and it is yours alone.
               </p>
               <p>
-                For each segment of your day, you&apos;ll define what matters most — and I&apos;ll
-                transform each one into an <em>Intention Declaration™</em> you can live from.
+                Now I&apos;ll guide you through designing your{" "}
+                <strong className="text-brand-ink">Work-Life Balance Business Week™</strong> — the
+                eight <strong className="text-brand-ink">Operating Segments™</strong> that will
+                structure every day and protect both your life and your business simultaneously.
               </p>
               <p className="text-brand-ink-soft">
-                This takes about 10 minutes and only happens once.
+                This takes about 10 minutes. Once designed, your week becomes your operating system.
               </p>
             </div>
 
