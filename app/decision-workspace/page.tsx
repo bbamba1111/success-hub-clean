@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { Suspense } from "react"
 import { DecisionWorkspaceClient } from "./decision-workspace-client"
 
 export const metadata: Metadata = {
@@ -8,5 +9,9 @@ export const metadata: Metadata = {
 }
 
 export default function DecisionWorkspacePage() {
-  return <DecisionWorkspaceClient />
+  return (
+    <Suspense>
+      <DecisionWorkspaceClient />
+    </Suspense>
+  )
 }

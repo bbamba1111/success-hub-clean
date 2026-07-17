@@ -8,11 +8,9 @@
  * and adaptation history. All data derived from localStorage + engines.
  */
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { ChevronDown, Calendar, Zap, LayoutDashboard, Clock } from "lucide-react"
-import { useHarmonyContext } from "@/components/harmony-context/harmony-context-provider"
-import { assembleHarmonyContext } from "@/lib/founder-gps/context/harmony-context-aggregator"
 import { deriveWorkspaceConfig } from "@/lib/adaptive-workspace/workspace-intelligence-engine"
 import { derivePersonalizedRituals } from "@/lib/adaptive-workspace/ritual-intelligence-engine"
 import { getAdaptationHistory, ADAPTATION_HISTORY_UPDATED } from "@/lib/adaptive-workspace/adaptation-store"
@@ -46,41 +44,56 @@ function SectionHeader({ icon: Icon, title }: { icon: React.ComponentType<{ clas
 }
 
 export function AdaptiveWorkspaceSectionClient() {
-  const ctx = useHarmonyContext()
   const [adaptHistory, setAdaptHistory] = useState<AdaptationHistoryEntry[]>([])
   const [showHistory, setShowHistory] = useState(false)
+  const [derived, setDerived] = useState<{ config: AdaptiveWorkspaceConfig; rituals: PersonalizedRitual[] } | null>(null)
 
-  // Load adaptation history and subscribe to updates
   useEffect(() => {
+    // Derive workspace config directly from localStorage stores — no HarmonyProvider needed.
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const { getBusinessContext } = require("@/lib/business-context/business-context-store")
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const { getBusinessStage } = require("@/lib/business-stage/business-stage-store")
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const { analyzePatterns } = require("@/lib/harmony-memory/pattern-recognition-engine")
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const { getRecommendationHistory } = require("@/lib/founder-gps/history/recommendation-history-store")
+
+      const bc = getBusinessContext()
+      const stage = getBusinessStage()
+      const gpsHistory: RecommendationHistoryEntry[] = getRecommendationHistory()
+      const patterns: PatternSignal[] = analyzePatterns(gpsHistory).slice(0, 3)
+
+      // Build a minimal aggregate object matching what deriveWorkspaceConfig expects
+      const miniAgg = {
+        businessStage: stage,
+        businessContext: bc,
+        patternSignals: patterns,
+        inLifeProtectionMode: false,
+        consecutiveCompletions: 0,
+        hasMomentum: false,
+        upcomingLifeEvents: [],
+        daysUntilNextSignificantEvent: null,
+        biggestOpportunities: bc?.biggestOpportunities ?? [],
+        biggestGoals: bc?.biggestGoals ?? [],
+      }
+
+      const config = deriveWorkspaceConfig(miniAgg as Parameters<typeof deriveWorkspaceConfig>[0], patterns)
+      const rituals = derivePersonalizedRituals(patterns, gpsHistory)
+      setDerived({ config, rituals })
+    } catch {
+      // no-op — component shows empty state
+    }
+
+    // Adaptation history
     setAdaptHistory(getAdaptationHistory())
     const handler = () => setAdaptHistory(getAdaptationHistory())
     window.addEventListener(ADAPTATION_HISTORY_UPDATED, handler)
     return () => window.removeEventListener(ADAPTATION_HISTORY_UPDATED, handler)
   }, [])
 
-  const derived = useMemo(() => {
-    if (!ctx.ready) return null
-    try {
-      const agg = assembleHarmonyContext(ctx)
-      const patterns = (agg.patternSignals ?? []) as PatternSignal[]
-      const config = deriveWorkspaceConfig(agg, patterns)
-
-      // Load history for ritual engine
-      let gpsHistory: RecommendationHistoryEntry[] = []
-      try {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const { getRecommendationHistory } = require("@/lib/founder-gps/history/recommendation-history-store")
-        gpsHistory = getRecommendationHistory()
-      } catch { /* no-op */ }
-
-      const rituals = derivePersonalizedRituals(patterns, gpsHistory)
-      return { config, rituals }
-    } catch {
-      return null
-    }
-  }, [ctx])
-
-  if (!ctx.ready || !derived) {
+  if (!derived) {
     return (
       <div className="rounded-xl border border-black/[0.07] bg-card px-6 py-8 text-center">
         <p className="font-montserrat text-sm text-brand-ink-soft">
