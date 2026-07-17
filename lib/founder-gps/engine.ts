@@ -142,6 +142,15 @@ export interface GpsRecommendationCard {
    * and which were deferred. Optional for full backward compatibility.
    */
   executiveBrief?: ExecutiveBrief
+
+  // ── Phase 10.4 — Executive Capability Intelligence™ ──────────────────────
+
+  /**
+   * The Executive Briefing topic most relevant to this recommendation.
+   * When present, ExecutiveBriefingTrigger will surface it inline.
+   * Optional — undefined when no gap is detected or the topic is already mastered.
+   */
+  capabilityBriefing?: import("@/lib/executive-capability/types").ExecutiveBriefingTopicId
 }
 
 /* ===========================================================================
@@ -760,6 +769,20 @@ export function deriveGpsRecommendation(
       executiveBrief = undefined
     }
 
+    // ── Phase 10.4 — Executive Capability Intelligence™ ─────────────────────
+    let capabilityBriefing:
+      | import("@/lib/executive-capability/types").ExecutiveBriefingTopicId
+      | undefined
+    try {
+      const { getBriefingForRecommendation } = await import(
+        "@/lib/executive-capability/capability-engine"
+      )
+      const result = getBriefingForRecommendation(card, aggregate)
+      capabilityBriefing = result ?? undefined
+    } catch {
+      capabilityBriefing = undefined
+    }
+
     return {
       ...card,
       confidence,
@@ -768,6 +791,7 @@ export function deriveGpsRecommendation(
       assetChain,
       adaptiveLearningPrompt,
       executiveBrief,
+      capabilityBriefing,
     }
   }
 
