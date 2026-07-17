@@ -85,7 +85,9 @@ function DashboardSectionHeader({
         style={{ background: `${color}18` }}
         aria-hidden
       >
-        <Icon className="h-3.5 w-3.5" style={{ color }} />
+        <span style={{ color }} aria-hidden>
+          <Icon className="h-3.5 w-3.5" />
+        </span>
       </div>
       <h3 className="font-montserrat text-sm font-semibold text-brand-ink">{title}</h3>
     </div>

@@ -783,9 +783,8 @@ export function deriveGpsRecommendation(
       | import("@/lib/executive-capability/types").ExecutiveBriefingTopicId
       | undefined
     try {
-      const { getBriefingForRecommendation } = await import(
-        "@/lib/executive-capability/capability-engine"
-      )
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const { getBriefingForRecommendation } = require("@/lib/executive-capability/capability-engine")
       const result = getBriefingForRecommendation(card, aggregate)
       capabilityBriefing = result ?? undefined
     } catch {

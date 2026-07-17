@@ -75,7 +75,9 @@ function TimelineEntryRow({ entry }: { entry: TimelineEntry }) {
           style={{ background: `${color}18` }}
           aria-hidden
         >
-          <Icon className="h-3.5 w-3.5" style={{ color }} />
+          <span style={{ color }} aria-hidden>
+            <Icon className="h-3.5 w-3.5" />
+          </span>
         </div>
         <div className="mt-1 w-px flex-1 bg-black/[0.07]" aria-hidden />
       </div>
