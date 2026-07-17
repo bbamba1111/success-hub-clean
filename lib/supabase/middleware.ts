@@ -22,6 +22,7 @@ const PUBLIC_ROUTES = [
 // Routes that require authentication but NOT paid membership (free access after login)
 const AUTH_ONLY_ROUTES = [
   "/welcome",
+  "/installation",
   "/human-zone-of-genius-team",
   "/ai-executive-team",
 ]
