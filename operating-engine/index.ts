@@ -20,7 +20,7 @@ export { SCHEDULE, SCHEDULE_BY_ID, PLATFORM_TIMEZONE, COMMUNITY_OPEN_MINUTES, CO
 // Individual engines (exported for advanced/standalone use).
 export { getTimeContext, buildCountdown, pickDaily } from "./engines/time"
 export { getCircadianPhase, getCurrentBlock, getCurrentBlockIndex } from "./engines/circadian"
-export { getBusinessDayState } from "./engines/business-day"
+export { getBusinessDayState, getNextOperatingSegment } from "./engines/business-day"
 export { getThemeState } from "./engines/theme"
 export { getCommunityState } from "./engines/community"
 export { getMemberState } from "./engines/member"

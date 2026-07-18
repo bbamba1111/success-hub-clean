@@ -4,8 +4,8 @@
  * the hero status badge, progress through the open day, and the full
  * timeline with per-block presentation state.
  */
-import type { BusinessDayState, SessionStatus, TimeContext, TimelineEntry } from "../types"
-import { COMMUNITY_CLOSE_MINUTES, COMMUNITY_OPEN_MINUTES, SCHEDULE } from "../config/schedule"
+import type { BlockConfig, BusinessDayState, SessionStatus, TimeContext, TimelineEntry } from "../types"
+import { COMMUNITY_CLOSE_MINUTES, COMMUNITY_OPEN_MINUTES, SCHEDULE, SCHEDULE_BY_ID } from "../config/schedule"
 import { buildCountdown } from "./time"
 import { getCurrentBlockIndex } from "./circadian"
 
@@ -14,6 +14,66 @@ function minutesUntil(fromMinutes: number, targetMinutes: number): number {
   let diff = targetMinutes - fromMinutes
   if (diff <= 0) diff += 24 * 60
   return diff
+}
+
+/**
+ * Returns the semantically correct next operating segment for the given moment.
+ *
+ * The naive `SCHEDULE[(index + 1) % len]` approach works for most blocks but
+ * breaks for `digital-detox` (11 PM → 7 AM) because that block wraps midnight
+ * across multiple calendar days.  During the Time Freedom™ weekend
+ * (Thu 17:00 → Mon 07:00) the night after `digital-detox` is still Time
+ * Freedom™ — NOT Early Access™.  Only Sunday night's closure leads back into
+ * Early Access™.
+ *
+ * Official weekend transitions:
+ *   Thu night  → Time Freedom™   (Fri)
+ *   Fri night  → Time Freedom™   (Sat)
+ *   Sat night  → Time Freedom™   (Sun)
+ *   Sun night  → Early Access™   (Mon 7 AM)
+ *
+ * For every other block this function simply returns the next array element,
+ * preserving all existing behaviour.
+ *
+ * @param currentIndex  Index of the currently-active block in SCHEDULE.
+ * @param time          Full time context (supplies dayOfWeek + minutesSinceMidnight).
+ */
+export function getNextOperatingSegment(currentIndex: number, time: TimeContext): BlockConfig {
+  const len = SCHEDULE.length
+  const current = SCHEDULE[currentIndex]
+
+  // Only the overnight closure ("digital-detox") needs day-aware logic.
+  // For all other blocks, fall through to the default array-next behaviour.
+  if (current.id !== "digital-detox") {
+    return SCHEDULE[(currentIndex + 1) % len]
+  }
+
+  // digital-detox spans 11 PM → 7 AM.  The "next" segment depends on which
+  // calendar day the block WILL END on (i.e. the morning after tonight).
+  //
+  // We derive the upcoming morning's day-of-week:
+  //   • If it's currently past midnight (0:00–6:59) the morning is TODAY.
+  //   • If it's currently 23:00+ the morning is TOMORROW (dayOfWeek + 1 mod 7).
+  const isPastMidnight = time.minutesSinceMidnight < 7 * 60 // 00:00–06:59
+  const morningDayOfWeek = isPastMidnight
+    ? time.dayOfWeek                          // already past midnight, still same calendar day
+    : (time.dayOfWeek + 1) % 7               // 11 PM — morning is the next calendar day
+
+  // Sunday night (morningDayOfWeek === 1, i.e. Monday morning) → Early Access™
+  // All other nights within Time Freedom™ weekend → Time Freedom™ continues
+  if (morningDayOfWeek === 1) {
+    // Sunday night → Monday morning: re-enter the standard schedule via Early Access™
+    return SCHEDULE_BY_ID["early-access"] ?? SCHEDULE[(currentIndex + 1) % len]
+  }
+
+  // Thu / Fri / Sat night → Time Freedom™ continues the next day
+  // dayOfWeek of the morning: 5 = Fri, 6 = Sat, 0 = Sun → all Time Freedom™
+  if ([5, 6, 0].includes(morningDayOfWeek)) {
+    return SCHEDULE_BY_ID["time-freedom"] ?? SCHEDULE[(currentIndex + 1) % len]
+  }
+
+  // Fallback for any other night (Tue/Wed night → Mon–Thu morning) — use array-next.
+  return SCHEDULE[(currentIndex + 1) % len]
 }
 
 /** Window (in minutes before start) during which a live block reads as "STARTING NEXT". */
@@ -58,7 +118,8 @@ export function getBusinessDayState(time: TimeContext): BusinessDayState {
 
   const current = SCHEDULE[currentIndex]
   const previous = SCHEDULE[(currentIndex - 1 + len) % len]
-  const next = SCHEDULE[(currentIndex + 1) % len]
+  // Use the day-aware helper so weekend nights point to Time Freedom™, not Early Access™.
+  const next = getNextOperatingSegment(currentIndex, time)
 
   const minutesUntilNext = minutesUntil(minutes, next.startMinutes)
   const status = resolveStatus(current, next, minutesUntilNext)
