@@ -98,6 +98,11 @@ export const PRIMARY_NAV: PrimarySection[] = [
     built: true,
     workspaces: [
       {
+        label: "Executive Headquarters™",
+        href: "/headquarters",
+        description: "Your real-time operating dashboard — Harmony Score™, daily focus, rhythm, events, and journey.",
+      },
+      {
         label: "Live & Lead Today™",
         href: "/",
         description: "Your daily operating workspace — Daily Non-Negotiables™ and the 4-Hour CEO Workday™.",

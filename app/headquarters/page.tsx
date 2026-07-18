@@ -1,16 +1,16 @@
 import type { Metadata } from "next"
-import { FounderCommandCenter } from "@/components/command-center/founder-command-center"
+import { ExecutiveHeadquartersClient } from "@/components/executive-headquarters/executive-headquarters-client"
 
 export const metadata: Metadata = {
-  title: "Today's Headquarters™ | Make Time For More™",
+  title: "Executive Headquarters™ | Harmony Lane™",
   description:
-    "Your Founder Command Center™ — Today's Next Best Step™, the Cherry Blossom Executive Brief™, and Time Freedom Time™, all powered by your Founder Intelligence Engine™.",
+    "Your real-time Founder Operating System™ — Harmony Score™, daily executive focus, operating rhythm, upcoming live experiences, and your complete journey — all in one place.",
 }
 
 export default function HeadquartersPage() {
   return (
-    <div className="min-h-screen bg-[#F5F5F0]">
-      <FounderCommandCenter />
+    <div className="min-h-screen bg-white">
+      <ExecutiveHeadquartersClient />
     </div>
   )
 }
