@@ -6,6 +6,7 @@
  */
 import type { BusinessDayState, CircadianPhase, MemberInput, MemberState, TimeContext } from "../types"
 import { COMMUNITY_CLOSE_MINUTES } from "../config/schedule"
+import { getGreetingByTime } from "@/lib/cherry-blossom/greeting"
 
 const MS_PER_WEEK = 7 * 24 * 60 * 60 * 1000
 
@@ -26,13 +27,16 @@ export function getMemberState(
   member: MemberInput = {},
 ): MemberState {
   const firstName = member.firstName?.trim() || "Friend"
-  const greeting = `Good ${phase.greetingPeriod}, ${firstName}`
+
+  // Derive greeting from clock time so "Good Night" appears at 10 PM+
+  // regardless of which schedule block is active.
+  const greetingResult = getGreetingByTime(time.minutesSinceMidnight, firstName)
 
   return {
     firstName,
-    greeting,
-    greetingPeriod: phase.greetingPeriod,
-    greetingEmoji: phase.greetingEmoji,
+    greeting: greetingResult.greeting,
+    greetingPeriod: greetingResult.period,
+    greetingEmoji: greetingResult.emoji,
     installationWeek: resolveInstallationWeek(member.joinedAt, time.now),
     dayName: time.dayName,
     streak: member.streak ?? 0,

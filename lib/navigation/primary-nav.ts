@@ -102,6 +102,11 @@ export const PRIMARY_NAV: PrimarySection[] = [
         href: "/",
         description: "Your daily operating workspace — Daily Non-Negotiables™ and the 4-Hour CEO Workday™.",
       },
+      {
+        label: "Community Events™",
+        href: "/events",
+        description: "Live Co-Working™, Monday Sync™, Office Hours™, Founder Circle™, and more — the full community calendar.",
+      },
     ],
   },
   {

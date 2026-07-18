@@ -38,7 +38,7 @@ export type SessionStatus = "LIVE" | "NEXT" | "NIGHT" | "OPEN"
 export type BlockState = "current" | "upcoming" | "completed"
 
 /** Greeting period shown to the member. */
-export type GreetingPeriod = "Morning" | "Afternoon" | "Evening"
+export type GreetingPeriod = "Morning" | "Afternoon" | "Evening" | "Night"
 
 /** Live engagement style for a block. */
 export type EngagementKind = "live-room" | "social" | "self-guided" | "closed"
