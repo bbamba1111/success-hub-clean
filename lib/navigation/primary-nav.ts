@@ -140,6 +140,11 @@ export const PRIMARY_NAV: PrimarySection[] = [
     built: false,
     workspaces: [
       {
+        label: "Founder Memory™",
+        href: "/founder-memory",
+        description: "Every milestone, win, reflection, and decision — remembered by Cherry Blossom and synthesised into pattern insights.",
+      },
+      {
         label: "My Results™",
         href: "/my-results",
         description: "Your Reality Check™ results and trends over time.",

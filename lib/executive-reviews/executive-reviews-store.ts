@@ -7,6 +7,7 @@
  */
 
 import type { ExecutiveReviewsStore, WeeklyReview, MonthlyReview, QuarterlyReview } from "./types"
+import type { FounderMemory } from "@/lib/founder-memory/types"
 
 const STORAGE_KEY = "hl:executive-reviews:v1"
 export const EXECUTIVE_REVIEWS_UPDATED = "EXECUTIVE_REVIEWS_UPDATED"
@@ -62,6 +63,35 @@ export function saveWeeklyReview(review: WeeklyReview): void {
   store.weekly = store.weekly.slice(0, 52)
   store.lastGeneratedAt = new Date().toISOString()
   save(store)
+
+  // ── Founder Memory™ bridge ────────────────────────────────────────────────
+  // Record a "review" memory so Cherry Blossom can reference this review in
+  // future coaching notes. Dynamic import keeps this file dependency-free
+  // when running in SSR/build contexts where the memory store is not available.
+  try {
+    const now = new Date().toISOString()
+    const memory: FounderMemory = {
+      id: `review-weekly-${review.id}`,
+      category: "review",
+      title: `Weekly Executive Review — ${review.period?.label ?? "This Week"}`,
+      summary:
+        review.cherryBlossomLetter?.slice(0, 140) ??
+        "Weekly operating review generated and saved.",
+      date: review.period?.startDate ?? now.slice(0, 10),
+      timestamp: now,
+      harmonyScore: review.harmonyScore?.value,
+      cherryBlossomReflection: review.harmonyScore
+        ? `Your Harmony Score™ of ${review.harmonyScore.value}/100 — ${review.harmonyScore.rationale}`
+        : undefined,
+      ctaLabel: "View Review",
+      ctaHref: "/executive-reviews",
+    }
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { recordMemory } = require("@/lib/founder-memory/founder-memory-store")
+    recordMemory(memory)
+  } catch {
+    // Memory bridge is non-critical — never block the review save
+  }
 }
 
 export function saveMonthlyReview(review: MonthlyReview): void {

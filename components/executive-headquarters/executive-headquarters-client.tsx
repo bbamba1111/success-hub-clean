@@ -22,9 +22,11 @@ import { HQFounderJourney } from "./hq-founder-journey"
 import { HQCelebrate } from "./hq-celebrate"
 import { HQQuickActions } from "./hq-quick-actions"
 import { HQTimeFreedomMode } from "./hq-time-freedom-mode"
+import { HQMemorySection } from "@/components/founder-memory/hq-memory-section"
 import type { WeeklyReview } from "@/lib/executive-reviews/types"
 import type { RecommendationHistoryEntry } from "@/lib/founder-gps/history/recommendation-history-store"
 import type { InstallationProfile } from "@/lib/installation/types"
+import type { FounderMemory, FounderInsight } from "@/lib/founder-memory/types"
 
 // ─── Derived state loaded from localStorage stores ───────────────────────────
 
@@ -37,6 +39,8 @@ interface ClientState {
   adaptationCount: number
   reviewCount: number
   profile: InstallationProfile | null
+  latestMemory: FounderMemory | null
+  latestInsight: FounderInsight | null
 }
 
 const EMPTY: ClientState = {
@@ -48,6 +52,8 @@ const EMPTY: ClientState = {
   adaptationCount: 0,
   reviewCount: 0,
   profile: null,
+  latestMemory: null,
+  latestInsight: null,
 }
 
 // ─── Component ───────────────────────────────────────────────────────────────
@@ -87,15 +93,35 @@ export function ExecutiveHeadquartersClient() {
       const latestFocus =
         [...gpsHistory].reverse().find((h) => h.outcome === "completed" || h.outcome === "accepted") ?? null
 
+      // ── Founder Memory™ ─────────────────────────────────────────────────
+      let latestMemory: FounderMemory | null = null
+      let latestInsight: FounderInsight | null = null
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const { getLatestMilestone } = require("@/lib/founder-memory/founder-memory-store")
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const { deriveFounderInsights } = require("@/lib/founder-memory/pattern-recognition-engine")
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const { getMemoryStore } = require("@/lib/founder-memory/founder-memory-store")
+        latestMemory = getLatestMilestone()
+        const { memories } = getMemoryStore()
+        const insights = deriveFounderInsights(memories, gpsHistory)
+        latestInsight = insights[0] ?? null
+      } catch {
+        // Non-critical — skip if memory store unavailable
+      }
+
       setState({
         latestReview,
-        harmonyScore: latestReview?.harmonyScore.overall ?? null,
+        harmonyScore: latestReview?.harmonyScore.value ?? null,
         scoreTrend,
         latestFocus,
         gpsCount: gpsHistory.filter((h) => h.outcome === "completed").length,
         adaptationCount: adaptHistory.length,
         reviewCount: reviews.weekly.length + reviews.monthly.length + reviews.quarterly.length,
         profile,
+        latestMemory,
+        latestInsight,
       })
     } catch {
       // localStorage unavailable — render with empty state
@@ -170,7 +196,14 @@ export function ExecutiveHeadquartersClient() {
             accentColor={accentColor}
           />
 
-          {/* Row 6: Quick Actions */}
+          {/* Row 6: Founder Memory™ widget */}
+          <HQMemorySection
+            latestMemory={state.latestMemory}
+            latestInsight={state.latestInsight}
+            accentColor={accentColor}
+          />
+
+          {/* Row 7: Quick Actions */}
           <HQQuickActions />
         </>
       )}
