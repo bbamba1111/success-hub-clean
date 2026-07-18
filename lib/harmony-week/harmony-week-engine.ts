@@ -238,3 +238,34 @@ export function getHarmonyDayTheme(dayOfWeek: number): HarmonyDayTheme {
 export function getCurrentHarmonyDayTheme(): HarmonyDayTheme {
   return getHarmonyDayTheme(new Date().getDay())
 }
+
+/**
+ * Time Freedom™ window: Thu 17:00 → Mon 07:00 (exclusive).
+ *
+ * Returns `true` when the founder is inside their protected Time Freedom™
+ * weekend — meaning the operating schedule should show no CEO Workday blocks.
+ *
+ * The exact boundary is:
+ *   • Thursday   17:00+ (≥ 1020 minutesSinceMidnight)
+ *   • Friday     all day
+ *   • Saturday   all day
+ *   • Sunday     all day
+ *   • Monday     00:00–06:59 (< 420 minutesSinceMidnight)
+ *
+ * @param dayOfWeek           JS day index: 0 = Sunday … 6 = Saturday
+ * @param minutesSinceMidnight Current minutes since midnight (0–1439)
+ */
+export function isTimeFreedomNow(dayOfWeek: number, minutesSinceMidnight: number): boolean {
+  switch (dayOfWeek) {
+    case 4: // Thursday — Time Freedom starts at 5:00 PM (minute 1020)
+      return minutesSinceMidnight >= 17 * 60
+    case 5: // Friday   — always Time Freedom
+    case 6: // Saturday — always Time Freedom
+    case 0: // Sunday   — always Time Freedom
+      return true
+    case 1: // Monday   — Time Freedom ends at 7:00 AM (minute 420)
+      return minutesSinceMidnight < 7 * 60
+    default: // Tuesday, Wednesday — always business day
+      return false
+  }
+}

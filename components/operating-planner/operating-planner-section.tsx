@@ -13,12 +13,18 @@
  */
 
 import { useOperatingEngine } from "@/components/operating-engine-provider"
+import { useHarmonyWeek } from "@/components/harmony-week/harmony-week-provider"
 import { OperatingPlanner } from "@/components/operating-planner/operating-planner"
 import { segmentHasPlanner } from "@/components/operating-planner/planner-config"
 
 export function OperatingPlannerSection() {
   const experience = useOperatingEngine()
+  const harmonyWeek = useHarmonyWeek()
+
+  // During the Time Freedom™ window (Thu 5 PM → Mon 7 AM) the CEO Workday
+  // planner is intentionally hidden — founders are off the clock.
   if (!experience) return null
+  if (harmonyWeek?.isTimeFreedomNow) return null
 
   const blockId = experience.businessDay.current.id
   if (!segmentHasPlanner(blockId)) return null

@@ -26,6 +26,7 @@ import {
   Flower2,
   Briefcase,
   Sprout,
+  BarChart2,
   type LucideIcon,
 } from "lucide-react"
 
@@ -147,6 +148,11 @@ export const PRIMARY_NAV: PrimarySection[] = [
         label: "Welcome & Onboarding™",
         href: "/welcome",
         description: "Revisit your onboarding journey and getting-started steps.",
+      },
+      {
+        label: "Executive Review Engine™",
+        href: "/executive-reviews",
+        description: "Weekly, monthly, and quarterly operating reviews synthesised from your Harmony data.",
       },
     ],
   },

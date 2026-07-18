@@ -21,30 +21,47 @@ import {
   type ReactNode,
 } from "react"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
-import { getHarmonyDayTheme } from "@/lib/harmony-week/harmony-week-engine"
+import { getHarmonyDayTheme, isTimeFreedomNow } from "@/lib/harmony-week/harmony-week-engine"
 import type { HarmonyDayTheme } from "@/lib/harmony-week/types"
 
-const HarmonyWeekContext = createContext<HarmonyDayTheme | null>(null)
+/** The full context value exposed by HarmonyWeekProvider. */
+export interface HarmonyWeekContextValue extends HarmonyDayTheme {
+  /**
+   * True when the founder is inside the Time Freedom™ window.
+   * Encodes Thu 17:00 → Mon 07:00, including the exact half-day boundaries.
+   * Always `false` before the first client tick.
+   */
+  isTimeFreedomNow: boolean
+}
+
+const HarmonyWeekContext = createContext<HarmonyWeekContextValue | null>(null)
 
 export function HarmonyWeekProvider({ children }: { children: ReactNode }) {
   const experience = useOperatingEngine()
 
-  const theme = useMemo<HarmonyDayTheme | null>(() => {
+  const value = useMemo<HarmonyWeekContextValue | null>(() => {
     if (!experience) return null
-    return getHarmonyDayTheme(experience.time.dayOfWeek)
+    const theme = getHarmonyDayTheme(experience.time.dayOfWeek)
+    return {
+      ...theme,
+      isTimeFreedomNow: isTimeFreedomNow(
+        experience.time.dayOfWeek,
+        experience.time.minutesSinceMidnight,
+      ),
+    }
   }, [experience])
 
   return (
-    <HarmonyWeekContext.Provider value={theme}>
+    <HarmonyWeekContext.Provider value={value}>
       {children}
     </HarmonyWeekContext.Provider>
   )
 }
 
 /**
- * Returns the current HarmonyDayTheme, or `null` before the first client tick.
- * Must be used within `HarmonyWeekProvider`.
+ * Returns the current HarmonyWeekContextValue (HarmonyDayTheme + isTimeFreedomNow),
+ * or `null` before the first client tick. Must be used within `HarmonyWeekProvider`.
  */
-export function useHarmonyWeek(): HarmonyDayTheme | null {
+export function useHarmonyWeek(): HarmonyWeekContextValue | null {
   return useContext(HarmonyWeekContext)
 }

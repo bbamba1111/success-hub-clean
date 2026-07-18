@@ -14,6 +14,7 @@ import { useMemo } from "react"
 import useSWR from "swr"
 import { BusinessDayBlock } from "@/components/business-day-block"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
+import { useHarmonyWeek } from "@/components/harmony-week/harmony-week-provider"
 import { getActiveRules } from "@/lib/operating-rules/storage"
 import { SCHEDULE, type BlockConfig } from "@/operating-engine"
 
@@ -49,6 +50,7 @@ function segmentTiming(block: BlockConfig, minutes: number): { progress: number;
 
 export function BusinessDaySchedule() {
   const experience = useOperatingEngine()
+  const harmonyWeek = useHarmonyWeek()
 
   // Each segment's current Operating Rule™, loaded once (newest-first) and
   // mapped by segment so every card can preview its guiding commitment.
@@ -63,8 +65,14 @@ export function BusinessDaySchedule() {
 
   // Before the first client tick, render the schedule with no active highlight
   // (every block "upcoming") so the markup is stable and SSR-safe.
-  const timeline =
+  const rawTimeline =
     experience?.businessDay.timeline ?? SCHEDULE.map((block) => ({ block, state: "upcoming" as const }))
+
+  // During Time Freedom™ (Thu 5 PM → Mon 7 AM) hide the CEO Workday block
+  // from the daily schedule — founders are off the operating clock.
+  const timeline = harmonyWeek?.isTimeFreedomNow
+    ? rawTimeline.filter(({ block }) => block.id !== "ceo-workday")
+    : rawTimeline
 
   return (
     <div id="todays-business-day" className="w-full scroll-mt-20 bg-gradient-to-br from-[#F5F1E8] to-white pb-8 pt-12">

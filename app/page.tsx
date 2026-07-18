@@ -13,7 +13,6 @@ import { CherryBlossomCoGuide } from "@/components/cherry-blossom-co-guide"
 import { WeeklyRealityCheck } from "@/components/weekly-reality-check"
 import { BusinessDayHero } from "@/components/business-day-hero"
 import { BusinessDaySchedule } from "@/components/business-day-schedule"
-import { OperatingEngineProvider } from "@/components/operating-engine-provider"
 import { OperatingPlannerSection } from "@/components/operating-planner/operating-planner-section"
 import { DeveloperToolbar } from "@/components/developer-toolbar"
 import { TimeFreedomDashboard } from "@/components/harmony-week/time-freedom-dashboard"
@@ -73,29 +72,23 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white">
-      {/* Phase 1: Home page powered entirely by the shared Operating Engine.
-          One provider supplies a single time-aware snapshot so the hero and the
-          Business Day timeline can never disagree. This is the ONLY home hero. */}
-      <OperatingEngineProvider>
-        {/* Single engine-driven hero - the primary Home page experience.
-            The hero is orientation only; the workspace lives below it. */}
-        <BusinessDayHero />
+      {/* Operating Engine providers now live at root layout — no per-page wrapper
+          needed. Components read useOperatingEngine() and useHarmonyWeek() freely. */}
 
-        {/* Time Freedom™ Dashboard — Fri/Sat/Sun only. Renders itself only on
-            Time Freedom days (isTimeFreedom === true); returns null on Mon–Thu. */}
-        <TimeFreedomDashboard />
+      {/* Single engine-driven hero - the primary Home page experience. */}
+      <BusinessDayHero />
 
-        {/* Operating Planner™ (Phase 3B.1) — the ONE reusable workspace for the
-            segment currently in session, opened full-width directly below the
-            hero. This replaces the old inline hero/card workspaces. */}
-        <OperatingPlannerSection />
+      {/* Time Freedom™ Dashboard — renders only during the Thu 5PM→Mon 7AM window. */}
+      <TimeFreedomDashboard />
 
-        {/* Today's Work-Life Balance Business Day™ - full daily rhythm of time-block cards */}
-        <BusinessDaySchedule />
+      {/* Operating Planner™ — hidden during Time Freedom™ window. */}
+      <OperatingPlannerSection />
 
-        {/* Admin-only Developer Toolbar (renders nothing for regular members) */}
-        <DeveloperToolbar />
-      </OperatingEngineProvider>
+      {/* Today's Work-Life Balance Business Day™ — CEO block hidden during Time Freedom™. */}
+      <BusinessDaySchedule />
+
+      {/* Admin-only Developer Toolbar */}
+      <DeveloperToolbar />
 
       {/* Weekly Work-Life Balance Reality Check™ - directly under the engine hero */}
       <WeeklyRealityCheck />
