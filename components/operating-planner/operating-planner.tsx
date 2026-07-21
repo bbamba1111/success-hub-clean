@@ -933,6 +933,9 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
           <SleepPlanner value={plannedSleep} onChange={setPlannedSleep} />
         )}
 
+        {/* Repeat After Me™ — Intention Declaration at the bottom of the tools card */}
+        <RepeatAfterMe blockId={blockId} data={data} />
+
       </div>
     </div>
   )
@@ -1003,10 +1006,6 @@ export function OperatingPlanner({ blockId }: OperatingPlannerProps) {
               <div className="mx-auto max-w-4xl">
                 <div className="rounded-2xl bg-white border border-brand-blush/30 shadow-sm overflow-hidden">
                   <SegmentBody blockId={blockId} data={data} config={config} />
-                  {/* Repeat After Me™ — Intention Declaration at base of tools card */}
-                  <div className="px-6 pb-10 pt-2 sm:px-10 lg:px-14">
-                    <RepeatAfterMe blockId={blockId} data={data} />
-                  </div>
                 </div>
               </div>
             </div>

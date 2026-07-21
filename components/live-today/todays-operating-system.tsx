@@ -60,10 +60,71 @@ function shouldShowDmwReminder(): boolean {
   return false
 }
 
-/** Returns true if today is a Time Freedom™ day (Fri / Sat / Sun). */
+/**
+ * Returns true when Time Freedom™ is active.
+ * Window: Thursday 5:00 PM → Monday 7:00 AM.
+ */
 function isTimeFreedomDay(): boolean {
-  const day = new Date().getDay()
-  return day === 5 || day === 6 || day === 0
+  const now = new Date()
+  const day = now.getDay()   // 0=Sun 1=Mon 2=Tue 3=Wed 4=Thu 5=Fri 6=Sat
+  const hour = now.getHours()
+  if (day === 4 && hour >= 17) return true  // Thu 5 PM+
+  if (day === 5 || day === 6 || day === 0) return true // Fri / Sat / Sun — all day
+  if (day === 1 && hour < 7) return true    // Mon before 7 AM
+  return false
+}
+
+/** Returns the day-of-week main heading and sub-line for the Dynamic Hero™. */
+function getDayGreeting(): { heading: string; subline: string } {
+  const now = new Date()
+  const day = now.getDay()
+  const hour = now.getHours()
+
+  // Time Freedom™ window: Thu 5pm – Mon 7am
+  if (day === 4 && hour >= 17) return {
+    heading: "Welcome to Time Freedom™",
+    subline: "Your business is resting. Life is the priority.",
+  }
+  if (day === 5) return {
+    heading: "Welcome to Time Freedom™",
+    subline: "Your business is resting. Life is the priority.",
+  }
+  if (day === 6) return {
+    heading: "Welcome to Time Freedom™",
+    subline: "Your business is resting. Life is the priority.",
+  }
+  if (day === 0) return {
+    heading: "Welcome to Time Freedom™",
+    subline: "Your business is resting. Life is the priority.",
+  }
+  if (day === 1 && hour < 7) return {
+    heading: "Welcome to Time Freedom™",
+    subline: "Your business is resting. Life is the priority.",
+  }
+
+  // Workweek days
+  if (day === 1) return {
+    heading: "Welcome to Make Time For More On Monday™",
+    subline: "Your Redesigned Entry Into The Workweek",
+  }
+  if (day === 2) return {
+    heading: "Welcome to Tuesday's Work-Life Balance Business Day™",
+    subline: "A focused day of CEO work, life, and everything in between.",
+  }
+  if (day === 3) return {
+    heading: "Welcome to Wednesday's Work-Life Balance Business Day™",
+    subline: "Midweek momentum — stay the course.",
+  }
+  if (day === 4) return {
+    heading: "Welcome to Thursday's Work-Life Balance Business Day™",
+    subline: "Time Freedom™ begins at 5:00 PM. Finish strong.",
+  }
+
+  // Fallback
+  return {
+    heading: "Live & Lead Today™",
+    subline: "Your Work-Life Balance Business Day™ is ready.",
+  }
 }
 
 // ─── Main component ───────────────────────────────────────────────────────────
@@ -129,6 +190,7 @@ function DynamicHero({ ctx }: { ctx: ReturnType<typeof useHarmonyContext> }) {
   const progress = deriveProgressSummary()
   const upcomingEvents = deriveUpcomingCherryBlossomEvents(14)
   const guidance = getCherryBlossomGuidance(ctx, progress, upcomingEvents)
+  const dayGreeting = getDayGreeting()
 
   return (
     <header className="relative overflow-hidden bg-[#2C3E2D] px-6 py-10 sm:py-14">
@@ -151,36 +213,24 @@ function DynamicHero({ ctx }: { ctx: ReturnType<typeof useHarmonyContext> }) {
           </div>
         </div>
 
-        {/* Current segment status */}
-        {isTimeFreedomDay() && !seg ? (
-          <>
-            <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.18em] text-[#E8C4A0]/80 mb-2">
-              Time Freedom™
-            </p>
-            <h1 className="font-playfair text-3xl font-medium text-white leading-tight text-balance sm:text-4xl">
-              Your business is resting. Life is the priority.
-            </h1>
-          </>
-        ) : seg ? (
-          <>
-            <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.18em] text-white/50 mb-2">
-              Current Operating Segment™
-            </p>
-            <h1 className="font-playfair text-3xl font-medium text-white leading-tight text-balance sm:text-4xl">
+        {/* Day-of-week main greeting — always shown as the primary heading */}
+        <h1 className="font-playfair text-3xl font-medium text-white leading-tight text-balance sm:text-4xl">
+          {dayGreeting.heading}
+        </h1>
+        <p className="mt-2 font-montserrat text-sm font-semibold text-[#E8C4A0]/90 text-balance">
+          {dayGreeting.subline}
+        </p>
+
+        {/* Current segment — shown as a contextual badge below the main heading */}
+        {seg && !isTimeFreedomDay() && (
+          <div className="mt-4 flex items-center gap-2">
+            <span className="font-montserrat text-xs font-semibold uppercase tracking-[0.18em] text-white/50">
+              Current Segment:
+            </span>
+            <span className="font-montserrat text-xs font-semibold text-white/80">
               {seg.title}
-            </h1>
-          </>
-        ) : (
-          <>
-            <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.18em] text-white/50 mb-2">
-              Live &amp; Lead Today™
-            </p>
-            <h1 className="font-playfair text-3xl font-medium text-white leading-tight sm:text-4xl">
-              {ctx.hasDesignedWeek
-                ? "Your week is designed and ready."
-                : "Design your week to begin."}
-            </h1>
-          </>
+            </span>
+          </div>
         )}
 
         {/* Context-aware Cherry Blossom™ message — Phase 9.0 */}
