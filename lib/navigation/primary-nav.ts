@@ -112,6 +112,12 @@ export const PRIMARY_NAV: PrimarySection[] = [
         href: "/events",
         description: "Live Co-Working™, Monday Sync™, Office Hours™, Founder Circle™, and more — the full community calendar.",
       },
+      {
+        label: "Community™",
+        href: "/community",
+        description: "Daily accountability, founder wins, discussions, challenges, and your community calendar — all in one place.",
+        built: true,
+      },
     ],
   },
   {

@@ -23,6 +23,7 @@ import { HQCelebrate } from "./hq-celebrate"
 import { HQQuickActions } from "./hq-quick-actions"
 import { HQTimeFreedomMode } from "./hq-time-freedom-mode"
 import { HQMemorySection } from "@/components/founder-memory/hq-memory-section"
+import { HQCommunityWidget } from "./hq-community-widget"
 import type { WeeklyReview } from "@/lib/executive-reviews/types"
 import type { RecommendationHistoryEntry } from "@/lib/founder-gps/history/recommendation-history-store"
 import type { InstallationProfile } from "@/lib/installation/types"
@@ -175,6 +176,9 @@ export function ExecutiveHeadquartersClient() {
 
           {/* Row 3: Upcoming Events */}
           <HQUpcomingEvents />
+
+          {/* Row 3.5: Community™ widget */}
+          <HQCommunityWidget accentColor={accentColor} />
 
           {/* Row 4: Executive Review + Founder Journey */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
