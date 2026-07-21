@@ -22,7 +22,7 @@
 
 import { useState } from "react"
 import { ArrowRight, CheckCircle2, ChevronDown, Clock, Info, Plus, Trash2 } from "lucide-react"
-import { CherryBlossomSceneCard } from "@/components/cherry-blossom/cherry-blossom-scene"
+import { CherryBlossomScene, CherryBlossomSceneCard } from "@/components/cherry-blossom/cherry-blossom-scene"
 import type { BlockId } from "@/operating-engine"
 import { PLANNER_CONFIG } from "@/components/operating-planner/planner-config"
 
@@ -791,7 +791,7 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
 
   return (
     <div className="px-6 pb-10 pt-6 sm:px-10 lg:px-14">
-      <div className="mx-auto max-w-3xl">
+      <div className="w-full">
 
         {/* Segment meta */}
         <div className="flex items-center gap-3 mb-1 flex-wrap">
@@ -953,12 +953,13 @@ export function OperatingPlanner({ blockId }: OperatingPlannerProps) {
   if (!config) return null
 
   return (
-    <div className="relative z-10 w-full px-4 pb-[4.5rem] pt-8 sm:px-6 lg:px-8">
+    /* Panoramic outer wrapper — full width, no horizontal padding */
+    <div className="relative z-10 w-full pb-[4.5rem] pt-8">
+      {/* Toggle header — constrained width, padded */}
       <div
-        className="overflow-hidden rounded-2xl shadow-ds w-full"
+        className="mx-4 sm:mx-6 lg:mx-8 overflow-hidden rounded-t-2xl"
         style={{ backgroundColor: config.surface }}
       >
-        {/* Dropdown toggle */}
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
@@ -983,28 +984,35 @@ export function OperatingPlanner({ blockId }: OperatingPlannerProps) {
             <span className="sr-only">{open ? "Collapse workspace" : "Expand workspace"}</span>
           </span>
         </button>
-
-        {/* Collapsible body */}
-        {open && (
-          <div id={`operating-planner-body-${blockId}`}>
-            {/* 1. Cherry Blossom™ Hero — clean card, no full-bleed background */}
-            <div className="flex justify-center px-6 py-12 sm:px-10 sm:py-16">
-              <CherryBlossomSceneCard title={config.welcomeName}>
-                <p>{config.cherryBlossomMessage}</p>
-                {/* Repeat After Me™ — Intention Declaration lives in the hero */}
-                {data && (
-                  <RepeatAfterMe blockId={blockId} data={data} />
-                )}
-              </CherryBlossomSceneCard>
-            </div>
-
-            {/* 2. Segment content — ported from /design-my-week */}
-            {data && (
-              <SegmentBody blockId={blockId} data={data} config={config} />
-            )}
-          </div>
-        )}
       </div>
+
+      {/* Collapsible body — PANORAMIC, edge-to-edge */}
+      {open && (
+        <div id={`operating-planner-body-${blockId}`} className="w-full">
+
+          {/* 1. Cherry Blossom™ Hero — full-bleed garden background, wide card */}
+          <CherryBlossomScene variant="garden" minHeight="min-h-[60vh]">
+            <CherryBlossomSceneCard title={config.welcomeName} maxWidth="max-w-3xl">
+              <p>{config.cherryBlossomMessage}</p>
+            </CherryBlossomSceneCard>
+          </CherryBlossomScene>
+
+          {/* 2. Segment tools — white card below, panoramic padded container */}
+          {data && (
+            <div className="w-full px-4 py-10 sm:px-8 lg:px-12" style={{ backgroundColor: config.surface }}>
+              <div className="mx-auto max-w-4xl">
+                <div className="rounded-2xl bg-white border border-brand-blush/30 shadow-sm overflow-hidden">
+                  <SegmentBody blockId={blockId} data={data} config={config} />
+                  {/* Repeat After Me™ — Intention Declaration at base of tools card */}
+                  <div className="px-6 pb-10 pt-2 sm:px-10 lg:px-14">
+                    <RepeatAfterMe blockId={blockId} data={data} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }

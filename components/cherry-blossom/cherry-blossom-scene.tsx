@@ -94,6 +94,8 @@ interface SceneCardProps {
   time?: string
   /** Optional animated scroll prompt displayed beneath the card. */
   scrollPrompt?: string
+  /** Tailwind max-width class override. Defaults to max-w-2xl. */
+  maxWidth?: string
 }
 
 export function CherryBlossomSceneCard({
@@ -102,9 +104,10 @@ export function CherryBlossomSceneCard({
   children,
   time,
   scrollPrompt,
+  maxWidth = "max-w-2xl",
 }: SceneCardProps) {
   return (
-    <div className="flex flex-col items-center gap-6 w-full max-w-2xl">
+    <div className={`flex flex-col items-center gap-6 w-full ${maxWidth}`}>
     <div
       className="
         w-full
