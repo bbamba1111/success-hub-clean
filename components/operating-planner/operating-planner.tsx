@@ -22,7 +22,7 @@
 
 import { useState } from "react"
 import { ArrowRight, CheckCircle2, ChevronDown, Clock, Info, Plus, Trash2 } from "lucide-react"
-import { CherryBlossomScene, CherryBlossomSceneCard } from "@/components/cherry-blossom/cherry-blossom-scene"
+import { CherryBlossomSceneCard } from "@/components/cherry-blossom/cherry-blossom-scene"
 import type { BlockId } from "@/operating-engine"
 import { PLANNER_CONFIG } from "@/components/operating-planner/planner-config"
 
@@ -620,6 +620,158 @@ function LearnMoreSection({ heading, body }: { heading: string; body: string }) 
 }
 
 // ---------------------------------------------------------------------------
+// RepeatAfterMe — Intention Declaration block that lives inside the hero card
+// ---------------------------------------------------------------------------
+interface RepeatAfterMeProps {
+  blockId: BlockId
+  data: SegmentData
+}
+
+function RepeatAfterMe({ blockId, data }: RepeatAfterMeProps) {
+  const [input, setInput] = useState("")
+  const [declaration, setDeclaration] = useState<string | null>(null)
+  const [confirmed, setConfirmed] = useState(false)
+
+  function handleGenerate() {
+    if (!input.trim()) return
+    setDeclaration(elevateDeclaration(data.dmwId, input))
+  }
+
+  if (confirmed && declaration) {
+    return (
+      <div className="mt-6 w-full space-y-4 text-left">
+        <p className="font-sans text-xs font-bold uppercase tracking-[0.2em] text-brand-coral">
+          Repeat After Me™
+        </p>
+        <div className="rounded-2xl border border-brand-green/20 bg-brand-green/5 px-5 py-4">
+          <p className={`font-sans text-xs font-bold uppercase tracking-[0.2em] mb-2 ${TYPE_COLOR[data.type]}`}>
+            {TYPE_DECLARATION_LABEL[data.type]}
+          </p>
+          <p className="font-sans text-[15px] font-semibold leading-relaxed text-brand-ink text-balance">
+            &ldquo;{declaration}&rdquo;
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-3">
+          <div className="inline-flex items-center gap-2 rounded-full bg-brand-green px-6 py-3 font-sans text-sm font-bold text-white shadow-sm">
+            <CheckCircle2 className="h-4 w-4" aria-hidden />
+            Installed™
+          </div>
+          <button
+            type="button"
+            onClick={() => { setConfirmed(false); setDeclaration(null) }}
+            className="inline-flex items-center gap-2 rounded-full border border-brand-green/30 bg-transparent px-5 py-3 font-sans text-sm font-semibold text-brand-green transition-all hover:bg-brand-green/5"
+          >
+            Edit
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="mt-6 w-full space-y-4 text-left">
+      {/* Section label */}
+      <p className="font-sans text-xs font-bold uppercase tracking-[0.2em] text-brand-coral">
+        Repeat After Me™
+      </p>
+
+      {/* Example chips */}
+      <div>
+        <p className="font-sans text-[13px] font-semibold text-brand-ink mb-1">
+          Choose one&hellip; or create your own.
+        </p>
+        <p className="font-sans text-[12px] text-brand-ink-soft mb-3">
+          Click any example to use it, then customize it as you like.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {data.examples.slice(0, 6).map((ex) => (
+            <button
+              key={ex}
+              type="button"
+              onClick={() => { setInput(ex); setDeclaration(null) }}
+              className={`rounded-full border px-3 py-1.5 font-sans text-xs font-medium transition-colors ${
+                input === ex
+                  ? "border-brand-green bg-brand-green/10 text-brand-green"
+                  : "border-brand-blush bg-white/70 text-brand-ink-soft hover:border-brand-green/40 hover:text-brand-green"
+              }`}
+            >
+              {ex}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Commitment input + declaration */}
+      {!declaration ? (
+        <div className="space-y-4">
+          <div>
+            <label htmlFor={`ram-${blockId}`} className="block font-sans text-sm font-bold text-brand-ink mb-2">
+              {TYPE_INPUT_LABEL[data.type]}
+            </label>
+            <div className="flex items-start rounded-xl border border-brand-blush bg-white/60 focus-within:border-brand-green focus-within:ring-2 focus-within:ring-brand-green/20 transition-all overflow-hidden">
+              <span className="shrink-0 px-4 pt-3.5 font-sans text-[15px] font-semibold text-brand-green select-none">
+                I am committed to
+              </span>
+              <textarea
+                id={`ram-${blockId}`}
+                value={input}
+                onChange={(e) => { setInput(e.target.value); setDeclaration(null) }}
+                placeholder="completing the sentence..."
+                rows={2}
+                className="flex-1 bg-transparent px-2 py-3.5 font-sans text-[15px] text-brand-ink placeholder:text-brand-ink-soft/40 focus:outline-none resize-none"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing && e.keyCode !== 229) {
+                    e.preventDefault()
+                    handleGenerate()
+                  }
+                }}
+              />
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={handleGenerate}
+            disabled={!input.trim()}
+            className="inline-flex items-center gap-2 rounded-full bg-brand-green px-6 py-3 font-sans text-sm font-bold text-white shadow-sm transition-all hover:bg-brand-green-dark disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            Create My Intention Declaration™
+            <ArrowRight className="h-4 w-4" aria-hidden />
+          </button>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          <div className="rounded-2xl border border-brand-green/20 bg-brand-green/5 px-5 py-4">
+            <p className={`font-sans text-xs font-bold uppercase tracking-[0.2em] mb-2 ${TYPE_COLOR[data.type]}`}>
+              {TYPE_DECLARATION_LABEL[data.type]}
+            </p>
+            <p className="font-sans text-[15px] font-semibold leading-relaxed text-brand-ink text-balance">
+              &ldquo;{declaration}&rdquo;
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={() => setConfirmed(true)}
+              className="inline-flex items-center gap-2 rounded-full bg-brand-green px-6 py-3 font-sans text-sm font-bold text-white shadow-sm transition-all hover:bg-brand-green-dark"
+            >
+              <CheckCircle2 className="h-4 w-4" aria-hidden />
+              Install This™
+            </button>
+            <button
+              type="button"
+              onClick={() => setDeclaration(null)}
+              className="inline-flex items-center gap-2 rounded-full border border-brand-green/30 bg-transparent px-5 py-3 font-sans text-sm font-semibold text-brand-green transition-all hover:bg-brand-green/5"
+            >
+              Edit
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
 // Segment Body — all /design-my-week content after the Cherry Blossom™ hero
 // ---------------------------------------------------------------------------
 interface SegmentBodyProps {
@@ -629,9 +781,6 @@ interface SegmentBodyProps {
 }
 
 function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
-  const [input, setInput] = useState("")
-  const [declaration, setDeclaration] = useState<string | null>(null)
-  const [confirmed, setConfirmed] = useState(false)
   const [showFlexInfo, setShowFlexInfo] = useState(false)
   const [showLearnMore, setShowLearnMore] = useState(false)
   const [plannedActivities, setPlannedActivities] = useState<PlannedActivity[]>([])
@@ -639,49 +788,6 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
 
   const isWorkout = blockId === "movement-window"
   const isPowerDown = blockId === "power-down"
-
-  function handleGenerate() {
-    if (!input.trim()) return
-    setDeclaration(elevateDeclaration(data.dmwId, input))
-  }
-
-  function handleConfirm() {
-    setConfirmed(true)
-  }
-
-  function handleEdit() {
-    setDeclaration(null)
-  }
-
-  if (confirmed && declaration) {
-    return (
-      <div className="px-6 pb-10 pt-6 sm:px-10 lg:px-14">
-        <div className="mx-auto max-w-3xl space-y-6">
-          <div className="rounded-2xl border border-brand-green/20 bg-brand-green/5 px-6 py-5">
-            <p className={`font-sans text-xs font-bold uppercase tracking-[0.2em] mb-3 ${TYPE_COLOR[data.type]}`}>
-              {TYPE_DECLARATION_LABEL[data.type]}
-            </p>
-            <p className="font-sans text-lg font-semibold leading-relaxed text-brand-ink text-balance">
-              &ldquo;{declaration}&rdquo;
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <div className="inline-flex items-center gap-2 rounded-full bg-brand-green px-7 py-3.5 font-sans text-sm font-bold text-white shadow-sm">
-              <CheckCircle2 className="h-4 w-4" aria-hidden />
-              Installed™
-            </div>
-            <button
-              type="button"
-              onClick={() => { setConfirmed(false); setDeclaration(null) }}
-              className="inline-flex items-center gap-2 rounded-full border border-brand-green/30 bg-transparent px-6 py-3.5 font-sans text-sm font-semibold text-brand-green transition-all hover:bg-brand-green/5"
-            >
-              Edit
-            </button>
-          </div>
-        </div>
-      </div>
-    )
-  }
 
   return (
     <div className="px-6 pb-10 pt-6 sm:px-10 lg:px-14">
@@ -704,7 +810,7 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
         </div>
 
         <h2 className="font-playfair text-3xl font-bold text-brand-ink mb-2 text-balance">
-          {config.title}
+          Learn More About This Non-Negotiable™
         </h2>
         <p className="font-sans text-[17px] font-medium leading-relaxed text-brand-ink text-pretty mb-6">
           {data.description}
@@ -827,98 +933,6 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
           <SleepPlanner value={plannedSleep} onChange={setPlannedSleep} />
         )}
 
-        {/* Choose one… or create your own */}
-        <div className="mb-6">
-          <p className="font-sans text-sm font-semibold text-brand-ink mb-1">
-            Choose one&hellip; or create your own.
-          </p>
-          <p className="font-sans text-xs text-brand-ink-soft mb-3">
-            Click any example to use it, then customize it as you like.
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {data.examples.map((ex) => (
-              <button
-                key={ex}
-                type="button"
-                onClick={() => { setInput(ex); setDeclaration(null) }}
-                className={`rounded-full border px-3 py-1.5 font-sans text-xs font-medium transition-colors ${
-                  input === ex
-                    ? "border-brand-green bg-brand-green/10 text-brand-green"
-                    : "border-brand-blush bg-white text-brand-ink-soft hover:border-brand-green/40 hover:text-brand-green"
-                }`}
-              >
-                {ex}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Commitment input + Declaration */}
-        {!declaration ? (
-          <div className="space-y-5">
-            <div>
-              <label htmlFor={`input-${blockId}`} className="block font-sans text-sm font-bold text-brand-ink mb-3">
-                {TYPE_INPUT_LABEL[data.type]}
-              </label>
-              <div className="flex items-start rounded-xl border border-brand-blush bg-brand-cream/40 focus-within:border-brand-green focus-within:ring-2 focus-within:ring-brand-green/20 transition-all overflow-hidden">
-                <span className="shrink-0 px-4 pt-3.5 font-sans text-[15px] font-semibold text-brand-green select-none">
-                  I am committed to
-                </span>
-                <textarea
-                  id={`input-${blockId}`}
-                  value={input}
-                  onChange={(e) => { setInput(e.target.value); setDeclaration(null) }}
-                  placeholder="completing the sentence..."
-                  rows={2}
-                  className="flex-1 bg-transparent px-2 py-3.5 font-sans text-[15px] text-brand-ink placeholder:text-brand-ink-soft/40 focus:outline-none resize-none"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing && e.keyCode !== 229) {
-                      e.preventDefault()
-                      handleGenerate()
-                    }
-                  }}
-                />
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={handleGenerate}
-              disabled={!input.trim()}
-              className="inline-flex items-center gap-2 rounded-full bg-brand-green px-7 py-3.5 font-sans text-sm font-bold text-white shadow-sm transition-all hover:bg-brand-green-dark disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              Create My Intention Declaration™
-              <ArrowRight className="h-4 w-4" aria-hidden />
-            </button>
-          </div>
-        ) : (
-          <div className="space-y-6">
-            <div className="rounded-2xl border border-brand-green/20 bg-brand-green/5 px-6 py-5">
-              <p className={`font-sans text-xs font-bold uppercase tracking-[0.2em] mb-3 ${TYPE_COLOR[data.type]}`}>
-                {TYPE_DECLARATION_LABEL[data.type]}
-              </p>
-              <p className="font-sans text-lg font-semibold leading-relaxed text-brand-ink text-balance">
-                &ldquo;{declaration}&rdquo;
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-3">
-              <button
-                type="button"
-                onClick={handleConfirm}
-                className="inline-flex items-center gap-2 rounded-full bg-brand-green px-7 py-3.5 font-sans text-sm font-bold text-white shadow-sm transition-all hover:bg-brand-green-dark"
-              >
-                <CheckCircle2 className="h-4 w-4" aria-hidden />
-                Install This™
-              </button>
-              <button
-                type="button"
-                onClick={handleEdit}
-                className="inline-flex items-center gap-2 rounded-full border border-brand-green/30 bg-transparent px-6 py-3.5 font-sans text-sm font-semibold text-brand-green transition-all hover:bg-brand-green/5"
-              >
-                Edit
-              </button>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   )
@@ -973,12 +987,16 @@ export function OperatingPlanner({ blockId }: OperatingPlannerProps) {
         {/* Collapsible body */}
         {open && (
           <div id={`operating-planner-body-${blockId}`}>
-            {/* 1. Cherry Blossom™ Hero — garden background, same as /begin */}
-            <CherryBlossomScene variant="garden" minHeight="min-h-[50vh]">
-              <CherryBlossomSceneCard title={config.title}>
+            {/* 1. Cherry Blossom™ Hero — clean card, no full-bleed background */}
+            <div className="flex justify-center px-6 py-12 sm:px-10 sm:py-16">
+              <CherryBlossomSceneCard title={config.welcomeName}>
                 <p>{config.cherryBlossomMessage}</p>
+                {/* Repeat After Me™ — Intention Declaration lives in the hero */}
+                {data && (
+                  <RepeatAfterMe blockId={blockId} data={data} />
+                )}
               </CherryBlossomSceneCard>
-            </CherryBlossomScene>
+            </div>
 
             {/* 2. Segment content — ported from /design-my-week */}
             {data && (

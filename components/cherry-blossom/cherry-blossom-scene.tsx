@@ -116,9 +116,47 @@ export function CherryBlossomSceneCard({
         flex flex-col items-center text-center
       "
     >
-      {/* Avatar */}
-      <div className="mb-4 h-16 w-16 overflow-hidden rounded-full border-2 border-brand-blush shadow-sm shrink-0">
-        <img src={avatarSrc} alt="Cherry Blossom" className="h-full w-full object-cover" />
+      {/* Avatar — stained glass circle with cherry blossom petal ring */}
+      <div className="mb-5 relative h-[84px] w-[84px] shrink-0 flex items-center justify-center">
+        {/* Decorative cherry blossom petal ring — SVG petals at 8 compass points */}
+        <svg
+          aria-hidden
+          viewBox="0 0 84 84"
+          className="absolute inset-0 h-full w-full"
+          style={{ filter: "drop-shadow(0 1px 3px rgba(205,90,120,0.25))" }}
+        >
+          {/* Eight cherry blossom petals arranged in a ring */}
+          {[0, 45, 90, 135, 180, 225, 270, 315].map((angle) => {
+            const rad = (angle * Math.PI) / 180
+            const cx = 42 + Math.cos(rad) * 36
+            const cy = 42 + Math.sin(rad) * 36
+            return (
+              <ellipse
+                key={angle}
+                cx={cx}
+                cy={cy}
+                rx={5.5}
+                ry={8}
+                fill="#F4A7B9"
+                fillOpacity={0.88}
+                transform={`rotate(${angle + 90}, ${cx}, ${cy})`}
+              />
+            )
+          })}
+          {/* Small accent dots between petals */}
+          {[22.5, 67.5, 112.5, 157.5, 202.5, 247.5, 292.5, 337.5].map((angle) => {
+            const rad = (angle * Math.PI) / 180
+            const cx = 42 + Math.cos(rad) * 36
+            const cy = 42 + Math.sin(rad) * 36
+            return <circle key={`dot-${angle}`} cx={cx} cy={cy} r={2.5} fill="#E8748A" fillOpacity={0.6} />
+          })}
+          {/* Thin circular ring behind petals */}
+          <circle cx="42" cy="42" r="32" fill="none" stroke="#F4A7B9" strokeWidth="1" strokeOpacity="0.4" />
+        </svg>
+        {/* Avatar image */}
+        <div className="relative z-10 h-[60px] w-[60px] overflow-hidden rounded-full border-2 border-white shadow-md">
+          <img src={avatarSrc} alt="Cherry Blossom" className="h-full w-full object-cover" />
+        </div>
       </div>
 
       {/* Eyebrow — always brand pink/coral */}

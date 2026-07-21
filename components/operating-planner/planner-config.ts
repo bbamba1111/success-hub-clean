@@ -20,8 +20,13 @@ export interface CeoBlock {
 }
 
 export interface PlannerSegmentConfig {
-  /** Short workspace title shown at the top of the planner. */
+  /** Short workspace title shown at the top of the planner dropdown toggle. */
   title: string
+  /**
+   * The segment's welcome name — what Cherry Blossom™ says in the hero card heading.
+   * e.g. "Welcome to Time Freedom™" rather than "Design My Time Freedom™".
+   */
+  welcomeName: string
   /**
    * The workspace's own name — members enter the SEGMENT, not "the planner."
    * e.g. "Your Executive Workspace", "Your Morning Sanctuary".
@@ -67,6 +72,7 @@ export interface PlannerSegmentConfig {
 export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
   "early-access": {
     title: "Design My Flex Time™",
+    welcomeName: "Welcome to Flex Time™",
     workspaceLabel: "Your Flex Time Design Space",
     atmosphere: "Quiet · Unhurried · Open",
     surface: "#FBF4EC",
@@ -84,6 +90,7 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
   },
   "morning-given": {
     title: "Design My Morning Routine™",
+    welcomeName: "Welcome to Morning GIV•EN™",
     workspaceLabel: "Your Morning Design Space",
     atmosphere: "Light · Fresh · Hopeful",
     surface: "#FBF1F3",
@@ -101,6 +108,7 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
   },
   "movement-window": {
     title: "Design My 30-Minute Movement™",
+    welcomeName: "Welcome to Your Movement Window™",
     workspaceLabel: "Your Movement Design Space",
     atmosphere: "Energizing · Present · Alive",
     surface: "#EFF5EC",
@@ -118,6 +126,7 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
   },
   "lunch-break": {
     title: "Design My Lunch Experience™",
+    welcomeName: "Welcome to Your Healthy Hybrid Lunch™",
     workspaceLabel: "Your Lunch Design Space",
     atmosphere: "Nourishing · Warm · Restorative",
     surface: "#F5F1E7",
@@ -135,6 +144,7 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
   },
   "ceo-workday": {
     title: "Design My CEO Workday™",
+    welcomeName: "Welcome to Your CEO Workday™",
     workspaceLabel: "Your CEO Workday Design Space",
     atmosphere: "Focused · Grounded · Executive",
     // Soft sage — the protected execution room.
@@ -180,6 +190,7 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
   },
   "time-freedom": {
     title: "Design My Time Freedom™",
+    welcomeName: "Welcome to Time Freedom™",
     workspaceLabel: "Your Time Freedom Design Space",
     atmosphere: "Golden · Spacious · Free",
     // Golden-hour warmth — sunset sand, not a cool spa. Time Freedom™ is the
@@ -200,6 +211,7 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
   },
   "power-down": {
     title: "Design My Evening Routine™",
+    welcomeName: "Welcome to Power Down™",
     workspaceLabel: "Your Evening Design Space",
     atmosphere: "Quiet · Warm · Restorative",
     surface: "#EEEFF3",
@@ -217,6 +229,7 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
   },
   "digital-detox": {
     title: "Design My Digital Detox™",
+    welcomeName: "Welcome to Your Digital Detox™",
     workspaceLabel: "Your Digital Detox Design Space",
     atmosphere: "Still · Restful · Restorative",
     surface: "#EDEEF2",
