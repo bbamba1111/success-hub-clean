@@ -52,14 +52,27 @@ export interface PlannerSegmentConfig {
    * journey. Internals are built in a later pass.
    */
   ceoBlocks?: CeoBlock[]
+  /**
+   * Panoramic background image path for this segment's Cherry Blossom™ Hero.
+   * Should match the segment's card image from the schedule.
+   */
+  backgroundImage: string
+  /**
+   * Cherry Blossom™ welcome message for this segment's Design Space hero.
+   * A warm, personal introduction to the purpose and benefit of this segment.
+   */
+  cherryBlossomMessage: string
 }
 
 export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
   "early-access": {
-    title: "Early Access & Flex Time™",
-    workspaceLabel: "Your Early Access Space",
+    title: "Design My Flex Time™",
+    workspaceLabel: "Your Flex Time Design Space",
     atmosphere: "Quiet · Unhurried · Open",
     surface: "#FBF4EC",
+    backgroundImage: "/images/block-early-access.png",
+    cherryBlossomMessage:
+      "Welcome to your Flex Time™ — a protected 2-hour buffer at the start of every day, designed to absorb life's unavoidable demands without ever touching your CEO Workday™. This is not wasted time. It is your most powerful act of daily protection. Use it to prepare, handle what life asks of you, and arrive at your CEO Workday™ with clarity and full presence. What you design here determines the quality of everything that follows.",
     guidance:
       "The day hasn't asked anything of you yet. Before it does, let's set the tone. A few unhurried minutes now — for your mind, your space, your priorities — is how clarity replaces chaos.",
     defaultRuleType: "human",
@@ -70,10 +83,13 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
     ],
   },
   "morning-given": {
-    title: "Morning GIV•EN™ Routine",
-    workspaceLabel: "Your Morning Sanctuary",
+    title: "Design My Morning Routine™",
+    workspaceLabel: "Your Morning Design Space",
     atmosphere: "Light · Fresh · Hopeful",
     surface: "#FBF1F3",
+    backgroundImage: "/images/block-morning-given.png",
+    cherryBlossomMessage:
+      "Welcome to Morning GIV•EN™ — your 90-minute intentional morning operating ritual. GIV•EN™ stands for Gratitude, Invitation to Your Creator, Vision and Visualization, Emotional Embodiment, and Nurture. This is where you lead yourself before you lead your business. When you begin your day aligned in mind, body, and spirit, everything that follows — your decisions, your creativity, your presence — flows from a place of wholeness rather than depletion.",
     guidance:
       "Lead yourself before you lead your business. This is your sanctuary — a few grounded moments of Gratitude, Invitation, Vision, Emotional embodiment, and Nurture — so you meet the day already whole.",
     defaultRuleType: "human",
@@ -84,10 +100,13 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
     ],
   },
   "movement-window": {
-    title: "30-Minute Workday Movement™",
-    workspaceLabel: "Your Movement Window",
+    title: "Design My 30-Minute Movement™",
+    workspaceLabel: "Your Movement Design Space",
     atmosphere: "Energizing · Present · Alive",
     surface: "#EFF5EC",
+    backgroundImage: "/images/block-movement-window.png",
+    cherryBlossomMessage:
+      "Welcome to your 30-Minute Movement Window™ — a non-negotiable block built directly into your Work-Life Balance Business Day™. The goal is not athletic performance. The goal is movement consistency. A 3-minute stretch performed every day compounds into far more value than an intense workout performed occasionally. When you move your body, you prepare your mind. The energy you bring to your CEO Workday™ at 1:00 PM is built right here.",
     guidance:
       "Care for the body that carries your vision. Thirty intentional minutes — walk, stretch, strength, whatever your body asks for — is how you return sharper than you left.",
     defaultRuleType: "human",
@@ -98,10 +117,13 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
     ],
   },
   "lunch-break": {
-    title: "Extended Healthy Hybrid Lunch™",
-    workspaceLabel: "Your Midday Restoration",
+    title: "Design My Lunch Experience™",
+    workspaceLabel: "Your Lunch Design Space",
     atmosphere: "Nourishing · Warm · Restorative",
     surface: "#F5F1E7",
+    backgroundImage: "/images/block-lunch-break.png",
+    cherryBlossomMessage:
+      "Welcome to your Extended Healthy Hybrid Lunch Break™ — a nourishing midday pause that refuels your body, creates a natural rhythm break, and prepares you for your most important work. This window is not a gap between tasks. It is a deliberate Sustainable Operating Practice™. What happens here — the meal you choose, the air you breathe, the presence you cultivate — directly determines the quality of your 4-Hour CEO Workday™. Nourishment is productive.",
     guidance:
       "Nourishment is productive. Step fully away, eat well, get outside, reconnect. The afternoon belongs to the version of you that took this time.",
     defaultRuleType: "human",
@@ -112,11 +134,14 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
     ],
   },
   "ceo-workday": {
-    title: "4-Hour Focused CEO Workday™",
-    workspaceLabel: "Your Executive Workspace",
+    title: "Design My CEO Workday™",
+    workspaceLabel: "Your CEO Workday Design Space",
     atmosphere: "Focused · Grounded · Executive",
     // Soft sage — the protected execution room.
     surface: "#E7F0E3",
+    backgroundImage: "/images/block-ceo-workday.png",
+    cherryBlossomMessage:
+      "Welcome to your 4-Hour Focused CEO Workday™ — the most protected and powerful four hours in your entire Work-Life Balance Business Week™. This is not your busiest time. This is your most strategic time. Deep, uninterrupted work produces 4 to 5 times more output than scattered, reactive hours. Here you lead from your Human Zone of Genius™. You decide what only you can decide. You create what only you can create. Nothing enters this space uninvited.",
     guidance:
       "This is your protected execution window. Today's priority isn't doing more — it's protecting uninterrupted thinking. Let's install one operating rule that guards your Human Zone of Genius™.",
     defaultRuleType: "business",
@@ -154,13 +179,16 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
     ],
   },
   "time-freedom": {
-    title: "Time Freedom™",
-    workspaceLabel: "Your Time Freedom Space",
+    title: "Design My Time Freedom™",
+    workspaceLabel: "Your Time Freedom Design Space",
     atmosphere: "Golden · Spacious · Free",
     // Golden-hour warmth — sunset sand, not a cool spa. Time Freedom™ is the
     // reward at the end of a beautifully lived Business Day™: work is finished,
     // life begins now.
     surface: "#F7EDDD",
+    backgroundImage: "/images/block-time-freedom.png",
+    cherryBlossomMessage:
+      "Welcome to Time Freedom™ — the protected life your business exists to support. From 5:00 PM to 10:00 PM, you are fully present. The business does not follow you here. This five-hour window belongs to your relationships, your passions, your rest, and your joy. Work is finished. You kept your commitment. Now receive the reward you built your operating system to protect. Be here. Be whole. Be free.",
     guidance:
       "Good evening. You've protected your work — now protect your life with the same intention. Set it down, step outside, and be fully here. Presence is today's greatest achievement.",
     defaultRuleType: "human",
@@ -171,10 +199,13 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
     ],
   },
   "power-down": {
-    title: "Power Down & Unplug™",
-    workspaceLabel: "Your Evening Wind-Down",
+    title: "Design My Evening Routine™",
+    workspaceLabel: "Your Evening Design Space",
     atmosphere: "Quiet · Warm · Restorative",
     surface: "#EEEFF3",
+    backgroundImage: "/images/block-power-down.png",
+    cherryBlossomMessage:
+      "Welcome to Power Down™ — your intentional evening transition from productivity to restoration. This is how you close the day with the same intention you opened it. Honor what you accomplished. Set down what you didn't. Prepare tomorrow so your mind can release its grip on today. Quality rest is not a reward for good performance — it is the foundation of tomorrow's excellence. What you do in this hour determines how you wake.",
     guidance:
       "Let the day come to a gentle close. Honor what you accomplished, set down what you didn't, and prepare tomorrow so your mind can finally slow.",
     defaultRuleType: "human",
@@ -184,9 +215,26 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
       "What will help your mind begin to slow?",
     ],
   },
+  "digital-detox": {
+    title: "Design My Digital Detox™",
+    workspaceLabel: "Your Digital Detox Design Space",
+    atmosphere: "Still · Restful · Restorative",
+    surface: "#EDEEF2",
+    backgroundImage: "/images/block-digital-detox.png",
+    cherryBlossomMessage:
+      "Welcome to your Unplug Digital Detox™ — the final and most restorative practice of your Work-Life Balance Business Day™. This is where you turn off the devices and give your nervous system the deep recovery it needs. Tomorrow's clarity, creativity, and performance are being built right now, in the quiet. The most successful founders protect their sleep as fiercely as they protect their CEO Workday™. Rest is a business strategy.",
+    guidance:
+      "Devices off. Mind quieted. This is how the best version of tomorrow is built — not by working later, but by resting deeper.",
+    defaultRuleType: "human",
+    prompts: [
+      "What will you put down tonight to rest fully?",
+      "What intention do you want to carry into tomorrow?",
+      "What does your body need from you right now?",
+    ],
+  },
 }
 
-/** True when a segment has a planner (i.e. is not the closed detox block). */
+/** True when a segment has a Design Space (all segments now have one). */
 export function segmentHasPlanner(blockId: BlockId): boolean {
   return Boolean(PLANNER_CONFIG[blockId])
 }

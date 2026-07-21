@@ -1,147 +1,195 @@
 "use client"
 
 /**
- * OperatingPlanner™ — the ONE reusable workspace every Operating Segment uses.
- * Phase 3C reframes it as an immersive ROOM, not a stack of UI boxes: members
- * enter the 4-Hour Focused CEO Workday™ (etc.), and the planner is simply part
- * of that experience.
+ * OperatingPlanner™ — reframed as the Design Space™ for each operating segment.
  *
- * Editorial principles applied here:
- *   • Sections are separated by whitespace + Harmony Divider™ hairlines, not
- *     borders around every block.
- *   • Glass is reserved for MOMENTS — Cherry Blossom Guidance™ and Today's
- *     Operating Rule™ — everything else stays beautifully minimal.
- *   • Typography carries the hierarchy: Playfair (titles), Lora (guidance,
- *     prompts, reflections), Montserrat (labels, UI).
- *   • The experience reveals slowly and calmly on open.
+ * Phase: Live & Lead Today™ Design Space Migration
  *
- * The five parts of every room:
- *   1. Cherry Blossom Guidance™ — a concierge welcome
- *   2. Today's Operating Rule™  — the centerpiece commitment (PERSISTED)
- *   3. Operating Planner™        — a short executive planning session (prompts)
- *   4. CEO Workday Blocks™       — CEO only, a 5-step journey (built later)
- *   5. Harmony Soundscapes™ / Win the Segment™ — quiet placeholders
+ * The expanded dropdown now contains:
+ *   1. Cherry Blossom™ Hero — a segment-specific panoramic welcome
+ *   2. Design Space™ placeholder — lists the features coming to this space
+ *
+ * The dropdown toggle, animations, expand/collapse behaviour, glassmorphism,
+ * border-radius, shadows, and spacing are all preserved from the previous version.
+ * Only the body content has been replaced.
+ *
+ * The standalone Design My Week™ page (/design-my-week) is NOT modified here.
  */
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { ChevronDown } from "lucide-react"
 import type { BlockId } from "@/operating-engine"
-import { PLANNER_CONFIG, type CeoBlock } from "@/components/operating-planner/planner-config"
-import { OperatingRuleCard } from "@/components/operating-planner/operating-rule-card"
+import { PLANNER_CONFIG } from "@/components/operating-planner/planner-config"
 
 interface OperatingPlannerProps {
   blockId: BlockId
 }
 
-/** Time-of-day concierge greeting — warm, never robotic. */
-function useGreeting() {
-  const [greeting, setGreeting] = useState("Welcome.")
-  useEffect(() => {
-    const h = new Date().getHours()
-    setGreeting(h < 12 ? "Good morning." : h < 17 ? "Good afternoon." : "Good evening.")
-  }, [])
-  return greeting
+// ---------------------------------------------------------------------------
+// Cherry Blossom™ Hero — segment-specific panoramic welcome
+// ---------------------------------------------------------------------------
+
+interface SegmentHeroProps {
+  title: string
+  backgroundImage: string
+  message: string
+  atmosphere: string
 }
 
-/**
- * A calm, staggered reveal so the room settles in gently rather than snapping
- * open. Purely presentational; respects reduced-motion via motion-safe.
- */
-function Reveal({ show, index = 0, children }: { show: boolean; index?: number; children: React.ReactNode }) {
+function SegmentHero({ title, backgroundImage, message, atmosphere }: SegmentHeroProps) {
   return (
-    <div
-      className={`transition-all duration-700 ease-out motion-reduce:transition-none ${
-        show ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
-      }`}
-      style={{ transitionDelay: show ? `${index * 110}ms` : "0ms" }}
-    >
-      {children}
-    </div>
-  )
-}
+    <div className="relative w-full overflow-hidden" style={{ minHeight: "420px" }}>
+      {/* Panoramic background — full width of the Design Space */}
+      <div
+        aria-hidden
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url('${backgroundImage}')` }}
+      />
 
-/** A quiet editorial section label — no box, just typographic hierarchy. */
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return <p className="ds-eyebrow text-brand-green-dark/80">{children}</p>
-}
+      {/* Warm brand-tone overlay for readability */}
+      <div
+        aria-hidden
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(160deg, rgba(250,212,220,0.55) 0%, rgba(255,248,245,0.18) 45%, rgba(250,240,230,0.58) 100%)",
+        }}
+      />
 
-/** Operating Planner™ — an executive planning session of reflective prompts. */
-function PlanningSession({ prompts }: { prompts: string[] }) {
-  const [answers, setAnswers] = useState<string[]>(() => prompts.map(() => ""))
-  return (
-    <div className="space-y-7">
-      {prompts.map((prompt, i) => (
-        <div key={prompt}>
-          <label className="block font-serif text-lg leading-snug text-brand-ink" htmlFor={`prompt-${i}`}>
-            {prompt}
-          </label>
-          <textarea
-            id={`prompt-${i}`}
-            value={answers[i]}
-            onChange={(e) => setAnswers((prev) => prev.map((a, idx) => (idx === i ? e.target.value : a)))}
-            rows={1}
-            placeholder="Take a moment…"
-            className="mt-2 w-full resize-none border-0 border-b border-black/10 bg-transparent px-0 py-2 font-serif text-[15px] italic leading-relaxed text-brand-ink-soft placeholder:not-italic placeholder:text-muted-foreground/60 focus:border-brand-green focus:outline-none focus:ring-0"
-          />
+      {/* Soft vignette so glass card pops */}
+      <div
+        aria-hidden
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.14) 100%)",
+        }}
+      />
+
+      {/* Centered glass card — same premium treatment as Design My Week™ */}
+      <div className="relative z-10 flex min-h-[420px] flex-col items-center justify-center px-4 py-16 sm:py-20">
+        <div className="flex w-full max-w-2xl flex-col items-center gap-6">
+          <div
+            className="w-full rounded-3xl border border-white/60 px-8 py-10 text-center shadow-[0_8px_40px_rgba(0,0,0,0.13)] sm:px-12 sm:py-12"
+            style={{ backgroundColor: "rgba(255,255,255,0.87)", backdropFilter: "blur(14px)" }}
+          >
+            {/* Avatar */}
+            <div className="mb-4 h-16 w-16 overflow-hidden rounded-full border-2 border-[#F2A2B5] shadow-sm mx-auto shrink-0">
+              <img
+                src="/images/logo.png"
+                alt="Cherry Blossom"
+                className="h-full w-full object-cover"
+              />
+            </div>
+
+            {/* Eyebrow */}
+            <p className="mb-4 font-sans text-xs font-bold uppercase tracking-[0.22em] text-[#C13B6B]">
+              Cherry Blossom&trade;
+            </p>
+
+            {/* Title */}
+            <h2 className="mb-5 font-playfair text-3xl font-bold leading-tight text-balance text-[#1C161A] sm:text-4xl">
+              {title}
+            </h2>
+
+            {/* Body — rendered as clean flowing paragraphs */}
+            <p className="w-full font-sans font-medium text-[15px] sm:text-[17px] leading-relaxed text-[#1C161A]/80 text-pretty text-left">
+              {message}
+            </p>
+
+            {/* Atmosphere tag */}
+            <p className="mt-6 font-sans text-xs font-semibold uppercase tracking-[0.18em] text-[#78AD7D]">
+              {atmosphere}
+            </p>
+          </div>
         </div>
-      ))}
+      </div>
     </div>
   )
 }
 
-/** CEO Workday Blocks™ — a five-step journey, not a set of dropdowns. */
-function CeoJourney({ blocks }: { blocks: CeoBlock[] }) {
+// ---------------------------------------------------------------------------
+// Design Space™ Placeholder
+// ---------------------------------------------------------------------------
+
+const DESIGN_SPACE_FEATURES = [
+  "My Commitments",
+  "Intention Declaration™",
+  "Cherry Blossom™ Coaching",
+  "Repeat After Me™",
+  "Join Live™",
+  "Harmony Soundscapes™",
+  "Reflection",
+  "Reflection Notes",
+  "AI Coaching",
+  "Resources",
+  "Downloads",
+  "Community",
+  "Progress Tracking",
+]
+
+function DesignSpacePlaceholder() {
   return (
-    <ol className="space-y-6">
-      {blocks.map((block, i) => (
-        <li key={block.id} className="flex gap-4 sm:gap-5">
-          {/* Step indicator + connector */}
-          <div className="flex flex-col items-center">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-brand-green/40 bg-white/70 font-sans text-sm font-semibold text-brand-green-dark">
-              {i + 1}
-            </span>
-            {i < blocks.length - 1 && <span className="mt-1 w-px flex-1 bg-black/10" aria-hidden />}
-          </div>
-          {/* Step content */}
-          <div className="pb-1">
-            <p className="ds-eyebrow text-brand-green-dark/70">{`Step ${i + 1} of ${blocks.length}`}</p>
-            <h4 className="mt-0.5 font-display text-lg text-brand-ink">{block.title}</h4>
-            <p className="mt-1 font-serif text-[15px] leading-relaxed text-brand-ink-soft">{block.description}</p>
-            <span className="mt-2 inline-block text-xs font-medium uppercase tracking-wide text-muted-foreground/70">
-              Arriving soon
-            </span>
-          </div>
-        </li>
-      ))}
-    </ol>
+    <div className="px-6 pb-12 pt-8 sm:px-10 lg:px-14">
+      <div className="mx-auto max-w-3xl">
+        {/* Section header */}
+        <div className="mb-8 text-center">
+          <p className="font-sans text-xs font-bold uppercase tracking-[0.2em] text-[#78AD7D] mb-2">
+            Design Space™
+          </p>
+          <p className="font-serif text-base leading-relaxed text-[#4A3A42]/80 text-pretty max-w-xl mx-auto">
+            This Design Space will soon become your personalized workspace for designing, installing, and
+            continuously improving this part of your Work-Life Balance Business Week™.
+          </p>
+        </div>
+
+        {/* Coming Soon divider */}
+        <div className="flex items-center gap-4 mb-6">
+          <div className="flex-1 h-px bg-[#7FB069]/20" />
+          <span className="font-sans text-xs font-bold uppercase tracking-[0.18em] text-[#6B5860]/70 px-2">
+            Coming Soon
+          </span>
+          <div className="flex-1 h-px bg-[#7FB069]/20" />
+        </div>
+
+        {/* Feature grid */}
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          {DESIGN_SPACE_FEATURES.map((feature) => (
+            <div
+              key={feature}
+              className="flex items-center gap-3 rounded-xl border border-[#7FB069]/15 bg-white/60 px-4 py-3"
+            >
+              <span
+                className="h-1.5 w-1.5 rounded-full shrink-0 bg-[#7FB069]/60"
+                aria-hidden
+              />
+              <span className="font-sans text-sm font-medium text-[#4A3A42]/80">{feature}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   )
 }
+
+// ---------------------------------------------------------------------------
+// OperatingPlanner — main export
+// ---------------------------------------------------------------------------
 
 export function OperatingPlanner({ blockId }: OperatingPlannerProps) {
   const config = PLANNER_CONFIG[blockId]
   const [open, setOpen] = useState(true)
-  const [revealed, setRevealed] = useState(false)
-  const greeting = useGreeting()
-
-  // Trigger the staggered reveal shortly after the body opens.
-  useEffect(() => {
-    if (!open) {
-      setRevealed(false)
-      return
-    }
-    const t = setTimeout(() => setRevealed(true), 40)
-    return () => clearTimeout(t)
-  }, [open])
 
   if (!config) return null
-  const isCeo = blockId === "ceo-workday"
 
   return (
-    // The room. Sits fully below the hero on a white band; its surface tint and
-    // generous spacing make it feel like a distinct, calm environment.
-    <div className="relative z-10 mx-auto max-w-7xl px-4 pb-[4.5rem] pt-8 sm:px-6 lg:px-8">
-      <div className="overflow-hidden rounded-2xl shadow-ds" style={{ backgroundColor: config.surface }}>
-        {/* Room header — identifies the SEGMENT, not "the planner". */}
+    // Full-width wrapper — matches the panoramic hero image width
+    <div className="relative z-10 w-full px-4 pb-[4.5rem] pt-8 sm:px-6 lg:px-8">
+      <div
+        className="overflow-hidden rounded-2xl shadow-ds w-full"
+        style={{ backgroundColor: config.surface }}
+      >
+        {/* Dropdown toggle — preserved from previous version */}
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
@@ -154,86 +202,32 @@ export function OperatingPlanner({ blockId }: OperatingPlannerProps) {
             <span className="mt-1.5 block font-display text-3xl font-semibold tracking-tight text-brand-ink sm:text-4xl">
               {config.title}
             </span>
-            <span className="mt-2 block font-serif text-sm italic text-brand-ink-soft">{config.atmosphere}</span>
+            <span className="mt-2 block font-serif text-sm italic text-brand-ink-soft">
+              {config.atmosphere}
+            </span>
           </span>
           <span className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/70 text-brand-ink-soft">
-            <ChevronDown className={`ds-icon transition-transform duration-300 ${open ? "rotate-180" : ""}`} aria-hidden />
+            <ChevronDown
+              className={`ds-icon transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+              aria-hidden
+            />
             <span className="sr-only">{open ? "Collapse workspace" : "Expand workspace"}</span>
           </span>
         </button>
 
+        {/* Collapsible body */}
         {open && (
-          <div
-            id={`operating-planner-body-${blockId}`}
-            className="px-6 pb-12 sm:px-10 lg:grid lg:grid-cols-[1.1fr_1fr] lg:gap-x-14"
-          >
-            {/* LEFT COLUMN — guidance + the planning session */}
-            <div className="space-y-10">
-              {/* 1 · Cherry Blossom Guidance™ — a concierge welcome, in glass */}
-              <Reveal show={revealed} index={0}>
-                <section className="harmony-glass p-6 sm:p-7">
-                  <SectionLabel>Cherry Blossom Guidance™</SectionLabel>
-                  <p className="mt-3 font-serif text-xl leading-relaxed text-brand-ink">{greeting}</p>
-                  <p className="mt-2 font-serif text-lg leading-relaxed text-brand-ink-soft text-pretty">
-                    {config.guidance}
-                  </p>
-                </section>
-              </Reveal>
+          <div id={`operating-planner-body-${blockId}`}>
+            {/* 1. Cherry Blossom™ Hero — segment-specific panoramic welcome */}
+            <SegmentHero
+              title={config.title}
+              backgroundImage={config.backgroundImage}
+              message={config.cherryBlossomMessage}
+              atmosphere={config.atmosphere}
+            />
 
-              {/* 3 · Operating Planner™ — the executive planning session */}
-              <Reveal show={revealed} index={2}>
-                <section>
-                  <SectionLabel>Operating Planner™</SectionLabel>
-                  <h3 className="mt-1 font-display text-xl text-brand-ink">Design this segment</h3>
-                  <div className="mt-5">
-                    <PlanningSession prompts={config.prompts} />
-                  </div>
-                </section>
-              </Reveal>
-
-              {/* 4 · CEO Workday Blocks™ — the journey (CEO only) */}
-              {isCeo && config.ceoBlocks && (
-                <Reveal show={revealed} index={3}>
-                  <section>
-                    <hr className="harmony-divider mb-8" />
-                    <SectionLabel>CEO Workday Blocks™</SectionLabel>
-                    <h3 className="mt-1 mb-6 font-display text-xl text-brand-ink">Your execution journey</h3>
-                    <CeoJourney blocks={config.ceoBlocks} />
-                  </section>
-                </Reveal>
-              )}
-            </div>
-
-            {/* RIGHT COLUMN — the centerpiece rule + quiet placeholders */}
-            <div className="mt-10 space-y-10 lg:mt-0">
-              {/* 2 · Today's Operating Rule™ — the centerpiece commitment */}
-              <Reveal show={revealed} index={1}>
-                <OperatingRuleCard segmentId={blockId} defaultRuleType={config.defaultRuleType} allowAllTypes={isCeo} />
-              </Reveal>
-
-              {/* 5 · Quiet placeholders — minimal, no heavy boxes */}
-              <Reveal show={revealed} index={4}>
-                <section>
-                  <hr className="harmony-divider mb-8" />
-                  <div className="space-y-6">
-                    <div>
-                      <SectionLabel>Harmony Soundscapes™</SectionLabel>
-                      <p className="mt-1.5 font-serif text-[15px] leading-relaxed text-brand-ink-soft">
-                        Curated soundscapes to help you find focus and flow.{" "}
-                        <span className="text-muted-foreground/70">Arriving soon.</span>
-                      </p>
-                    </div>
-                    <div>
-                      <SectionLabel>Win the Segment™</SectionLabel>
-                      <p className="mt-1.5 font-serif text-[15px] leading-relaxed text-brand-ink-soft">
-                        A short reflection to capture your win and close with intention.{" "}
-                        <span className="text-muted-foreground/70">Arriving soon.</span>
-                      </p>
-                    </div>
-                  </div>
-                </section>
-              </Reveal>
-            </div>
+            {/* 2. Design Space™ placeholder */}
+            <DesignSpacePlaceholder />
           </div>
         )}
       </div>

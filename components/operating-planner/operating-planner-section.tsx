@@ -21,12 +21,13 @@ export function OperatingPlannerSection() {
   const experience = useOperatingEngine()
   const harmonyWeek = useHarmonyWeek()
 
-  // During the Time Freedom™ window (Thu 5 PM → Mon 7 AM) the CEO Workday
-  // planner is intentionally hidden — founders are off the clock.
   if (!experience) return null
-  if (harmonyWeek?.isTimeFreedomNow) return null
 
   const blockId = experience.businessDay.current.id
+
+  // Show Design Space for every segment that has one configured.
+  // During Time Freedom™ (Thu 5 PM → Mon 7 AM) the CEO Workday block is
+  // hidden from the schedule, so it won't be surfaced here either.
   if (!segmentHasPlanner(blockId)) return null
 
   return (
