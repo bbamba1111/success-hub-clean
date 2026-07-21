@@ -793,7 +793,7 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
     <div className="px-6 pb-10 pt-6 sm:px-10 lg:px-14">
       <div className="w-full">
 
-        {/* Segment meta */}
+        {/* Segment meta: type chip + time — matches /design-my-week exactly */}
         <div className="flex items-center gap-3 mb-1 flex-wrap">
           <span className={`font-sans text-xs font-bold uppercase tracking-[0.22em] ${TYPE_COLOR[data.type]}`}>
             {TYPE_LABEL[data.type]}
@@ -809,24 +809,48 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
           )}
         </div>
 
-        <h2 className="font-playfair text-3xl font-bold text-brand-ink mb-2 text-balance">
-          Learn More About This Non-Negotiable™
-        </h2>
-        <p className="font-sans text-[17px] font-medium leading-relaxed text-brand-ink text-pretty mb-6">
-          {data.description}
-        </p>
-
-        {/* Unplug™ CB message */}
-        {data.isUnplug && (
-          <div className="mb-6 rounded-2xl border border-brand-coral/20 bg-brand-coral/[0.04] px-5 py-4">
-            <p className="font-sans text-xs font-bold uppercase tracking-[0.16em] text-brand-coral mb-2">
-              Cherry Blossom™ says:
-            </p>
-            <p className="font-sans text-[15px] font-medium leading-relaxed text-brand-ink italic">
-              &ldquo;Your business is now{" "}
-              <strong className="not-italic">Closed For Business™</strong>. Tomorrow deserves
-              a fully restored CEO.&rdquo;
-            </p>
+        {/* Learn More About This Segment™ accordion — moved to top, right under type + time */}
+        {data.learnMore && (
+          <div className="mb-6 mt-3 rounded-2xl border border-brand-blush bg-brand-cream/50 overflow-hidden">
+            <button
+              type="button"
+              onClick={() => setShowLearnMore((v) => !v)}
+              className="flex w-full items-center justify-between px-5 py-4 text-left"
+              aria-expanded={showLearnMore}
+            >
+              <span className="flex items-center gap-2 font-sans text-sm font-bold text-brand-ink">
+                <Info className="h-4 w-4 text-brand-green" aria-hidden />
+                Learn More About This Segment™
+              </span>
+              <ChevronDown
+                className={`h-4 w-4 text-brand-ink-soft transition-transform duration-200 ${showLearnMore ? "rotate-180" : ""}`}
+                aria-hidden
+              />
+            </button>
+            {showLearnMore && (
+              <div className="px-5 pb-6 space-y-5 font-sans text-[15px] leading-relaxed text-brand-ink">
+                <LearnMoreSection heading="Purpose" body={data.learnMore.purpose} />
+                <LearnMoreSection heading="Why It Matters" body={data.learnMore.whyItMatters} />
+                <LearnMoreSection heading="Scientific Foundation" body={data.learnMore.science} />
+                <LearnMoreSection heading="Business Value" body={data.learnMore.businessValue} />
+                <div>
+                  <p className="font-bold text-brand-ink mb-1.5">Common Mistakes</p>
+                  <ul className="space-y-1 list-disc ml-4">
+                    {data.learnMore.commonMistakes.map((m, i) => <li key={i}>{m}</li>)}
+                  </ul>
+                </div>
+                <div>
+                  <p className="font-bold text-brand-ink mb-1.5">Best Practices</p>
+                  <ul className="space-y-1 list-disc ml-4">
+                    {data.learnMore.bestPractices.map((p, i) => <li key={i}>{p}</li>)}
+                  </ul>
+                </div>
+                <div className="rounded-xl border border-brand-coral/20 bg-brand-coral/5 px-4 py-3">
+                  <p className="font-bold text-brand-coral mb-1">Cherry Blossom™ Tip</p>
+                  <p>{data.learnMore.cbTip}</p>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -875,48 +899,17 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
           </div>
         )}
 
-        {/* Learn More About This Segment™ */}
-        {data.learnMore && (
-          <div className="mb-6 rounded-2xl border border-brand-blush bg-brand-cream/50 overflow-hidden">
-            <button
-              type="button"
-              onClick={() => setShowLearnMore((v) => !v)}
-              className="flex w-full items-center justify-between px-5 py-4 text-left"
-              aria-expanded={showLearnMore}
-            >
-              <span className="flex items-center gap-2 font-sans text-sm font-bold text-brand-ink">
-                <Info className="h-4 w-4 text-brand-green" aria-hidden />
-                Learn More About This Segment™
-              </span>
-              <ChevronDown
-                className={`h-4 w-4 text-brand-ink-soft transition-transform duration-200 ${showLearnMore ? "rotate-180" : ""}`}
-                aria-hidden
-              />
-            </button>
-            {showLearnMore && (
-              <div className="px-5 pb-6 space-y-5 font-sans text-[15px] leading-relaxed text-brand-ink">
-                <LearnMoreSection heading="Purpose" body={data.learnMore.purpose} />
-                <LearnMoreSection heading="Why It Matters" body={data.learnMore.whyItMatters} />
-                <LearnMoreSection heading="Scientific Foundation" body={data.learnMore.science} />
-                <LearnMoreSection heading="Business Value" body={data.learnMore.businessValue} />
-                <div>
-                  <p className="font-bold text-brand-ink mb-1.5">Common Mistakes</p>
-                  <ul className="space-y-1 list-disc ml-4">
-                    {data.learnMore.commonMistakes.map((m, i) => <li key={i}>{m}</li>)}
-                  </ul>
-                </div>
-                <div>
-                  <p className="font-bold text-brand-ink mb-1.5">Best Practices</p>
-                  <ul className="space-y-1 list-disc ml-4">
-                    {data.learnMore.bestPractices.map((p, i) => <li key={i}>{p}</li>)}
-                  </ul>
-                </div>
-                <div className="rounded-xl border border-brand-coral/20 bg-brand-coral/5 px-4 py-3">
-                  <p className="font-bold text-brand-coral mb-1">Cherry Blossom™ Tip</p>
-                  <p>{data.learnMore.cbTip}</p>
-                </div>
-              </div>
-            )}
+        {/* Unplug™ CB message */}
+        {data.isUnplug && (
+          <div className="mb-6 rounded-2xl border border-brand-coral/20 bg-brand-coral/[0.04] px-5 py-4">
+            <p className="font-sans text-xs font-bold uppercase tracking-[0.16em] text-brand-coral mb-2">
+              Cherry Blossom™ says:
+            </p>
+            <p className="font-sans text-[15px] font-medium leading-relaxed text-brand-ink italic">
+              &ldquo;Your business is now{" "}
+              <strong className="not-italic">Closed For Business™</strong>. Tomorrow deserves
+              a fully restored CEO.&rdquo;
+            </p>
           </div>
         )}
 
@@ -933,7 +926,7 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
           <SleepPlanner value={plannedSleep} onChange={setPlannedSleep} />
         )}
 
-        {/* Repeat After Me™ — Intention Declaration at the bottom of the tools card */}
+        {/* Repeat After Me™ / Intention Declaration */}
         <RepeatAfterMe blockId={blockId} data={data} />
 
       </div>
