@@ -470,7 +470,7 @@ function ProgressBar({ step, total }: { step: number; total: number }) {
 
 const TOTAL_STEPS = 22
 
-export function BusinessContextProfile() {
+export function BusinessContextProfile({ onDone }: { onDone?: () => void } = {}) {
   const router = useRouter()
   const cardRef = useRef<HTMLDivElement | null>(null)
   const hasAdvancedRef = useRef(false)
@@ -585,7 +585,11 @@ export function BusinessContextProfile() {
       completedLessons: [],
     })
 
-    router.push("/harmony-blueprint")
+    if (onDone) {
+      onDone()
+    } else {
+      router.push("/harmony-blueprint")
+    }
   }
 
   const completedSteps = step

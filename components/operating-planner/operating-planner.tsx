@@ -27,9 +27,10 @@ import type { BlockId } from "@/operating-engine"
 import { PLANNER_CONFIG } from "@/components/operating-planner/planner-config"
 import dynamic from "next/dynamic"
 
-// Lazy-load the BCA to keep the main bundle lean — only needed in ceo-workday
+// Lazy-load the BCA to keep the main bundle lean — only needed in ceo-workday.
+// BusinessContextProfile is a named export so we re-export it as default here.
 const BusinessContextProfile = dynamic(
-  () => import("@/components/business-context/business-context-profile"),
+  () => import("@/components/business-context/business-context-profile").then(m => ({ default: m.BusinessContextProfile })),
   { ssr: false, loading: () => <div className="py-8 text-center font-sans text-sm text-brand-ink/40">Loading assessment…</div> }
 )
 
@@ -967,7 +968,7 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
             </button>
             {showBca && (
               <div className="border-t border-brand-green/10">
-                <BusinessContextProfile />
+                <BusinessContextProfile onDone={() => setShowBca(false)} />
               </div>
             )}
           </div>
