@@ -140,7 +140,7 @@ export const PRIMARY_NAV: PrimarySection[] = [
     id: "my-harmony",
     navLabel: "My Work-Life Harmony™",
     title: "My Work-Life Harmony™",
-    href: "/my-harmony",
+    href: "/harmony-blueprint",
     icon: Flower2,
     tagline: "Your long-term growth center — audit history, operating maturity, milestones, and whole-life progress.",
     built: false,
