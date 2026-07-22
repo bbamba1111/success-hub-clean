@@ -33,9 +33,7 @@ import {
 import { CeoWorkdayWorkspace } from "@/components/live-today/ceo-workday-workspace"
 import { GpsRecommendationCard } from "@/components/live-today/gps-recommendation-card"
 import { deriveGpsRecommendation, type SegmentId } from "@/lib/founder-gps/engine"
-import { getCherryBlossomGuidance } from "@/lib/harmony-context/cherry-blossom-guidance"
-import { deriveProgressSummary } from "@/lib/founder-gps/progress-intelligence"
-import { deriveUpcomingCherryBlossomEvents } from "@/lib/whole-life-context"
+
 import { assembleHarmonyContext } from "@/lib/founder-gps/context/harmony-context-aggregator"
 import { FounderPresenceBanner } from "@/components/adaptive-workspace/founder-presence-banner"
 import { OperatingModeCard } from "@/components/adaptive-workspace/operating-mode-card"
@@ -88,22 +86,22 @@ function getDayGreeting(): { heading: string; subline: string; badge: string } {
   }
   if (day === 5) return {
     heading: "Welcome to Your Time Freedom™",
-    subline: "Your business week is complete. Enjoy the freedom you intentionally designed. Rest, reconnect, and recharge before next week's journey begins.",
+    subline: "Your business week is complete. Protect the freedom you intentionally created.",
     badge: "TIME FREEDOM™",
   }
   if (day === 6) return {
     heading: "Welcome to Your Time Freedom™",
-    subline: "Your business week is complete. Enjoy the freedom you intentionally designed. Rest, reconnect, and recharge before next week's journey begins.",
+    subline: "Slow down, recharge, connect, and enjoy the life you designed your business to support.",
     badge: "TIME FREEDOM™",
   }
   if (day === 0) return {
     heading: "Welcome to Your Time Freedom™",
-    subline: "Reflect on the week you've completed and prepare to intentionally design the week ahead.",
+    subline: "Enjoy the final day of your Time Freedom™. Reflect on the week you've completed and prepare to intentionally begin another Work-Life Balance Business Week™ tomorrow.",
     badge: "TIME FREEDOM™",
   }
   if (day === 1 && hour < 7) return {
     heading: "Welcome to Your Time Freedom™",
-    subline: "Reflect on the week you've completed and prepare to intentionally design the week ahead.",
+    subline: "Enjoy the final day of your Time Freedom™. Reflect on the week you've completed and prepare to intentionally begin another Work-Life Balance Business Week™ tomorrow.",
     badge: "TIME FREEDOM™",
   }
 
@@ -125,7 +123,7 @@ function getDayGreeting(): { heading: string; subline: string; badge: string } {
   }
   if (day === 4) return {
     heading: "Welcome to Thursday's Work-Life Balance Business Day™",
-    subline: "Finish your business week strong and complete what matters most before entering Time Freedom™.",
+    subline: "Finish your business week strong. Complete what matters most before entering Time Freedom™.",
     badge: "WORK-LIFE BALANCE BUSINESS WEEK™",
   }
 
@@ -248,9 +246,6 @@ export function TodaysOperatingSystem() {
 
 function DynamicHero({ ctx }: { ctx: ReturnType<typeof useHarmonyContext> }) {
   const seg = ctx.currentSegment
-  const progress = deriveProgressSummary()
-  const upcomingEvents = deriveUpcomingCherryBlossomEvents(14)
-  const guidance = getCherryBlossomGuidance(ctx, progress, upcomingEvents)
   const { heading, subline } = getDayGreeting()
 
   return (
@@ -292,18 +287,6 @@ function DynamicHero({ ctx }: { ctx: ReturnType<typeof useHarmonyContext> }) {
               {seg.title}
             </span>
           </div>
-        )}
-
-        {/* Context-aware Cherry Blossom™ message — Phase 9.0 */}
-        <p className="mt-3 font-montserrat text-[14px] leading-relaxed text-white/75 text-pretty max-w-xl">
-          {guidance.message}
-        </p>
-
-        {/* Observation — streak celebration, asset notice, or life event (when present) */}
-        {guidance.observation && (
-          <p className="mt-2 font-montserrat text-[13px] leading-relaxed text-[#E8C4A0]/80 text-pretty max-w-xl">
-            {guidance.observation}
-          </p>
         )}
 
         {/* Animated scroll prompt */}
