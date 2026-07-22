@@ -1,5 +1,6 @@
 import type { BlockId } from "@/operating-engine"
 import type { RuleType } from "@/lib/operating-rules/storage"
+import type { SceneVariant } from "@/components/cherry-blossom/cherry-blossom-scene"
 
 /**
  * Per-segment content for the reusable Operating Planner™ (Phase 3B.1).
@@ -62,6 +63,11 @@ export interface PlannerSegmentConfig {
    * Should match the segment's card image from the schedule.
    */
   backgroundImage: string
+  /**
+   * Which CherryBlossomScene variant to use for this segment's hero.
+   * Defaults to "garden" if omitted.
+   */
+  sceneVariant?: SceneVariant
   /**
    * Cherry Blossom™ welcome message for this segment's Design Space hero.
    * A warm, personal introduction to the purpose and benefit of this segment.
@@ -150,6 +156,7 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
     // Soft sage — the protected execution room.
     surface: "#E7F0E3",
     backgroundImage: "/images/block-ceo-workday.png",
+    sceneVariant: "ceo-office",
     cherryBlossomMessage:
       "Welcome to your 4-Hour Focused CEO Workday™ — the most protected and powerful four hours in your entire Work-Life Balance Business Week™. This is not your busiest time. This is your most strategic time. Deep, uninterrupted work produces 4 to 5 times more output than scattered, reactive hours. Here you lead from your Human Zone of Genius™. You decide what only you can decide. You create what only you can create. Nothing enters this space uninvited.",
     guidance:
