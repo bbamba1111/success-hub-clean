@@ -13,7 +13,6 @@
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
-import { useHarmonyWeek } from "@/components/harmony-week/harmony-week-provider"
 import type { PartOfDay, SessionStatus } from "@/operating-engine"
 
 const STATUS_META: Record<SessionStatus, { label: string; icon: string; className: string; glow?: boolean }> = {
@@ -29,39 +28,97 @@ function scrollToRhythm() {
 }
 
 /**
- * The invitation evolves with the week so the platform feels like a living
- * operating system rather than a static page:
- *   Sun → Sunday Design Day™ (a ~20-min ritual within Time Freedom™)
- *   Mon–Thu → enter that day's Business Day
- *   Fri → Time Freedom begins · Sat → Time Freedom continues
- * 0 = Sunday … 6 = Saturday.
+ * Returns the correct heading, subline, badge pill text, and emoji
+ * based purely on the current calendar day + time.
+ * This is the single source of truth for the hero — no workflow state,
+ * no theme engine, no Synchronize™ / Execute™ / Optimize™ / Finish Strong™.
+ *
+ * Time Freedom™ window: Thursday 5:00 PM → Monday 7:00 AM.
  */
-function getInvitation(
-  dayOfWeek: number,
-  dayName: string,
-): { emoji: string; text: string; accent?: string; subheading?: string } {
-  // Sunday is part of the 3-Day Time Freedom™ Weekend — Design My Week™ is a ~20-min intentional ritual.
-  if (dayOfWeek === 0)
-    return {
-      emoji: "🌸",
-      text: "Design My Week™",
-      accent: "Design My Week™",
-      subheading: "Still your Time Freedom™ — spend about 20 intentional minutes designing the week ahead, then get back to your day.",
-    }
-  // Monday marks the intentional beginning of a new weekly rhythm — not just another workday.
-  if (dayOfWeek === 1)
-    return {
-      emoji: "🌸",
-      text: "Welcome to Your Work-Life Balance Business Week™",
-      accent: "Business Week™",
-      subheading: "Your Redesigned Entry Into the Workweek.",
-    }
-  if (dayOfWeek === 5) return { emoji: "🌿", text: "Welcome to Time Freedom™" }
-  if (dayOfWeek === 6) return { emoji: "🌿", text: "Continue Your Time Freedom™" }
-  return {
+function getCalendarInvitation(): {
+  text: string
+  accent?: string
+  subheading: string
+  badge: string
+  emoji: string
+} {
+  const now = new Date()
+  const day = now.getDay()   // 0=Sun 1=Mon 2=Tue 3=Wed 4=Thu 5=Fri 6=Sat
+  const hour = now.getHours()
+
+  // ── Time Freedom™ window ──────────────────────────────────────────────────
+  if (day === 4 && hour >= 17) return {
+    text: "Welcome to Your Time Freedom™",
+    accent: "Time Freedom™",
+    subheading: "Your business week is complete. Protect the freedom you intentionally created.",
+    badge: "TIME FREEDOM™",
+    emoji: "🌿",
+  }
+  if (day === 5) return {
+    text: "Welcome to Your Time Freedom™",
+    accent: "Time Freedom™",
+    subheading: "Your business week is complete. Protect the freedom you intentionally created.",
+    badge: "TIME FREEDOM™",
+    emoji: "🌿",
+  }
+  if (day === 6) return {
+    text: "Welcome to Your Time Freedom™",
+    accent: "Time Freedom™",
+    subheading: "Slow down, recharge, connect, and enjoy the life you designed your business to support.",
+    badge: "TIME FREEDOM™",
+    emoji: "🌿",
+  }
+  if (day === 0) return {
+    text: "Welcome to Your Time Freedom™",
+    accent: "Time Freedom™",
+    subheading: "Enjoy the final day of your Time Freedom™. Reflect and prepare to begin another Work-Life Balance Business Week™ tomorrow.",
+    badge: "TIME FREEDOM™",
+    emoji: "🌿",
+  }
+  if (day === 1 && hour < 7) return {
+    text: "Welcome to Your Time Freedom™",
+    accent: "Time Freedom™",
+    subheading: "Enjoy the final day of your Time Freedom™. Reflect and prepare to begin another Work-Life Balance Business Week™ tomorrow.",
+    badge: "TIME FREEDOM™",
+    emoji: "🌿",
+  }
+
+  // ── Workweek days ─────────────────────────────────────────────────────────
+  if (day === 1) return {
+    text: "Welcome to Make Time For More Mondays™",
+    accent: "Mondays™",
+    subheading: "Your Redesigned Entry Into the Workweek. Begin another Work-Life Balance Business Week™ with clarity, purpose, and balance.",
+    badge: "MAKE TIME FOR MORE MONDAYS™",
     emoji: "🌸",
-    text: `Enter ${dayName}'s Work-Life Balance Business Day™`,
-    accent: `${dayName}'s`,
+  }
+  if (day === 2) return {
+    text: "Welcome to Tuesday's Work-Life Balance Business Day™",
+    accent: "Tuesday's",
+    subheading: "Continue living the commitments you designed. Protect your rhythm. Lead with intention.",
+    badge: "WORK-LIFE BALANCE BUSINESS WEEK™",
+    emoji: "🌸",
+  }
+  if (day === 3) return {
+    text: "Welcome to Wednesday's Work-Life Balance Business Day™",
+    accent: "Wednesday's",
+    subheading: "Consistency creates momentum. Honor today's commitments and continue building the life you designed.",
+    badge: "WORK-LIFE BALANCE BUSINESS WEEK™",
+    emoji: "🌸",
+  }
+  if (day === 4) return {
+    text: "Welcome to Thursday's Work-Life Balance Business Day™",
+    accent: "Thursday's",
+    subheading: "Finish your business week strong. Complete what matters most before entering Time Freedom™.",
+    badge: "WORK-LIFE BALANCE BUSINESS WEEK™",
+    emoji: "🌸",
+  }
+
+  // Fallback
+  return {
+    text: "Welcome to Your Work-Life Balance Business Day™",
+    subheading: "Live, Lead, and Love Today.",
+    badge: "WORK-LIFE BALANCE BUSINESS WEEK™",
+    emoji: "🌸",
   }
 }
 
@@ -97,26 +154,14 @@ function getDayIntention(part: PartOfDay): string {
 
 export function BusinessDayHero() {
   const experience = useOperatingEngine()
-  const harmonyDay = useHarmonyWeek()
 
   // Stable fallback background before the first client tick.
   const backgroundImage = experience?.theme.backgroundImage ?? "/images/business-day-hero-bg.png"
   const status = experience ? STATUS_META[experience.businessDay.status] : null
 
-  // Derive invitation from HarmonyWeek theme when available, fall back to
-  // the legacy getInvitation() function so the hero degrades gracefully.
-  const invitation = harmonyDay
-    ? {
-        emoji: harmonyDay.isTimeFreedom ? "🌿" : "🌸",
-        text: harmonyDay.isTimeFreedom
-          ? `Welcome to ${harmonyDay.themeName}`
-          : `Welcome to ${harmonyDay.themeName} — Your Work-Life Balance Business Day™`,
-        accent: harmonyDay.themeName,
-        subheading: harmonyDay.tagline,
-      }
-    : experience
-    ? getInvitation(experience.time.dayOfWeek, experience.time.dayName)
-    : { emoji: "🌸", text: "Enter Your Work-Life Balance Business Day™" }
+  // Calendar-driven invitation — day of week + time is the single source of truth.
+  // No workflow state (Synchronize/Execute/Optimize/Finish Strong) involved.
+  const invitation = getCalendarInvitation()
 
   const dayIntention = experience ? getDayIntention(experience.phase.part) : "Today is for intentional living."
 
@@ -130,26 +175,13 @@ export function BusinessDayHero() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="mx-auto max-w-none"
         >
-          {/* Day theme chip — only rendered once HarmonyWeek has ticked */}
-          {harmonyDay && (
-            <div className="mb-4 flex justify-center">
-              <span
-                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-montserrat text-[10px] font-bold uppercase tracking-[0.18em]"
-                style={{
-                  backgroundColor: harmonyDay.accent.color + "18",
-                  color: harmonyDay.accent.color,
-                  border: `1px solid ${harmonyDay.accent.color}30`,
-                }}
-              >
-                <span
-                  className="h-1.5 w-1.5 rounded-full shrink-0"
-                  style={{ backgroundColor: harmonyDay.accent.color }}
-                  aria-hidden
-                />
-                {harmonyDay.themeName}
-              </span>
-            </div>
-          )}
+          {/* Day badge pill — driven by calendar, not workflow state */}
+          <div className="mb-4 flex justify-center">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#5B835F]/30 bg-[#5B835F]/10 px-3 py-1 font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#3a5c3d]">
+              <span className="h-1.5 w-1.5 rounded-full shrink-0 bg-[#5B835F]" aria-hidden />
+              {invitation.badge}
+            </span>
+          </div>
           <h1 className="text-balance font-playfair text-4xl font-semibold leading-tight tracking-tight text-[#1C161A] sm:text-5xl">
             <AccentedTitle text={invitation.text} accent={invitation.accent} />
           </h1>
