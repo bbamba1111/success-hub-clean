@@ -104,12 +104,12 @@ function getDayGreeting(): { heading: string; subline: string } {
 
   // Workweek days
   if (day === 1) return {
-    heading: "Welcome to Monday's Work-Life Balance Business Day™",
+    heading: "Welcome to Make Time For More On Mondays™",
     subline: "Your Redesigned Entry Into The Workweek",
   }
   if (day === 2) return {
     heading: "Welcome to Tuesday's Work-Life Balance Business Day™",
-    subline: "A focused day of CEO work, life, and everything in between.",
+    subline: "This is the day things get done. Move with purpose.",
   }
   if (day === 3) return {
     heading: "Welcome to Wednesday's Work-Life Balance Business Day™",
@@ -127,6 +127,55 @@ function getDayGreeting(): { heading: string; subline: string } {
   }
 }
 
+/** Returns just the day name string for the banner pill. */
+function getDayName(): string {
+  const names = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+  return names[new Date().getDay()]
+}
+
+// ─── Day-of-Week Banner™ ──────────────────────────────────────────────────────
+// Full-width display heading — large serif, day name in italic brand-coral,
+// matching the panoramic section style shown in the design reference.
+
+function DayOfWeekBanner() {
+  const { heading, subline } = getDayGreeting()
+  const dayName = getDayName()
+  const isTimeFreedom = isTimeFreedomDay()
+
+  // Split the heading to highlight the day name in italic coral
+  // e.g. "Welcome to Tuesday's Work-Life Balance Business Day™"
+  //       → "Welcome to " + "Tuesday's" + " Work-Life Balance Business Day™"
+  const parts = heading.split(new RegExp(`(${dayName}(?:'s)?)`, "i"))
+
+  return (
+    <div className="w-full bg-[#FAF6F0] px-6 py-14 text-center sm:px-10 sm:py-20">
+      {/* Day pill */}
+      <div className="mb-6 flex justify-center">
+        <span className="inline-flex items-center gap-2 rounded-full border border-brand-green/30 bg-brand-green/10 px-4 py-1.5 font-montserrat text-[11px] font-bold uppercase tracking-[0.22em] text-brand-green-dark">
+          <span className="h-1.5 w-1.5 rounded-full bg-brand-green" aria-hidden />
+          {isTimeFreedom ? "Time Freedom™" : `${dayName}™`}
+        </span>
+      </div>
+
+      {/* Main heading — day name highlighted in italic coral */}
+      <h1 className="font-playfair text-4xl font-bold text-brand-ink leading-tight text-balance sm:text-5xl lg:text-6xl">
+        {parts.map((part, i) =>
+          part.toLowerCase().startsWith(dayName.toLowerCase()) ? (
+            <span key={i} className="italic text-brand-coral">{part}</span>
+          ) : (
+            <span key={i}>{part}</span>
+          )
+        )}
+      </h1>
+
+      {/* Subline */}
+      <p className="mt-4 font-montserrat text-base font-semibold text-brand-green sm:text-lg">
+        {subline}
+      </p>
+    </div>
+  )
+}
+
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export function TodaysOperatingSystem() {
@@ -140,6 +189,9 @@ export function TodaysOperatingSystem() {
     <div className="w-full">
       {/* Founder Presence Banner™ — Phase 10.6: thin contextual layer above hero */}
       <FounderPresenceBanner />
+
+      {/* Day-of-Week Banner™ — full-width display heading above Dynamic Hero */}
+      <DayOfWeekBanner />
 
       {/* Dynamic Hero™ */}
       <DynamicHero ctx={ctx} />

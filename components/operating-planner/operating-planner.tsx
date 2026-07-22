@@ -788,8 +788,8 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
   const isPowerDown = blockId === "power-down"
 
   return (
-    <div className="px-6 pb-10 pt-6 sm:px-10 lg:px-14">
-      <div className="w-full">
+    <div className="px-6 pb-10 pt-6 sm:px-12 lg:px-20 xl:px-28">
+      <div className="w-full max-w-5xl mx-auto">
 
         {/* Segment meta: type chip + time */}
         <div className="flex items-center gap-3 mb-2 flex-wrap">
@@ -952,11 +952,11 @@ export function OperatingPlanner({ blockId }: OperatingPlannerProps) {
   if (!config) return null
 
   return (
-    /* Panoramic outer wrapper — full width, no horizontal padding */
+    /* Panoramic outer wrapper — truly full width, no margin constraints */
     <div className="relative z-10 w-full pb-[4.5rem] pt-8">
-      {/* Toggle header — constrained width, padded */}
+      {/* Toggle header — full width */}
       <div
-        className="mx-4 sm:mx-6 lg:mx-8 overflow-hidden rounded-t-2xl"
+        className="w-full overflow-hidden rounded-none"
         style={{ backgroundColor: config.surface }}
       >
         <button
@@ -964,7 +964,7 @@ export function OperatingPlanner({ blockId }: OperatingPlannerProps) {
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-controls={`operating-planner-body-${blockId}`}
-          className="flex w-full items-start justify-between gap-4 px-6 pt-8 pb-6 text-left sm:px-10 sm:pt-10"
+          className="flex w-full items-start justify-between gap-4 px-6 pt-8 pb-6 text-left sm:px-12 sm:pt-10"
         >
           <span>
             <span className="ds-eyebrow text-brand-green-dark/70">{config.workspaceLabel}</span>
@@ -996,11 +996,11 @@ export function OperatingPlanner({ blockId }: OperatingPlannerProps) {
             </CherryBlossomSceneCard>
           </CherryBlossomScene>
 
-          {/* 2. Segment tools — white card below, panoramic padded container */}
+          {/* 2. Segment tools — full-width, no max-w constraint */}
           {data && (
-            <div className="w-full px-4 py-10 sm:px-8 lg:px-12" style={{ backgroundColor: config.surface }}>
-              <div className="mx-auto max-w-4xl">
-                <div className="rounded-2xl bg-white border border-brand-blush/30 shadow-sm overflow-hidden">
+            <div className="w-full px-0 py-0" style={{ backgroundColor: config.surface }}>
+              <div className="w-full">
+                <div className="bg-white border-t border-brand-blush/20 shadow-sm overflow-hidden">
                   <SegmentBody blockId={blockId} data={data} config={config} />
                 </div>
               </div>
