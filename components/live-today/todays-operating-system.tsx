@@ -104,7 +104,7 @@ function getDayGreeting(): { heading: string; subline: string } {
 
   // Workweek days
   if (day === 1) return {
-    heading: "Welcome to Make Time For More On Monday™",
+    heading: "Welcome to Monday's Work-Life Balance Business Day™",
     subline: "Your Redesigned Entry Into The Workweek",
   }
   if (day === 2) return {
@@ -122,8 +122,8 @@ function getDayGreeting(): { heading: string; subline: string } {
 
   // Fallback
   return {
-    heading: "Live & Lead Today™",
-    subline: "Your Work-Life Balance Business Day™ is ready.",
+    heading: "Welcome to Your Work-Life Balance Business Day™",
+    subline: "Live, Lead, and Love Today.",
   }
 }
 
@@ -244,16 +244,6 @@ function DynamicHero({ ctx }: { ctx: ReturnType<typeof useHarmonyContext> }) {
             {guidance.observation}
           </p>
         )}
-
-        {/* Two-OS badge row */}
-        <div className="mt-6 flex flex-wrap gap-2">
-          <span className="rounded-full border border-[#5B835F]/60 bg-[#5B835F]/20 px-3 py-1 font-montserrat text-[11px] font-semibold uppercase tracking-[0.14em] text-[#A8C4AA]">
-            Sustainable Operating Practices™
-          </span>
-          <span className="rounded-full border border-[#C13B6B]/40 bg-[#C13B6B]/15 px-3 py-1 font-montserrat text-[11px] font-semibold uppercase tracking-[0.14em] text-[#E8A0B4]">
-            Business Operating System™
-          </span>
-        </div>
 
         {/* Animated scroll prompt */}
         <div className="mt-8 flex flex-col items-start gap-1.5 select-none pointer-events-none" aria-hidden>

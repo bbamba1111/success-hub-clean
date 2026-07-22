@@ -640,9 +640,6 @@ function RepeatAfterMe({ blockId, data }: RepeatAfterMeProps) {
   if (confirmed && declaration) {
     return (
       <div className="mt-6 w-full space-y-4 text-left">
-        <p className="font-sans text-xs font-bold uppercase tracking-[0.2em] text-brand-coral">
-          Repeat After Me™
-        </p>
         <div className="rounded-2xl border border-brand-green/20 bg-brand-green/5 px-5 py-4">
           <p className={`font-sans text-xs font-bold uppercase tracking-[0.2em] mb-2 ${TYPE_COLOR[data.type]}`}>
             {TYPE_DECLARATION_LABEL[data.type]}
@@ -670,9 +667,10 @@ function RepeatAfterMe({ blockId, data }: RepeatAfterMeProps) {
 
   return (
     <div className="mt-6 w-full space-y-4 text-left">
-      {/* Section label */}
-      <p className="font-sans text-xs font-bold uppercase tracking-[0.2em] text-brand-coral">
-        Repeat After Me™
+      {/* Instruction */}
+      <p className="font-sans text-[14px] leading-relaxed text-brand-ink-soft text-pretty">
+        For this segment, complete the commitment. I will transform it into an{" "}
+        <strong className="text-brand-ink">Intention Declaration™</strong> you will live from, this week.
       </p>
 
       {/* Example chips */}
@@ -793,8 +791,8 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
     <div className="px-6 pb-10 pt-6 sm:px-10 lg:px-14">
       <div className="w-full">
 
-        {/* Segment meta: type chip + time — matches /design-my-week exactly */}
-        <div className="flex items-center gap-3 mb-1 flex-wrap">
+        {/* Segment meta: type chip + time */}
+        <div className="flex items-center gap-3 mb-2 flex-wrap">
           <span className={`font-sans text-xs font-bold uppercase tracking-[0.22em] ${TYPE_COLOR[data.type]}`}>
             {TYPE_LABEL[data.type]}
           </span>
@@ -809,7 +807,12 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
           )}
         </div>
 
-        {/* Learn More About This Segment™ accordion — moved to top, right under type + time */}
+        {/* Segment title — e.g. "Design My Time Freedom™" */}
+        <h2 className="font-playfair text-3xl font-bold text-brand-ink mb-4 text-balance">
+          {config.title}
+        </h2>
+
+        {/* Learn More About This Segment™ accordion — right under title */}
         {data.learnMore && (
           <div className="mb-6 mt-3 rounded-2xl border border-brand-blush bg-brand-cream/50 overflow-hidden">
             <button
