@@ -25,6 +25,13 @@ import { ArrowRight, CheckCircle2, ChevronDown, Clock, Info, Plus, Trash2 } from
 import { CherryBlossomScene, CherryBlossomSceneCard } from "@/components/cherry-blossom/cherry-blossom-scene"
 import type { BlockId } from "@/operating-engine"
 import { PLANNER_CONFIG } from "@/components/operating-planner/planner-config"
+import dynamic from "next/dynamic"
+
+// Lazy-load the BCA to keep the main bundle lean — only needed in ceo-workday
+const BusinessContextProfile = dynamic(
+  () => import("@/components/business-context/business-context-profile"),
+  { ssr: false, loading: () => <div className="py-8 text-center font-sans text-sm text-brand-ink/40">Loading assessment…</div> }
+)
 
 // ---------------------------------------------------------------------------
 // Segment data — ported from /design-my-week so each Design Space is fully
@@ -781,6 +788,7 @@ interface SegmentBodyProps {
 function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
   const [showFlexInfo, setShowFlexInfo] = useState(false)
   const [showLearnMore, setShowLearnMore] = useState(false)
+  const [showBca, setShowBca] = useState(false)
   const [plannedActivities, setPlannedActivities] = useState<PlannedActivity[]>([])
   const [plannedSleep, setPlannedSleep] = useState<number | null>(null)
 
@@ -931,6 +939,39 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
 
         {/* Repeat After Me™ / Intention Declaration */}
         <RepeatAfterMe blockId={blockId} data={data} />
+
+        {/* Business Context Assessment™ accordion — ceo-workday only */}
+        {blockId === "ceo-workday" && (
+          <div className="mt-8 rounded-2xl border border-brand-green/20 bg-brand-green/[0.04] overflow-hidden">
+            <button
+              type="button"
+              onClick={() => setShowBca((v) => !v)}
+              aria-expanded={showBca}
+              className="flex w-full items-center justify-between px-5 py-5 text-left hover:bg-brand-green/[0.04] transition-colors"
+            >
+              <div className="flex items-start gap-3">
+                <Info className="h-5 w-5 text-brand-green mt-0.5 shrink-0" aria-hidden />
+                <div>
+                  <p className="font-sans text-base font-bold text-brand-ink">
+                    Business Context Assessment™
+                  </p>
+                  <p className="font-sans text-[13px] leading-relaxed text-brand-ink/55 mt-0.5 max-w-lg">
+                    Complete your Business Context Assessment™ to help Harmony Lane™ better understand your business and provide more personalized executive guidance and recommendations.
+                  </p>
+                </div>
+              </div>
+              <ChevronDown
+                className={`ml-4 h-5 w-5 shrink-0 text-brand-green/60 transition-transform duration-200 ${showBca ? "rotate-180" : ""}`}
+                aria-hidden
+              />
+            </button>
+            {showBca && (
+              <div className="border-t border-brand-green/10">
+                <BusinessContextProfile />
+              </div>
+            )}
+          </div>
+        )}
 
       </div>
     </div>
