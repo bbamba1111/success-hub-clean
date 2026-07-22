@@ -814,24 +814,24 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
 
         {/* Learn More About This Segment™ accordion — right under title */}
         {data.learnMore && (
-          <div className="mb-6 mt-3 rounded-2xl border border-brand-blush bg-brand-cream/50 overflow-hidden">
+          <div className="mb-6 mt-3 rounded-2xl border border-brand-green/20 bg-brand-green/[0.05] overflow-hidden">
             <button
               type="button"
               onClick={() => setShowLearnMore((v) => !v)}
-              className="flex w-full items-center justify-between px-5 py-4 text-left"
+              className="flex w-full items-center justify-between px-5 py-4 text-left hover:bg-brand-green/[0.04] transition-colors"
               aria-expanded={showLearnMore}
             >
-              <span className="flex items-center gap-2 font-sans text-sm font-bold text-brand-ink">
+              <span className="flex items-center gap-2 font-sans text-sm font-bold text-brand-green-dark">
                 <Info className="h-4 w-4 text-brand-green" aria-hidden />
                 Learn More About This Segment™
               </span>
               <ChevronDown
-                className={`h-4 w-4 text-brand-ink-soft transition-transform duration-200 ${showLearnMore ? "rotate-180" : ""}`}
+                className={`h-4 w-4 text-brand-green/60 transition-transform duration-200 ${showLearnMore ? "rotate-180" : ""}`}
                 aria-hidden
               />
             </button>
             {showLearnMore && (
-              <div className="px-5 pb-6 space-y-5 font-sans text-[15px] leading-relaxed text-brand-ink">
+              <div className="px-5 pb-6 pt-1 space-y-5 font-sans text-[15px] leading-relaxed text-brand-ink border-t border-brand-green/10">
                 <LearnMoreSection heading="Purpose" body={data.learnMore.purpose} />
                 <LearnMoreSection heading="Why It Matters" body={data.learnMore.whyItMatters} />
                 <LearnMoreSection heading="Scientific Foundation" body={data.learnMore.science} />
@@ -848,8 +848,8 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
                     {data.learnMore.bestPractices.map((p, i) => <li key={i}>{p}</li>)}
                   </ul>
                 </div>
-                <div className="rounded-xl border border-brand-coral/20 bg-brand-coral/5 px-4 py-3">
-                  <p className="font-bold text-brand-coral mb-1">Cherry Blossom™ Tip</p>
+                <div className="rounded-xl border border-brand-green/20 bg-brand-green/[0.06] px-4 py-3">
+                  <p className="font-bold text-brand-green-dark mb-1">Cherry Blossom™ Tip</p>
                   <p>{data.learnMore.cbTip}</p>
                 </div>
               </div>
@@ -996,13 +996,13 @@ export function OperatingPlanner({ blockId }: OperatingPlannerProps) {
             </CherryBlossomSceneCard>
           </CherryBlossomScene>
 
-          {/* 2. Segment tools — full-width, no max-w constraint */}
+          {/* 2. Design Space — tinted surface bg + elevated white workspace card */}
           {data && (
-            <div className="w-full px-0 py-0" style={{ backgroundColor: config.surface }}>
-              <div className="w-full">
-                <div className="bg-white border-t border-brand-blush/20 shadow-sm overflow-hidden">
-                  <SegmentBody blockId={blockId} data={data} config={config} />
-                </div>
+            // Part 5: subtle tinted background spans the full design space area
+            <div className="w-full px-4 pb-12 pt-12 sm:px-8 lg:px-12" style={{ backgroundColor: config.surface }}>
+              {/* Part 6: single elevated white workspace card */}
+              <div className="mx-auto w-full max-w-5xl rounded-3xl bg-white shadow-[0_4px_32px_rgba(0,0,0,0.08)] overflow-hidden ring-1 ring-black/[0.04]">
+                <SegmentBody blockId={blockId} data={data} config={config} />
               </div>
             </div>
           )}

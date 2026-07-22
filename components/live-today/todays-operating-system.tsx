@@ -75,55 +75,65 @@ function isTimeFreedomDay(): boolean {
 }
 
 /** Returns the day-of-week main heading and sub-line for the Dynamic Hero™. */
-function getDayGreeting(): { heading: string; subline: string } {
+function getDayGreeting(): { heading: string; subline: string; badge: string } {
   const now = new Date()
   const day = now.getDay()
   const hour = now.getHours()
 
   // Time Freedom™ window: Thu 5pm – Mon 7am
   if (day === 4 && hour >= 17) return {
-    heading: "Welcome to Time Freedom™",
-    subline: "Your business is resting. Life is the priority.",
+    heading: "Welcome to Your Time Freedom™",
+    subline: "Your business week is complete. Enjoy the freedom you intentionally designed. Rest, reconnect, and recharge before next week's journey begins.",
+    badge: "TIME FREEDOM™",
   }
   if (day === 5) return {
-    heading: "Welcome to Time Freedom™",
-    subline: "Your business is resting. Life is the priority.",
+    heading: "Welcome to Your Time Freedom™",
+    subline: "Your business week is complete. Enjoy the freedom you intentionally designed. Rest, reconnect, and recharge before next week's journey begins.",
+    badge: "TIME FREEDOM™",
   }
   if (day === 6) return {
-    heading: "Welcome to Time Freedom™",
-    subline: "Your business is resting. Life is the priority.",
+    heading: "Welcome to Your Time Freedom™",
+    subline: "Your business week is complete. Enjoy the freedom you intentionally designed. Rest, reconnect, and recharge before next week's journey begins.",
+    badge: "TIME FREEDOM™",
   }
   if (day === 0) return {
-    heading: "Welcome to Time Freedom™",
-    subline: "Your business is resting. Life is the priority.",
+    heading: "Welcome to Your Time Freedom™",
+    subline: "Reflect on the week you've completed and prepare to intentionally design the week ahead.",
+    badge: "TIME FREEDOM™",
   }
   if (day === 1 && hour < 7) return {
-    heading: "Welcome to Time Freedom™",
-    subline: "Your business is resting. Life is the priority.",
+    heading: "Welcome to Your Time Freedom™",
+    subline: "Reflect on the week you've completed and prepare to intentionally design the week ahead.",
+    badge: "TIME FREEDOM™",
   }
 
   // Workweek days
   if (day === 1) return {
-    heading: "Welcome to Make Time For More On Mondays™",
-    subline: "Your Redesigned Entry Into The Workweek",
+    heading: "Welcome to Make Time For More Mondays™",
+    subline: "Your Redesigned Entry Into the Workweek. Today we intentionally begin another Work-Life Balance Business Week™ with clarity, purpose, and balance.",
+    badge: "MAKE TIME FOR MORE MONDAYS™",
   }
   if (day === 2) return {
     heading: "Welcome to Tuesday's Work-Life Balance Business Day™",
-    subline: "This is the day things get done. Move with purpose.",
+    subline: "Continue living the commitments you designed. Protect your rhythm. Lead with intention.",
+    badge: "WORK-LIFE BALANCE BUSINESS WEEK™",
   }
   if (day === 3) return {
     heading: "Welcome to Wednesday's Work-Life Balance Business Day™",
-    subline: "Midweek momentum — stay the course.",
+    subline: "Consistency creates momentum. Honor today's commitments and continue building the life you designed.",
+    badge: "WORK-LIFE BALANCE BUSINESS WEEK™",
   }
   if (day === 4) return {
     heading: "Welcome to Thursday's Work-Life Balance Business Day™",
-    subline: "Time Freedom™ begins at 5:00 PM. Finish strong.",
+    subline: "Finish your business week strong and complete what matters most before entering Time Freedom™.",
+    badge: "WORK-LIFE BALANCE BUSINESS WEEK™",
   }
 
   // Fallback
   return {
     heading: "Welcome to Your Work-Life Balance Business Day™",
     subline: "Live, Lead, and Love Today.",
+    badge: "WORK-LIFE BALANCE BUSINESS WEEK™",
   }
 }
 
@@ -138,26 +148,25 @@ function getDayName(): string {
 // matching the panoramic section style shown in the design reference.
 
 function DayOfWeekBanner() {
-  const { heading, subline } = getDayGreeting()
+  const { heading, subline, badge } = getDayGreeting()
   const dayName = getDayName()
-  const isTimeFreedom = isTimeFreedomDay()
 
-  // Split the heading to highlight the day name in italic coral
+  // Split heading to italicise + colour the day name portion
   // e.g. "Welcome to Tuesday's Work-Life Balance Business Day™"
-  //       → "Welcome to " + "Tuesday's" + " Work-Life Balance Business Day™"
+  //   → ["Welcome to ", "Tuesday's", " Work-Life Balance Business Day™"]
   const parts = heading.split(new RegExp(`(${dayName}(?:'s)?)`, "i"))
 
   return (
     <div className="w-full bg-[#FAF6F0] px-6 py-14 text-center sm:px-10 sm:py-20">
-      {/* Day pill */}
+      {/* Badge pill — exact spec text */}
       <div className="mb-6 flex justify-center">
         <span className="inline-flex items-center gap-2 rounded-full border border-brand-green/30 bg-brand-green/10 px-4 py-1.5 font-montserrat text-[11px] font-bold uppercase tracking-[0.22em] text-brand-green-dark">
           <span className="h-1.5 w-1.5 rounded-full bg-brand-green" aria-hidden />
-          {isTimeFreedom ? "Time Freedom™" : `${dayName}™`}
+          {badge}
         </span>
       </div>
 
-      {/* Main heading — day name highlighted in italic coral */}
+      {/* Main heading — day name in italic brand-coral */}
       <h1 className="font-playfair text-4xl font-bold text-brand-ink leading-tight text-balance sm:text-5xl lg:text-6xl">
         {parts.map((part, i) =>
           part.toLowerCase().startsWith(dayName.toLowerCase()) ? (
@@ -169,7 +178,7 @@ function DayOfWeekBanner() {
       </h1>
 
       {/* Subline */}
-      <p className="mt-4 font-montserrat text-base font-semibold text-brand-green sm:text-lg">
+      <p className="mt-5 mx-auto max-w-2xl font-montserrat text-base leading-relaxed text-brand-green sm:text-lg">
         {subline}
       </p>
     </div>
@@ -242,7 +251,7 @@ function DynamicHero({ ctx }: { ctx: ReturnType<typeof useHarmonyContext> }) {
   const progress = deriveProgressSummary()
   const upcomingEvents = deriveUpcomingCherryBlossomEvents(14)
   const guidance = getCherryBlossomGuidance(ctx, progress, upcomingEvents)
-  const dayGreeting = getDayGreeting()
+  const { heading, subline } = getDayGreeting()
 
   return (
     <header className="relative overflow-hidden bg-[#2C3E2D] px-6 py-10 sm:py-14">
@@ -265,12 +274,12 @@ function DynamicHero({ ctx }: { ctx: ReturnType<typeof useHarmonyContext> }) {
           </div>
         </div>
 
-        {/* Day-of-week main greeting — always shown as the primary heading */}
+        {/* Day-of-week main greeting */}
         <h1 className="font-playfair text-3xl font-medium text-white leading-tight text-balance sm:text-4xl">
-          {dayGreeting.heading}
+          {heading}
         </h1>
-        <p className="mt-2 font-montserrat text-sm font-semibold text-[#E8C4A0]/90 text-balance">
-          {dayGreeting.subline}
+        <p className="mt-2 font-montserrat text-sm font-semibold text-[#E8C4A0]/90 text-balance max-w-xl">
+          {subline}
         </p>
 
         {/* Current segment — shown as a contextual badge below the main heading */}
