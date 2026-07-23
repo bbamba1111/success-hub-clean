@@ -57,7 +57,7 @@ export function TopNavigation() {
           {/* Primary 4-section navigation (Live Today / Lead / Share / Grow) */}
           {user && (
             <div className="flex items-center gap-1 sm:gap-2">
-              {PRIMARY_DESTINATIONS.map(({ id, navLabel, href, icon: Icon }) => {
+              {PRIMARY_DESTINATIONS.map(({ id, navLabel, href }) => {
                 const active = isActive(href)
                 return (
                   <Link key={id} href={href}>
@@ -70,7 +70,6 @@ export function TopNavigation() {
                       }`}
                       data-testid={`button-nav-${id}`}
                     >
-                      <Icon className={`h-4 w-4 ${active ? "text-[#5D9D61]" : ""}`} />
                       <span className="hidden sm:inline">{navLabel}</span>
                     </Button>
                   </Link>
