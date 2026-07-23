@@ -74,27 +74,37 @@ export interface PrimarySection {
 export const PRIMARY_NAV: PrimarySection[] = [
   {
     id: "sunday-design-day",
-    navLabel: "Design My Week™",
-    title: "Design My Week™",
-    href: "/begin",
+    navLabel: "Measure Monthly™",
+    title: "Measure Monthly™",
+    href: "/founder-profile",
     icon: CalendarCheck,
-    tagline: "Install your Work-Life Balance Business Week™ — your weekly operating system design experience.",
+    tagline: "Complete your monthly Work-Life Balance Reality Check™ and Entrepreneur Success Assessment™.",
     built: true,
     workspaces: [
       {
-        label: "Design My Week™",
-        href: "/begin",
-        description: "Install your Daily Non-Negotiables™, Intention Declarations™, and weekly operating rhythm.",
+        label: "Founder & Business Profile™",
+        href: "/founder-profile",
+        description: "Update your personal and business profile — the foundation of your Harmony Blueprint™.",
+      },
+      {
+        label: "Work-Life Balance Reality Check™",
+        href: "/audit",
+        description: "Measure how your life has been operating over the past 30 days.",
+      },
+      {
+        label: "Entrepreneur Success Assessment™",
+        href: "/entrepreneur-success-assessment",
+        description: "Measure how your business has been operating over the past 30 days.",
       },
     ],
   },
   {
     id: "live-today",
-    navLabel: "Live & Lead Today™",
-    title: "Live & Lead Today™",
+    navLabel: "Live & Lead Daily™",
+    title: "Live & Lead Daily™",
     href: "/",
     icon: Sunrise,
-    tagline: "Live your Sustainable Operating Practices™ and lead your Business Operating System™ — every day.",
+    tagline: "Live your Daily Non-Negotiables™ and lead your 4-Hour CEO Workday™ — every day.",
     built: true,
     workspaces: [
       {
