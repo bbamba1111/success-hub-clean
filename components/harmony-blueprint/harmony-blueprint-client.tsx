@@ -204,7 +204,7 @@ export function HarmonyBlueprintClient() {
     <div className="min-h-screen bg-brand-cream">
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <CherryBlossomScene variant="garden" minHeight="min-h-[60vh]">
+      <CherryBlossomScene variant="garden" minHeight="min-h-[60vh]" noBackground>
         <CherryBlossomSceneCard
           title="My Work-Life Harmony Blueprint™"
           scrollPrompt="Open My Blueprint™"
@@ -631,7 +631,7 @@ export function HarmonyBlueprintClient() {
           </div>
         </Chapter>
 
-        {/* ── Chapter 11: Executive Vault™ ────────────────────────────────── */}
+        {/* ── Chapter 11: Executive Vault™ ─────────────────���──────────────── */}
         <Chapter
           icon={Archive}
           chapter="Chapter 11"

@@ -1032,7 +1032,7 @@ export function OperatingPlanner({ blockId }: OperatingPlannerProps) {
         <div id={`operating-planner-body-${blockId}`} className="w-full">
 
           {/* 1. Cherry Blossom™ Hero — segment-specific background */}
-          <CherryBlossomScene variant={config.sceneVariant ?? "garden"} minHeight="min-h-[60vh]">
+          <CherryBlossomScene variant={config.sceneVariant ?? "garden"} minHeight="min-h-[60vh]" noBackground>
             <CherryBlossomSceneCard title={config.welcomeName} maxWidth="max-w-3xl">
               <p>{config.cherryBlossomMessage}</p>
             </CherryBlossomSceneCard>

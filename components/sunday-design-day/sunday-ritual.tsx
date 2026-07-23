@@ -116,7 +116,7 @@ function WelcomeScreen({
 
   return (
     <main className="min-h-screen bg-brand-cream">
-      <CherryBlossomScene variant="garden" minHeight="min-h-screen">
+      <CherryBlossomScene variant="garden" minHeight="min-h-screen" noBackground>
         <CherryBlossomSceneCard
           title={isFirst ? "Welcome to Your First Work-Life Balance Business Week™" : "Welcome Back to Your Work-Life Balance Business Week™"}
           time={isFirst ? "5 mins" : "About 15–20 minutes"}

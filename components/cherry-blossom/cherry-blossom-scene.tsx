@@ -49,35 +49,43 @@ interface CherryBlossomSceneProps {
   variant: SceneVariant
   children: React.ReactNode
   minHeight?: string
+  /** When true, suppresses the photographic background and overlays — renders
+   *  a plain bg-brand-cream surface so the glass card floats on a clean field. */
+  noBackground?: boolean
 }
 
 export function CherryBlossomScene({
   variant,
   children,
   minHeight = "min-h-[70vh]",
+  noBackground = false,
 }: CherryBlossomSceneProps) {
   const scene = SCENE_CONFIG[variant]
 
   return (
     <section
-      className={`relative isolate overflow-hidden w-full ${minHeight}`}
+      className={`relative isolate overflow-hidden w-full ${minHeight} ${noBackground ? "bg-brand-cream" : ""}`}
       aria-label={scene.ariaLabel}
     >
-      {/* Photographic background */}
-      <div
-        aria-hidden
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url('${scene.src}')` }}
-      />
+      {!noBackground && (
+        <>
+          {/* Photographic background */}
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: `url('${scene.src}')` }}
+          />
 
-      {/* Brand-tone overlay — softens photo, ensures readability */}
-      <div aria-hidden className={`absolute inset-0 ${scene.overlay}`} />
+          {/* Brand-tone overlay — softens photo, ensures readability */}
+          <div aria-hidden className={`absolute inset-0 ${scene.overlay}`} />
 
-      {/* Soft vignette so glass card pops */}
-      <div
-        aria-hidden
-        className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,rgba(0,0,0,0.15)_100%)]"
-      />
+          {/* Soft vignette so glass card pops */}
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,rgba(0,0,0,0.15)_100%)]"
+          />
+        </>
+      )}
 
       {/* Content layer */}
       <div className="relative z-10 flex flex-col items-center justify-center px-4 py-16 sm:py-20 min-h-[inherit]">
