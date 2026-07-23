@@ -47,7 +47,7 @@ export function TopNavigation() {
         <div className="grid items-center" style={{ gridTemplateColumns: "1fr auto 1fr" }}>
 
           {/* Logo — pushed 55% from left within its column */}
-          <div className="flex items-center" style={{ paddingLeft: "55%" }}>
+          <div className="flex items-center" style={{ paddingLeft: "calc(55% - 48px)" }}>
             <Link href="/" className="flex items-center gap-2 shrink-0">
               <img
                 src="/images/logo.png"
