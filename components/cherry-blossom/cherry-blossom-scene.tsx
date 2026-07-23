@@ -49,12 +49,20 @@ interface CherryBlossomSceneProps {
   variant: SceneVariant
   children: React.ReactNode
   minHeight?: string
+  /**
+   * Optional editorial backdrop image URL. When provided, replaces the
+   * built-in variant photo with this image, rendered at 25% opacity with
+   * a 6px blur, desaturated, and a warm ivory overlay — premium lifestyle
+   * backdrop treatment.
+   */
+  overrideSrc?: string
 }
 
 export function CherryBlossomScene({
   variant,
   children,
   minHeight = "min-h-[70vh]",
+  overrideSrc,
 }: CherryBlossomSceneProps) {
   const scene = SCENE_CONFIG[variant]
 
@@ -63,12 +71,34 @@ export function CherryBlossomScene({
       className={`relative isolate overflow-hidden w-full ${minHeight}`}
       aria-label={scene.ariaLabel}
     >
-      {/* Photographic background */}
-      <div
-        aria-hidden
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url('${scene.src}')` }}
-      />
+      {/* Photographic background — editorial override or built-in variant */}
+      {overrideSrc ? (
+        <>
+          {/* Editorial backdrop at reduced opacity + blur + desaturation */}
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{
+              backgroundImage: `url('${overrideSrc}')`,
+              opacity: 0.25,
+              filter: "blur(6px) saturate(0.7) brightness(0.95)",
+              transform: "scale(1.04)",
+            }}
+          />
+          {/* Warm ivory overlay to unify with page palette */}
+          <div
+            aria-hidden
+            className="absolute inset-0"
+            style={{ background: "rgba(251,244,236,0.72)" }}
+          />
+        </>
+      ) : (
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url('${scene.src}')` }}
+        />
+      )}
 
       {/* Brand-tone overlay — softens photo, ensures readability */}
       <div aria-hidden className={`absolute inset-0 ${scene.overlay}`} />
