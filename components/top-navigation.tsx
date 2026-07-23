@@ -42,29 +42,24 @@ export function TopNavigation() {
 
   return (
     <nav className="sticky top-0 z-50 border-b border-black/[0.06] bg-white/95 shadow-ds-sm backdrop-blur-sm">
-      <div className="max-w-7xl mx-auto px-6 py-4">
-        {/* Three-column grid: logo | nav (centered) | auth */}
-        <div className="grid items-center" style={{ gridTemplateColumns: "1fr auto 1fr" }}>
+      <div className="max-w-7xl mx-auto px-3 py-4">
+        {/* Relative container: logo left, auth right, nav absolutely centered */}
+        <div className="relative flex items-center justify-between">
 
-          {/* Logo — far left (0.5in margin) when unauthenticated; offset when authenticated */}
-          <div
-            className="flex items-center"
-            style={{ paddingLeft: user ? "calc(55% - 48px)" : "0" }}
-          >
-            <Link href="/" className="flex items-center gap-2 shrink-0">
-              <img
-                src="/images/logo.png"
-                alt="Make Time For More Logo"
-                width={48}
-                height={48}
-                className="rounded-full shadow-md"
-              />
-            </Link>
-          </div>
+          {/* Logo — far left */}
+          <Link href="/" className="flex items-center gap-2 shrink-0 relative z-10">
+            <img
+              src="/images/logo.png"
+              alt="Make Time For More Logo"
+              width={48}
+              height={48}
+              className="rounded-full shadow-md"
+            />
+          </Link>
 
-          {/* Primary navigation — centered in the middle column */}
-          {user ? (
-            <div className="flex items-center gap-1 sm:gap-2" style={{ transform: "translateX(50%)" }}>
+          {/* Primary navigation — absolutely centered in the bar */}
+          {user && (
+            <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1 sm:gap-2">
               {PRIMARY_DESTINATIONS.map(({ id, navLabel, href }) => {
                 const active = isActive(href)
                 return (
@@ -84,12 +79,10 @@ export function TopNavigation() {
                 )
               })}
             </div>
-          ) : (
-            <div />
           )}
 
-          {/* Auth — right-aligned in its column */}
-          <div className="flex items-center justify-end gap-3">
+          {/* Auth — far right */}
+          <div className="flex items-center gap-3 relative z-10 shrink-0">
             {!loading && (
               <>
                 {user ? (
@@ -122,7 +115,7 @@ export function TopNavigation() {
             )}
           </div>
 
-        </div>{/* end grid */}
+        </div>
       </div>
     </nav>
   )
