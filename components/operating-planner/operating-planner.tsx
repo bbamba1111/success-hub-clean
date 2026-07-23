@@ -1032,11 +1032,38 @@ export function OperatingPlanner({ blockId }: OperatingPlannerProps) {
         <div id={`operating-planner-body-${blockId}`} className="w-full">
 
           {/* 1. Cherry Blossom™ Hero — segment-specific background */}
-          <CherryBlossomScene variant={config.sceneVariant ?? "garden"} minHeight="min-h-[60vh]">
-            <CherryBlossomSceneCard title={config.welcomeName} maxWidth="max-w-3xl">
-              <p>{config.cherryBlossomMessage}</p>
-            </CherryBlossomSceneCard>
-          </CherryBlossomScene>
+          <div className="relative w-full overflow-hidden">
+            {/* Optional editorial backdrop — faded lifestyle image behind the scene */}
+            {config.designSpaceBg && (
+              <div
+                aria-hidden
+                className="absolute inset-0 z-0"
+                style={{
+                  backgroundImage: `url('${config.designSpaceBg}')`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  opacity: 0.25,
+                  filter: "blur(6px) saturate(0.7) brightness(0.95)",
+                  transform: "scale(1.04)", // prevent blur edge bleed
+                }}
+              />
+            )}
+            {/* Warm ivory overlay to unify image with the page palette */}
+            {config.designSpaceBg && (
+              <div
+                aria-hidden
+                className="absolute inset-0 z-[1]"
+                style={{ background: "rgba(251,244,236,0.55)" }}
+              />
+            )}
+            <div className="relative z-[2]">
+              <CherryBlossomScene variant={config.sceneVariant ?? "garden"} minHeight="min-h-[60vh]">
+                <CherryBlossomSceneCard title={config.welcomeName} maxWidth="max-w-3xl">
+                  <p>{config.cherryBlossomMessage}</p>
+                </CherryBlossomSceneCard>
+              </CherryBlossomScene>
+            </div>
+          </div>
 
           {/* 2. Design Space — tinted surface bg + elevated white workspace card */}
           {data && (
