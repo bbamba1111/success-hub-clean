@@ -75,7 +75,7 @@ export interface PrimarySection {
 export const PRIMARY_NAV: PrimarySection[] = [
   {
     id: "sunday-design-day",
-    navLabel: "Measure Monthly™",
+    navLabel: "Measure Monthly",
     title: "Measure Monthly™",
     href: "/founder-profile",
     icon: CalendarCheck,
@@ -101,7 +101,7 @@ export const PRIMARY_NAV: PrimarySection[] = [
   },
   {
     id: "design-weekly",
-    navLabel: "Design Weekly™",
+    navLabel: "Design Weekly",
     title: "Design Weekly™",
     href: "/design-my-week",
     icon: Calendar,
@@ -127,7 +127,7 @@ export const PRIMARY_NAV: PrimarySection[] = [
   },
   {
     id: "live-today",
-    navLabel: "Live & Lead Daily™",
+    navLabel: "Live & Lead Daily",
     title: "Live & Lead Daily™",
     href: "/",
     icon: Sunrise,
@@ -159,7 +159,7 @@ export const PRIMARY_NAV: PrimarySection[] = [
   },
   {
     id: "time-freedom",
-    navLabel: "Time Freedom™",
+    navLabel: "Time Freedom",
     title: "Time Freedom™",
     href: "/time-freedom",
     icon: Leaf,
@@ -175,7 +175,7 @@ export const PRIMARY_NAV: PrimarySection[] = [
   },
   {
     id: "my-harmony",
-    navLabel: "My Work-Life Harmony™",
+    navLabel: "My Work-Life Harmony",
     title: "My Work-Life Harmony™",
     href: "/harmony-blueprint",
     icon: Flower2,
