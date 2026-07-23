@@ -100,6 +100,32 @@ export const PRIMARY_NAV: PrimarySection[] = [
     ],
   },
   {
+    id: "design-weekly",
+    navLabel: "Design Weekly™",
+    title: "Design Weekly™",
+    href: "/design-my-week",
+    icon: Calendar,
+    tagline: "Design and install your Work-Life Balance Business Week™ every Sunday.",
+    built: true,
+    workspaces: [
+      {
+        label: "Design My Week™",
+        href: "/design-my-week",
+        description: "Install your Daily Non-Negotiables™, Intention Declarations™, and weekly operating rhythm.",
+      },
+      {
+        label: "Sunday Design Day™",
+        href: "/sunday-shift",
+        description: "Your full Sunday reset ritual — audit, intentions, prep sheet, and weekly design.",
+      },
+      {
+        label: "My Work-Life Harmony Blueprint™",
+        href: "/harmony-blueprint",
+        description: "Your permanent executive record — the foundation every recommendation is built from.",
+      },
+    ],
+  },
+  {
     id: "live-today",
     navLabel: "Live & Lead Daily™",
     title: "Live & Lead Daily™",
@@ -128,32 +154,6 @@ export const PRIMARY_NAV: PrimarySection[] = [
         href: "/community",
         description: "Daily accountability, founder wins, discussions, challenges, and your community calendar — all in one place.",
         built: true,
-      },
-    ],
-  },
-  {
-    id: "design-weekly",
-    navLabel: "Design Weekly™",
-    title: "Design Weekly™",
-    href: "/design-my-week",
-    icon: Calendar,
-    tagline: "Design and install your Work-Life Balance Business Week™ every Sunday.",
-    built: true,
-    workspaces: [
-      {
-        label: "Design My Week™",
-        href: "/design-my-week",
-        description: "Install your Daily Non-Negotiables™, Intention Declarations™, and weekly operating rhythm.",
-      },
-      {
-        label: "Sunday Design Day™",
-        href: "/sunday-shift",
-        description: "Your full Sunday reset ritual — audit, intentions, prep sheet, and weekly design.",
-      },
-      {
-        label: "My Work-Life Harmony Blueprint™",
-        href: "/harmony-blueprint",
-        description: "Your permanent executive record — the foundation every recommendation is built from.",
       },
     ],
   },
