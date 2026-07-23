@@ -50,7 +50,6 @@ const SEGMENTS = [
     title: "Early Entry / Flex Time™",
     time: "7:00 AM – 9:00 AM",
     type: "flex" as const,
-    sceneSrc: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Jul%2023%2C%202026%2C%2002_38_47%20AM-APumNVW4Z83Hy5V02RywfdU2O5idCB.png",
     description:
       "A protected 2-hour flexibility buffer at the start of every day — designed to absorb life's unavoidable demands without ever touching your CEO Workday™.",
     examples: [
@@ -97,7 +96,6 @@ const SEGMENTS = [
     title: "Morning GIV\u2022EN\u2122",
     time: "9:00 AM – 10:30 AM",
     type: "life" as const,
-    sceneSrc: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Jul%2023%2C%202026%2C%2002_02_12%20AM-SPxGkeOdGNtUBUeQ8KJON3t4tCWTvq.png",
     description:
       "Your 90-minute intentional morning operating ritual — grounding your mind, aligning your spirit, and setting the tone for your entire Work-Life Balance Business Day™. GIV\u2022EN\u2122 stands for: Gratitude \u2022 Invitation to Your Creator \u2022 Vision & Visualization \u2022 Emotional Embodiment \u2022 Nurture.",
     examples: [
@@ -134,7 +132,6 @@ const SEGMENTS = [
     title: "Movement Window\u2122",
     time: "10:30 AM – 11:00 AM",
     type: "life" as const,
-    sceneSrc: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Jul%2023%2C%202026%2C%2002_38_47%20AM-APumNVW4Z83Hy5V02RywfdU2O5idCB.png",
     description:
       "Your protected 30-minute Movement Window\u2122 — built directly into your Work-Life Balance Business Day\u2122. Non-negotiable for sustained energy, mental clarity, and long-term health. The goal is not athletic performance. The goal is movement consistency.",
     examples: [
@@ -171,7 +168,6 @@ const SEGMENTS = [
     title: "Healthy Hybrid Lunch\u2122",
     time: "11:00 AM – 1:00 PM",
     type: "life" as const,
-    sceneSrc: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Jul%2023%2C%202026%2C%2002_30_23%20AM-zfvYSs0qLk39PvItH0AaYW0059e1PS.png",
     description:
       "A nourishing midday pause that refuels your body, creates a natural rhythm break, and prepares you for your most important work.",
     examples: [
@@ -206,7 +202,6 @@ const SEGMENTS = [
     title: "4-Hour CEO Workday\u2122",
     time: "1:00 PM – 5:00 PM",
     type: "business" as const,
-    sceneSrc: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Jul%2023%2C%202026%2C%2003_35_46%20PM-F4HxvUxJPy7VqxwJZhmaS0rnjTDxwu.png",
     description:
       "Your protected, high-leverage CEO execution window. Four focused hours dedicated exclusively to the most important work that moves your business forward.",
     examples: [
@@ -240,7 +235,6 @@ const SEGMENTS = [
     title: "Time Freedom\u2122",
     time: "5:00 PM – 10:00 PM",
     type: "life" as const,
-    sceneSrc: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Jul%2023%2C%202026%2C%2002_10_29%20AM-NH3LSxx3CmGp2RNnGiPJ23Sjy3Or7T.png",
     description:
       "The protected life your business exists to support. Five hours of fully present, fully free time — for your relationships, passions, rest, and joy. The business does not follow you here.",
     examples: [
@@ -274,7 +268,6 @@ const SEGMENTS = [
     title: "Power Down\u2122",
     time: "10:00 PM – 11:00 PM",
     type: "life" as const,
-    sceneSrc: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Jul%2023%2C%202026%2C%2002_42_59%20AM-G78m1F9xQG3LDuKYj7wrw2tDf3HlT7.png",
     description:
       "The intentional close to every Work-Life Balance Business Day\u2122. Power Down\u2122 begins at 10:00 PM. You are fully winding down — transitioning away from screens, releasing the day, and preparing your mind and body for deep, restorative rest.",
     examples: [
@@ -316,7 +309,6 @@ const SEGMENTS = [
     title: "Unplug\u2122",
     time: "11:00 PM \u2022 Closed For Business\u2122",
     type: "life" as const,
-    sceneSrc: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Jul%2023%2C%202026%2C%2002_07_45%20AM-e1dp0OLQTKMiS4JmICsCaUfQsSFyQ4.png",
     description:
       "The official close of the Work-Life Balance Business Day\u2122. At 11:00 PM, Harmony Lane\u2122 is Closed For Business\u2122. All devices are away. The community is closed. You are in full rest. Tomorrow deserves a fully restored CEO.",
     examples: [
@@ -927,19 +919,8 @@ export function DesignMyWeekClient() {
 
         {/* Active segment card */}
         {!allConfirmed && (
-          <div className="rounded-3xl border border-brand-blush shadow-lg overflow-hidden relative">
-            {/* Segment design space background */}
-            {current.sceneSrc && (
-              <>
-                <div
-                  aria-hidden
-                  className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-                  style={{ backgroundImage: `url('${current.sceneSrc}')` }}
-                />
-                <div aria-hidden className="absolute inset-0 bg-white/88 backdrop-blur-[2px]" />
-              </>
-            )}
-            <div className={`relative px-8 py-10 sm:px-10 ${!current.sceneSrc ? "bg-white" : ""}`}>
+          <div className="rounded-3xl bg-white border border-brand-blush shadow-lg overflow-hidden">
+            <div className="px-8 py-10 sm:px-10">
 
               {/* Segment meta */}
               <div className="flex items-center gap-3 mb-1 flex-wrap">
