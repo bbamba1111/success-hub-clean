@@ -547,14 +547,14 @@ export function FounderProfileForm() {
                 <div key={i} className="flex items-center gap-3">
                   <input
                     type="text"
-                    className={inputClass}
+                    className={`${inputClass} flex-1 min-w-0`}
                     placeholder="Name"
                     value={child.name}
                     onChange={(e) => updateChild(i, "name", e.target.value)}
                   />
                   <input
                     type="date"
-                    className={`${inputClass} w-44 shrink-0`}
+                    className={`${inputClass} w-36 shrink-0`}
                     value={child.birthday}
                     onChange={(e) => updateChild(i, "birthday", e.target.value)}
                     aria-label="Birthday"
@@ -664,14 +664,14 @@ export function FounderProfileForm() {
                   <div key={i} className="flex items-center gap-3">
                     <input
                       type="text"
-                      className={inputClass}
+                      className={`${inputClass} flex-1 min-w-0`}
                       placeholder="Pet name"
                       value={pet.name}
                       onChange={(e) => updatePet(i, "name", e.target.value)}
                     />
                     <input
                       type="text"
-                      className={`${inputClass} w-40 shrink-0`}
+                      className={`${inputClass} w-32 shrink-0`}
                       placeholder="Type (e.g. Dog)"
                       value={pet.type}
                       onChange={(e) => updatePet(i, "type", e.target.value)}
