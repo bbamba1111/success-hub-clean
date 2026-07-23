@@ -59,7 +59,7 @@ export function TopNavigation() {
 
           {/* Primary navigation — absolutely centered in the bar */}
           {user && (
-            <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1 sm:gap-2">
+            <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1 sm:gap-2" style={{ marginLeft: "-168px" }}>
               {PRIMARY_DESTINATIONS.map(({ id, navLabel, href }) => {
                 const active = isActive(href)
                 return (
