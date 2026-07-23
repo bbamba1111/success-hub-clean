@@ -64,7 +64,7 @@ export function TopNavigation() {
 
           {/* Primary navigation — centered in the middle column */}
           {user ? (
-            <div className="flex items-center gap-1 sm:gap-2">
+            <div className="flex items-center gap-1 sm:gap-2" style={{ transform: "translateX(0.5%)" }}>
               {PRIMARY_DESTINATIONS.map(({ id, navLabel, href }) => {
                 const active = isActive(href)
                 return (
