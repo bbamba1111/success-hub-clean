@@ -54,27 +54,29 @@ export function TopNavigation() {
             />
           </Link>
 
-          {/* Primary 4-section navigation (Live Today / Lead / Share / Grow) */}
+          {/* Primary navigation — centered with a -8px (≈0.5in) left offset */}
           {user && (
-            <div className="flex items-center gap-1 sm:gap-2">
-              {PRIMARY_DESTINATIONS.map(({ id, navLabel, href }) => {
-                const active = isActive(href)
-                return (
-                  <Link key={id} href={href}>
-                    <Button
-                      variant="ghost"
-                      className={`flex items-center gap-2 ${
-                        active
-                          ? "bg-[#5D9D61]/10 text-[#3A2E33] font-semibold"
-                          : "text-[#5C4F55] hover:text-[#3A2E33]"
-                      }`}
-                      data-testid={`button-nav-${id}`}
-                    >
-                      <span className="hidden sm:inline">{navLabel}</span>
-                    </Button>
-                  </Link>
-                )
-              })}
+            <div className="flex flex-1 items-center justify-center -ml-8">
+              <div className="flex items-center gap-1 sm:gap-2">
+                {PRIMARY_DESTINATIONS.map(({ id, navLabel, href }) => {
+                  const active = isActive(href)
+                  return (
+                    <Link key={id} href={href}>
+                      <Button
+                        variant="ghost"
+                        className={`flex items-center gap-2 ${
+                          active
+                            ? "bg-[#5D9D61]/10 text-[#3A2E33] font-semibold"
+                            : "text-[#5C4F55] hover:text-[#3A2E33]"
+                        }`}
+                        data-testid={`button-nav-${id}`}
+                      >
+                        <span className="hidden sm:inline">{navLabel}</span>
+                      </Button>
+                    </Link>
+                  )
+                })}
+              </div>
             </div>
           )}
 
