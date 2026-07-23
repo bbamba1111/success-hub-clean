@@ -87,7 +87,7 @@ export function CherryBlossomScene({
           <div
             aria-hidden
             className="absolute inset-0"
-            style={{ background: "rgba(180, 210, 80, 0.35)" }}
+            style={{ background: "rgba(232, 237, 160, 0.55)" }}
           />
         </>
       ) : (
