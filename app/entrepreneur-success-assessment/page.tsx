@@ -19,7 +19,7 @@ export default function EntrepreneurSuccessAssessmentPage() {
           scrollPrompt="Begin Entrepreneur Success Assessment™"
         >
           <p>
-            During the past 7 days you&apos;ve developed habits, routines, and business practices —{" "}
+            During the past 30 days you&apos;ve developed habits, routines, and business practices —{" "}
             <em>some intentionally, others by default</em>.
           </p>
           <p>

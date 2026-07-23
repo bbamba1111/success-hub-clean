@@ -220,7 +220,7 @@ export default function EntrepreneurSuccessResults() {
           >
             <p>
               We now understand how your life and leadership have been operating over the past{" "}
-              <strong>7 days</strong>.
+              <strong>30 days</strong>.
             </p>
             <p>
               These insights become the foundation of your{" "}

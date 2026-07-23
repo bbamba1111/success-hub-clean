@@ -51,6 +51,15 @@ interface FormData {
   biggestGoal: string
   biggestChallenge: string
   successVision: string
+  // About Your Business
+  businessName: string
+  industry: string
+  businessStage: string
+  businessModel: string
+  teamSize: string
+  revenueRange: string
+  businessGoals: string
+  currentChallenges: string
 }
 
 const TITLE_OPTIONS = [
@@ -70,6 +79,72 @@ const MARITAL_OPTIONS = [
   "Widowed",
   "In a Relationship",
   "Prefer Not to Say",
+]
+
+const INDUSTRY_OPTIONS = [
+  "Health & Wellness",
+  "Beauty & Personal Care",
+  "Fashion & Apparel",
+  "Food & Beverage",
+  "Education & Training",
+  "Finance & Wealth",
+  "Real Estate",
+  "Technology",
+  "Marketing & Creative",
+  "Legal & Compliance",
+  "Media & Entertainment",
+  "Retail & E-Commerce",
+  "Nonprofit & Social Impact",
+  "Travel & Hospitality",
+  "Professional Services",
+  "Home & Lifestyle",
+  "Other",
+]
+
+const STAGE_OPTIONS = [
+  "Idea Stage™ — I have an idea but haven't launched yet",
+  "Pre-Revenue™ — I've launched but haven't made a sale yet",
+  "Early Revenue™ — I'm making sales but building consistency",
+  "Growth Stage™ — I have consistent revenue and am growing",
+  "Scaling™ — I'm systematizing beyond my own capacity",
+  "Established™ — I have a mature, profitable business",
+  "Pivoting™ — I'm transitioning to a new model or market",
+  "Multi-Business™ — I own or operate more than one business",
+]
+
+const MODEL_OPTIONS = [
+  "Service Business",
+  "Digital Products",
+  "Physical Products",
+  "SaaS / Software",
+  "Agency",
+  "Consulting",
+  "Coaching / Training",
+  "Membership / Community",
+  "Real Estate",
+  "Franchise",
+  "Other",
+]
+
+const TEAM_SIZE_OPTIONS = [
+  "Solo — just me",
+  "1–3 people",
+  "4–10 people",
+  "11–25 people",
+  "26–50 people",
+  "51+ people",
+]
+
+const REVENUE_OPTIONS = [
+  "Pre-revenue",
+  "Under $50K / year",
+  "$50K – $100K / year",
+  "$100K – $250K / year",
+  "$250K – $500K / year",
+  "$500K – $1M / year",
+  "$1M – $5M / year",
+  "$5M+ / year",
+  "Prefer not to say",
 ]
 
 // ─── Shared field styles ──────────────────────────────────────────────────────
@@ -166,6 +241,15 @@ export function FounderProfileForm() {
     biggestGoal: "",
     biggestChallenge: "",
     successVision: "",
+    // About Your Business
+    businessName: "",
+    industry: "",
+    businessStage: "",
+    businessModel: "",
+    teamSize: "",
+    revenueRange: "",
+    businessGoals: "",
+    currentChallenges: "",
   })
 
   function set<K extends keyof FormData>(key: K, value: FormData[K]) {
@@ -721,6 +805,134 @@ export function FounderProfileForm() {
                 placeholder="When I am truly succeeding, my life looks like…"
                 value={form.successVision}
                 onChange={(e) => set("successVision", e.target.value)}
+              />
+            </div>
+          </div>
+
+          <Divider />
+
+          {/* ── SECTION: About Your Business ─────────────────────────── */}
+          <SectionHeading
+            label="About Your Business"
+            title="Tell us about the business you are building."
+            description="This helps Cherry Blossom™ personalize your CEO Workday™, Blueprint™, and every recommendation inside Harmony Lane™."
+          />
+
+          <div className="space-y-5">
+            <div>
+              <Label>Business Name</Label>
+              <input
+                type="text"
+                className={inputClass}
+                placeholder="Your business name"
+                value={form.businessName}
+                onChange={(e) => set("businessName", e.target.value)}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <Label>Industry</Label>
+                <div className="relative">
+                  <select
+                    className={selectClass}
+                    value={form.industry}
+                    onChange={(e) => set("industry", e.target.value)}
+                  >
+                    <option value="">Select industry…</option>
+                    {INDUSTRY_OPTIONS.map((o) => (
+                      <option key={o} value={o}>{o}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div>
+                <Label>Business Model</Label>
+                <div className="relative">
+                  <select
+                    className={selectClass}
+                    value={form.businessModel}
+                    onChange={(e) => set("businessModel", e.target.value)}
+                  >
+                    <option value="">Select model…</option>
+                    {MODEL_OPTIONS.map((o) => (
+                      <option key={o} value={o}>{o}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <Label>Business Stage</Label>
+              <div className="relative">
+                <select
+                  className={selectClass}
+                  value={form.businessStage}
+                  onChange={(e) => set("businessStage", e.target.value)}
+                >
+                  <option value="">Select stage…</option>
+                  {STAGE_OPTIONS.map((o) => (
+                    <option key={o} value={o}>{o}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <Label>Team Size</Label>
+                <div className="relative">
+                  <select
+                    className={selectClass}
+                    value={form.teamSize}
+                    onChange={(e) => set("teamSize", e.target.value)}
+                  >
+                    <option value="">Select team size…</option>
+                    {TEAM_SIZE_OPTIONS.map((o) => (
+                      <option key={o} value={o}>{o}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div>
+                <Label>Annual Revenue Range</Label>
+                <div className="relative">
+                  <select
+                    className={selectClass}
+                    value={form.revenueRange}
+                    onChange={(e) => set("revenueRange", e.target.value)}
+                  >
+                    <option value="">Select range…</option>
+                    {REVENUE_OPTIONS.map((o) => (
+                      <option key={o} value={o}>{o}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <Label>Business Goals</Label>
+              <OptionalHint text="What are the most important things you want your business to achieve in the next 90 days?" />
+              <textarea
+                className={textareaClass}
+                rows={3}
+                placeholder="My most important business goals right now are…"
+                value={form.businessGoals}
+                onChange={(e) => set("businessGoals", e.target.value)}
+              />
+            </div>
+
+            <div>
+              <Label>Current Challenges</Label>
+              <OptionalHint text="What is the number one business challenge you are working to solve right now?" />
+              <textarea
+                className={textareaClass}
+                rows={3}
+                placeholder="My biggest business challenge right now is…"
+                value={form.currentChallenges}
+                onChange={(e) => set("currentChallenges", e.target.value)}
               />
             </div>
           </div>

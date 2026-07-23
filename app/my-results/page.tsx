@@ -182,13 +182,13 @@ export default function MyResultsPage() {
             ctaHref="/entrepreneur-success"
           >
             <p>
-              We now understand how your life has been operating over the past 7 days.
+              We now understand how your life has been operating over the past 30 days.
             </p>
             <p>
               These results become the first half of your Harmony Blueprint™.
             </p>
             <p>
-              Next we&apos;ll discover how your business has been operating during those same 7 days.
+              Next we&apos;ll discover how your business has been operating during those same 30 days.
             </p>
             <p>
               Together these two assessments allow me to personalize every recommendation
