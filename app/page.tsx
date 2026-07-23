@@ -16,7 +16,6 @@ import { BusinessDaySchedule } from "@/components/business-day-schedule"
 import { OperatingPlannerSection } from "@/components/operating-planner/operating-planner-section"
 import { DeveloperToolbar } from "@/components/developer-toolbar"
 import { TimeFreedomDashboard } from "@/components/harmony-week/time-freedom-dashboard"
-import { LiveLeadDaily } from "@/components/live-today/live-lead-daily"
 import { createBrowserClient } from "@supabase/ssr"
 
 export default function HomePage() {
@@ -78,9 +77,6 @@ export default function HomePage() {
 
       {/* Single engine-driven hero - the primary Home page experience. */}
       <BusinessDayHero />
-
-      {/* Live & Lead Daily™ — the execution layer of the Founder Operating System™. */}
-      <LiveLeadDaily />
 
       {/* Time Freedom™ Dashboard — renders only during the Thu 5PM→Mon 7AM window. */}
       <TimeFreedomDashboard />

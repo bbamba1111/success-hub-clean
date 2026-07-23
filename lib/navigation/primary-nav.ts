@@ -21,6 +21,7 @@
 
 import {
   CalendarCheck,
+  Calendar,
   Sunrise,
   Leaf,
   Flower2,
@@ -31,7 +32,7 @@ import {
 } from "lucide-react"
 
 /** The four permanent, user-facing destinations. */
-export type PrimarySectionId = "sunday-design-day" | "live-today" | "time-freedom" | "my-harmony"
+export type PrimarySectionId = "sunday-design-day" | "live-today" | "design-weekly" | "time-freedom" | "my-harmony"
 
 /** Developer-only module groups (not shown in navigation). */
 export type InternalModuleId = "lead" | "share" | "grow"
@@ -127,6 +128,32 @@ export const PRIMARY_NAV: PrimarySection[] = [
         href: "/community",
         description: "Daily accountability, founder wins, discussions, challenges, and your community calendar — all in one place.",
         built: true,
+      },
+    ],
+  },
+  {
+    id: "design-weekly",
+    navLabel: "Design Weekly™",
+    title: "Design Weekly™",
+    href: "/design-my-week",
+    icon: Calendar,
+    tagline: "Design and install your Work-Life Balance Business Week™ every Sunday.",
+    built: true,
+    workspaces: [
+      {
+        label: "Design My Week™",
+        href: "/design-my-week",
+        description: "Install your Daily Non-Negotiables™, Intention Declarations™, and weekly operating rhythm.",
+      },
+      {
+        label: "Sunday Design Day™",
+        href: "/sunday-shift",
+        description: "Your full Sunday reset ritual — audit, intentions, prep sheet, and weekly design.",
+      },
+      {
+        label: "My Work-Life Harmony Blueprint™",
+        href: "/harmony-blueprint",
+        description: "Your permanent executive record — the foundation every recommendation is built from.",
       },
     ],
   },
