@@ -80,7 +80,7 @@ export function CherryBlossomScene({
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{
               backgroundImage: `url('${overrideSrc}')`,
-              opacity: 0.5,
+              opacity: 0.3,
             }}
           />
         </>
