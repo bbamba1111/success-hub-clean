@@ -74,14 +74,20 @@ export function CherryBlossomScene({
       {/* Photographic background — editorial override or built-in variant */}
       {overrideSrc ? (
         <>
-          {/* Editorial backdrop at reduced opacity */}
+          {/* Editorial backdrop at 15% opacity */}
           <div
             aria-hidden
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{
               backgroundImage: `url('${overrideSrc}')`,
-              opacity: 0.3,
+              opacity: 0.15,
             }}
+          />
+          {/* Greenish-yellow overlay */}
+          <div
+            aria-hidden
+            className="absolute inset-0"
+            style={{ background: "rgba(180, 210, 80, 0.35)" }}
           />
         </>
       ) : (
