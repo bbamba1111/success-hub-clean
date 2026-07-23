@@ -73,13 +73,6 @@ export interface PlannerSegmentConfig {
    * A warm, personal introduction to the purpose and benefit of this segment.
    */
   cherryBlossomMessage: string
-  /**
-   * Optional editorial background image shown behind the CherryBlossomScene
-   * Design Space hero. Rendered at ~25% opacity with a warm ivory overlay and
-   * a soft blur so it reads as atmospheric context rather than a photograph.
-   * Only set on segments where the visual narrative warrants it.
-   */
-  designSpaceBg?: string
 }
 
 export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
@@ -90,7 +83,6 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
     atmosphere: "Quiet · Unhurried · Open",
     surface: "#FBF4EC",
     backgroundImage: "/images/block-early-access.png",
-    designSpaceBg: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Jul%2023%2C%202026%2C%2002_42_59%20AM-G78m1F9xQG3LDuKYj7wrw2tDf3HlT7.png",
     cherryBlossomMessage:
       "Welcome to your Flex Time™ — a protected 2-hour buffer at the start of every day, designed to absorb life's unavoidable demands without ever touching your CEO Workday™. This is not wasted time. It is your most powerful act of daily protection. Use it to prepare, handle what life asks of you, and arrive at your CEO Workday™ with clarity and full presence. What you design here determines the quality of everything that follows.",
     guidance:

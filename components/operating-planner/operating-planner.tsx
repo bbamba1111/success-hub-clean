@@ -1032,11 +1032,7 @@ export function OperatingPlanner({ blockId }: OperatingPlannerProps) {
         <div id={`operating-planner-body-${blockId}`} className="w-full">
 
           {/* 1. Cherry Blossom™ Hero — segment-specific background */}
-          <CherryBlossomScene
-            variant={config.sceneVariant ?? "garden"}
-            minHeight="min-h-[60vh]"
-            overrideSrc={config.designSpaceBg}
-          >
+          <CherryBlossomScene variant={config.sceneVariant ?? "garden"} minHeight="min-h-[60vh]">
             <CherryBlossomSceneCard title={config.welcomeName} maxWidth="max-w-3xl">
               <p>{config.cherryBlossomMessage}</p>
             </CherryBlossomSceneCard>
@@ -1045,7 +1041,7 @@ export function OperatingPlanner({ blockId }: OperatingPlannerProps) {
           {/* 2. Design Space — tinted surface bg + elevated white workspace card */}
           {data && (
             // Part 5: subtle tinted background spans the full design space area
-            <div className="w-full px-4 pb-12 pt-0.5 sm:px-8 lg:px-12" style={{ backgroundColor: "#E8EDA0" }}>
+            <div className="w-full px-4 pb-12 pt-12 sm:px-8 lg:px-12" style={{ backgroundColor: config.surface }}>
               {/* Part 6: single elevated white workspace card */}
               <div className="mx-auto w-full max-w-5xl rounded-3xl bg-white shadow-[0_4px_32px_rgba(0,0,0,0.08)] overflow-hidden ring-1 ring-black/[0.04]">
                 <SegmentBody blockId={blockId} data={data} config={config} />
