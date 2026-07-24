@@ -216,7 +216,7 @@ export default function EntrepreneurSuccessResults() {
           <CherryBlossomTransitionCard
             greeting="Thank you."
             ctaLabel="Generate My Harmony Blueprint™"
-            ctaHref="/harmony-blueprint"
+            ctaHref="https://success-hub-clean-ics7g40y6-thought-leader-barbaras-projects.vercel.app/harmony-blueprint"
           >
             <p>
               We now understand how your life and leadership have been operating over the past{" "}

@@ -33,7 +33,7 @@ const ESA_OPTIONS = [
 ]
 
 export default function EntrepreneurSuccessAssessment({
-  resultsUrl = "/my-results/entrepreneur-success",
+  resultsUrl = "https://success-hub-clean-ics7g40y6-thought-leader-barbaras-projects.vercel.app/harmony-blueprint",
 }: {
   resultsUrl?: string
 }) {
