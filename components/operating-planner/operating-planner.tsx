@@ -1006,7 +1006,7 @@ export function OperatingPlanner({ blockId }: OperatingPlannerProps) {
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-controls={`operating-planner-body-${blockId}`}
-          className="flex w-full items-start justify-between gap-4 px-6 pt-8 pb-6 text-left sm:px-12 sm:pt-10"
+          className="flex w-full items-start justify-between gap-4 px-6 pt-8 pb-8 text-left sm:px-12 sm:pt-10 sm:pb-10"
         >
           <span>
             <span className="ds-eyebrow text-brand-green-dark/70">{config.workspaceLabel}</span>
