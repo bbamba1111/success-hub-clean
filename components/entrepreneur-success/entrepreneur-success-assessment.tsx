@@ -172,15 +172,18 @@ const ESA_OPTIONS = [
   { label: "Never",     value: 0   as ResponseValue, bg: "bg-[#D4EAD6]", hover: "hover:bg-[#C5DFC8]", text: "text-brand-ink",  dot: "5" },
 ]
 
+export { CompletionScreen }
+
 export default function EntrepreneurSuccessAssessment({
   resultsUrl = "https://success-hub-clean-ics7g40y6-thought-leader-barbaras-projects.vercel.app/harmony-blueprint",
+  onComplete,
 }: {
   resultsUrl?: string
+  onComplete?: () => void
 }) {
   const router = useRouter()
   const [currentIndex, setCurrentIndex] = useState(0)
   const [responses, setResponses] = useState<Record<string, number>>({})
-  const [complete, setComplete] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
   // Only scroll to the question card after the founder answers the first question.
   // This preserves the hero-first experience on initial page load.
@@ -221,19 +224,15 @@ export default function EntrepreneurSuccessAssessment({
       } else {
         const results = computeEsaResults(updated)
         saveEsaResults(results)
-        setComplete(true)
+        onComplete?.()
       }
     },
-    [currentIndex, question.id, responses, router, resultsUrl]
+    [currentIndex, onComplete, question.id, responses]
   )
 
   const handleBack = useCallback(() => {
     if (currentIndex > 0) setCurrentIndex((i) => i - 1)
   }, [currentIndex])
-
-  if (complete) {
-    return <CompletionScreen resultsUrl={resultsUrl} />
-  }
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4 py-10" ref={cardRef}>

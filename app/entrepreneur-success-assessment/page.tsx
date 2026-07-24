@@ -1,17 +1,29 @@
-import EntrepreneurSuccessAssessment from "@/components/entrepreneur-success/entrepreneur-success-assessment"
+"use client"
+
+import { useState } from "react"
+import EntrepreneurSuccessAssessment, {
+  CompletionScreen,
+} from "@/components/entrepreneur-success/entrepreneur-success-assessment"
 import { CherryBlossomScene, CherryBlossomSceneCard } from "@/components/cherry-blossom/cherry-blossom-scene"
 
-export const metadata = {
-  title: "Entrepreneur Success Assessment™ | Harmony Lane™",
-  description:
-    "Establish your operating baseline across the Eight Operating Pillars™. No right or wrong answers — we are simply establishing your starting point.",
-}
+const RESULTS_URL =
+  "https://success-hub-clean-ics7g40y6-thought-leader-barbaras-projects.vercel.app/harmony-blueprint"
 
 export default function EntrepreneurSuccessAssessmentPage() {
+  const [complete, setComplete] = useState(false)
+
+  if (complete) {
+    return (
+      <div className="min-h-screen bg-brand-cream flex items-center justify-center py-16 px-4">
+        <CompletionScreen resultsUrl={RESULTS_URL} />
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-brand-cream">
 
-      {/* ── Scene 3: Japanese Executive Study / Shoji Screens ────────── */}
+      {/* ── Scene: Japanese Executive Study / Shoji Screens ─────────── */}
       <CherryBlossomScene variant="executive" minHeight="min-h-[70vh]">
         <CherryBlossomSceneCard
           title="Entrepreneur Success Assessment™"
@@ -32,9 +44,12 @@ export default function EntrepreneurSuccessAssessmentPage() {
         </CherryBlossomSceneCard>
       </CherryBlossomScene>
 
-      {/* ── ESA form — flows below the scene ─────────────────────────── */}
+      {/* ── ESA questions ─────────────────────────────────────────────── */}
       <div className="bg-white">
-        <EntrepreneurSuccessAssessment />
+        <EntrepreneurSuccessAssessment
+          resultsUrl={RESULTS_URL}
+          onComplete={() => setComplete(true)}
+        />
       </div>
 
     </div>
