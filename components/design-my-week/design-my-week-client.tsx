@@ -868,7 +868,7 @@ export function DesignMyWeekClient() {
 
   return (
     <div className="min-h-screen bg-brand-cream">
-      <CherryBlossomScene variant="pond" minHeight="min-h-[55vh]" noBackground>
+      <CherryBlossomScene variant="design-my-week" minHeight="min-h-[55vh]">
         <CherryBlossomSceneCard title="Design My Week™" time="Approx. 10 mins" scrollPrompt="Design My Week™">
           <p>
             Now we design your eight <strong>Operating Segments™</strong> — the daily structure

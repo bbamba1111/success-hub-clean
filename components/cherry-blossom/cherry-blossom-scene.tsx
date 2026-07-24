@@ -46,9 +46,14 @@ const SCENE_CONFIG = {
     overlay: "bg-gradient-to-b from-[#4A3728]/8 via-transparent to-[#2C3E2D]/12",
     ariaLabel: "Japanese-inspired executive workspace with panoramic zen garden view, cherry blossoms, desk with laptop, bonsai, and founder nameplate",
   },
+  "design-my-week": {
+    src: "/images/design-my-week-bg.png",
+    overlay: "bg-gradient-to-b from-[#F5E6E0]/20 via-transparent to-[#2C3E2D]/10",
+    ariaLabel: "Design My Week planner spread with cherry blossoms, candle, Harmony journal, and work-life balance weekly grid",
+  },
 } as const
 
-export type SceneVariant = "garden" | "pond" | "executive" | "ceo-office" | "workspace"
+export type SceneVariant = "garden" | "pond" | "executive" | "ceo-office" | "workspace" | "design-my-week"
 
 interface CherryBlossomSceneProps {
   variant: SceneVariant
