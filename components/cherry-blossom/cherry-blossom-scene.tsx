@@ -88,7 +88,7 @@ export function CherryBlossomScene({
       )}
 
       {/* Content layer */}
-      <div className={`relative z-10 flex flex-col items-center justify-center px-4 min-h-[inherit] ${noBackground ? "py-8" : "py-16 sm:py-20"}`}>
+      <div className="relative z-10 flex flex-col items-center justify-center px-4 py-16 sm:py-20 min-h-[inherit]">
         {children}
       </div>
     </section>
