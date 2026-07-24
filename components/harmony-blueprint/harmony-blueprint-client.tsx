@@ -203,7 +203,7 @@ export function HarmonyBlueprintClient() {
   return (
     <div className="min-h-screen bg-brand-cream">
 
-      {/* ── Hero ─────────────────────────────────────────────────────────── */}
+      {/* ── Hero ───────────────────��─────────────────────────────────────── */}
       <CherryBlossomScene variant="garden" minHeight="min-h-[60vh]" noBackground>
         <CherryBlossomSceneCard
           title="My Work-Life Harmony Blueprint™"
@@ -313,8 +313,8 @@ export function HarmonyBlueprintClient() {
             <div className="space-y-5">
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                 <DataCard label="Overall Life Score™" value={`${lifeData.overallScore} / 100`} accent="#E26C73" />
-                {lifeData.categoryScores && Object.entries(lifeData.categoryScores).slice(0, 5).map(([k, v]) => (
-                  <DataCard key={k} label={fmt(k)} value={`${v} / 100`} accent="#E26C73" />
+                {Array.isArray(lifeData.results) && lifeData.results.slice(0, 5).map((r) => (
+                  <DataCard key={r.category} label={fmt(r.category)} value={`${r.percentage} / 100`} accent="#E26C73" />
                 ))}
               </div>
               <div className="flex items-center justify-between">
@@ -360,8 +360,8 @@ export function HarmonyBlueprintClient() {
               {ready && bizData ? (
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                   <DataCard label="Business Score™" value={`${bizData.overallScore} / 100`} accent="#5B835F" />
-                  {bizData.pillarScores && Object.entries(bizData.pillarScores).slice(0, 5).map(([k, v]) => (
-                    <DataCard key={k} label={fmt(k)} value={`${v} / 100`} accent="#5B835F" />
+                  {Array.isArray(bizData.pillarScores) && bizData.pillarScores.slice(0, 5).map((p) => (
+                    <DataCard key={p.pillarId} label={p.pillarName} value={`${p.percentage} / 100`} accent="#5B835F" />
                   ))}
                 </div>
               ) : (
@@ -494,7 +494,7 @@ export function HarmonyBlueprintClient() {
           </div>
         </Chapter>
 
-        {/* ── Chapter 6: Executive Performance™ ──────────────────────────── */}
+        {/* ── Chapter 6: Executive Performance™ ───��──────────────────────── */}
         <Chapter
           icon={TrendingUp}
           chapter="Chapter 6"
