@@ -995,7 +995,7 @@ export function OperatingPlanner({ blockId }: OperatingPlannerProps) {
 
   return (
     /* Panoramic outer wrapper — truly full width, no margin constraints */
-    <div className="relative z-10 w-full pb-[4.5rem] pt-8">
+    <div className="relative z-10 w-full pb-[4.5rem] pt-0">
       {/* Toggle header — full width */}
       <div
         className="w-full overflow-hidden rounded-none"
