@@ -63,8 +63,8 @@ interface WorkLifeBalanceAuditProps {
 
 export default function WorkLifeBalanceAudit({
   resultsUrl = "/my-results",
-  assessmentWindow = "30-day",
-  assessmentType = "baseline_30_day",
+  assessmentWindow = "30-day" as AssessmentWindow,
+  assessmentType = "baseline_30_day" as AssessmentType,
 }: WorkLifeBalanceAuditProps) {
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState<Record<number, number>>({})
