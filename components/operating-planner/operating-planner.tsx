@@ -797,7 +797,7 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
   const isPowerDown = blockId === "power-down"
 
   return (
-    <div className="px-6 pb-10 pt-6 sm:px-12 lg:px-20 xl:px-28">
+    <div className="px-6 py-10 sm:px-12 lg:px-20 xl:px-28">
       <div className="w-full max-w-5xl mx-auto">
 
         {/* Segment meta: type chip + time */}
