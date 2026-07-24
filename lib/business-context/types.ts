@@ -249,6 +249,14 @@ export interface BusinessContextProfile {
   // Goals, Challenges & Opportunities (Phase 10.1.1: operatingEnvironment, supportNetwork, biggestOpportunities added)
   biggestGoals: GoalOption[]
   biggestChallenges: ChallengeOption[]
+
+  // Your Vision™ (open-text, moved from Founder Profile)
+  /** What is the most important thing you want to achieve in the next 90 days? */
+  biggestGoalText?: string
+  /** What is the number one thing getting in the way of the life and business you want? */
+  biggestChallengeText?: string
+  /** Describe what your life looks like when you are truly winning. */
+  successVision?: string
   /** Phase 10.1.1 — Founder Operating Environment™ */
   operatingEnvironment?: OperatingEnvironmentOption
   /** Phase 10.1.1 — Founder Support Network™ (multi-select) */

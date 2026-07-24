@@ -468,7 +468,7 @@ function ProgressBar({ step, total }: { step: number; total: number }) {
 
 // ─── Main wizard ─────────────────────────────────────────────────────────────
 
-const TOTAL_STEPS = 22
+const TOTAL_STEPS = 25
 
 export function BusinessContextProfile({ onDone }: { onDone?: () => void } = {}) {
   const router = useRouter()
@@ -493,6 +493,11 @@ export function BusinessContextProfile({ onDone }: { onDone?: () => void } = {})
   const [operatingEnvironment, setOperatingEnvironment] = useState<OperatingEnvironmentOption | null>(null)
   const [supportNetwork, setSupportNetwork] = useState<SupportNetworkOption[]>([])
   const [biggestOpportunities, setBiggestOpportunities] = useState<OpportunityOption[]>([])
+
+  // Your Vision™ (open-text, formerly in Founder Profile)
+  const [biggestGoalText, setBiggestGoalText] = useState("")
+  const [biggestChallengeText, setBiggestChallengeText] = useState("")
+  const [successVision, setSuccessVision] = useState("")
 
   // Long-Term Vision™
   const [vision, setVision] = useState<LongTermVision>({
@@ -562,6 +567,9 @@ export function BusinessContextProfile({ onDone }: { onDone?: () => void } = {})
       revenueStage: revenueStage!,
       biggestGoals,
       biggestChallenges,
+      biggestGoalText: biggestGoalText || undefined,
+      biggestChallengeText: biggestChallengeText || undefined,
+      successVision: successVision || undefined,
       operatingEnvironment: operatingEnvironment ?? undefined,
       supportNetwork: supportNetwork.length > 0 ? supportNetwork : undefined,
       biggestOpportunities: biggestOpportunities.length > 0 ? biggestOpportunities : undefined,
@@ -845,10 +853,61 @@ export function BusinessContextProfile({ onDone }: { onDone?: () => void } = {})
         </StepCard>
       )}
 
-      {/* ── Step 13: Capital Strategy™ ────────────────────────────────────── */}
+      {/* ── Step 13: Biggest Goal™ (open-text) ───────────────────────────── */}
       {step === 13 && (
+        <StepCard innerRef={cardRef}>
+          <StepLabel label="Your Vision™" step={14} total={TOTAL_STEPS} />
+          <StepQuestion>What is the most important thing you want to achieve in the next 90 days?</StepQuestion>
+          <StepHint>In business and in life. Be as specific as you like.</StepHint>
+          <textarea
+            value={biggestGoalText}
+            onChange={(e) => setBiggestGoalText(e.target.value)}
+            rows={4}
+            placeholder="My biggest goal right now is…"
+            className="w-full rounded-2xl border border-[#E8E0D5] bg-white px-4 py-3 font-montserrat text-sm text-[#3A2E33] placeholder:text-[#6B5860]/40 focus:border-[#5B835F] focus:outline-none focus:ring-2 focus:ring-[#5B835F]/20 resize-none leading-relaxed"
+          />
+          <ContinueButton onClick={advance} />
+        </StepCard>
+      )}
+
+      {/* ── Step 14: Biggest Challenge™ (open-text) ──────────────────────── */}
+      {step === 14 && (
+        <StepCard innerRef={cardRef}>
+          <StepLabel label="Your Vision™" step={15} total={TOTAL_STEPS} />
+          <StepQuestion>What is the number one thing getting in the way of the life and business you want?</StepQuestion>
+          <StepHint>There is no wrong answer — honesty here makes every recommendation sharper.</StepHint>
+          <textarea
+            value={biggestChallengeText}
+            onChange={(e) => setBiggestChallengeText(e.target.value)}
+            rows={4}
+            placeholder="My biggest challenge is…"
+            className="w-full rounded-2xl border border-[#E8E0D5] bg-white px-4 py-3 font-montserrat text-sm text-[#3A2E33] placeholder:text-[#6B5860]/40 focus:border-[#5B835F] focus:outline-none focus:ring-2 focus:ring-[#5B835F]/20 resize-none leading-relaxed"
+          />
+          <ContinueButton onClick={advance} />
+        </StepCard>
+      )}
+
+      {/* ── Step 15: Success Vision™ (open-text) ──────────────────────────── */}
+      {step === 15 && (
+        <StepCard innerRef={cardRef}>
+          <StepLabel label="Your Vision™" step={16} total={TOTAL_STEPS} />
+          <StepQuestion>Describe what your life looks like when you are truly winning — in both business and life.</StepQuestion>
+          <StepHint>Paint the picture. This becomes the north star for your entire operating system.</StepHint>
+          <textarea
+            value={successVision}
+            onChange={(e) => setSuccessVision(e.target.value)}
+            rows={5}
+            placeholder="When I am truly winning, my life looks like…"
+            className="w-full rounded-2xl border border-[#E8E0D5] bg-white px-4 py-3 font-montserrat text-sm text-[#3A2E33] placeholder:text-[#6B5860]/40 focus:border-[#5B835F] focus:outline-none focus:ring-2 focus:ring-[#5B835F]/20 resize-none leading-relaxed"
+          />
+          <ContinueButton onClick={advance} label="Save My Vision™" />
+        </StepCard>
+      )}
+
+      {/* ── Step 16: Capital Strategy™ ────────────────────────────────────── */}
+      {step === 16 && (
         <StepCard>
-          <StepLabel label="Growth & Capital™" step={14} total={TOTAL_STEPS} />
+          <StepLabel label="Growth & Capital™" step={17} total={TOTAL_STEPS} />
           <StepQuestion>How are you funding or planning to fund your business?</StepQuestion>
           <StepHint>Select all that apply.</StepHint>
           <MultiChoice
@@ -860,10 +919,10 @@ export function BusinessContextProfile({ onDone }: { onDone?: () => void } = {})
         </StepCard>
       )}
 
-      {/* ── Step 14: Growth Vision™ ───────────────────────────────────────── */}
-      {step === 14 && (
+      {/* ── Step 17: Growth Vision™ ───────────────────────────────────────── */}
+      {step === 17 && (
         <StepCard>
-          <StepLabel label="Growth & Capital™" step={15} total={TOTAL_STEPS} />
+          <StepLabel label="Growth & Capital™" step={18} total={TOTAL_STEPS} />
           <StepQuestion>What is your overall growth vision for this business?</StepQuestion>
           <SingleChoice
             options={GROWTH_OPTIONS}
@@ -873,10 +932,10 @@ export function BusinessContextProfile({ onDone }: { onDone?: () => void } = {})
         </StepCard>
       )}
 
-      {/* ── Step 15: Exit Vision™ ─────────────────────────────────────────── */}
-      {step === 15 && (
+      {/* ── Step 18: Exit Vision™ ─────────────────────────────────────────── */}
+      {step === 18 && (
         <StepCard>
-          <StepLabel label="Growth & Capital™" step={16} total={TOTAL_STEPS} />
+          <StepLabel label="Growth & Capital™" step={19} total={TOTAL_STEPS} />
           <StepQuestion>What is your long-term exit vision?</StepQuestion>
           <SingleChoice
             options={EXIT_OPTIONS}
@@ -886,10 +945,10 @@ export function BusinessContextProfile({ onDone }: { onDone?: () => void } = {})
         </StepCard>
       )}
 
-      {/* ── Step 16: Business Credit™ ─────────────────────────────────────── */}
-      {step === 16 && (
+      {/* ── Step 19: Business Credit™ ─────────────────────────────────────── */}
+      {step === 19 && (
         <StepCard>
-          <StepLabel label="Financial Architecture™" step={17} total={TOTAL_STEPS} />
+          <StepLabel label="Financial Architecture™" step={20} total={TOTAL_STEPS} />
           <StepQuestion>Do you have established business credit?</StepQuestion>
           <SingleChoice
             options={CREDIT_OPTIONS}
@@ -899,10 +958,10 @@ export function BusinessContextProfile({ onDone }: { onDone?: () => void } = {})
         </StepCard>
       )}
 
-      {/* ── Step 17: Business Banking™ ────────────────────────────────────── */}
-      {step === 17 && (
+      {/* ── Step 20: Business Banking™ ────────────────────────────────────── */}
+      {step === 20 && (
         <StepCard>
-          <StepLabel label="Financial Architecture™" step={18} total={TOTAL_STEPS} />
+          <StepLabel label="Financial Architecture™" step={21} total={TOTAL_STEPS} />
           <StepQuestion>Do you have a dedicated business bank account?</StepQuestion>
           <SingleChoice
             options={BANKING_OPTIONS}
@@ -912,10 +971,10 @@ export function BusinessContextProfile({ onDone }: { onDone?: () => void } = {})
         </StepCard>
       )}
 
-      {/* ── Step 18: Financial Foundation™ ───────────────────────────────── */}
-      {step === 18 && (
+      {/* ── Step 21: Financial Foundation™ ───────────────────────────────── */}
+      {step === 21 && (
         <StepCard>
-          <StepLabel label="Financial Architecture™" step={19} total={TOTAL_STEPS} />
+          <StepLabel label="Financial Architecture™" step={22} total={TOTAL_STEPS} />
           <StepQuestion>Which financial foundations have you built for your business?</StepQuestion>
           <StepHint>Select all that apply.</StepHint>
           <MultiChoice
@@ -927,10 +986,10 @@ export function BusinessContextProfile({ onDone }: { onDone?: () => void } = {})
         </StepCard>
       )}
 
-      {/* ── Step 19: Wealth Building™ ─────────────────────────────────────── */}
-      {step === 19 && (
+      {/* ── Step 22: Wealth Building™ ─────────────────────────────────────── */}
+      {step === 22 && (
         <StepCard>
-          <StepLabel label="Financial Architecture™" step={20} total={TOTAL_STEPS} />
+          <StepLabel label="Financial Architecture™" step={230} total={TOTAL_STEPS} />
           <StepQuestion>Where are you currently building or interested in building wealth?</StepQuestion>
           <StepHint>Select all that apply.</StepHint>
           <MultiChoice
@@ -942,10 +1001,10 @@ export function BusinessContextProfile({ onDone }: { onDone?: () => void } = {})
         </StepCard>
       )}
 
-      {/* ── Step 20: Executive Communication Level™ ───────────────────────── */}
-      {step === 20 && (
+      {/* ── Step 23: Executive Communication Level™ ───────────────────────── */}
+      {step === 23 && (
         <StepCard>
-          <StepLabel label="Executive Communication™" step={21} total={TOTAL_STEPS} />
+          <StepLabel label="Executive Communication™" step={24} total={TOTAL_STEPS} />
           <StepQuestion>
             How would you like Harmony Lane™ to communicate business concepts with you?
           </StepQuestion>
@@ -965,10 +1024,10 @@ export function BusinessContextProfile({ onDone }: { onDone?: () => void } = {})
         </StepCard>
       )}
 
-      {/* ── Step 21: Learning Interests™ ─────────────────────────────────── */}
-      {step === 21 && (
+      {/* ── Step 24: Learning Interests™ ─────────────────────────────────── */}
+      {step === 24 && (
         <StepCard>
-          <StepLabel label="Learn Before You Launch™" step={22} total={TOTAL_STEPS} />
+          <StepLabel label="Learn Before You Launch™" step={25} total={TOTAL_STEPS} />
           <StepQuestion>
             What topics are you most interested in learning more about?
           </StepQuestion>
