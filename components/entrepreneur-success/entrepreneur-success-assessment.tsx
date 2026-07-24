@@ -60,26 +60,62 @@ function CompletionScreen({ resultsUrl }: { resultsUrl: string }) {
 
         <div className="relative px-8 py-9 sm:px-10 sm:py-10">
           <p className="font-sans font-bold text-2xl text-brand-ink mb-4 text-balance">
-            You did it. That took courage.
+            You have just done something most founders never do.
           </p>
 
-          <div className="font-sans font-medium text-[15px] leading-relaxed text-brand-ink-soft space-y-3 text-pretty mb-7">
+          {/* Completed steps summary */}
+          <div className="flex flex-wrap gap-2 mb-5">
+            {[
+              "Founder Profile",
+              "Business Context",
+              "Work-Life Balance Audit\u2122",
+              "Entrepreneur Success Assessment\u2122",
+            ].map((step) => (
+              <span
+                key={step}
+                className="inline-flex items-center gap-1.5 rounded-full border border-brand-green/30 bg-brand-green/8 px-3 py-1 text-xs font-semibold text-brand-green"
+              >
+                <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-brand-green flex-shrink-0" />
+                {step}
+              </span>
+            ))}
+          </div>
+
+          <div className="font-sans font-medium text-[15px] leading-relaxed text-brand-ink-soft space-y-3 text-pretty mb-2">
             <p>
-              You just completed the <strong>Entrepreneur Success Assessment&trade;</strong> — a
-              honest look at how you are actually operating across the Eight Pillars&trade; of a
-              high-performing founder life.
+              You just completed all four of your foundational assessments — your{" "}
+              <strong>Founder Profile</strong>, your <strong>Business Context</strong>, your{" "}
+              <strong>Work-Life Balance Audit&trade;</strong>, and your{" "}
+              <strong>Entrepreneur Success Assessment&trade;</strong>. This is your baseline. This
+              is how we measure where you are right now, and it is what you will come back to
+              do every single month inside <strong>Harmony Lane&trade;</strong>.
             </p>
             <p>
-              Most women never stop long enough to ask these questions. You did. That
-              is already a form of leadership.
+              This is your <strong>Measure Monthly&trade;</strong> ritual — the practice of
+              checking in with your whole self, not just your revenue. Every month, Cherry
+              Blossom will use your updated scores to recalibrate your priorities, surface the
+              areas of your life and business that need attention, and make sure your operating
+              system is actually working for you — not against you.
             </p>
             <p>
-              I am taking everything you shared and weaving it into your personal{" "}
-              <strong>Work-Life Harmony Blueprint&trade;</strong>. This is where your operating
-              system begins.
+              Right now, I am taking everything you just shared across all four assessments
+              and using it to build something made specifically for you.
             </p>
-            <p>
-              Get ready. Your blueprint is being prepared now.
+          </div>
+
+          {/* Blueprint intro */}
+          <div className="my-5 rounded-xl border border-brand-blush bg-brand-blush/20 px-5 py-4">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-coral mb-1">
+              Introducing
+            </p>
+            <p className="font-sans font-bold text-lg text-brand-ink mb-1.5">
+              Your My Work-Life Harmony Blueprint&trade;
+            </p>
+            <p className="font-sans text-sm text-brand-ink-soft leading-relaxed text-pretty">
+              This is your personal operating system — built from your scores, your story, and
+              your goals. It tells you exactly where to focus, what to strengthen, and how to
+              build a business and a life that are genuinely in harmony. It lives inside
+              Harmony Lane&trade; and updates every time you complete your monthly check-in.
             </p>
           </div>
 
@@ -87,7 +123,7 @@ function CompletionScreen({ resultsUrl }: { resultsUrl: string }) {
           <div className="mb-5">
             <div className="flex items-center justify-between mb-1.5">
               <span className="text-xs font-semibold text-brand-ink-soft">
-                Preparing your Blueprint&trade;&hellip;
+                Building your Blueprint&trade;&hellip;
               </span>
               <span className="text-xs font-semibold tabular-nums text-brand-coral">
                 {secondsLeft}s
@@ -107,7 +143,7 @@ function CompletionScreen({ resultsUrl }: { resultsUrl: string }) {
             onClick={() => router.push(resultsUrl)}
             className="inline-flex items-center gap-2 rounded-full bg-brand-green px-7 py-3.5 text-sm font-bold text-white shadow-ds transition-colors hover:bg-brand-green-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/30"
           >
-            Take Me to My Blueprint&trade;
+            Open My Harmony Blueprint&trade;
             <ArrowRight className="h-4 w-4" aria-hidden />
           </button>
         </div>
