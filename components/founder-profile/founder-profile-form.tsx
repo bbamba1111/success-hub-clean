@@ -294,7 +294,7 @@ export function FounderProfileForm() {
     setSaving(true)
     // TODO: persist to Supabase
     await new Promise((r) => setTimeout(r, 600))
-    router.push("/audit")
+    router.push("/business-context")
   }
 
   return (

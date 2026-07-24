@@ -222,7 +222,7 @@ const WEEKLY_RHYTHM = [
     title: "Every 30 Days",
     body: "Complete your Work-Life Balance Reality Check™ and Entrepreneur Success Assessment™ to measure how your life and business are operating.",
     links: [
-      { label: "Reality Check™", href: "/audit" },
+      { label: "Work-Life Balance Audit™", href: "/business-context" },
       { label: "ESA™", href: "/entrepreneur-success-assessment" },
     ],
     accent: "coral" as const,

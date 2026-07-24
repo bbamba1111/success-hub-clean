@@ -588,7 +588,7 @@ export function BusinessContextProfile({ onDone }: { onDone?: () => void } = {})
     if (onDone) {
       onDone()
     } else {
-      router.push("/harmony-blueprint")
+      router.push("/audit")
     }
   }
 

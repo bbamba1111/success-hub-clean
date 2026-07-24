@@ -15,7 +15,7 @@ export const metadata: Metadata = {
  * into a single setup experience called the Founder & Business Profile™.
  *
  * Flow:
- *   /begin → /founder-profile → /audit → /entrepreneur-success-assessment
+ *   /begin → /founder-profile → /business-context → /audit → /entrepreneur-success-assessment
  *   → /harmony-blueprint → /design-my-week
  */
 export default function FounderProfilePage() {
