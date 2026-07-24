@@ -130,9 +130,10 @@ export function CherryBlossomSceneCard({
       className="
         w-full
         rounded-3xl
-        bg-white
-        border border-white/40
-        shadow-[0_8px_40px_rgba(0,0,0,0.10)]
+        bg-white/70
+        backdrop-blur-md
+        border border-white/50
+        shadow-[0_8px_40px_rgba(0,0,0,0.12)]
         px-8 py-10 sm:px-12 sm:py-12
         flex flex-col items-center text-center
       "
