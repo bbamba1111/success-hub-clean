@@ -32,9 +32,9 @@ const SCENE_CONFIG = {
     ariaLabel: "Zen stones and cherry blossom branch with golden light",
   },
   executive: {
-    src: "/images/coming-soon-retreat-simple.png",
-    overlay: "bg-gradient-to-b from-[#F5EDE8]/40 via-white/10 to-[#EDE8E0]/45",
-    ariaLabel: "Women meditating in a cherry blossom garden with Japanese pagoda",
+    src: "/images/entrepreneur-success-assessment-bg.png",
+    overlay: "bg-gradient-to-b from-[#3D2B1F]/10 via-transparent to-[#2C3E2D]/15",
+    ariaLabel: "Japanese garden with cherry blossoms, pagoda, zen stones, and a wooden deck with tea and books",
   },
   "ceo-office": {
     src: "/images/ceo-workday-hero-bg.png",
