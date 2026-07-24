@@ -7,10 +7,114 @@ import {
   ASSESSMENT_QUESTIONS,
   OPERATING_PRACTICES,
 } from "@/lib/entrepreneur-success/esa-registry"
-import { RESPONSE_OPTIONS, computeEsaResults, type ResponseValue } from "@/lib/entrepreneur-success/scoring"
+import { computeEsaResults, type ResponseValue } from "@/lib/entrepreneur-success/scoring"
 import { saveEsaResults } from "@/lib/entrepreneur-success/esa-storage"
 import type { AssessmentQuestion } from "@/lib/entrepreneur-success/types"
 import { ArrowRight } from "lucide-react"
+
+const REDIRECT_DELAY = 6 // seconds before auto-redirect
+
+/* ── Cherry Blossom completion screen ──────────────────────────────────── */
+function CompletionScreen({ resultsUrl }: { resultsUrl: string }) {
+  const router = useRouter()
+  const [secondsLeft, setSecondsLeft] = useState(REDIRECT_DELAY)
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" })
+    const interval = setInterval(() => {
+      setSecondsLeft((s) => {
+        if (s <= 1) {
+          clearInterval(interval)
+          router.push(resultsUrl)
+          return 0
+        }
+        return s - 1
+      })
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [router, resultsUrl])
+
+  const pct = ((REDIRECT_DELAY - secondsLeft) / REDIRECT_DELAY) * 100
+
+  return (
+    <div className="w-full max-w-2xl mx-auto px-4 py-16 flex flex-col items-center text-center gap-0">
+      {/* Cherry Blossom avatar */}
+      <span className="relative inline-flex h-16 w-16 shrink-0 overflow-hidden rounded-full border-2 border-brand-blush shadow-md mb-5">
+        <img src="/images/logo.png" alt="Cherry Blossom" className="h-full w-full object-cover" />
+      </span>
+
+      <span className="text-xs font-bold uppercase tracking-[0.22em] text-brand-coral mb-6">
+        Cherry Blossom&trade;
+      </span>
+
+      {/* Card */}
+      <section
+        aria-label="Assessment complete — Cherry Blossom message"
+        className="relative overflow-hidden rounded-2xl border border-brand-blush bg-white/80 backdrop-blur-sm shadow-ds w-full text-left"
+      >
+        {/* Coral left spine */}
+        <div aria-hidden className="absolute inset-y-0 left-0 w-1 bg-brand-coral/70 rounded-l-2xl" />
+        {/* Blush ambient */}
+        <div aria-hidden className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-brand-blush/50 blur-3xl" />
+        <div aria-hidden className="pointer-events-none absolute -left-8 -bottom-8 h-32 w-32 rounded-full bg-brand-green/10 blur-2xl" />
+
+        <div className="relative px-8 py-9 sm:px-10 sm:py-10">
+          <p className="font-sans font-bold text-2xl text-brand-ink mb-4 text-balance">
+            You did it. That took courage.
+          </p>
+
+          <div className="font-sans font-medium text-[15px] leading-relaxed text-brand-ink-soft space-y-3 text-pretty mb-7">
+            <p>
+              You just completed the <strong>Entrepreneur Success Assessment&trade;</strong> — a
+              honest look at how you are actually operating across the Eight Pillars&trade; of a
+              high-performing founder life.
+            </p>
+            <p>
+              Most women never stop long enough to ask these questions. You did. That
+              is already a form of leadership.
+            </p>
+            <p>
+              I am taking everything you shared and weaving it into your personal{" "}
+              <strong>Work-Life Harmony Blueprint&trade;</strong>. This is where your operating
+              system begins.
+            </p>
+            <p>
+              Get ready. Your blueprint is being prepared now.
+            </p>
+          </div>
+
+          {/* Auto-redirect progress bar */}
+          <div className="mb-5">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-xs font-semibold text-brand-ink-soft">
+                Preparing your Blueprint&trade;&hellip;
+              </span>
+              <span className="text-xs font-semibold tabular-nums text-brand-coral">
+                {secondsLeft}s
+              </span>
+            </div>
+            <div className="h-1.5 w-full rounded-full bg-brand-green/15 overflow-hidden">
+              <div
+                className="h-full rounded-full bg-brand-green transition-all duration-1000 ease-linear"
+                style={{ width: `${pct}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Manual CTA */}
+          <button
+            type="button"
+            onClick={() => router.push(resultsUrl)}
+            className="inline-flex items-center gap-2 rounded-full bg-brand-green px-7 py-3.5 text-sm font-bold text-white shadow-ds transition-colors hover:bg-brand-green-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/30"
+          >
+            Take Me to My Blueprint&trade;
+            <ArrowRight className="h-4 w-4" aria-hidden />
+          </button>
+        </div>
+      </section>
+    </div>
+  )
+}
 
 const ORDERED_QUESTIONS: AssessmentQuestion[] = OPERATING_PILLARS.flatMap((pillar) =>
   ASSESSMENT_QUESTIONS.filter(
@@ -40,6 +144,7 @@ export default function EntrepreneurSuccessAssessment({
   const router = useRouter()
   const [currentIndex, setCurrentIndex] = useState(0)
   const [responses, setResponses] = useState<Record<string, number>>({})
+  const [complete, setComplete] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
   // Only scroll to the question card after the founder answers the first question.
   // This preserves the hero-first experience on initial page load.
@@ -80,7 +185,7 @@ export default function EntrepreneurSuccessAssessment({
       } else {
         const results = computeEsaResults(updated)
         saveEsaResults(results)
-        router.push(resultsUrl)
+        setComplete(true)
       }
     },
     [currentIndex, question.id, responses, router, resultsUrl]
@@ -89,6 +194,10 @@ export default function EntrepreneurSuccessAssessment({
   const handleBack = useCallback(() => {
     if (currentIndex > 0) setCurrentIndex((i) => i - 1)
   }, [currentIndex])
+
+  if (complete) {
+    return <CompletionScreen resultsUrl={resultsUrl} />
+  }
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4 py-10" ref={cardRef}>
