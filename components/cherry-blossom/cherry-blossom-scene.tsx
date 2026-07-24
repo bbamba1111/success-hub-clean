@@ -41,9 +41,14 @@ const SCENE_CONFIG = {
     overlay: "bg-gradient-to-b from-[#2C3E2D]/20 via-transparent to-[#1A2B1B]/30",
     ariaLabel: "Luxury Founder CEO office with cherry blossom view and Japanese garden",
   },
+  workspace: {
+    src: "/images/business-context-bg.png",
+    overlay: "bg-gradient-to-b from-[#4A3728]/8 via-transparent to-[#2C3E2D]/12",
+    ariaLabel: "Japanese-inspired executive workspace with panoramic zen garden view, cherry blossoms, desk with laptop, bonsai, and founder nameplate",
+  },
 } as const
 
-export type SceneVariant = "garden" | "pond" | "executive" | "ceo-office"
+export type SceneVariant = "garden" | "pond" | "executive" | "ceo-office" | "workspace"
 
 interface CherryBlossomSceneProps {
   variant: SceneVariant

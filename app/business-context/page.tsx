@@ -12,7 +12,7 @@ export default function BusinessContextPage() {
     <div className="min-h-screen bg-brand-cream">
 
       {/* ── Scene: Executive garden — introduces the business layer ───── */}
-      <CherryBlossomScene variant="executive" minHeight="min-h-[70vh]">
+      <CherryBlossomScene variant="workspace" minHeight="min-h-[70vh]">
         <CherryBlossomSceneCard
           title="Business Context Profile™"
           time="Approx. 10 mins"
