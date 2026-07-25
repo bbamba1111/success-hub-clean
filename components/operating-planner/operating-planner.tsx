@@ -22,7 +22,6 @@
 
 import { useState } from "react"
 import { ArrowRight, CheckCircle2, ChevronDown, Clock, Info, Plus, Trash2 } from "lucide-react"
-import { CherryBlossomScene, CherryBlossomSceneCard } from "@/components/cherry-blossom/cherry-blossom-scene"
 import type { BlockId } from "@/operating-engine"
 import { PLANNER_CONFIG } from "@/components/operating-planner/planner-config"
 import dynamic from "next/dynamic"
@@ -938,9 +937,6 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
           <SleepPlanner value={plannedSleep} onChange={setPlannedSleep} />
         )}
 
-        {/* Repeat After Me™ / Intention Declaration */}
-        <RepeatAfterMe blockId={blockId} data={data} />
-
         {/* Business Context Assessment™ accordion — ceo-workday only */}
         {blockId === "ceo-workday" && (
           <div className="mt-8 rounded-2xl border border-brand-green/20 bg-brand-green/[0.04] overflow-hidden">
@@ -1027,18 +1023,11 @@ export function OperatingPlanner({ blockId }: OperatingPlannerProps) {
         </button>
       </div>
 
-      {/* Collapsible body — PANORAMIC, edge-to-edge */}
+        {/* Collapsible body — PANORAMIC, edge-to-edge */}
       {open && (
         <div id={`operating-planner-body-${blockId}`} className="w-full">
 
-          {/* 1. Cherry Blossom™ Hero — segment-specific background */}
-          <CherryBlossomScene variant={config.sceneVariant ?? "garden"} minHeight="min-h-[60vh]" noBackground>
-            <CherryBlossomSceneCard title={config.welcomeName} maxWidth="max-w-3xl">
-              <p>{config.cherryBlossomMessage}</p>
-            </CherryBlossomSceneCard>
-          </CherryBlossomScene>
-
-          {/* 2. Design Space — tinted surface bg + elevated white workspace card */}
+          {/* Design Space — tinted surface bg + elevated white workspace card */}
           {data && (
             // Part 5: subtle tinted background spans the full design space area
             <div className="w-full px-4 pb-12 pt-12 sm:px-8 lg:px-12" style={{ backgroundColor: config.surface }}>
