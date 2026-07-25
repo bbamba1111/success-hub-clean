@@ -54,7 +54,6 @@ type ExecutiveOutcomeStatus = "completed" | "progress" | "blocked" | null
 type WorkspaceState = {
   executiveOutcome: string
   businessAsset: string
-  operatingRule: string
   outcomeStatus: ExecutiveOutcomeStatus
   phase1Open: boolean
   phase2Open: boolean
@@ -82,15 +81,6 @@ const ASSET_EXAMPLES: Record<string, string> = {
   "Finalize a keynote presentation": "Sales Asset™",
 }
 
-const OPERATING_RULE_EXAMPLES = [
-  "Meetings require an agenda, owner, and clear decision",
-  "AI drafts first — I review and approve",
-  "Delegate before doing",
-  "Build an SOP after the third repetition",
-  "Protect my Human Zone of Genius™",
-  "Decisions move forward within 24 hours whenever possible",
-]
-
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export function CeoWorkdayWorkspace({
@@ -106,7 +96,6 @@ export function CeoWorkdayWorkspace({
   const [state, setState] = useState<WorkspaceState>({
     executiveOutcome: "",
     businessAsset: "",
-    operatingRule: segment.rule || "",
     outcomeStatus: savedResponse as ExecutiveOutcomeStatus | null,
     phase1Open: true,
     phase2Open: isCurrent,
@@ -227,24 +216,6 @@ export function CeoWorkdayWorkspace({
         >
           {/* Founder GPS™ — Live Recommendation (Phase 8.1) */}
           <GpsRecommendationCard card={gpsPhase1} />
-
-          {/* Today's Operating Rule™ */}
-          <InstalledField
-            label="Today's Operating Rule™"
-            value={state.operatingRule}
-            placeholder="Your installed Operating Rule™ will appear here after Design My Week™"
-            accent="#5B835F"
-          />
-
-          {/* Operating Rule selector (if not installed) */}
-          {!state.operatingRule && (
-            <ExampleChips
-              label="Operating Rule Examples"
-              items={OPERATING_RULE_EXAMPLES}
-              onSelect={(v) => setState((s) => ({ ...s, operatingRule: v }))}
-              accent="#5B835F"
-            />
-          )}
 
           {/* Practice — Intention Declaration */}
           {segment.declaration && (
@@ -627,34 +598,6 @@ function ExecutivePhase({
   )
 }
 
-function InstalledField({
-  label,
-  value,
-  placeholder,
-  accent,
-}: {
-  label: string
-  value: string
-  placeholder: string
-  accent: string
-}) {
-  return (
-    <div className="rounded-xl border border-black/[0.07] bg-white/70 px-4 py-3">
-      <p
-        className="font-montserrat text-xs font-bold uppercase tracking-[0.16em] mb-1"
-        style={{ color: accent }}
-      >
-        {label}
-      </p>
-      {value ? (
-        <p className="font-montserrat text-[14px] leading-relaxed text-[#1A1A1A]">{value}</p>
-      ) : (
-        <p className="font-montserrat text-[13px] italic text-[#6B5860]/50">{placeholder}</p>
-      )}
-    </div>
-  )
-}
-
 function DeclarationPanel({ declaration }: { declaration: string }) {
   return (
     <div className="rounded-xl border border-[#5B835F]/25 bg-[#5B835F]/[0.05] px-5 py-4">
@@ -667,39 +610,6 @@ function DeclarationPanel({ declaration }: { declaration: string }) {
       <p className="mt-2 font-montserrat text-[11px] leading-relaxed text-[#6B5860]/70">
         This is the operating standard you committed to. It defines how you show up during your CEO Workday™ today.
       </p>
-    </div>
-  )
-}
-
-function ExampleChips({
-  label,
-  items,
-  onSelect,
-  accent,
-}: {
-  label: string
-  items: string[]
-  onSelect: (v: string) => void
-  accent: string
-}) {
-  return (
-    <div>
-      <p className="font-montserrat text-[10px] font-semibold uppercase tracking-[0.16em] text-[#6B5860]/60 mb-2">
-        {label}
-      </p>
-      <div className="flex flex-wrap gap-1.5">
-        {items.map((item) => (
-          <button
-            key={item}
-            type="button"
-            onClick={() => onSelect(item)}
-            className="rounded-full border px-3 py-1 font-montserrat text-[11px] font-medium transition-colors hover:opacity-80"
-            style={{ borderColor: `${accent}30`, color: accent, background: `${accent}08` }}
-          >
-            {item}
-          </button>
-        ))}
-      </div>
     </div>
   )
 }
