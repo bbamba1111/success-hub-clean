@@ -16,7 +16,7 @@
  */
 
 import Link from "next/link"
-import { ArrowRight, Sun, Dumbbell, Salad, Briefcase, Sunset, Moon, Calendar, BarChart3, ChevronDown, Radio, Music2, VolumeX } from "lucide-react"
+import { ArrowRight, Sun, Dumbbell, Salad, Briefcase, Sunset, Moon, Calendar, BarChart3, ChevronDown } from "lucide-react"
 import { useState } from "react"
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -308,107 +308,83 @@ function ExpandableBlock({ block }: { block: RhythmBlock }) {
         </div>
       </button>
 
-      {/* ── Expandable body ─────────────────────────────────────────────────── */}
+      {/* ── Expanded body ───────────────────────────────────────────────────── */}
       {open && (
-        <div className="border-t border-black/[0.06] divide-y divide-black/[0.05]">
+        <div className="border-t border-black/[0.06]">
 
-          {/* 1. Join Us Live™ */}
-          <div className="px-7 py-6">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="inline-flex h-2.5 w-2.5 rounded-full bg-[#E26C73] animate-pulse shrink-0" aria-hidden />
-              <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.20em] text-[#E26C73]">
-                Join Us Live™
-              </p>
-            </div>
+          {/* Row 1 — Join Us Live™ */}
+          <div className="px-7 py-5">
             <a
               href="#"
-              className="inline-flex items-center gap-2.5 rounded-xl bg-[#E26C73] px-6 py-3.5 font-sans text-sm font-bold text-white shadow-sm transition-colors hover:bg-[#c04d54] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E26C73]/40"
+              className="inline-flex items-center gap-2.5 rounded-xl bg-[#E26C73] px-6 py-3 font-sans text-sm font-bold text-white shadow-sm transition-colors hover:bg-[#c04d54] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E26C73]/40"
             >
-              <Radio className="h-4 w-4" aria-hidden />
+              <span className="h-2 w-2 rounded-full bg-white animate-pulse shrink-0" aria-hidden />
               Join Us Live™
             </a>
           </div>
 
-          {/* 2. Music */}
-          <div className="px-7 py-6">
-            <div className="flex items-center gap-2 mb-3">
-              <Music2 className={`h-4 w-4 shrink-0 ${a.icon}`} aria-hidden />
-              <p className={`font-montserrat text-[10px] font-bold uppercase tracking-[0.20em] ${a.eyebrow}`}>
-                Music
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-2" role="group" aria-label="Music options">
-              {(
-                [
-                  { value: "barbara" as const, label: "Barbara's Recommended Playlist", icon: Music2 },
-                  { value: "my-playlist" as const, label: "My Playlist",               icon: Music2 },
-                  { value: "silent" as const,    label: "Silent",                       icon: VolumeX },
-                ] as const
-              ).map(({ value, label, icon: Icon }) => {
-                const selected = music === value
+          <div className="mx-7 border-t border-black/[0.05]" />
+
+          {/* Row 2 — Music */}
+          <div className="px-7 py-5">
+            <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-brand-ink/40 mb-3">
+              Music
+            </p>
+            <div className="flex flex-col gap-1" role="group" aria-label="Music options">
+              {(["Barbara's Recommended Playlist", "My Playlist", "Silent"] as const).map((label) => {
+                const val = label === "Barbara's Recommended Playlist" ? "barbara" : label === "My Playlist" ? "my-playlist" : "silent"
+                const selected = music === val
                 return (
                   <button
-                    key={value}
+                    key={val}
                     type="button"
                     aria-pressed={selected}
-                    onClick={() => setMusic(selected ? null : value)}
-                    className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-2 font-sans text-sm font-medium transition-colors ${
+                    onClick={() => setMusic(selected ? null : val as MusicChoice)}
+                    className={`w-fit text-left rounded-lg px-4 py-2 font-sans text-sm font-medium transition-colors ${
                       selected
-                        ? `${a.cta} border-transparent shadow-sm`
-                        : `border-black/[0.10] bg-white/70 text-brand-ink/70 hover:bg-white`
+                        ? `${a.cta} shadow-sm`
+                        : `text-brand-ink/65 hover:bg-black/[0.04]`
                     }`}
                   >
-                    <Icon className="h-3.5 w-3.5" aria-hidden />
                     {label}
                   </button>
                 )
               })}
             </div>
-            {music === "barbara" && (
-              <p className="mt-3 font-sans text-sm text-brand-ink/60 italic">
-                Barbara&apos;s curated playlist for this segment is coming soon.
-              </p>
-            )}
-            {music === "my-playlist" && (
-              <p className="mt-3 font-sans text-sm text-brand-ink/60 italic">
-                Connect your preferred music service to play your own playlist here.
-              </p>
-            )}
           </div>
 
-          {/* 3. About This Segment */}
-          <div className="overflow-hidden">
+          <div className="mx-7 border-t border-black/[0.05]" />
+
+          {/* Row 3 — About This Segment */}
+          <div>
             <button
               type="button"
               onClick={() => setShowAbout((v) => !v)}
-              className="flex w-full items-center justify-between px-7 py-4 text-left transition-colors hover:bg-black/[0.02]"
+              className="flex w-full items-center gap-2 px-7 py-4 text-left transition-colors hover:bg-black/[0.02]"
               aria-expanded={showAbout}
             >
-              <div className="flex items-center gap-2">
-                <ChevronDown
-                  className={`h-4 w-4 text-brand-ink/40 transition-transform duration-200 ${showAbout ? "rotate-180" : ""}`}
-                  aria-hidden
-                />
-                <p className="font-montserrat text-xs font-semibold text-brand-ink/60">
-                  About This Segment
-                </p>
-              </div>
+              <ChevronDown
+                className={`h-4 w-4 text-brand-ink/40 transition-transform duration-200 ${showAbout ? "rotate-180" : ""}`}
+                aria-hidden
+              />
+              <span className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-brand-ink/40">
+                About This Segment
+              </span>
             </button>
 
             {showAbout && (
-              <div className="px-7 pb-6 space-y-3">
-                <p className="font-sans text-[15px] leading-relaxed text-brand-ink/70 max-w-2xl">
+              <div className="px-7 pb-6 space-y-3 border-t border-black/[0.05]">
+                <p className="font-sans text-[14px] leading-relaxed text-brand-ink/65 max-w-2xl pt-4">
                   {block.description}
                 </p>
-
                 {block.items && block.items.length > 0 && (
-                  <ul className="space-y-2.5 pt-1">
+                  <ul className="space-y-2 pt-1">
                     {block.items.map((item) => (
                       <li key={item.label} className="flex items-start gap-3">
-                        <span className={`mt-2 h-1.5 w-1.5 rounded-full shrink-0 ${a.itemDot}`} aria-hidden />
+                        <span className={`mt-1.5 h-1.5 w-1.5 rounded-full shrink-0 ${a.itemDot}`} aria-hidden />
                         <div>
                           <span className="font-sans text-sm font-semibold text-brand-ink">{item.label} — </span>
-                          <span className="font-sans text-sm text-brand-ink/65">{item.body}</span>
+                          <span className="font-sans text-sm text-brand-ink/60">{item.body}</span>
                         </div>
                       </li>
                     ))}
