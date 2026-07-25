@@ -254,7 +254,9 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
   },
 }
 
-/** True when a segment has a Design Space (all segments now have one). */
+/** True when a segment has a Design Space (all segments now have one).
+ *  power-down is excluded — its planner section has been removed from the home page. */
 export function segmentHasPlanner(blockId: BlockId): boolean {
+  if (blockId === "power-down") return false
   return Boolean(PLANNER_CONFIG[blockId])
 }
