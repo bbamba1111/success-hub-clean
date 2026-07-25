@@ -229,18 +229,17 @@ export function BusinessDayBlock({
                 })}
               </div>
               {music === "barbara" && (
-                <div className="mt-3 flex items-center gap-2">
-                  <a
-                    href="https://youtube.com/playlist?list=OLAK5uy_l3HOZ6_m7VDrRL6zuazqyC7T9Af5c6jQw&si=0zskKwck-Z4UzpBa"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-lg border border-[#7FB069]/30 bg-[#7FB069]/10 px-4 py-2 font-sans text-sm font-medium text-[#5B835F] transition-colors hover:bg-[#7FB069]/20"
-                  >
-                    <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-                      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                    </svg>
-                    Open on YouTube
-                  </a>
+                <div className="mt-4">
+                  <div className="overflow-hidden rounded-xl border border-black/[0.07] shadow-sm">
+                    <iframe
+                      src="https://www.youtube.com/embed/videoseries?list=OLAK5uy_l3HOZ6_m7VDrRL6zuazqyC7T9Af5c6jQw&autoplay=1"
+                      title="Barbara's Recommended Playlist"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="w-full"
+                      style={{ height: 200 }}
+                    />
+                  </div>
                 </div>
               )}
             </div>
