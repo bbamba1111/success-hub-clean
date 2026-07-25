@@ -30,6 +30,8 @@ export interface BusinessDayBlockProps {
   segmentRemaining?: string
   /** Preview of this segment's active Operating Rule™ (shown on the card). */
   operatingRulePreview?: string
+  /** Rich content for the "About This Segment" accordion. Falls back to description. */
+  aboutContent?: ReactNode
 }
 
 const STATUS_LABEL: Record<BlockStatus, string> = {
@@ -61,6 +63,7 @@ export function BusinessDayBlock({
   segmentProgress,
   segmentRemaining,
   operatingRulePreview,
+  aboutContent,
 }: BusinessDayBlockProps) {
   const isCurrent = status === "current"
   const showProgress = isCurrent && typeof segmentProgress === "number"
@@ -259,8 +262,10 @@ export function BusinessDayBlock({
                 </span>
               </button>
               {showAbout && (
-                <div className="px-7 pb-6 pt-3 border-t border-black/[0.05]">
-                  <div className="text-sm leading-relaxed text-[#5C4F55]">{description}</div>
+                <div className="px-7 pb-7 pt-4 border-t border-black/[0.05] space-y-4">
+                  {aboutContent ?? (
+                    <div className="text-sm leading-relaxed text-[#5C4F55]">{description}</div>
+                  )}
                 </div>
               )}
             </div>

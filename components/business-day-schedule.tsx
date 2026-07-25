@@ -17,6 +17,7 @@ import { useOperatingEngine } from "@/components/operating-engine-provider"
 import { useHarmonyWeek } from "@/components/harmony-week/harmony-week-provider"
 import { getActiveRules } from "@/lib/operating-rules/storage"
 import { SCHEDULE, type BlockConfig } from "@/operating-engine"
+import { SEGMENT_ABOUT, renderSegmentAbout } from "@/operating-engine/config/segment-about"
 
 /** Smoothly bring the member to the Operating Planner™ workspace below the hero. */
 function scrollToOperatingPlanner() {
@@ -118,6 +119,11 @@ export function BusinessDaySchedule() {
               segmentProgress={timing?.progress}
               segmentRemaining={timing?.remaining}
               operatingRulePreview={ruleBySegment[block.id]}
+              aboutContent={
+                SEGMENT_ABOUT[block.id]
+                  ? renderSegmentAbout(SEGMENT_ABOUT[block.id])
+                  : undefined
+              }
             />
           )
         })}
