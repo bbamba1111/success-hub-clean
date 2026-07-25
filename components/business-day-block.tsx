@@ -131,19 +131,6 @@ export function BusinessDayBlock({
 
               <div className="mt-2 line-clamp-2 text-pretty text-sm leading-relaxed text-[#5C4F55]">{description}</div>
 
-              {/* Today's Operating Rule™ preview — the single commitment guiding
-                  this segment. Keeps the card informative without a workspace. */}
-              {operatingRulePreview && (
-                <div className="mt-3 rounded-xl border border-[#7FB069]/20 bg-white/60 px-3 py-2">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#5B835F]">
-                    {"Today's Operating Rule™"}
-                  </p>
-                  <p className="mt-0.5 line-clamp-2 font-serif text-sm italic leading-snug text-[#3A2E33]">
-                    {operatingRulePreview}
-                  </p>
-                </div>
-              )}
-
               {children}
 
               {/* One clear next action: only the live segment invites the member
