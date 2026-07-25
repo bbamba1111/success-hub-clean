@@ -10,7 +10,6 @@ import CherryBlossomCountdown from "@/components/cherry-blossom-countdown"
 import WorkLifeBalanceSchedule from "@/components/work-life-balance-schedule"
 import { SimpleChatModal } from "@/components/simple-chat-modal"
 import { CherryBlossomCoGuide } from "@/components/cherry-blossom-co-guide"
-import { WeeklyRealityCheck } from "@/components/weekly-reality-check"
 import { BusinessDayHero } from "@/components/business-day-hero"
 import { BusinessDaySchedule } from "@/components/business-day-schedule"
 import { OperatingPlannerSection } from "@/components/operating-planner/operating-planner-section"
@@ -85,9 +84,6 @@ export default function HomePage() {
 
       {/* Admin-only Developer Toolbar */}
       <DeveloperToolbar />
-
-      {/* Weekly Work-Life Balance Reality Check™ - directly under the engine hero */}
-      <WeeklyRealityCheck />
 
       {/* Chat + Co-Guide modals retained so members can still launch guidance */}
       <SimpleChatModal
