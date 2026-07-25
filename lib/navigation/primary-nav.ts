@@ -32,7 +32,7 @@ import {
 } from "lucide-react"
 
 /** The four permanent, user-facing destinations. */
-export type PrimarySectionId = "sunday-design-day" | "live-today" | "design-weekly" | "my-harmony"
+export type PrimarySectionId = "sunday-design-day" | "live-today" | "design-weekly" | "time-freedom" | "my-harmony"
 
 /** Developer-only module groups (not shown in navigation). */
 export type InternalModuleId = "lead" | "share" | "grow"
@@ -154,6 +154,22 @@ export const PRIMARY_NAV: PrimarySection[] = [
         href: "/community",
         description: "Daily accountability, founder wins, discussions, challenges, and your community calendar — all in one place.",
         built: true,
+      },
+    ],
+  },
+  {
+    id: "time-freedom",
+    navLabel: "Time Freedom",
+    title: "Time Freedom™",
+    href: "/time-freedom",
+    icon: Leaf,
+    tagline: "The life your business exists to support — celebrate contained work and expanded life.",
+    built: false,
+    workspaces: [
+      {
+        label: "Time Freedom Moments™",
+        href: "/time-freedom-moments",
+        description: "Share and celebrate the life you're reclaiming with the community.",
       },
     ],
   },
