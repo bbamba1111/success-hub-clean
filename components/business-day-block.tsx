@@ -1,8 +1,9 @@
 "use client"
 
-import { type ReactNode } from "react"
+import { type ReactNode, useState } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
+import { ChevronDown } from "lucide-react"
 
 export type BlockStatus = "current" | "upcoming" | "completed"
 
@@ -43,6 +44,8 @@ const STATUS_BADGE: Record<BlockStatus, string> = {
   completed: "bg-black/10 text-[#6B5860]",
 }
 
+type MusicChoice = "barbara" | "my-playlist" | "silent"
+
 export function BusinessDayBlock({
   sectionId,
   backgroundImage = "/placeholder.svg?height=560&width=1600",
@@ -61,6 +64,9 @@ export function BusinessDayBlock({
 }: BusinessDayBlockProps) {
   const isCurrent = status === "current"
   const showProgress = isCurrent && typeof segmentProgress === "number"
+  const [open, setOpen] = useState(false)
+  const [showAbout, setShowAbout] = useState(false)
+  const [music, setMusic] = useState<MusicChoice | null>(null)
 
   return (
     <section id={sectionId} aria-label={title} className="scroll-mt-24 w-full px-4 py-3 sm:px-6 lg:px-8">
@@ -75,6 +81,7 @@ export function BusinessDayBlock({
         }`}
         style={{ backgroundColor: `rgb(${tint})` }}
       >
+
         {/* Segment progress — thin bar showing how much of the in-session block remains */}
         {showProgress && (
           <div className="absolute inset-x-0 top-0 z-20 h-1.5 bg-[#7FB069]/15">
@@ -169,9 +176,98 @@ export function BusinessDayBlock({
           </div>
         </div>
 
-        {/* Phase 3B.1: the in-session workspace now lives once, full-width,
-            in the Operating Planner™ below the hero — not repeated on each
-            schedule card. These cards are a clean visual timeline only. */}
+        {/* Expand toggle — always visible */}
+        <button
+          type="button"
+          aria-expanded={open}
+          onClick={() => setOpen((v) => !v)}
+          className="flex w-full items-center justify-center gap-1.5 border-t border-black/[0.06] py-3 font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60 transition-colors hover:bg-black/[0.02]"
+        >
+          <ChevronDown
+            className={`h-3.5 w-3.5 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+            aria-hidden
+          />
+          {open ? "Close" : "Open Segment"}
+        </button>
+
+        {/* 3-part expandable body */}
+        {open && (
+          <div className="border-t border-black/[0.06]">
+
+            {/* Row 1 — Join Us Live™ */}
+            <div className="px-7 py-5">
+              <a
+                href="#"
+                className="inline-flex items-center gap-2.5 rounded-xl bg-[#E26C73] px-6 py-3 font-sans text-sm font-bold text-white shadow-sm transition-colors hover:bg-[#c04d54] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E26C73]/40"
+              >
+                <span className="h-2 w-2 rounded-full bg-white animate-pulse shrink-0" aria-hidden />
+                Join Us Live™
+              </a>
+            </div>
+
+            <div className="mx-7 border-t border-black/[0.05]" />
+
+            {/* Row 2 — Music */}
+            <div className="px-7 py-5">
+              <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/50 mb-3">
+                Music
+              </p>
+              <div className="flex flex-col gap-1" role="group" aria-label="Music options">
+                {(
+                  [
+                    { val: "barbara" as const, label: "Barbara's Recommended Playlist" },
+                    { val: "my-playlist" as const, label: "My Playlist" },
+                    { val: "silent" as const, label: "Silent" },
+                  ] as const
+                ).map(({ val, label }) => {
+                  const selected = music === val
+                  return (
+                    <button
+                      key={val}
+                      type="button"
+                      aria-pressed={selected}
+                      onClick={() => setMusic(selected ? null : val)}
+                      className={`w-fit text-left rounded-lg px-4 py-2 font-sans text-sm font-medium transition-colors ${
+                        selected
+                          ? "bg-[#7FB069] text-white shadow-sm"
+                          : "text-[#5C4F55] hover:bg-black/[0.04]"
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+
+            <div className="mx-7 border-t border-black/[0.05]" />
+
+            {/* Row 3 — About This Segment */}
+            <div>
+              <button
+                type="button"
+                aria-expanded={showAbout}
+                onClick={() => setShowAbout((v) => !v)}
+                className="flex w-full items-center gap-2 px-7 py-4 text-left transition-colors hover:bg-black/[0.02]"
+              >
+                <ChevronDown
+                  className={`h-4 w-4 text-[#6B5860]/40 transition-transform duration-200 ${showAbout ? "rotate-180" : ""}`}
+                  aria-hidden
+                />
+                <span className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/50">
+                  About This Segment
+                </span>
+              </button>
+              {showAbout && (
+                <div className="px-7 pb-6 pt-3 border-t border-black/[0.05]">
+                  <div className="text-sm leading-relaxed text-[#5C4F55]">{description}</div>
+                </div>
+              )}
+            </div>
+
+          </div>
+        )}
+
       </motion.div>
     </section>
   )
