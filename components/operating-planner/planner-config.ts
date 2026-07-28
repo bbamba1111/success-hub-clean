@@ -254,10 +254,7 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
   },
 }
 
-/** True when a segment has a Design Space.
- *  power-down and digital-detox are excluded — their planner sections have
- *  been removed from the home page per product spec. */
-export function segmentHasPlanner(blockId: BlockId): boolean {
-  if (blockId === "power-down" || blockId === "digital-detox") return false
-  return Boolean(PLANNER_CONFIG[blockId])
+/** All Design Space planner sections have been removed from the home page. */
+export function segmentHasPlanner(_blockId: BlockId): boolean {
+  return false
 }
