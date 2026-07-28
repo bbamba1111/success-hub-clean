@@ -48,35 +48,35 @@ function getCalendarInvitation(): {
 
   // ── Time Freedom™ window ──────────────────────────────────────────────────
   if (day === 4 && hour >= 17) return {
-    text: "Welcome to Your Time Freedom™",
+    text: "Join Your Time Freedom™",
     accent: "Time Freedom™",
     subheading: "Your business week is complete. Protect the freedom you intentionally created.",
     badge: "TIME FREEDOM™",
     emoji: "🌿",
   }
   if (day === 5) return {
-    text: "Welcome to Your Time Freedom™",
+    text: "Join Your Time Freedom™",
     accent: "Time Freedom™",
     subheading: "Your business week is complete. Protect the freedom you intentionally created.",
     badge: "TIME FREEDOM™",
     emoji: "🌿",
   }
   if (day === 6) return {
-    text: "Welcome to Your Time Freedom™",
+    text: "Join Your Time Freedom™",
     accent: "Time Freedom™",
     subheading: "Slow down, recharge, connect, and enjoy the life you designed your business to support.",
     badge: "TIME FREEDOM™",
     emoji: "🌿",
   }
   if (day === 0) return {
-    text: "Welcome to Your Time Freedom™",
+    text: "Join Your Time Freedom™",
     accent: "Time Freedom™",
     subheading: "Enjoy the final day of your Time Freedom™. Reflect and prepare to begin another Work-Life Balance Business Week™ tomorrow.",
     badge: "TIME FREEDOM™",
     emoji: "🌿",
   }
   if (day === 1 && hour < 7) return {
-    text: "Welcome to Your Time Freedom™",
+    text: "Join Your Time Freedom™",
     accent: "Time Freedom™",
     subheading: "Enjoy the final day of your Time Freedom™. Reflect and prepare to begin another Work-Life Balance Business Week™ tomorrow.",
     badge: "TIME FREEDOM™",
@@ -85,28 +85,28 @@ function getCalendarInvitation(): {
 
   // ── Workweek days ─────────────────────────────────────────────────────────
   if (day === 1) return {
-    text: "Welcome to Make Time For More Mondays™",
+    text: "Join Make Time For More Mondays™",
     accent: "Mondays™",
     subheading: "Your Redesigned Entry Into the Workweek. Begin another Work-Life Balance Business Week™ with clarity, purpose, and balance.",
     badge: "MAKE TIME FOR MORE MONDAYS™",
     emoji: "🌸",
   }
   if (day === 2) return {
-    text: "Welcome to Tuesday's Work-Life Balance Business Day™",
+    text: "Join Tuesday's Work-Life Balance Business Day™",
     accent: "Tuesday's",
     subheading: "Continue living the commitments you designed. Protect your rhythm. Lead with intention.",
     badge: "WORK-LIFE BALANCE BUSINESS WEEK™",
     emoji: "🌸",
   }
   if (day === 3) return {
-    text: "Welcome to Wednesday's Work-Life Balance Business Day™",
+    text: "Join Wednesday's Work-Life Balance Business Day™",
     accent: "Wednesday's",
     subheading: "Consistency creates momentum. Honor today's commitments and continue building the life you designed.",
     badge: "WORK-LIFE BALANCE BUSINESS WEEK™",
     emoji: "🌸",
   }
   if (day === 4) return {
-    text: "Welcome to Thursday's Work-Life Balance Business Day™",
+    text: "Join Thursday's Work-Life Balance Business Day™",
     accent: "Thursday's",
     subheading: "Finish your business week strong. Complete what matters most before entering Time Freedom™.",
     badge: "WORK-LIFE BALANCE BUSINESS WEEK™",
@@ -115,7 +115,7 @@ function getCalendarInvitation(): {
 
   // Fallback
   return {
-    text: "Welcome to Your Work-Life Balance Business Day™",
+    text: "Join Your Work-Life Balance Business Day™",
     subheading: "Live, Lead, and Love Today.",
     badge: "WORK-LIFE BALANCE BUSINESS WEEK™",
     emoji: "🌸",
