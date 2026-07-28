@@ -175,19 +175,11 @@ export function BusinessDayHero() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="mx-auto max-w-none"
         >
-          {/* Day badge pill — driven by calendar, not workflow state */}
-          <div className="mb-4 flex justify-center">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#5B835F]/30 bg-[#5B835F]/10 px-3 py-1 font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#3a5c3d]">
-              <span className="h-1.5 w-1.5 rounded-full shrink-0 bg-[#5B835F]" aria-hidden />
-              {invitation.badge}
-            </span>
-          </div>
           <h1 className="text-balance font-playfair text-4xl font-semibold leading-tight tracking-tight text-[#1C161A] sm:text-5xl">
-            <AccentedTitle text={invitation.text} accent={invitation.accent} />
+            Join the Work-Life Balance Business Week™
           </h1>
           <p className="mt-3 font-montserrat text-base font-medium tracking-wide text-[#78AD7D] sm:text-lg">
-            {(invitation.subheading ?? dayIntention).replace(/\.\s*$/, "")}{" "}
-            <span aria-hidden>{invitation.emoji}</span>
+            {"The World's First Work-Life Balance Co-Working Community™ for Founders & Entrepreneurs"}
           </p>
         </motion.div>
       </div>
