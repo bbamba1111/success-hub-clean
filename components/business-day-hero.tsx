@@ -181,14 +181,17 @@ export function BusinessDayHero() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="mx-auto flex max-w-3xl flex-col items-center px-6 py-12 text-center sm:py-14"
         >
-          {/* Eyebrow label */}
-          <p className="mb-4 font-montserrat text-[22px] font-medium text-[#78AD7D] sm:text-[26px]">
+          {/* Badge */}
+          <div className="mb-5 inline-flex items-center gap-1.5 rounded-full border border-[#5B835F]/30 bg-[#5B835F]/10 px-4 py-1.5 font-montserrat text-[13px] font-semibold tracking-wide text-[#3a5c3d]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#5B835F] shrink-0" aria-hidden />
             Make Time For More™
-          </p>
+          </div>
 
           {/* Primary headline — single line */}
           <h1 className="whitespace-nowrap font-playfair text-3xl font-bold leading-tight tracking-tight text-[#1C161A] sm:text-4xl lg:text-5xl">
-            {"Join Today's Work-Life Balance Business Day™"}
+            {"Join "}
+            <span className="italic text-[#C13B6B]">{"Today's"}</span>
+            {" Work-Life Balance Business Day™"}
           </h1>
         </motion.div>
       </div>
