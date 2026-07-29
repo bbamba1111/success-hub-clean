@@ -182,13 +182,13 @@ export function BusinessDayHero() {
           className="mx-auto flex max-w-3xl flex-col items-center px-6 py-12 text-center sm:py-14"
         >
           {/* Badge */}
-          <div className="mb-5 inline-flex items-center gap-1.5 rounded-full border border-[#5B835F]/30 bg-[#5B835F]/10 px-4 py-1.5 font-montserrat text-[13px] font-semibold tracking-wide text-[#3a5c3d]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#5B835F] shrink-0" aria-hidden />
+          <div className="mb-5 inline-flex items-center gap-1.5 rounded-lg border border-[#5B835F]/30 bg-[#5B835F]/10 px-4 py-1.5 font-montserrat text-[16px] font-semibold tracking-wide text-[#3a5c3d]">
+            <span className="shrink-0 text-[11px] leading-none" aria-hidden>🌸</span>
             Make Time For More™
           </div>
 
           {/* Primary headline — single line */}
-          <h1 className="whitespace-nowrap font-playfair text-3xl font-bold leading-tight tracking-tight text-[#1C161A] sm:text-4xl lg:text-5xl">
+          <h1 className="whitespace-nowrap font-playfair text-3xl font-normal leading-tight tracking-tight text-[#1C161A] sm:text-4xl lg:text-5xl">
             {"Join "}
             <span className="italic text-[#C13B6B]">{"Today's"}</span>
             {" Work-Life Balance Business Day™"}
