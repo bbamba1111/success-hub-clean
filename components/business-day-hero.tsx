@@ -217,6 +217,17 @@ export function BusinessDayHero() {
             className="glass-panel w-full max-w-2xl rounded-2xl p-8 sm:p-10"
             style={{ backgroundColor: "rgba(253, 250, 245, 0.72)" }}
           >
+            {/* Now Being Lived indicator */}
+            <div className="mb-4 inline-flex items-center gap-2">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#C13B6B] opacity-60" />
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#C13B6B]" />
+              </span>
+              <span className="font-montserrat text-[11px] font-bold uppercase tracking-[0.18em] text-[#C13B6B]">
+                Now Being Lived
+              </span>
+            </div>
+
             {experience && (
               <motion.div
                 key={`${experience.businessDay.current.id}-${experience.member.greeting}`}
@@ -254,11 +265,8 @@ export function BusinessDayHero() {
 
 
 
-            {/* Enter button at the bottom — label adapts to the current block.
-                The planner/tools now live in the full-width Operating Planner™
-                workspace BELOW the hero (Phase 3B.1): the hero is orientation
-                only and never contains forms or planners. */}
-            <div className="mt-8">
+            {/* Enter button + Community Closed */}
+            <div className="mt-8 flex flex-col gap-3">
               <Button
                 size="lg"
                 onClick={scrollToRhythm}
@@ -266,6 +274,13 @@ export function BusinessDayHero() {
               >
                 {experience ? experience.businessDay.current.cta : "Enter Today's Business Day™"}
               </Button>
+              <button
+                type="button"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-[#3A3340]/20 bg-[#3A3340]/90 px-6 py-2.5 font-montserrat text-sm font-semibold text-white/90 shadow-sm transition-colors hover:bg-[#3A3340]"
+              >
+                <span className="h-2 w-2 rounded-full bg-white/60" aria-hidden />
+                Community Closed
+              </button>
             </div>
           </motion.div>
         </div>
