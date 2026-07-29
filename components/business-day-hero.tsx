@@ -173,7 +173,7 @@ export function BusinessDayHero() {
           className="mx-auto flex max-w-3xl flex-col items-center px-6 py-[38px] text-center sm:py-[45px]"
         >
           {/* Badge */}
-          <div className="mb-5 inline-flex items-center gap-1.5 rounded-lg border border-[#78AD7D] bg-[#78AD7D] px-4 py-1.5 font-montserrat text-[16px] font-semibold tracking-wide text-white">
+          <div className="mb-5 inline-flex items-center gap-1.5 rounded-lg border border-[#78AD7D]/40 bg-[#78AD7D]/15 px-4 py-1.5 font-montserrat text-[16px] font-semibold tracking-wide text-[#4a8a50]">
             <span className="shrink-0 text-[11px] leading-none" aria-hidden>🌸</span>
             Make Time For More™
           </div>
