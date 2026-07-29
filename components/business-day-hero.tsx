@@ -182,7 +182,7 @@ export function BusinessDayHero() {
           className="mx-auto flex max-w-3xl flex-col items-center px-6 py-12 text-center sm:py-14"
         >
           {/* Eyebrow label */}
-          <p className="mb-4 font-playfair text-xl font-medium text-[#78AD7D] sm:text-2xl">
+          <p className="mb-4 font-montserrat text-[22px] font-medium text-[#78AD7D] sm:text-[26px]">
             Make Time For More™
           </p>
 
