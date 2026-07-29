@@ -55,17 +55,17 @@ export function CommunityClosedGate() {
         <span className="absolute bottom-[25%] left-[8%] text-base opacity-30" style={{ transform: "rotate(5deg)" }}>🌸</span>
       </div>
 
-      {/* ── Glass card — left-anchored, max 33% width on large screens ── */}
-      <div className="relative z-10 flex h-full items-center justify-start px-8 py-10 lg:px-16">
+      {/* ── Glass card — left-anchored, narrow so background breathes ── */}
+      <div className="relative z-10 flex h-full items-center justify-start px-6 py-8 lg:px-12">
         <div
-          className="w-full max-w-sm rounded-2xl p-8 shadow-2xl lg:max-w-md"
+          className="w-full max-w-[260px] rounded-xl p-6 shadow-xl lg:max-w-[300px]"
           style={{
-            background: "rgba(253, 250, 247, 0.82)",
-            backdropFilter: "blur(6px)",
-            WebkitBackdropFilter: "blur(6px)",
-            border: "1px solid rgba(255,255,255,0.55)",
+            background: "rgba(253, 250, 247, 0.62)",
+            backdropFilter: "blur(3px)",
+            WebkitBackdropFilter: "blur(3px)",
+            border: "1px solid rgba(255,255,255,0.45)",
             boxShadow:
-              "0 8px 48px rgba(18,12,28,0.22), 0 2px 12px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.7)",
+              "0 4px 32px rgba(18,12,28,0.18), 0 1px 8px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.6)",
           }}
         >
 
@@ -84,48 +84,42 @@ export function CommunityClosedGate() {
           </div>
 
           {/* Current segment */}
-          <h2 className="font-playfair text-2xl font-semibold leading-tight text-[#C13B6B] lg:text-3xl">
+          <h2 className="font-playfair text-xl font-semibold leading-tight text-[#C13B6B]">
             Unplug Digital Detox™
           </h2>
-          <p className="mt-1 font-montserrat text-xs font-semibold uppercase tracking-[0.14em] text-[#5A4A52]">
+          <p className="mt-0.5 font-montserrat text-[10px] font-semibold uppercase tracking-[0.14em] text-[#5A4A52]">
             11:00 PM – 7:00 AM ET
           </p>
 
           {/* Divider */}
-          <div className="my-5 h-px bg-[#C8B89A]/40" />
+          <div className="my-4 h-px bg-[#C8B89A]/40" />
 
           {/* Primary message */}
-          <p className="font-playfair text-xl font-semibold leading-snug text-[#1C161A] lg:text-2xl">
-            Our Day Has Ended &amp;
-          </p>
-          <p className="font-playfair text-xl font-semibold leading-snug text-[#1C161A] lg:text-2xl">
-            {"We're Closed For The Evening."}
+          <p className="font-playfair text-base font-semibold leading-snug text-[#1C161A]">
+            {"Our Day Has Ended & We're Closed For The Evening."}
           </p>
 
           {/* Supporting copy */}
-          <p className="mt-4 font-montserrat text-sm leading-relaxed text-[#5A4A52]">
-            The Harmony Lane™ community is intentionally offline so you can disconnect from technology, restore your mind and body, and enjoy restorative sleep.
-          </p>
-          <p className="mt-2 font-montserrat text-sm italic leading-relaxed text-[#7A6A72]">
-            Because {"tomorrow's"} success begins with {"tonight's"} recovery.
+          <p className="mt-3 font-montserrat text-xs leading-relaxed text-[#5A4A52]">
+            {"Tomorrow's"} success begins with {"tonight's"} recovery.
           </p>
 
           {/* Inspirational quote */}
           <blockquote
-            className="mt-5 rounded-xl px-4 py-3"
-            style={{ background: "rgba(120,173,125,0.10)", borderLeft: "3px solid #78AD7D" }}
+            className="mt-4 rounded-lg px-3 py-2.5"
+            style={{ background: "rgba(120,173,125,0.10)", borderLeft: "2px solid #78AD7D" }}
           >
-            <p className="font-playfair text-sm italic leading-relaxed text-[#3a5c3d]">
+            <p className="font-playfair text-xs italic leading-relaxed text-[#3a5c3d]">
               &ldquo;Your devices are resting. Now let your mind and body do the same.&rdquo;
             </p>
           </blockquote>
 
           {/* Community Closed button */}
-          <div className="mt-6">
+          <div className="mt-5">
             <button
               type="button"
               disabled
-              className="w-full cursor-not-allowed rounded-xl bg-[#78AD7D]/70 py-3 font-montserrat text-sm font-semibold tracking-wide text-white opacity-80"
+              className="w-full cursor-not-allowed rounded-lg bg-[#78AD7D]/70 py-2.5 font-montserrat text-xs font-semibold tracking-wide text-white opacity-80"
               aria-label="Community is currently closed"
             >
               Community Closed
@@ -133,25 +127,23 @@ export function CommunityClosedGate() {
           </div>
 
           {/* Divider */}
-          <div className="my-5 h-px bg-[#C8B89A]/40" />
+          <div className="my-4 h-px bg-[#C8B89A]/40" />
 
           {/* Up Next */}
           <div>
-            <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#7A6A72]">
+            <p className="font-montserrat text-[9px] font-bold uppercase tracking-[0.18em] text-[#7A6A72]">
               Up Next
             </p>
             <div className="mt-2 flex items-center gap-2">
-              <span className="text-base">🌅</span>
+              <span className="text-sm">🌅</span>
               <div>
-                <p className="font-playfair text-base font-semibold text-[#1C161A]">
-                  Flex Time™
-                </p>
-                <p className="font-montserrat text-xs text-[#5A4A52]">7:00–9:00 AM ET</p>
+                <p className="font-playfair text-sm font-semibold text-[#1C161A]">Flex Time™</p>
+                <p className="font-montserrat text-[10px] text-[#5A4A52]">7:00–9:00 AM ET</p>
               </div>
             </div>
-            <div className="mt-3 flex items-center gap-2 rounded-lg bg-[#F5EFE4] px-3 py-2">
-              <span className="font-montserrat text-xs font-medium text-[#7A6A72]">Opens in</span>
-              <span className="font-montserrat text-sm font-bold text-[#78AD7D]">
+            <div className="mt-2.5 flex items-center gap-2 rounded-lg bg-[#F5EFE4] px-3 py-1.5">
+              <span className="font-montserrat text-[10px] font-medium text-[#7A6A72]">Opens in</span>
+              <span className="font-montserrat text-xs font-bold text-[#78AD7D]">
                 {countdown.label}
               </span>
             </div>

@@ -78,23 +78,37 @@ export function BusinessDaySchedule() {
   return (
     <div id="todays-business-day" className="w-full scroll-mt-20 bg-white pb-8 pt-[60px]">
       <div className="mx-auto max-w-7xl">
-        <div className="px-6 pb-3 text-center">
-          <h2 className="text-pretty font-playfair text-3xl font-medium text-[#5B835F] sm:text-4xl">
-            Live Your New 9-5 &amp; Nighttime <span className="italic text-[#C13B6B]">Non-Negotiable</span> SOPs
-          </h2>
-          <p className="mt-1 font-montserrat text-sm font-thin italic text-[#6B5860]">
-            (Sustainable Operating Practices)
-          </p>
-        </div>
+        {/* Editorial welcome section — 65/35 layout */}
+        <div className="px-6 pb-8 pt-2 sm:px-8 lg:px-12">
+          <div className="mx-auto flex max-w-6xl flex-col items-center gap-8 lg:flex-row lg:items-center lg:gap-12">
 
-        {/* Frosted-glass status bar — matches the width of the cards below */}
-        <div className="px-4 pb-4 sm:px-6 lg:px-8">
-          <div className="glass-panel rounded-2xl px-6 py-5 text-center">
-            <p className="text-pretty font-playfair text-xl font-medium italic text-[#3A2E33] sm:text-2xl">
-              {experience
-                ? `${experience.time.dayName}'s ${experience.businessDay.next.shortTitle} starts in ${experience.businessDay.countdownToNext.label}...`
-                : "Continue into today's rhythm..."}
-            </p>
+            {/* Left — 65% copy */}
+            <div className="flex flex-1 flex-col items-center text-center lg:items-start lg:text-left">
+              <h2 className="text-balance font-playfair text-3xl font-semibold leading-tight text-[#1C161A] sm:text-4xl">
+                Experience Work-Life Balance —{" "}
+                <span className="italic text-[#C13B6B]">Live in Real Time™</span>
+              </h2>
+              <p className="mt-2 font-montserrat text-sm font-semibold uppercase tracking-[0.14em] text-[#78AD7D]">
+                with Thought Leader Barbara
+              </p>
+              <p className="mt-4 max-w-xl font-montserrat text-base leading-relaxed text-[#5A4A52]">
+                Reconnect with your original entrepreneurial intentions through intentional time frames designed to help you honor, create, and live your desired work-lifestyle today.
+              </p>
+            </div>
+
+            {/* Right — 35% portrait */}
+            <div className="shrink-0">
+              <div className="h-[220px] w-[220px] overflow-hidden rounded-[1.5rem] shadow-lg sm:h-[260px] sm:w-[260px]"
+                style={{ boxShadow: "0 8px 32px rgba(193,59,107,0.14), 0 2px 10px rgba(0,0,0,0.08)" }}
+              >
+                <img
+                  src="/images/barbara-live-portrait.png"
+                  alt="Thought Leader Barbara — Founder of Harmony Lane™"
+                  className="h-full w-full object-cover object-top"
+                />
+              </div>
+            </div>
+
           </div>
         </div>
 
