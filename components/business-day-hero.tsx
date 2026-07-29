@@ -219,11 +219,11 @@ export function BusinessDayHero() {
           >
             {/* Now Being Lived indicator */}
             <div className="mb-4 inline-flex items-center gap-2">
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#C13B6B] opacity-60" />
-                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#C13B6B]" />
+              <span className="relative flex h-3 w-3 items-center justify-center">
+                <span className="absolute inline-flex h-full w-full animate-[ping_2s_cubic-bezier(0,0,0.2,1)_infinite] rounded-full bg-[#78AD7D] opacity-50" />
+                <span className="relative text-[10px] leading-none">🌸</span>
               </span>
-              <span className="font-montserrat text-[11px] font-bold uppercase tracking-[0.18em] text-[#C13B6B]">
+              <span className="font-montserrat text-[11px] font-bold uppercase tracking-[0.18em] text-[#78AD7D]">
                 Now Being Lived
               </span>
             </div>
@@ -265,8 +265,8 @@ export function BusinessDayHero() {
 
 
 
-            {/* Enter button + Community Closed */}
-            <div className="mt-8 flex flex-col gap-3">
+            {/* Enter button */}
+            <div className="mt-8">
               <Button
                 size="lg"
                 onClick={scrollToRhythm}
@@ -274,13 +274,6 @@ export function BusinessDayHero() {
               >
                 {experience ? experience.businessDay.current.cta : "Enter Today's Business Day™"}
               </Button>
-              <button
-                type="button"
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-[#3A3340]/20 bg-[#3A3340]/90 px-6 py-2.5 font-montserrat text-sm font-semibold text-white/90 shadow-sm transition-colors hover:bg-[#3A3340]"
-              >
-                <span className="h-2 w-2 rounded-full bg-white/60" aria-hidden />
-                Community Closed
-              </button>
             </div>
           </motion.div>
         </div>
