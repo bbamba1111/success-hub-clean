@@ -13,14 +13,7 @@
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
-import type { PartOfDay, SessionStatus } from "@/operating-engine"
-
-const STATUS_META: Record<SessionStatus, { label: string; icon: string; className: string; glow?: boolean }> = {
-  LIVE: { label: "In Session", icon: "🌸", className: "bg-[#78AD7D] text-white", glow: true },
-  NEXT: { label: "STARTING NEXT", icon: "🌸", className: "bg-[#78AD7D] text-white", glow: true },
-  NIGHT: { label: "CLOSED FOR THE NIGHT", icon: "🌙", className: "bg-[#3A3340] text-white" },
-  OPEN: { label: "COMMUNITY OPEN", icon: "🌅", className: "bg-white/85 text-[#3A3340]" },
-}
+import type { PartOfDay } from "@/operating-engine"
 
 function scrollToRhythm() {
   const el = document.getElementById("todays-business-day")
@@ -157,8 +150,6 @@ export function BusinessDayHero() {
 
   // Stable fallback background before the first client tick.
   const backgroundImage = experience?.theme.backgroundImage ?? "/images/business-day-hero-bg.png"
-  const status = experience ? STATUS_META[experience.businessDay.status] : null
-
   // Calendar-driven invitation — day of week + time is the single source of truth.
   // No workflow state (Synchronize/Execute/Optimize/Finish Strong) involved.
   const invitation = getCalendarInvitation()
@@ -233,31 +224,21 @@ export function BusinessDayHero() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.12 }}
               >
-                {/* Live status */}
-                {status && (
-                  <motion.span
-                    key={status.label}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.4 }}
-                    className={`inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-[0.15em] shadow-sm ${status.className}`}
-                  >
-                    <span aria-hidden className={status.glow ? "blossom-glow" : undefined}>
-                      {status.icon}
-                    </span>
-                    {status.label}
-                  </motion.span>
-                )}
-
-                {/* Current activity */}
-                <p className="mt-4 text-pretty font-playfair text-3xl font-medium leading-tight text-[#C13B6B] sm:text-4xl">
-                  Early Access Flex Time:{" "}
-                  <span className="text-[#5A4A52]">7:00–9:00 AM</span>
+                {/* Current segment title */}
+                <p className="text-pretty font-playfair text-3xl font-medium leading-tight text-[#C13B6B] sm:text-4xl">
+                  {experience.businessDay.current.title}
                 </p>
 
-                {/* Up next countdown — directly under the current activity */}
-                <p className="mt-2 text-sm font-medium text-[#5A4A52]">
-                  Up next: {experience.businessDay.next.shortTitle} ·{" "}
+                {/* Current segment time */}
+                <p className="mt-1 font-montserrat text-sm font-semibold uppercase tracking-[0.14em] text-[#5A4A52]">
+                  {experience.businessDay.current.timeLabel}
+                </p>
+
+                {/* Up next */}
+                <p className="mt-3 text-sm font-medium text-[#7A6A72]">
+                  Up next:{" "}
+                  <span className="font-semibold text-[#5A4A52]">{experience.businessDay.next.shortTitle}</span>
+                  {" · "}
                   <span className="font-semibold text-[#78AD7D]">{experience.businessDay.countdownToNext.label}</span>
                 </p>
 
