@@ -199,7 +199,7 @@ export function BusinessDayHero() {
       {/* Imagery + dynamic glass card */}
       <div className="relative w-full overflow-hidden">
         {/* Dynamic background — provided by the engine's Theme Engine (current block image) */}
-        <div className="absolute inset-0">
+          <div className="absolute inset-0">
           <img
             key={backgroundImage}
             src={backgroundImage || "/placeholder.svg"}
@@ -207,12 +207,12 @@ export function BusinessDayHero() {
             aria-hidden="true"
             className="h-full w-full object-cover"
           />
-          {/* Soft left-weighted wash so the glass panel reads clearly */}
+          {/* Soft left-weighted wash — reduced so more background shows through */}
           <div
             className="absolute inset-0"
             style={{
               background:
-                "linear-gradient(90deg, rgba(255,241,245,0.62) 0%, rgba(255,241,245,0.22) 46%, rgba(255,241,245,0) 68%)",
+                "linear-gradient(90deg, rgba(255,241,245,0.42) 0%, rgba(255,241,245,0.12) 46%, rgba(255,241,245,0) 68%)",
             }}
           />
         </div>
@@ -224,7 +224,7 @@ export function BusinessDayHero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
             className="glass-panel w-full max-w-2xl rounded-2xl p-8 sm:p-10"
-            style={{ backgroundColor: "rgba(253, 250, 245, 0.9)" }}
+            style={{ backgroundColor: "rgba(253, 250, 245, 0.72)" }}
           >
             {experience && (
               <motion.div
@@ -249,12 +249,10 @@ export function BusinessDayHero() {
                   </motion.span>
                 )}
 
-                {/* Current activity — full title in signature coral (the one non-sage headline) */}
+                {/* Current activity */}
                 <p className="mt-4 text-pretty font-playfair text-3xl font-medium leading-tight text-[#C13B6B] sm:text-4xl">
-                  {experience.businessDay.current.title}
-                </p>
-                <p className="mt-1 text-base font-medium text-[#5A4A52]">
-                  {experience.businessDay.current.timeLabel}
+                  Early Access Flex Time:{" "}
+                  <span className="text-[#5A4A52]">7:00–9:00 AM</span>
                 </p>
 
                 {/* Up next countdown — directly under the current activity */}
@@ -273,28 +271,7 @@ export function BusinessDayHero() {
               </motion.div>
             )}
 
-            {/* Repeat After Me™ affirmation — relevant to the current block */}
-            {experience && (
-              <motion.div
-                key={experience.motivation.affirmations.join("|")}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="mt-6 rounded-xl border border-[#7FB069]/30 bg-white/55 p-5"
-              >
-                <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-[#78AD7D]">
-                  <span aria-hidden>🌸</span>
-                  Repeat After Me™
-                </p>
-                <ul className="mt-3 space-y-1.5">
-                  {experience.motivation.affirmations.map((line) => (
-                    <li key={line} className="text-pretty text-base font-medium italic leading-relaxed text-[#4A3A42]">
-                      {line}
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            )}
+
 
             {/* Enter button at the bottom — label adapts to the current block.
                 The planner/tools now live in the full-width Operating Planner™
