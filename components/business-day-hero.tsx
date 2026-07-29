@@ -181,48 +181,20 @@ export function BusinessDayHero() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="mx-auto flex max-w-3xl flex-col items-center px-6 py-12 text-center sm:py-14"
         >
-          {/* LIVE badge + headline label */}
-          <div className="mb-5 flex flex-col items-center gap-2">
-            <span className="inline-flex items-center gap-2 rounded-full bg-[#C13B6B] px-4 py-1.5 font-montserrat text-[11px] font-bold uppercase tracking-[0.2em] text-white shadow-md">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-60" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
-              </span>
-              LIVE
-            </span>
-            <p className="font-playfair text-xl font-semibold text-[#1C161A] sm:text-2xl">
-              Make Time For More™
-            </p>
-          </div>
+          {/* Eyebrow label */}
+          <p className="mb-4 font-montserrat text-sm font-semibold uppercase tracking-[0.18em] text-[#78AD7D]">
+            Make Time For More™
+          </p>
 
-          {/* Primary headline */}
-          <h1 className="text-balance font-playfair text-3xl font-bold leading-tight tracking-tight text-[#1C161A] sm:text-4xl lg:text-5xl">
+          {/* Primary headline — single line */}
+          <h1 className="whitespace-nowrap font-playfair text-3xl font-bold leading-tight tracking-tight text-[#1C161A] sm:text-4xl lg:text-5xl">
             {"Join Today's Work-Life Balance Business Day™"}
           </h1>
 
           {/* Supporting message — italic */}
-          <p className="mt-4 max-w-xl font-playfair text-lg italic leading-relaxed text-[#5A4A52] sm:text-xl">
-            Reconnect with your original entrepreneurial intentions.
+          <p className="mt-4 font-playfair text-lg italic leading-relaxed text-[#5A4A52] sm:text-xl">
+            Experience Work-Life Balance In Real Time
           </p>
-
-          {/* CTAs */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Button
-              size="lg"
-              onClick={scrollToRhythm}
-              className="bg-[#78AD7D] px-8 text-sm font-semibold text-white shadow-lg transition-transform hover:scale-[1.03] hover:bg-[#6a9c6f]"
-            >
-              {"Join Today's Business Day™"}
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              onClick={scrollToRhythm}
-              className="border-[#C13B6B]/40 px-8 text-sm font-semibold text-[#C13B6B] transition-colors hover:bg-[#C13B6B]/5"
-            >
-              {"See Today's Schedule"}
-            </Button>
-          </div>
         </motion.div>
       </div>
 
