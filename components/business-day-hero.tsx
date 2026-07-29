@@ -167,112 +167,63 @@ export function BusinessDayHero() {
 
   return (
     <section className="relative w-full overflow-hidden">
-      {/* Editorial two-column hero band — portrait right, copy left */}
+      {/* Above-hero copy band — centered, no portrait */}
       <div
-        className="w-full overflow-hidden"
+        className="w-full"
         style={{
           background:
-            "linear-gradient(135deg, #FDF6F0 0%, #FBF0F4 35%, #F0F5EE 70%, #FDFAF6 100%)",
+            "linear-gradient(135deg, #FDF6F0 0%, #FBF0F4 40%, #F0F5EE 70%, #FDFAF6 100%)",
         }}
       >
-        <div className="mx-auto flex max-w-7xl flex-col items-center gap-10 px-6 py-12 lg:flex-row lg:items-center lg:gap-16 lg:py-16">
-
-          {/* Left — copy stack */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.65, ease: "easeOut" }}
-            className="flex flex-1 flex-col items-center text-center lg:items-start lg:text-left"
-          >
-            {/* LIVE badge */}
-            <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-[#C13B6B] px-4 py-1.5 font-montserrat text-[11px] font-bold uppercase tracking-[0.2em] text-white shadow-md">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="mx-auto flex max-w-3xl flex-col items-center px-6 py-12 text-center sm:py-14"
+        >
+          {/* LIVE badge + headline label */}
+          <div className="mb-5 flex flex-col items-center gap-2">
+            <span className="inline-flex items-center gap-2 rounded-full bg-[#C13B6B] px-4 py-1.5 font-montserrat text-[11px] font-bold uppercase tracking-[0.2em] text-white shadow-md">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-60" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
               </span>
               LIVE
             </span>
-
-            {/* Platform name */}
-            <p className="font-playfair text-2xl font-semibold italic text-[#1C161A] sm:text-3xl">
-              Make Time For More™{" "}
-              <span className="not-italic text-[#C13B6B]">LIVE</span>
+            <p className="font-playfair text-xl font-semibold text-[#1C161A] sm:text-2xl">
+              Make Time For More™
             </p>
-            <p className="mt-1 font-montserrat text-sm font-medium tracking-wide text-[#78AD7D]">
-              with Thought Leader Barbara
-            </p>
+          </div>
 
-            {/* Main headline */}
-            <h1 className="mt-5 text-balance font-playfair text-3xl font-bold leading-tight tracking-tight text-[#1C161A] sm:text-4xl lg:text-5xl">
-              Join the Work-Life Balance Business Week™
-            </h1>
+          {/* Primary headline */}
+          <h1 className="text-balance font-playfair text-3xl font-bold leading-tight tracking-tight text-[#1C161A] sm:text-4xl lg:text-5xl">
+            {"Join Today's Work-Life Balance Business Day™"}
+          </h1>
 
-            {/* Supporting message */}
-            <p className="mt-4 max-w-lg font-montserrat text-base leading-relaxed text-[#5A4A52]">
-              {"The World's First Work-Life Balance Co-Working Community™ for Founders & Entrepreneurs."}
-            </p>
-            <p className="mt-3 max-w-lg font-montserrat text-sm leading-relaxed text-[#7A6A72]">
-              For people who chose entrepreneurship for freedom, rebuilt hustle and burnout inside their business — or want to build with Work-Life Balance from day one.
-            </p>
+          {/* Supporting message — italic */}
+          <p className="mt-4 max-w-xl font-playfair text-lg italic leading-relaxed text-[#5A4A52] sm:text-xl">
+            Reconnect with your original entrepreneurial intentions.
+          </p>
 
-            {/* CTAs */}
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Button
-                size="lg"
-                onClick={scrollToRhythm}
-                className="bg-[#78AD7D] px-8 text-sm font-semibold text-white shadow-lg transition-transform hover:scale-[1.03] hover:bg-[#6a9c6f]"
-              >
-                {"Join Today's Business Day™"}
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={scrollToRhythm}
-                className="border-[#C13B6B]/40 px-8 text-sm font-semibold text-[#C13B6B] transition-colors hover:bg-[#C13B6B]/8"
-              >
-                {"See Today's Schedule"}
-              </Button>
-            </div>
-          </motion.div>
-
-          {/* Right — portrait */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.96 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
-            className="relative flex shrink-0 items-center justify-center"
-          >
-            {/* Soft glow ring behind portrait */}
-            <div
-              className="absolute h-[340px] w-[340px] rounded-full sm:h-[400px] sm:w-[400px]"
-              style={{
-                background:
-                  "radial-gradient(circle, rgba(193,59,107,0.18) 0%, rgba(120,173,125,0.14) 50%, transparent 75%)",
-                filter: "blur(24px)",
-              }}
-              aria-hidden
-            />
-            {/* Cherry blossom accent petals */}
-            <div className="absolute -right-3 -top-4 text-3xl opacity-70 select-none" aria-hidden>🌸</div>
-            <div className="absolute -left-2 bottom-6 text-2xl opacity-50 select-none" aria-hidden>🌸</div>
-
-            {/* Portrait */}
-            <div
-              className="relative h-[300px] w-[300px] overflow-hidden rounded-[2rem] shadow-2xl sm:h-[360px] sm:w-[360px]"
-              style={{
-                boxShadow:
-                  "0 8px 40px rgba(193,59,107,0.18), 0 2px 12px rgba(0,0,0,0.10)",
-              }}
+          {/* CTAs */}
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <Button
+              size="lg"
+              onClick={scrollToRhythm}
+              className="bg-[#78AD7D] px-8 text-sm font-semibold text-white shadow-lg transition-transform hover:scale-[1.03] hover:bg-[#6a9c6f]"
             >
-              <img
-                src="/images/barbara-live-portrait.png"
-                alt="Thought Leader Barbara — Founder of Harmony Lane™"
-                className="h-full w-full object-cover object-top"
-              />
-            </div>
-          </motion.div>
-
-        </div>
+              {"Join Today's Business Day™"}
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={scrollToRhythm}
+              className="border-[#C13B6B]/40 px-8 text-sm font-semibold text-[#C13B6B] transition-colors hover:bg-[#C13B6B]/5"
+            >
+              {"See Today's Schedule"}
+            </Button>
+          </div>
+        </motion.div>
       </div>
 
       {/* Imagery + dynamic glass card */}
