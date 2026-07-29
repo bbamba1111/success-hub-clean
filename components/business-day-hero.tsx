@@ -179,7 +179,7 @@ export function BusinessDayHero() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="mx-auto flex max-w-3xl flex-col items-center px-6 py-12 text-center sm:py-14"
+          className="mx-auto flex max-w-3xl flex-col items-center px-6 py-[38px] text-center sm:py-[45px]"
         >
           {/* Badge */}
           <div className="mb-5 inline-flex items-center gap-1.5 rounded-lg border border-[#5B835F]/30 bg-[#5B835F]/10 px-4 py-1.5 font-montserrat text-[16px] font-semibold tracking-wide text-[#3a5c3d]">
@@ -188,7 +188,7 @@ export function BusinessDayHero() {
           </div>
 
           {/* Primary headline — single line */}
-          <h1 className="whitespace-nowrap font-playfair text-3xl font-normal leading-tight tracking-tight text-[#1C161A] sm:text-4xl lg:text-5xl">
+          <h1 className="whitespace-nowrap font-playfair text-3xl font-semibold leading-tight tracking-tight text-[#1C161A] sm:text-4xl lg:text-5xl">
             {"Join "}
             <span className="italic text-[#C13B6B]">{"Today's"}</span>
             {" Work-Life Balance Business Day™"}
