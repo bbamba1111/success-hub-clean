@@ -182,7 +182,7 @@ export function BusinessDayHero() {
           className="mx-auto flex max-w-3xl flex-col items-center px-6 py-12 text-center sm:py-14"
         >
           {/* Eyebrow label */}
-          <p className="mb-4 font-montserrat text-sm font-semibold uppercase tracking-[0.18em] text-[#78AD7D]">
+          <p className="mb-4 font-playfair text-xl font-medium text-[#78AD7D] sm:text-2xl">
             Make Time For More™
           </p>
 
@@ -190,11 +190,6 @@ export function BusinessDayHero() {
           <h1 className="whitespace-nowrap font-playfair text-3xl font-bold leading-tight tracking-tight text-[#1C161A] sm:text-4xl lg:text-5xl">
             {"Join Today's Work-Life Balance Business Day™"}
           </h1>
-
-          {/* Supporting message — italic */}
-          <p className="mt-4 font-playfair text-lg italic leading-relaxed text-[#5A4A52] sm:text-xl">
-            Experience Work-Life Balance In Real Time
-          </p>
         </motion.div>
       </div>
 
