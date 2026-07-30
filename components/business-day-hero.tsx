@@ -184,6 +184,10 @@ export function BusinessDayHero() {
             <span className="italic text-[#C13B6B]">{"Today's"}</span>
             {" Work-Life Balance Business Day™"}
           </h1>
+
+          <p className="mt-3 font-montserrat text-sm font-medium leading-relaxed text-[#78AD7D] sm:text-base">
+            Practice living the life of freedom, flexibility, and holistic success you chose entrepreneurship to create.
+          </p>
         </motion.div>
       </div>
 
