@@ -11,6 +11,7 @@ import WorkLifeBalanceSchedule from "@/components/work-life-balance-schedule"
 import { SimpleChatModal } from "@/components/simple-chat-modal"
 import { CherryBlossomCoGuide } from "@/components/cherry-blossom-co-guide"
 import { BusinessDayHero } from "@/components/business-day-hero"
+import { HowItWorks } from "@/components/how-it-works"
 import { BusinessDaySchedule } from "@/components/business-day-schedule"
 import { OperatingPlannerSection } from "@/components/operating-planner/operating-planner-section"
 import { DeveloperToolbar } from "@/components/developer-toolbar"
@@ -75,6 +76,9 @@ export default function HomePage() {
 
       {/* Single engine-driven hero - the primary Home page experience. */}
       <BusinessDayHero />
+
+      {/* How the Work-Life Balance Business Day™ works — 5-step overview */}
+      <HowItWorks />
 
       {/* Operating Planner™ — hidden during Time Freedom™ window. */}
       <OperatingPlannerSection />
