@@ -185,7 +185,7 @@ export function BusinessDayHero() {
             {" Work-Life Balance Business Day™"}
           </h1>
 
-          <p className="mt-3 font-montserrat text-sm font-medium leading-relaxed text-[#78AD7D] sm:text-base">
+          <p className="mt-3 whitespace-nowrap font-montserrat text-[15px] font-medium italic text-[#78AD7D] sm:text-[17px]">
             Practice living the life of freedom, flexibility, and holistic success you chose entrepreneurship to create.
           </p>
         </motion.div>
@@ -228,7 +228,7 @@ export function BusinessDayHero() {
                 <span className="relative text-[10px] leading-none">🌸</span>
               </span>
               <span className="font-montserrat text-[11px] font-bold uppercase tracking-[0.18em] text-[#78AD7D]">
-                Now Being Lived
+                LIVING NOW
               </span>
             </div>
 
