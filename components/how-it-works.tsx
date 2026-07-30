@@ -92,40 +92,6 @@ export function HowItWorks() {
           The Work-Life Balance Business Day™
         </motion.p>
 
-        {/* Intro header — introduces the segments */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.55, delay: 0.08 }}
-          className="mb-10 flex flex-col items-center text-center"
-        >
-          <h2 className="font-playfair text-2xl font-semibold text-[#1C161A] sm:text-3xl">
-            Your New 9-to-5 &amp; Nighttime Non-Negotiables™
-          </h2>
-          <div className="mt-3 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 font-montserrat text-[11px] font-medium uppercase tracking-[0.14em] text-[#78AD7D]">
-            {[
-              "Your Spirit",
-              "Mind",
-              "Body",
-              "Health",
-              "Energy",
-              "Relationships",
-              "80/20 Leveraged High-Value Work",
-              "Time Freedom",
-              "Recovery",
-              "Restorative Sleep",
-            ].map((value, i, arr) => (
-              <span key={value} className="flex items-center gap-x-2">
-                <span>{value}</span>
-                {i < arr.length - 1 && (
-                  <span className="h-1 w-1 rounded-full bg-[#C13B6B] opacity-60" aria-hidden />
-                )}
-              </span>
-            ))}
-          </div>
-        </motion.div>
-
         {/* ── Horizontal scrolling timeline ── */}
         <div
           ref={scrollRef}
