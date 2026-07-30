@@ -12,6 +12,7 @@ import { SimpleChatModal } from "@/components/simple-chat-modal"
 import { CherryBlossomCoGuide } from "@/components/cherry-blossom-co-guide"
 import { BusinessDayHero } from "@/components/business-day-hero"
 import { HowItWorks } from "@/components/how-it-works"
+import { BarbaraWelcome } from "@/components/barbara-welcome"
 import { BusinessDaySchedule } from "@/components/business-day-schedule"
 import { OperatingPlannerSection } from "@/components/operating-planner/operating-planner-section"
 import { DeveloperToolbar } from "@/components/developer-toolbar"
@@ -74,16 +75,19 @@ export default function HomePage() {
       {/* Operating Engine providers now live at root layout — no per-page wrapper
           needed. Components read useOperatingEngine() and useHarmonyWeek() freely. */}
 
-      {/* Single engine-driven hero - the primary Home page experience. */}
+      {/* 1. Hero — orientation */}
       <BusinessDayHero />
 
-      {/* How the Work-Life Balance Business Day™ works — 5-step overview */}
+      {/* 2. Barbara Welcome — the WHY */}
+      <BarbaraWelcome />
+
+      {/* 3. How It Works — the OVERVIEW of the full day rhythm */}
       <HowItWorks />
 
-      {/* Operating Planner™ — hidden during Time Freedom™ window. */}
+      {/* 4. Operating Planner™ — hidden during Time Freedom™ window. */}
       <OperatingPlannerSection />
 
-      {/* Today's Work-Life Balance Business Day™ — CEO block hidden during Time Freedom™. */}
+      {/* 5. Today's Segments — the HOW (detailed cards) */}
       <BusinessDaySchedule />
 
       {/* Admin-only Developer Toolbar */}
