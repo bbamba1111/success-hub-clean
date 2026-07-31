@@ -75,33 +75,9 @@ export function BusinessDaySchedule() {
     ? rawTimeline.filter(({ block }) => block.id !== "ceo-workday")
     : rawTimeline
 
-  const VALUES = [
-    "Your Spirit", "Mind", "Body", "Health", "Energy", "Relationships",
-    "80/20 Leveraged High-Value Work", "Time Freedom", "Recovery", "Restorative Sleep",
-  ]
-
   return (
     <div id="todays-business-day" className="w-full scroll-mt-20 bg-white pb-8 pt-[60px]">
       <div className="mx-auto max-w-7xl">
-
-        {/* Non-Negotiables intro — centered above the first panoramic card */}
-        <div className="mb-12 flex flex-col items-center px-6 text-center">
-          <h2 className="text-balance font-playfair text-3xl font-semibold text-[#1C161A] sm:text-4xl lg:text-5xl">
-            Your New 9-to-5 &amp; Nighttime Non-Negotiables™
-          </h2>
-          <div className="mt-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
-            {VALUES.map((value, i) => (
-              <span key={value} className="flex items-center gap-x-3">
-                <span className="font-montserrat text-[13px] font-semibold tracking-wide text-[#1C161A]">
-                  {value}
-                </span>
-                {i < VALUES.length - 1 && (
-                  <span className="text-[#C13B6B] opacity-70" aria-hidden>•</span>
-                )}
-              </span>
-            ))}
-          </div>
-        </div>
 
         {timeline.map(({ block, state }) => {
           const timing =
