@@ -175,7 +175,7 @@ export function BusinessDayHero() {
           {/* Badge */}
           <div className="mb-5 inline-flex items-center gap-1.5 rounded-lg border border-[#C8B89A]/50 bg-[#F5EFE4] px-4 py-1.5 font-montserrat text-[16px] font-semibold tracking-wide text-[#4a8a50]">
             <span className="shrink-0 text-[11px] leading-none" aria-hidden>🌸</span>
-            Make Time For More™
+            Make Time For More™ —<em className="ml-1 not-italic font-semibold italic">In Real Time</em>
           </div>
 
           {/* Primary headline — single line */}
