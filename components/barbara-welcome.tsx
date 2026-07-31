@@ -112,37 +112,9 @@ export function BarbaraWelcome() {
                 alt="Thought Leader Barbara — Founder of Harmony Lane™"
                 className="h-full w-full object-cover object-top"
               />
-            </div>
-          </motion.div>
-
-        </div>
-      </div>
-
-      {/* ── Non-Negotiables — full-width centered manifesto ── */}
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, delay: 0.1 }}
-        className="mx-auto max-w-[1320px] px-6 pb-0 pt-20 text-center sm:px-10 sm:pt-24 lg:px-16 lg:pt-28"
-      >
-        <h2 className="text-balance font-playfair text-3xl font-semibold text-[#1C161A] sm:text-4xl lg:text-5xl">
-          Your New 9-to-5 &amp; Nighttime Non-Negotiables™
-        </h2>
-        <div className="mx-auto mt-6 flex flex-nowrap items-center justify-center gap-x-3 overflow-x-auto">
-          {VALUES.map((value, i) => (
-            <span key={value} className="flex items-center gap-x-3">
-              <span className="font-montserrat text-[13px] font-semibold tracking-wide text-[#1C161A]">
-                {value}
-              </span>
-              {i < VALUES.length - 1 && (
-                <span className="text-[#C13B6B] opacity-60" aria-hidden>•</span>
-              )}
-            </span>
-          ))}
         </div>
       </motion.div>
-
+      </div>
 
     </section>
   )
