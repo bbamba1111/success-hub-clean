@@ -65,22 +65,22 @@ export function BarbaraWelcome() {
               With Thought Leader Barbara
             </p>
 
-            {/* Credentials */}
-            <div className="flex flex-col gap-6 mb-5">
+            {/* Credentials — extra top gap from subline, tighter internal + inter-group spacing */}
+            <div className="mt-7 flex flex-col gap-[18px] mb-0">
               {CREDENTIALS.map((c, i) => (
                 <div key={i}>
                   <p className="font-montserrat text-[13px] font-semibold leading-snug text-[#1C161A]">
                     {c.title}
                   </p>
-                  <p className="mt-1 font-montserrat text-[12px] italic leading-relaxed text-[#7A6A72]">
+                  <p className="mt-[5px] font-montserrat text-[12px] italic leading-snug text-[#7A6A72]">
                     {c.subtitle}
                   </p>
                 </div>
               ))}
             </div>
 
-            {/* Philosophy */}
-            <p className="max-w-[580px] font-montserrat text-[15px] leading-[1.8] text-[#4A3A42]">
+            {/* Philosophy — clearly separated from credentials */}
+            <p className="mt-10 max-w-[580px] font-montserrat text-[15px] leading-[1.8] text-[#4A3A42]">
               Together, we move through the{" "}
               <strong className="font-semibold text-[#1C161A]">Work-Life Balance Business Day™</strong>
               —an intentionally designed operating rhythm built around{" "}
