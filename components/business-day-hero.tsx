@@ -172,13 +172,6 @@ export function BusinessDayHero() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="mx-auto flex max-w-3xl flex-col items-center px-6 py-[38px] text-center sm:py-[45px]"
         >
-          {/* Badge */}
-          <div className="mb-5 inline-flex items-center gap-1.5 rounded-lg bg-[#F5EFE4] px-4 py-1.5 font-montserrat text-[16px] font-semibold tracking-wide text-[#4a8a50]">
-            <span className="shrink-0 text-[11px] leading-none" aria-hidden>🌸</span>
-            Make Time For More™ —<em className="ml-1 not-italic font-semibold italic">In Real Time</em>
-            <span className="shrink-0 text-[11px] leading-none" aria-hidden>🌸</span>
-          </div>
-
           {/* Primary headline — single line */}
           <h1 className="whitespace-nowrap font-playfair text-3xl font-semibold leading-tight tracking-tight text-[#1C161A] sm:text-4xl lg:text-5xl">
             {"Join "}
