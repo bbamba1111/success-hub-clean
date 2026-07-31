@@ -82,7 +82,7 @@ export function BusinessDayBlock({
         className={`relative w-full overflow-hidden rounded-3xl shadow-lg ${
           isCurrent ? "ring-2 ring-[#7FB069] ring-offset-2 ring-offset-[#F5F1E8]" : ""
         }`}
-        style={{ backgroundColor: `rgb(${tint})` }}
+        style={{ background: "linear-gradient(135deg, #FDF6F0 0%, #FBF0F4 40%, #F0F5EE 70%, #FDFAF6 100%)" }}
       >
 
         {/* Segment progress — thin bar showing how much of the in-session block remains */}
@@ -107,7 +107,7 @@ export function BusinessDayBlock({
           {/* Left content panel — 42% tablet, 34–38% desktop, capped at 600px */}
           <div
             className="flex items-center px-5 py-6 sm:px-8 md:w-[42%] md:max-w-[600px] md:px-10 lg:w-[36%]"
-            style={{ backgroundColor: `rgb(${tint})` }}
+            style={{ background: "linear-gradient(135deg, #FDF6F0 0%, #FBF0F4 40%, #F0F5EE 70%, #FDFAF6 100%)" }}
           >
             <div className="w-full">
               <div className="mb-2.5 flex flex-wrap items-center gap-2.5">
@@ -161,7 +161,7 @@ export function BusinessDayBlock({
             {/* Soft ~48px horizontal fade blending the panel into the photography (desktop only) */}
             <div
               className="pointer-events-none absolute inset-y-0 left-0 hidden w-12 md:block"
-              style={{ background: `linear-gradient(90deg, rgb(${tint}) 0%, rgb(${tint} / 0) 100%)` }}
+              style={{ background: "linear-gradient(90deg, #FDF6F0 0%, transparent 100%)" }}
             />
           </div>
         </div>
