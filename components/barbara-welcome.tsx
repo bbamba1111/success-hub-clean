@@ -9,7 +9,7 @@ const CREDENTIALS = [
   },
   {
     title: "International Bestselling Co-Author",
-    subtitle: "The Voyage to Your Vision — Chapter 9, "Learn Before You Launch."",
+    subtitle: "The Voyage to Your Vision \u2014 Chapter 9, \u201cLearn Before You Launch.\u201d",
   },
   {
     title: "Creator & Host — Make Time For More™ Mondays™",
