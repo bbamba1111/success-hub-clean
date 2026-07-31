@@ -65,11 +65,8 @@ export function BarbaraWelcome() {
               With Thought Leader Barbara
             </p>
 
-            {/* Divider */}
-            <div className="my-7 h-px w-10 bg-[#C8B89A]" />
-
             {/* Credentials */}
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-6 mb-5">
               {CREDENTIALS.map((c, i) => (
                 <div key={i}>
                   <p className="font-montserrat text-[13px] font-semibold leading-snug text-[#1C161A]">
@@ -81,9 +78,6 @@ export function BarbaraWelcome() {
                 </div>
               ))}
             </div>
-
-            {/* Divider */}
-            <div className="my-8 h-px w-10 bg-[#C8B89A]" />
 
             {/* Philosophy */}
             <p className="max-w-[580px] font-montserrat text-[15px] leading-[1.8] text-[#4A3A42]">
@@ -149,34 +143,7 @@ export function BarbaraWelcome() {
         </div>
       </motion.div>
 
-      {/* ── Begin invitation ── */}
-      <motion.div
-        initial={{ opacity: 0, y: 14 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.55, delay: 0.12 }}
-        className="mx-auto max-w-[1320px] px-6 pb-20 pt-16 text-center sm:px-10 sm:pb-24 sm:pt-20 lg:px-16 lg:pb-28 lg:pt-24"
-      >
-        <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.28em] text-[#78AD7D]">
-          Begin Your Daily Identity Practice
-        </p>
-        <p className="mx-auto mt-4 max-w-2xl font-playfair text-lg italic leading-relaxed text-[#4A3A42] sm:text-xl">
-          Explore the Work-Life Balance Business Day™ and discover how each dedicated time frame is
-          intentionally designed to help you live, lead, work, recover, and make time for what matters most.
-        </p>
-        <div className="mt-6 flex justify-center">
-          <div className="flex h-8 w-px flex-col items-center justify-start overflow-hidden">
-            <motion.div
-              animate={{ y: ["0%", "100%"] }}
-              transition={{ duration: 1.2, repeat: Infinity, ease: "easeIn" }}
-              className="h-full w-px bg-gradient-to-b from-[#78AD7D] to-transparent"
-            />
-          </div>
-        </div>
-        <p className="mt-3 font-montserrat text-[11px] font-bold uppercase tracking-[0.22em] text-[#78AD7D]">
-          Work-Life Balance Business Day™ Experience
-        </p>
-      </motion.div>
+
     </section>
   )
 }
