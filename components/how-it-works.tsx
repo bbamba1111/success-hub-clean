@@ -81,17 +81,6 @@ export function HowItWorks() {
     >
       <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
 
-        {/* Eyebrow */}
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="mb-6 text-center font-montserrat text-[11px] font-bold uppercase tracking-[0.26em] text-[#78AD7D]"
-        >
-          The Work-Life Balance Business Day™
-        </motion.p>
-
         {/* ── Horizontal scrolling timeline ── */}
         <div
           ref={scrollRef}
