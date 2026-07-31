@@ -11,7 +11,6 @@ import WorkLifeBalanceSchedule from "@/components/work-life-balance-schedule"
 import { SimpleChatModal } from "@/components/simple-chat-modal"
 import { CherryBlossomCoGuide } from "@/components/cherry-blossom-co-guide"
 import { BusinessDayHero } from "@/components/business-day-hero"
-import { HowItWorks } from "@/components/how-it-works"
 import { BarbaraWelcome } from "@/components/barbara-welcome"
 import { BusinessDaySchedule } from "@/components/business-day-schedule"
 import { OperatingPlannerSection } from "@/components/operating-planner/operating-planner-section"
@@ -81,10 +80,7 @@ export default function HomePage() {
       {/* 2. Barbara Welcome — the WHY */}
       <BarbaraWelcome />
 
-      {/* 3. How It Works — the OVERVIEW of the full day rhythm */}
-      <HowItWorks />
-
-      {/* 4. Operating Planner™ — hidden during Time Freedom™ window. */}
+      {/* 3. Operating Planner™ — hidden during Time Freedom™ window. */}
       <OperatingPlannerSection />
 
       {/* 5. Today's Segments — the HOW (detailed cards) */}
