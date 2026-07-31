@@ -39,7 +39,7 @@ export function BarbaraWelcome() {
     <section className="w-full bg-[#FDFAF5]">
 
       {/* ── Two-column intro ── */}
-      <div className="mx-auto max-w-[1320px] px-6 pb-0 pt-20 sm:px-10 sm:pt-24 lg:px-16 lg:pt-28">
+      <div className="mx-auto max-w-[1320px] px-6 pb-12 pt-20 sm:px-10 sm:pb-14 sm:pt-24 lg:px-16 lg:pb-16 lg:pt-28">
         <div className="flex flex-col items-start gap-14 lg:flex-row lg:items-start lg:gap-20">
 
           {/* Left column — 60% */}
@@ -126,12 +126,12 @@ export function BarbaraWelcome() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="mx-auto max-w-[1320px] px-6 pb-16 pt-20 text-center sm:px-10 sm:pb-20 sm:pt-24 lg:px-16 lg:pb-24 lg:pt-28"
+          className="mx-auto max-w-[1320px] px-6 pb-8 pt-12 text-center sm:px-10 sm:pb-10 sm:pt-14 lg:px-16 lg:pb-10 lg:pt-16"
         >
           <h2 className="text-balance font-playfair text-3xl font-semibold text-[#1C161A] sm:text-4xl lg:text-5xl">
             Your New 9-to-5 &amp; Nighttime Non-Negotiables™
           </h2>
-          <div className="mx-auto mt-6 flex flex-nowrap items-center justify-center gap-x-3 overflow-x-auto">
+          <div className="mx-auto mt-4 flex flex-nowrap items-center justify-center gap-x-3 overflow-x-auto">
             {VALUES.map((value, i) => (
               <span key={value} className="flex shrink-0 items-center gap-x-3">
                 <span className="font-montserrat text-[13px] font-semibold tracking-wide text-[#1C161A]">
