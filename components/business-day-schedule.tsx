@@ -69,11 +69,8 @@ export function BusinessDaySchedule() {
   const rawTimeline =
     experience?.businessDay.timeline ?? SCHEDULE.map((block) => ({ block, state: "upcoming" as const }))
 
-  // During Time Freedom™ (Thu 5 PM → Mon 7 AM) hide the CEO Workday block
-  // from the daily schedule — founders are off the operating clock.
-  const timeline = harmonyWeek?.isTimeFreedomNow
-    ? rawTimeline.filter(({ block }) => block.id !== "ceo-workday")
-    : rawTimeline
+  // Always show all blocks including CEO Workday™ regardless of Time Freedom™ window.
+  const timeline = rawTimeline
 
   return (
     <div id="todays-business-day" className="w-full scroll-mt-20 pb-8 pt-4" style={{ background: "linear-gradient(135deg, #FDF6F0 0%, #FBF0F4 40%, #F0F5EE 70%, #FDFAF6 100%)" }}>
