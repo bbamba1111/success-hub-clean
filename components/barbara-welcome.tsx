@@ -31,7 +31,7 @@ const VALUES = [
   "80/20 Leveraged High-Value Work",
   "Time Freedom",
   "Recovery",
-  "Restorative Sleep",
+  "Sleep",
 ]
 
 export function BarbaraWelcome() {
@@ -80,7 +80,7 @@ export function BarbaraWelcome() {
             </div>
 
             {/* Philosophy — clearly separated from credentials */}
-            <p className="mt-10 max-w-[580px] font-montserrat text-[15px] leading-[1.8] text-[#4A3A42]">
+            <p className="mt-10 max-w-[580px] font-montserrat text-[15px] leading-[1.6] text-[#4A3A42]">
               Together, we move through the{" "}
               <strong className="font-semibold text-[#1C161A]">Work-Life Balance Business Day™</strong>
               —an intentionally designed operating rhythm built around{" "}
@@ -129,7 +129,7 @@ export function BarbaraWelcome() {
         <h2 className="text-balance font-playfair text-3xl font-semibold text-[#1C161A] sm:text-4xl lg:text-5xl">
           Your New 9-to-5 &amp; Nighttime Non-Negotiables™
         </h2>
-        <div className="mx-auto mt-6 flex max-w-4xl flex-wrap items-center justify-center gap-x-3 gap-y-2">
+        <div className="mx-auto mt-6 flex flex-nowrap items-center justify-center gap-x-3 overflow-x-auto">
           {VALUES.map((value, i) => (
             <span key={value} className="flex items-center gap-x-3">
               <span className="font-montserrat text-[13px] font-semibold tracking-wide text-[#1C161A]">
