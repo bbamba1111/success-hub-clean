@@ -91,27 +91,7 @@ export function BarbaraWelcome() {
               your well-being, and the things that matter most.
             </p>
 
-            {/* Divider */}
-            <div className="my-8 h-px w-12 bg-[#C8B89A]" />
 
-            {/* Non-Negotiables headline */}
-            <p className="font-playfair text-xl font-semibold text-[#1C161A] sm:text-2xl">
-              Your New 9-to-5 &amp; Nighttime Non-Negotiables™
-            </p>
-
-            {/* Values manifesto row */}
-            <div className="mt-5 flex max-w-[620px] flex-wrap items-center gap-x-3 gap-y-2">
-              {VALUES.map((value, i) => (
-                <span key={value} className="flex items-center gap-x-3">
-                  <span className="font-montserrat text-[13px] font-semibold tracking-wide text-[#1C161A]">
-                    {value}
-                  </span>
-                  {i < VALUES.length - 1 && (
-                    <span className="text-[#C13B6B] opacity-70" aria-hidden>•</span>
-                  )}
-                </span>
-              ))}
-            </div>
 
           </motion.div>
 
