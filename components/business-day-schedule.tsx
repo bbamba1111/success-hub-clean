@@ -76,7 +76,7 @@ export function BusinessDaySchedule() {
     : rawTimeline
 
   return (
-    <div id="todays-business-day" className="w-full scroll-mt-20 bg-white pb-8 pt-4">
+    <div id="todays-business-day" className="w-full scroll-mt-20 pb-8 pt-4" style={{ background: "linear-gradient(135deg, #FDF6F0 0%, #FBF0F4 40%, #F0F5EE 70%, #FDFAF6 100%)" }}>
       <div className="mx-auto max-w-7xl">
 
         {timeline.map(({ block, state }) => {

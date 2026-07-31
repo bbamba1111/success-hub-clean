@@ -119,8 +119,8 @@ export function BarbaraWelcome() {
         </div>
       </div>
 
-      {/* ── Non-Negotiables — full-width centered on white ── */}
-      <div className="w-full bg-white">
+      {/* ── Non-Negotiables — full-width centered, hero gradient bg ── */}
+      <div className="w-full" style={{ background: "linear-gradient(135deg, #FDF6F0 0%, #FBF0F4 40%, #F0F5EE 70%, #FDFAF6 100%)" }}>
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -129,7 +129,7 @@ export function BarbaraWelcome() {
           className="mx-auto max-w-[1320px] px-6 pb-8 pt-12 text-center sm:px-10 sm:pb-10 sm:pt-14 lg:px-16 lg:pb-10 lg:pt-16"
         >
           <h2 className="text-balance font-playfair text-3xl font-semibold text-[#1C161A] sm:text-4xl lg:text-5xl">
-            Your New 9-to-5 &amp; Nighttime Non-Negotiables™
+            Your New 9-5 &amp; Nighttime Non-Negotiables™
           </h2>
           <div className="mx-auto mt-4 flex flex-nowrap items-center justify-center gap-x-3 overflow-x-auto">
             {VALUES.map((value, i) => (
