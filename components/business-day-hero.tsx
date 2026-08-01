@@ -294,14 +294,9 @@ export function BusinessDayHero() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.12 }}
                 >
-                  {/* Personalized greeting */}
-                  <p className="font-playfair text-2xl font-medium italic text-[#78AD7D] sm:text-3xl">
+                  {/* Personalized greeting — 10pt smaller than before (text-2xl=24px → 14px, sm:text-3xl=30px → 20px) */}
+                  <p className="font-playfair text-[14px] font-medium italic text-[#78AD7D] sm:text-[20px]">
                     {experience.member.greeting}
-                  </p>
-
-                  {/* Per-block encouragement */}
-                  <p className="mt-4 text-pretty font-playfair text-2xl font-medium leading-snug text-[#3A2E33] sm:text-3xl">
-                    {hero?.encouragement ?? experience.phase.message}
                   </p>
                 </motion.div>
               )
