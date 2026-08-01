@@ -208,13 +208,17 @@ export function BusinessDayHero() {
             </h1>
           )}
 
-          {/* Sub-line — timeLabel • Next: [shortTitle] */}
+          {/* Sub-line — timeLabel • Next: [shortTitle] · countdown */}
           {experience && (
             <p className="mt-3 font-montserrat text-[13px] font-medium text-[#5A4A52] sm:text-[14px]">
               {experience.businessDay.current.timeLabel}
               <span className="mx-2 text-[#C8B89A]">&bull;</span>
               <span className="text-[#78AD7D]">{"Next: "}</span>
               <span className="italic">{experience.businessDay.next.shortTitle}</span>
+              <span className="mx-2 text-[#C8B89A]">&bull;</span>
+              <span className="tabular-nums text-[#78AD7D]">
+                {experience.businessDay.countdownToNext.label}
+              </span>
             </p>
           )}
         </motion.div>
