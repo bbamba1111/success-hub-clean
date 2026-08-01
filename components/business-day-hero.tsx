@@ -23,8 +23,8 @@ function scrollToActiveSegment(sectionId?: string) {
   if (target) target.scrollIntoView({ behavior: "smooth", block: "start" })
 }
 
-/** Per-block motivational copy shown in the glass hero. */
-const BLOCK_HERO: Record<string, { encouragement: string; cta: string }> = {
+/** Per-block motivational copy shown in the glass hero. `btn` overrides the Enter Here label. */
+const BLOCK_HERO: Record<string, { encouragement: string; cta: string; btn?: string }> = {
   "monday-flex":           { encouragement: "Prepare today with intention.",                   cta: "It\u2019s Time To Prepare" },
   "monday-reality-check":  { encouragement: "Redesign your entry into the workweek.",          cta: "Take Your Reality Check\u2122" },
   "early-access":          { encouragement: "Prepare today with intention.",                   cta: "It\u2019s Time To Prepare" },
@@ -34,7 +34,7 @@ const BLOCK_HERO: Record<string, { encouragement: string; cta: string }> = {
   "ceo-workday":           { encouragement: "Build a business that leaves room for life.",     cta: "It\u2019s Time To Build" },
   "time-freedom":          { encouragement: "Enjoy the life your business exists to support.", cta: "It\u2019s Time To Live" },
   "power-down":            { encouragement: "Release today so tomorrow begins with clarity.",  cta: "It\u2019s Time To Release" },
-  "digital-detox":         { encouragement: "Rest well. Tomorrow begins with you.",            cta: "It\u2019s Time To Rest" },
+  "digital-detox":         { encouragement: "Rest well. Tomorrow begins with you.",            cta: "It\u2019s Time To Rest",  btn: "Unplug Now \u2192" },
 }
 
 /**
@@ -294,28 +294,30 @@ export function BusinessDayHero() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.12 }}
                 >
-                  {/* Personalized greeting — 10pt smaller than before (text-2xl=24px → 14px, sm:text-3xl=30px → 20px) */}
+                  {/* Greeting + "It's Time To ___" on one line, no gap */}
                   <p className="font-playfair text-[14px] font-medium italic text-[#78AD7D] sm:text-[20px]">
                     {experience.member.greeting}
+                    {hero?.cta && (
+                      <span className="ml-2 text-[11px] not-italic text-[#78AD7D] sm:text-[14px]">
+                        &bull; {hero.cta}
+                      </span>
+                    )}
                   </p>
                 </motion.div>
               )
             })()}
 
-            {/* Dynamic CTA — per-block label above, Enter Here → button below */}
-            <div className="mt-8 flex flex-col gap-2">
-              {experience && (
-                <p className="font-montserrat text-[12px] font-semibold uppercase tracking-[0.16em] text-[#78AD7D]">
-                  {BLOCK_HERO[experience.businessDay.current.id]?.cta ?? experience.businessDay.current.cta}
-                </p>
-              )}
+            {/* CTA button */}
+            <div className="mt-6">
               <Button
                 size="lg"
                 id="hero-cta"
                 onClick={() => scrollToActiveSegment(experience?.businessDay.current.sectionId)}
                 className="w-fit bg-[#78AD7D] px-8 text-base font-semibold text-white shadow-lg transition-transform hover:scale-[1.03] hover:bg-[#6a9c6f]"
               >
-                {"Enter Here \u2192"}
+                {experience
+                  ? (BLOCK_HERO[experience.businessDay.current.id]?.btn ?? "Enter Here \u2192")
+                  : "Enter Here \u2192"}
               </Button>
             </div>
           </motion.div>
