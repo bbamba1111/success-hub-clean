@@ -109,7 +109,7 @@ export function BusinessDaySchedule() {
               emoji={block.emoji}
               time={block.timeLabel}
               title={block.title}
-              buttonText="Continue Segment™"
+              buttonText={block.mondayOnly ? block.cta : "Continue Segment™"}
               status={state}
               description={block.description}
               onAction={scrollToOperatingPlanner}

@@ -25,16 +25,16 @@ function scrollToActiveSegment(sectionId?: string) {
 
 /** Per-block motivational copy shown in the glass hero. */
 const BLOCK_HERO: Record<string, { encouragement: string; cta: string }> = {
-  "monday-flex":           { encouragement: "Prepare today with intention.",                                         cta: "It\u2019s Time To Prepare \u2192" },
-  "monday-reality-check":  { encouragement: "Redesign your entry into the workweek.",                               cta: "Take Your Reality Check\u2122 \u2192" },
-  "early-access":          { encouragement: "Prepare today with intention.",                                         cta: "It\u2019s Time To Prepare \u2192" },
-  "morning-given":         { encouragement: "Align your mind before you lead.",                                      cta: "It\u2019s Time To Align \u2192" },
-  "movement-window":       { encouragement: "Move your body. Renew your energy.",                                    cta: "It\u2019s Time To Move \u2192" },
-  "lunch-break":           { encouragement: "Nourish yourself with a healthy meal to prevent the midday crash.",     cta: "It\u2019s Time To Nourish \u2192" },
-  "ceo-workday":           { encouragement: "Build a business that leaves room for life.",                           cta: "It\u2019s Time To Build \u2192" },
-  "time-freedom":          { encouragement: "Enjoy the life your business exists to support.",                       cta: "It\u2019s Time To Live \u2192" },
-  "power-down":            { encouragement: "Release today so tomorrow begins with clarity.",                        cta: "It\u2019s Time To Release \u2192" },
-  "digital-detox":         { encouragement: "Rest well. Tomorrow begins with you.",                                  cta: "It\u2019s Time To Rest \u2192" },
+  "monday-flex":           { encouragement: "Prepare today with intention.",                   cta: "It\u2019s Time To Prepare" },
+  "monday-reality-check":  { encouragement: "Redesign your entry into the workweek.",          cta: "Take Your Reality Check\u2122" },
+  "early-access":          { encouragement: "Prepare today with intention.",                   cta: "It\u2019s Time To Prepare" },
+  "morning-given":         { encouragement: "Align your mind before you lead.",                cta: "It\u2019s Time To Align" },
+  "movement-window":       { encouragement: "Move your body. Renew your energy.",              cta: "It\u2019s Time To Move" },
+  "lunch-break":           { encouragement: "Nourish your body. Enjoy the moment.",            cta: "It\u2019s Time To Nourish" },
+  "ceo-workday":           { encouragement: "Build a business that leaves room for life.",     cta: "It\u2019s Time To Build" },
+  "time-freedom":          { encouragement: "Enjoy the life your business exists to support.", cta: "It\u2019s Time To Live" },
+  "power-down":            { encouragement: "Release today so tomorrow begins with clarity.",  cta: "It\u2019s Time To Release" },
+  "digital-detox":         { encouragement: "Rest well. Tomorrow begins with you.",            cta: "It\u2019s Time To Rest" },
 }
 
 /**
@@ -231,17 +231,13 @@ export function BusinessDayHero() {
             </h1>
           )}
 
-          {/* Line 2 — current timeLabel · Up Next: name · timeLabel · countdown */}
+          {/* Sub-line — timeLabel • Next: [shortTitle] */}
           {experience && (
-            <p className="mt-3 font-montserrat text-[14px] font-medium text-[#5A4A52] sm:text-[16px]">
+            <p className="mt-3 font-montserrat text-[13px] font-medium text-[#5A4A52] sm:text-[14px]">
               {experience.businessDay.current.timeLabel}
-              <span className="mx-2 text-[#C8B89A]">·</span>
-              <span className="text-[#78AD7D]">{"Up Next: "}</span>
+              <span className="mx-2 text-[#C8B89A]">&bull;</span>
+              <span className="text-[#78AD7D]">{"Next: "}</span>
               <span className="italic">{experience.businessDay.next.shortTitle}</span>
-              <span className="mx-2 text-[#C8B89A]">·</span>
-              {experience.businessDay.next.timeLabel}
-              <span className="mx-2 text-[#C8B89A]">·</span>
-              {experience.businessDay.countdownToNext.label}
             </p>
           )}
         </motion.div>
@@ -274,7 +270,7 @@ export function BusinessDayHero() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
-            className="glass-panel w-full max-w-2xl rounded-2xl p-8 sm:p-10"
+            className="glass-panel w-full max-w-md rounded-2xl p-8 sm:p-10"
             style={{ backgroundColor: "rgba(253, 250, 245, 0.72)" }}
           >
             {/* Now Being Lived indicator */}
@@ -311,17 +307,20 @@ export function BusinessDayHero() {
               )
             })()}
 
-            {/* Dynamic CTA — scrolls to active segment */}
-            <div className="mt-8">
+            {/* Dynamic CTA — per-block label above, Enter Here → button below */}
+            <div className="mt-8 flex flex-col gap-2">
+              {experience && (
+                <p className="font-montserrat text-[12px] font-semibold uppercase tracking-[0.16em] text-[#78AD7D]">
+                  {BLOCK_HERO[experience.businessDay.current.id]?.cta ?? experience.businessDay.current.cta}
+                </p>
+              )}
               <Button
                 size="lg"
                 id="hero-cta"
                 onClick={() => scrollToActiveSegment(experience?.businessDay.current.sectionId)}
-                className="bg-[#78AD7D] px-8 text-base font-semibold text-white shadow-lg transition-transform hover:scale-[1.03] hover:bg-[#6a9c6f]"
+                className="w-fit bg-[#78AD7D] px-8 text-base font-semibold text-white shadow-lg transition-transform hover:scale-[1.03] hover:bg-[#6a9c6f]"
               >
-                {experience
-                  ? (BLOCK_HERO[experience.businessDay.current.id]?.cta ?? experience.businessDay.current.cta)
-                  : "Enter Today\u2019s Business Day\u2122"}
+                {"Enter Here \u2192"}
               </Button>
             </div>
           </motion.div>
