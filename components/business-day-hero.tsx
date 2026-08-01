@@ -245,7 +245,7 @@ export function BusinessDayHero() {
           />
         </div>
 
-        {/* Small glass status indicator — bottom-left of hero image */}
+        {/* Glass status indicator — top-left, matching screenshot exactly */}
         {experience && (() => {
           const id = experience.businessDay.current.id
           const label = id === "digital-detox"
@@ -253,17 +253,23 @@ export function BusinessDayHero() {
             : id === "ceo-workday"
             ? "Working Now"
             : "Living Now"
-          const dotColor = id === "digital-detox" ? "#C13B6B" : id === "ceo-workday" ? "#C8A96B" : "#78AD7D"
+          const green = "#78AD7D"
           return (
-            <div className="absolute bottom-6 left-6 z-20 inline-flex items-center gap-2 rounded-full px-3 py-1.5 shadow-lg backdrop-blur-md"
-              style={{ background: "rgba(253, 250, 245, 0.55)", border: "1px solid rgba(255,255,255,0.55)" }}
+            <div
+              className="absolute left-6 top-6 z-20 inline-flex items-center gap-2.5 rounded-full px-3 py-2 shadow-sm backdrop-blur-sm"
+              style={{ background: "rgba(253, 250, 245, 0.60)", border: "1px solid rgba(255,255,255,0.60)" }}
             >
-              <span className="text-[13px] leading-none">🌸</span>
-              <span className="relative flex h-1.5 w-1.5 shrink-0">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-60" style={{ backgroundColor: dotColor }} />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full" style={{ backgroundColor: dotColor }} />
+              {/* Soft green circle with cherry blossom inside */}
+              <span
+                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[14px] leading-none"
+                style={{ backgroundColor: "rgba(120, 173, 125, 0.18)" }}
+              >
+                🌸
               </span>
-              <span className="font-montserrat text-[10px] font-bold uppercase tracking-[0.22em]" style={{ color: dotColor }}>
+              <span
+                className="font-montserrat text-[10px] font-bold uppercase tracking-[0.22em] pr-1"
+                style={{ color: green }}
+              >
                 {label}
               </span>
             </div>
