@@ -26,7 +26,7 @@ function scrollToRhythm() {
  * italic: the italic accent phrase
  */
 const BLOCK_SENTENCE: Record<string, { plain: string; italic: string }> = {
-  "early-access":    { plain: "Using Flex Time or Preparing For",         italic: "The Work-Life Balance Business Day™" },
+  "early-access":    { plain: "In Flex Time or Preparing For",            italic: "The Work-Life Balance Business Day™" },
   "morning-given":   { plain: "Aligning Our Energy In The",               italic: "Morning GIV\u2022EN™ Routine" },
   "movement-window": { plain: "Moving Our Bodies In The",                 italic: "30-Minute Movement Window™" },
   "lunch-break":     { plain: "Nourishing Ourselves In The",              italic: "Extended Healthy Hybrid Lunch™" },
@@ -195,7 +195,7 @@ export function BusinessDayHero() {
             return (
               <h1 className={`flex flex-col items-center font-playfair text-3xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-5xl ${isLunch ? "gap-0" : "gap-0.5"}`}>
                 <span className="text-[#1C161A]">
-                  {"We\u2019re "}
+                  {"We\u2019re Now "}
                   {s ? s.plain : experience.businessDay.current.shortTitle}
                 </span>
                 {s && (
