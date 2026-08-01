@@ -256,7 +256,7 @@ export function BusinessDayHero() {
           const green = "#78AD7D"
           return (
             <div
-              className="absolute left-1/2 top-[64px] z-20 inline-flex -translate-x-1/2 items-center gap-1.5 rounded-[6px] px-2 py-1 shadow-sm backdrop-blur-sm"
+              className="absolute bottom-[24px] left-1/2 z-20 inline-flex -translate-x-1/2 items-center gap-1.5 rounded-[6px] px-2 py-1 shadow-sm backdrop-blur-sm"
               style={{ background: "rgba(253, 250, 245, 0.58)", border: "1px solid rgba(255,255,255,0.55)" }}
             >
               {/* Pulsating cherry blossom — text-sized with small ping circumference */}
