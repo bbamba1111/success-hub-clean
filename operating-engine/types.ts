@@ -129,6 +129,10 @@ export interface BlockConfig {
   messages: string[]
   /** If true, this block only appears on Mondays (dayOfWeek === 1). */
   mondayOnly?: boolean
+  /** Override timeLabel shown on Fri/Sat/Sun (days 5, 6, 0). */
+  weekendTimeLabel?: string
+  /** Override startMinutes used on Fri/Sat/Sun. */
+  weekendStartMinutes?: number
 }
 
 /** Output of the Time Engine. */

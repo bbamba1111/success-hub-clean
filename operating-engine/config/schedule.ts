@@ -213,8 +213,11 @@ export const SCHEDULE: BlockConfig[] = [
     sectionId: "block-time-freedom",
     title: "Time Freedom™",
     shortTitle: "Time Freedom™",
+    // Weekdays: 5–10 PM. On Fri/Sat/Sun the engine overrides to all-day (7 AM–11 PM).
     timeLabel: "5:00–10:00 PM",
+    weekendTimeLabel: "7:00 AM–11:00 PM",
     startMinutes: h(17),
+    weekendStartMinutes: h(7),
     endMinutes: h(22),
     description:
       "Enjoy the life you built your business to support—family, health, relationships, recreation, creativity, faith, and growth.",

@@ -111,14 +111,75 @@ function buildTimeline(currentIndex: number): TimelineEntry[] {
   })
 }
 
+/** Days that are Time Freedom™ all-day (7 AM → 11 PM). */
+const WEEKEND_DAYS = new Set([5, 6, 0]) // Fri, Sat, Sun
+
+/** Returns true when the given day is a Time Freedom weekend day. */
+function isWeekendDay(dayOfWeek: number): boolean {
+  return WEEKEND_DAYS.has(dayOfWeek)
+}
+
 export function getBusinessDayState(time: TimeContext): BusinessDayState {
   const minutes = time.minutesSinceMidnight
-  const currentIndex = getCurrentBlockIndex(minutes)
   const len = SCHEDULE.length
 
+  // ── Weekend override ───────────────────────────────────────────────────────
+  // On Fri / Sat / Sun, Time Freedom™ runs all day from 7 AM.
+  // Before 7 AM those days are still Digital Detox (overnight closure).
+  const tfBlock = SCHEDULE_BY_ID["time-freedom"]!
+  const detoxBlock = SCHEDULE_BY_ID["digital-detox"]!
+  const tfWeekendStart = tfBlock.weekendStartMinutes ?? 7 * 60 // 420
+
+  if (isWeekendDay(time.dayOfWeek) && tfBlock) {
+    const isBeforeTfStart = minutes < tfWeekendStart
+
+    // Overnight closure (midnight → 7 AM) still shows Digital Detox.
+    const current = isBeforeTfStart ? detoxBlock : tfBlock
+
+    // Effective timeLabel for the panel (swap to all-day label on weekends)
+    const currentWithLabel: BlockConfig = current.id === "time-freedom"
+      ? { ...current, timeLabel: current.weekendTimeLabel ?? current.timeLabel }
+      : current
+
+    // Next segment:
+    //   - During detox hours (before 7 AM): Time Freedom is next at tfWeekendStart
+    //   - During Time Freedom: next is Digital Detox at 23:00 (unless Sunday → Early Access Mon)
+    let next: BlockConfig
+    let minutesUntilNext: number
+
+    if (isBeforeTfStart) {
+      // Still in overnight Digital Detox — Time Freedom starts at 7 AM
+      next = { ...tfBlock, timeLabel: tfBlock.weekendTimeLabel ?? tfBlock.timeLabel }
+      minutesUntilNext = tfWeekendStart - minutes
+    } else {
+      // Inside Time Freedom — night closure at 23:00
+      next = detoxBlock
+      minutesUntilNext = minutesUntil(minutes, detoxBlock.startMinutes)
+    }
+
+    const tfIndex = SCHEDULE.findIndex((b) => b.id === "time-freedom")
+    const status = resolveStatus(current, next, minutesUntilNext)
+
+    return {
+      current: currentWithLabel,
+      previous: isBeforeTfStart
+        ? SCHEDULE[(SCHEDULE.findIndex((b) => b.id === "digital-detox") - 1 + len) % len]
+        : SCHEDULE[(tfIndex - 1 + len) % len],
+      next,
+      minutesUntilNext,
+      countdownToNext: buildCountdown(minutesUntilNext),
+      status,
+      progress: resolveProgress(minutes),
+      timeline: buildTimeline(isBeforeTfStart
+        ? SCHEDULE.findIndex((b) => b.id === "digital-detox")
+        : tfIndex),
+    }
+  }
+  // ── Standard weekday logic ────────────────────────────────────────────────
+
+  const currentIndex = getCurrentBlockIndex(minutes)
   const current = SCHEDULE[currentIndex]
   const previous = SCHEDULE[(currentIndex - 1 + len) % len]
-  // Use the day-aware helper so weekend nights point to Time Freedom™, not Early Access™.
   const next = getNextOperatingSegment(currentIndex, time)
 
   const minutesUntilNext = minutesUntil(minutes, next.startMinutes)
