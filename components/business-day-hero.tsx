@@ -162,8 +162,9 @@ function getDayIntention(part: PartOfDay): string {
 export function BusinessDayHero() {
   const experience = useOperatingEngine()
 
-  // Stable fallback background before the first client tick.
-  const backgroundImage = experience?.theme.backgroundImage ?? "/images/business-day-hero-bg.png"
+  // Use the business-day engine's current block image so weekend overrides
+  // (Time Freedom all-day on Fri/Sat/Sun) are reflected correctly.
+  const backgroundImage = experience?.businessDay.current.backgroundImage ?? "/images/business-day-hero-bg.png"
   // Calendar-driven invitation — day of week + time is the single source of truth.
   // No workflow state (Synchronize/Execute/Optimize/Finish Strong) involved.
   const invitation = getCalendarInvitation()
