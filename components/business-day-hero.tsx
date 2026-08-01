@@ -11,31 +11,8 @@
  */
 
 import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
 import type { PartOfDay } from "@/operating-engine"
-
-/** Scroll to the currently-active segment card by its sectionId. */
-function scrollToActiveSegment(sectionId?: string) {
-  const target = sectionId
-    ? document.getElementById(sectionId)
-    : document.getElementById("todays-business-day")
-  if (target) target.scrollIntoView({ behavior: "smooth", block: "start" })
-}
-
-/** Per-block motivational copy shown in the glass hero. `btn` overrides the Enter Here label. */
-const BLOCK_HERO: Record<string, { encouragement: string; cta: string; btn?: string }> = {
-  "monday-flex":           { encouragement: "Prepare today with intention.",                   cta: "It\u2019s Time To Prepare" },
-  "monday-reality-check":  { encouragement: "Redesign your entry into the workweek.",          cta: "Take Your Reality Check\u2122" },
-  "early-access":          { encouragement: "Prepare today with intention.",                   cta: "It\u2019s Time To Prepare" },
-  "morning-given":         { encouragement: "Align your mind before you lead.",                cta: "It\u2019s Time To Align" },
-  "movement-window":       { encouragement: "Move your body. Renew your energy.",              cta: "It\u2019s Time To Move" },
-  "lunch-break":           { encouragement: "Nourish your body. Enjoy the moment.",            cta: "It\u2019s Time To Nourish" },
-  "ceo-workday":           { encouragement: "Build a business that leaves room for life.",     cta: "It\u2019s Time To Build" },
-  "time-freedom":          { encouragement: "Enjoy the life your business exists to support.", cta: "It\u2019s Time To Live" },
-  "power-down":            { encouragement: "Release today so tomorrow begins with clarity.",  cta: "It\u2019s Time To Release" },
-  "digital-detox":         { encouragement: "Rest well. Tomorrow begins with you.",            cta: "It\u2019s Time To Rest",  btn: "Unplug Now \u2192" },
-}
 
 /**
  * Maps each block ID → the full "We're Now ___" phrase (plain + italic parts).
@@ -209,6 +186,19 @@ export function BusinessDayHero() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="mx-auto flex max-w-4xl flex-col items-center px-6 py-[38px] text-center sm:py-[45px]"
         >
+          {/* Living Now / Sleeping Now pill */}
+          {experience && (
+            <div className="mb-5 inline-flex items-center gap-1.5 rounded-full bg-white/80 px-3 py-1 shadow-sm ring-1 ring-[#E8D5DE]">
+              <span className="relative flex h-1.5 w-1.5 shrink-0">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#78AD7D] opacity-60" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#78AD7D]" />
+              </span>
+              <span className="font-montserrat text-[10px] font-bold uppercase tracking-[0.22em] text-[#78AD7D]">
+                {experience.businessDay.current.id === "digital-detox" ? "Sleeping Now" : "Living Now"}
+              </span>
+            </div>
+          )}
+
           {/* Lines 1+2 — "We're Now [plain]" then italic segment name on its own line */}
           {experience ? (() => {
             const s = BLOCK_SENTENCE[experience.businessDay.current.id]
@@ -264,53 +254,8 @@ export function BusinessDayHero() {
           />
         </div>
 
-        <div className="relative z-10 mx-auto flex min-h-[560px] max-w-7xl flex-col justify-center px-6 py-16 sm:min-h-[640px] lg:py-24">
-          {/* Dynamic glass card — its contents change with the phase of the day */}
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
-            className="glass-panel w-full max-w-md rounded-2xl p-8 sm:p-10"
-            style={{ backgroundColor: "rgba(253, 250, 245, 0.72)" }}
-          >
-            {experience && (() => {
-              const blockId = experience.businessDay.current.id
-              const hero = BLOCK_HERO[blockId]
-              return (
-                <motion.div
-                  key={blockId}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.12 }}
-                >
-                  {/* Greeting + "It's Time To ___" on one line, no gap */}
-                  <p className="font-playfair text-[14px] font-medium italic text-[#78AD7D] sm:text-[20px]">
-                    {experience.member.greeting}
-                    {hero?.cta && (
-                      <span className="ml-2 text-[11px] not-italic text-[#78AD7D] sm:text-[14px]">
-                        &bull; {hero.cta}
-                      </span>
-                    )}
-                  </p>
-                </motion.div>
-              )
-            })()}
-
-            {/* CTA button */}
-            <div className="mt-6">
-              <Button
-                size="lg"
-                id="hero-cta"
-                onClick={() => scrollToActiveSegment(experience?.businessDay.current.sectionId)}
-                className="w-fit bg-[#78AD7D] px-8 text-base font-semibold text-white shadow-lg transition-transform hover:scale-[1.03] hover:bg-[#6a9c6f]"
-              >
-                {experience
-                  ? (BLOCK_HERO[experience.businessDay.current.id]?.btn ?? "Enter Here \u2192")
-                  : "Enter Here \u2192"}
-              </Button>
-            </div>
-          </motion.div>
-        </div>
+        {/* Pure imagery — no glass card overlay */}
+        <div className="min-h-[560px] sm:min-h-[640px]" />
       </div>
     </section>
   )

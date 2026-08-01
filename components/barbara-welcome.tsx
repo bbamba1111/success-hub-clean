@@ -3,24 +3,6 @@
 import { motion } from "framer-motion"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
 
-const CREDENTIALS = [
-  {
-    title: "Architect of Harmony\u2122",
-    subtitle: "The Parallel Lane\u2122 & Counterpart to Hustle Entrepreneurship",
-  },
-  {
-    title: "International Bestselling Co-Author",
-    subtitle: "The Voyage to Your Vision \u2014 Chapter 9, \u201cLearn Before You Launch.\u201d",
-  },
-  {
-    title: "Creator & Host \u2014 Make Time For More\u2122 On Mondays\u2122",
-    subtitle: "The Redesigned Entry Into the Workweek.",
-  },
-  {
-    title: "Creator & Guide \u2014 Make Time For More\u2122 \u2014 In Real Time\u2122",
-    subtitle: "The live experience of the Work-Life Balance Business Day\u2122, Week\u2122, Month\u2122, and Quarter\u2122.",
-  },
-]
 
 const VALUES = [
   "Your Spirit",
@@ -142,77 +124,38 @@ export function BarbaraWelcome() {
       <div className="mx-auto max-w-[1320px] px-6 pb-12 pt-20 sm:px-10 sm:pb-14 sm:pt-24 lg:px-16 lg:pb-16 lg:pt-28">
         <div className="flex flex-col items-start gap-14 lg:flex-row lg:items-start lg:gap-20">
 
-          {/* Left column — 60% */}
+          {/* Left column — 60% — coaching front and center */}
           <motion.div
+            key={blockId}
             initial={{ opacity: 0, y: 22 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65, ease: "easeOut" }}
             className="flex min-w-0 flex-1 flex-col"
           >
-            {/* Eyebrow */}
-            <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.3em] text-[#78AD7D]">
-              Welcome To
+            {/* Personalized greeting */}
+            <p className="font-playfair text-[20px] italic text-[#78AD7D] sm:text-[22px]">
+              {greeting}
             </p>
 
-            {/* Headline */}
-            <h2 className="mt-3 whitespace-nowrap font-playfair text-[2rem] font-semibold leading-tight tracking-[-0.01em] text-[#1C161A] lg:text-[2.55rem]">
-              {"Make Time For More\u2122 "}
-              <span className="italic text-[#C13B6B]">{"\u2014 In Real Time"}</span>
-            </h2>
-
-            {/* Subline */}
-            <p className="mt-3 font-montserrat text-[10px] font-bold uppercase tracking-[0.26em] text-[#78AD7D]">
-              With Thought Leader Barbara
+            {/* Coaching message — front and center */}
+            <p className="mt-4 max-w-[580px] font-montserrat text-[15px] leading-[1.7] text-[#4A3A42]">
+              {coaching.message}
             </p>
 
-            {/* Credentials */}
-            <div className="mb-0 mt-7 flex flex-col gap-[18px]">
-              {CREDENTIALS.map((c, i) => (
-                <div key={i}>
-                  <p className="font-montserrat text-[13px] font-semibold leading-snug text-[#1C161A]">
-                    {c.title}
-                  </p>
-                  <p className="mt-[5px] font-montserrat text-[12px] italic leading-snug text-[#7A6A72]">
-                    {c.subtitle}
-                  </p>
-                </div>
-              ))}
+            {/* Today's Reflection */}
+            <div className="mt-7 border-l-2 border-[#C13B6B]/30 pl-4">
+              <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.22em] text-[#C13B6B]">
+                {"Today\u2019s Reflection"}
+              </p>
+              <p className="mt-2 font-playfair text-[15px] italic leading-relaxed text-[#4A3A42]">
+                &ldquo;{coaching.reflection.text}&rdquo;
+              </p>
+              {coaching.reflection.author && (
+                <p className="mt-1 font-montserrat text-[11px] font-semibold tracking-wide text-[#7A6A72]">
+                  {"\u2014 "}{coaching.reflection.author}
+                </p>
+              )}
             </div>
-
-            {/* Live coaching — dynamic per block */}
-            <motion.div
-              key={blockId}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="mt-10 max-w-[580px]"
-            >
-              {/* Personalized greeting */}
-              <p className="font-playfair text-[17px] italic text-[#78AD7D]">
-                {greeting}
-              </p>
-
-              {/* Coaching message */}
-              <p className="mt-3 font-montserrat text-[15px] leading-[1.6] text-[#4A3A42]">
-                {coaching.message}
-              </p>
-
-              {/* Today's Reflection */}
-              <div className="mt-6 border-l-2 border-[#C13B6B]/30 pl-4">
-                <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.22em] text-[#C13B6B]">
-                  Today\u2019s Reflection
-                </p>
-                <p className="mt-2 font-playfair text-[15px] italic leading-relaxed text-[#4A3A42]">
-                  &ldquo;{coaching.reflection.text}&rdquo;
-                </p>
-                {coaching.reflection.author && (
-                  <p className="mt-1 font-montserrat text-[11px] font-semibold tracking-wide text-[#7A6A72]">
-                    \u2014 {coaching.reflection.author}
-                  </p>
-                )}
-              </div>
-            </motion.div>
           </motion.div>
 
           {/* Right column — 40% portrait */}
@@ -250,9 +193,14 @@ export function BarbaraWelcome() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="mx-auto max-w-[1320px] px-6 pb-8 pt-12 text-center sm:px-10 sm:pb-10 sm:pt-14 lg:px-16 lg:pb-10 lg:pt-16"
         >
-          <h2 className="text-balance font-playfair text-3xl font-semibold text-[#1C161A] sm:text-4xl lg:text-5xl">
-            Your New 9-5 &amp; Nighttime Non-Negotiables\u2122
-          </h2>
+          <div className="flex flex-wrap items-baseline justify-center gap-3">
+            <h2 className="text-balance font-playfair text-3xl font-semibold text-[#1C161A] sm:text-4xl lg:text-5xl">
+              {"Your New 9\u20115 & Nighttime Non-Negotiables\u2122"}
+            </h2>
+            <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#C13B6B] font-montserrat text-[11px] font-bold text-white">
+              {VALUES.length}
+            </span>
+          </div>
           <div className="mx-auto mt-4 flex flex-nowrap items-center justify-center gap-x-3 overflow-x-auto">
             {VALUES.map((value, i) => (
               <span key={value} className="flex shrink-0 items-center gap-x-3">
