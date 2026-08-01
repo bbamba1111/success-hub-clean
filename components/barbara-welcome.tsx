@@ -110,12 +110,23 @@ const DEFAULT_COACHING = {
   },
 }
 
+/** Returns the proper time-of-day salutation based on minutes-since-midnight. */
+function getSalutation(minutes: number): string {
+  if (minutes >= 22 * 60 || minutes < 5 * 60) return "Good Night"
+  if (minutes < 12 * 60) return "Good Morning"
+  if (minutes < 17 * 60) return "Good Afternoon"
+  return "Good Evening"
+}
+
 export function BarbaraWelcome() {
   const experience = useOperatingEngine()
   const blockId = experience?.businessDay.current.id ?? ""
   const coaching = BLOCK_COACHING[blockId] ?? DEFAULT_COACHING
   const firstName = experience?.member.firstName ?? "Friend"
-  const greeting = experience?.member.greeting ?? `Welcome, ${firstName}`
+  const minutes = experience?.time.minutesSinceMidnight ?? new Date().getHours() * 60 + new Date().getMinutes()
+  const salutation = getSalutation(minutes)
+  // Full greeting shown as lead line: "Good Morning, Friend"
+  const greeting = `${salutation}, ${firstName}`
 
   return (
     <section className="w-full bg-[#FDFAF5]">
