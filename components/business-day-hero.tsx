@@ -233,7 +233,7 @@ export function BusinessDayHero() {
             src={backgroundImage || "/placeholder.svg"}
             alt=""
             aria-hidden="true"
-            className="h-full w-full object-cover"
+            className={`h-full w-full ${experience?.businessDay.current.id === "digital-detox" ? "object-fill" : "object-cover"}`}
           />
           {/* Soft left-weighted wash — reduced so more background shows through */}
           <div
