@@ -15,9 +15,26 @@ import { Button } from "@/components/ui/button"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
 import type { PartOfDay } from "@/operating-engine"
 
-function scrollToRhythm() {
-  const el = document.getElementById("todays-business-day")
-  if (el) el.scrollIntoView({ behavior: "smooth", block: "start" })
+/** Scroll to the currently-active segment card by its sectionId. */
+function scrollToActiveSegment(sectionId?: string) {
+  const target = sectionId
+    ? document.getElementById(sectionId)
+    : document.getElementById("todays-business-day")
+  if (target) target.scrollIntoView({ behavior: "smooth", block: "start" })
+}
+
+/** Per-block motivational copy shown in the glass hero. */
+const BLOCK_HERO: Record<string, { encouragement: string; cta: string }> = {
+  "monday-flex":           { encouragement: "Prepare today with intention.",                                         cta: "It\u2019s Time To Prepare \u2192" },
+  "monday-reality-check":  { encouragement: "Redesign your entry into the workweek.",                               cta: "Take Your Reality Check\u2122 \u2192" },
+  "early-access":          { encouragement: "Prepare today with intention.",                                         cta: "It\u2019s Time To Prepare \u2192" },
+  "morning-given":         { encouragement: "Align your mind before you lead.",                                      cta: "It\u2019s Time To Align \u2192" },
+  "movement-window":       { encouragement: "Move your body. Renew your energy.",                                    cta: "It\u2019s Time To Move \u2192" },
+  "lunch-break":           { encouragement: "Nourish yourself with a healthy meal to prevent the midday crash.",     cta: "It\u2019s Time To Nourish \u2192" },
+  "ceo-workday":           { encouragement: "Build a business that leaves room for life.",                           cta: "It\u2019s Time To Build \u2192" },
+  "time-freedom":          { encouragement: "Enjoy the life your business exists to support.",                       cta: "It\u2019s Time To Live \u2192" },
+  "power-down":            { encouragement: "Release today so tomorrow begins with clarity.",                        cta: "It\u2019s Time To Release \u2192" },
+  "digital-detox":         { encouragement: "Rest well. Tomorrow begins with you.",                                  cta: "It\u2019s Time To Rest \u2192" },
 }
 
 /**
@@ -26,6 +43,10 @@ function scrollToRhythm() {
  * italic: the italic accent phrase
  */
 const BLOCK_SENTENCE: Record<string, { plain: string; italic: string }> = {
+  // Monday-only blocks
+  "monday-flex":           { plain: "Preparing For",                      italic: "Make Time For More™ On Mondays™" },
+  "monday-reality-check":  { plain: "Redesigning Our Entry Into The Workweek", italic: "Work-Life Balance Reality Check™" },
+  // Standard blocks
   "early-access":    { plain: "In Flex Time or Preparing For",            italic: "The Work-Life Balance Business Day™" },
   "morning-given":   { plain: "Aligning Our Energy In The",               italic: "Morning GIV\u2022EN™ Routine" },
   "movement-window": { plain: "Moving Our Bodies In The",                 italic: "30-Minute Movement Window™" },
@@ -267,51 +288,40 @@ export function BusinessDayHero() {
               </span>
             </div>
 
-            {experience && (
-              <motion.div
-                key={`${experience.businessDay.current.id}-${experience.member.greeting}`}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.12 }}
-              >
-                {/* Current segment title */}
-                <p className="text-pretty font-playfair text-3xl font-medium leading-tight text-[#C13B6B] sm:text-4xl">
-                  {experience.businessDay.current.title}
-                </p>
+            {experience && (() => {
+              const blockId = experience.businessDay.current.id
+              const hero = BLOCK_HERO[blockId]
+              return (
+                <motion.div
+                  key={blockId}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.12 }}
+                >
+                  {/* Personalized greeting */}
+                  <p className="font-playfair text-2xl font-medium italic text-[#78AD7D] sm:text-3xl">
+                    {experience.member.greeting}
+                  </p>
 
-                {/* Current segment time */}
-                <p className="mt-1 font-montserrat text-sm font-semibold uppercase tracking-[0.14em] text-[#5A4A52]">
-                  {experience.businessDay.current.timeLabel}
-                </p>
+                  {/* Per-block encouragement */}
+                  <p className="mt-4 text-pretty font-playfair text-2xl font-medium leading-snug text-[#3A2E33] sm:text-3xl">
+                    {hero?.encouragement ?? experience.phase.message}
+                  </p>
+                </motion.div>
+              )
+            })()}
 
-                {/* Up next */}
-                <p className="mt-3 text-sm font-medium text-[#7A6A72]">
-                  Up next:{" "}
-                  <span className="font-semibold text-[#5A4A52]">{experience.businessDay.next.shortTitle}</span>
-                  {" · "}
-                  <span className="font-semibold text-[#78AD7D]">{experience.businessDay.countdownToNext.label}</span>
-                </p>
-
-                {/* Personalized greeting — sage, Playfair italic */}
-                <p className="mt-6 font-playfair text-2xl font-medium italic text-[#78AD7D] sm:text-3xl">
-                  {experience.member.greeting} <span aria-hidden>{experience.member.greetingEmoji}</span>
-                </p>
-
-                {/* Encouraging message about the activity at hand */}
-                <p className="mt-2 text-base leading-relaxed text-[#4A3A42]">{experience.phase.message}</p>
-              </motion.div>
-            )}
-
-
-
-            {/* Enter button */}
+            {/* Dynamic CTA — scrolls to active segment */}
             <div className="mt-8">
               <Button
                 size="lg"
-                onClick={scrollToRhythm}
+                id="hero-cta"
+                onClick={() => scrollToActiveSegment(experience?.businessDay.current.sectionId)}
                 className="bg-[#78AD7D] px-8 text-base font-semibold text-white shadow-lg transition-transform hover:scale-[1.03] hover:bg-[#6a9c6f]"
               >
-                {experience ? experience.businessDay.current.cta : "Enter Today's Business Day™"}
+                {experience
+                  ? (BLOCK_HERO[experience.businessDay.current.id]?.cta ?? experience.businessDay.current.cta)
+                  : "Enter Today\u2019s Business Day\u2122"}
               </Button>
             </div>
           </motion.div>

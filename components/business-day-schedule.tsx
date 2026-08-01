@@ -16,7 +16,7 @@ import { BusinessDayBlock } from "@/components/business-day-block"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
 import { useHarmonyWeek } from "@/components/harmony-week/harmony-week-provider"
 import { getActiveRules } from "@/lib/operating-rules/storage"
-import { SCHEDULE, type BlockConfig } from "@/operating-engine"
+import { SCHEDULE, SCHEDULE_BY_ID, type BlockConfig } from "@/operating-engine"
 import { SEGMENT_ABOUT, renderSegmentAbout } from "@/operating-engine/config/segment-about"
 
 /** Smoothly bring the member to the Operating Planner™ workspace below the hero. */
@@ -69,8 +69,27 @@ export function BusinessDaySchedule() {
   const rawTimeline =
     experience?.businessDay.timeline ?? SCHEDULE.map((block) => ({ block, state: "upcoming" as const }))
 
-  // Always show all blocks including CEO Workday™ regardless of Time Freedom™ window.
-  const timeline = rawTimeline
+  // On Mondays, prepend the two Monday-only blocks (monday-flex 7–9 AM, monday-reality-check 9–9:30 AM).
+  // monday-reality-check auto-hides after 9:30 AM (540 minutes).
+  const isMonday = experience ? experience.time.dayOfWeek === 1 : new Date().getDay() === 1
+  const currentMinutes = experience?.time.minutesSinceMidnight ?? (new Date().getHours() * 60 + new Date().getMinutes())
+
+  const mondayBlocks: typeof rawTimeline = []
+  if (isMonday) {
+    const mFlex = SCHEDULE_BY_ID["monday-flex"]
+    const mCheck = SCHEDULE_BY_ID["monday-reality-check"]
+    if (mFlex) {
+      const flexState = currentMinutes < 9 * 60 ? (currentMinutes >= 7 * 60 ? "current" : "upcoming") : "completed"
+      mondayBlocks.push({ block: mFlex, state: flexState as "current" | "upcoming" | "completed" })
+    }
+    // Only show Reality Check before 9:30 AM
+    if (mCheck && currentMinutes < 9 * 60 + 30) {
+      const checkState = currentMinutes >= 9 * 60 ? "current" : "upcoming"
+      mondayBlocks.push({ block: mCheck, state: checkState as "current" | "upcoming" | "completed" })
+    }
+  }
+
+  const timeline = [...mondayBlocks, ...rawTimeline]
 
   return (
     <div id="todays-business-day" className="w-full scroll-mt-20 pb-8 pt-4" style={{ background: "linear-gradient(135deg, #FDF6F0 0%, #FBF0F4 40%, #F0F5EE 70%, #FDFAF6 100%)" }}>

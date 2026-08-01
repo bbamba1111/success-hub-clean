@@ -13,6 +13,8 @@
 
 /** Identifier for each block of the Work-Life Balance Business Day™. */
 export type BlockId =
+  | "monday-flex"
+  | "monday-reality-check"
   | "early-access"
   | "morning-given"
   | "movement-window"
@@ -125,6 +127,8 @@ export interface BlockConfig {
   communityOpen: boolean
   /** Rotating motivational messages tied to this block. */
   messages: string[]
+  /** If true, this block only appears on Mondays (dayOfWeek === 1). */
+  mondayOnly?: boolean
 }
 
 /** Output of the Time Engine. */

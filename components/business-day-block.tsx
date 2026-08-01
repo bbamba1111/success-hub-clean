@@ -140,8 +140,8 @@ export function BusinessDayBlock({
                 <div className="mt-4 flex flex-wrap items-center gap-2.5">
                   <Button
                     size="sm"
-                    onClick={onAction}
-                    className="bg-[#7FB069] text-white hover:bg-[#6FA058]"
+                    onClick={() => { onAction?.(); setOpen(true) }}
+                    className="animate-[pulse_2.4s_ease-in-out_infinite] bg-[#7FB069] text-white hover:bg-[#6FA058]"
                   >
                     {buttonText}
                   </Button>
