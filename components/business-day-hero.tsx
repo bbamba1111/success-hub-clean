@@ -259,12 +259,16 @@ export function BusinessDayHero() {
               className="absolute left-6 top-6 z-20 inline-flex items-center gap-2.5 rounded-full px-3 py-2 shadow-sm backdrop-blur-sm"
               style={{ background: "rgba(253, 250, 245, 0.60)", border: "1px solid rgba(255,255,255,0.60)" }}
             >
-              {/* Soft green circle with cherry blossom inside */}
+              {/* Pulsating cherry blossom in soft green circle */}
               <span
-                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[14px] leading-none"
+                className="relative flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[14px] leading-none"
                 style={{ backgroundColor: "rgba(120, 173, 125, 0.18)" }}
               >
-                🌸
+                <span
+                  className="absolute inset-0 rounded-full animate-ping"
+                  style={{ backgroundColor: "rgba(120, 173, 125, 0.22)", animationDuration: "2.2s" }}
+                />
+                <span className="relative" style={{ animation: "pulse 2.2s ease-in-out infinite" }}>🌸</span>
               </span>
               <span
                 className="font-montserrat text-[10px] font-bold uppercase tracking-[0.22em] pr-1"
