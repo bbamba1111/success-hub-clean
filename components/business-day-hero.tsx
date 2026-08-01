@@ -26,14 +26,14 @@ function scrollToRhythm() {
  * italic: the italic accent phrase
  */
 const BLOCK_SENTENCE: Record<string, { plain: string; italic: string }> = {
-  "early-access":    { plain: "Preparing For", italic: "Flex Time™" },
-  "morning-given":   { plain: "Aligning Through", italic: "Morning GIV•EN™" },
-  "movement-window": { plain: "Moving Our Bodies In The", italic: "30-Minute Movement Window™" },
-  "lunch-break":     { plain: "Nourishing With The", italic: "Healthy Hybrid Lunch™" },
-  "ceo-workday":     { plain: "Building During The", italic: "4-Hour Focused CEO Workday™" },
-  "time-freedom":    { plain: "Living In", italic: "Time Freedom™" },
-  "power-down":      { plain: "Powering Down With", italic: "Power Down™" },
-  "digital-detox":   { plain: "Resting In", italic: "Digital Detox™" },
+  "early-access":    { plain: "Preparing to Enter the",                  italic: "Work-Life Balance Business Day™" },
+  "morning-given":   { plain: "Aligning Our Energy Through The",          italic: "Morning GIV•EN™ Routine" },
+  "movement-window": { plain: "Moving Our Bodies In The",                 italic: "30-Minute Movement Window™" },
+  "lunch-break":     { plain: "Nourishing Ourselves In An Extended",      italic: "Healthy Hybrid Lunch Break™" },
+  "ceo-workday":     { plain: "Building Our Businesses In",               italic: "The 4-Hour Focused CEO Workday™" },
+  "time-freedom":    { plain: "Living In",                                italic: "Time Freedom™" },
+  "power-down":      { plain: "Releasing The Day In",                     italic: "Power Down™" },
+  "digital-detox":   { plain: "Closed & Resting & In",                   italic: "Unplugged Digital Detox™" },
 }
 
 /**
@@ -188,29 +188,24 @@ export function BusinessDayHero() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="mx-auto flex max-w-4xl flex-col items-center px-6 py-[38px] text-center sm:py-[45px]"
         >
-          {/* Line 1 — "We're Now [plain] [italic]" + current timeLabel */}
+          {/* Lines 1+2 — "We're Now [plain]" then italic segment name on its own line */}
           {experience ? (() => {
             const s = BLOCK_SENTENCE[experience.businessDay.current.id]
             return (
-              <h1 className="font-playfair text-3xl font-semibold leading-tight tracking-tight text-[#1C161A] sm:text-4xl lg:text-5xl">
-                {"We\u2019re Now "}
-                {s ? (
-                  <>
-                    {s.plain}{" "}
-                    <span className="italic text-[#C13B6B]">{s.italic}</span>
-                  </>
-                ) : (
-                  <span className="italic text-[#C13B6B]">
-                    {experience.businessDay.current.shortTitle}
-                  </span>
+              <h1 className="flex flex-col items-center gap-0.5 font-playfair text-3xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
+                <span className="text-[#1C161A]">
+                  {"We\u2019re Now "}
+                  {s ? s.plain : experience.businessDay.current.shortTitle}
+                </span>
+                {s && (
+                  <span className="italic text-[#C13B6B]">{s.italic}</span>
                 )}
               </h1>
             )
           })() : (
-            <h1 className="font-playfair text-3xl font-semibold leading-tight tracking-tight text-[#1C161A] sm:text-4xl lg:text-5xl">
-              {"Join "}
-              <span className="italic text-[#C13B6B]">{"Today\u2019s"}</span>
-              {" Work-Life Balance Business Day\u2122"}
+            <h1 className="flex flex-col items-center gap-0.5 font-playfair text-3xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
+              <span className="text-[#1C161A]">{"Join Today\u2019s"}</span>
+              <span className="italic text-[#C13B6B]">{"Work-Life Balance Business Day\u2122"}</span>
             </h1>
           )}
 
