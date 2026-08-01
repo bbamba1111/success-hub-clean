@@ -20,16 +20,20 @@ function scrollToRhythm() {
   if (el) el.scrollIntoView({ behavior: "smooth", block: "start" })
 }
 
-/** Maps each block ID → the "WE'RE NOW ___" verb phrase shown in the top band. */
-const BLOCK_VERB: Record<string, string> = {
-  "early-access":      "PREPARING",
-  "morning-given":     "ALIGNING",
-  "movement-window":   "MOVING",
-  "lunch-break":       "NOURISHING",
-  "ceo-workday":       "BUILDING",
-  "time-freedom":      "LIVING",
-  "power-down":        "POWERING DOWN",
-  "digital-detox":     "UNPLUGGED",
+/**
+ * Maps each block ID → the full "We're Now ___" phrase (plain + italic parts).
+ * plain: the non-italic prefix after "We're Now "
+ * italic: the italic accent phrase
+ */
+const BLOCK_SENTENCE: Record<string, { plain: string; italic: string }> = {
+  "early-access":    { plain: "Preparing For", italic: "Flex Time™" },
+  "morning-given":   { plain: "Aligning Through", italic: "Morning GIV•EN™" },
+  "movement-window": { plain: "Moving Our Bodies In The", italic: "30-Minute Movement Window™" },
+  "lunch-break":     { plain: "Nourishing With The", italic: "Healthy Hybrid Lunch™" },
+  "ceo-workday":     { plain: "Building During The", italic: "4-Hour Focused CEO Workday™" },
+  "time-freedom":    { plain: "Living In", italic: "Time Freedom™" },
+  "power-down":      { plain: "Powering Down With", italic: "Power Down™" },
+  "digital-detox":   { plain: "Resting In", italic: "Digital Detox™" },
 }
 
 /**
@@ -184,32 +188,43 @@ export function BusinessDayHero() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="mx-auto flex max-w-4xl flex-col items-center px-6 py-[38px] text-center sm:py-[45px]"
         >
-          {/* Line 1 — community status verb */}
-          {experience ? (
-            <h1 className="whitespace-nowrap font-playfair text-3xl font-semibold leading-tight tracking-tight text-[#1C161A] sm:text-4xl lg:text-5xl">
-              {"WE'RE NOW "}
-              <span className="italic text-[#C13B6B]">
-                {BLOCK_VERB[experience.businessDay.current.id] ?? "LIVING"}
-              </span>
-              {"..."}
-            </h1>
-          ) : (
-            <h1 className="whitespace-nowrap font-playfair text-3xl font-semibold leading-tight tracking-tight text-[#1C161A] sm:text-4xl lg:text-5xl">
+          {/* Line 1 — "We're Now [plain] [italic]" + current timeLabel */}
+          {experience ? (() => {
+            const s = BLOCK_SENTENCE[experience.businessDay.current.id]
+            return (
+              <h1 className="font-playfair text-3xl font-semibold leading-tight tracking-tight text-[#1C161A] sm:text-4xl lg:text-5xl">
+                {"We\u2019re Now "}
+                {s ? (
+                  <>
+                    {s.plain}{" "}
+                    <span className="italic text-[#C13B6B]">{s.italic}</span>
+                  </>
+                ) : (
+                  <span className="italic text-[#C13B6B]">
+                    {experience.businessDay.current.shortTitle}
+                  </span>
+                )}
+              </h1>
+            )
+          })() : (
+            <h1 className="font-playfair text-3xl font-semibold leading-tight tracking-tight text-[#1C161A] sm:text-4xl lg:text-5xl">
               {"Join "}
-              <span className="italic text-[#C13B6B]">{"Today's"}</span>
-              {" Work-Life Balance Business Day™"}
+              <span className="italic text-[#C13B6B]">{"Today\u2019s"}</span>
+              {" Work-Life Balance Business Day\u2122"}
             </h1>
           )}
 
-          {/* Line 2 — timeframe • countdown */}
+          {/* Line 2 — current timeLabel · Up Next: name · timeLabel · countdown */}
           {experience && (
-            <p className="mt-3 whitespace-nowrap font-montserrat text-[15px] font-medium text-[#5A4A52] sm:text-[17px]">
+            <p className="mt-3 font-montserrat text-[14px] font-medium text-[#5A4A52] sm:text-[16px]">
               {experience.businessDay.current.timeLabel}
-              {" • "}
-              <span className="italic text-[#78AD7D]">
-                {"Next Boundary Begins In: "}
-                {experience.businessDay.countdownToNext.label}
-              </span>
+              <span className="mx-2 text-[#C8B89A]">·</span>
+              <span className="text-[#78AD7D]">{"Up Next: "}</span>
+              <span className="italic">{experience.businessDay.next.shortTitle}</span>
+              <span className="mx-2 text-[#C8B89A]">·</span>
+              {experience.businessDay.next.timeLabel}
+              <span className="mx-2 text-[#C8B89A]">·</span>
+              {experience.businessDay.countdownToNext.label}
             </p>
           )}
         </motion.div>
