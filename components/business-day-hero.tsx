@@ -245,7 +245,7 @@ export function BusinessDayHero() {
           />
         </div>
 
-        {/* Glass status indicator — top-left, matching screenshot exactly */}
+        {/* Glass status indicator — sits at top-left of panoramic image, text-scale */}
         {experience && (() => {
           const id = experience.businessDay.current.id
           const label = id === "digital-detox"
@@ -256,22 +256,24 @@ export function BusinessDayHero() {
           const green = "#78AD7D"
           return (
             <div
-              className="absolute left-6 top-6 z-20 inline-flex items-center gap-2.5 rounded-full px-3 py-2 shadow-sm backdrop-blur-sm"
-              style={{ background: "rgba(253, 250, 245, 0.60)", border: "1px solid rgba(255,255,255,0.60)" }}
+              className="absolute left-6 top-4 z-20 inline-flex items-center gap-1.5 rounded-[6px] px-2 py-1 shadow-sm backdrop-blur-sm"
+              style={{ background: "rgba(253, 250, 245, 0.58)", border: "1px solid rgba(255,255,255,0.55)" }}
             >
-              {/* Pulsating cherry blossom in soft green circle */}
-              <span
-                className="relative flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[14px] leading-none"
-                style={{ backgroundColor: "rgba(120, 173, 125, 0.18)" }}
-              >
+              {/* Pulsating cherry blossom — text-sized with small ping circumference */}
+              <span className="relative flex h-[14px] w-[14px] shrink-0 items-center justify-center">
                 <span
-                  className="absolute inset-0 rounded-full animate-ping"
-                  style={{ backgroundColor: "rgba(120, 173, 125, 0.22)", animationDuration: "2.2s" }}
+                  className="absolute inset-[-2px] rounded-full animate-ping"
+                  style={{ backgroundColor: "rgba(120, 173, 125, 0.28)", animationDuration: "2s" }}
                 />
-                <span className="relative" style={{ animation: "pulse 2.2s ease-in-out infinite" }}>🌸</span>
+                <span
+                  className="relative text-[11px] leading-none"
+                  style={{ animation: "pulse 2s ease-in-out infinite" }}
+                >
+                  🌸
+                </span>
               </span>
               <span
-                className="font-montserrat text-[10px] font-bold uppercase tracking-[0.22em] pr-1"
+                className="font-montserrat text-[9px] font-bold uppercase tracking-[0.2em]"
                 style={{ color: green }}
               >
                 {label}
