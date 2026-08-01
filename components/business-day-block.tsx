@@ -111,11 +111,21 @@ export function BusinessDayBlock({
           >
             <div className="w-full">
               <div className="mb-2.5 flex flex-wrap items-center gap-2.5">
-                <span
-                  className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] ${STATUS_BADGE[status]}`}
-                >
-                  {STATUS_LABEL[status]}
-                </span>
+                {isCurrent ? (
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[#7FB069] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-white">
+                    <span className="relative flex h-1.5 w-1.5 shrink-0">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-70" />
+                      <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-white" />
+                    </span>
+                    🌸 Living Now
+                  </span>
+                ) : (
+                  <span
+                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] ${STATUS_BADGE[status]}`}
+                  >
+                    {STATUS_LABEL[status]}
+                  </span>
+                )}
                 <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#6B5860]">{time}</span>
                 {isCurrent && segmentRemaining && (
                   <span className="inline-flex items-center rounded-full bg-[#7FB069]/15 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#5A7A45]">

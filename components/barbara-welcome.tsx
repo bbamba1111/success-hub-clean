@@ -157,8 +157,8 @@ export function BarbaraWelcome() {
 
             {/* Headline */}
             <h2 className="mt-3 whitespace-nowrap font-playfair text-[2rem] font-semibold leading-tight tracking-[-0.01em] text-[#1C161A] lg:text-[2.55rem]">
-              Make Time For More\u2122{" "}
-              <span className="italic text-[#C13B6B]">\u2014 In Real Time</span>
+              {"Make Time For More\u2122 "}
+              <span className="italic text-[#C13B6B]">{"\u2014 In Real Time"}</span>
             </h2>
 
             {/* Subline */}

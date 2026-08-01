@@ -273,17 +273,6 @@ export function BusinessDayHero() {
             className="glass-panel w-full max-w-md rounded-2xl p-8 sm:p-10"
             style={{ backgroundColor: "rgba(253, 250, 245, 0.72)" }}
           >
-            {/* Now Being Lived indicator */}
-            <div className="mb-4 inline-flex items-center gap-2">
-              <span className="relative flex h-3 w-3 items-center justify-center">
-                <span className="absolute inline-flex h-full w-full animate-[ping_2s_cubic-bezier(0,0,0.2,1)_infinite] rounded-full bg-[#78AD7D] opacity-50" />
-                <span className="relative text-[10px] leading-none">🌸</span>
-              </span>
-              <span className="font-montserrat text-[11px] font-bold uppercase tracking-[0.18em] text-[#78AD7D]">
-                LIVING NOW
-              </span>
-            </div>
-
             {experience && (() => {
               const blockId = experience.businessDay.current.id
               const hero = BLOCK_HERO[blockId]
