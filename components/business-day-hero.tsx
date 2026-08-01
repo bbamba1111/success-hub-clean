@@ -188,19 +188,32 @@ export function BusinessDayHero() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="mx-auto flex max-w-4xl flex-col items-center px-6 py-[38px] text-center sm:py-[45px]"
         >
-          {/* Lines 1+2 — "We're Now [plain]" then italic segment name on its own line */}
+          {/* Line 1 — "We're Now [plain]" */}
           {experience ? (() => {
             const s = BLOCK_SENTENCE[experience.businessDay.current.id]
             const isLunch = experience.businessDay.current.id === "lunch-break"
             return (
-              <h1 className={`flex flex-col items-center font-playfair text-3xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-5xl ${isLunch ? "gap-0" : "gap-0.5"}`}>
+              <h1 className="flex flex-col items-center gap-0.5 font-playfair text-3xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
+                {/* Line 1: plain prefix */}
                 <span className="text-[#1C161A]">
                   {"We\u2019re Now "}
                   {s ? s.plain : experience.businessDay.current.shortTitle}
                 </span>
+
+                {/* Line 2: 🌸 live dot · italic segment name · current timeLabel */}
                 {s && (
-                  <span className={`italic text-[#C13B6B] ${isLunch ? "text-2xl sm:text-3xl lg:text-4xl" : ""}`}>
-                    {s.italic}
+                  <span className="mt-1 flex items-center gap-2">
+                    {/* Cherry blossom live indicator */}
+                    <span className="relative flex h-2.5 w-2.5 shrink-0">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#C13B6B] opacity-60" />
+                      <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#C13B6B]" />
+                    </span>
+                    <span className={`italic text-[#C13B6B] ${isLunch ? "text-2xl sm:text-3xl lg:text-4xl" : ""}`}>
+                      {s.italic}
+                    </span>
+                    <span className="font-montserrat text-[13px] font-medium not-italic text-[#5A4A52] sm:text-[15px]">
+                      {experience.businessDay.current.timeLabel}
+                    </span>
                   </span>
                 )}
               </h1>
@@ -212,11 +225,9 @@ export function BusinessDayHero() {
             </h1>
           )}
 
-          {/* Line 2 — current timeLabel · Up Next: name · timeLabel · countdown */}
+          {/* Line 3 — Up Next: [name] · [timeLabel] · [countdown] */}
           {experience && (
-            <p className="mt-3 font-montserrat text-[14px] font-medium text-[#5A4A52] sm:text-[16px]">
-              {experience.businessDay.current.timeLabel}
-              <span className="mx-2 text-[#C8B89A]">·</span>
+            <p className="mt-3 font-montserrat text-[13px] font-medium text-[#5A4A52] sm:text-[15px]">
               <span className="text-[#78AD7D]">{"Up Next: "}</span>
               <span className="italic">{experience.businessDay.next.shortTitle}</span>
               <span className="mx-2 text-[#C8B89A]">·</span>
