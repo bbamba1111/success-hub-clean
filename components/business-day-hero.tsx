@@ -26,9 +26,12 @@ function scrollToRhythm() {
  * italic: the italic accent phrase
  */
 const BLOCK_SENTENCE: Record<string, { plain: string; italic: string }> = {
-  "early-access":    { plain: "Using Flex Time / Preparing For",          italic: "The Work-Life Balance Business Day™" },
-  "lunch-break":     { plain: "Nourishing Ourselves In The",              italic: "Extended Healthy Hybrid Lunch™" },
-  "time-freedom":    { plain: "Making Time For More In",                  italic: "Time Freedom™" },
+  "early-access":    { plain: "Using Flex Time or Preparing to Enter The", italic: "Work-Life Balance Business Day™" },
+  "morning-given":   { plain: "Aligning Our Energy In The",               italic: "Morning GIV\u2022EN™ Routine" },
+  "movement-window": { plain: "Moving Our Bodies In The",                 italic: "30-Minute Movement Window™" },
+  "lunch-break":     { plain: "Nourishing Ourselves In The",              italic: "Extended Healthy Hybrid Lunch Break™" },
+  "ceo-workday":     { plain: "Building Our Businesses In",               italic: "The 4-Hour Focused CEO Workday™" },
+  "time-freedom":    { plain: "Living, Loving & Enjoying Our",            italic: "Time Freedom™" },
   "power-down":      { plain: "Releasing The Day In",                     italic: "Power Down™" },
   "digital-detox":   { plain: "Closed & Resting In The",                  italic: "Unplug Digital Detox™" },
 }
@@ -185,22 +188,18 @@ export function BusinessDayHero() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="mx-auto flex max-w-4xl flex-col items-center px-6 py-[38px] text-center sm:py-[45px]"
         >
-          {/* Line 1 — "We're Now [plain]" */}
+          {/* Lines 1+2 — "We're Now [plain]" then italic segment name on its own line */}
           {experience ? (() => {
             const s = BLOCK_SENTENCE[experience.businessDay.current.id]
+            const isLunch = experience.businessDay.current.id === "lunch-break"
             return (
-              <h1 className="flex flex-col items-center gap-0.5 font-playfair text-3xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
-                {/* Line 1: plain prefix */}
+              <h1 className={`flex flex-col items-center font-playfair text-3xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-5xl ${isLunch ? "gap-0" : "gap-0.5"}`}>
                 <span className="text-[#1C161A]">
                   {"We\u2019re Now "}
                   {s ? s.plain : experience.businessDay.current.shortTitle}
                 </span>
-
-                {/* Line 2: italic segment name only */}
                 {s && (
-                  <span className="italic text-[#C13B6B]">
-                    {s.italic}
-                  </span>
+                  <span className="italic text-[#C13B6B]">{s.italic}</span>
                 )}
               </h1>
             )
@@ -211,14 +210,15 @@ export function BusinessDayHero() {
             </h1>
           )}
 
-          {/* Line 3 — 🌸 Up Next · current time · next name · next time · countdown */}
+          {/* Line 2 — current timeLabel · Up Next: name · timeLabel · countdown */}
           {experience && (
-            <p className="mt-3 font-montserrat text-[13px] font-medium text-[#5A4A52] sm:text-[15px]">
-              <span className="mr-1.5 text-[11px]" aria-hidden>🌸</span>
+            <p className="mt-3 font-montserrat text-[14px] font-medium text-[#5A4A52] sm:text-[16px]">
+              {experience.businessDay.current.timeLabel}
+              <span className="mx-2 text-[#C8B89A]">·</span>
               <span className="text-[#78AD7D]">{"Up Next: "}</span>
               <span className="italic">{experience.businessDay.next.shortTitle}</span>
               <span className="mx-2 text-[#C8B89A]">·</span>
-              {experience.businessDay.current.timeLabel}
+              {experience.businessDay.next.timeLabel}
               <span className="mx-2 text-[#C8B89A]">·</span>
               {experience.businessDay.countdownToNext.label}
             </p>
