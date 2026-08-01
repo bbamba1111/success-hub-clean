@@ -193,7 +193,7 @@ export function BusinessDayHero() {
             const s = BLOCK_SENTENCE[experience.businessDay.current.id]
             const isLunch = experience.businessDay.current.id === "lunch-break"
             return (
-              <h1 className={`flex flex-col items-center font-playfair text-3xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-5xl ${isLunch ? "gap-0" : "gap-0.5"}`}>
+              <h1 className={`flex flex-col items-center font-playfair text-[28px] font-semibold leading-tight tracking-tight sm:text-[34px] lg:text-[46px] ${isLunch ? "gap-0" : "gap-0.5"}`}>
                 <span className="text-[#1C161A]">
                   {"We\u2019re Now "}
                   {s ? s.plain : experience.businessDay.current.shortTitle}
