@@ -111,6 +111,7 @@ export function BusinessDaySchedule() {
               title={block.title}
               buttonText={block.mondayOnly ? block.cta : "Continue Segment™"}
               status={state}
+              blockId={block.id}
               description={block.description}
               onAction={scrollToOperatingPlanner}
               segmentProgress={timing?.progress}

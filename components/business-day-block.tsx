@@ -22,6 +22,8 @@ export interface BusinessDayBlockProps {
   status?: BlockStatus
   /** Optional extra content rendered inside the panel (e.g. a featured sub-card). */
   children?: ReactNode
+  /** The id of the current block, used to pick the right status label. */
+  blockId?: string
   /** Fired when the member enters the live segment (opens the Operating Planner™). */
   onAction?: () => void
   /** Elapsed progress (0–100) through the current segment. Drives the bar. */
@@ -59,6 +61,7 @@ export function BusinessDayBlock({
   tint = "248 243 236",
   status = "upcoming",
   children,
+  blockId,
   onAction,
   segmentProgress,
   segmentRemaining,
@@ -111,15 +114,30 @@ export function BusinessDayBlock({
           >
             <div className="w-full">
               <div className="mb-2.5 flex flex-wrap items-center gap-2.5">
-                {isCurrent ? (
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[#7FB069] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-white">
-                    <span className="relative flex h-1.5 w-1.5 shrink-0">
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-70" />
-                      <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-white" />
+                {isCurrent ? (() => {
+                  const nowLabel = blockId === "digital-detox"
+                    ? "Sleeping Now"
+                    : blockId === "ceo-workday"
+                    ? "Working Now"
+                    : "Living Now"
+                  return (
+                    <span className="inline-flex items-center gap-1.5 rounded-[6px] bg-white/70 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[#78AD7D] shadow-sm backdrop-blur-sm ring-1 ring-white/60">
+                      <span className="relative flex h-[12px] w-[12px] shrink-0 items-center justify-center">
+                        <span
+                          className="absolute inset-[-2px] rounded-full animate-ping"
+                          style={{ backgroundColor: "rgba(120,173,125,0.30)", animationDuration: "2s" }}
+                        />
+                        <span
+                          className="relative text-[10px] leading-none"
+                          style={{ animation: "pulse 2s ease-in-out infinite" }}
+                        >
+                          🌸
+                        </span>
+                      </span>
+                      {nowLabel}
                     </span>
-                    🌸 Living Now
-                  </span>
-                ) : (
+                  )
+                })() : (
                   <span
                     className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] ${STATUS_BADGE[status]}`}
                   >

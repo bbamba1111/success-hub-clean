@@ -246,42 +246,7 @@ export function BusinessDayHero() {
           />
         </div>
 
-        {/* Glass status indicator — sits at top-left of panoramic image, text-scale */}
-        {experience && (() => {
-          const id = experience.businessDay.current.id
-          const label = id === "digital-detox"
-            ? "Sleeping Now"
-            : id === "ceo-workday"
-            ? "Working Now"
-            : "Living Now"
-          const green = "#78AD7D"
-          return (
-            <div
-              className="absolute bottom-[24px] left-1/2 z-20 inline-flex -translate-x-1/2 items-center gap-1.5 rounded-[6px] px-2 py-1 shadow-sm backdrop-blur-sm"
-              style={{ background: "rgba(253, 250, 245, 0.58)", border: "1px solid rgba(255,255,255,0.55)" }}
-            >
-              {/* Pulsating cherry blossom — text-sized with small ping circumference */}
-              <span className="relative flex h-[14px] w-[14px] shrink-0 items-center justify-center">
-                <span
-                  className="absolute inset-[-2px] rounded-full animate-ping"
-                  style={{ backgroundColor: "rgba(120, 173, 125, 0.28)", animationDuration: "2s" }}
-                />
-                <span
-                  className="relative text-[11px] leading-none"
-                  style={{ animation: "pulse 2s ease-in-out infinite" }}
-                >
-                  🌸
-                </span>
-              </span>
-              <span
-                className="font-montserrat text-[9px] font-bold uppercase tracking-[0.2em]"
-                style={{ color: green }}
-              >
-                {label}
-              </span>
-            </div>
-          )
-        })()}
+
 
         <div className="min-h-[560px] sm:min-h-[640px]" />
       </div>
