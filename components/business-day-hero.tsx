@@ -26,14 +26,14 @@ function scrollToRhythm() {
  * italic: the italic accent phrase
  */
 const BLOCK_SENTENCE: Record<string, { plain: string; italic: string }> = {
-  "early-access":    { plain: "Preparing to Enter the",                  italic: "Work-Life Balance Business Day™" },
-  "morning-given":   { plain: "Aligning Our Energy Through The",          italic: "Morning GIV•EN™ Routine" },
+  "early-access":    { plain: "Preparing or Using Flex Time Before The",  italic: "Work-Life Balance Business Day™ Begins" },
+  "morning-given":   { plain: "Aligning Our Energy In The",               italic: "Morning GIV\u2022EN™ Routine" },
   "movement-window": { plain: "Moving Our Bodies In The",                 italic: "30-Minute Movement Window™" },
-  "lunch-break":     { plain: "Nourishing Ourselves In An Extended",      italic: "Healthy Hybrid Lunch Break™" },
+  "lunch-break":     { plain: "Nourishing Ourselves In An",               italic: "Extended Healthy Hybrid Lunch Break™" },
   "ceo-workday":     { plain: "Building Our Businesses In",               italic: "The 4-Hour Focused CEO Workday™" },
   "time-freedom":    { plain: "Living In",                                italic: "Time Freedom™" },
   "power-down":      { plain: "Releasing The Day In",                     italic: "Power Down™" },
-  "digital-detox":   { plain: "Closed & Resting & In",                   italic: "Unplugged Digital Detox™" },
+  "digital-detox":   { plain: "Resting & Closed In The",                  italic: "Unplug Digital Detox™" },
 }
 
 /**
