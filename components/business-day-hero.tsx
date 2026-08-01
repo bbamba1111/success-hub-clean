@@ -20,6 +20,18 @@ function scrollToRhythm() {
   if (el) el.scrollIntoView({ behavior: "smooth", block: "start" })
 }
 
+/** Maps each block ID → the "WE'RE NOW ___" verb phrase shown in the top band. */
+const BLOCK_VERB: Record<string, string> = {
+  "early-access":      "PREPARING",
+  "morning-given":     "ALIGNING",
+  "movement-window":   "MOVING",
+  "lunch-break":       "NOURISHING",
+  "ceo-workday":       "BUILDING",
+  "time-freedom":      "LIVING",
+  "power-down":        "POWERING DOWN",
+  "digital-detox":     "UNPLUGGED",
+}
+
 /**
  * Returns the correct heading, subline, badge pill text, and emoji
  * based purely on the current calendar day + time.
@@ -170,18 +182,36 @@ export function BusinessDayHero() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="mx-auto flex max-w-3xl flex-col items-center px-6 py-[38px] text-center sm:py-[45px]"
+          className="mx-auto flex max-w-4xl flex-col items-center px-6 py-[38px] text-center sm:py-[45px]"
         >
-          {/* Primary headline — single line */}
-          <h1 className="whitespace-nowrap font-playfair text-3xl font-semibold leading-tight tracking-tight text-[#1C161A] sm:text-4xl lg:text-5xl">
-            {"Join "}
-            <span className="italic text-[#C13B6B]">{"Today's"}</span>
-            {" Work-Life Balance Business Day™"}
-          </h1>
+          {/* Line 1 — community status verb */}
+          {experience ? (
+            <h1 className="whitespace-nowrap font-playfair text-3xl font-semibold leading-tight tracking-tight text-[#1C161A] sm:text-4xl lg:text-5xl">
+              {"WE'RE NOW "}
+              <span className="italic text-[#C13B6B]">
+                {BLOCK_VERB[experience.businessDay.current.id] ?? "LIVING"}
+              </span>
+              {"..."}
+            </h1>
+          ) : (
+            <h1 className="whitespace-nowrap font-playfair text-3xl font-semibold leading-tight tracking-tight text-[#1C161A] sm:text-4xl lg:text-5xl">
+              {"Join "}
+              <span className="italic text-[#C13B6B]">{"Today's"}</span>
+              {" Work-Life Balance Business Day™"}
+            </h1>
+          )}
 
-          <p className="mt-3 whitespace-nowrap font-montserrat text-[15px] font-medium italic text-[#78AD7D] sm:text-[17px]">
-            Practice living the life of freedom, flexibility, and holistic success you chose entrepreneurship to create.
-          </p>
+          {/* Line 2 — timeframe • countdown */}
+          {experience && (
+            <p className="mt-3 whitespace-nowrap font-montserrat text-[15px] font-medium text-[#5A4A52] sm:text-[17px]">
+              {experience.businessDay.current.timeLabel}
+              {" • "}
+              <span className="italic text-[#78AD7D]">
+                {"Next Boundary Begins In: "}
+                {experience.businessDay.countdownToNext.label}
+              </span>
+            </p>
+          )}
         </motion.div>
       </div>
 
