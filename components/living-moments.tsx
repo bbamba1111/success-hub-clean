@@ -185,7 +185,7 @@ export function LivingMoments({
               default: { duration: 1.1, ease: [0.22, 1, 0.36, 1] },
               exit: { duration: 1.4, ease: [0.4, 0, 0.15, 1] },
             }}
-            className="pointer-events-none absolute left-10 top-1/2 -translate-y-1/2 inline-flex flex-col gap-1.5 px-5 py-4"
+            className="pointer-events-none absolute left-[232px] top-1/2 -translate-y-1/2 inline-flex flex-col gap-1.5 px-5 py-4"
             style={{
               background: "rgba(255,255,255,0.22)",
               backdropFilter: "blur(14px) saturate(1.3)",
