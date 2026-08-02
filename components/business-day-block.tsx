@@ -149,7 +149,24 @@ export function BusinessDayBlock({
                     {STATUS_LABEL[status]}
                   </span>
                 )}
-                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#6B5860]">{time}</span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#6B5860]">{time}</span>
+                  {isCurrent && (
+                    <>
+                      {/* green dot separator */}
+                      <span className="h-1 w-1 rounded-full bg-[#7FB069]" aria-hidden />
+                      {/* NOW LIVING badge with pulsating cherry blossom indicator */}
+                      <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[#4A7C59]">
+                        <span className="relative flex h-[10px] w-[10px] shrink-0">
+                          <span className="absolute inset-0 rounded-full bg-[#7FB069] animate-ping opacity-60" style={{ animationDuration: "1.8s" }} />
+                          <span className="relative h-full w-full rounded-full bg-[#7FB069]" />
+                        </span>
+                        <span className="text-[9px] leading-none">🌸</span>
+                        Now Living
+                      </span>
+                    </>
+                  )}
+                </span>
                 {isCurrent && segmentRemaining && (
                   <span className="inline-flex items-center rounded-full bg-[#7FB069]/15 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#5A7A45]">
                     {segmentRemaining}
