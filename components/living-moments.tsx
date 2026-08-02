@@ -180,7 +180,7 @@ export function LivingMoments({
             key="living-moments-glass"
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -36 }}
+            exit={{ opacity: 0, y: 36 }}
             transition={{
               default: { duration: 1.1, ease: [0.22, 1, 0.36, 1] },
               exit: { duration: 1.4, ease: [0.4, 0, 0.15, 1] },
