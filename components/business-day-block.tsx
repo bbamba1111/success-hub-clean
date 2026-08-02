@@ -4,6 +4,10 @@ import { type ReactNode, useState } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { ChevronDown } from "lucide-react"
+import {
+  IdentityInstallationPanel,
+  SEGMENT_CONFIGS,
+} from "@/components/identity-installation/identity-installation-panel"
 
 export type BlockStatus = "current" | "upcoming" | "completed"
 
@@ -211,6 +215,17 @@ export function BusinessDayBlock({
         {/* 3-part expandable body */}
         {open && (
           <div className="border-t border-black/[0.06]">
+
+            {/* Identity Installation System™ — above Join Us Live™, 7 segments only */}
+            {blockId && SEGMENT_CONFIGS[blockId] && (
+              <div className="px-7 pt-5">
+                <IdentityInstallationPanel
+                  segmentId={blockId}
+                  isCurrent={isCurrent}
+                  isPast={status === "completed"}
+                />
+              </div>
+            )}
 
             {/* Row 1 — Join Us Live™ */}
             <div className="px-7 py-5">
