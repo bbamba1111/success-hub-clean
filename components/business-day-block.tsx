@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { ChevronDown } from "lucide-react"
 import { OperatingPlanner } from "@/components/operating-planner/operating-planner"
 import { PLANNER_CONFIG } from "@/components/operating-planner/planner-config"
+import { SoundRitual } from "@/components/sound-ritual"
 
 export type BlockStatus = "current" | "upcoming" | "completed"
 
@@ -243,6 +244,11 @@ export function BusinessDayBlock({
                 Join Us Live™
               </a>
             </div>
+
+            <div className="mx-7 border-t border-black/[0.05]" />
+
+            {/* Sound Ritual™ — curated ambient soundscapes per segment */}
+            {blockId && <SoundRitual blockId={blockId} />}
 
             <div className="mx-7 border-t border-black/[0.05]" />
 
