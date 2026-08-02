@@ -200,7 +200,7 @@ export function BusinessDayHero() {
                     {"Make Time For More On Mondays\u2122"}
                   </span>
                   {/* Subheading — italic pink accent, ~65% the size of main title */}
-                  <span className="italic font-normal text-[#C13B6B] text-[20px] sm:text-[23px] lg:text-[31px]">
+                  <span className="italic font-normal text-[#4A7C59] text-[20px] sm:text-[23px] lg:text-[31px]">
                     {"Redesign Your Entry Into The Workweek\u2122"}
                   </span>
                 </h1>
