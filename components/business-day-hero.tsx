@@ -199,8 +199,8 @@ export function BusinessDayHero() {
                   <span className="not-italic font-semibold text-[#1C161A] text-[30px] sm:text-[36px] lg:text-[48px]">
                     {"Make Time For More On Mondays\u2122"}
                   </span>
-                  {/* Subheading — italic, semibold, pink-to-green gradient */}
-                  <span className="italic font-semibold text-[20px] sm:text-[23px] lg:text-[31px] bg-gradient-to-r from-[#C13B6B] to-[#4A7C59] bg-clip-text text-transparent">
+                  {/* Subheading — italic, normal weight, pink-to-green gradient */}
+                  <span className="italic font-normal text-[20px] sm:text-[23px] lg:text-[31px] bg-gradient-to-r from-[#C13B6B] to-[#4A7C59] bg-clip-text text-transparent">
                     {"Redesign Your Entry Into The Workweek\u2122"}
                   </span>
                 </h1>
