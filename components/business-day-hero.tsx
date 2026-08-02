@@ -196,11 +196,11 @@ export function BusinessDayHero() {
               return (
                 <h1 className="flex flex-col items-center gap-0.5 font-playfair leading-tight tracking-tight">
                   {/* Main title — upright, black, same size as other segment H1s */}
-                  <span className="not-italic font-semibold text-[#1C161A] text-[30px] sm:text-[36px] lg:text-[48px]">
+                  <span className="not-italic font-semibold text-[#1C161A] text-[27px] sm:text-[32px] lg:text-[43px]">
                     {"Make Time For More On Mondays\u2122"}
                   </span>
                   {/* Subheading — italic, normal weight, pink-to-green gradient */}
-                  <span className="italic font-normal text-[20px] sm:text-[23px] lg:text-[31px] bg-gradient-to-r from-[#C13B6B] to-[#4A7C59] bg-clip-text text-transparent">
+                  <span className="italic font-normal text-[18px] sm:text-[21px] lg:text-[28px] bg-gradient-to-r from-[#C13B6B] to-[#4A7C59] bg-clip-text text-transparent">
                     {"Redesign Your Entry Into The Workweek\u2122"}
                   </span>
                 </h1>
@@ -208,7 +208,7 @@ export function BusinessDayHero() {
             }
 
             return (
-              <h1 className={`flex flex-col items-center font-playfair text-[30px] font-semibold leading-tight tracking-tight sm:text-[36px] lg:text-[48px] gap-0`}>
+              <h1 className="flex flex-col items-center font-playfair text-[27px] font-semibold leading-tight tracking-tight sm:text-[32px] lg:text-[43px] gap-0">
                 <span className="text-[#1C161A]">
                   {"We\u2019re Now "}
                   {s ? s.plain : experience.businessDay.current.shortTitle}
@@ -219,7 +219,7 @@ export function BusinessDayHero() {
               </h1>
             )
           })() : (
-            <h1 className="flex flex-col items-center gap-0.5 font-playfair text-[30px] font-semibold leading-tight tracking-tight sm:text-[36px] lg:text-[48px]">
+            <h1 className="flex flex-col items-center gap-0.5 font-playfair text-[27px] font-semibold leading-tight tracking-tight sm:text-[32px] lg:text-[43px]">
               <span className="text-[#1C161A]">{"Join Today\u2019s"}</span>
               <span className="italic text-[#C13B6B]">{"Work-Life Balance Business Day\u2122"}</span>
             </h1>
@@ -257,11 +257,7 @@ export function BusinessDayHero() {
             src={backgroundImage || "/placeholder.svg"}
             alt=""
             aria-hidden="true"
-            className={`h-full w-full ${
-              experience?.businessDay.current.id === "digital-detox"
-                ? "object-fill"
-                : "object-cover object-center"
-            }`}
+            className="h-full w-full object-cover object-center"
           />
           {/* Soft left-weighted wash — reduced so more background shows through */}
           <div
