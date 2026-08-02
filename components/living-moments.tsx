@@ -211,7 +211,7 @@ export function LivingMoments({
           <motion.div
             key="living-moments-message"
             initial={{ opacity: 0, top: "50%", y: "-50%" }}
-            animate={{ opacity: 1, top: "calc(100% - 52px)", y: "0%" }}
+            animate={{ opacity: 1, top: "calc(100% - 48px)", y: "-100%" }}
             transition={{ duration: 2.0, ease: [0.4, 0, 0.2, 1] }}
             className="pointer-events-none absolute left-[192px] inline-flex flex-col gap-1"
           >
