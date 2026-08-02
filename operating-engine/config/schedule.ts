@@ -25,34 +25,9 @@ const h = (hours: number, minutes = 0) => hours * 60 + minutes
  * (Unplug Digital Detox™) wraps past midnight (23:00 → 07:00).
  */
 export const SCHEDULE: BlockConfig[] = [
-  // ── Monday-only blocks ────────────────────────────────────────────────────
-  // These blocks carry mondayOnly: true so the schedule renderer and engine
-  // can show/hide them based on the current day of week.
-  {
-    id: "monday-flex",
-    sectionId: "block-monday-flex",
-    title: "Make Time For More™ On Mondays™",
-    shortTitle: "Make Time For More™ On Mondays™",
-    timeLabel: "7:00–9:00 AM",
-    startMinutes: h(7),
-    endMinutes: h(9),
-    description:
-      "Begin your redesigned workweek with clarity, purpose, and balance. Flex time to prepare, reflect, and enter your week with intention.",
-    emoji: "🌸",
-    tint: "253 246 234",
-    backgroundImage: "/images/block-early-access.png",
-    cta: "Begin Make Time For More Mondays™",
-    engagement: "self-guided",
-    part: "morning",
-    greetingPeriod: "Morning",
-    greetingEmoji: "🌸",
-    themePeriod: "morning",
-    communityOpen: true,
-    mondayOnly: true,
-    messages: [
-      "A new week begins with your redesigned entry. Start with clarity, not chaos.",
-    ],
-  },
+  // ── Monday-only block ─────────────────────────────────────────────────────
+  // Appears after Early Access on Mondays only (9:00–9:30 AM).
+  // After this block, Morning GIV•EN™ shifts to 9:30–10:30 AM on Mondays.
   {
     id: "monday-reality-check",
     sectionId: "block-monday-reality-check",
@@ -62,11 +37,11 @@ export const SCHEDULE: BlockConfig[] = [
     startMinutes: h(9),
     endMinutes: h(9, 30),
     description:
-      "Redesign your entry into the workweek. Set your intentions, align your commitments, and step into Monday with clarity and purpose.",
+      "Stop surviving Mondays. Start creating a workweek that supports your life instead of consuming it.",
     emoji: "🌸",
     tint: "252 240 238",
     backgroundImage: "/images/block-morning-given.png",
-    cta: "Redesign Your Entry Into The Workweek",
+    cta: "Take the Reality Check™",
     engagement: "live-room",
     part: "morning",
     greetingPeriod: "Morning",
@@ -75,7 +50,7 @@ export const SCHEDULE: BlockConfig[] = [
     communityOpen: true,
     mondayOnly: true,
     messages: [
-      "Make Time For More on Mondays. Every week is a fresh opportunity to redesign your entry into the workweek.",
+      "Before you manage your business, manage your life. Redesign your entry into the workweek.",
     ],
   },
   // ─────────────────────────────────────────────────────────────────────────

@@ -19,17 +19,9 @@ const VALUES = [
 
 /** Per-block live coaching messages from Barbara. */
 const BLOCK_COACHING: Record<string, { message: string; reflection: { text: string; author?: string } }> = {
-  "monday-flex": {
-    message:
-      "Welcome to Make Time For More\u2122 On Mondays\u2122 \u2014 your redesigned entry into the workweek. Before the demands of the day arrive, this time belongs entirely to you. Use it to ground yourself, set your intentions, and remember why you chose this path. The week ahead is full of possibility. Let\u2019s enter it with clarity, not chaos.",
-    reflection: {
-      text: "The secret of getting ahead is getting started.",
-      author: "Mark Twain",
-    },
-  },
   "monday-reality-check": {
     message:
-      "Welcome to Make Time For More On Mondays\u2122. This is your protected 30-minute window to redesign your entry into the workweek. Before you build, before you execute \u2014 pause, realign, and step into Monday with clarity and intention. How you enter your week shapes everything that follows.",
+      "Before you manage your business, manage your life. Begin your week with a 30-minute Work-Life Balance Reality Check\u2122 to identify where your time, energy, and attention are needed most. Receive personalized insights that help you intentionally redesign your week around what matters most. Stop surviving Mondays \u2014 start creating a workweek that supports your life instead of consuming it.",
     reflection: {
       text: "Almost everything will work again if you unplug it for a few minutes, including you.",
       author: "Anne Lamott",

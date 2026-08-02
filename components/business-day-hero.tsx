@@ -20,9 +20,8 @@ import type { PartOfDay } from "@/operating-engine"
  * italic: the italic accent phrase
  */
 const BLOCK_SENTENCE: Record<string, { plain: string; italic: string }> = {
-  // Monday-only blocks
-  "monday-flex":           { plain: "Preparing For",                      italic: "Make Time For More™ On Mondays™" },
-  "monday-reality-check":  { plain: "Redesigning Our Entry Into The Workweek", italic: "Make Time For More On Mondays™" },
+  // Monday-only block
+  "monday-reality-check":  { plain: "Making Time For More On", italic: "Mondays™" },
   // Standard blocks
   "early-access":    { plain: "In Flex Time or Preparing For",            italic: "The Work-Life Balance Business Day™" },
   "morning-given":   { plain: "Aligning Our Energy In The",               italic: "Morning GIV\u2022EN™ Routine" },

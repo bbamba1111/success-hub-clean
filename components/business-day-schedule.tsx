@@ -69,27 +69,35 @@ export function BusinessDaySchedule() {
   const rawTimeline =
     experience?.businessDay.timeline ?? SCHEDULE.map((block) => ({ block, state: "upcoming" as const }))
 
-  // On Mondays, prepend the two Monday-only blocks (monday-flex 7–9 AM, monday-reality-check 9–9:30 AM).
-  // monday-reality-check auto-hides after 9:30 AM (540 minutes).
+  // Monday-only logic:
+  //   - Insert "Make Time For More On Mondays™" (monday-reality-check) after early-access.
+  //   - Shift morning-given time label to 9:30–10:30 AM on Mondays.
+  //   - On Tue–Thu morning-given stays at 9:00–10:30 AM.
+  //   - monday-reality-check auto-hides once past 9:30 AM.
   const isMonday = experience ? experience.time.dayOfWeek === 1 : new Date().getDay() === 1
   const currentMinutes = experience?.time.minutesSinceMidnight ?? (new Date().getHours() * 60 + new Date().getMinutes())
 
-  const mondayBlocks: typeof rawTimeline = []
-  if (isMonday) {
-    const mFlex = SCHEDULE_BY_ID["monday-flex"]
-    const mCheck = SCHEDULE_BY_ID["monday-reality-check"]
-    if (mFlex) {
-      const flexState = currentMinutes < 9 * 60 ? (currentMinutes >= 7 * 60 ? "current" : "upcoming") : "completed"
-      mondayBlocks.push({ block: mFlex, state: flexState as "current" | "upcoming" | "completed" })
-    }
-    // Only show Reality Check before 9:30 AM
-    if (mCheck && currentMinutes < 9 * 60 + 30) {
-      const checkState = currentMinutes >= 9 * 60 ? "current" : "upcoming"
-      mondayBlocks.push({ block: mCheck, state: checkState as "current" | "upcoming" | "completed" })
-    }
-  }
+  const mondayRealityCheck = SCHEDULE_BY_ID["monday-reality-check"]
+  const showRealityCheck = isMonday && currentMinutes < 9 * 60 + 30
 
-  const timeline = [...mondayBlocks, ...rawTimeline]
+  const timeline = rawTimeline.flatMap(({ block, state }) => {
+    // On Mondays, shift morning-given time display to 9:30–10:30 AM
+    if (isMonday && block.id === "morning-given") {
+      const shifted = { ...block, timeLabel: "9:30–10:30 AM" }
+      return [{ block: shifted, state }]
+    }
+    // After early-access on Mondays, inject the reality check card
+    if (block.id === "early-access") {
+      const result: typeof rawTimeline = [{ block, state }]
+      if (showRealityCheck && mondayRealityCheck) {
+        const checkState: "current" | "upcoming" | "completed" =
+          currentMinutes >= 9 * 60 ? "current" : "upcoming"
+        result.push({ block: mondayRealityCheck, state: checkState })
+      }
+      return result
+    }
+    return [{ block, state }]
+  })
 
   return (
     <div id="todays-business-day" className="w-full scroll-mt-20 pb-8 pt-4" style={{ background: "linear-gradient(135deg, #FDF6F0 0%, #FBF0F4 40%, #F0F5EE 70%, #FDFAF6 100%)" }}>
