@@ -4,10 +4,8 @@ import { type ReactNode, useState } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { ChevronDown } from "lucide-react"
-import {
-  IdentityInstallationPanel,
-  SEGMENT_CONFIGS,
-} from "@/components/identity-installation/identity-installation-panel"
+import { OperatingPlanner } from "@/components/operating-planner/operating-planner"
+import { PLANNER_CONFIG } from "@/components/operating-planner/planner-config"
 
 export type BlockStatus = "current" | "upcoming" | "completed"
 
@@ -216,15 +214,11 @@ export function BusinessDayBlock({
         {open && (
           <div className="border-t border-black/[0.06]">
 
-            {/* Identity Installation System™ — above Join Us Live™, 7 segments only */}
-            {blockId && SEGMENT_CONFIGS[blockId] && (
-              <div className="px-7 pt-5">
-                <IdentityInstallationPanel
-                  segmentId={blockId}
-                  isCurrent={isCurrent}
-                  isPast={status === "completed"}
-                />
-              </div>
+            {/* Operating Planner™ — chip picker → commitment → declaration → Install This™
+                Uses the exact same working component as /design-my-week.
+                Skips digital-detox and placeholder segments (no PLANNER_CONFIG entry). */}
+            {blockId && blockId !== "digital-detox" && PLANNER_CONFIG[blockId as keyof typeof PLANNER_CONFIG] && (
+              <OperatingPlanner blockId={blockId as any} />
             )}
 
             {/* Row 1 — Join Us Live™ */}
