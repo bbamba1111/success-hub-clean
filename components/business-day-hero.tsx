@@ -233,17 +233,20 @@ export function BusinessDayHero() {
             const timeLabel = isMondayBlock ? "9:00–9:45 AM" : experience.businessDay.current.timeLabel
             const nextLabel = isMondayBlock ? "Morning GIV\u2022EN\u2122" : experience.businessDay.next.shortTitle
             return (
-              <p className="mt-1.5 inline-flex flex-wrap items-center gap-x-0 font-montserrat text-[13px] font-medium text-[#5A4A52] sm:text-[14px]">
-                {/* Pulsating cherry blossom + NOW LIVING — sits before the time */}
-                <span className="mr-2 inline-flex items-center gap-1 font-bold uppercase tracking-[0.14em] text-[#4A7C59]">
-                  <span className="animate-ping" style={{ animationDuration: "1.8s", display: "inline-block" }} aria-hidden>🌸</span>
+              <p className="mt-1.5 inline-flex flex-wrap items-center gap-2.5 font-montserrat text-[13px] font-medium text-[#5A4A52] sm:text-[14px]">
+                {/* Exact same badge as the card below */}
+                <span className="inline-flex items-center gap-1.5 rounded-[6px] bg-white/70 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[#78AD7D] shadow-sm backdrop-blur-sm ring-1 ring-white/60">
+                  <span className="relative flex h-[12px] w-[12px] shrink-0 items-center justify-center">
+                    <span className="absolute inset-[-2px] animate-ping rounded-full" style={{ backgroundColor: "rgba(120,173,125,0.30)", animationDuration: "2s" }} />
+                    <span className="relative text-[10px] leading-none" style={{ animation: "pulse 2s ease-in-out infinite" }}>🌸</span>
+                  </span>
                   Now Living
                 </span>
                 {timeLabel}
-                <span className="mx-2 text-[#C8B89A]">&bull;</span>
+                <span className="text-[#C8B89A]">&bull;</span>
                 <span className="text-[#78AD7D]">{"Next: "}</span>
                 <span className="italic">{nextLabel}</span>
-                <span className="mx-2 text-[#C8B89A]">&bull;</span>
+                <span className="text-[#C8B89A]">&bull;</span>
                 <span className="tabular-nums text-[#78AD7D]">
                   {experience.businessDay.countdownToNext.label}
                 </span>
