@@ -233,8 +233,18 @@ export function BusinessDayHero() {
             const timeLabel = isMondayBlock ? "9:00–9:45 AM" : experience.businessDay.current.timeLabel
             const nextLabel = isMondayBlock ? "Morning GIV\u2022EN\u2122" : experience.businessDay.next.shortTitle
             return (
-              <p className="mt-1.5 font-montserrat text-[13px] font-medium text-[#5A4A52] sm:text-[14px]">
+              <p className="mt-1.5 inline-flex flex-wrap items-center gap-x-0 font-montserrat text-[13px] font-medium text-[#5A4A52] sm:text-[14px]">
                 {timeLabel}
+                <span className="mx-2 text-[#C8B89A]">&bull;</span>
+                {/* Pulsating NOW LIVING indicator */}
+                <span className="inline-flex items-center gap-1 font-bold uppercase tracking-[0.14em] text-[#4A7C59]">
+                  <span className="relative flex h-[9px] w-[9px] shrink-0">
+                    <span className="absolute inset-0 animate-ping rounded-full bg-[#7FB069] opacity-75" style={{ animationDuration: "1.6s" }} />
+                    <span className="relative h-full w-full rounded-full bg-[#7FB069]" />
+                  </span>
+                  <span aria-hidden className="text-[10px] leading-none">🌸</span>
+                  Now Living
+                </span>
                 <span className="mx-2 text-[#C8B89A]">&bull;</span>
                 <span className="text-[#78AD7D]">{"Next: "}</span>
                 <span className="italic">{nextLabel}</span>
