@@ -194,9 +194,13 @@ export function BusinessDayHero() {
 
             if (isMondayBlock) {
               return (
-                <h1 className="flex flex-col items-center gap-1 font-playfair text-[30px] font-semibold leading-tight tracking-tight sm:text-[36px] lg:text-[48px]">
-                  <span className="italic text-[#C13B6B]">{"Make Time For More On Mondays\u2122"}</span>
-                  <span className="text-[#1C161A] text-[22px] sm:text-[26px] lg:text-[32px] font-normal not-italic">
+                <h1 className="flex flex-col items-center gap-2 font-playfair leading-tight tracking-tight">
+                  {/* Main title — upright, black, same size as other segment H1s */}
+                  <span className="not-italic font-semibold text-[#1C161A] text-[30px] sm:text-[36px] lg:text-[48px]">
+                    {"Make Time For More On Mondays\u2122"}
+                  </span>
+                  {/* Subheading — italic pink accent, ~65% the size of main title */}
+                  <span className="italic font-normal text-[#C13B6B] text-[20px] sm:text-[23px] lg:text-[31px]">
                     {"Redesign Your Entry Into The Workweek\u2122"}
                   </span>
                 </h1>
