@@ -235,7 +235,7 @@ export function BusinessDayHero() {
             return (
               <p className="mt-1.5 inline-flex flex-wrap items-center gap-2.5 font-montserrat text-[13px] font-medium text-[#5A4A52] sm:text-[14px]">
                 {/* Pulsating blossom + NOW LIVING — inherits sub-line color and size, no badge */}
-                <span className="inline-flex items-center gap-1">
+                <span className="inline-flex items-center gap-1 uppercase tracking-[0.18em] text-[#78AD7D]">
                   <span className="relative flex h-[12px] w-[12px] shrink-0 items-center justify-center">
                     <span className="absolute inset-[-2px] animate-ping rounded-full" style={{ backgroundColor: "rgba(120,173,125,0.30)", animationDuration: "2s" }} />
                     <span className="relative text-[10px] leading-none" style={{ animation: "pulse 2s ease-in-out infinite" }}>🌸</span>
