@@ -223,7 +223,7 @@ export function LivingMoments({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.9, ease: "easeOut" }}
-            className="pointer-events-none absolute bottom-6 left-6 right-6 flex flex-col gap-1"
+            className="pointer-events-none absolute left-36 right-6 top-1/2 flex -translate-y-1/2 flex-col gap-1"
           >
             <span className="font-playfair text-[15px] font-semibold italic text-white drop-shadow-[0_1px_4px_rgba(0,0,0,0.45)] sm:text-[17px]">
               {copy.headline}
