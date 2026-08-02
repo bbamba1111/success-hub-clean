@@ -59,7 +59,7 @@ const MOMENTS_COPY: Record<string, { headline: string; subline: string }> = {
   "movement-window":  { headline: "Move. Connect. Live.",         subline: "Movement is joyful. Movement is life." },
   "lunch-break":      { headline: "This is Living",               subline: "Not a break — a moment you chose." },
   "ceo-workday":      { headline: "Build with Purpose",           subline: "Focused. Calm. Intentional." },
-  "time-freedom":     { headline: "This is What You Built For",   subline: "Protect the freedom you intentionally created." },
+  "time-freedom":     { headline: "This is What You're Building It For", subline: "Protect the freedom you are intentionally creating." },
   "power-down":       { headline: "The Day is Complete",          subline: "Release. Rest. Restore." },
   "digital-detox":    { headline: "Rest Now",                     subline: "You have earned this stillness." },
   "monday-reality-check": { headline: "Redesign Your Week",       subline: "Make time for more. Begin here." },
@@ -99,10 +99,12 @@ export function LivingMoments({
   const reducedMotion = useReducedMotion()
   const [mode, setMode] = useState<LivingMomentsMode>("motion+sound")
   const [awakening, setAwakening] = useState(false)
-  const [showCopy, setShowCopy] = useState(false)
+  const [showCopy, setShowCopy] = useState(false)   // message stays on after glass fades
+  const [showGlass, setShowGlass] = useState(false) // glass card visible for 5s then fades
   const [settingsOpen, setSettingsOpen] = useState(false)
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const awakeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const glassTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const prevBlockId = useRef<string>("")
 
   // Load saved mode once on mount
@@ -159,10 +161,17 @@ export function LivingMoments({
 
     if (motionEnabled) {
       setAwakening(true)
-      setShowCopy(true)
+      setShowCopy(true)   // message appears immediately and persists
+      setShowGlass(true)  // glass card appears immediately
+
+      // After 5s — fade the glass, keep the message (at reduced opacity)
+      glassTimerRef.current = setTimeout(() => {
+        setShowGlass(false)
+      }, 5000)
+
+      // After 5.2s — end Ken Burns
       awakeTimerRef.current = setTimeout(() => {
         setAwakening(false)
-        setShowCopy(false)
         onAwakeningComplete?.()
       }, 5200)
     }
@@ -173,6 +182,7 @@ export function LivingMoments({
 
     return () => {
       if (awakeTimerRef.current) clearTimeout(awakeTimerRef.current)
+      if (glassTimerRef.current) clearTimeout(glassTimerRef.current)
     }
   }, [blockId, mode, reducedMotion, startAudio, onAwakeningComplete])
 
@@ -214,26 +224,49 @@ export function LivingMoments({
         }
       />
 
-      {/* Contextual copy overlay — fades in then out during awakening */}
-      <AnimatePresence>
-        {showCopy && copy && !reducedMotion && (
+      {/* Contextual copy overlay — glass card holds for 5s then fades, message persists at lower opacity */}
+      {showCopy && copy && !reducedMotion && (
+        <div className="pointer-events-none absolute left-36 right-6 top-1/2 -translate-y-1/2">
+
+          {/* Glass card — visible for 5s then fades away */}
+          <AnimatePresence>
+            {showGlass && (
+              <motion.div
+                key="glass-card"
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="absolute inset-0 rounded-2xl"
+                style={{
+                  background: "rgba(255,255,255,0.75)",
+                  backdropFilter: "blur(12px)",
+                  WebkitBackdropFilter: "blur(12px)",
+                  boxShadow: "0 4px 24px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.6)",
+                  border: "1px solid rgba(255,255,255,0.55)",
+                }}
+              />
+            )}
+          </AnimatePresence>
+
+          {/* Message — fades in with glass, then drops to 50% opacity after glass leaves */}
           <motion.div
-            key="living-moments-copy"
+            key="living-moments-message"
             initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.9, ease: "easeOut" }}
-            className="pointer-events-none absolute left-36 right-6 top-1/2 flex -translate-y-1/2 flex-col gap-1"
+            animate={{ opacity: showGlass ? 1 : 0.5, y: 0 }}
+            transition={{ duration: showGlass ? 0.9 : 1.4, ease: "easeOut" }}
+            className="relative flex flex-col gap-1.5 px-5 py-4"
           >
-            <span className="font-playfair text-[15px] font-semibold italic text-white drop-shadow-[0_1px_4px_rgba(0,0,0,0.45)] sm:text-[17px]">
+            <span className="font-playfair text-[15px] font-semibold italic text-[#1C161A] drop-shadow-[0_1px_2px_rgba(255,255,255,0.6)] sm:text-[17px]">
               {copy.headline}
             </span>
-            <span className="font-montserrat text-[11px] font-medium uppercase tracking-[0.16em] text-white/80 drop-shadow-[0_1px_3px_rgba(0,0,0,0.4)]">
+            <span className="font-montserrat text-[11px] font-medium uppercase tracking-[0.16em] text-[#4A3A42] drop-shadow-[0_1px_1px_rgba(255,255,255,0.5)]">
               {copy.subline}
             </span>
           </motion.div>
-        )}
-      </AnimatePresence>
+
+        </div>
+      )}
 
       {/* Settings toggle — bottom right corner */}
       <div className="absolute bottom-3 right-3 z-10">
