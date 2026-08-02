@@ -237,6 +237,9 @@ export function BusinessDayHero() {
               currentId === "ceo-workday" ? "Working Now"
               : currentId === "digital-detox" ? "Sleeping Now"
               : currentId === "power-down" ? "Releasing Now"
+              : currentId === "movement-window" ? "Moving Now"
+              : currentId === "morning-given" ? "Aligning Now"
+              : currentId === "lunch-break" ? "Nourishing Now"
               : "Living Now"
             return (
               <p className="mt-1.5 inline-flex flex-wrap items-center gap-2.5 font-montserrat text-[13px] font-medium text-[#5A4A52] sm:text-[14px]">
