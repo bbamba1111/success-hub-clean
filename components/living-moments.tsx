@@ -178,10 +178,13 @@ export function LivingMoments({
         {showGlass && copy && !reducedMotion && (
           <motion.div
             key="living-moments-glass"
-            initial={{ opacity: 0, y: 8 }}
+            initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            exit={{ opacity: 0, y: -36 }}
+            transition={{
+              default: { duration: 1.1, ease: [0.22, 1, 0.36, 1] },
+              exit: { duration: 1.4, ease: [0.4, 0, 0.15, 1] },
+            }}
             className="pointer-events-none absolute left-10 top-1/2 -translate-y-1/2 inline-flex flex-col gap-1.5 px-5 py-4"
             style={{
               background: "rgba(255,255,255,0.22)",
