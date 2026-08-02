@@ -15,6 +15,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react"
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion"
+import { publishMomentMessage } from "@/components/living-moments-store"
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -164,9 +165,13 @@ export function LivingMoments({
       setShowCopy(true)   // message appears immediately and persists
       setShowGlass(true)  // glass card appears immediately
 
-      // After 5s — fade the glass, keep the message (at reduced opacity)
+      // After 5s — fade glass, send message down to intro section, clear hero overlay
       glassTimerRef.current = setTimeout(() => {
         setShowGlass(false)
+        // Publish to BarbaraWelcome via SWR event bus
+        if (copy) publishMomentMessage(copy)
+        // After glass fade completes (~700ms), remove from hero entirely
+        setTimeout(() => setShowCopy(false), 800)
       }, 5000)
 
       // After 5.2s — end Ken Burns
