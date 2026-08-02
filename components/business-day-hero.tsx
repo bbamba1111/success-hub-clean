@@ -240,7 +240,7 @@ export function BusinessDayHero() {
                     <span className="absolute inset-[-2px] animate-ping rounded-full" style={{ backgroundColor: "rgba(120,173,125,0.30)", animationDuration: "2s" }} />
                     <span className="relative text-[10px] leading-none" style={{ animation: "pulse 2s ease-in-out infinite" }}>🌸</span>
                   </span>
-                  Now Living
+                  Living Now
                 </span>
                 {timeLabel}
                 <span className="text-[#C8B89A]">&bull;</span>
