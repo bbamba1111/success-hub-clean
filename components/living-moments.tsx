@@ -13,7 +13,7 @@
  * localStorage under the key "living-moments-mode".
  */
 
-import { useEffect, useRef, useState, useCallback } from "react"
+import { useEffect, useRef, useState } from "react"
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion"
 import { publishMomentMessage } from "@/components/living-moments-store"
 
@@ -40,21 +40,6 @@ interface LivingMomentsProps {
 
 // ── Ambient audio map ────────────────────────────────────────────────────────
 // One carefully matched ambient track per segment using free public CDN URLs.
-
-// Whispering wind + wind chimes — used for every segment transition
-const WIND_CHIMES_URL = "https://cdn.pixabay.com/audio/2022/10/16/audio_12a5a21f76.mp3"
-
-const AMBIENT: Record<string, string> = {
-  "morning-given":         WIND_CHIMES_URL,
-  "movement-window":       WIND_CHIMES_URL,
-  "lunch-break":           WIND_CHIMES_URL,
-  "ceo-workday":           WIND_CHIMES_URL,
-  "time-freedom":          WIND_CHIMES_URL,
-  "power-down":            WIND_CHIMES_URL,
-  "digital-detox":         WIND_CHIMES_URL,
-  "monday-reality-check":  WIND_CHIMES_URL,
-  "early-access":          WIND_CHIMES_URL,
-}
 
 // ── Contextual overlay copy per segment ─────────────────────────────────────
 
@@ -103,105 +88,55 @@ export function LivingMoments({
   const reducedMotion = useReducedMotion()
   const [mode, setMode] = useState<LivingMomentsMode>("motion+sound")
   const [awakening, setAwakening] = useState(false)
-  const [showCopy, setShowCopy] = useState(false)
+  const [showGlass, setShowGlass] = useState(false)  // glass card on hero after Ken Burns
   const [settingsOpen, setSettingsOpen] = useState(false)
-  const [pageReady, setPageReady] = useState(false)  // true after 6s initial delay
-  const audioRef = useRef<HTMLAudioElement | null>(null)
   const awakeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const messageTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const glassTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const prevBlockId = useRef<string>("")
-  const isFirstLoad = useRef(true)
-
-  // 6-second page-load buffer — lets the header settle before message appears
-  useEffect(() => {
-    const t = setTimeout(() => setPageReady(true), 6000)
-    return () => clearTimeout(t)
-  }, [])
 
   // Load saved mode once on mount
   useEffect(() => {
     setMode(getStoredMode())
   }, [])
 
-  const stopAudio = useCallback(() => {
-    if (audioRef.current) {
-      audioRef.current.pause()
-      audioRef.current.src = ""
-      audioRef.current = null
-    }
-  }, [])
+  // Audio removed from entry — Sound Ritual™ handles all audio independently
 
-  const startAudio = useCallback((id: string, vol = 0.35) => {
-    const url = AMBIENT[id]
-    if (!url) return
-    stopAudio()
-    const audio = new Audio(url)
-    audio.loop = true
-    audio.volume = 0
-    audioRef.current = audio
-    audio.play().catch(() => {/* autoplay blocked — silent fail */})
-    // Fade in
-    let v = 0
-    const fadeIn = setInterval(() => {
-      v = Math.min(v + 0.04, vol)
-      if (audio) audio.volume = v
-      if (v >= vol) clearInterval(fadeIn)
-    }, 80)
-    // Fade out after 5s
-    setTimeout(() => {
-      const fadeOut = setInterval(() => {
-        if (!audio) { clearInterval(fadeOut); return }
-        audio.volume = Math.max(0, audio.volume - 0.03)
-        if (audio.volume <= 0) {
-          audio.pause()
-          clearInterval(fadeOut)
-        }
-      }, 80)
-    }, 4800)
-  }, [stopAudio])
-
-  // Trigger awakening — waits for pageReady (6s) on first load
+  // Trigger awakening immediately when blockId changes (no delay)
   useEffect(() => {
-    if (!pageReady) return
-    if (blockId === prevBlockId.current && !isFirstLoad.current) return
+    if (blockId === prevBlockId.current) return
     prevBlockId.current = blockId
-    isFirstLoad.current = false
 
     if (awakeTimerRef.current) clearTimeout(awakeTimerRef.current)
-    if (messageTimerRef.current) clearTimeout(messageTimerRef.current)
+    if (glassTimerRef.current) clearTimeout(glassTimerRef.current)
+    setShowGlass(false)
 
     const motionEnabled = !reducedMotion && (mode === "motion+sound" || mode === "motion")
-    const soundEnabled = mode === "motion+sound" || mode === "sound"
 
     if (motionEnabled) {
+      // Step 1: Ken Burns starts immediately
       setAwakening(true)
-      setShowCopy(true)
 
-      // After 5s — publish to intro section, remove from hero
-      messageTimerRef.current = setTimeout(() => {
-        if (copy) publishMomentMessage(copy)
-        setTimeout(() => setShowCopy(false), 600)
-      }, 5000)
-
-      // After 5.2s — end Ken Burns
+      // Step 2: After 5.2s Ken Burns ends — show glass card on hero
       awakeTimerRef.current = setTimeout(() => {
         setAwakening(false)
+        setShowGlass(true)
         onAwakeningComplete?.()
+
+        // Step 3: After 5s on glass — publish to intro, remove from hero
+        glassTimerRef.current = setTimeout(() => {
+          if (copy) publishMomentMessage(copy)
+          setShowGlass(false)
+        }, 5000)
       }, 5200)
     }
 
-    if (soundEnabled) {
-      startAudio(blockId)
-    }
+    // No ambient sound on entry — Sound Ritual™ handles audio independently
 
     return () => {
       if (awakeTimerRef.current) clearTimeout(awakeTimerRef.current)
-      if (messageTimerRef.current) clearTimeout(messageTimerRef.current)
+      if (glassTimerRef.current) clearTimeout(glassTimerRef.current)
     }
-  }, [blockId, pageReady, mode, reducedMotion, startAudio, onAwakeningComplete])
-
-  // Cleanup on unmount
-  useEffect(() => () => { stopAudio() }, [stopAudio])
+  }, [blockId, mode, reducedMotion, onAwakeningComplete])
 
   const kb = KEN_BURNS[blockId] ?? DEFAULT_KB
   const copy = MOMENTS_COPY[blockId]
@@ -238,21 +173,29 @@ export function LivingMoments({
         }
       />
 
-      {/* Contextual copy — no glass, white text, rests at bottom of image */}
+      {/* Glass card — appears after Ken Burns ends, holds for 5s, white text */}
       <AnimatePresence>
-        {showCopy && copy && !reducedMotion && (
+        {showGlass && copy && !reducedMotion && (
           <motion.div
-            key="living-moments-copy"
-            initial={{ opacity: 0, y: 10 }}
+            key="living-moments-glass"
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1.0, ease: "easeOut" }}
-            className="pointer-events-none absolute bottom-6 left-10 flex flex-col gap-1"
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            className="pointer-events-none absolute left-10 top-1/2 -translate-y-1/2 inline-flex flex-col gap-1.5 px-5 py-4"
+            style={{
+              background: "rgba(255,255,255,0.22)",
+              backdropFilter: "blur(14px) saturate(1.3)",
+              WebkitBackdropFilter: "blur(14px) saturate(1.3)",
+              borderRadius: "16px",
+              border: "1px solid rgba(255,255,255,0.40)",
+              boxShadow: "0 4px 24px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.55)",
+            }}
           >
-            <span className="font-playfair text-[15px] font-semibold italic text-white drop-shadow-[0_1px_4px_rgba(0,0,0,0.35)] sm:text-[17px]">
+            <span className="font-playfair text-[15px] font-semibold italic text-white drop-shadow-[0_1px_4px_rgba(0,0,0,0.30)] sm:text-[17px]">
               {copy.headline}
             </span>
-            <span className="font-montserrat text-[10px] font-medium uppercase tracking-[0.18em] text-white/80 drop-shadow-[0_1px_3px_rgba(0,0,0,0.30)]">
+            <span className="font-montserrat text-[10px] font-medium uppercase tracking-[0.18em] text-white/85 drop-shadow-[0_1px_3px_rgba(0,0,0,0.25)]">
               {copy.subline}
             </span>
           </motion.div>
