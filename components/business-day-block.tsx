@@ -155,13 +155,13 @@ export function BusinessDayBlock({
                     <>
                       {/* green dot separator */}
                       <span className="h-1 w-1 rounded-full bg-[#7FB069]" aria-hidden />
-                      {/* NOW LIVING badge with pulsating cherry blossom indicator */}
-                      <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[#4A7C59]">
-                        <span className="relative flex h-[10px] w-[10px] shrink-0">
-                          <span className="absolute inset-0 rounded-full bg-[#7FB069] animate-ping opacity-60" style={{ animationDuration: "1.8s" }} />
+                      {/* NOW LIVING badge — pulsating green dot + cherry blossom + label */}
+                      <span className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-[0.16em] text-[#4A7C59]">
+                        <span className="relative flex h-[9px] w-[9px] shrink-0">
+                          <span className="absolute inset-0 animate-ping rounded-full bg-[#7FB069] opacity-75" style={{ animationDuration: "1.6s" }} />
                           <span className="relative h-full w-full rounded-full bg-[#7FB069]" />
                         </span>
-                        <span className="text-[9px] leading-none">🌸</span>
+                        <span aria-hidden className="text-[10px] leading-none">🌸</span>
                         Now Living
                       </span>
                     </>
