@@ -13,6 +13,7 @@
 import { motion } from "framer-motion"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
 import type { PartOfDay } from "@/operating-engine"
+import { LivingMoments } from "@/components/living-moments"
 
 /**
  * Maps each block ID → the full "We're Now ___" phrase (plain + italic parts).
@@ -267,14 +268,12 @@ export function BusinessDayHero() {
 
       {/* Imagery + dynamic glass card */}
       <div className="relative w-full overflow-hidden">
-        {/* Dynamic background — provided by the engine's Theme Engine (current block image) */}
+        {/* Living Moments™ — cinematic awakening on each new segment */}
           <div className="absolute inset-0">
-          <img
-            key={backgroundImage}
-            src={backgroundImage || "/placeholder.svg"}
-            alt=""
-            aria-hidden="true"
-            className="h-full w-full object-cover object-center"
+          <LivingMoments
+            backgroundImage={backgroundImage || "/placeholder.svg"}
+            blockId={experience?.businessDay.current.id ?? "early-access"}
+            className="h-full w-full"
           />
           {/* Soft left-weighted wash — reduced so more background shows through */}
           <div
