@@ -1,8 +1,7 @@
 "use client"
 
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
-import { useMomentMessage } from "@/components/living-moments-store"
 
 
 const VALUES = [
@@ -113,7 +112,6 @@ function getSalutation(minutes: number): string {
 
 export function BarbaraWelcome() {
   const experience = useOperatingEngine()
-  const momentMessage = useMomentMessage()
   const blockId = experience?.businessDay.current.id ?? ""
   const coaching = BLOCK_COACHING[blockId] ?? DEFAULT_COACHING
   const firstName = experience?.member.firstName ?? "Friend"
@@ -136,46 +134,6 @@ export function BarbaraWelcome() {
             transition={{ duration: 0.65, ease: "easeOut" }}
             className="flex min-w-0 flex-1 flex-col"
           >
-            {/* Living Moments™ stained-glass message — slides down from above the greeting */}
-            <AnimatePresence>
-              {momentMessage && (
-                <motion.div
-                  key={momentMessage.headline}
-                  initial={{ opacity: 0, y: -40 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-                  className="mb-5 inline-flex max-w-[480px] flex-col gap-1.5 px-6 py-4"
-                  style={{
-                    /* Stained-glass: frosted at edges, clear in centre */
-                    background: "rgba(255,255,255,0.18)",
-                    backdropFilter: "blur(14px) saturate(1.4)",
-                    WebkitBackdropFilter: "blur(14px) saturate(1.4)",
-                    borderRadius: "18px",
-                    border: "1px solid rgba(255,255,255,0.45)",
-                    boxShadow: [
-                      /* Outer soft glow — pink-green wash like light through glass */
-                      "0 0 0 1px rgba(193,59,107,0.08)",
-                      "0 6px 32px rgba(120,173,125,0.14)",
-                      "0 2px 8px rgba(193,59,107,0.07)",
-                      /* Inner edge highlight simulating stained-glass lead lines */
-                      "inset 0 1px 0 rgba(255,255,255,0.55)",
-                      "inset 0 -1px 0 rgba(120,173,125,0.18)",
-                      "inset 1px 0 0 rgba(193,59,107,0.10)",
-                      "inset -1px 0 0 rgba(120,173,125,0.10)",
-                    ].join(", "),
-                  }}
-                >
-                  <span className="font-playfair text-[16px] font-semibold italic leading-snug text-[#3A6B47] sm:text-[18px]">
-                    {momentMessage.headline}
-                  </span>
-                  <span className="font-montserrat text-[10px] font-medium uppercase tracking-[0.20em] text-[#78AD7D]">
-                    {momentMessage.subline}
-                  </span>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
             {/* Personalized greeting */}
             <p className="font-playfair text-[20px] italic text-[#78AD7D] sm:text-[22px]">
               {greeting}

@@ -122,9 +122,8 @@ export function LivingMoments({
         setShowGlass(true)
         onAwakeningComplete?.()
 
-        // Step 3: After 5s on glass — publish to intro, remove from hero
+        // Step 3: After 5s — glide glass down and out
         glassTimerRef.current = setTimeout(() => {
-          if (copy) publishMomentMessage(copy)
           setShowGlass(false)
         }, 5000)
       }, 5200)
@@ -178,14 +177,14 @@ export function LivingMoments({
         {showGlass && copy && !reducedMotion && (
           <motion.div
             key="living-moments-glass"
-            initial={{ opacity: 0, y: 28 }}
+            initial={{ opacity: 0, y: -24 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 36 }}
+            exit={{ opacity: 0, y: 60 }}
             transition={{
               default: { duration: 1.1, ease: [0.22, 1, 0.36, 1] },
-              exit: { duration: 1.4, ease: [0.4, 0, 0.15, 1] },
+              exit: { duration: 1.6, ease: [0.4, 0, 0.6, 1] },
             }}
-            className="pointer-events-none absolute left-[232px] top-1/2 -translate-y-1/2 inline-flex flex-col gap-1.5 px-5 py-4"
+            className="pointer-events-none absolute bottom-8 left-[232px] inline-flex flex-col gap-1.5 px-5 py-4"
             style={{
               background: "rgba(255,255,255,0.22)",
               backdropFilter: "blur(14px) saturate(1.3)",
