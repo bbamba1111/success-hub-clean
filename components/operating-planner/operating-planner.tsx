@@ -970,6 +970,12 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
           </div>
         )}
 
+        {/* Chip picker + "I am committed to" input + Create My Intention Declaration™
+            Skip for unplug (digital-detox) segments — they have no commitment workflow. */}
+        {!data.isUnplug && (
+          <RepeatAfterMe blockId={blockId} data={data} />
+        )}
+
       </div>
     </div>
   )
