@@ -56,17 +56,17 @@ export const SCHEDULE: BlockConfig[] = [
   {
     id: "monday-reality-check",
     sectionId: "block-monday-reality-check",
-    title: "Work-Life Balance Reality Check™",
-    shortTitle: "Work-Life Balance Reality Check™",
+    title: "Make Time For More On Mondays™",
+    shortTitle: "Make Time For More On Mondays™",
     timeLabel: "9:00–9:30 AM",
     startMinutes: h(9),
     endMinutes: h(9, 30),
     description:
-      "Redesign your entry into the workweek. Set your intentions, review your boundaries, and align your commitments before the day begins.",
+      "Redesign your entry into the workweek. Set your intentions, align your commitments, and step into Monday with clarity and purpose.",
     emoji: "🌸",
     tint: "252 240 238",
     backgroundImage: "/images/block-morning-given.png",
-    cta: "Take Your Reality Check™",
+    cta: "Redesign Your Entry Into The Workweek",
     engagement: "live-room",
     part: "morning",
     greetingPeriod: "Morning",
@@ -75,7 +75,7 @@ export const SCHEDULE: BlockConfig[] = [
     communityOpen: true,
     mondayOnly: true,
     messages: [
-      "Redesign your entry into the workweek. Every Monday is a fresh opportunity to realign.",
+      "Make Time For More on Mondays. Every week is a fresh opportunity to redesign your entry into the workweek.",
     ],
   },
   // ─────────────────────────────────────────────────────────────────────────

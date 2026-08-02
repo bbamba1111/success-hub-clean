@@ -29,7 +29,7 @@ const BLOCK_COACHING: Record<string, { message: string; reflection: { text: stri
   },
   "monday-reality-check": {
     message:
-      "This is your Work-Life Balance Reality Check\u2122. Before you build, before you execute, take 30 minutes to honestly examine where you are. Are your boundaries holding? Is your energy protected? Are you honoring the commitments you made to yourself as well as to your business? Sustainable success begins with honest self-leadership.",
+      "Welcome to Make Time For More On Mondays\u2122. This is your protected 30-minute window to redesign your entry into the workweek. Before you build, before you execute \u2014 pause, realign, and step into Monday with clarity and intention. How you enter your week shapes everything that follows.",
     reflection: {
       text: "Almost everything will work again if you unplug it for a few minutes, including you.",
       author: "Anne Lamott",
