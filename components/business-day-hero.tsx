@@ -258,10 +258,9 @@ export function BusinessDayHero() {
             alt=""
             aria-hidden="true"
             className={`h-full w-full ${
-              experience?.businessDay.current.id === "digital-detox" ||
-              experience?.businessDay.current.id === "time-freedom"
+              experience?.businessDay.current.id === "digital-detox"
                 ? "object-fill"
-                : "object-cover"
+                : "object-cover object-center"
             }`}
           />
           {/* Soft left-weighted wash — reduced so more background shows through */}
