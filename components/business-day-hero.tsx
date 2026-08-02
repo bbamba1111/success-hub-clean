@@ -234,8 +234,8 @@ export function BusinessDayHero() {
             const nextLabel = isMondayBlock ? "Morning GIV\u2022EN\u2122" : experience.businessDay.next.shortTitle
             return (
               <p className="mt-1.5 inline-flex flex-wrap items-center gap-2.5 font-montserrat text-[13px] font-medium text-[#5A4A52] sm:text-[14px]">
-                {/* Inline NOW LIVING — no badge, same size as time, darker green */}
-                <span className="inline-flex items-center gap-1 font-semibold uppercase tracking-[0.18em] text-[#3A6B47]">
+                {/* Pulsating blossom + NOW LIVING — inherits sub-line color and size, no badge */}
+                <span className="inline-flex items-center gap-1">
                   <span className="relative flex h-[12px] w-[12px] shrink-0 items-center justify-center">
                     <span className="absolute inset-[-2px] animate-ping rounded-full" style={{ backgroundColor: "rgba(120,173,125,0.30)", animationDuration: "2s" }} />
                     <span className="relative text-[10px] leading-none" style={{ animation: "pulse 2s ease-in-out infinite" }}>🌸</span>
