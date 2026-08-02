@@ -184,7 +184,7 @@ export function BusinessDayHero() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="mx-auto flex max-w-4xl flex-col items-center px-6 py-[38px] text-center sm:py-[45px]"
+          className="mx-auto flex max-w-4xl flex-col items-center px-6 py-5 text-center sm:py-6"
         >
           {/* Lines 1+2 — special static heading for Monday, "We're Now..." for all others */}
           {experience ? (() => {
@@ -194,7 +194,7 @@ export function BusinessDayHero() {
 
             if (isMondayBlock) {
               return (
-                <h1 className="flex flex-col items-center gap-2 font-playfair leading-tight tracking-tight">
+                <h1 className="flex flex-col items-center gap-0.5 font-playfair leading-tight tracking-tight">
                   {/* Main title — upright, black, same size as other segment H1s */}
                   <span className="not-italic font-semibold text-[#1C161A] text-[30px] sm:text-[36px] lg:text-[48px]">
                     {"Make Time For More On Mondays\u2122"}
@@ -208,7 +208,7 @@ export function BusinessDayHero() {
             }
 
             return (
-              <h1 className={`flex flex-col items-center font-playfair text-[30px] font-semibold leading-tight tracking-tight sm:text-[36px] lg:text-[48px] ${isLunch ? "gap-0" : "gap-0.5"}`}>
+              <h1 className={`flex flex-col items-center font-playfair text-[30px] font-semibold leading-tight tracking-tight sm:text-[36px] lg:text-[48px] gap-0`}>
                 <span className="text-[#1C161A]">
                   {"We\u2019re Now "}
                   {s ? s.plain : experience.businessDay.current.shortTitle}
@@ -233,7 +233,7 @@ export function BusinessDayHero() {
             const timeLabel = isMondayBlock ? "9:00–9:45 AM" : experience.businessDay.current.timeLabel
             const nextLabel = isMondayBlock ? "Morning GIV\u2022EN\u2122" : experience.businessDay.next.shortTitle
             return (
-              <p className="mt-3 font-montserrat text-[13px] font-medium text-[#5A4A52] sm:text-[14px]">
+              <p className="mt-1.5 font-montserrat text-[13px] font-medium text-[#5A4A52] sm:text-[14px]">
                 {timeLabel}
                 <span className="mx-2 text-[#C8B89A]">&bull;</span>
                 <span className="text-[#78AD7D]">{"Next: "}</span>
@@ -276,7 +276,7 @@ export function BusinessDayHero() {
 
 
 
-        <div className="min-h-[560px] sm:min-h-[640px]" />
+        <div className="min-h-[420px] sm:min-h-[500px]" />
       </div>
     </section>
   )
