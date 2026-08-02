@@ -224,48 +224,50 @@ export function LivingMoments({
         }
       />
 
-      {/* Contextual copy overlay — glass card holds for 5s then fades, message persists at lower opacity */}
+      {/* Contextual copy overlay — glass holds 5s then fades; message persists near bottom */}
       {showCopy && copy && !reducedMotion && (
-        <div className="pointer-events-none absolute left-36 right-6 top-1/2 -translate-y-1/2">
-
-          {/* Glass card — visible for 5s then fades away */}
+        <motion.div
+          className="pointer-events-none absolute left-36 inline-flex"
+          initial={{ bottom: "50%", y: "50%" }}
+          animate={{ bottom: showGlass ? "50%" : "24px", y: showGlass ? "50%" : "0%" }}
+          transition={{ duration: 1.4, ease: [0.4, 0, 0.2, 1] }}
+        >
+          {/* Glass card shell — fades after 5s */}
           <AnimatePresence>
             {showGlass && (
               <motion.div
                 key="glass-card"
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -4 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.7, ease: "easeOut" }}
                 className="absolute inset-0 rounded-2xl"
                 style={{
-                  background: "rgba(255,255,255,0.75)",
-                  backdropFilter: "blur(12px)",
-                  WebkitBackdropFilter: "blur(12px)",
-                  boxShadow: "0 4px 24px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.6)",
-                  border: "1px solid rgba(255,255,255,0.55)",
+                  background: "rgba(255,255,255,0.30)",
+                  backdropFilter: "blur(10px)",
+                  WebkitBackdropFilter: "blur(10px)",
+                  boxShadow: "0 2px 16px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.45)",
+                  border: "1px solid rgba(255,255,255,0.35)",
                 }}
               />
             )}
           </AnimatePresence>
 
-          {/* Message — fades in with glass, then drops to 50% opacity after glass leaves */}
+          {/* Message — stays visible, green text, reduced opacity after glass fades */}
           <motion.div
-            key="living-moments-message"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: showGlass ? 1 : 0.5, y: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: showGlass ? 1 : 0.75 }}
             transition={{ duration: showGlass ? 0.9 : 1.4, ease: "easeOut" }}
-            className="relative flex flex-col gap-1.5 px-5 py-4"
+            className="relative flex flex-col gap-1 whitespace-nowrap px-5 py-3.5"
           >
-            <span className="font-playfair text-[15px] font-semibold italic text-[#1C161A] drop-shadow-[0_1px_2px_rgba(255,255,255,0.6)] sm:text-[17px]">
+            <span className="font-playfair text-[15px] font-semibold italic text-[#3A6B47] sm:text-[17px]">
               {copy.headline}
             </span>
-            <span className="font-montserrat text-[11px] font-medium uppercase tracking-[0.16em] text-[#4A3A42] drop-shadow-[0_1px_1px_rgba(255,255,255,0.5)]">
+            <span className="font-montserrat text-[10px] font-medium uppercase tracking-[0.18em] text-[#78AD7D]">
               {copy.subline}
             </span>
           </motion.div>
-
-        </div>
+        </motion.div>
       )}
 
       {/* Settings toggle — bottom right corner */}
