@@ -10,8 +10,10 @@
  * engine's timeline into cards — it owns no schedule data or time logic.
  */
 
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
+import { AnimatePresence } from "framer-motion"
 import useSWR from "swr"
+import { DailyTransition } from "@/components/cherry-blossom/daily-transition"
 import { BusinessDayBlock } from "@/components/business-day-block"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
 import { useHarmonyWeek } from "@/components/harmony-week/harmony-week-provider"
@@ -49,9 +51,15 @@ function segmentTiming(block: BlockConfig, minutes: number): { progress: number;
   return { progress, remaining }
 }
 
+interface TransitionState {
+  from: { id: string; shortTitle: string }
+  to: { id: string; shortTitle: string }
+}
+
 export function BusinessDaySchedule() {
   const experience = useOperatingEngine()
   const harmonyWeek = useHarmonyWeek()
+  const [activeTransition, setActiveTransition] = useState<TransitionState | null>(null)
 
   // Each segment's current Operating Rule™, loaded once (newest-first) and
   // mapped by segment so every card can preview its guiding commitment.
@@ -107,41 +115,80 @@ export function BusinessDaySchedule() {
     return [{ block, state }]
   })
 
-  return (
-    <div id="todays-business-day" className="w-full scroll-mt-20 pb-8 pt-4" style={{ background: "linear-gradient(135deg, #FDF6F0 0%, #FBF0F4 40%, #F0F5EE 70%, #FDFAF6 100%)" }}>
-      <div className="mx-auto max-w-7xl">
+  // Build a lookup from block id → next block's shortTitle for transition labels
+  const nextBlockById = useMemo(() => {
+    const map: Record<string, { id: string; shortTitle: string }> = {}
+    for (let i = 0; i < timeline.length - 1; i++) {
+      map[timeline[i].block.id] = {
+        id: timeline[i + 1].block.id,
+        shortTitle: timeline[i + 1].block.shortTitle,
+      }
+    }
+    return map
+  }, [timeline])
 
-        {timeline.map(({ block, state }) => {
-          const timing =
-            state === "current" && experience
-              ? segmentTiming(block, experience.time.minutesSinceMidnight)
-              : null
-          return (
-            <BusinessDayBlock
-              key={block.id}
-              sectionId={block.sectionId}
-              backgroundImage={block.backgroundImage}
-              tint={block.tint}
-              emoji={block.emoji}
-              time={block.timeLabel}
-              title={block.title}
-              buttonText={block.mondayOnly ? block.cta : "Continue Segment™"}
-              status={state}
-              blockId={block.id}
-              description={block.description}
-              onAction={scrollToOperatingPlanner}
-              segmentProgress={timing?.progress}
-              segmentRemaining={timing?.remaining}
-              operatingRulePreview={ruleBySegment[block.id]}
-              aboutContent={
-                SEGMENT_ABOUT[block.id]
-                  ? renderSegmentAbout(SEGMENT_ABOUT[block.id])
-                  : undefined
-              }
-            />
-          )
-        })}
+  return (
+    <>
+      {/* Passage of Time™ — full-screen cinematic transition overlay */}
+      <AnimatePresence>
+        {activeTransition && (
+          <DailyTransition
+            key="daily-transition"
+            fromSegment={activeTransition.from}
+            toSegment={activeTransition.to}
+            onComplete={() => {
+              setActiveTransition(null)
+              scrollToOperatingPlanner()
+            }}
+          />
+        )}
+      </AnimatePresence>
+
+      <div id="todays-business-day" className="w-full scroll-mt-20 pb-8 pt-4" style={{ background: "linear-gradient(135deg, #FDF6F0 0%, #FBF0F4 40%, #F0F5EE 70%, #FDFAF6 100%)" }}>
+        <div className="mx-auto max-w-7xl">
+
+          {timeline.map(({ block, state }) => {
+            const timing =
+              state === "current" && experience
+                ? segmentTiming(block, experience.time.minutesSinceMidnight)
+                : null
+            const nextBlock = nextBlockById[block.id]
+            return (
+              <BusinessDayBlock
+                key={block.id}
+                sectionId={block.sectionId}
+                backgroundImage={block.backgroundImage}
+                tint={block.tint}
+                emoji={block.emoji}
+                time={block.timeLabel}
+                title={block.title}
+                buttonText={block.mondayOnly ? block.cta : "Continue Segment™"}
+                status={state}
+                blockId={block.id}
+                description={block.description}
+                onAction={scrollToOperatingPlanner}
+                onTransition={
+                  state === "current" && nextBlock
+                    ? () =>
+                        setActiveTransition({
+                          from: { id: block.id, shortTitle: block.shortTitle },
+                          to: nextBlock,
+                        })
+                    : undefined
+                }
+                segmentProgress={timing?.progress}
+                segmentRemaining={timing?.remaining}
+                operatingRulePreview={ruleBySegment[block.id]}
+                aboutContent={
+                  SEGMENT_ABOUT[block.id]
+                    ? renderSegmentAbout(SEGMENT_ABOUT[block.id])
+                    : undefined
+                }
+              />
+            )
+          })}
+        </div>
       </div>
-    </div>
+    </>
   )
 }

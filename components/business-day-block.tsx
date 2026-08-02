@@ -28,6 +28,8 @@ export interface BusinessDayBlockProps {
   blockId?: string
   /** Fired when the member enters the live segment (opens the Operating Planner™). */
   onAction?: () => void
+  /** Fired when the "Continue Segment™" button is clicked — triggers the Daily Transition™ overlay. */
+  onTransition?: () => void
   /** Elapsed progress (0–100) through the current segment. Drives the bar. */
   segmentProgress?: number
   /** Human label for time left in the segment, e.g. "22m left". */
@@ -65,6 +67,7 @@ export function BusinessDayBlock({
   children,
   blockId,
   onAction,
+  onTransition,
   segmentProgress,
   segmentRemaining,
   operatingRulePreview,
@@ -170,7 +173,14 @@ export function BusinessDayBlock({
                 <div className="mt-4 flex flex-wrap items-center gap-2.5">
                   <Button
                     size="sm"
-                    onClick={() => { onAction?.(); setOpen(true) }}
+                    onClick={() => {
+                      if (onTransition) {
+                        onTransition()
+                      } else {
+                        onAction?.()
+                        setOpen(true)
+                      }
+                    }}
                     className="animate-[pulse_2.4s_ease-in-out_infinite] bg-[#7FB069] text-white hover:bg-[#6FA058]"
                   >
                     {buttonText}
