@@ -41,16 +41,19 @@ interface LivingMomentsProps {
 // ── Ambient audio map ────────────────────────────────────────────────────────
 // One carefully matched ambient track per segment using free public CDN URLs.
 
+// Whispering wind + wind chimes — used for every segment transition
+const WIND_CHIMES_URL = "https://cdn.pixabay.com/audio/2022/10/16/audio_12a5a21f76.mp3"
+
 const AMBIENT: Record<string, string> = {
-  "morning-given":    "https://cdn.pixabay.com/audio/2022/03/10/audio_c8c8a73467.mp3", // morning birds + gentle breeze
-  "movement-window":  "https://cdn.pixabay.com/audio/2022/05/13/audio_8a86945ae5.mp3", // uplifting park ambience
-  "lunch-break":      "https://cdn.pixabay.com/audio/2022/03/09/audio_c8a8a36e28.mp3", // café ambience
-  "ceo-workday":      "https://cdn.pixabay.com/audio/2022/01/18/audio_d0c6ff1c47.mp3", // library + keyboard
-  "time-freedom":     "https://cdn.pixabay.com/audio/2022/03/10/audio_c8c8a73467.mp3", // nature + birds
-  "power-down":       "https://cdn.pixabay.com/audio/2022/03/15/audio_c4dc9f6f7b.mp3", // fireplace crackle + rain
-  "digital-detox":    "https://cdn.pixabay.com/audio/2022/03/15/audio_c4dc9f6f7b.mp3", // rain + night ambience
-  "monday-reality-check": "https://cdn.pixabay.com/audio/2022/03/10/audio_c8c8a73467.mp3",
-  "early-access":     "https://cdn.pixabay.com/audio/2022/03/10/audio_c8c8a73467.mp3",
+  "morning-given":         WIND_CHIMES_URL,
+  "movement-window":       WIND_CHIMES_URL,
+  "lunch-break":           WIND_CHIMES_URL,
+  "ceo-workday":           WIND_CHIMES_URL,
+  "time-freedom":          WIND_CHIMES_URL,
+  "power-down":            WIND_CHIMES_URL,
+  "digital-detox":         WIND_CHIMES_URL,
+  "monday-reality-check":  WIND_CHIMES_URL,
+  "early-access":          WIND_CHIMES_URL,
 }
 
 // ── Contextual overlay copy per segment ─────────────────────────────────────
@@ -100,13 +103,20 @@ export function LivingMoments({
   const reducedMotion = useReducedMotion()
   const [mode, setMode] = useState<LivingMomentsMode>("motion+sound")
   const [awakening, setAwakening] = useState(false)
-  const [showCopy, setShowCopy] = useState(false)   // message stays on after glass fades
-  const [showGlass, setShowGlass] = useState(false) // glass card visible for 5s then fades
+  const [showCopy, setShowCopy] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [pageReady, setPageReady] = useState(false)  // true after 6s initial delay
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const awakeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const glassTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const messageTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const prevBlockId = useRef<string>("")
+  const isFirstLoad = useRef(true)
+
+  // 6-second page-load buffer — lets the header settle before message appears
+  useEffect(() => {
+    const t = setTimeout(() => setPageReady(true), 6000)
+    return () => clearTimeout(t)
+  }, [])
 
   // Load saved mode once on mount
   useEffect(() => {
@@ -150,28 +160,27 @@ export function LivingMoments({
     }, 4800)
   }, [stopAudio])
 
-  // Trigger awakening when blockId changes
+  // Trigger awakening — waits for pageReady (6s) on first load
   useEffect(() => {
-    if (blockId === prevBlockId.current) return
+    if (!pageReady) return
+    if (blockId === prevBlockId.current && !isFirstLoad.current) return
     prevBlockId.current = blockId
+    isFirstLoad.current = false
 
     if (awakeTimerRef.current) clearTimeout(awakeTimerRef.current)
+    if (messageTimerRef.current) clearTimeout(messageTimerRef.current)
 
     const motionEnabled = !reducedMotion && (mode === "motion+sound" || mode === "motion")
     const soundEnabled = mode === "motion+sound" || mode === "sound"
 
     if (motionEnabled) {
       setAwakening(true)
-      setShowCopy(true)   // message appears immediately and persists
-      setShowGlass(true)  // glass card appears immediately
+      setShowCopy(true)
 
-      // After 5s — fade glass, send message down to intro section, clear hero overlay
-      glassTimerRef.current = setTimeout(() => {
-        setShowGlass(false)
-        // Publish to BarbaraWelcome via SWR event bus
+      // After 5s — publish to intro section, remove from hero
+      messageTimerRef.current = setTimeout(() => {
         if (copy) publishMomentMessage(copy)
-        // After glass fade completes (~700ms), remove from hero entirely
-        setTimeout(() => setShowCopy(false), 800)
+        setTimeout(() => setShowCopy(false), 600)
       }, 5000)
 
       // After 5.2s — end Ken Burns
@@ -187,9 +196,9 @@ export function LivingMoments({
 
     return () => {
       if (awakeTimerRef.current) clearTimeout(awakeTimerRef.current)
-      if (glassTimerRef.current) clearTimeout(glassTimerRef.current)
+      if (messageTimerRef.current) clearTimeout(messageTimerRef.current)
     }
-  }, [blockId, mode, reducedMotion, startAudio, onAwakeningComplete])
+  }, [blockId, pageReady, mode, reducedMotion, startAudio, onAwakeningComplete])
 
   // Cleanup on unmount
   useEffect(() => () => { stopAudio() }, [stopAudio])
@@ -229,51 +238,26 @@ export function LivingMoments({
         }
       />
 
-      {/* Contextual copy overlay — glass holds 5s then fades; message persists near bottom */}
-      {showCopy && copy && !reducedMotion && (
-        <motion.div
-          className="pointer-events-none absolute left-36 inline-flex"
-          initial={{ bottom: "50%", y: "50%" }}
-          animate={{ bottom: showGlass ? "50%" : "24px", y: showGlass ? "50%" : "0%" }}
-          transition={{ duration: 1.4, ease: [0.4, 0, 0.2, 1] }}
-        >
-          {/* Glass card shell — fades after 5s */}
-          <AnimatePresence>
-            {showGlass && (
-              <motion.div
-                key="glass-card"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.7, ease: "easeOut" }}
-                className="absolute inset-0 rounded-2xl"
-                style={{
-                  background: "rgba(255,255,255,0.30)",
-                  backdropFilter: "blur(10px)",
-                  WebkitBackdropFilter: "blur(10px)",
-                  boxShadow: "0 2px 16px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.45)",
-                  border: "1px solid rgba(255,255,255,0.35)",
-                }}
-              />
-            )}
-          </AnimatePresence>
-
-          {/* Message — stays visible, green text, reduced opacity after glass fades */}
+      {/* Contextual copy — no glass, white text, rests at bottom of image */}
+      <AnimatePresence>
+        {showCopy && copy && !reducedMotion && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: showGlass ? 1 : 0.75 }}
-            transition={{ duration: showGlass ? 0.9 : 1.4, ease: "easeOut" }}
-            className="relative flex flex-col gap-1 whitespace-nowrap px-5 py-3.5"
+            key="living-moments-copy"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.0, ease: "easeOut" }}
+            className="pointer-events-none absolute bottom-6 left-10 flex flex-col gap-1"
           >
-            <span className="font-playfair text-[15px] font-semibold italic text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.3)] sm:text-[17px]">
+            <span className="font-playfair text-[15px] font-semibold italic text-white drop-shadow-[0_1px_4px_rgba(0,0,0,0.35)] sm:text-[17px]">
               {copy.headline}
             </span>
-            <span className="font-montserrat text-[10px] font-medium uppercase tracking-[0.18em] text-white/80 drop-shadow-[0_1px_2px_rgba(0,0,0,0.25)]">
+            <span className="font-montserrat text-[10px] font-medium uppercase tracking-[0.18em] text-white/80 drop-shadow-[0_1px_3px_rgba(0,0,0,0.30)]">
               {copy.subline}
             </span>
           </motion.div>
-        </motion.div>
-      )}
+        )}
+      </AnimatePresence>
 
       {/* Settings toggle — bottom right corner */}
       <div className="absolute bottom-3 right-3 z-10">
