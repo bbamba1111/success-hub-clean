@@ -265,10 +265,10 @@ export function LivingMoments({
             transition={{ duration: showGlass ? 0.9 : 1.4, ease: "easeOut" }}
             className="relative flex flex-col gap-1 whitespace-nowrap px-5 py-3.5"
           >
-            <span className="font-playfair text-[15px] font-semibold italic text-[#3A6B47] sm:text-[17px]">
+            <span className="font-playfair text-[15px] font-semibold italic text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.3)] sm:text-[17px]">
               {copy.headline}
             </span>
-            <span className="font-montserrat text-[10px] font-medium uppercase tracking-[0.18em] text-[#78AD7D]">
+            <span className="font-montserrat text-[10px] font-medium uppercase tracking-[0.18em] text-white/80 drop-shadow-[0_1px_2px_rgba(0,0,0,0.25)]">
               {copy.subline}
             </span>
           </motion.div>
