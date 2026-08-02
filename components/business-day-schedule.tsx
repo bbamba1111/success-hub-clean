@@ -80,7 +80,11 @@ export function BusinessDaySchedule() {
   const mondayRealityCheck = SCHEDULE_BY_ID["monday-reality-check"]
   const showRealityCheck = isMonday && currentMinutes < 9 * 60 + 30
 
-  const timeline = rawTimeline.flatMap(({ block, state }) => {
+  // Strip monday-reality-check from wherever the engine placed it —
+  // the flatMap below re-inserts it in the correct position (after early-access).
+  const dedupedTimeline = rawTimeline.filter(({ block }) => block.id !== "monday-reality-check")
+
+  const timeline = dedupedTimeline.flatMap(({ block, state }) => {
     // On Mondays, shift morning-given time display to 9:30–10:30 AM
     if (isMonday && block.id === "morning-given") {
       const shifted = { ...block, timeLabel: "9:30–10:30 AM" }
