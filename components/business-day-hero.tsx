@@ -186,10 +186,23 @@ export function BusinessDayHero() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="mx-auto flex max-w-4xl flex-col items-center px-6 py-[38px] text-center sm:py-[45px]"
         >
-          {/* Lines 1+2 — "We're Now [plain]" then italic segment name on its own line */}
+          {/* Lines 1+2 — special static heading for Monday, "We're Now..." for all others */}
           {experience ? (() => {
+            const isMondayBlock = experience.businessDay.current.id === "monday-reality-check"
             const s = BLOCK_SENTENCE[experience.businessDay.current.id]
             const isLunch = experience.businessDay.current.id === "lunch-break"
+
+            if (isMondayBlock) {
+              return (
+                <h1 className="flex flex-col items-center gap-1 font-playfair text-[30px] font-semibold leading-tight tracking-tight sm:text-[36px] lg:text-[48px]">
+                  <span className="italic text-[#C13B6B]">{"Make Time For More On Mondays\u2122"}</span>
+                  <span className="text-[#1C161A] text-[22px] sm:text-[26px] lg:text-[32px] font-normal not-italic">
+                    {"Redesign Your Entry Into The Workweek\u2122"}
+                  </span>
+                </h1>
+              )
+            }
+
             return (
               <h1 className={`flex flex-col items-center font-playfair text-[30px] font-semibold leading-tight tracking-tight sm:text-[36px] lg:text-[48px] ${isLunch ? "gap-0" : "gap-0.5"}`}>
                 <span className="text-[#1C161A]">
@@ -208,19 +221,26 @@ export function BusinessDayHero() {
             </h1>
           )}
 
-          {/* Sub-line — timeLabel • Next: [shortTitle] · countdown */}
-          {experience && (
-            <p className="mt-3 font-montserrat text-[13px] font-medium text-[#5A4A52] sm:text-[14px]">
-              {experience.businessDay.current.timeLabel}
-              <span className="mx-2 text-[#C8B89A]">&bull;</span>
-              <span className="text-[#78AD7D]">{"Next: "}</span>
-              <span className="italic">{experience.businessDay.next.shortTitle}</span>
-              <span className="mx-2 text-[#C8B89A]">&bull;</span>
-              <span className="tabular-nums text-[#78AD7D]">
-                {experience.businessDay.countdownToNext.label}
-              </span>
-            </p>
-          )}
+          {/* Sub-line — timeLabel • Next: [shortTitle] · countdown
+              On the Monday block, always show "Next: Morning GIV•EN™" regardless
+              of what the engine's next pointer resolves to. */}
+          {experience && (() => {
+            const isMondayBlock = experience.businessDay.current.id === "monday-reality-check"
+            const timeLabel = isMondayBlock ? "9:00–9:45 AM" : experience.businessDay.current.timeLabel
+            const nextLabel = isMondayBlock ? "Morning GIV\u2022EN\u2122" : experience.businessDay.next.shortTitle
+            return (
+              <p className="mt-3 font-montserrat text-[13px] font-medium text-[#5A4A52] sm:text-[14px]">
+                {timeLabel}
+                <span className="mx-2 text-[#C8B89A]">&bull;</span>
+                <span className="text-[#78AD7D]">{"Next: "}</span>
+                <span className="italic">{nextLabel}</span>
+                <span className="mx-2 text-[#C8B89A]">&bull;</span>
+                <span className="tabular-nums text-[#78AD7D]">
+                  {experience.businessDay.countdownToNext.label}
+                </span>
+              </p>
+            )
+          })()}
         </motion.div>
       </div>
 

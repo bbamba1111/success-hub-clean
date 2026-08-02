@@ -87,9 +87,9 @@ export function BusinessDaySchedule() {
   const dedupedTimeline = rawTimeline.filter(({ block }) => block.id !== "monday-reality-check")
 
   const timeline = dedupedTimeline.flatMap(({ block, state }) => {
-    // On Mondays, shift morning-given time display to 9:30–10:30 AM
+    // On Mondays, shift morning-given to 9:45–10:30 AM
     if (isMonday && block.id === "morning-given") {
-      const shifted = { ...block, timeLabel: "9:30–10:30 AM" }
+      const shifted = { ...block, timeLabel: "9:45–10:30 AM", startMinutes: 9 * 60 + 45 }
       return [{ block: shifted, state }]
     }
     // After early-access on Mondays, inject the reality check card
@@ -97,7 +97,7 @@ export function BusinessDaySchedule() {
       const result: typeof rawTimeline = [{ block, state }]
       if (showRealityCheck && mondayRealityCheck) {
         const checkState: "current" | "upcoming" | "completed" =
-          currentMinutes >= 9 * 60 + 30 ? "completed"
+          currentMinutes >= 9 * 60 + 45 ? "completed"
           : currentMinutes >= 9 * 60 ? "current"
           : "upcoming"
         result.push({ block: mondayRealityCheck, state: checkState })

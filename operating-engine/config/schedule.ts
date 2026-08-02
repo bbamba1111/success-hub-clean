@@ -31,13 +31,13 @@ export const SCHEDULE: BlockConfig[] = [
   {
     id: "monday-reality-check",
     sectionId: "block-monday-reality-check",
-    title: "Make Time For More On Mondays™",
+    title: "Take the Work-Life Balance Reality Check™",
     shortTitle: "Make Time For More On Mondays™",
-    timeLabel: "9:00–9:30 AM",
+    timeLabel: "9:00–9:45 AM",
     startMinutes: h(9),
-    endMinutes: h(9, 30),
+    endMinutes: h(9, 45),
     description:
-      "Stop surviving Mondays. Start creating a workweek that supports your life instead of consuming it.",
+      "Before you manage your business, manage your life. Take 45 minutes to honestly examine where you are — boundaries, energy, and commitments — and redesign your entry into the workweek.",
     emoji: "🌸",
     tint: "252 240 238",
     backgroundImage: "/images/block-morning-given.png",
