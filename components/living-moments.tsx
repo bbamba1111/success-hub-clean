@@ -88,8 +88,10 @@ export function LivingMoments({
   const reducedMotion = useReducedMotion()
   const [mode, setMode] = useState<LivingMomentsMode>("motion+sound")
   const [awakening, setAwakening] = useState(false)
-  const [showGlass, setShowGlass] = useState(false)  // glass card on hero after Ken Burns
+  const [showGlass, setShowGlass] = useState(false)    // frosted glass — mid screen, 5s
+  const [showMessage, setShowMessage] = useState(false) // plain white text — rests at bottom
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
   const awakeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const glassTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const prevBlockId = useRef<string>("")
@@ -109,6 +111,7 @@ export function LivingMoments({
     if (awakeTimerRef.current) clearTimeout(awakeTimerRef.current)
     if (glassTimerRef.current) clearTimeout(glassTimerRef.current)
     setShowGlass(false)
+    setShowMessage(false)
 
     const motionEnabled = !reducedMotion && (mode === "motion+sound" || mode === "motion")
 
@@ -116,15 +119,16 @@ export function LivingMoments({
       // Step 1: Ken Burns starts immediately
       setAwakening(true)
 
-      // Step 2: After 5.2s Ken Burns ends — show glass card on hero
+      // Step 2: After 5.2s Ken Burns ends — show glass card mid-screen
       awakeTimerRef.current = setTimeout(() => {
         setAwakening(false)
         setShowGlass(true)
         onAwakeningComplete?.()
 
-        // Step 3: After 5s — glide glass down and out
+        // Step 3: After 5s — fade glass, drop plain white message to bottom
         glassTimerRef.current = setTimeout(() => {
           setShowGlass(false)
+          setShowMessage(true)
         }, 5000)
       }, 5200)
     }
@@ -172,19 +176,16 @@ export function LivingMoments({
         }
       />
 
-      {/* Glass card — appears after Ken Burns ends, holds for 5s, white text */}
+      {/* Step 1 — Glass card: fades in mid-screen (2in from left), holds 5s, fades out */}
       <AnimatePresence>
         {showGlass && copy && !reducedMotion && (
           <motion.div
             key="living-moments-glass"
-            initial={{ opacity: 0, y: -24 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 60 }}
-            transition={{
-              default: { duration: 1.1, ease: [0.22, 1, 0.36, 1] },
-              exit: { duration: 1.6, ease: [0.4, 0, 0.6, 1] },
-            }}
-            className="pointer-events-none absolute bottom-8 left-[232px] inline-flex flex-col gap-1.5 px-5 py-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.0, ease: "easeInOut" }}
+            className="pointer-events-none absolute left-[192px] top-1/2 -translate-y-1/2 inline-flex flex-col gap-1.5 px-5 py-4"
             style={{
               background: "rgba(255,255,255,0.22)",
               backdropFilter: "blur(14px) saturate(1.3)",
@@ -198,6 +199,26 @@ export function LivingMoments({
               {copy.headline}
             </span>
             <span className="font-montserrat text-[10px] font-medium uppercase tracking-[0.18em] text-white/85 drop-shadow-[0_1px_3px_rgba(0,0,0,0.25)]">
+              {copy.subline}
+            </span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Step 2 — Plain white message: softly glides down from mid to bottom, no glass */}
+      <AnimatePresence>
+        {showMessage && copy && !reducedMotion && (
+          <motion.div
+            key="living-moments-message"
+            initial={{ opacity: 0, top: "50%", y: "-50%" }}
+            animate={{ opacity: 1, top: "calc(100% - 52px)", y: "0%" }}
+            transition={{ duration: 2.0, ease: [0.4, 0, 0.2, 1] }}
+            className="pointer-events-none absolute left-[192px] inline-flex flex-col gap-1"
+          >
+            <span className="font-playfair text-[15px] font-semibold italic text-white drop-shadow-[0_1px_4px_rgba(0,0,0,0.35)] sm:text-[17px]">
+              {copy.headline}
+            </span>
+            <span className="font-montserrat text-[10px] font-medium uppercase tracking-[0.18em] text-white/80 drop-shadow-[0_1px_3px_rgba(0,0,0,0.28)]">
               {copy.subline}
             </span>
           </motion.div>
