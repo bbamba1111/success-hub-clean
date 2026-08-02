@@ -78,7 +78,9 @@ export function BusinessDaySchedule() {
   const currentMinutes = experience?.time.minutesSinceMidnight ?? (new Date().getHours() * 60 + new Date().getMinutes())
 
   const mondayRealityCheck = SCHEDULE_BY_ID["monday-reality-check"]
-  const showRealityCheck = isMonday && currentMinutes < 9 * 60 + 30
+  // Show all day on Mondays — no time gate. The card state (upcoming/current/completed)
+  // reflects where it sits in the day, but it always appears in the Monday schedule.
+  const showRealityCheck = isMonday
 
   // Strip monday-reality-check from wherever the engine placed it —
   // the flatMap below re-inserts it in the correct position (after early-access).
@@ -95,7 +97,9 @@ export function BusinessDaySchedule() {
       const result: typeof rawTimeline = [{ block, state }]
       if (showRealityCheck && mondayRealityCheck) {
         const checkState: "current" | "upcoming" | "completed" =
-          currentMinutes >= 9 * 60 ? "current" : "upcoming"
+          currentMinutes >= 9 * 60 + 30 ? "completed"
+          : currentMinutes >= 9 * 60 ? "current"
+          : "upcoming"
         result.push({ block: mondayRealityCheck, state: checkState })
       }
       return result
