@@ -25,6 +25,8 @@ const AUTH_ONLY_ROUTES = [
   "/installation",
   "/human-zone-of-genius-team",
   "/ai-executive-team",
+  "/workout-planner",
+  "/sleep-tracker",
 ]
 
 // Valid paid membership tiers (from database constraint)
