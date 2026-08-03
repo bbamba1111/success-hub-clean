@@ -1,390 +1,542 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
-import { Calendar, Dumbbell, Clock, TrendingUp, Target, Plus, Trash2, Home, Copy, Check } from "lucide-react"
+import { Calendar, Dumbbell, TrendingUp, Copy, Check, Trash2, Home, Minus, Plus } from "lucide-react"
+import Link from "next/link"
 
-interface WorkoutEntry {
+// ── Types ──────────────────────────────────────────────────────────────────
+
+type CompletionStatus = "yes" | "partially" | "no"
+
+interface MovementRecord {
   id: string
   date: string
   type: string
-  duration: number | string
-  notes: string
+  duration: number
+  completionStatus: CompletionStatus
+  completedDuration?: number
+  reflection: string
+  createdAt: string
 }
 
-const WORKOUT_TYPES = [
-  "Radio Taiso",
+interface MovementState {
+  type: string
+  customType: string
+  duration: number
+  commitment: string
+  declaration: string
+  completionStatus: CompletionStatus | null
+  completedDuration: number
+  reflection: string
+  createdAt: string
+}
+
+// ── Constants ───────────────────────────────────────────────────────────────
+
+const MOVEMENT_TYPES = [
+  "Walk Away the Pounds™",
+  "Walking",
+  "Tai Chi",
   "Yoga",
   "Pilates",
-  "HIIT",
-  "Walking",
-  "Running",
+  "Stretching",
+  "Mobility",
+  "Dance",
+  "Strength Training",
+  "Zumba",
   "Cycling",
   "Swimming",
-  "Strength Training",
-  "Dance",
-  "Tai Chi",
+  "Radio Taiso",
   "Qigong",
-  "Stretching",
+  "HIIT",
   "Barre",
-  "Boxing",
-  "Kickboxing",
-  "Rowing",
-  "Elliptical",
-  "Jump Rope",
-  "Stair Climbing",
-  "Zumba",
-  "Aerobics",
-  "CrossFit",
-  "Martial Arts",
-  "Rock Climbing",
   "Other",
 ]
 
-const ENCOURAGING_MESSAGES = [
-  "You're crushing it!",
-  "Way to go!",
-  "Keep up the amazing work!",
-  "You're unstoppable!",
-  "Fantastic effort!",
-  "You're a rockstar!",
-  "Incredible dedication!",
-  "You're on fire!",
-]
+const COMPLETION_MESSAGES: Record<CompletionStatus, string> = {
+  yes: "Beautiful work. You honored the promise you made to yourself today.",
+  partially: "Progress counts. Every promise you keep strengthens the person you're becoming.",
+  no: "Tomorrow is another opportunity to honor yourself.",
+}
 
-const getRandomMessage = () =>
-  ENCOURAGING_MESSAGES[Math.floor(Math.random() * ENCOURAGING_MESSAGES.length)]
+function buildCommitment(type: string, custom: string, duration: number): string {
+  const label = type === "Other" ? custom.trim() : type
+  if (!label || !duration) return ""
+  return `I am committed to completing a ${duration}-minute ${label} practice during today's Movement Window™.`
+}
 
-export default function WorkoutPlannerPage() {
-  const [mounted, setMounted] = useState(false)
-  const [workouts, setWorkouts] = useState<WorkoutEntry[]>([])
-  const [newWorkout, setNewWorkout] = useState({
-    date: "",
+function buildDeclaration(type: string, custom: string, duration: number): string {
+  const label = type === "Other" ? custom.trim() : type
+  if (!label || !duration) return ""
+  return `I honor my body by completing my ${duration}-minute ${label} practice today, building the strength, flexibility, energy, and consistency that support the life I am intentionally creating.`
+}
+
+function freshState(): MovementState {
+  return {
     type: "",
-    duration: 30,
-    notes: "",
-  })
-  const [copied, setCopied] = useState(false)
+    customType: "",
+    duration: 20,
+    commitment: "",
+    declaration: "",
+    completionStatus: null,
+    completedDuration: 20,
+    reflection: "",
+    createdAt: new Date().toISOString(),
+  }
+}
+
+// ── Component ───────────────────────────────────────────────────────────────
+
+export default function MovementIntentionPage() {
+  const [mounted, setMounted] = useState(false)
+  const [state, setState] = useState<MovementState>(freshState)
+  const [history, setHistory] = useState<MovementRecord[]>([])
+  const [copiedCommitment, setCopiedCommitment] = useState(false)
+  const [copiedDeclaration, setCopiedDeclaration] = useState(false)
+  const [saved, setSaved] = useState(false)
+  const celebrationRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    setNewWorkout((prev) => ({ ...prev, date: new Date().toISOString().split("T")[0] }))
-    const savedWorkouts = localStorage.getItem("workouts")
-    if (savedWorkouts) setWorkouts(JSON.parse(savedWorkouts))
-    localStorage.setItem("dashboardVisited", "true")
+    try {
+      const saved = localStorage.getItem("movementHistory")
+      if (saved) setHistory(JSON.parse(saved))
+    } catch {}
     setMounted(true)
   }, [])
 
-  // Auto-built commitment sentence from type + duration
-  const commitment =
-    newWorkout.type && newWorkout.duration
-      ? `I intend and commit to doing ${newWorkout.duration} minutes of ${newWorkout.type} today.`
-      : ""
-
-  // Full declaration text for copy
-  const declaration = commitment
-    ? `My Intention Declaration™\n\n"${commitment}"\n\nI choose to show up for myself. I choose movement. I choose health.`
-    : ""
-
-  const handleCopy = () => {
-    if (!declaration) return
-    navigator.clipboard.writeText(declaration).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    })
-  }
-
-  const addWorkout = () => {
-    if (!newWorkout.type) return
-    const workout: WorkoutEntry = { id: Date.now().toString(), ...newWorkout }
-    const updated = [...workouts, workout]
-    setWorkouts(updated)
-    localStorage.setItem("workouts", JSON.stringify(updated))
-    setNewWorkout({
-      date: mounted ? new Date().toISOString().split("T")[0] : "",
-      type: "",
-      duration: 30,
-      notes: "",
-    })
-  }
-
-  const deleteWorkout = (id: string) => {
-    const updated = workouts.filter((w) => w.id !== id)
-    setWorkouts(updated)
-    localStorage.setItem("workouts", JSON.stringify(updated))
-  }
-
-  const getWeeklyStats = () => {
-    const now = new Date()
-    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
-    const weekly = workouts.filter((w) => {
-      const d = new Date(w.date)
-      return d >= weekAgo && d <= now
-    })
-    return {
-      count: weekly.length,
-      totalMinutes: weekly.reduce(
-        (sum, w) => sum + (typeof w.duration === "number" ? w.duration : 0),
-        0,
-      ),
-    }
-  }
-
-  const stats = getWeeklyStats()
+  // Regenerate text whenever type / duration changes
+  useEffect(() => {
+    setState(prev => ({
+      ...prev,
+      commitment: buildCommitment(prev.type, prev.customType, prev.duration),
+      declaration: buildDeclaration(prev.type, prev.customType, prev.duration),
+    }))
+  }, [state.type, state.customType, state.duration])
 
   if (!mounted) return null
 
+  // ── Helpers ───────────────────────────────────────────────────────────────
+
+  const typeReady = state.type !== "" && (state.type !== "Other" || state.customType.trim() !== "")
+
+  const displayType = state.type === "Other"
+    ? (state.customType.trim() || "movement")
+    : state.type
+
+  const weeklyStats = (() => {
+    const now = new Date()
+    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+    const weekly = history.filter(r => new Date(r.date + "T12:00:00") >= weekAgo)
+    const done = weekly.filter(r => r.completionStatus === "yes" || r.completionStatus === "partially")
+    return {
+      sessions: weekly.length,
+      completed: done.length,
+      minutes: done.reduce((s, r) =>
+        s + (r.completionStatus === "partially" ? (r.completedDuration ?? r.duration) : r.duration), 0),
+    }
+  })()
+
+  // ── Actions ───────────────────────────────────────────────────────────────
+
+  const setType = (type: string) =>
+    setState(prev => ({ ...prev, type, customType: type === "Other" ? prev.customType : "" }))
+
+  const adjustDuration = (delta: number) =>
+    setState(prev => ({ ...prev, duration: Math.min(30, Math.max(5, prev.duration + delta)) }))
+
+  const setCompletion = (status: CompletionStatus) =>
+    setState(prev => ({ ...prev, completionStatus: status }))
+
+  const handleSave = () => {
+    const record: MovementRecord = {
+      id: Date.now().toString(),
+      date: new Date().toISOString().split("T")[0],
+      type: displayType,
+      duration: state.duration,
+      completionStatus: state.completionStatus!,
+      completedDuration: state.completionStatus === "partially" ? state.completedDuration : undefined,
+      reflection: state.reflection,
+      createdAt: state.createdAt,
+    }
+    const updated = [record, ...history]
+    setHistory(updated)
+    try { localStorage.setItem("movementHistory", JSON.stringify(updated)) } catch {}
+    setSaved(true)
+    setTimeout(() => celebrationRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }), 100)
+  }
+
+  const handleReset = () => {
+    setState(freshState())
+    setSaved(false)
+  }
+
+  const deleteRecord = (id: string) => {
+    const updated = history.filter(r => r.id !== id)
+    setHistory(updated)
+    try { localStorage.setItem("movementHistory", JSON.stringify(updated)) } catch {}
+  }
+
+  const copyText = (text: string, which: "commitment" | "declaration") => {
+    navigator.clipboard.writeText(text).then(() => {
+      if (which === "commitment") {
+        setCopiedCommitment(true)
+        setTimeout(() => setCopiedCommitment(false), 2000)
+      } else {
+        setCopiedDeclaration(true)
+        setTimeout(() => setCopiedDeclaration(false), 2000)
+      }
+    })
+  }
+
+  // ── Render ────────────────────────────────────────────────────────────────
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white py-12">
-      <div className="max-w-6xl mx-auto px-6">
+      <div className="max-w-3xl mx-auto px-6 space-y-8">
 
         {/* Header */}
-        <div className="text-center mb-12">
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-[#7FB069] to-[#E26C73] rounded-full flex items-center justify-center">
-              <Dumbbell className="h-8 w-8 text-white" />
+        <div className="text-center space-y-2">
+          <div className="flex items-center justify-center gap-3">
+            <div className="w-12 h-12 rounded-full bg-[#4A7C59] flex items-center justify-center shadow-sm">
+              <Dumbbell className="h-6 w-6 text-white" />
             </div>
+            <h1 className="text-3xl font-bold text-[#2D2D2D]">Movement Intention™</h1>
           </div>
-          <h1 className="text-4xl font-bold text-[#7FB069] mb-4">Workout Planner</h1>
-          <p className="text-xl text-gray-600">Track your 30-minute workday workout sessions</p>
+          <p className="text-sm text-gray-500">Movement Window™ · Identity Installation System™</p>
+          <Link
+            href="/hub"
+            className="inline-flex items-center gap-1 text-xs text-gray-400 hover:text-[#4A7C59] transition-colors mt-1"
+          >
+            <Home className="h-3 w-3" /> Back to Hub
+          </Link>
         </div>
 
         {/* Weekly Stats */}
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
-          <Card className="border-2 border-[#7FB069]/30">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-xl font-medium text-gray-600 flex items-center gap-2">
-                <Target className="h-4 w-4" /> Weekly Workouts
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-[#7FB069]">{stats.count}</div>
-              <p className="text-xl text-gray-500 mt-1">This week</p>
-            </CardContent>
-          </Card>
-
-          <Card className="border-2 border-[#7FB069]/30">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-xl font-medium text-gray-600 flex items-center gap-2">
-                <Clock className="h-4 w-4" /> Total Minutes
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-[#7FB069]">{stats.totalMinutes}</div>
-              <p className="text-xl text-gray-500 mt-1">This week</p>
-            </CardContent>
-          </Card>
-
-          <Card className="border-2 border-[#7FB069]/30">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-xl font-medium text-gray-600 flex items-center gap-2">
-                <TrendingUp className="h-4 w-4" /> Average Duration
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-[#7FB069]">
-                {stats.count > 0 ? Math.round(stats.totalMinutes / stats.count) : 0}
-              </div>
-              <p className="text-xl text-gray-500 mt-1">Minutes per workout</p>
-            </CardContent>
-          </Card>
+        <div className="grid grid-cols-3 gap-4">
+          {[
+            { label: "Sessions", value: weeklyStats.sessions },
+            { label: "Completed", value: weeklyStats.completed },
+            { label: "Total Minutes", value: weeklyStats.minutes },
+          ].map(s => (
+            <Card key={s.label} className="border-0 shadow-sm bg-white/80 text-center">
+              <CardContent className="py-4">
+                <div className="text-2xl font-bold text-[#4A7C59]">{s.value}</div>
+                <div className="text-xs text-gray-500 mt-0.5">{s.label} · this week</div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
-        {/* Add Workout Form */}
-        <Card className="mb-8 border-2 border-[#7FB069]/30">
-          <CardHeader>
-            <CardTitle className="text-[#7FB069] flex items-center gap-2">
-              <Plus className="h-5 w-5" /> Add New Workout
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="date" className="text-xl">Date</Label>
-                <Input
-                  id="date"
-                  type="date"
-                  value={newWorkout.date}
-                  onChange={(e) => setNewWorkout({ ...newWorkout, date: e.target.value })}
-                  className="text-xl"
-                  suppressHydrationWarning
-                />
-              </div>
+        {/* ── Main workflow — hidden after save ── */}
+        {!saved && (
+          <>
+            {/* Step 1 — Choose movement + duration */}
+            <Card className="border-0 shadow-md bg-white">
+              <CardHeader className="pb-4 border-b border-gray-100">
+                <CardTitle className="text-lg text-[#2D2D2D]">
+                  What movement are you committing to today?
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-5 space-y-6">
 
-              <div className="space-y-2">
-                <Label htmlFor="type" className="text-xl">Workout Type</Label>
-                <select
-                  id="type"
-                  value={newWorkout.type}
-                  onChange={(e) => setNewWorkout({ ...newWorkout, type: e.target.value })}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#7FB069] focus:border-transparent text-xl"
-                >
-                  <option value="">Select workout type</option>
-                  {WORKOUT_TYPES.map((type) => (
-                    <option key={type} value={type}>{type}</option>
+                {/* Movement type buttons */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {MOVEMENT_TYPES.map(t => (
+                    <button
+                      key={t}
+                      onClick={() => setType(t)}
+                      className={[
+                        "px-3 py-2.5 rounded-lg text-sm font-medium border transition-all text-left leading-snug",
+                        state.type === t
+                          ? "bg-[#4A7C59] text-white border-[#4A7C59] shadow-sm"
+                          : "bg-white text-gray-700 border-gray-200 hover:border-[#4A7C59] hover:text-[#4A7C59]",
+                      ].join(" ")}
+                    >
+                      {t}
+                    </button>
                   ))}
-                </select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="duration" className="text-xl">Duration (minutes)</Label>
-                <Input
-                  id="duration"
-                  type="number"
-                  min="1"
-                  value={newWorkout.duration}
-                  onChange={(e) => {
-                    const v = e.target.value
-                    setNewWorkout({ ...newWorkout, duration: v === "" ? ("" as any) : parseInt(v) || 0 })
-                  }}
-                  onBlur={(e) => {
-                    if (e.target.value === "" || parseInt(e.target.value) < 1)
-                      setNewWorkout({ ...newWorkout, duration: 30 })
-                  }}
-                  className="text-xl"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="notes" className="text-xl">Notes (optional)</Label>
-                <Textarea
-                  id="notes"
-                  placeholder="How did you feel? Any observations?"
-                  value={newWorkout.notes}
-                  onChange={(e) => setNewWorkout({ ...newWorkout, notes: e.target.value })}
-                  rows={3}
-                  className="text-xl"
-                />
-              </div>
-            </div>
-
-            {/* ── Intention Setter + Declaration — appears once type is chosen ── */}
-            {commitment && (
-              <div className="mt-8 space-y-4">
-                {/* Commitment sentence */}
-                <div className="p-4 rounded-lg bg-[#7FB069]/10 border border-[#7FB069]/30">
-                  <p className="text-xs font-bold uppercase tracking-widest text-[#7FB069] mb-1">
-                    Your Intention
-                  </p>
-                  <p className="text-xl text-gray-800">{commitment}</p>
                 </div>
 
-                {/* My Intention Declaration card */}
-                <div className="p-5 rounded-xl border border-[#7FB069]/40 bg-[#F5F1E8]">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <p className="text-xs font-bold uppercase tracking-widest text-[#7FB069] mb-3">
-                        My Intention Declaration&#x2122;
-                      </p>
-                      <p
-                        className="text-lg leading-relaxed text-gray-800 italic"
-                        style={{ fontFamily: "'Montserrat', sans-serif" }}
-                      >
-                        &ldquo;{commitment}&rdquo;
-                      </p>
-                      <p
-                        className="mt-3 text-base text-gray-600 italic"
-                        style={{ fontFamily: "'Montserrat', sans-serif" }}
-                      >
-                        I choose to show up for myself. I choose movement. I choose health.
-                      </p>
-                      <p className="mt-4 text-sm font-semibold text-[#7FB069]">
-                        Read this aloud before you begin.
-                      </p>
-                    </div>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={handleCopy}
-                      className="shrink-0 border-[#7FB069]/40 text-[#7FB069] hover:bg-[#7FB069] hover:text-white"
-                    >
-                      {copied ? <Check className="h-4 w-4 mr-1" /> : <Copy className="h-4 w-4 mr-1" />}
-                      {copied ? "Copied" : "Copy"}
-                    </Button>
+                {/* Custom field */}
+                {state.type === "Other" && (
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium text-gray-700">Custom Movement</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Aqua aerobics"
+                      value={state.customType}
+                      onChange={e => setState(prev => ({ ...prev, customType: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#4A7C59]/25 focus:border-[#4A7C59]"
+                    />
                   </div>
-                </div>
-              </div>
-            )}
+                )}
 
-            <Button
-              onClick={addWorkout}
-              className="w-full mt-6 bg-[#7FB069] hover:bg-[#6FA055] text-white text-xl py-6"
-            >
-              <Plus className="mr-2 h-5 w-5" /> Add Workout
-            </Button>
-          </CardContent>
-        </Card>
-
-        {/* Workout History */}
-        <Card className="mb-8 border-2 border-[#7FB069]/30">
-          <CardHeader>
-            <CardTitle className="text-[#7FB069] flex items-center gap-2">
-              <Calendar className="h-5 w-5" /> Workout History
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {workouts.length === 0 ? (
-              <p className="text-xl text-gray-500 text-center py-8">
-                No workouts logged yet. Add your first workout above!
-              </p>
-            ) : (
-              <div className="space-y-4">
-                {[...workouts]
-                  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-                  .map((workout) => (
-                    <div
-                      key={workout.id}
-                      className="flex items-start justify-between p-4 bg-gradient-to-br from-[#7FB069]/5 to-transparent rounded-lg border border-[#7FB069]/20"
-                    >
-                      <div className="flex-grow">
-                        <div className="flex items-center gap-3 mb-2">
-                          <Badge className="bg-[#7FB069] text-white text-xl px-3 py-1">{workout.type}</Badge>
-                          <span className="text-xl text-gray-600 flex items-center gap-1" suppressHydrationWarning>
-                              <Calendar className="h-4 w-4" />
-                              {new Date(workout.date).toLocaleDateString()}
-                            </span>
-                          <span className="text-xl text-gray-600 flex items-center gap-1">
-                            <Clock className="h-4 w-4" />
-                            {typeof workout.duration === "number" ? workout.duration : 0} min
-                          </span>
-                        </div>
-                        {workout.notes && <p className="text-xl text-gray-700 mt-2">{workout.notes}</p>}
-                        <div className="mt-3 flex items-center gap-2">
-                          <span className="text-2xl">🌸</span>
-                          <span className="text-2xl">🙌</span>
-                          <span className="text-xl font-semibold text-[#E26C73] italic">{getRandomMessage()}</span>
-                        </div>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => deleteWorkout(workout.id)}
-                        className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                {/* Duration — only appears once a valid type is chosen */}
+                {typeReady && (
+                  <div className="space-y-2 pt-2 border-t border-gray-100">
+                    <label className="text-sm font-medium text-gray-700">Duration (minutes)</label>
+                    <div className="flex items-center gap-4">
+                      <button
+                        onClick={() => adjustDuration(-5)}
+                        disabled={state.duration <= 5}
+                        className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-600 hover:border-[#4A7C59] hover:text-[#4A7C59] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                       >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                        <Minus className="h-4 w-4" />
+                      </button>
+                      <span className="text-4xl font-bold text-[#4A7C59] w-16 text-center tabular-nums">
+                        {state.duration}
+                      </span>
+                      <button
+                        onClick={() => adjustDuration(5)}
+                        disabled={state.duration >= 30}
+                        className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-600 hover:border-[#4A7C59] hover:text-[#4A7C59] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </button>
+                      <span className="text-xs text-gray-400">5 – 30 min</span>
                     </div>
-                  ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                  </div>
+                )}
 
-        {/* Back to Home */}
-        <div className="flex justify-center">
-          <Button
-            onClick={() => (window.location.href = "/")}
-            variant="outline"
-            className="border-[#7FB069] text-[#7FB069] hover:bg-[#7FB069] hover:text-white text-xl py-6 px-8"
-          >
-            <Home className="mr-2 h-5 w-5" /> Back to Home
-          </Button>
-        </div>
+                {/* Auto-generated commitment */}
+                {state.commitment && (
+                  <div className="space-y-2 pt-2 border-t border-gray-100">
+                    <label className="text-sm font-medium text-gray-700">My Movement Commitment™</label>
+                    <Textarea
+                      value={state.commitment}
+                      onChange={e => setState(prev => ({ ...prev, commitment: e.target.value }))}
+                      rows={2}
+                      className="text-sm resize-none border-gray-200 focus:ring-[#4A7C59]/25 focus:border-[#4A7C59]"
+                    />
+                    <button
+                      onClick={() => copyText(state.commitment, "commitment")}
+                      className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-[#4A7C59] transition-colors"
+                    >
+                      {copiedCommitment
+                        ? <><Check className="h-3 w-3" /> Copied to clipboard</>
+                        : <><Copy className="h-3 w-3" /> Copy to Zoom Chat</>}
+                    </button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Declaration card — appears once commitment is ready */}
+            {state.declaration && (
+              <Card className="border-0 shadow-md bg-gradient-to-br from-[#4A7C59]/8 to-[#F5F1E8]">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base font-bold text-[#4A7C59] uppercase tracking-widest text-xs">
+                    My Daily Non-Negotiable™
+                  </CardTitle>
+                  <p className="text-xs text-gray-500 mt-0.5">Read this aloud before you begin.</p>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <blockquote className="text-[#2D2D2D] text-base leading-relaxed italic border-l-4 border-[#4A7C59]/60 pl-4">
+                    &ldquo;{state.declaration}&rdquo;
+                  </blockquote>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      onClick={() => copyText(state.declaration, "declaration")}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#4A7C59] text-white text-xs font-semibold hover:bg-[#3d6b4a] transition-colors"
+                    >
+                      {copiedDeclaration ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+                      {copiedDeclaration ? "Copied!" : "Copy to Zoom Chat"}
+                    </button>
+                    <button
+                      onClick={() => copyText(state.declaration, "declaration")}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-[#4A7C59] text-[#4A7C59] text-xs font-semibold hover:bg-[#4A7C59]/10 transition-colors"
+                    >
+                      Repeat After Me™
+                    </button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Step 2 — Completion question (only after type is set) */}
+            {typeReady && (
+              <Card className="border-0 shadow-md bg-white">
+                <CardHeader className="pb-4 border-b border-gray-100">
+                  <CardTitle className="text-lg text-[#2D2D2D]">
+                    Did you complete today&apos;s Movement Intention?
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pt-5 space-y-5">
+                  <div className="flex flex-wrap gap-3">
+                    {(["yes", "partially", "no"] as const).map(s => (
+                      <button
+                        key={s}
+                        onClick={() => setCompletion(s)}
+                        className={[
+                          "px-6 py-2.5 rounded-full text-sm font-semibold border transition-all",
+                          state.completionStatus === s
+                            ? "bg-[#4A7C59] text-white border-[#4A7C59] shadow-sm"
+                            : "bg-white text-gray-700 border-gray-200 hover:border-[#4A7C59] hover:text-[#4A7C59]",
+                        ].join(" ")}
+                      >
+                        {s === "yes" ? "Yes" : s === "partially" ? "Partially" : "No"}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Partial duration */}
+                  {state.completionStatus === "partially" && (
+                    <div className="space-y-2 p-4 bg-amber-50 rounded-xl border border-amber-100">
+                      <label className="text-sm font-medium text-gray-700">
+                        How many minutes did you complete?
+                      </label>
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={() => setState(prev => ({ ...prev, completedDuration: Math.max(1, prev.completedDuration - 1) }))}
+                          className="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center hover:border-[#4A7C59] hover:text-[#4A7C59] transition-colors bg-white"
+                        >
+                          <Minus className="h-3.5 w-3.5" />
+                        </button>
+                        <span className="text-3xl font-bold text-[#4A7C59] w-12 text-center tabular-nums">
+                          {state.completedDuration}
+                        </span>
+                        <button
+                          onClick={() => setState(prev => ({ ...prev, completedDuration: Math.min(prev.duration, prev.completedDuration + 1) }))}
+                          className="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center hover:border-[#4A7C59] hover:text-[#4A7C59] transition-colors bg-white"
+                        >
+                          <Plus className="h-3.5 w-3.5" />
+                        </button>
+                        <span className="text-xs text-gray-400">of {state.duration} min</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Reflection */}
+                  {state.completionStatus !== null && (
+                    <Textarea
+                      placeholder={
+                        state.completionStatus === "yes"
+                          ? "How did you feel? (optional)"
+                          : state.completionStatus === "no"
+                          ? "What got in the way? (optional)"
+                          : "Any notes? (optional)"
+                      }
+                      value={state.reflection}
+                      onChange={e => setState(prev => ({ ...prev, reflection: e.target.value }))}
+                      rows={2}
+                      className="text-sm resize-none border-gray-200 focus:ring-[#4A7C59]/25 focus:border-[#4A7C59]"
+                    />
+                  )}
+
+                  {state.completionStatus !== null && (
+                    <Button
+                      onClick={handleSave}
+                      className="w-full bg-[#4A7C59] hover:bg-[#3d6b4a] text-white rounded-full py-5 text-sm font-semibold shadow-sm"
+                    >
+                      Save My Movement Record
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+          </>
+        )}
+
+        {/* ── Celebration ── */}
+        {saved && (
+          <div ref={celebrationRef}>
+            <Card className="border-0 shadow-md bg-gradient-to-br from-[#4A7C59]/10 to-[#F5F1E8] text-center">
+              <CardContent className="py-10 space-y-4">
+                <div className="text-5xl select-none">🌸</div>
+                <p className="text-lg font-semibold text-[#2D2D2D] max-w-sm mx-auto leading-snug">
+                  {COMPLETION_MESSAGES[state.completionStatus!]}
+                </p>
+                <Badge className="bg-[#4A7C59]/12 text-[#4A7C59] border-0 px-4 py-1.5 text-xs font-medium">
+                  {displayType} &nbsp;·&nbsp;{" "}
+                  {state.completionStatus === "partially"
+                    ? `${state.completedDuration} of ${state.duration} min`
+                    : `${state.duration} min`}
+                  &nbsp;·&nbsp;{" "}
+                  {state.completionStatus === "yes"
+                    ? "Completed"
+                    : state.completionStatus === "partially"
+                    ? "Partial"
+                    : "Not completed"}
+                </Badge>
+                <div className="pt-2">
+                  <Button
+                    onClick={handleReset}
+                    variant="outline"
+                    className="border-[#4A7C59] text-[#4A7C59] hover:bg-[#4A7C59]/10 rounded-full px-8"
+                  >
+                    Start a New Intention
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* ── Movement History™ ── */}
+        {history.length > 0 && (
+          <Card className="border-0 shadow-md bg-white">
+            <CardHeader className="border-b border-gray-100">
+              <CardTitle className="text-lg text-[#2D2D2D] flex items-center gap-2">
+                <TrendingUp className="h-5 w-5 text-[#4A7C59]" />
+                Movement History™
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-4 space-y-2">
+              {history.map(record => (
+                <div
+                  key={record.id}
+                  className="flex items-start justify-between p-3 rounded-xl bg-[#F5F1E8]/60 group"
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-semibold text-sm text-[#2D2D2D]">{record.type}</span>
+                      <Badge className={[
+                        "text-xs border-0 px-2 py-0.5 font-medium",
+                        record.completionStatus === "yes"
+                          ? "bg-[#4A7C59]/15 text-[#4A7C59]"
+                          : record.completionStatus === "partially"
+                          ? "bg-amber-100 text-amber-700"
+                          : "bg-red-50 text-red-500",
+                      ].join(" ")}>
+                        {record.completionStatus === "yes"
+                          ? "Completed"
+                          : record.completionStatus === "partially"
+                          ? "Partial"
+                          : "Not completed"}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center gap-3 mt-0.5 text-xs text-gray-400">
+                      <span className="flex items-center gap-1">
+                        <Calendar className="h-3 w-3" />
+                        {new Date(record.date + "T12:00:00").toLocaleDateString()}
+                      </span>
+                      <span>
+                        {record.completionStatus === "partially"
+                          ? `${record.completedDuration ?? record.duration} min`
+                          : `${record.duration} min`}
+                      </span>
+                    </div>
+                    {record.reflection && (
+                      <p className="text-xs text-gray-400 mt-0.5 italic truncate">{record.reflection}</p>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => deleteRecord(record.id)}
+                    className="ml-3 opacity-0 group-hover:opacity-100 p-1.5 rounded text-gray-300 hover:text-red-400 transition-all"
+                    aria-label="Delete record"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        )}
+
       </div>
     </div>
   )

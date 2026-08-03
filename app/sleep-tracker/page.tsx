@@ -1,398 +1,462 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
-import { Calendar, Moon, Clock, TrendingUp, Target, Plus, Trash2, Home, Copy, Check } from "lucide-react"
+import { Calendar, Moon, TrendingUp, Copy, Check, Trash2, Home } from "lucide-react"
+import Link from "next/link"
 
-interface SleepEntry {
+// ── Types ──────────────────────────────────────────────────────────────────
+
+type CompletionStatus = "yes" | "partially" | "no"
+
+interface SleepRecord {
   id: string
   date: string
-  bedtime: string
-  wakeTime: string
-  quality: "Poor" | "Fair" | "Good" | "Excellent"
-  notes: string
+  targetHours: number
+  completionStatus: CompletionStatus
+  actualHours?: number
+  reflection: string
+  createdAt: string
 }
 
-export default function SleepTrackerPage() {
+interface SleepState {
+  targetHours: number
+  commitment: string
+  declaration: string
+  completionStatus: CompletionStatus | null
+  actualHours: number
+  reflection: string
+  createdAt: string
+}
+
+// ── Constants ───────────────────────────────────────────────────────────────
+
+const SLEEP_OPTIONS = [6.5, 7, 7.5, 8, 8.5, 9]
+
+const COMPLETION_MESSAGES: Record<CompletionStatus, string> = {
+  yes: "Beautiful. You honored your commitment to rest. Your body and mind thank you.",
+  partially: "Rest is not all-or-nothing. Every hour you protect is an investment in yourself.",
+  no: "Tomorrow is another opportunity to honor yourself with the rest you deserve.",
+}
+
+function buildCommitment(hours: number): string {
+  return `I am committed to protecting ${hours} hours of restorative sleep tonight to support my health, energy, and the life I am intentionally creating.`
+}
+
+function buildDeclaration(hours: number): string {
+  return `I honor my body and mind by protecting ${hours} hours of restorative sleep tonight, knowing that deep rest is the foundation of my strength, clarity, and the extraordinary life I am building.`
+}
+
+function freshState(): SleepState {
+  return {
+    targetHours: 0,
+    commitment: "",
+    declaration: "",
+    completionStatus: null,
+    actualHours: 7,
+    reflection: "",
+    createdAt: new Date().toISOString(),
+  }
+}
+
+// ── Component ───────────────────────────────────────────────────────────────
+
+export default function SleepIntentionPage() {
   const [mounted, setMounted] = useState(false)
-  const [sleepEntries, setSleepEntries] = useState<SleepEntry[]>([])
-  const [newEntry, setNewEntry] = useState({
-    date: "",
-    bedtime: "22:00",
-    wakeTime: "06:00",
-    quality: "Good" as const,
-    notes: "",
-  })
-  const [copied, setCopied] = useState(false)
+  const [state, setState] = useState<SleepState>(freshState)
+  const [history, setHistory] = useState<SleepRecord[]>([])
+  const [copiedCommitment, setCopiedCommitment] = useState(false)
+  const [copiedDeclaration, setCopiedDeclaration] = useState(false)
+  const [saved, setSaved] = useState(false)
+  const celebrationRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    setNewEntry((prev) => ({ ...prev, date: new Date().toISOString().split("T")[0] }))
-    const savedEntries = localStorage.getItem("sleepEntries")
-    if (savedEntries) setSleepEntries(JSON.parse(savedEntries))
-    localStorage.setItem("dashboardVisited", "true")
+    try {
+      const saved = localStorage.getItem("sleepHistory")
+      if (saved) setHistory(JSON.parse(saved))
+    } catch {}
     setMounted(true)
   }, [])
 
-  const calculateDuration = (bedtime: string, wakeTime: string) => {
-    const [bedHour, bedMin] = bedtime.split(":").map(Number)
-    const [wakeHour, wakeMin] = wakeTime.split(":").map(Number)
-    const bedMinutes = bedHour * 60 + bedMin
-    let wakeMinutes = wakeHour * 60 + wakeMin
-    if (wakeMinutes < bedMinutes) wakeMinutes += 24 * 60
-    const totalMinutes = wakeMinutes - bedMinutes
-    return { hours: Math.floor(totalMinutes / 60), minutes: totalMinutes % 60, totalMinutes }
-  }
-
-  // Auto-built commitment + declaration from bedtime/wakeTime
-  const { hours: estHours, minutes: estMins } = calculateDuration(newEntry.bedtime, newEntry.wakeTime)
-  const commitment =
-    newEntry.bedtime && newEntry.wakeTime
-      ? `I intend and commit to sleeping ${estHours}h ${estMins}m tonight, from ${newEntry.bedtime} to ${newEntry.wakeTime}.`
-      : ""
-
-  const declaration = commitment
-    ? `My Intention Declaration™\n\n"${commitment}"\n\nI honor my rest. I protect my sleep. I wake up restored.`
-    : ""
-
-  const handleCopy = () => {
-    if (!declaration) return
-    navigator.clipboard.writeText(declaration).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    })
-  }
-
-  const addEntry = () => {
-    const entry: SleepEntry = { id: Date.now().toString(), ...newEntry }
-    const updated = [...sleepEntries, entry]
-    setSleepEntries(updated)
-    localStorage.setItem("sleepEntries", JSON.stringify(updated))
-    setNewEntry({
-      date: new Date().toISOString().split("T")[0],
-      bedtime: "22:00",
-      wakeTime: "06:00",
-      quality: "Good" as const,
-      notes: "",
-    })
-  }
-
-  const deleteEntry = (id: string) => {
-    const updated = sleepEntries.filter((e) => e.id !== id)
-    setSleepEntries(updated)
-    localStorage.setItem("sleepEntries", JSON.stringify(updated))
-  }
-
-  const getWeeklyStats = () => {
-    const now = new Date()
-    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
-    const weekly = sleepEntries.filter((e) => {
-      const d = new Date(e.date)
-      return d >= weekAgo && d <= now
-    })
-    const totalMinutes = weekly.reduce((sum, e) => {
-      const { totalMinutes } = calculateDuration(e.bedtime, e.wakeTime)
-      return sum + totalMinutes
-    }, 0)
-    return {
-      count: weekly.length,
-      averageHours: weekly.length > 0 ? totalMinutes / weekly.length / 60 : 0,
-    }
-  }
-
-  const encouragingMessages = [
-    "Good for you!",
-    "Great job!",
-    "Awesome YOU!",
-    "You're crushing it!",
-    "Keep it up!",
-    "Sleep champion!",
-    "Well done!",
-    "You're amazing!",
-    "Fantastic work!",
-    "Sleep goals achieved!",
-  ]
-
-  const getEncouragingMessage = () =>
-    encouragingMessages[Math.floor(Math.random() * encouragingMessages.length)]
-
-  const shouldShowEncouragement = (hours: number, quality: string) =>
-    hours >= 8 && hours <= 9 && (quality === "Good" || quality === "Excellent")
-
-  const getQualityColor = (quality: string) => {
-    switch (quality) {
-      case "Excellent": return "bg-green-100 text-green-800 border-green-200"
-      case "Good": return "bg-blue-100 text-blue-800 border-blue-200"
-      case "Fair": return "bg-yellow-100 text-yellow-800 border-yellow-200"
-      case "Poor": return "bg-red-100 text-red-800 border-red-200"
-      default: return "bg-gray-100 text-gray-800 border-gray-200"
-    }
-  }
-
-  const stats = getWeeklyStats()
+  // Regenerate text whenever targetHours changes
+  useEffect(() => {
+    if (!state.targetHours) return
+    setState(prev => ({
+      ...prev,
+      commitment: buildCommitment(prev.targetHours),
+      declaration: buildDeclaration(prev.targetHours),
+    }))
+  }, [state.targetHours])
 
   if (!mounted) return null
 
+  // ── Helpers ───────────────────────────────────────────────────────────────
+
+  const weeklyStats = (() => {
+    const now = new Date()
+    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+    const weekly = history.filter(r => new Date(r.date + "T12:00:00") >= weekAgo)
+    const honored = weekly.filter(r => r.completionStatus === "yes" || r.completionStatus === "partially")
+    const totalHours = honored.reduce((s, r) =>
+      s + (r.completionStatus === "partially" ? (r.actualHours ?? r.targetHours) : r.targetHours), 0)
+    return {
+      nights: weekly.length,
+      honored: honored.length,
+      avgHours: honored.length > 0 ? (totalHours / honored.length).toFixed(1) : "—",
+    }
+  })()
+
+  // ── Actions ───────────────────────────────────────────────────────────────
+
+  const setTarget = (hours: number) =>
+    setState(prev => ({ ...prev, targetHours: hours }))
+
+  const setCompletion = (status: CompletionStatus) =>
+    setState(prev => ({
+      ...prev,
+      completionStatus: status,
+      actualHours: status === "partially" ? Math.max(4, prev.targetHours - 1) : prev.targetHours,
+    }))
+
+  const handleSave = () => {
+    const record: SleepRecord = {
+      id: Date.now().toString(),
+      date: new Date().toISOString().split("T")[0],
+      targetHours: state.targetHours,
+      completionStatus: state.completionStatus!,
+      actualHours: state.completionStatus === "partially" ? state.actualHours : undefined,
+      reflection: state.reflection,
+      createdAt: state.createdAt,
+    }
+    const updated = [record, ...history]
+    setHistory(updated)
+    try { localStorage.setItem("sleepHistory", JSON.stringify(updated)) } catch {}
+    setSaved(true)
+    setTimeout(() => celebrationRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }), 100)
+  }
+
+  const handleReset = () => {
+    setState(freshState())
+    setSaved(false)
+  }
+
+  const deleteRecord = (id: string) => {
+    const updated = history.filter(r => r.id !== id)
+    setHistory(updated)
+    try { localStorage.setItem("sleepHistory", JSON.stringify(updated)) } catch {}
+  }
+
+  const copyText = (text: string, which: "commitment" | "declaration") => {
+    navigator.clipboard.writeText(text).then(() => {
+      if (which === "commitment") {
+        setCopiedCommitment(true)
+        setTimeout(() => setCopiedCommitment(false), 2000)
+      } else {
+        setCopiedDeclaration(true)
+        setTimeout(() => setCopiedDeclaration(false), 2000)
+      }
+    })
+  }
+
+  // ── Render ────────────────────────────────────────────────────────────────
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white py-12">
-      <div className="max-w-6xl mx-auto px-6">
+      <div className="max-w-3xl mx-auto px-6 space-y-8">
 
         {/* Header */}
-        <div className="text-center mb-12">
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-[#E26C73] to-[#7FB069] rounded-full flex items-center justify-center">
-              <Moon className="h-8 w-8 text-white" />
+        <div className="text-center space-y-2">
+          <div className="flex items-center justify-center gap-3">
+            <div className="w-12 h-12 rounded-full bg-[#E26C73] flex items-center justify-center shadow-sm">
+              <Moon className="h-6 w-6 text-white" />
             </div>
+            <h1 className="text-3xl font-bold text-[#2D2D2D]">Sleep Intention™</h1>
           </div>
-          <h1 className="text-4xl font-bold text-[#E26C73] mb-4">Sleep Tracker</h1>
-          <p className="text-2xl text-gray-600">Monitor your sleep patterns and quality</p>
+          <p className="text-sm text-gray-500">Sleep Segment · Identity Installation System™</p>
+          <Link
+            href="/hub"
+            className="inline-flex items-center gap-1 text-xs text-gray-400 hover:text-[#E26C73] transition-colors mt-1"
+          >
+            <Home className="h-3 w-3" /> Back to Hub
+          </Link>
         </div>
 
         {/* Weekly Stats */}
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
-          <Card className="border-2 border-[#E26C73]/30">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-xl font-medium text-gray-600 flex items-center gap-2">
-                <Target className="h-4 w-4" /> Nights Tracked
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-[#E26C73]">{stats.count}</div>
-              <p className="text-xl text-gray-500 mt-1">This week</p>
-            </CardContent>
-          </Card>
-
-          <Card className="border-2 border-[#E26C73]/30">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-xl font-medium text-gray-600 flex items-center gap-2">
-                <Clock className="h-4 w-4" /> Average Sleep
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-[#E26C73]">{stats.averageHours.toFixed(1)}h</div>
-              <p className="text-xl text-gray-500 mt-1">Per night</p>
-            </CardContent>
-          </Card>
-
-          <Card className="border-2 border-[#E26C73]/30">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-xl font-medium text-gray-600 flex items-center gap-2">
-                <TrendingUp className="h-4 w-4" /> Sleep Goal
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-[#E26C73]">7-9h</div>
-              <p className="text-xl text-gray-500 mt-1">Recommended</p>
-            </CardContent>
-          </Card>
+        <div className="grid grid-cols-3 gap-4">
+          {[
+            { label: "Nights", value: weeklyStats.nights },
+            { label: "Honored", value: weeklyStats.honored },
+            { label: "Avg Hours", value: weeklyStats.avgHours },
+          ].map(s => (
+            <Card key={s.label} className="border-0 shadow-sm bg-white/80 text-center">
+              <CardContent className="py-4">
+                <div className="text-2xl font-bold text-[#E26C73]">{s.value}</div>
+                <div className="text-xs text-gray-500 mt-0.5">{s.label} · this week</div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
-        {/* Log Sleep Entry Form */}
-        <Card className="mb-8 border-2 border-[#E26C73]/30">
-          <CardHeader>
-            <CardTitle className="text-[#E26C73] flex items-center gap-2">
-              <Plus className="h-5 w-5" /> Log Sleep Entry
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="date" className="text-xl">Date</Label>
-                <Input
-                  id="date"
-                  type="date"
-                  value={newEntry.date}
-                  onChange={(e) => setNewEntry({ ...newEntry, date: e.target.value })}
-                  suppressHydrationWarning
-                />
-              </div>
+        {/* ── Main workflow — hidden after save ── */}
+        {!saved && (
+          <>
+            {/* Step 1 — Choose target hours */}
+            <Card className="border-0 shadow-md bg-white">
+              <CardHeader className="pb-4 border-b border-gray-100">
+                <CardTitle className="text-lg text-[#2D2D2D]">
+                  How many hours of restorative sleep will you protect tonight?
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-5 space-y-6">
 
-              <div className="space-y-2">
-                <Label htmlFor="quality" className="text-xl">Sleep Quality</Label>
-                <select
-                  id="quality"
-                  value={newEntry.quality}
-                  onChange={(e) => setNewEntry({ ...newEntry, quality: e.target.value as any })}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#E26C73] focus:border-transparent text-xl"
-                >
-                  <option value="Poor">Poor</option>
-                  <option value="Fair">Fair</option>
-                  <option value="Good">Good</option>
-                  <option value="Excellent">Excellent</option>
-                </select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="bedtime" className="text-xl">Bedtime</Label>
-                <Input
-                  id="bedtime"
-                  type="time"
-                  value={newEntry.bedtime}
-                  onChange={(e) => setNewEntry({ ...newEntry, bedtime: e.target.value })}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="wakeTime" className="text-xl">Wake Time</Label>
-                <Input
-                  id="wakeTime"
-                  type="time"
-                  value={newEntry.wakeTime}
-                  onChange={(e) => setNewEntry({ ...newEntry, wakeTime: e.target.value })}
-                />
-              </div>
-
-              <div className="space-y-2 md:col-span-2">
-                <Label htmlFor="notes" className="text-xl">Notes (optional)</Label>
-                <Textarea
-                  id="notes"
-                  placeholder="How did you sleep? Any observations?"
-                  value={newEntry.notes}
-                  onChange={(e) => setNewEntry({ ...newEntry, notes: e.target.value })}
-                  rows={3}
-                  className="text-xl"
-                />
-              </div>
-
-              <div className="md:col-span-2 p-4 bg-[#E26C73]/5 rounded-lg">
-                <p className="text-xl text-gray-700">
-                  <strong>Estimated Sleep Duration:</strong>{" "}
-                  {`${estHours}h ${estMins}m`}
-                </p>
-              </div>
-            </div>
-
-            {/* ── Intention Setter + Declaration ── */}
-            {commitment && (
-              <div className="mt-8 space-y-4">
-                {/* Commitment sentence */}
-                <div className="p-4 rounded-lg bg-[#E26C73]/10 border border-[#E26C73]/30">
-                  <p className="text-xs font-bold uppercase tracking-widest text-[#E26C73] mb-1">
-                    Your Intention
-                  </p>
-                  <p className="text-xl text-gray-800">{commitment}</p>
-                </div>
-
-                {/* My Intention Declaration card */}
-                <div className="p-5 rounded-xl border border-[#E26C73]/40 bg-[#F5F1E8]">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <p className="text-xs font-bold uppercase tracking-widest text-[#E26C73] mb-3">
-                        My Intention Declaration&#x2122;
-                      </p>
-                      <p
-                        className="text-lg leading-relaxed text-gray-800 italic"
-                        style={{ fontFamily: "'Montserrat', sans-serif" }}
-                      >
-                        &ldquo;{commitment}&rdquo;
-                      </p>
-                      <p
-                        className="mt-3 text-base text-gray-600 italic"
-                        style={{ fontFamily: "'Montserrat', sans-serif" }}
-                      >
-                        I honor my rest. I protect my sleep. I wake up restored.
-                      </p>
-                      <p className="mt-4 text-sm font-semibold text-[#E26C73]">
-                        Read this aloud before you wind down.
-                      </p>
-                    </div>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={handleCopy}
-                      className="shrink-0 border-[#E26C73]/40 text-[#E26C73] hover:bg-[#E26C73] hover:text-white"
+                {/* Hours buttons */}
+                <div className="flex flex-wrap gap-3">
+                  {SLEEP_OPTIONS.map(h => (
+                    <button
+                      key={h}
+                      onClick={() => setTarget(h)}
+                      className={[
+                        "w-16 py-3 rounded-xl text-base font-bold border transition-all",
+                        state.targetHours === h
+                          ? "bg-[#E26C73] text-white border-[#E26C73] shadow-sm"
+                          : "bg-white text-gray-700 border-gray-200 hover:border-[#E26C73] hover:text-[#E26C73]",
+                      ].join(" ")}
                     >
-                      {copied ? <Check className="h-4 w-4 mr-1" /> : <Copy className="h-4 w-4 mr-1" />}
-                      {copied ? "Copied" : "Copy"}
-                    </Button>
-                  </div>
+                      {h}h
+                    </button>
+                  ))}
                 </div>
-              </div>
+
+                {/* Auto-generated commitment */}
+                {state.commitment && (
+                  <div className="space-y-2 pt-2 border-t border-gray-100">
+                    <label className="text-sm font-medium text-gray-700">My Sleep Commitment™</label>
+                    <Textarea
+                      value={state.commitment}
+                      onChange={e => setState(prev => ({ ...prev, commitment: e.target.value }))}
+                      rows={2}
+                      className="text-sm resize-none border-gray-200 focus:ring-[#E26C73]/25 focus:border-[#E26C73]"
+                    />
+                    <button
+                      onClick={() => copyText(state.commitment, "commitment")}
+                      className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-[#E26C73] transition-colors"
+                    >
+                      {copiedCommitment
+                        ? <><Check className="h-3 w-3" /> Copied to clipboard</>
+                        : <><Copy className="h-3 w-3" /> Copy to Zoom Chat</>}
+                    </button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Declaration card */}
+            {state.declaration && (
+              <Card className="border-0 shadow-md bg-gradient-to-br from-[#E26C73]/8 to-[#F5F1E8]">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-xs font-bold text-[#E26C73] uppercase tracking-widest">
+                    My Daily Non-Negotiable™
+                  </CardTitle>
+                  <p className="text-xs text-gray-500 mt-0.5">Read this aloud before you wind down.</p>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <blockquote className="text-[#2D2D2D] text-base leading-relaxed italic border-l-4 border-[#E26C73]/60 pl-4">
+                    &ldquo;{state.declaration}&rdquo;
+                  </blockquote>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      onClick={() => copyText(state.declaration, "declaration")}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#E26C73] text-white text-xs font-semibold hover:bg-[#d55a60] transition-colors"
+                    >
+                      {copiedDeclaration ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+                      {copiedDeclaration ? "Copied!" : "Copy to Zoom Chat"}
+                    </button>
+                    <button
+                      onClick={() => copyText(state.declaration, "declaration")}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-[#E26C73] text-[#E26C73] text-xs font-semibold hover:bg-[#E26C73]/10 transition-colors"
+                    >
+                      Repeat After Me™
+                    </button>
+                  </div>
+                </CardContent>
+              </Card>
             )}
 
-            <Button onClick={addEntry} className="w-full mt-6 bg-[#E26C73] hover:bg-[#D55A60] text-white text-xl py-6">
-              <Plus className="mr-2 h-4 w-4" /> Add Sleep Entry
-            </Button>
-          </CardContent>
-        </Card>
-
-        {/* Sleep History */}
-        <Card className="mb-8 border-2 border-[#E26C73]/30">
-          <CardHeader>
-            <CardTitle className="text-[#E26C73] flex items-center gap-2">
-              <Calendar className="h-5 w-5" /> Sleep History
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {sleepEntries.length === 0 ? (
-              <p className="text-gray-500 text-center py-8 text-xl">
-                No sleep entries yet. Add your first entry above!
-              </p>
-            ) : (
-              <div className="space-y-4">
-                {[...sleepEntries]
-                  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-                  .map((entry) => {
-                    const { hours, minutes } = calculateDuration(entry.bedtime, entry.wakeTime)
-                    const showEncouragement = shouldShowEncouragement(hours, entry.quality)
-                    return (
-                      <div
-                        key={entry.id}
-                        className="flex items-start justify-between p-4 bg-gradient-to-br from-[#E26C73]/5 to-transparent rounded-lg border border-[#E26C73]/20"
+            {/* Step 2 — Did you honor your commitment? */}
+            {state.targetHours > 0 && (
+              <Card className="border-0 shadow-md bg-white">
+                <CardHeader className="pb-4 border-b border-gray-100">
+                  <CardTitle className="text-lg text-[#2D2D2D]">
+                    Did you honor your sleep commitment?
+                  </CardTitle>
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    Answer this the following morning.
+                  </p>
+                </CardHeader>
+                <CardContent className="pt-5 space-y-5">
+                  <div className="flex flex-wrap gap-3">
+                    {(["yes", "partially", "no"] as const).map(s => (
+                      <button
+                        key={s}
+                        onClick={() => setCompletion(s)}
+                        className={[
+                          "px-6 py-2.5 rounded-full text-sm font-semibold border transition-all",
+                          state.completionStatus === s
+                            ? "bg-[#E26C73] text-white border-[#E26C73] shadow-sm"
+                            : "bg-white text-gray-700 border-gray-200 hover:border-[#E26C73] hover:text-[#E26C73]",
+                        ].join(" ")}
                       >
-                        <div className="flex-grow">
-                          <div className="flex items-center gap-3 mb-2 flex-wrap">
-                            <Badge className={getQualityColor(entry.quality)}>{entry.quality}</Badge>
-                            <span className="text-xl text-gray-600 flex items-center gap-1" suppressHydrationWarning>
-                              <Calendar className="h-3 w-3" />
-                              {new Date(entry.date).toLocaleDateString()}
-                            </span>
-                            <span className="text-xl text-gray-600 flex items-center gap-1">
-                              <Clock className="h-3 w-3" />
-                              {hours}h {minutes}m
-                            </span>
-                            {showEncouragement && (
-                              <span className="text-xl font-semibold text-[#E26C73] flex items-center gap-1">
-                                🌸 {getEncouragingMessage()}
-                              </span>
-                            )}
-                          </div>
-                          <div className="text-xl text-gray-600">
-                            {entry.bedtime} &rarr; {entry.wakeTime}
-                          </div>
-                          {entry.notes && <p className="text-xl text-gray-700 mt-2">{entry.notes}</p>}
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => deleteEntry(entry.id)}
-                          className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    )
-                  })}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                        {s === "yes" ? "Yes" : s === "partially" ? "Partially" : "No"}
+                      </button>
+                    ))}
+                  </div>
 
-        {/* Back to Home */}
-        <div className="flex justify-center">
-          <Button
-            onClick={() => (window.location.href = "/")}
-            variant="outline"
-            className="border-[#E26C73] text-[#E26C73] hover:bg-[#E26C73] hover:text-white"
-          >
-            <Home className="mr-2 h-4 w-4" /> Back to Home
-          </Button>
-        </div>
+                  {/* Actual hours for partial */}
+                  {state.completionStatus === "partially" && (
+                    <div className="space-y-2 p-4 bg-amber-50 rounded-xl border border-amber-100">
+                      <label className="text-sm font-medium text-gray-700">
+                        How many hours did you actually sleep?
+                      </label>
+                      <div className="flex flex-wrap gap-2">
+                        {SLEEP_OPTIONS.filter(h => h <= state.targetHours).map(h => (
+                          <button
+                            key={h}
+                            onClick={() => setState(prev => ({ ...prev, actualHours: h }))}
+                            className={[
+                              "w-14 py-2.5 rounded-xl text-sm font-bold border transition-all",
+                              state.actualHours === h
+                                ? "bg-amber-500 text-white border-amber-500"
+                                : "bg-white text-gray-700 border-gray-200 hover:border-amber-400",
+                            ].join(" ")}
+                          >
+                            {h}h
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Reflection */}
+                  {state.completionStatus !== null && (
+                    <Textarea
+                      placeholder={
+                        state.completionStatus === "yes"
+                          ? "How do you feel this morning? (optional)"
+                          : state.completionStatus === "no"
+                          ? "What got in the way? (optional)"
+                          : "Any notes? (optional)"
+                      }
+                      value={state.reflection}
+                      onChange={e => setState(prev => ({ ...prev, reflection: e.target.value }))}
+                      rows={2}
+                      className="text-sm resize-none border-gray-200 focus:ring-[#E26C73]/25 focus:border-[#E26C73]"
+                    />
+                  )}
+
+                  {state.completionStatus !== null && (
+                    <Button
+                      onClick={handleSave}
+                      className="w-full bg-[#E26C73] hover:bg-[#d55a60] text-white rounded-full py-5 text-sm font-semibold shadow-sm"
+                    >
+                      Save My Sleep Record
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+          </>
+        )}
+
+        {/* ── Celebration ── */}
+        {saved && (
+          <div ref={celebrationRef}>
+            <Card className="border-0 shadow-md bg-gradient-to-br from-[#E26C73]/10 to-[#F5F1E8] text-center">
+              <CardContent className="py-10 space-y-4">
+                <div className="text-5xl select-none">🌙</div>
+                <p className="text-lg font-semibold text-[#2D2D2D] max-w-sm mx-auto leading-snug">
+                  {COMPLETION_MESSAGES[state.completionStatus!]}
+                </p>
+                <Badge className="bg-[#E26C73]/12 text-[#E26C73] border-0 px-4 py-1.5 text-xs font-medium">
+                  {state.targetHours}h target &nbsp;·&nbsp;{" "}
+                  {state.completionStatus === "partially"
+                    ? `${state.actualHours}h actual`
+                    : state.completionStatus === "yes"
+                    ? "Honored"
+                    : "Not honored"}
+                </Badge>
+                <div className="pt-2">
+                  <Button
+                    onClick={handleReset}
+                    variant="outline"
+                    className="border-[#E26C73] text-[#E26C73] hover:bg-[#E26C73]/10 rounded-full px-8"
+                  >
+                    Start a New Intention
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* ── Sleep History™ ── */}
+        {history.length > 0 && (
+          <Card className="border-0 shadow-md bg-white">
+            <CardHeader className="border-b border-gray-100">
+              <CardTitle className="text-lg text-[#2D2D2D] flex items-center gap-2">
+                <TrendingUp className="h-5 w-5 text-[#E26C73]" />
+                Sleep History™
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-4 space-y-2">
+              {history.map(record => (
+                <div
+                  key={record.id}
+                  className="flex items-start justify-between p-3 rounded-xl bg-[#F5F1E8]/60 group"
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-semibold text-sm text-[#2D2D2D]">
+                        {record.targetHours}h target
+                      </span>
+                      <Badge className={[
+                        "text-xs border-0 px-2 py-0.5 font-medium",
+                        record.completionStatus === "yes"
+                          ? "bg-[#E26C73]/15 text-[#E26C73]"
+                          : record.completionStatus === "partially"
+                          ? "bg-amber-100 text-amber-700"
+                          : "bg-red-50 text-red-500",
+                      ].join(" ")}>
+                        {record.completionStatus === "yes"
+                          ? "Honored"
+                          : record.completionStatus === "partially"
+                          ? `Partial · ${record.actualHours}h`
+                          : "Not honored"}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center gap-2 mt-0.5 text-xs text-gray-400">
+                      <Calendar className="h-3 w-3" />
+                      {new Date(record.date + "T12:00:00").toLocaleDateString()}
+                    </div>
+                    {record.reflection && (
+                      <p className="text-xs text-gray-400 mt-0.5 italic truncate">{record.reflection}</p>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => deleteRecord(record.id)}
+                    className="ml-3 opacity-0 group-hover:opacity-100 p-1.5 rounded text-gray-300 hover:text-red-400 transition-all"
+                    aria-label="Delete record"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        )}
+
       </div>
     </div>
   )
