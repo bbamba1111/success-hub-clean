@@ -129,7 +129,7 @@ const SEGMENTS = [
   },
   {
     id: "workout",
-    title: "Movement Window\u2122",
+    title: "Set My 30-Minute Movement Intention\u2122",
     time: "10:30 AM – 11:00 AM",
     type: "life" as const,
     description:
@@ -586,11 +586,8 @@ function MovementPlanner({
   return (
     <div className="mb-6 rounded-2xl border border-brand-green/20 bg-brand-green/[0.04] overflow-hidden">
       <div className="px-5 py-4 border-b border-brand-green/10">
-        <p className="font-sans text-sm font-bold text-brand-green">
-          Planned Movement™ <span className="font-normal text-brand-ink-soft">(optional)</span>
-        </p>
         <p className="mt-0.5 font-sans text-xs text-brand-ink-soft">
-          Build your 30-minute movement plan. Cherry Blossom™ will track your consistency over time.
+          For this segment I will transform your intention into an Intention Declaration™ you will live from, in this segment.
         </p>
       </div>
 
@@ -1093,7 +1090,7 @@ export function DesignMyWeekClient() {
               {/* Examples — Part 2: "Choose one... or create your own." */}
               <div className="mb-6">
                 <p className="font-sans text-sm font-semibold text-brand-ink mb-1">
-                  Choose one&hellip; or create your own.
+                  {isWorkout ? "Choose an intention below \u2026 or create your own." : "Choose one\u2026 or create your own."}
                 </p>
                 <p className="font-sans text-xs text-brand-ink-soft mb-3">
                   Click any example to use it, then customize it as you like.
