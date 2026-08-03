@@ -229,7 +229,7 @@ export function BusinessDayBlock({
                 Uses the exact same working component as /design-my-week.
                 Skips digital-detox and placeholder segments (no PLANNER_CONFIG entry). */}
             {blockId && blockId !== "digital-detox" && PLANNER_CONFIG[blockId as keyof typeof PLANNER_CONFIG] && (
-              <OperatingPlanner blockId={blockId as any} isCurrent={isCurrent} isPast={status === "completed"} />
+              <OperatingPlanner blockId={blockId as any} />
             )}
 
             {/* Row 1 — Join Us Live™ */}

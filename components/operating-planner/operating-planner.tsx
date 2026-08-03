@@ -21,10 +21,9 @@
  */
 
 import { useState } from "react"
-import { ChevronDown, Clock, Info } from "lucide-react"
+import { ArrowRight, CheckCircle2, ChevronDown, Clock, Info, Plus, Trash2 } from "lucide-react"
 import type { BlockId } from "@/operating-engine"
 import { PLANNER_CONFIG } from "@/components/operating-planner/planner-config"
-import { IdentityInstallationPanel } from "@/components/identity-installation/identity-installation-panel"
 import dynamic from "next/dynamic"
 
 // Lazy-load the BCA to keep the main bundle lean — only needed in ceo-workday.
@@ -784,11 +783,9 @@ interface SegmentBodyProps {
   blockId: BlockId
   data: SegmentData
   config: NonNullable<(typeof PLANNER_CONFIG)[BlockId]>
-  isCurrent?: boolean
-  isPast?: boolean
 }
 
-function SegmentBody({ blockId, data, config, isCurrent, isPast }: SegmentBodyProps) {
+function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
   const [showFlexInfo, setShowFlexInfo] = useState(false)
   const [showLearnMore, setShowLearnMore] = useState(false)
   const [showBca, setShowBca] = useState(false)
@@ -973,16 +970,10 @@ function SegmentBody({ blockId, data, config, isCurrent, isPast }: SegmentBodyPr
           </div>
         )}
 
-        {/* Identity Installation™ — full intention → declaration → completion → celebration flow.
+        {/* Chip picker + "I am committed to" input + Create My Intention Declaration™
             Skip for unplug (digital-detox) segments — they have no commitment workflow. */}
         {!data.isUnplug && (
-          <div className="mt-8">
-            <IdentityInstallationPanel
-              segmentId={blockId}
-              isCurrent={isCurrent}
-              isPast={isPast}
-            />
-          </div>
+          <RepeatAfterMe blockId={blockId} data={data} />
         )}
 
       </div>
@@ -995,11 +986,9 @@ function SegmentBody({ blockId, data, config, isCurrent, isPast }: SegmentBodyPr
 // ---------------------------------------------------------------------------
 interface OperatingPlannerProps {
   blockId: BlockId
-  isCurrent?: boolean
-  isPast?: boolean
 }
 
-export function OperatingPlanner({ blockId, isCurrent, isPast }: OperatingPlannerProps) {
+export function OperatingPlanner({ blockId }: OperatingPlannerProps) {
   const config = PLANNER_CONFIG[blockId]
   const data = SEGMENT_DATA[blockId]
   const [open, setOpen] = useState(true)
@@ -1050,7 +1039,7 @@ export function OperatingPlanner({ blockId, isCurrent, isPast }: OperatingPlanne
             <div className="w-full px-4 pb-12 pt-12 sm:px-8 lg:px-12" style={{ backgroundColor: config.surface }}>
               {/* Part 6: single elevated white workspace card */}
               <div className="mx-auto w-full max-w-5xl rounded-3xl bg-white shadow-[0_4px_32px_rgba(0,0,0,0.08)] overflow-hidden ring-1 ring-black/[0.04]">
-                <SegmentBody blockId={blockId} data={data} config={config} isCurrent={isCurrent} isPast={isPast} />
+                <SegmentBody blockId={blockId} data={data} config={config} />
               </div>
             </div>
           )}

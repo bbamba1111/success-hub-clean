@@ -17,8 +17,6 @@ const PUBLIC_ROUTES = [
   "/my-results",
   "/preview-results",
   "/pricing",
-  "/workout-planner",
-  "/sleep-tracker",
 ]
 
 // Routes that require authentication but NOT paid membership (free access after login)
