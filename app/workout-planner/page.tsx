@@ -75,15 +75,6 @@ export default function WorkoutPlannerPage() {
     setMounted(true)
   }, [])
 
-  // ── Derived ──────────────────────────────────────────────────────────────
-
-  const weeklySessions = history.filter((w) => {
-    const d = new Date(w.date)
-    const now = new Date()
-    return d >= new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
-  })
-  const weeklyMinutes = weeklySessions.reduce((s, w) => s + w.duration, 0)
-
   // ── Handlers ─────────────────────────────────────────────────────────────
 
   const handleTypeSelect = (type: string) =>
@@ -137,6 +128,15 @@ export default function WorkoutPlannerPage() {
   }
 
   if (!mounted) return null
+
+  // ── Derived (client-only — safe after mounted guard) ─────────────────────
+
+  const weeklySessions = history.filter((w) => {
+    const d = new Date(w.date)
+    const now = new Date()
+    return d >= new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+  })
+  const weeklyMinutes = weeklySessions.reduce((s, w) => s + w.duration, 0)
 
   // ── Render ───────────────────────────────────────────────────────────────
 

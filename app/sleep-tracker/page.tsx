@@ -87,21 +87,6 @@ export default function SleepTrackerPage() {
     setMounted(true)
   }, [])
 
-  // ── Derived ──────────────────────────────────────────────────────────────
-
-  const weeklySessions = history.filter((e) => {
-    const d = new Date(e.date)
-    const now = new Date()
-    return d >= new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
-  })
-
-  const avgHours =
-    weeklySessions.length > 0
-      ? weeklySessions.reduce((s, e) => s + (e.actualHours ?? e.targetHours), 0) / weeklySessions.length
-      : 0
-
-  const estimated = calcDuration(state.bedtime, state.wakeTime)
-
   // ── Handlers ─────────────────────────────────────────────────────────────
 
   const handleTargetSelect = (h: number) =>
@@ -159,6 +144,21 @@ export default function SleepTrackerPage() {
   }
 
   if (!mounted) return null
+
+  // ── Derived (client-only — safe after mounted guard) ─────────────────────
+
+  const weeklySessions = history.filter((e) => {
+    const d = new Date(e.date)
+    const now = new Date()
+    return d >= new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+  })
+
+  const avgHours =
+    weeklySessions.length > 0
+      ? weeklySessions.reduce((s, e) => s + (e.actualHours ?? e.targetHours), 0) / weeklySessions.length
+      : 0
+
+  const estimated = calcDuration(state.bedtime, state.wakeTime)
 
   // ── Render ───────────────────────────────────────────────────────────────
 
