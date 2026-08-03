@@ -14,6 +14,8 @@ import {
   MessageCircleHeart,
   ClipboardCheck,
   CalendarDays,
+  Dumbbell,
+  Moon,
 } from "lucide-react"
 import {
   getOperatingCenterData,
@@ -260,6 +262,60 @@ export function OperatingCenter() {
             ))}
           </CardContent>
         </Card>
+      </section>
+
+      {/* Daily tools */}
+      <section className="mt-8">
+        <h2 className="mb-4 font-playfair text-2xl font-bold text-[#5A4A52]">Daily Non-Negotiable Tools™</h2>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {/* Movement Planner */}
+          <Link href="/workout-planner" className="group block">
+            <Card className="h-full rounded-2xl border-[#7FB069]/20 bg-white shadow-sm transition-shadow hover:shadow-md">
+              <CardContent className="flex flex-col gap-4 p-6">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#7FB069]/12">
+                    <Dumbbell className="h-5 w-5 text-[#5B835F]" />
+                  </span>
+                  <div>
+                    <p className="font-semibold text-[#3A2E33]">Movement Intention™</p>
+                    <p className="text-xs text-[#6B5860]">10:30 AM – 11:00 AM</p>
+                  </div>
+                </div>
+                <p className="text-sm leading-relaxed text-[#5A4A52]/75">
+                  Set your 30-minute movement intention, generate your Intention Declaration™, and log your daily consistency.
+                </p>
+                <span className="mt-auto inline-flex items-center gap-1 text-sm font-semibold text-[#5B835F] group-hover:underline">
+                  Open Movement Planner™
+                  <ArrowUpRight className="h-4 w-4" />
+                </span>
+              </CardContent>
+            </Card>
+          </Link>
+
+          {/* Sleep Tracker */}
+          <Link href="/sleep-tracker" className="group block">
+            <Card className="h-full rounded-2xl border-[#E26C73]/20 bg-white shadow-sm transition-shadow hover:shadow-md">
+              <CardContent className="flex flex-col gap-4 p-6">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#E26C73]/10">
+                    <Moon className="h-5 w-5 text-[#C0545A]" />
+                  </span>
+                  <div>
+                    <p className="font-semibold text-[#3A2E33]">Sleep Intention™</p>
+                    <p className="text-xs text-[#6B5860]">11:00 PM – 7:00 AM</p>
+                  </div>
+                </div>
+                <p className="text-sm leading-relaxed text-[#5A4A52]/75">
+                  Set your sleep intention, generate your Intention Declaration™, and track your nightly rest for sustainable energy.
+                </p>
+                <span className="mt-auto inline-flex items-center gap-1 text-sm font-semibold text-[#C0545A] group-hover:underline">
+                  Open Sleep Tracker™
+                  <ArrowUpRight className="h-4 w-4" />
+                </span>
+              </CardContent>
+            </Card>
+          </Link>
+        </div>
       </section>
 
       {/* Enter the hub */}
