@@ -1,468 +1,397 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Calendar, Clock, TrendingUp, Trash2, Home, Copy, Check, Moon } from "lucide-react"
-import Link from "next/link"
-
-// ── Types ─────────────────────────────────────────────────────────────────────
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Badge } from "@/components/ui/badge"
+import { Calendar, Moon, Clock, TrendingUp, Target, Plus, Trash2, Home, Copy, Check } from "lucide-react"
 
 interface SleepEntry {
   id: string
   date: string
   bedtime: string
   wakeTime: string
-  quality: string
-  targetHours: number
-  actualHours: number
-  status: "honored" | "partial" | "not-completed"
-  notes?: string
+  quality: "Poor" | "Fair" | "Good" | "Excellent"
+  notes: string
 }
-
-// ── Constants ─────────────────────────────────────────────────────────────────
-
-const ACCENT = "#C13B6B"
-const QUALITY_OPTIONS = ["Excellent", "Good", "Fair", "Poor"]
-
-const CHERRY_MESSAGES: Record<SleepEntry["status"], string> = {
-  honored: "Awesome YOU! \ud83c\udf38",
-  partial: "Rest is progress too. \ud83c\udf38",
-  "not-completed": "Tomorrow is a fresh start. \ud83c\udf38",
-}
-
-function buildDeclaration(hours: number) {
-  return `I declare that I am a person who honors their rest. Tonight I am protecting ${hours} hours of restorative sleep \u2014 not as a luxury, but as an act of self-leadership. My body and mind deserve this recovery.`
-}
-
-function calcHours(bedtime: string, wakeTime: string): number {
-  if (!bedtime || !wakeTime) return 0
-  const [bh, bm] = bedtime.split(":").map(Number)
-  const [wh, wm] = wakeTime.split(":").map(Number)
-  let mins = (wh * 60 + wm) - (bh * 60 + bm)
-  if (mins < 0) mins += 24 * 60
-  return Math.round((mins / 60) * 10) / 10
-}
-
-function formatHours(h: number) {
-  const hrs = Math.floor(h)
-  const mins = Math.round((h - hrs) * 60)
-  return mins > 0 ? `${hrs}h ${mins}m` : `${hrs}h 0m`
-}
-
-function formatDate(iso: string) {
-  const [y, m, d] = iso.split("-")
-  return `${m}/${d}/${y}`
-}
-
-function statusColor(s: SleepEntry["status"]) {
-  if (s === "honored") return "#3A6B47"
-  if (s === "partial") return "#B87333"
-  return "#9B8B8B"
-}
-
-// ── Main Page ─────────────────────────────────────────────────────────────────
 
 export default function SleepTrackerPage() {
-  // ── Hydration guard ──
   const [mounted, setMounted] = useState(false)
-
-  // ── Form state ──
-  const [date, setDate] = useState("")
-  const [bedtime, setBedtime] = useState("22:00")
-  const [wakeTime, setWakeTime] = useState("06:00")
-  const [quality, setQuality] = useState("Good")
-  const [targetHours, setTargetHours] = useState(8)
-  const [notes, setNotes] = useState("")
-
-  // ── Declaration state ──
+  const [sleepEntries, setSleepEntries] = useState<SleepEntry[]>([])
+  const [newEntry, setNewEntry] = useState({
+    date: "",
+    bedtime: "22:00",
+    wakeTime: "06:00",
+    quality: "Good" as const,
+    notes: "",
+  })
   const [copied, setCopied] = useState(false)
 
-  // ── Completion state ──
-  const [pendingEntry, setPendingEntry] = useState<Omit<SleepEntry, "status"> | null>(null)
-  const [completionStatus, setCompletionStatus] = useState<SleepEntry["status"] | "">("")
-  const [completionNotes, setCompletionNotes] = useState("")
-  const [savedEntry, setSavedEntry] = useState<SleepEntry | null>(null)
-
-  // ── History ──
-  const [entries, setEntries] = useState<SleepEntry[]>([])
-
   useEffect(() => {
-    setDate(new Date().toISOString().split("T")[0])
-    try {
-      const saved = localStorage.getItem("sleepEntries")
-      if (saved) setEntries(JSON.parse(saved))
-    } catch {}
+    localStorage.setItem("dashboardVisited", "true")
+    const savedEntries = localStorage.getItem("sleepEntries")
+    if (savedEntries) setSleepEntries(JSON.parse(savedEntries))
+    setNewEntry((prev) => ({ ...prev, date: new Date().toISOString().split("T")[0] }))
     setMounted(true)
   }, [])
 
-  const estimatedHours = calcHours(bedtime, wakeTime)
+  const calculateDuration = (bedtime: string, wakeTime: string) => {
+    const [bedHour, bedMin] = bedtime.split(":").map(Number)
+    const [wakeHour, wakeMin] = wakeTime.split(":").map(Number)
+    const bedMinutes = bedHour * 60 + bedMin
+    let wakeMinutes = wakeHour * 60 + wakeMin
+    if (wakeMinutes < bedMinutes) wakeMinutes += 24 * 60
+    const totalMinutes = wakeMinutes - bedMinutes
+    return { hours: Math.floor(totalMinutes / 60), minutes: totalMinutes % 60, totalMinutes }
+  }
 
-  // Commitment sentence auto-populates from targetHours
-  const commitment = `I intend/commit to sleeping ${targetHours} hours tonight.`
-  const declaration = buildDeclaration(targetHours)
+  // Auto-built commitment + declaration from bedtime/wakeTime
+  const { hours: estHours, minutes: estMins } = calculateDuration(newEntry.bedtime, newEntry.wakeTime)
+  const commitment =
+    newEntry.bedtime && newEntry.wakeTime
+      ? `I intend and commit to sleeping ${estHours}h ${estMins}m tonight, from ${newEntry.bedtime} to ${newEntry.wakeTime}.`
+      : ""
 
-  const copyDeclaration = async () => {
-    try {
-      await navigator.clipboard.writeText(declaration)
+  const declaration = commitment
+    ? `My Intention Declaration™\n\n"${commitment}"\n\nI honor my rest. I protect my sleep. I wake up restored.`
+    : ""
+
+  const handleCopy = () => {
+    if (!declaration) return
+    navigator.clipboard.writeText(declaration).then(() => {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
-    } catch {}
+    })
   }
 
-  const handleAdd = () => {
-    const entry: Omit<SleepEntry, "status"> = {
-      id: Date.now().toString(),
-      date,
-      bedtime,
-      wakeTime,
-      quality,
-      targetHours,
-      actualHours: estimatedHours,
-      notes: notes || undefined,
-    }
-    setPendingEntry(entry)
-    setCompletionStatus("")
-    setCompletionNotes("")
-    setSavedEntry(null)
-  }
-
-  const handleSaveCompletion = () => {
-    if (!pendingEntry || !completionStatus) return
-    const entry: SleepEntry = {
-      ...pendingEntry,
-      status: completionStatus,
-      notes: completionNotes || pendingEntry.notes,
-    }
-    const updated = [entry, ...entries]
-    setEntries(updated)
-    try { localStorage.setItem("sleepEntries", JSON.stringify(updated)) } catch {}
-    setSavedEntry(entry)
-    setPendingEntry(null)
-    // Reset form
-    setDate(new Date().toISOString().split("T")[0])
-    setBedtime("22:00")
-    setWakeTime("06:00")
-    setQuality("Good")
-    setTargetHours(8)
-    setNotes("")
+  const addEntry = () => {
+    const entry: SleepEntry = { id: Date.now().toString(), ...newEntry }
+    const updated = [...sleepEntries, entry]
+    setSleepEntries(updated)
+    localStorage.setItem("sleepEntries", JSON.stringify(updated))
+    setNewEntry({
+      date: new Date().toISOString().split("T")[0],
+      bedtime: "22:00",
+      wakeTime: "06:00",
+      quality: "Good",
+      notes: "",
+    })
   }
 
   const deleteEntry = (id: string) => {
-    const updated = entries.filter((e) => e.id !== id)
-    setEntries(updated)
-    try { localStorage.setItem("sleepEntries", JSON.stringify(updated)) } catch {}
+    const updated = sleepEntries.filter((e) => e.id !== id)
+    setSleepEntries(updated)
+    localStorage.setItem("sleepEntries", JSON.stringify(updated))
   }
 
-  const weeklyEntries = entries.filter((e) => {
-    const d = new Date(e.date + "T00:00:00")
-    return Date.now() - d.getTime() < 7 * 24 * 60 * 60 * 1000
-  })
-  const avgSleep = weeklyEntries.length > 0
-    ? Math.round((weeklyEntries.reduce((s, e) => s + e.actualHours, 0) / weeklyEntries.length) * 10) / 10
-    : 0
+  const getWeeklyStats = () => {
+    const now = new Date()
+    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+    const weekly = sleepEntries.filter((e) => {
+      const d = new Date(e.date)
+      return d >= weekAgo && d <= now
+    })
+    const totalMinutes = weekly.reduce((sum, e) => {
+      const { totalMinutes } = calculateDuration(e.bedtime, e.wakeTime)
+      return sum + totalMinutes
+    }, 0)
+    return {
+      count: weekly.length,
+      averageHours: weekly.length > 0 ? totalMinutes / weekly.length / 60 : 0,
+    }
+  }
+
+  const encouragingMessages = [
+    "Good for you!",
+    "Great job!",
+    "Awesome YOU!",
+    "You're crushing it!",
+    "Keep it up!",
+    "Sleep champion!",
+    "Well done!",
+    "You're amazing!",
+    "Fantastic work!",
+    "Sleep goals achieved!",
+  ]
+
+  const getEncouragingMessage = () =>
+    encouragingMessages[Math.floor(Math.random() * encouragingMessages.length)]
+
+  const shouldShowEncouragement = (hours: number, quality: string) =>
+    hours >= 8 && hours <= 9 && (quality === "Good" || quality === "Excellent")
+
+  const getQualityColor = (quality: string) => {
+    switch (quality) {
+      case "Excellent": return "bg-green-100 text-green-800 border-green-200"
+      case "Good": return "bg-blue-100 text-blue-800 border-blue-200"
+      case "Fair": return "bg-yellow-100 text-yellow-800 border-yellow-200"
+      case "Poor": return "bg-red-100 text-red-800 border-red-200"
+      default: return "bg-gray-100 text-gray-800 border-gray-200"
+    }
+  }
+
+  const stats = getWeeklyStats()
 
   if (!mounted) return null
 
   return (
-    <div className="min-h-screen bg-[#F5F0E8] py-10 font-montserrat">
-      <div className="mx-auto max-w-2xl px-5">
+    <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white py-12">
+      <div className="max-w-6xl mx-auto px-6">
 
         {/* Header */}
-        <div className="mb-8 text-center">
-          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full" style={{ background: "rgba(193,59,107,0.12)" }}>
-            <Moon className="h-6 w-6" style={{ color: ACCENT }} />
+        <div className="text-center mb-12">
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="w-16 h-16 bg-gradient-to-br from-[#E26C73] to-[#7FB069] rounded-full flex items-center justify-center">
+              <Moon className="h-8 w-8 text-white" />
+            </div>
           </div>
-          <h1 className="font-playfair text-[30px] font-bold" style={{ color: ACCENT }}>Sleep Tracker</h1>
-          <p className="mt-1 text-[13px] text-[#6B5C54]">Monitor your sleep patterns and quality</p>
+          <h1 className="text-4xl font-bold text-[#E26C73] mb-4">Sleep Tracker</h1>
+          <p className="text-2xl text-gray-600">Monitor your sleep patterns and quality</p>
         </div>
 
-        {/* Stats */}
-        <div className="mb-6 grid grid-cols-3 gap-3">
-          {[
-            { icon: <span className="text-sm">&#x25CE;</span>, label: "Nights Tracked", value: weeklyEntries.length, sub: "This week" },
-            { icon: <Clock className="h-4 w-4" />, label: "Average Sleep", value: avgSleep > 0 ? `${avgSleep}h` : "0.0h", sub: "Per night" },
-            { icon: <TrendingUp className="h-4 w-4" />, label: "Sleep Goal", value: "7-9h", sub: "Recommended" },
-          ].map((s) => (
-            <div key={s.label} className="rounded-xl border bg-white p-4" style={{ borderColor: "rgba(193,59,107,0.20)" }}>
-              <div className="mb-1 flex items-center gap-1.5 text-[#9B8B8B] text-[12px]">
-                {s.icon} {s.label}
-              </div>
-              <p className="font-playfair text-[26px] font-bold" style={{ color: ACCENT }}>{s.value}</p>
-              <p className="text-[11px] text-[#9B8B8B]">{s.sub}</p>
-            </div>
-          ))}
+        {/* Weekly Stats */}
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
+          <Card className="border-2 border-[#E26C73]/30">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-xl font-medium text-gray-600 flex items-center gap-2">
+                <Target className="h-4 w-4" /> Nights Tracked
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-[#E26C73]">{stats.count}</div>
+              <p className="text-xl text-gray-500 mt-1">This week</p>
+            </CardContent>
+          </Card>
+
+          <Card className="border-2 border-[#E26C73]/30">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-xl font-medium text-gray-600 flex items-center gap-2">
+                <Clock className="h-4 w-4" /> Average Sleep
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-[#E26C73]">{stats.averageHours.toFixed(1)}h</div>
+              <p className="text-xl text-gray-500 mt-1">Per night</p>
+            </CardContent>
+          </Card>
+
+          <Card className="border-2 border-[#E26C73]/30">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-xl font-medium text-gray-600 flex items-center gap-2">
+                <TrendingUp className="h-4 w-4" /> Sleep Goal
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-[#E26C73]">7-9h</div>
+              <p className="text-xl text-gray-500 mt-1">Recommended</p>
+            </CardContent>
+          </Card>
         </div>
 
-        {/* ── Completion check-in (shown after Add) ── */}
-        {pendingEntry && !savedEntry && (
-          <div className="mb-6 rounded-xl border bg-white p-5" style={{ borderColor: "rgba(193,59,107,0.25)" }}>
-            <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: ACCENT }}>Morning Check-In</p>
-            <p className="mb-4 font-playfair text-[15px] italic text-[#3D2E32]">
-              Did you honor your {pendingEntry.targetHours}-hour sleep commitment?
-            </p>
-            <div className="mb-4 flex gap-2">
-              {(["honored", "partial", "not-completed"] as SleepEntry["status"][]).map((s) => (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={() => setCompletionStatus(s)}
-                  className="flex-1 rounded-lg border py-2.5 text-[12px] font-semibold uppercase tracking-[0.10em] transition"
-                  style={{
-                    backgroundColor: completionStatus === s ? ACCENT : "white",
-                    borderColor: completionStatus === s ? ACCENT : "#D4C9B8",
-                    color: completionStatus === s ? "white" : "#5A4A52",
-                  }}
-                >
-                  {s === "honored" ? "Yes" : s === "partial" ? "Partially" : "Not Tonight"}
-                </button>
-              ))}
-            </div>
-            {(completionStatus === "partial" || completionStatus === "not-completed") && (
-              <div className="mb-3">
-                <label className="mb-1 block text-[12px] font-semibold text-[#5A4A52]">
-                  {completionStatus === "partial" ? "Any notes?" : "What got in the way? (optional)"}
-                </label>
-                <textarea
-                  rows={2}
-                  value={completionNotes}
-                  onChange={(e) => setCompletionNotes(e.target.value)}
-                  placeholder="No judgment here..."
-                  className="w-full resize-none rounded-lg border border-[#D4C9B8] bg-[#FDFAF5] px-3 py-2 text-[13px] text-[#3D2E32] placeholder:text-[#C8B89A] focus:outline-none"
-                />
-              </div>
-            )}
-            <button
-              type="button"
-              disabled={!completionStatus}
-              onClick={handleSaveCompletion}
-              className="w-full rounded-lg py-3 text-[13px] font-bold uppercase tracking-[0.14em] text-white transition disabled:opacity-40"
-              style={{ backgroundColor: ACCENT }}
-            >
-              Save &amp; Record
-            </button>
-          </div>
-        )}
-
-        {/* ── Post-session summary ── */}
-        {savedEntry && (
-          <div className="mb-6 rounded-xl border bg-white p-5" style={{ borderColor: "rgba(193,59,107,0.25)" }}>
-            <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.18em]" style={{ color: ACCENT }}>Sleep Summary</p>
-            <div className="mb-3 grid grid-cols-2 gap-3 text-[13px]">
-              <div className="rounded-lg bg-[#F5F0E8] px-3 py-2.5">
-                <p className="mb-0.5 text-[10px] uppercase tracking-[0.14em] text-[#9B8B8B]">Date</p>
-                <p className="font-semibold text-[#3D2E32]">{formatDate(savedEntry.date)}</p>
-              </div>
-              <div className="rounded-lg bg-[#F5F0E8] px-3 py-2.5">
-                <p className="mb-0.5 text-[10px] uppercase tracking-[0.14em] text-[#9B8B8B]">Quality</p>
-                <p className="font-semibold text-[#3D2E32]">{savedEntry.quality}</p>
-              </div>
-              <div className="rounded-lg bg-[#F5F0E8] px-3 py-2.5">
-                <p className="mb-0.5 text-[10px] uppercase tracking-[0.14em] text-[#9B8B8B]">Committed</p>
-                <p className="font-semibold text-[#3D2E32]">{savedEntry.targetHours}h</p>
-              </div>
-              <div className="rounded-lg bg-[#F5F0E8] px-3 py-2.5">
-                <p className="mb-0.5 text-[10px] uppercase tracking-[0.14em] text-[#9B8B8B]">Actual Sleep</p>
-                <p className="font-semibold" style={{ color: statusColor(savedEntry.status) }}>
-                  {formatHours(savedEntry.actualHours)}
-                </p>
-              </div>
-              <div className="col-span-2 rounded-lg bg-[#F5F0E8] px-3 py-2.5">
-                <p className="mb-0.5 text-[10px] uppercase tracking-[0.14em] text-[#9B8B8B]">Bedtime &rarr; Wake</p>
-                <p className="font-semibold text-[#3D2E32]">{savedEntry.bedtime} &rarr; {savedEntry.wakeTime}</p>
-              </div>
-            </div>
-            <div className="rounded-lg px-3 py-2.5 text-center" style={{ background: "rgba(193,59,107,0.06)" }}>
-              <span className="text-base">&#x1F338;</span>{" "}
-              <span className="font-playfair text-[13px] italic" style={{ color: ACCENT }}>{CHERRY_MESSAGES[savedEntry.status]}</span>
-            </div>
-            <button
-              type="button"
-              onClick={() => setSavedEntry(null)}
-              className="mt-3 w-full rounded-lg border border-[#D4C9B8] py-2 text-[12px] font-semibold text-[#5A4A52] transition hover:text-[#3D2E32]"
-            >
-              + Log Another Night
-            </button>
-          </div>
-        )}
-
-        {/* ── Log Sleep Entry form ── */}
-        {!pendingEntry && !savedEntry && (
-          <div className="mb-6 rounded-xl border bg-white p-5" style={{ borderColor: "rgba(193,59,107,0.20)" }}>
-            <p className="mb-4 text-[15px] font-bold" style={{ color: ACCENT }}>+ Log Sleep Entry</p>
-
-            <div className="mb-4 grid grid-cols-2 gap-4">
-              <div>
-                <label className="mb-1 block text-[12px] font-semibold text-[#5A4A52]">Date</label>
-                <input
+        {/* Log Sleep Entry Form */}
+        <Card className="mb-8 border-2 border-[#E26C73]/30">
+          <CardHeader>
+            <CardTitle className="text-[#E26C73] flex items-center gap-2">
+              <Plus className="h-5 w-5" /> Log Sleep Entry
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="date" className="text-xl">Date</Label>
+                <Input
+                  id="date"
                   type="date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  className="w-full rounded-lg border border-[#D4C9B8] bg-[#FDFAF5] px-3 py-2.5 text-[13px] text-[#3D2E32] focus:outline-none"
+                  value={newEntry.date}
+                  onChange={(e) => setNewEntry({ ...newEntry, date: e.target.value })}
                 />
               </div>
-              <div>
-                <label className="mb-1 block text-[12px] font-semibold text-[#5A4A52]">Sleep Quality</label>
+
+              <div className="space-y-2">
+                <Label htmlFor="quality" className="text-xl">Sleep Quality</Label>
                 <select
-                  value={quality}
-                  onChange={(e) => setQuality(e.target.value)}
-                  className="w-full rounded-lg border border-[#D4C9B8] bg-[#FDFAF5] px-3 py-2.5 text-[13px] text-[#3D2E32] focus:outline-none"
+                  id="quality"
+                  value={newEntry.quality}
+                  onChange={(e) => setNewEntry({ ...newEntry, quality: e.target.value as any })}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#E26C73] focus:border-transparent text-xl"
                 >
-                  {QUALITY_OPTIONS.map((q) => (
-                    <option key={q} value={q}>{q}</option>
-                  ))}
+                  <option value="Poor">Poor</option>
+                  <option value="Fair">Fair</option>
+                  <option value="Good">Good</option>
+                  <option value="Excellent">Excellent</option>
                 </select>
               </div>
-            </div>
 
-            <div className="mb-4 grid grid-cols-2 gap-4">
-              <div>
-                <label className="mb-1 block text-[12px] font-semibold text-[#5A4A52]">Bedtime</label>
-                <input
+              <div className="space-y-2">
+                <Label htmlFor="bedtime" className="text-xl">Bedtime</Label>
+                <Input
+                  id="bedtime"
                   type="time"
-                  value={bedtime}
-                  onChange={(e) => setBedtime(e.target.value)}
-                  className="w-full rounded-lg border border-[#D4C9B8] bg-[#FDFAF5] px-3 py-2.5 text-[13px] text-[#3D2E32] focus:outline-none"
+                  value={newEntry.bedtime}
+                  onChange={(e) => setNewEntry({ ...newEntry, bedtime: e.target.value })}
                 />
               </div>
-              <div>
-                <label className="mb-1 block text-[12px] font-semibold text-[#5A4A52]">Wake Time</label>
-                <input
+
+              <div className="space-y-2">
+                <Label htmlFor="wakeTime" className="text-xl">Wake Time</Label>
+                <Input
+                  id="wakeTime"
                   type="time"
-                  value={wakeTime}
-                  onChange={(e) => setWakeTime(e.target.value)}
-                  className="w-full rounded-lg border border-[#D4C9B8] bg-[#FDFAF5] px-3 py-2.5 text-[13px] text-[#3D2E32] focus:outline-none"
+                  value={newEntry.wakeTime}
+                  onChange={(e) => setNewEntry({ ...newEntry, wakeTime: e.target.value })}
                 />
               </div>
-            </div>
 
-            {/* Target hours + commitment sentence */}
-            <div className="mb-4">
-              <label className="mb-1 block text-[12px] font-semibold text-[#5A4A52]">Target Hours</label>
-              <select
-                value={targetHours}
-                onChange={(e) => setTargetHours(Number(e.target.value))}
-                className="w-full rounded-lg border border-[#D4C9B8] bg-[#FDFAF5] px-3 py-2.5 text-[13px] text-[#3D2E32] focus:outline-none"
-              >
-                {[6.5, 7, 7.5, 8, 8.5, 9].map((h) => (
-                  <option key={h} value={h}>{h} hours</option>
-                ))}
-              </select>
-            </div>
+              <div className="space-y-2 md:col-span-2">
+                <Label htmlFor="notes" className="text-xl">Notes (optional)</Label>
+                <Textarea
+                  id="notes"
+                  placeholder="How did you sleep? Any observations?"
+                  value={newEntry.notes}
+                  onChange={(e) => setNewEntry({ ...newEntry, notes: e.target.value })}
+                  rows={3}
+                  className="text-xl"
+                />
+              </div>
 
-            {/* Commitment sentence — auto-populates */}
-            <div className="mb-4 rounded-lg border px-4 py-3" style={{ borderColor: "rgba(193,59,107,0.20)", background: "rgba(193,59,107,0.04)" }}>
-              <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.16em]" style={{ color: ACCENT }}>My Commitment</p>
-              <p className="font-playfair text-[13px] italic text-[#3D2E32]">&ldquo;{commitment}&rdquo;</p>
-            </div>
-
-            {/* Declaration box — Read this aloud + Copy, no separate Repeat After Me */}
-            <div className="mb-4 rounded-lg border px-4 py-4" style={{ borderColor: "rgba(193,59,107,0.20)", background: "#F5F0E8" }}>
-              <div className="mb-2 flex items-center justify-between">
-                <p className="text-[10px] font-bold uppercase tracking-[0.16em]" style={{ color: ACCENT }}>
-                  My Intention Declaration&#x2122; &mdash; Read this aloud
+              <div className="md:col-span-2 p-4 bg-[#E26C73]/5 rounded-lg">
+                <p className="text-xl text-gray-700">
+                  <strong>Estimated Sleep Duration:</strong>{" "}
+                  {`${estHours}h ${estMins}m`}
                 </p>
-                <button
-                  type="button"
-                  onClick={copyDeclaration}
-                  className="inline-flex items-center gap-1 rounded-full border bg-white px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] transition hover:opacity-80"
-                  style={{ borderColor: "rgba(193,59,107,0.25)", color: ACCENT }}
-                >
-                  {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
-                  {copied ? "Copied" : "Copy"}
-                </button>
               </div>
-              <p className="font-montserrat text-[13px] italic leading-relaxed text-[#3D2E32]">
-                &ldquo;{declaration}&rdquo;
-              </p>
             </div>
 
-            {/* Estimated duration */}
-            {estimatedHours > 0 && (
-              <div className="mb-4 rounded-lg px-4 py-2.5 text-[13px] font-semibold text-[#3D2E32]" style={{ background: "rgba(193,59,107,0.05)" }}>
-                <span className="text-[#9B8B8B]">Estimated Sleep Duration: </span>
-                {formatHours(estimatedHours)}
+            {/* ── Intention Setter + Declaration ── */}
+            {commitment && (
+              <div className="mt-8 space-y-4">
+                {/* Commitment sentence */}
+                <div className="p-4 rounded-lg bg-[#E26C73]/10 border border-[#E26C73]/30">
+                  <p className="text-xs font-bold uppercase tracking-widest text-[#E26C73] mb-1">
+                    Your Intention
+                  </p>
+                  <p className="text-xl text-gray-800">{commitment}</p>
+                </div>
+
+                {/* My Intention Declaration card */}
+                <div className="p-5 rounded-xl border border-[#E26C73]/40 bg-[#F5F1E8]">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1">
+                      <p className="text-xs font-bold uppercase tracking-widest text-[#E26C73] mb-3">
+                        My Intention Declaration&#x2122;
+                      </p>
+                      <p
+                        className="text-lg leading-relaxed text-gray-800 italic"
+                        style={{ fontFamily: "'Montserrat', sans-serif" }}
+                      >
+                        &ldquo;{commitment}&rdquo;
+                      </p>
+                      <p
+                        className="mt-3 text-base text-gray-600 italic"
+                        style={{ fontFamily: "'Montserrat', sans-serif" }}
+                      >
+                        I honor my rest. I protect my sleep. I wake up restored.
+                      </p>
+                      <p className="mt-4 text-sm font-semibold text-[#E26C73]">
+                        Read this aloud before you wind down.
+                      </p>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleCopy}
+                      className="shrink-0 border-[#E26C73]/40 text-[#E26C73] hover:bg-[#E26C73] hover:text-white"
+                    >
+                      {copied ? <Check className="h-4 w-4 mr-1" /> : <Copy className="h-4 w-4 mr-1" />}
+                      {copied ? "Copied" : "Copy"}
+                    </Button>
+                  </div>
+                </div>
               </div>
             )}
 
-            <div>
-              <label className="mb-1 block text-[12px] font-semibold text-[#5A4A52]">Notes (optional)</label>
-              <textarea
-                rows={2}
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                placeholder="How did you sleep? Any observations?"
-                className="mb-4 w-full resize-none rounded-lg border border-[#D4C9B8] bg-[#FDFAF5] px-3 py-2.5 text-[13px] text-[#3D2E32] placeholder:text-[#C8B89A] focus:outline-none"
-              />
-            </div>
+            <Button onClick={addEntry} className="w-full mt-6 bg-[#E26C73] hover:bg-[#D55A60] text-white text-xl py-6">
+              <Plus className="mr-2 h-4 w-4" /> Add Sleep Entry
+            </Button>
+          </CardContent>
+        </Card>
 
-            <button
-              type="button"
-              onClick={handleAdd}
-              className="w-full rounded-lg py-3 text-[13px] font-bold uppercase tracking-[0.14em] text-white transition"
-              style={{ backgroundColor: ACCENT }}
-            >
-              + Add Sleep Entry
-            </button>
-          </div>
-        )}
-
-        {/* ── Sleep History ── */}
-        <div className="rounded-xl border bg-white p-5" style={{ borderColor: "rgba(193,59,107,0.20)" }}>
-          <p className="mb-4 flex items-center gap-2 text-[15px] font-bold" style={{ color: ACCENT }}>
-            <Calendar className="h-4 w-4" /> Sleep History
-          </p>
-          {entries.length === 0 ? (
-            <p className="py-4 text-center text-[13px] text-[#9B8B8B]">No sleep entries yet. Log your first night above.</p>
-          ) : (
-            <div className="flex flex-col gap-3">
-              {entries.map((e) => (
-                <div key={e.id} className="rounded-lg border border-[#E8DDD5] px-4 py-3">
-                  <div className="mb-1.5 flex items-center justify-between">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span
-                        className="rounded-full px-2.5 py-0.5 text-[11px] font-semibold text-white"
-                        style={{ backgroundColor: statusColor(e.status) }}
+        {/* Sleep History */}
+        <Card className="mb-8 border-2 border-[#E26C73]/30">
+          <CardHeader>
+            <CardTitle className="text-[#E26C73] flex items-center gap-2">
+              <Calendar className="h-5 w-5" /> Sleep History
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {sleepEntries.length === 0 ? (
+              <p className="text-gray-500 text-center py-8 text-xl">
+                No sleep entries yet. Add your first entry above!
+              </p>
+            ) : (
+              <div className="space-y-4">
+                {[...sleepEntries]
+                  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                  .map((entry) => {
+                    const { hours, minutes } = calculateDuration(entry.bedtime, entry.wakeTime)
+                    const showEncouragement = shouldShowEncouragement(hours, entry.quality)
+                    return (
+                      <div
+                        key={entry.id}
+                        className="flex items-start justify-between p-4 bg-gradient-to-br from-[#E26C73]/5 to-transparent rounded-lg border border-[#E26C73]/20"
                       >
-                        {e.quality}
-                      </span>
-                      <span className="flex items-center gap-1 text-[11px] text-[#9B8B8B]">
-                        <Calendar className="h-3 w-3" /> {formatDate(e.date)}
-                      </span>
-                      <span className="flex items-center gap-1 text-[11px] text-[#9B8B8B]">
-                        <Clock className="h-3 w-3" /> {formatHours(e.actualHours)}
-                      </span>
-                      <span className="text-[11px]" style={{ color: ACCENT }}>
-                        &#x1F338; {CHERRY_MESSAGES[e.status]}
-                      </span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => deleteEntry(e.id)}
-                      className="text-[#C8B89A] transition hover:text-[#C13B6B]"
-                      aria-label="Delete"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </div>
-                  <p className="text-[12px] text-[#5A4A52]">
-                    {e.bedtime} &rarr; {e.wakeTime}
-                  </p>
-                  {e.notes && <p className="mt-0.5 text-[12px] text-[#9B8B8B]">{e.notes}</p>}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+                        <div className="flex-grow">
+                          <div className="flex items-center gap-3 mb-2 flex-wrap">
+                            <Badge className={getQualityColor(entry.quality)}>{entry.quality}</Badge>
+                            <span className="text-xl text-gray-600 flex items-center gap-1">
+                              <Calendar className="h-3 w-3" />
+                              {new Date(entry.date).toLocaleDateString()}
+                            </span>
+                            <span className="text-xl text-gray-600 flex items-center gap-1">
+                              <Clock className="h-3 w-3" />
+                              {hours}h {minutes}m
+                            </span>
+                            {showEncouragement && (
+                              <span className="text-xl font-semibold text-[#E26C73] flex items-center gap-1">
+                                🌸 {getEncouragingMessage()}
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-xl text-gray-600">
+                            {entry.bedtime} &rarr; {entry.wakeTime}
+                          </div>
+                          {entry.notes && <p className="text-xl text-gray-700 mt-2">{entry.notes}</p>}
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => deleteEntry(entry.id)}
+                          className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    )
+                  })}
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         {/* Back to Home */}
-        <div className="mt-8 text-center">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 rounded-full border border-[#D4C9B8] px-5 py-2 text-[12px] font-semibold text-[#5A4A52] transition hover:border-[#C13B6B] hover:text-[#C13B6B]"
+        <div className="flex justify-center">
+          <Button
+            onClick={() => (window.location.href = "/")}
+            variant="outline"
+            className="border-[#E26C73] text-[#E26C73] hover:bg-[#E26C73] hover:text-white"
           >
-            <Home className="h-3.5 w-3.5" /> Back to Home
-          </Link>
+            <Home className="mr-2 h-4 w-4" /> Back to Home
+          </Button>
         </div>
-
       </div>
     </div>
   )
