@@ -27,6 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { CelebrationOverlay } from "@/components/identity-installation/celebration-overlay"
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -241,6 +242,9 @@ export function IdentityInstallationPanel({
   // Reflection
   const [reflection, setReflection] = useState("")
 
+  // Celebration overlay
+  const [showCelebration, setShowCelebration] = useState(false)
+
   const declarationRef = useRef<HTMLDivElement>(null)
 
   // ── Helpers ────────────────────────────────────────────────────────────────
@@ -371,7 +375,7 @@ export function IdentityInstallationPanel({
         setReflection(accumulated)
       }
 
-      setStep("done")
+      setShowCelebration(true)
     } catch (err) {
       console.error("[IdentityInstallationPanel] completion error:", err)
       setStep("completing")
@@ -393,6 +397,27 @@ export function IdentityInstallationPanel({
   ])
 
   // ── Render ─────────────────────────────────────────────────────────────────
+
+  // ── CELEBRATION: fires after completion is saved, before transitioning to done
+  if (showCelebration) {
+    return (
+      <CelebrationOverlay
+        show={showCelebration}
+        status={
+          completionStatus === "honored"
+            ? "honored"
+            : completionStatus === "modified"
+              ? "partial"
+              : "not-completed"
+        }
+        flow={config.isSleepSegment ? "sleep" : "movement"}
+        onDone={() => {
+          setShowCelebration(false)
+          setStep("done")
+        }}
+      />
+    )
+  }
 
   // ── IDLE: CTA to start setting intention
   if (step === "idle") {
