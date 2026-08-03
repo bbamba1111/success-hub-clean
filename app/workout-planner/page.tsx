@@ -61,10 +61,9 @@ const getRandomMessage = () =>
   ENCOURAGING_MESSAGES[Math.floor(Math.random() * ENCOURAGING_MESSAGES.length)]
 
 export default function WorkoutPlannerPage() {
-  const [mounted, setMounted] = useState(false)
   const [workouts, setWorkouts] = useState<WorkoutEntry[]>([])
   const [newWorkout, setNewWorkout] = useState({
-    date: "",
+    date: new Date().toISOString().split("T")[0],
     type: "",
     duration: 30,
     notes: "",
@@ -75,8 +74,6 @@ export default function WorkoutPlannerPage() {
     localStorage.setItem("dashboardVisited", "true")
     const savedWorkouts = localStorage.getItem("workouts")
     if (savedWorkouts) setWorkouts(JSON.parse(savedWorkouts))
-    setNewWorkout((prev) => ({ ...prev, date: new Date().toISOString().split("T")[0] }))
-    setMounted(true)
   }, [])
 
   // Auto-built commitment sentence from type + duration
@@ -135,8 +132,6 @@ export default function WorkoutPlannerPage() {
   }
 
   const stats = getWeeklyStats()
-
-  if (!mounted) return null
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white py-12">
@@ -211,6 +206,7 @@ export default function WorkoutPlannerPage() {
                   value={newWorkout.date}
                   onChange={(e) => setNewWorkout({ ...newWorkout, date: e.target.value })}
                   className="text-xl"
+                  suppressHydrationWarning
                 />
               </div>
 
@@ -343,10 +339,10 @@ export default function WorkoutPlannerPage() {
                       <div className="flex-grow">
                         <div className="flex items-center gap-3 mb-2">
                           <Badge className="bg-[#7FB069] text-white text-xl px-3 py-1">{workout.type}</Badge>
-                          <span className="text-xl text-gray-600 flex items-center gap-1">
-                            <Calendar className="h-4 w-4" />
-                            {new Date(workout.date).toLocaleDateString()}
-                          </span>
+                          <span className="text-xl text-gray-600 flex items-center gap-1" suppressHydrationWarning>
+                              <Calendar className="h-4 w-4" />
+                              {new Date(workout.date).toLocaleDateString()}
+                            </span>
                           <span className="text-xl text-gray-600 flex items-center gap-1">
                             <Clock className="h-4 w-4" />
                             {typeof workout.duration === "number" ? workout.duration : 0} min

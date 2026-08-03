@@ -19,10 +19,9 @@ interface SleepEntry {
 }
 
 export default function SleepTrackerPage() {
-  const [mounted, setMounted] = useState(false)
   const [sleepEntries, setSleepEntries] = useState<SleepEntry[]>([])
   const [newEntry, setNewEntry] = useState({
-    date: "",
+    date: new Date().toISOString().split("T")[0],
     bedtime: "22:00",
     wakeTime: "06:00",
     quality: "Good" as const,
@@ -34,8 +33,6 @@ export default function SleepTrackerPage() {
     localStorage.setItem("dashboardVisited", "true")
     const savedEntries = localStorage.getItem("sleepEntries")
     if (savedEntries) setSleepEntries(JSON.parse(savedEntries))
-    setNewEntry((prev) => ({ ...prev, date: new Date().toISOString().split("T")[0] }))
-    setMounted(true)
   }, [])
 
   const calculateDuration = (bedtime: string, wakeTime: string) => {
@@ -135,8 +132,6 @@ export default function SleepTrackerPage() {
 
   const stats = getWeeklyStats()
 
-  if (!mounted) return null
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white py-12">
       <div className="max-w-6xl mx-auto px-6">
@@ -207,6 +202,7 @@ export default function SleepTrackerPage() {
                   type="date"
                   value={newEntry.date}
                   onChange={(e) => setNewEntry({ ...newEntry, date: e.target.value })}
+                  suppressHydrationWarning
                 />
               </div>
 
@@ -347,7 +343,7 @@ export default function SleepTrackerPage() {
                         <div className="flex-grow">
                           <div className="flex items-center gap-3 mb-2 flex-wrap">
                             <Badge className={getQualityColor(entry.quality)}>{entry.quality}</Badge>
-                            <span className="text-xl text-gray-600 flex items-center gap-1">
+                            <span className="text-xl text-gray-600 flex items-center gap-1" suppressHydrationWarning>
                               <Calendar className="h-3 w-3" />
                               {new Date(entry.date).toLocaleDateString()}
                             </span>
