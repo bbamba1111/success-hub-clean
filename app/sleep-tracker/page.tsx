@@ -62,10 +62,11 @@ function statusColor(s: SleepEntry["status"]) {
 // ── Main Page ─────────────────────────────────────────────────────────────────
 
 export default function SleepTrackerPage() {
-  const today = new Date().toISOString().split("T")[0]
+  // ── Hydration guard ──
+  const [mounted, setMounted] = useState(false)
 
   // ── Form state ──
-  const [date, setDate] = useState(today)
+  const [date, setDate] = useState("")
   const [bedtime, setBedtime] = useState("22:00")
   const [wakeTime, setWakeTime] = useState("06:00")
   const [quality, setQuality] = useState("Good")
@@ -85,10 +86,12 @@ export default function SleepTrackerPage() {
   const [entries, setEntries] = useState<SleepEntry[]>([])
 
   useEffect(() => {
+    setDate(new Date().toISOString().split("T")[0])
     try {
       const saved = localStorage.getItem("sleepEntries")
       if (saved) setEntries(JSON.parse(saved))
     } catch {}
+    setMounted(true)
   }, [])
 
   const estimatedHours = calcHours(bedtime, wakeTime)
@@ -135,7 +138,7 @@ export default function SleepTrackerPage() {
     setSavedEntry(entry)
     setPendingEntry(null)
     // Reset form
-    setDate(today)
+    setDate(new Date().toISOString().split("T")[0])
     setBedtime("22:00")
     setWakeTime("06:00")
     setQuality("Good")
@@ -156,6 +159,8 @@ export default function SleepTrackerPage() {
   const avgSleep = weeklyEntries.length > 0
     ? Math.round((weeklyEntries.reduce((s, e) => s + e.actualHours, 0) / weeklyEntries.length) * 10) / 10
     : 0
+
+  if (!mounted) return null
 
   return (
     <div className="min-h-screen bg-[#F5F0E8] py-10 font-montserrat">

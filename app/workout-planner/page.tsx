@@ -65,9 +65,11 @@ function statusColor(s: WorkoutEntry["status"]) {
 // ── Main Page ─────────────────────────────────────────────────────────────────
 
 export default function MovementPlannerPage() {
+  // ── Hydration guard — render nothing until mounted client-side ──
+  const [mounted, setMounted] = useState(false)
+
   // ── Form state ──
-  const today = new Date().toISOString().split("T")[0]
-  const [date, setDate] = useState(today)
+  const [date, setDate] = useState("")
   const [type, setType] = useState("")
   const [duration, setDuration] = useState(30)
   const [notes, setNotes] = useState("")
@@ -87,10 +89,13 @@ export default function MovementPlannerPage() {
   const [workouts, setWorkouts] = useState<WorkoutEntry[]>([])
 
   useEffect(() => {
+    const today = new Date().toISOString().split("T")[0]
+    setDate(today)
     try {
       const saved = localStorage.getItem("workouts")
       if (saved) setWorkouts(JSON.parse(saved))
     } catch {}
+    setMounted(true)
   }, [])
 
   // Auto-show declaration when type is selected
@@ -145,7 +150,7 @@ export default function MovementPlannerPage() {
     setType("")
     setDuration(30)
     setNotes("")
-    setDate(today)
+    setDate(new Date().toISOString().split("T")[0])
   }
 
   const deleteWorkout = (id: string) => {
@@ -160,6 +165,8 @@ export default function MovementPlannerPage() {
   })
   const totalMinutes = weeklyWorkouts.filter((w) => w.status !== "not-completed").reduce((s, w) => s + (w.actualDuration ?? w.duration), 0)
   const avgDuration = weeklyWorkouts.length > 0 ? Math.round(totalMinutes / weeklyWorkouts.filter((w) => w.status !== "not-completed").length) || 0 : 0
+
+  if (!mounted) return null
 
   return (
     <div className="min-h-screen bg-[#F5F0E8] py-10 font-montserrat">
