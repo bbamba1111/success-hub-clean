@@ -19,9 +19,10 @@ interface SleepEntry {
 }
 
 export default function SleepTrackerPage() {
+  const [mounted, setMounted] = useState(false)
   const [sleepEntries, setSleepEntries] = useState<SleepEntry[]>([])
   const [newEntry, setNewEntry] = useState({
-    date: new Date().toISOString().split("T")[0],
+    date: "",
     bedtime: "22:00",
     wakeTime: "06:00",
     quality: "Good" as const,
@@ -30,9 +31,11 @@ export default function SleepTrackerPage() {
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
-    localStorage.setItem("dashboardVisited", "true")
+    setNewEntry((prev) => ({ ...prev, date: new Date().toISOString().split("T")[0] }))
     const savedEntries = localStorage.getItem("sleepEntries")
     if (savedEntries) setSleepEntries(JSON.parse(savedEntries))
+    localStorage.setItem("dashboardVisited", "true")
+    setMounted(true)
   }, [])
 
   const calculateDuration = (bedtime: string, wakeTime: string) => {
@@ -73,7 +76,7 @@ export default function SleepTrackerPage() {
       date: new Date().toISOString().split("T")[0],
       bedtime: "22:00",
       wakeTime: "06:00",
-      quality: "Good",
+      quality: "Good" as const,
       notes: "",
     })
   }
@@ -131,6 +134,8 @@ export default function SleepTrackerPage() {
   }
 
   const stats = getWeeklyStats()
+
+  if (!mounted) return null
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white py-12">

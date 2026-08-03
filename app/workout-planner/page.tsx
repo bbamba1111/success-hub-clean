@@ -61,9 +61,10 @@ const getRandomMessage = () =>
   ENCOURAGING_MESSAGES[Math.floor(Math.random() * ENCOURAGING_MESSAGES.length)]
 
 export default function WorkoutPlannerPage() {
+  const [mounted, setMounted] = useState(false)
   const [workouts, setWorkouts] = useState<WorkoutEntry[]>([])
   const [newWorkout, setNewWorkout] = useState({
-    date: new Date().toISOString().split("T")[0],
+    date: "",
     type: "",
     duration: 30,
     notes: "",
@@ -71,9 +72,11 @@ export default function WorkoutPlannerPage() {
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
-    localStorage.setItem("dashboardVisited", "true")
+    setNewWorkout((prev) => ({ ...prev, date: new Date().toISOString().split("T")[0] }))
     const savedWorkouts = localStorage.getItem("workouts")
     if (savedWorkouts) setWorkouts(JSON.parse(savedWorkouts))
+    localStorage.setItem("dashboardVisited", "true")
+    setMounted(true)
   }, [])
 
   // Auto-built commitment sentence from type + duration
@@ -102,7 +105,7 @@ export default function WorkoutPlannerPage() {
     setWorkouts(updated)
     localStorage.setItem("workouts", JSON.stringify(updated))
     setNewWorkout({
-      date: new Date().toISOString().split("T")[0],
+      date: mounted ? new Date().toISOString().split("T")[0] : "",
       type: "",
       duration: 30,
       notes: "",
@@ -132,6 +135,8 @@ export default function WorkoutPlannerPage() {
   }
 
   const stats = getWeeklyStats()
+
+  if (!mounted) return null
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white py-12">
