@@ -17,6 +17,8 @@ const PUBLIC_ROUTES = [
   "/my-results",
   "/preview-results",
   "/pricing",
+  "/workout-planner",
+  "/sleep-tracker",
 ]
 
 // Routes that require authentication but NOT paid membership (free access after login)
@@ -25,8 +27,6 @@ const AUTH_ONLY_ROUTES = [
   "/installation",
   "/human-zone-of-genius-team",
   "/ai-executive-team",
-  "/workout-planner",
-  "/sleep-tracker",
 ]
 
 // Valid paid membership tiers (from database constraint)
