@@ -85,7 +85,7 @@ function freshState(): MovementState {
     completionStatus: null,
     completedDuration: 20,
     reflection: "",
-    createdAt: new Date().toISOString(),
+    createdAt: "",
   }
 }
 
@@ -152,15 +152,16 @@ export default function MovementIntentionPage() {
     setState(prev => ({ ...prev, completionStatus: status }))
 
   const handleSave = () => {
+    const now = new Date().toISOString()
     const record: MovementRecord = {
       id: Date.now().toString(),
-      date: new Date().toISOString().split("T")[0],
+      date: now.split("T")[0],
       type: displayType,
       duration: state.duration,
       completionStatus: state.completionStatus!,
       completedDuration: state.completionStatus === "partially" ? state.completedDuration : undefined,
       reflection: state.reflection,
-      createdAt: state.createdAt,
+      createdAt: now,
     }
     const updated = [record, ...history]
     setHistory(updated)

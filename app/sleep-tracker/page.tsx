@@ -58,7 +58,7 @@ function freshState(): SleepState {
     completionStatus: null,
     actualHours: 7,
     reflection: "",
-    createdAt: new Date().toISOString(),
+    createdAt: "",
   }
 }
 
@@ -122,14 +122,15 @@ export default function SleepIntentionPage() {
     }))
 
   const handleSave = () => {
+    const now = new Date().toISOString()
     const record: SleepRecord = {
       id: Date.now().toString(),
-      date: new Date().toISOString().split("T")[0],
+      date: now.split("T")[0],
       targetHours: state.targetHours,
       completionStatus: state.completionStatus!,
       actualHours: state.completionStatus === "partially" ? state.actualHours : undefined,
       reflection: state.reflection,
-      createdAt: state.createdAt,
+      createdAt: now,
     }
     const updated = [record, ...history]
     setHistory(updated)
