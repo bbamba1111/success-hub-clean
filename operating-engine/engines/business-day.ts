@@ -72,8 +72,10 @@ export function getNextOperatingSegment(currentIndex: number, time: TimeContext)
     return SCHEDULE_BY_ID["time-freedom"] ?? SCHEDULE[(currentIndex + 1) % len]
   }
 
-  // Fallback for any other night (Tue/Wed night → Mon–Thu morning) — use array-next.
-  return SCHEDULE[(currentIndex + 1) % len]
+  // Tue / Wed / Thu night → standard weekday morning (Early Access™ at 7 AM).
+  // Never fall through to array-next here because index 0 is monday-reality-check,
+  // which would incorrectly appear as "Next" on non-Monday nights.
+  return SCHEDULE_BY_ID["early-access"] ?? SCHEDULE[(currentIndex + 1) % len]
 }
 
 /** Window (in minutes before start) during which a live block reads as "STARTING NEXT". */
