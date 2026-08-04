@@ -103,13 +103,24 @@ function resolveProgress(minutes: number): number {
   return Math.round(((minutes - COMMUNITY_OPEN_MINUTES) / span) * 100)
 }
 
-/** Build the per-block timeline with current/upcoming/completed states. */
-function buildTimeline(currentIndex: number): TimelineEntry[] {
-  return SCHEDULE.map((block, index) => {
+/** Build the per-block timeline with current/upcoming/completed states.
+ *  Blocks marked `mondayOnly` are excluded on every day except Monday (dayOfWeek === 1).
+ *  On Monday, morning-given starts at 9:45 AM (after the Reality Check ends).
+ */
+function buildTimeline(currentIndex: number, dayOfWeek: number): TimelineEntry[] {
+  const isMonday = dayOfWeek === 1
+  return SCHEDULE.flatMap((block, index) => {
+    // Hide mondayOnly blocks on non-Monday days
+    if (block.mondayOnly && !isMonday) return []
+    // On Monday, morning-given shifts to 9:45–10:30 AM
+    const resolvedBlock =
+      isMonday && block.id === "morning-given"
+        ? { ...block, timeLabel: "9:45–10:30 AM", startMinutes: 9 * 60 + 45 }
+        : block
     let state: TimelineEntry["state"] = "upcoming"
     if (index === currentIndex) state = "current"
     else if (index < currentIndex) state = "completed"
-    return { block, state }
+    return [{ block: resolvedBlock, state }]
   })
 }
 
@@ -172,15 +183,22 @@ export function getBusinessDayState(time: TimeContext): BusinessDayState {
       countdownToNext: buildCountdown(minutesUntilNext),
       status,
       progress: resolveProgress(minutes),
-      timeline: buildTimeline(isBeforeTfStart
-        ? SCHEDULE.findIndex((b) => b.id === "digital-detox")
-        : tfIndex),
+      timeline: buildTimeline(
+        isBeforeTfStart ? SCHEDULE.findIndex((b) => b.id === "digital-detox") : tfIndex,
+        time.dayOfWeek,
+      ),
     }
   }
   // ── Standard weekday logic ────────────────────────────────────────────────
 
   const currentIndex = getCurrentBlockIndex(minutes)
-  const current = SCHEDULE[currentIndex]
+  const isMonday = time.dayOfWeek === 1
+  const rawCurrent = SCHEDULE[currentIndex]
+  // On Mondays, morning-given starts at 9:45 AM (after the Reality Check ends at 9:45).
+  const current: BlockConfig =
+    isMonday && rawCurrent.id === "morning-given"
+      ? { ...rawCurrent, timeLabel: "9:45–10:30 AM", startMinutes: 9 * 60 + 45 }
+      : rawCurrent
   const previous = SCHEDULE[(currentIndex - 1 + len) % len]
   const next = getNextOperatingSegment(currentIndex, time)
 
@@ -195,6 +213,6 @@ export function getBusinessDayState(time: TimeContext): BusinessDayState {
     countdownToNext: buildCountdown(minutesUntilNext),
     status,
     progress: resolveProgress(minutes),
-    timeline: buildTimeline(currentIndex),
+    timeline: buildTimeline(currentIndex, time.dayOfWeek),
   }
 }
