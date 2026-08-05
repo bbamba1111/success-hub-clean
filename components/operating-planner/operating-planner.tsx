@@ -1,9 +1,9 @@
 "use client"
 
 /**
- * OperatingPlanner™ — Design Space™ for each operating segment.
+ * OperatingPlanner™ — Space™ for each operating segment.
  *
- * Phase: Live & Lead Today™ Design Space — Full Content Migration
+ * Phase: Live & Lead Today™ Space™ — Full Content Migration
  *
  * Structure inside each expanded dropdown:
  *   1. Cherry Blossom™ Hero  — garden background (same as /begin), glass card
@@ -34,7 +34,7 @@ const BusinessContextProfile = dynamic(
 )
 
 // ---------------------------------------------------------------------------
-// Segment data — ported from /design-my-week so each Design Space is fully
+// Segment data — ported from /design-my-week so each Space™ is fully
 // self-contained. Keys match BlockId values.
 // ---------------------------------------------------------------------------
 
@@ -1018,6 +1018,11 @@ export function OperatingPlanner({ blockId }: OperatingPlannerProps) {
             <span className="mt-2 block font-serif text-sm italic text-brand-ink-soft">
               {config.atmosphere}
             </span>
+            {config.purposeDescription && (
+              <span className="mt-3 block font-sans text-sm text-brand-ink-soft/80 max-w-lg">
+                {config.purposeDescription}
+              </span>
+            )}
           </span>
           <span className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/70 text-brand-ink-soft">
             <ChevronDown
@@ -1033,9 +1038,9 @@ export function OperatingPlanner({ blockId }: OperatingPlannerProps) {
       {open && (
         <div id={`operating-planner-body-${blockId}`} className="w-full">
 
-          {/* Design Space — tinted surface bg + elevated white workspace card */}
+          {/* Space™ — tinted surface bg + elevated white workspace card */}
           {data && (
-            // Part 5: subtle tinted background spans the full design space area
+            // Part 5: subtle tinted background spans the full Space™ area
             <div className="w-full px-4 pb-12 pt-12 sm:px-8 lg:px-12" style={{ backgroundColor: config.surface }}>
               {/* Part 6: single elevated white workspace card */}
               <div className="mx-auto w-full max-w-5xl rounded-3xl bg-white shadow-[0_4px_32px_rgba(0,0,0,0.08)] overflow-hidden ring-1 ring-black/[0.04]">

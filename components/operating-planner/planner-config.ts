@@ -29,10 +29,15 @@ export interface PlannerSegmentConfig {
    */
   welcomeName: string
   /**
-   * The workspace's own name — members enter the SEGMENT, not "the planner."
-   * e.g. "Your Executive Workspace", "Your Morning Sanctuary".
+   * The Space™ label shown above the title — members enter the Space™, not "the planner."
+   * e.g. "Reflection Space™", "Movement Space™".
    */
   workspaceLabel: string
+  /**
+   * One-sentence purpose description shown below the atmosphere line.
+   * Built around the core philosophy: "A protected time and space for what matters most."
+   */
+  purposeDescription: string
   /**
    * A short, atmospheric mood line for the room (three words, editorial).
    * Communicates atmosphere before functionality. e.g. "Focused · Grounded · Executive".
@@ -79,7 +84,8 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
   "early-access": {
     title: "Design My Flex Time™",
     welcomeName: "Welcome to Flex Time™",
-    workspaceLabel: "Your Flex Time Design Space",
+    workspaceLabel: "Flex Time Space™",
+    purposeDescription: "A protected time and space to absorb life's unavoidable demands before they ever touch your CEO Workday™.",
     atmosphere: "Quiet · Unhurried · Open",
     surface: "#FBF4EC",
     backgroundImage: "/images/block-early-access.png",
@@ -97,7 +103,8 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
   "morning-given": {
     title: "Design My Morning Routine™",
     welcomeName: "Welcome to Morning GIV•EN™",
-    workspaceLabel: "Your Morning Design Space",
+    workspaceLabel: "Alignment Space™",
+    purposeDescription: "A protected time and space to align your mind, body, spirit, and intentions before beginning your day.",
     atmosphere: "Light · Fresh · Hopeful",
     surface: "#FBF1F3",
     backgroundImage: "/images/block-morning-given.png",
@@ -115,7 +122,8 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
   "movement-window": {
     title: "Design My 30-Minute Movement™",
     welcomeName: "Welcome to Your Movement Window™",
-    workspaceLabel: "Your Movement Design Space",
+    workspaceLabel: "Movement Space™",
+    purposeDescription: "A protected time and space to honor your body through intentional movement and strengthen the promises you make to yourself.",
     atmosphere: "Energizing · Present · Alive",
     surface: "#EFF5EC",
     backgroundImage: "/images/block-movement-window.png",
@@ -133,7 +141,8 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
   "lunch-break": {
     title: "Design My Lunch Experience™",
     welcomeName: "Welcome to Your Healthy Hybrid Lunch™",
-    workspaceLabel: "Your Lunch Design Space",
+    workspaceLabel: "Midday Space™",
+    purposeDescription: "A protected time and space to nourish yourself, connect with what matters most, and prepare to enter your CEO Workspace™.",
     atmosphere: "Nourishing · Warm · Restorative",
     surface: "#F5F1E7",
     backgroundImage: "/images/block-lunch-break.png",
@@ -151,7 +160,8 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
   "ceo-workday": {
     title: "Design My CEO Workday™",
     welcomeName: "Welcome to Your CEO Workday™",
-    workspaceLabel: "Your CEO Workday Design Space",
+    workspaceLabel: "CEO Workspace™",
+    purposeDescription: "A protected time and space for your highest-value work.",
     atmosphere: "Focused · Grounded · Executive",
     // Soft sage — the protected execution room.
     surface: "#E7F0E3",
@@ -198,7 +208,8 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
   "time-freedom": {
     title: "Design My Time Freedom™",
     welcomeName: "Welcome to Time Freedom™",
-    workspaceLabel: "Your Time Freedom Design Space",
+    workspaceLabel: "Time Freedom Space™",
+    purposeDescription: "A protected time and space to enjoy the life you are building your business to support.",
     atmosphere: "Golden · Spacious · Free",
     // Golden-hour warmth — sunset sand, not a cool spa. Time Freedom™ is the
     // reward at the end of a beautifully lived Business Day™: work is finished,
@@ -219,7 +230,8 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
   "power-down": {
     title: "Design My Evening Routine™",
     welcomeName: "Welcome to Power Down™",
-    workspaceLabel: "Your Evening Design Space",
+    workspaceLabel: "Power Down Space™",
+    purposeDescription: "A protected time and space to prepare your mind and body for restorative sleep.",
     atmosphere: "Quiet · Warm · Restorative",
     surface: "#EEEFF3",
     backgroundImage: "/images/block-power-down.png",
@@ -237,7 +249,8 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
   "digital-detox": {
     title: "Design My Digital Detox™",
     welcomeName: "Welcome to Your Digital Detox™",
-    workspaceLabel: "Your Digital Detox Design Space",
+    workspaceLabel: "Unplug Space™",
+    purposeDescription: "A protected time and space to disconnect from technology and reconnect with deep rest.",
     atmosphere: "Still · Restful · Restorative",
     surface: "#EDEEF2",
     backgroundImage: "/images/block-digital-detox.png",
@@ -254,7 +267,7 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
   },
 }
 
-/** All Design Space planner sections have been removed from the home page. */
+/** All Space™ planner sections have been removed from the home page. */
 export function segmentHasPlanner(_blockId: BlockId): boolean {
   return false
 }

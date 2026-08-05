@@ -25,7 +25,7 @@ export function OperatingPlannerSection() {
 
   const blockId = experience.businessDay.current.id
 
-  // Show Design Space for every segment that has one configured.
+  // Show Space™ for every segment that has one configured.
   // During Time Freedom™ (Thu 5 PM → Mon 7 AM) the CEO Workday block is
   // hidden from the schedule, so it won't be surfaced here either.
   if (!segmentHasPlanner(blockId)) return null
