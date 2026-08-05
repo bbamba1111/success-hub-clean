@@ -24,6 +24,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import { Briefcase, ChevronDown, Dumbbell, ExternalLink, Moon, Users } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { CherryBlossomWorkstation } from "@/components/cherry-blossom-workstation"
+import { ReflectionSpace } from "@/components/reflection-space"
 import { TimeFreedomSocial } from "@/components/time-freedom-social"
 import type { BlockId } from "@/operating-engine"
 
@@ -68,7 +69,12 @@ const SEGMENT_TOOLS: Partial<Record<BlockId, SegmentTool>> = {
 
 /** True when a segment exposes any planner / tool / social feature. */
 export function segmentHasWorkspace(blockId: BlockId): boolean {
-  return Boolean(BLOCK_CHAT_CONTEXT[blockId]) || Boolean(SEGMENT_TOOLS[blockId]) || blockId === "time-freedom"
+  return (
+    Boolean(BLOCK_CHAT_CONTEXT[blockId]) ||
+    Boolean(SEGMENT_TOOLS[blockId]) ||
+    blockId === "time-freedom" ||
+    blockId === "monday-reality-check"
+  )
 }
 
 type PanelId = "planner" | "tool" | "social"
@@ -90,9 +96,19 @@ export function SegmentWorkspace({ blockId, isCurrent, tint = "255 255 255" }: S
   const chatContext = BLOCK_CHAT_CONTEXT[blockId]
   const tool = SEGMENT_TOOLS[blockId]
   const hasSocial = blockId === "time-freedom"
+  const isReflection = blockId === "monday-reality-check"
 
   // Nothing to offer for this segment (e.g. early-access), or not in session.
-  if (!isCurrent || (!chatContext && !tool && !hasSocial)) return null
+  if (!isCurrent || (!chatContext && !tool && !hasSocial && !isReflection)) return null
+
+  // Reflection Space™ renders its own full UI — no tab toggles needed.
+  if (isReflection) {
+    return (
+      <div className="mt-5">
+        <ReflectionSpace />
+      </div>
+    )
+  }
 
   const toggle = (panel: PanelId) => setOpenPanel((current) => (current === panel ? null : panel))
 
