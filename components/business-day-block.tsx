@@ -42,6 +42,19 @@ export interface BusinessDayBlockProps {
   aboutContent?: ReactNode
 }
 
+/** Maps each block id to the Space™ name shown in the expand toggle. */
+const SPACE_LABEL: Record<string, string> = {
+  "monday-reality-check": "Reflection Space™",
+  "early-access":         "Flex Time Space™",
+  "morning-given":        "Alignment Space™",
+  "movement-window":      "Movement Space™",
+  "lunch-break":          "Midday Space™",
+  "ceo-workday":          "CEO Workspace™",
+  "time-freedom":         "Time Freedom Space™",
+  "power-down":           "Power Down Space™",
+  "digital-detox":        "Unplug Space™",
+}
+
 const STATUS_LABEL: Record<BlockStatus, string> = {
   current: "Happening Now",
   upcoming: "Upcoming",
@@ -219,7 +232,11 @@ export function BusinessDayBlock({
             className={`h-3.5 w-3.5 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
             aria-hidden
           />
-          {open ? "Close" : "Open Segment"}
+          {open
+            ? "Close"
+            : blockId && SPACE_LABEL[blockId]
+              ? `Enter ${SPACE_LABEL[blockId]}`
+              : "Open Segment"}
         </button>
 
         {/* 3-part expandable body */}
