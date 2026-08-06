@@ -11,12 +11,14 @@ export const metadata: Metadata = {
 /**
  * /founder-profile — Step 1 of the Harmony Lane™ onboarding flow.
  *
- * Now combines the former Founder Profile™ and Business Context Assessment™
- * into a single setup experience called the Founder & Business Profile™.
+ * One-time onboarding experience — Founder & Business Profile™.
+ * After saving, the member returns to / (Harmony Lane™ home).
+ *
+ * Business Context™ is NOT part of this flow. It belongs exclusively to
+ * the Measure Monthly™ process.
  *
  * Flow:
- *   /begin → /founder-profile → /business-context → /audit → /entrepreneur-success-assessment
- *   → /harmony-blueprint → /design-my-week
+ *   /begin → /founder-profile → /  (home — Reflection Space™ reads profile on first Monday)
  */
 export default function FounderProfilePage() {
   return (

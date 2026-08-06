@@ -203,7 +203,8 @@ export function FounderProfileForm() {
     setSaving(true)
     // TODO: persist to Supabase
     await new Promise((r) => setTimeout(r, 600))
-    router.push("/business-context")
+    // Return home — Business Context belongs to Measure Monthly™, not this flow.
+    router.push("/")
   }
 
   return (
@@ -687,7 +688,7 @@ export function FounderProfileForm() {
             <div className="flex items-center gap-3">
               <button
                 type="button"
-                onClick={() => router.push("/business-context")}
+                onClick={() => router.push("/")}
                 className="rounded-xl border border-[#E8DDD8] bg-white px-5 py-3 font-sans text-sm font-semibold text-brand-ink/50 hover:bg-brand-cream hover:text-brand-ink transition-colors"
               >
                 Skip for Now
