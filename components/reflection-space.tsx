@@ -21,7 +21,17 @@ import { CheckCircle2, Lock, User } from "lucide-react"
 
 // ─── Storage ─────────────────────────────────────────────────────────────────
 
-const WEEKLY_KEY = "reflectionSpace_v2"
+const WEEKLY_KEY   = "reflectionSpace_v2"
+/** Persists forever — marks that the member has completed their first Reality Check™. */
+const BASELINE_KEY = "reflectionSpace_baselineDone"
+
+function hasCompletedBaseline(): boolean {
+  try { return localStorage.getItem(BASELINE_KEY) === "true" } catch { return false }
+}
+
+function markBaselineDone() {
+  try { localStorage.setItem(BASELINE_KEY, "true") } catch { /* ignore */ }
+}
 
 function getWeekKey(date = new Date()): string {
   const d = new Date(date)
@@ -101,6 +111,7 @@ function formatCountdown(seconds: number): string {
 
 export function ReflectionSpace() {
   const [mounted, setMounted]               = useState(false)
+  const [isBaseline, setIsBaseline]         = useState(true)
   const [snapshot, setSnapshot]             = useState<FounderSnapshot>({ name: "", businessName: "", currentFocus: "", quarterlyIntention: "" })
   const [snapshotDone, setSnapshotDone]     = useState(false)
   const [auditDone, setAuditDone]           = useState(false)
@@ -114,6 +125,7 @@ export function ReflectionSpace() {
   useEffect(() => {
     const ws = loadWeekly()
     const fp = loadFounderSnapshot()
+    setIsBaseline(!hasCompletedBaseline())
     setSnapshot(fp)
     setSnapshotDone(ws.snapshotDone)
     setAuditDone(ws.auditDone)
@@ -163,6 +175,8 @@ export function ReflectionSpace() {
     const now = new Date().toISOString()
     const next: WeeklyState = { weekKey: getWeekKey(), snapshotDone, auditDone, assessmentDone: true, completedAt: now }
     saveWeekly(next)
+    // Persist baseline completion forever so future visits switch to 7-day wording
+    if (isBaseline) markBaselineDone()
     setAssessmentDone(true)
     setCompletedAt(now)
     setTimeout(() => setActiveStep(4), 500)
@@ -170,16 +184,19 @@ export function ReflectionSpace() {
 
   const bothDone = auditDone && assessmentDone
 
-  // Cherry Blossom message based on current state
+  // Cherry Blossom message — changes based on step and whether this is the first-ever Reality Check™
+  const period = isBaseline ? "30 days" : "7 days"
   const cherryBlossomMessage = bothDone
-    ? "Beautiful. You have now reflected on both your life and your business. Let\u2019s bring those two perspectives together."
-    : assessmentDone
-    ? "Beautiful. You have now reflected on both your life and your business. Let\u2019s bring those two perspectives together."
+    ? "Reflection Complete. Thank you for creating a protected time and space to reflect before reacting to the week ahead. The awareness you\u2019ve gained today is the foundation for making intentional choices throughout your Work-Life Balance Business Day\u2122."
     : auditDone
-    ? "Thank you for taking a moment to honestly reflect on your life. Now let\u2019s look at how your business has been supporting \u2014 or competing with \u2014 the life you\u2019re intentionally creating."
+    ? "Business Reflection Complete. You\u2019ve now reflected on both your business and your life. Seeing these together creates the clarity needed to intentionally redesign your entry into the workweek."
     : snapshotDone
-    ? "It\u2019s wonderful to see you again. Let\u2019s begin by reflecting on how you\u2019ve been living since we last met."
-    : "Welcome back. Before you redesign your entry into the workweek, let\u2019s create a protected time and space to reflect on your life and your business."
+    ? isBaseline
+      ? "You\u2019re establishing your starting point. Today\u2019s Reality Check\u2122 looks back over the past 30 days to create a clear baseline for your work-life balance and your business. From this point forward, you\u2019ll return each Monday to measure your progress one week at a time."
+      : "Welcome back. Today\u2019s Reality Check\u2122 reflects on the past 7 days, giving you a weekly opportunity to celebrate your progress, identify new opportunities, and intentionally redesign your entry into the workweek."
+    : isBaseline
+    ? "You\u2019re establishing your starting point. Today\u2019s Reality Check\u2122 looks back over the past 30 days to help you understand where you are today. Future Reality Checks\u2122 will help you measure your progress week by week."
+    : "Welcome back. Today\u2019s Reality Check\u2122 reflects on the past 7 days, giving you a weekly opportunity to celebrate your progress, identify new opportunities, and intentionally redesign your entry into the workweek."
 
   if (!mounted) {
     return <div className="h-64 rounded-3xl bg-[#FDF8F5]" aria-hidden />
@@ -268,7 +285,7 @@ export function ReflectionSpace() {
       {/* ── Step 2 — Work-Life Balance Audit™ ──────────────────────────────── */}
       <StepCard
         stepNumber={2}
-        label="Begin With Your Life"
+        label="Activity 1"
         title="Work-Life Balance Audit™"
         done={auditDone}
         active={activeStep === 2}
@@ -279,14 +296,14 @@ export function ReflectionSpace() {
         }}
       >
         <p className="font-sans text-sm text-[#5A4A52] leading-relaxed">
-          Before you redesign your workweek, begin by reflecting on your life. The Work-Life Balance Audit™ helps you understand how consistently you&apos;ve honored what matters most across 15 areas of your life over the past 30 days.
+          Reflect on how you&apos;ve been living over the past <strong>{period}</strong>. This audit provides a snapshot of your overall work-life balance and helps you identify the areas of your life that may need more attention before the week begins.
         </p>
         <div className="flex flex-col gap-3 pt-2">
           <Link
             href="/audit"
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#E26C73] px-6 py-3 font-sans text-sm font-semibold text-white transition-colors hover:bg-[#C0545A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E26C73]"
           >
-            Start Work-Life Balance Audit™
+            Begin Work-Life Balance Audit™
           </Link>
           <button
             onClick={markAuditDone}
@@ -306,7 +323,7 @@ export function ReflectionSpace() {
       {/* ── Step 3 — Entrepreneur Success Assessment™ ──────────────────────── */}
       <StepCard
         stepNumber={3}
-        label="Now Reflect On Your Business"
+        label="Activity 2"
         title="Entrepreneur Success Assessment™"
         done={assessmentDone}
         active={activeStep === 3}
@@ -317,14 +334,14 @@ export function ReflectionSpace() {
         }}
       >
         <p className="font-sans text-sm text-[#5A4A52] leading-relaxed">
-          Now reflect on how your business has been operating over the past 30 days. Discover whether your business is supporting the life you want — or quietly pulling you back into hustle culture.
+          Now reflect on how your business has been operating over the past <strong>{period}</strong>. This assessment helps you understand whether your business systems, leadership, and daily practices are supporting the life you&apos;re intentionally creating.
         </p>
         <div className="flex flex-col gap-3 pt-2">
           <Link
             href="/entrepreneur-success-assessment"
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#E26C73] px-6 py-3 font-sans text-sm font-semibold text-white transition-colors hover:bg-[#C0545A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E26C73]"
           >
-            Start Entrepreneur Success Assessment™
+            Begin Entrepreneur Success Assessment™
           </Link>
           <button
             onClick={markAssessmentDone}
@@ -354,10 +371,10 @@ export function ReflectionSpace() {
             <div className="rounded-3xl border border-[#7FB069]/25 bg-[#F7FBF4] p-8 space-y-6">
               <div className="text-center space-y-1">
                 <p className="font-sans text-xs font-semibold uppercase tracking-[0.25em] text-[#5B835F]">
-                  Step 4 — Your Work-Life Balance Reality Check™
+                  Activity 3 — Your Work-Life Balance Reality Check™
                 </p>
                 <p className="font-serif text-xl font-semibold text-[#2E1F27]">
-                  You&apos;ve created the clarity needed to redesign your workweek.
+                  Your Reality Check™ brings your life and business insights together into one intentional weekly reflection.
                 </p>
               </div>
 
