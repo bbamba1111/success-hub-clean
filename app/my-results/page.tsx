@@ -177,22 +177,21 @@ export default function MyResultsPage() {
         {/* Cherry Blossom Transition Card — the only thing below the breakdown */}
         <div className="mb-16">
           <CherryBlossomTransitionCard
-            greeting="Thank you."
-            ctaLabel="Continue to Entrepreneur Success Assessment™"
+            greeting="Life Reflection Complete."
+            ctaLabel="Begin Entrepreneur Success Assessment™"
             ctaHref="/entrepreneur-success"
           >
             <p>
-              We now understand how your life has been operating over the past 30 days.
+              Thank you for taking the time to reflect on your life.
             </p>
             <p>
-              These results become the first half of your Harmony Blueprint™.
+              Your responses provide a clearer picture of how you&apos;ve been honoring what
+              matters most over the past 30 days.
             </p>
             <p>
-              Next we&apos;ll discover how your business has been operating during those same 30 days.
-            </p>
-            <p>
-              Together these two assessments allow me to personalize every recommendation
-              you&apos;ll receive inside Harmony Lane™.
+              Next, we&apos;ll reflect on how your business has been operating during that same
+              period so we can bring both perspectives together in your Work-Life Balance
+              Reality Check&trade;.
             </p>
           </CherryBlossomTransitionCard>
         </div>

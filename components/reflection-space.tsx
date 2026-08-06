@@ -187,20 +187,16 @@ export function ReflectionSpace() {
   // Cherry Blossom™ — message changes by step and whether this is the First Reality Check™
   const period = isBaseline ? "30 days" : "7 days"
 
-  // Pre-activity messages (shown before audit begins — same for both first-visit and returning)
-  const preActivityMessage = isBaseline
-    ? "Welcome to Reflection Space\u2122.\n\nBefore you redesign your entry into the workweek, let\u2019s create a protected time and space to reflect on your life and your business.\n\nBecause this is your first Reality Check\u2122, we\u2019ll look back over the past 30 days to create a meaningful starting point for your journey.\n\nFuture Reality Checks\u2122 will reflect on the past 7 days, allowing you to celebrate your progress and intentionally improve one week at a time."
-    : "Welcome back.\n\nBefore you redesign your entry into the workweek, let\u2019s take a few moments to reflect on the past 7 days.\n\nEach Monday is an opportunity to celebrate your progress, learn from the previous week, and intentionally create the week ahead."
-
+  // Cherry Blossom™ — message changes by step and whether this is the First Reality Check™
   const cherryBlossomMessage = bothDone
-    ? "Reflection Complete\n\nYou\u2019ve taken the time to pause before reacting to the week ahead.\n\nThat awareness is the first step toward intentionally redesigning your entry into the workweek.\n\nYour next protected time and space \u2014 Alignment Space\u2122 (Morning GIV\u2022EN\u2122) \u2014 will open at its scheduled time."
+    ? "Reflection Complete\n\nYou have just created something many founders never do.\n\nYou created a protected time and space to reflect on both your life and your business before reacting to the week ahead.\n\nMost founders begin Monday by opening their inbox. You began by creating awareness.\n\nThat single decision changes how the rest of your week unfolds."
     : auditDone
-    ? "Business Reflection Complete\n\nWonderful.\n\nYou\u2019ve now reflected on both your life and your business.\n\nLet\u2019s bring these insights together in your personalized Work-Life Balance Reality Check\u2122."
+    ? "Life Reflection Complete\n\nThank you for taking the time to reflect on your life.\n\nYour responses provide a clearer picture of how you\u2019ve been honoring what matters most over the past " + period + ".\n\nNext, we\u2019ll reflect on how your business has been operating during that same period so we can bring both perspectives together in your Work-Life Balance Reality Check\u2122."
     : snapshotDone
-    ? isBaseline
-      ? "Life Reflection Complete\n\nThank you for creating a protected time and space to reflect on your life.\n\nYour results provide valuable insight into how you\u2019ve been honoring what matters most. Let\u2019s continue by reflecting on your business."
-      : "Life Reflection Complete\n\nThank you for creating a protected time and space to reflect on your life.\n\nYour results provide valuable insight into how you\u2019ve been honoring what matters most. Let\u2019s continue by reflecting on your business."
-    : preActivityMessage
+    ? "Business Reflection\n\nYour business shapes your life just as much as your life shapes your business.\n\nThis reflection looks at how your business has been operating over the past " + period + ".\n\nThere are no right or wrong answers. Simply answer honestly so we can understand how your business is supporting \u2014 or competing with \u2014 the life you\u2019re intentionally creating."
+    : isBaseline
+    ? "Welcome to Reflection Space\u2122.\n\nBefore you redesign your entry into the workweek, let\u2019s begin with you.\n\nYour Founder Profile\u2122 helps me understand who you are, the business you\u2019re building, and what matters most to you so I can guide you throughout your Work-Life Balance Business Day\u2122.\n\nComplete your profile once. We\u2019ll use it as the foundation for your Monday reflections and your experience inside Harmony Lane\u2122."
+    : "Welcome back.\n\nBefore you redesign your entry into the workweek, let\u2019s take a few moments to reflect on the past 7 days.\n\nEach Monday is an opportunity to celebrate your progress, learn from the previous week, and intentionally create the week ahead."
 
   if (!mounted) {
     return <div className="h-64 rounded-3xl bg-[#FDF8F5]" aria-hidden />
@@ -259,7 +255,7 @@ export function ReflectionSpace() {
           ) : (
             <div className="space-y-3">
               <p className="font-sans text-sm text-[#5A4A52] leading-relaxed">
-                Your Founder Profile™ has not been completed yet. Complete it once so Cherry Blossom™ can personalize your entire Harmony Lane™ experience.
+                Your Founder Profile™ has not been completed yet. Complete it once so Cherry Blossom™ can understand who you are, the business you&apos;re building, and what matters most to you — and guide you throughout your Work-Life Balance Business Day™.
               </p>
               <Link
                 href="/founder-profile"
@@ -378,7 +374,7 @@ export function ReflectionSpace() {
                   Activity 3 — Your Work-Life Balance Reality Check™
                 </p>
                 <p className="font-serif text-xl font-semibold text-[#2E1F27]">
-                  Your Reality Check™ brings your life and business insights together into one intentional weekly reflection.
+                  Your life and business reflections have now been brought together into one personalized Work-Life Balance Reality Check™.
                 </p>
               </div>
 
@@ -388,12 +384,12 @@ export function ReflectionSpace() {
                   <span className="text-xl select-none" role="img" aria-label="Cherry blossom">🌸</span>
                   <p className="font-sans text-xs font-semibold uppercase tracking-[0.2em] text-[#E26C73]">Cherry Blossom™</p>
                 </div>
-                <p className="font-serif text-base font-semibold text-[#2E1F27] leading-snug">Beautiful.</p>
+                <p className="font-serif text-base font-semibold text-[#2E1F27] leading-snug">Take a few moments to review your insights and consider where you&apos;d like to focus your attention this week.</p>
                 <p className="font-sans text-sm text-[#5A4A52] leading-relaxed">
-                  Your Reality Check™ isn&apos;t about judging your performance. It&apos;s about creating awareness.
+                  Rather than reacting to whatever the week brings, you now have the clarity to intentionally redesign your entry into the workweek.
                 </p>
                 <p className="font-sans text-sm text-[#5A4A52] leading-relaxed">
-                  By reflecting on both your life and your business before reacting to the week ahead, you&apos;ve created the clarity needed to intentionally redesign your entry into the workweek.
+                  The next protected time and space — <strong>Alignment Space™ (Morning GIV&bull;EN™)</strong> — will open at its scheduled time.
                 </p>
                 <div className="pt-2 space-y-3 border-t border-[#E26C73]/10">
                   <ReflectionPoint
