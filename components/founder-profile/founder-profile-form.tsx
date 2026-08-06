@@ -453,7 +453,7 @@ export function FounderProfileForm() {
             )}
             <div className="space-y-3">
               {form.children.map((child, i) => (
-                <div key={i} className="flex items-center gap-3">
+                <div key={i} className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
                   <input
                     type="text"
                     className={`${inputClass} flex-1 min-w-0`}
@@ -463,7 +463,7 @@ export function FounderProfileForm() {
                   />
                   <input
                     type="date"
-                    className={`${inputClass} w-36 shrink-0`}
+                    className={`${inputClass} w-full sm:w-[8.5rem] sm:shrink-0`}
                     value={child.birthday}
                     onChange={(e) => updateChild(i, "birthday", e.target.value)}
                     aria-label="Birthday"
@@ -570,7 +570,7 @@ export function FounderProfileForm() {
               </div>
               <div className="space-y-3">
                 {form.pets.map((pet, i) => (
-                  <div key={i} className="flex items-center gap-3">
+                  <div key={i} className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
                     <input
                       type="text"
                       className={`${inputClass} flex-1 min-w-0`}
@@ -580,7 +580,7 @@ export function FounderProfileForm() {
                     />
                     <input
                       type="text"
-                      className={`${inputClass} w-32 shrink-0`}
+                      className={`${inputClass} w-full sm:w-[8.5rem] sm:shrink-0`}
                       placeholder="Type (e.g. Dog)"
                       value={pet.type}
                       onChange={(e) => updatePet(i, "type", e.target.value)}
