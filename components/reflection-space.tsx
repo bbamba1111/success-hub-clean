@@ -21,16 +21,16 @@ import { CheckCircle2, Lock, User } from "lucide-react"
 
 // ─── Storage ─────────────────────────────────────────────────────────────────
 
-const WEEKLY_KEY   = "reflectionSpace_v2"
-/** Persists forever — marks that the member has completed their first Reality Check™. */
-const BASELINE_KEY = "reflectionSpace_baselineDone"
+const WEEKLY_KEY        = "reflectionSpace_v2"
+/** Persists forever — marks that the member has completed their First Reality Check™. */
+const FIRST_REALITY_KEY = "reflectionSpace_firstRealityCheckComplete"
 
-function hasCompletedBaseline(): boolean {
-  try { return localStorage.getItem(BASELINE_KEY) === "true" } catch { return false }
+function hasCompletedFirstRealityCheck(): boolean {
+  try { return localStorage.getItem(FIRST_REALITY_KEY) === "true" } catch { return false }
 }
 
-function markBaselineDone() {
-  try { localStorage.setItem(BASELINE_KEY, "true") } catch { /* ignore */ }
+function markFirstRealityCheckComplete() {
+  try { localStorage.setItem(FIRST_REALITY_KEY, "true") } catch { /* ignore */ }
 }
 
 function getWeekKey(date = new Date()): string {
@@ -125,7 +125,7 @@ export function ReflectionSpace() {
   useEffect(() => {
     const ws = loadWeekly()
     const fp = loadFounderSnapshot()
-    setIsBaseline(!hasCompletedBaseline())
+    setIsBaseline(!hasCompletedFirstRealityCheck())
     setSnapshot(fp)
     setSnapshotDone(ws.snapshotDone)
     setAuditDone(ws.auditDone)
@@ -175,8 +175,8 @@ export function ReflectionSpace() {
     const now = new Date().toISOString()
     const next: WeeklyState = { weekKey: getWeekKey(), snapshotDone, auditDone, assessmentDone: true, completedAt: now }
     saveWeekly(next)
-    // Persist baseline completion forever so future visits switch to 7-day wording
-    if (isBaseline) markBaselineDone()
+    // Persist First Reality Check™ completion forever so future visits switch to 7-day wording
+    if (isBaseline) markFirstRealityCheckComplete()
     setAssessmentDone(true)
     setCompletedAt(now)
     setTimeout(() => setActiveStep(4), 500)
@@ -184,19 +184,23 @@ export function ReflectionSpace() {
 
   const bothDone = auditDone && assessmentDone
 
-  // Cherry Blossom message — changes based on step and whether this is the first-ever Reality Check™
+  // Cherry Blossom™ — message changes by step and whether this is the First Reality Check™
   const period = isBaseline ? "30 days" : "7 days"
+
+  // Pre-activity messages (shown before audit begins — same for both first-visit and returning)
+  const preActivityMessage = isBaseline
+    ? "Welcome to Reflection Space\u2122.\n\nBefore you redesign your entry into the workweek, let\u2019s create a protected time and space to reflect on your life and your business.\n\nBecause this is your first Reality Check\u2122, we\u2019ll look back over the past 30 days to create a meaningful starting point for your journey.\n\nFuture Reality Checks\u2122 will reflect on the past 7 days, allowing you to celebrate your progress and intentionally improve one week at a time."
+    : "Welcome back.\n\nBefore you redesign your entry into the workweek, let\u2019s take a few moments to reflect on the past 7 days.\n\nEach Monday is an opportunity to celebrate your progress, learn from the previous week, and intentionally create the week ahead."
+
   const cherryBlossomMessage = bothDone
-    ? "Reflection Complete. Thank you for creating a protected time and space to reflect before reacting to the week ahead. The awareness you\u2019ve gained today is the foundation for making intentional choices throughout your Work-Life Balance Business Day\u2122."
+    ? "Reflection Complete\n\nYou\u2019ve taken the time to pause before reacting to the week ahead.\n\nThat awareness is the first step toward intentionally redesigning your entry into the workweek.\n\nYour next protected time and space \u2014 Alignment Space\u2122 (Morning GIV\u2022EN\u2122) \u2014 will open at its scheduled time."
     : auditDone
-    ? "Business Reflection Complete. You\u2019ve now reflected on both your business and your life. Seeing these together creates the clarity needed to intentionally redesign your entry into the workweek."
+    ? "Business Reflection Complete\n\nWonderful.\n\nYou\u2019ve now reflected on both your life and your business.\n\nLet\u2019s bring these insights together in your personalized Work-Life Balance Reality Check\u2122."
     : snapshotDone
     ? isBaseline
-      ? "You\u2019re establishing your starting point. Today\u2019s Reality Check\u2122 looks back over the past 30 days to create a clear baseline for your work-life balance and your business. From this point forward, you\u2019ll return each Monday to measure your progress one week at a time."
-      : "Welcome back. Today\u2019s Reality Check\u2122 reflects on the past 7 days, giving you a weekly opportunity to celebrate your progress, identify new opportunities, and intentionally redesign your entry into the workweek."
-    : isBaseline
-    ? "You\u2019re establishing your starting point. Today\u2019s Reality Check\u2122 looks back over the past 30 days to help you understand where you are today. Future Reality Checks\u2122 will help you measure your progress week by week."
-    : "Welcome back. Today\u2019s Reality Check\u2122 reflects on the past 7 days, giving you a weekly opportunity to celebrate your progress, identify new opportunities, and intentionally redesign your entry into the workweek."
+      ? "Life Reflection Complete\n\nThank you for creating a protected time and space to reflect on your life.\n\nYour results provide valuable insight into how you\u2019ve been honoring what matters most. Let\u2019s continue by reflecting on your business."
+      : "Life Reflection Complete\n\nThank you for creating a protected time and space to reflect on your life.\n\nYour results provide valuable insight into how you\u2019ve been honoring what matters most. Let\u2019s continue by reflecting on your business."
+    : preActivityMessage
 
   if (!mounted) {
     return <div className="h-64 rounded-3xl bg-[#FDF8F5]" aria-hidden />
@@ -610,14 +614,23 @@ function StepCard({
 }
 
 function CherryBlossomCoach({ message }: { message: string }) {
+  // Split on double-newline so each paragraph renders separately.
+  // The first paragraph is treated as the title (semibold serif).
+  const paragraphs = message.split("\n\n").filter(Boolean)
+  const [title, ...body] = paragraphs
   return (
     <div className="rounded-2xl border border-[#E26C73]/20 bg-[#FDF8F5] px-6 py-5 flex gap-4 items-start">
       <div className="shrink-0 mt-0.5">
         <span className="text-xl select-none" role="img" aria-label="Cherry blossom">🌸</span>
       </div>
-      <div className="space-y-1">
+      <div className="space-y-2">
         <p className="font-sans text-xs font-semibold uppercase tracking-[0.2em] text-[#E26C73]">Cherry Blossom™</p>
-        <p className="font-sans text-sm text-[#3A2E33] leading-relaxed">{message}</p>
+        {title && (
+          <p className="font-serif text-base font-semibold text-[#2E1F27] leading-snug">{title}</p>
+        )}
+        {body.map((para, i) => (
+          <p key={i} className="font-sans text-sm text-[#3A2E33] leading-relaxed">{para}</p>
+        ))}
       </div>
     </div>
   )
