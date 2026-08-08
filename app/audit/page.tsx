@@ -48,7 +48,7 @@ export default async function AuditPage() {
           </p>
           <p>
             {isBaseline
-              ? <>If this is your first <strong>Reality Check™</strong>, you&apos;ll reflect on the past <strong>30 days</strong> to create a meaningful starting point.</>
+              ? <>If this is your first <strong>Reality Check™</strong>, you&apos;ll reflect on the past <strong>30 days</strong>.</>
               : <>Today&apos;s <strong>Reality Check™</strong> reflects on the previous <strong>7 days</strong>, helping you measure your progress since last Monday.</>}
           </p>
           <p className="text-brand-ink-soft">
