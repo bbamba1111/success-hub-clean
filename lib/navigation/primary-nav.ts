@@ -118,11 +118,6 @@ export const PRIMARY_NAV: PrimarySection[] = [
         href: "/sunday-shift",
         description: "Your full Sunday reset ritual — audit, intentions, prep sheet, and weekly design.",
       },
-      {
-        label: "My Work-Life Harmony Blueprint™",
-        href: "/harmony-blueprint",
-        description: "Your permanent executive record — the foundation every recommendation is built from.",
-      },
     ],
   },
   {
@@ -161,7 +156,7 @@ export const PRIMARY_NAV: PrimarySection[] = [
     id: "my-harmony",
     navLabel: "My Work-Life Harmony",
     title: "My Work-Life Harmony™",
-    href: "/harmony-blueprint",
+    href: "/my-harmony",
     icon: Flower2,
     tagline: "Your long-term growth center — audit history, operating maturity, milestones, and whole-life progress.",
     built: false,
