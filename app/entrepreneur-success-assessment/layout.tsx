@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 export const metadata: Metadata = {
   title: "Entrepreneur Success Assessment™ | Harmony Lane™",
   description:
-    "Establish your operating baseline across the Eight Operating Pillars™. No right or wrong answers — we are simply establishing your starting point.",
+    "Reflect on how your business has been operating over the past 30 days so we can bring both your life and your business together in your Work-Life Balance Reality Check™.",
 }
 
 export default function EntrepreneurSuccessAssessmentLayout({

@@ -31,15 +31,17 @@ export default function EntrepreneurSuccessAssessmentPage() {
           scrollPrompt="Begin Entrepreneur Success Assessment™"
         >
           <p>
-            During the past 30 days you&apos;ve developed habits, routines, and business practices —{" "}
-            <em>some intentionally, others by default</em>.
+            Over the past 30 days, your business has been operating in its own unique way.
           </p>
           <p>
-            This assessment helps me understand how you&apos;ve been operating your business so I can{" "}
-            <strong>personalize Harmony Lane™ specifically for you</strong>.
+            This assessment measures how your business has been operating{" "}
+            <strong>alongside your life</strong> during that same period so we can compare both
+            experiences and better understand where they are working together — and where they
+            may be competing with one another.
           </p>
           <p className="text-brand-ink-soft">
-            There are no right or wrong answers. We are simply establishing your starting point.
+            There are no right or wrong answers. Simply answer honestly. Honest reflection
+            creates the awareness needed to intentionally redesign your entry into the workweek.
           </p>
         </CherryBlossomSceneCard>
       </CherryBlossomScene>
