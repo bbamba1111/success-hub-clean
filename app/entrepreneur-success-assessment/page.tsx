@@ -1,16 +1,24 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import EntrepreneurSuccessAssessment, {
   CompletionScreen,
 } from "@/components/entrepreneur-success/entrepreneur-success-assessment"
 import { CherryBlossomScene, CherryBlossomSceneCard } from "@/components/cherry-blossom/cherry-blossom-scene"
+import { getStoredAssessmentWindow } from "@/lib/assessment-cadence"
 
 const RESULTS_URL =
   "https://success-hub-clean-ics7g40y6-thought-leader-barbaras-projects.vercel.app/harmony-blueprint"
 
 export default function EntrepreneurSuccessAssessmentPage() {
   const [complete, setComplete] = useState(false)
+  // Mirrors the Work-Life Balance Audit™'s cadence for the *same* Reality Check™ —
+  // first Reality Check™ ever = 30-day, every Monday after = 7-day.
+  const [isBaseline, setIsBaseline] = useState(true)
+
+  useEffect(() => {
+    setIsBaseline(getStoredAssessmentWindow() === "30-day")
+  }, [])
 
   if (complete) {
     return (
@@ -31,17 +39,26 @@ export default function EntrepreneurSuccessAssessmentPage() {
           scrollPrompt="Begin Entrepreneur Success Assessment™"
         >
           <p>
-            Over the past 30 days, your business has been operating in its own unique way.
+            Your business has been operating alongside your life every day.
           </p>
           <p>
-            This assessment measures how your business has been operating{" "}
-            <strong>alongside your life</strong> during that same period so we can compare both
-            experiences and better understand where they are working together — and where they
-            may be competing with one another.
+            This assessment measures how your business has been operating during the{" "}
+            <strong>same period</strong> as your Work-Life Balance Audit™.
+          </p>
+          <p>
+            {isBaseline
+              ? <>If this is your first <strong>Reality Check™</strong>, you&apos;ll reflect on the past <strong>30 days</strong>.</>
+              : <>Today&apos;s <strong>Reality Check™</strong> reflects on the previous <strong>7 days</strong>, helping you measure your progress since last Monday.</>}
+          </p>
+          <p>
+            Together, these two reflections create your personalized{" "}
+            <strong>Work-Life Balance Reality Check™</strong>, helping you see how your life and
+            your business are working together — and where they may need better alignment.
           </p>
           <p className="text-brand-ink-soft">
-            There are no right or wrong answers. Simply answer honestly. Honest reflection
-            creates the awareness needed to intentionally redesign your entry into the workweek.
+            There are no right or wrong answers. Simply answer honestly. Reflection creates
+            awareness, and awareness is the first step toward intentionally redesigning your
+            entry into the workweek.
           </p>
         </CherryBlossomSceneCard>
       </CherryBlossomScene>

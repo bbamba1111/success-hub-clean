@@ -43,12 +43,17 @@ export default async function AuditPage() {
           scrollPrompt="Take My Work-Life Balance Audit™"
         >
           <p>
+            Today&apos;s Work-Life Balance Audit™ measures how your life has been operating
+            across <strong>15 key areas</strong>.
+          </p>
+          <p>
             {isBaseline
-              ? <>Before we design your first <strong>Work-Life Balance Business Week™</strong>, I&apos;d like to understand how your life has been showing up over the past <strong>30 days</strong> across 15 areas — a one-time snapshot to see how your work and life have really been gelling together.</>
-              : <>Each Monday we reflect on how your life has been showing up across <strong>15 areas</strong> over the past <strong>7 days</strong> — so you can celebrate your progress and intentionally redesign your entry into the workweek.</>}
+              ? <>If this is your first <strong>Reality Check™</strong>, you&apos;ll reflect on the past <strong>30 days</strong> to create a meaningful starting point.</>
+              : <>Today&apos;s <strong>Reality Check™</strong> reflects on the previous <strong>7 days</strong>, helping you measure your progress since last Monday.</>}
           </p>
           <p className="text-brand-ink-soft">
-            There are no right or wrong answers. Be honest with yourself — <em>this is just between us</em>.
+            There are no right or wrong answers. Simply answer honestly. Awareness creates the
+            clarity needed to intentionally redesign your entry into the workweek.
           </p>
         </CherryBlossomSceneCard>
       </CherryBlossomScene>
