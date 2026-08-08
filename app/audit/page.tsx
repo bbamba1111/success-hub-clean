@@ -2,7 +2,7 @@ import WorkLifeBalanceAudit from "@/components/work-life-balance-audit"
 import { CherryBlossomScene, CherryBlossomSceneCard } from "@/components/cherry-blossom/cherry-blossom-scene"
 import { createClient } from "@/lib/supabase/server"
 import { getCycleContext } from "@/lib/sunday-cycle/cycle-actions"
-import { deriveAssessmentCadence } from "@/lib/assessment-cadence"
+import { deriveAssessmentCadence, type AssessmentType, type AssessmentWindow } from "@/lib/assessment-cadence"
 
 export const metadata = {
   title: "Work-Life Balance Audit™ | Harmony Lane™",
@@ -14,8 +14,8 @@ export default async function AuditPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  let assessmentWindow: "30-day" = "30-day"
-  let assessmentType: "baseline_30_day" | "monthly_30_day" = "baseline_30_day"
+  let assessmentWindow: AssessmentWindow = "30-day"
+  let assessmentType: AssessmentType = "baseline_30_day"
 
   if (user) {
     const cycleContext = await getCycleContext(user.id)
@@ -27,6 +27,9 @@ export default async function AuditPage() {
     assessmentType   = cadence.type
   }
 
+  // The 30-day look-back happens ONLY the very first time — a founder's
+  // one-time baseline snapshot of how work and life were gelling together
+  // before Harmony Lane™. Every Monday after that reflects on the past 7 days.
   const isBaseline = assessmentType === "baseline_30_day"
 
   return (
@@ -41,8 +44,8 @@ export default async function AuditPage() {
         >
           <p>
             {isBaseline
-              ? <>Before we design your first <strong>Work-Life Balance Business Week™</strong>, I&apos;d like to understand how your life has been showing up over the past <strong>30 days</strong> across 15 areas.</>
-              : <>Each month we revisit how your life has been showing up across <strong>15 areas</strong> over the past <strong>30 days</strong> — so your operating system stays tuned to your real life.</>}
+              ? <>Before we design your first <strong>Work-Life Balance Business Week™</strong>, I&apos;d like to understand how your life has been showing up over the past <strong>30 days</strong> across 15 areas — a one-time snapshot to see how your work and life have really been gelling together.</>
+              : <>Each Monday we reflect on how your life has been showing up across <strong>15 areas</strong> over the past <strong>7 days</strong> — so you can celebrate your progress and intentionally redesign your entry into the workweek.</>}
           </p>
           <p className="text-brand-ink-soft">
             There are no right or wrong answers. Be honest with yourself — <em>this is just between us</em>.

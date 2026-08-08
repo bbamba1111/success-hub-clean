@@ -5,12 +5,15 @@
  * on their personal cycle state. No manual switching. No user settings.
  *
  * Cadence table:
- *   First Login (no cycle_start_date)   → baseline_30_day  (30 days)
- *   Any week of any cycle               → monthly_30_day   (30 days)
+ *   First Login (no cycle_start_date)   → baseline_30_day  (30 days, once)
+ *   Every Monday thereafter             → weekly_7_day     (7 days)
  *
- * The Work-Life Balance Audit™ is always a 30-day look-back. It is taken
- * once on joining (baseline) and then once every 30 days thereafter as long
- * as the founder remains a paid member.
+ * The Work-Life Balance Audit™ looks back 30 days ONLY the very first time a
+ * founder takes it — this establishes an accurate snapshot of how work and
+ * life were gelling together before Harmony Lane™. It is never re-taken as a
+ * 30-day look-back after that. Every Monday from then on, the audit reflects
+ * on the most recent 7 days as part of the founder's weekly Reflection
+ * Space™ ritual.
  *
  * Assessment types persist as metadata with every submission so Founder
  * GPS™, Cherry Blossom™, trend analysis, and future analytics can read them.
@@ -20,8 +23,8 @@
 // Types
 // ---------------------------------------------------------------------------
 
-export type AssessmentType = "baseline_30_day" | "monthly_30_day"
-export type AssessmentWindow = "30-day"
+export type AssessmentType = "baseline_30_day" | "weekly_7_day"
+export type AssessmentWindow = "30-day" | "7-day"
 
 export interface AssessmentCadence {
   /** The persisted metadata label stored with every submission. */
@@ -55,13 +58,13 @@ export function deriveAssessmentCadence(
   cycleStartDate: string | null | undefined,
   cycleWeek: number = 1,
 ): AssessmentCadence {
-  // First-time founder — no installation yet. Always full baseline.
+  // First-time founder — no installation yet. Always the one-time 30-day baseline.
   if (!cycleStartDate) {
     return CADENCES.baseline_30_day
   }
 
-  // All cycles: 30-day Work-Life Balance Audit™ once per month.
-  return CADENCES.monthly_30_day
+  // Every Monday after the baseline: a 7-day weekly reflection.
+  return CADENCES.weekly_7_day
 }
 
 // ---------------------------------------------------------------------------
@@ -75,11 +78,11 @@ export const CADENCES: Record<AssessmentType, AssessmentCadence> = {
     label: "Work-Life Balance Audit™",
     timePhrase: "Over the past 30 days",
   },
-  monthly_30_day: {
-    type: "monthly_30_day",
-    window: "30-day",
+  weekly_7_day: {
+    type: "weekly_7_day",
+    window: "7-day",
     label: "Work-Life Balance Audit™",
-    timePhrase: "Over the past 30 days",
+    timePhrase: "Over the past 7 days",
   },
 }
 
@@ -92,7 +95,7 @@ export const CADENCES: Record<AssessmentType, AssessmentCadence> = {
  * prefix every question without importing the full cadence object.
  */
 export function getTimePhrase(window: AssessmentWindow): string {
-  return "Over the past 30 days"
+  return window === "30-day" ? "Over the past 30 days" : "Over the past 7 days"
 }
 
 /**
