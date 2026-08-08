@@ -24,6 +24,7 @@ import {
 import Link from "next/link"
 import { getAuditResults } from "@/utils/audit-storage"
 import { CherryBlossomTransitionCard } from "@/components/cherry-blossom/cherry-blossom-transition-card"
+import { getStoredAssessmentWindow } from "@/lib/assessment-cadence"
 
 interface AuditResult {
   category: string
@@ -82,9 +83,13 @@ function getScoreMessage(score: number): string {
 
 export default function MyResultsPage() {
   const [auditData, setAuditData] = useState<AuditData | null>(null)
+  // Mirrors the Assessment Cadence Engine — first Reality Check™ ever looks
+  // back 30 days, every Monday after that reflects on the past 7 days.
+  const [period, setPeriod] = useState("30 days")
 
   useEffect(() => {
     setAuditData(getAuditResults())
+    setPeriod(getStoredAssessmentWindow() === "30-day" ? "30 days" : "7 days")
   }, [])
 
   if (!auditData) {
@@ -185,8 +190,8 @@ export default function MyResultsPage() {
               Thank you for taking the time to reflect on your life.
             </p>
             <p>
-              Your responses provide a clearer picture of how you&apos;ve been honoring what
-              matters most over the past 30 days.
+              Your responses have created a clear picture of how your life has been operating
+              over the past {period}.
             </p>
             <p>
               Next, we&apos;ll reflect on how your business has been operating during that same
