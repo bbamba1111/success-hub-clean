@@ -7,8 +7,7 @@ import EntrepreneurSuccessAssessment, {
 import { CherryBlossomScene, CherryBlossomSceneCard } from "@/components/cherry-blossom/cherry-blossom-scene"
 import { getStoredAssessmentWindow } from "@/lib/assessment-cadence"
 
-const RESULTS_URL =
-  "https://success-hub-clean-ics7g40y6-thought-leader-barbaras-projects.vercel.app/harmony-blueprint"
+const RESULTS_URL = "/reality-check"
 
 export default function EntrepreneurSuccessAssessmentPage() {
   const [complete, setComplete] = useState(false)

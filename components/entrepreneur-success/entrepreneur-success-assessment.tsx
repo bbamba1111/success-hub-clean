@@ -164,7 +164,7 @@ const ESA_OPTIONS = [
 export { CompletionScreen }
 
 export default function EntrepreneurSuccessAssessment({
-  resultsUrl = "https://success-hub-clean-ics7g40y6-thought-leader-barbaras-projects.vercel.app/harmony-blueprint",
+  resultsUrl = "/reality-check",
   onComplete,
 }: {
   resultsUrl?: string

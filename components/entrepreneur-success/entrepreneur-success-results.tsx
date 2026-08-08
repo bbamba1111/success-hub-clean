@@ -215,20 +215,19 @@ export default function EntrepreneurSuccessResults() {
         <div className="mb-16">
           <CherryBlossomTransitionCard
             greeting="Thank you."
-            ctaLabel="Generate My Harmony Blueprint™"
-            ctaHref="https://success-hub-clean-ics7g40y6-thought-leader-barbaras-projects.vercel.app/harmony-blueprint"
+            ctaLabel="View My Work-Life Balance Reality Check™"
+            ctaHref="/reality-check"
           >
             <p>
-              We now understand how your life and leadership have been operating over the past{" "}
-              <strong>30 days</strong>.
+              We now understand how your life and leadership have been operating this week.
             </p>
             <p>
-              These insights become the foundation of your{" "}
-              <strong>My Work-Life Harmony Blueprint™</strong>.
+              These insights become part of your{" "}
+              <strong>Work-Life Balance Reality Check™</strong>.
             </p>
             <p>
-              Next, we&apos;ll generate your personalized blueprint and help you begin designing and
-              installing your Work-Life Balance Business Week™.
+              Next, we&apos;ll show you which areas need attention this week and help you begin
+              designing and installing your Work-Life Balance Business Week™.
             </p>
           </CherryBlossomTransitionCard>
         </div>

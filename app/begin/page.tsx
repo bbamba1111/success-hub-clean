@@ -5,7 +5,7 @@ import { redirect } from "next/navigation"
  *
  * Updated flow (Phase 11):
  *   /begin → /founder-profile → /audit → /entrepreneur-success-assessment
- *   → /harmony-blueprint → /design-my-week → /live-today
+ *   → /reality-check → /design-my-week → /live-today
  *
  * /begin now redirects immediately to /founder-profile so any existing
  * links or email campaigns that point to /begin continue to work.
