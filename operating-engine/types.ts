@@ -133,6 +133,8 @@ export interface BlockConfig {
   weekendTimeLabel?: string
   /** Override startMinutes used on Fri/Sat/Sun. */
   weekendStartMinutes?: number
+  /** Override timeLabel shown specifically on Sunday (closes one hour earlier than Fri/Sat). */
+  sundayTimeLabel?: string
 }
 
 /** Output of the Time Engine. */

@@ -139,57 +139,77 @@ export function getBusinessDayState(time: TimeContext): BusinessDayState {
   // ── Weekend override ───────────────────────────────────────────────────────
   // On Fri / Sat / Sun, Time Freedom™ runs all day from 7 AM.
   // Before 7 AM those days are still Digital Detox (overnight closure).
+  //
+  // Fri/Sat run all the way to 11 PM before closing.
+  // Sunday closes ONE HOUR EARLIER (10 PM) to prepare members for
+  // Make Time For More On Mondays™ — after 10 PM Sunday, control falls
+  // through to the standard weekday schedule below, which already has a
+  // real Power Down™ (10–11 PM) → Digital Detox™ (11 PM–7 AM) sequence
+  // that leads correctly into Monday's Early Access™.
   const tfBlock = SCHEDULE_BY_ID["time-freedom"]!
   const detoxBlock = SCHEDULE_BY_ID["digital-detox"]!
   const tfWeekendStart = tfBlock.weekendStartMinutes ?? 7 * 60 // 420
+  const isSunday = time.dayOfWeek === 0
+  const tfCloseMinutes = isSunday ? 22 * 60 : 23 * 60 // Sun 10 PM · Fri/Sat 11 PM
 
-  if (isWeekendDay(time.dayOfWeek) && tfBlock) {
-    const isBeforeTfStart = minutes < tfWeekendStart
+  const inWeekendOvernightClosure = isWeekendDay(time.dayOfWeek) && minutes < tfWeekendStart
+  const inWeekendTimeFreedom =
+    isWeekendDay(time.dayOfWeek) && minutes >= tfWeekendStart && minutes < tfCloseMinutes
 
-    // Overnight closure (midnight → 7 AM) still shows Digital Detox.
-    const current = isBeforeTfStart ? detoxBlock : tfBlock
-
-    // Effective timeLabel for the panel (swap to all-day label on weekends)
-    const currentWithLabel: BlockConfig = current.id === "time-freedom"
-      ? { ...current, timeLabel: current.weekendTimeLabel ?? current.timeLabel }
-      : current
-
-    // Next segment:
-    //   - During detox hours (before 7 AM): Time Freedom is next at tfWeekendStart
-    //   - During Time Freedom: next is Digital Detox at 23:00 (unless Sunday → Early Access Mon)
-    let next: BlockConfig
-    let minutesUntilNext: number
-
-    if (isBeforeTfStart) {
-      // Still in overnight Digital Detox — Time Freedom starts at 7 AM
-      next = { ...tfBlock, timeLabel: tfBlock.weekendTimeLabel ?? tfBlock.timeLabel }
-      minutesUntilNext = tfWeekendStart - minutes
-    } else {
-      // Inside Time Freedom — night closure at 23:00
-      next = detoxBlock
-      minutesUntilNext = minutesUntil(minutes, detoxBlock.startMinutes)
-    }
-
-    const tfIndex = SCHEDULE.findIndex((b) => b.id === "time-freedom")
+  if (inWeekendOvernightClosure) {
+    // Still in overnight Digital Detox — Time Freedom starts at 7 AM.
+    const current = detoxBlock
+    const nextLabel = isSunday ? tfBlock.sundayTimeLabel : tfBlock.weekendTimeLabel
+    const next: BlockConfig = { ...tfBlock, timeLabel: nextLabel ?? tfBlock.timeLabel }
+    const minutesUntilNext = tfWeekendStart - minutes
     const status = resolveStatus(current, next, minutesUntilNext)
+    const detoxIndex = SCHEDULE.findIndex((b) => b.id === "digital-detox")
 
     return {
-      current: currentWithLabel,
-      previous: isBeforeTfStart
-        ? SCHEDULE[(SCHEDULE.findIndex((b) => b.id === "digital-detox") - 1 + len) % len]
-        : SCHEDULE[(tfIndex - 1 + len) % len],
+      current,
+      previous: SCHEDULE[(detoxIndex - 1 + len) % len],
       next,
       minutesUntilNext,
       countdownToNext: buildCountdown(minutesUntilNext),
       status,
       progress: resolveProgress(minutes),
-      timeline: buildTimeline(
-        isBeforeTfStart ? SCHEDULE.findIndex((b) => b.id === "digital-detox") : tfIndex,
-        time.dayOfWeek,
-      ),
+      timeline: buildTimeline(detoxIndex, time.dayOfWeek),
+    }
+  }
+
+  if (inWeekendTimeFreedom) {
+    // Effective timeLabel for the panel: Sunday closes an hour earlier than Fri/Sat.
+    const label = isSunday ? tfBlock.sundayTimeLabel : tfBlock.weekendTimeLabel
+    const currentWithLabel: BlockConfig = { ...tfBlock, timeLabel: label ?? tfBlock.timeLabel }
+
+    // "Next" is the wind-down transition at close — always framed as
+    // Power Down & Unplug™, with the countdown pointed at the correct
+    // close time for the day (10 PM Sunday · 11 PM Fri/Sat).
+    const next: BlockConfig = {
+      ...detoxBlock,
+      title: "Power Down & Unplug™",
+      shortTitle: "Power Down & Unplug™",
+      startMinutes: tfCloseMinutes,
+    }
+    const minutesUntilNext = minutesUntil(minutes, tfCloseMinutes)
+    const tfIndex = SCHEDULE.findIndex((b) => b.id === "time-freedom")
+    const status = resolveStatus(currentWithLabel, next, minutesUntilNext)
+
+    return {
+      current: currentWithLabel,
+      previous: SCHEDULE[(tfIndex - 1 + len) % len],
+      next,
+      minutesUntilNext,
+      countdownToNext: buildCountdown(minutesUntilNext),
+      status,
+      progress: resolveProgress(minutes),
+      timeline: buildTimeline(tfIndex, time.dayOfWeek),
     }
   }
   // ── Standard weekday logic ────────────────────────────────────────────────
+  // Also covers Sunday from 10 PM onward: Power Down™ (10–11 PM) → Digital
+  // Detox™ (11 PM–7 AM), which getNextOperatingSegment already resolves into
+  // Monday's Early Access™.
 
   const currentIndex = getCurrentBlockIndex(minutes)
   const isMonday = time.dayOfWeek === 1
