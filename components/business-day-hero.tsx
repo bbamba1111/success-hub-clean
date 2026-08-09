@@ -15,7 +15,6 @@ import { Sparkles } from "lucide-react"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
 import type { PartOfDay } from "@/operating-engine"
 import { LivingMoments } from "@/components/living-moments"
-import { EnterSpaceButton } from "@/components/enter-space-button"
 import { useActiveSpace } from "@/components/active-space-provider"
 import { SCHEDULE_BY_ID } from "@/operating-engine/config/schedule"
 
@@ -353,11 +352,6 @@ export function BusinessDayHero() {
             )
           })()}
 
-          {experience && (
-            <div className="mt-4">
-              <EnterSpaceButton variant="hero" />
-            </div>
-          )}
           </>
           )}
         </motion.div>
