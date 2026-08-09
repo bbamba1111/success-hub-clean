@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
+import { EnterSpaceButton } from "@/components/enter-space-button"
 
 
 const VALUES = [
@@ -157,6 +158,10 @@ export function BarbaraWelcome() {
                   {"\u2014 "}{coaching.reflection.author}
                 </p>
               )}
+            </div>
+
+            <div className="mt-7">
+              <EnterSpaceButton variant="welcome" />
             </div>
           </motion.div>
 

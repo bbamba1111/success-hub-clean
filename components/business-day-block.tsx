@@ -1,6 +1,6 @@
 "use client"
 
-import { type ReactNode, useState } from "react"
+import { type ReactNode, useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { ChevronDown } from "lucide-react"
@@ -8,6 +8,8 @@ import { OperatingPlanner } from "@/components/operating-planner/operating-plann
 import { PLANNER_CONFIG } from "@/components/operating-planner/planner-config"
 import { ReflectionSpace } from "@/components/reflection-space"
 import { SoundRitual } from "@/components/sound-ritual"
+import { useActiveSpace } from "@/components/active-space-provider"
+import { SPACE_LABEL } from "@/operating-engine/config/space-labels"
 
 export type BlockStatus = "current" | "upcoming" | "completed"
 
@@ -40,19 +42,6 @@ export interface BusinessDayBlockProps {
   operatingRulePreview?: string
   /** Rich content for the "About This Segment" accordion. Falls back to description. */
   aboutContent?: ReactNode
-}
-
-/** Maps each block id to the Space™ name shown in the expand toggle. */
-const SPACE_LABEL: Record<string, string> = {
-  "monday-reality-check": "Reflection Space™",
-  "early-access":         "Flex Time Space™",
-  "morning-given":        "Alignment Space™",
-  "movement-window":      "Movement Space™",
-  "lunch-break":          "Midday Space™",
-  "ceo-workday":          "CEO Workspace™",
-  "time-freedom":         "Time Freedom Space™",
-  "power-down":           "Power Down Space™",
-  "digital-detox":        "Unplug Space™",
 }
 
 const STATUS_LABEL: Record<BlockStatus, string> = {
@@ -93,6 +82,18 @@ export function BusinessDayBlock({
   const [open, setOpen] = useState(false)
   const [showAbout, setShowAbout] = useState(false)
   const [music, setMusic] = useState<MusicChoice | null>(null)
+  const activeSpace = useActiveSpace()
+
+  // "Enter the Space™" — auto-expand this accordion when the shared
+  // provider targets this block (Hero CTA, Welcome CTA, or the in-flow
+  // "Enter Alignment Space™" button inside ReflectionSpace).
+  useEffect(() => {
+    if (blockId && activeSpace?.expandBlockId === blockId) {
+      setOpen(true)
+    }
+  }, [activeSpace?.expandBlockId, blockId])
+
+  const isHighlighted = Boolean(blockId && activeSpace?.highlightBlockId === blockId)
 
   return (
     <section id={sectionId} aria-label={title} className="scroll-mt-24 w-full px-4 py-3 sm:px-6 lg:px-8">
@@ -102,8 +103,12 @@ export function BusinessDayBlock({
         viewport={{ once: true, amount: 0.3 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
         whileHover={{ boxShadow: "0 24px 50px -12px rgba(28,22,26,0.35)" }}
-        className={`relative w-full overflow-hidden rounded-3xl shadow-lg ${
-          isCurrent ? "ring-2 ring-[#7FB069] ring-offset-2 ring-offset-[#F5F1E8]" : ""
+        className={`relative w-full overflow-hidden rounded-3xl shadow-lg transition-shadow duration-700 ${
+          isHighlighted
+            ? "ring-4 ring-[#C13B6B]/40 ring-offset-2 ring-offset-[#F5F1E8]"
+            : isCurrent
+              ? "ring-2 ring-[#7FB069] ring-offset-2 ring-offset-[#F5F1E8]"
+              : ""
         }`}
         style={{ background: "linear-gradient(135deg, #FDF6F0 0%, #FBF0F4 40%, #F0F5EE 70%, #FDFAF6 100%)" }}
       >
@@ -234,8 +239,8 @@ export function BusinessDayBlock({
           />
           {open
             ? "Close"
-            : blockId && SPACE_LABEL[blockId]
-              ? `Enter ${SPACE_LABEL[blockId]}`
+            : blockId && SPACE_LABEL[blockId as keyof typeof SPACE_LABEL]
+              ? `Enter ${SPACE_LABEL[blockId as keyof typeof SPACE_LABEL]}`
               : "Open Segment"}
         </button>
 

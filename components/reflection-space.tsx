@@ -14,10 +14,12 @@
  * Weekly state is keyed by the Monday of the current week so it resets automatically.
  */
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { AnimatePresence, motion } from "framer-motion"
-import { CheckCircle2, Lock, User } from "lucide-react"
+import { CheckCircle2, Lock, Sparkles, User } from "lucide-react"
+import { useActiveSpace } from "@/components/active-space-provider"
+import { SCHEDULE_BY_ID } from "@/operating-engine/config/schedule"
 
 // ─── Storage ─────────────────────────────────────────────────────────────────
 
@@ -91,14 +93,8 @@ function loadFounderSnapshot(): FounderSnapshot {
 }
 
 // ─── Countdown to 9:45 AM ────────────────────────────────────────────────────
-
-function getSecondsUntil945(): number {
-  const now = new Date()
-  const target = new Date(now)
-  target.setHours(9, 45, 0, 0)
-  const diff = Math.floor((target.getTime() - now.getTime()) / 1000)
-  return diff > 0 ? diff : 0
-}
+// The countdown itself is now owned by ActiveSpaceProvider (one shared clock
+// for the whole app) — this component only formats and reads it.
 
 function formatCountdown(seconds: number): string {
   if (seconds <= 0) return "00:00"
@@ -118,9 +114,9 @@ export function ReflectionSpace() {
   const [assessmentDone, setAssessmentDone] = useState(false)
   const [completedAt, setCompletedAt]       = useState<string | null>(null)
   const [activeStep, setActiveStep]         = useState<1 | 2 | 3 | 4>(1)
-  const [secondsLeft, setSecondsLeft]       = useState(0)
-  const [unlocked, setUnlocked]             = useState(false)
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const activeSpace = useActiveSpace()
+  const secondsLeft = activeSpace?.secondsUntilAlignment ?? 0
+  const unlocked = activeSpace?.alignmentUnlocked ?? false
 
   useEffect(() => {
     const ws = loadWeekly()
@@ -143,19 +139,6 @@ export function ReflectionSpace() {
     }
     setMounted(true)
   }, [])
-
-  // Countdown tick
-  useEffect(() => {
-    if (!mounted) return
-    const tick = () => {
-      const s = getSecondsUntil945()
-      setSecondsLeft(s)
-      if (s === 0) setUnlocked(true)
-    }
-    tick()
-    timerRef.current = setInterval(tick, 1000)
-    return () => { if (timerRef.current) clearInterval(timerRef.current) }
-  }, [mounted])
 
   const markSnapshotDone = () => {
     const next: WeeklyState = { weekKey: getWeekKey(), snapshotDone: true, auditDone, assessmentDone, completedAt }
@@ -183,6 +166,13 @@ export function ReflectionSpace() {
   }
 
   const bothDone = auditDone && assessmentDone
+
+  // Let the shared provider know Monday's gate is now "waiting on time,"
+  // not "waiting on the member," so the Hero/Welcome CTA can show the
+  // countdown instead of a clickable "Enter Reflection Space™" action.
+  useEffect(() => {
+    if (bothDone) activeSpace?.setReflectionComplete(true)
+  }, [bothDone, activeSpace])
 
   // Cherry Blossom™ — message changes by step and whether this is the First Reality Check™
   const period = isBaseline ? "30 days" : "7 days"
@@ -450,6 +440,16 @@ export function ReflectionSpace() {
                       <p className="font-sans text-xs text-[#6B5860]">
                         Morning GIV&bull;EN™ has begun. Enter the space.
                       </p>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          activeSpace?.enterSpace("morning-given", SCHEDULE_BY_ID["morning-given"].sectionId)
+                        }
+                        className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#C13B6B] px-6 py-2.5 font-montserrat text-sm font-bold uppercase tracking-[0.08em] text-white shadow-sm transition-colors hover:bg-[#A8305A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C13B6B]/40 focus-visible:ring-offset-2"
+                      >
+                        <Sparkles className="h-4 w-4 shrink-0" aria-hidden />
+                        Enter Alignment Space™
+                      </button>
                     </>
                   ) : (
                     <>

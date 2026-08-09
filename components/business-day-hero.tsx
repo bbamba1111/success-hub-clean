@@ -14,6 +14,7 @@ import { motion } from "framer-motion"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
 import type { PartOfDay } from "@/operating-engine"
 import { LivingMoments } from "@/components/living-moments"
+import { EnterSpaceButton } from "@/components/enter-space-button"
 
 /**
  * Maps each block ID → the full "We're Now ___" phrase (plain + italic parts).
@@ -263,6 +264,12 @@ export function BusinessDayHero() {
               </p>
             )
           })()}
+
+          {experience && (
+            <div className="mt-4">
+              <EnterSpaceButton variant="hero" />
+            </div>
+          )}
         </motion.div>
       </div>
 

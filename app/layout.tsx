@@ -5,6 +5,7 @@ import "./globals.css"
 import { ConditionalNav } from "@/components/conditional-nav"
 import { OperatingEngineProvider } from "@/components/operating-engine-provider"
 import { HarmonyWeekProvider } from "@/components/harmony-week/harmony-week-provider"
+import { ActiveSpaceProvider } from "@/components/active-space-provider"
 
 const greatVibes = Great_Vibes({
   weight: "400",
@@ -47,8 +48,10 @@ export default function RootLayout({
       <body className={`${greatVibes.variable} ${playfair.variable} ${poppins.variable} ${montserrat.variable} font-montserrat`}>
         <OperatingEngineProvider>
           <HarmonyWeekProvider>
-            <ConditionalNav />
-            {children}
+            <ActiveSpaceProvider>
+              <ConditionalNav />
+              {children}
+            </ActiveSpaceProvider>
           </HarmonyWeekProvider>
         </OperatingEngineProvider>
       </body>
