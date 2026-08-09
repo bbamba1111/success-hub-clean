@@ -24,6 +24,7 @@ import { useState } from "react"
 import { ArrowRight, CheckCircle2, ChevronDown, Clock, Info, Plus, Trash2 } from "lucide-react"
 import type { BlockId } from "@/operating-engine"
 import { PLANNER_CONFIG } from "@/components/operating-planner/planner-config"
+import { FlexTimeGuidedMoments } from "@/components/guided-moments/flex-time-moments"
 import dynamic from "next/dynamic"
 
 // Lazy-load the BCA to keep the main bundle lean — only needed in ceo-workday.
@@ -820,6 +821,12 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
           {config.title}
         </h2>
 
+        {/* Guided Moments™ — the daily interactive experience for Flex Time & Preparation™.
+            Replaces the old chip-picker / Intention Declaration™ workflow. Kept above the
+            educational content below so members who just want to move through their morning
+            can do so quickly, while members who want to learn more can still expand it. */}
+        {blockId === "early-access" && <FlexTimeGuidedMoments />}
+
         {/* Learn More About This Segment™ accordion — right under title */}
         {data.learnMore && (
           <div className="mb-6 mt-3 rounded-2xl border border-brand-green/20 bg-brand-green/[0.05] overflow-hidden">
@@ -971,8 +978,9 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
         )}
 
         {/* Chip picker + "I am committed to" input + Create My Intention Declaration™
-            Skip for unplug (digital-detox) segments — they have no commitment workflow. */}
-        {!data.isUnplug && (
+            Skip for unplug (digital-detox) segments — they have no commitment workflow —
+            and for Flex Time & Preparation™, which now uses Guided Moments™ above instead. */}
+        {!data.isUnplug && blockId !== "early-access" && (
           <RepeatAfterMe blockId={blockId} data={data} />
         )}
 

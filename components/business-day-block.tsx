@@ -270,20 +270,26 @@ export function BusinessDayBlock({
               <OperatingPlanner blockId={blockId as any} />
             )}
 
-            {/* Row 1 — Join Us Live™ */}
-            <div className="px-7 py-5">
-              <a
-                href="https://us05web.zoom.us/j/2648726290?pwd=ubrd71NpIvu9tEkwDbvxQ9uaiuIIpS.1"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2.5 rounded-xl bg-[#E26C73] px-6 py-3 font-sans text-sm font-bold text-white shadow-sm transition-colors hover:bg-[#c04d54] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E26C73]/40"
-              >
-                <span className="h-2 w-2 rounded-full bg-white animate-pulse shrink-0" aria-hidden />
-                Join Us Live™
-              </a>
-            </div>
+            {/* Row 1 — Join Us Live™. Flex Time & Preparation™ is intentionally
+                independent of Zoom — members may be driving, at drop-off, in
+                appointments, or otherwise away from a screen during this window. */}
+            {blockId !== "early-access" && (
+              <>
+                <div className="px-7 py-5">
+                  <a
+                    href="https://us05web.zoom.us/j/2648726290?pwd=ubrd71NpIvu9tEkwDbvxQ9uaiuIIpS.1"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2.5 rounded-xl bg-[#E26C73] px-6 py-3 font-sans text-sm font-bold text-white shadow-sm transition-colors hover:bg-[#c04d54] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E26C73]/40"
+                  >
+                    <span className="h-2 w-2 rounded-full bg-white animate-pulse shrink-0" aria-hidden />
+                    Join Us Live™
+                  </a>
+                </div>
 
-            <div className="mx-7 border-t border-black/[0.05]" />
+                <div className="mx-7 border-t border-black/[0.05]" />
+              </>
+            )}
 
             {/* Sound Ritual™ — curated ambient soundscapes per segment */}
             {blockId && <SoundRitual blockId={blockId} />}
