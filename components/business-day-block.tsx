@@ -93,6 +93,14 @@ export function BusinessDayBlock({
     }
   }, [activeSpace?.expandBlockId, blockId])
 
+  // Force-close this accordion when the shared provider says to — used to
+  // collapse Reflection Space™ the moment the member enters Alignment Space™.
+  useEffect(() => {
+    if (blockId && activeSpace?.collapseBlockId === blockId) {
+      setOpen(false)
+    }
+  }, [activeSpace?.collapseBlockId, blockId])
+
   const isHighlighted = Boolean(blockId && activeSpace?.highlightBlockId === blockId)
 
   return (

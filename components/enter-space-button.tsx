@@ -26,6 +26,12 @@ export function EnterSpaceButton({ variant }: { variant: "hero" | "welcome" }) {
 
   if (!experience || !activeSpace) return null
 
+  // During the last 30 seconds before Alignment Space™ opens (and while it's
+  // open but not yet entered), the Hero itself takes over with the
+  // ceremonial countdown / "Now Open" CTA — this small button steps aside
+  // so there's exactly one call to action on screen.
+  if (activeSpace.ceremonyActive) return null
+
   const current = experience.businessDay.current
   const label = SPACE_LABEL[current.id] ?? "Enter the Space™"
 

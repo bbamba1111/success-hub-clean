@@ -443,7 +443,7 @@ export function ReflectionSpace() {
                       <button
                         type="button"
                         onClick={() =>
-                          activeSpace?.enterSpace("morning-given", SCHEDULE_BY_ID["morning-given"].sectionId)
+                          activeSpace?.enterAlignmentCeremony(SCHEDULE_BY_ID["morning-given"].sectionId)
                         }
                         className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#C13B6B] px-6 py-2.5 font-montserrat text-sm font-bold uppercase tracking-[0.08em] text-white shadow-sm transition-colors hover:bg-[#A8305A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C13B6B]/40 focus-visible:ring-offset-2"
                       >
