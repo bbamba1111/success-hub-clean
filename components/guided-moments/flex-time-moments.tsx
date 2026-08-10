@@ -11,8 +11,32 @@
  * planner, no declaration to draft.
  */
 
-import type { MomentConfig } from "@/components/guided-moments/guided-moments"
+import type { CheckInMomentConfig, MomentConfig, ResolutionOption } from "@/components/guided-moments/guided-moments"
 import { GuidedMoments } from "@/components/guided-moments/guided-moments"
+import { getDayKey, saveLocalDay, syncFlexTimeDay } from "@/utils/flex-time-storage"
+
+/**
+ * Day-aware borrowing rule for anything left outstanding at the 8:55 check-in:
+ *   - Monday: Morning GIV•EN™ is compressed to 45 min (9:45–10:30, after the
+ *     Reality Check), so it's never offered. Only Healthy Hybrid Lunch™ or defer.
+ *   - Tuesday–Friday: both Morning GIV•EN™ and Healthy Hybrid Lunch™ are
+ *     eligible, plus defer.
+ */
+function getResolutionOptions(now: Date): ResolutionOption[] {
+  const isMonday = now.getDay() === 1
+  const options: ResolutionOption[] = []
+  if (!isMonday) {
+    options.push({ id: "morning-given", label: "Morning GIV•EN™", kind: "borrow" })
+  }
+  options.push({ id: "healthy-hybrid-lunch", label: "Extended Healthy Hybrid Lunch™", kind: "borrow" })
+  options.push({ id: "defer", label: "Leave it for today — defer to tomorrow's Flex Time™", kind: "defer" })
+  return options
+}
+
+/** True at/after 8:55 AM local time (5 minutes before Flex Time's 9:00 AM end). */
+function isCheckInAvailable(now: Date): boolean {
+  return now.getHours() > 8 || (now.getHours() === 8 && now.getMinutes() >= 55)
+}
 
 const FLEX_TIME_MOMENTS: MomentConfig[] = [
   {
@@ -25,6 +49,10 @@ const FLEX_TIME_MOMENTS: MomentConfig[] = [
     summaryLabel: "What I'm Making Time For",
     confirmation:
       "Great choices. You're intentionally making room for what needs your attention this morning while protecting the rhythm of the day ahead.",
+    onContinue: (chosen) => {
+      const record = saveLocalDay(getDayKey(), { intended: chosen })
+      void syncFlexTimeDay(record)
+    },
     options: [
       { id: "morning-routine", label: "Morning routine" },
       { id: "extra-sleep", label: "Extra sleep / recovery" },
@@ -38,6 +66,38 @@ const FLEX_TIME_MOMENTS: MomentConfig[] = [
       { id: "other", label: "Other" },
     ],
   },
+  {
+    kind: "checkin",
+    id: "check-in",
+    sourceMomentId: "making-time-for",
+    question: "Which of these did you make time for?",
+    helperText: "Select everything you completed — Cherry Blossom will help with the rest.",
+    summaryLabel: "8:55 Check-In",
+    availableAt: isCheckInAvailable,
+    lockedNote: "Check-in opens at 8:55 AM — five minutes before Flex Time™ wraps up.",
+    confirmationComplete:
+      "Wonderful — you made time for everything you set out to this morning. That's exactly what Flex Time™ is for.",
+    confirmationOutstanding:
+      "Life happens, and that's exactly why Flex Time™ exists. Let's find a good home for what's still outstanding.",
+    getResolutionOptions,
+    confirmationResolved: (choice) =>
+      choice.kind === "borrow"
+        ? `Perfect — you're borrowing time from ${choice.label} to finish up. Your day stays intact.`
+        : "That's the whole point of Flex Time™ — you're choosing to let it go today and pick it up again tomorrow.",
+    onResolved: ({ completed, outstanding, resolution, resolutionChoice }) => {
+      const dayKey = getDayKey()
+      const record = saveLocalDay(dayKey, {
+        completed,
+        outstanding,
+        resolution,
+        borrowedFrom: resolutionChoice?.kind === "borrow" ? (resolutionChoice.id as "morning-given" | "healthy-hybrid-lunch") : null,
+        borrowedItems: resolutionChoice?.kind === "borrow" ? outstanding : [],
+        deferredItems: resolutionChoice?.kind === "defer" ? outstanding : [],
+        checkedInAt: new Date().toISOString(),
+      })
+      void syncFlexTimeDay(record)
+    },
+  } satisfies CheckInMomentConfig,
 ]
 
 function buildCopyText(selectionsByMoment: Record<string, string[]>): string {

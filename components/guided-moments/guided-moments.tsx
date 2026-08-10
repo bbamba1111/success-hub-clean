@@ -22,14 +22,15 @@
 
 import { useEffect, useRef, useState } from "react"
 import { AnimatePresence, motion } from "framer-motion"
-import { Check, ChevronLeft, Clipboard, ClipboardCheck } from "lucide-react"
+import { Check, ChevronLeft, Clipboard, ClipboardCheck, Lock } from "lucide-react"
 
 export interface MomentOption {
   id: string
   label: string
 }
 
-export interface MomentConfig {
+export interface SelectMomentConfig {
+  kind?: "select"
   id: string
   /** The single question shown at the top of this Moment. */
   question: string
@@ -46,7 +47,55 @@ export interface MomentConfig {
   summaryLabel: string
   /** Cherry Blossom™ micro-confirmation (1–2 sentences) shown after Continue. */
   confirmation: string
+  /** Called once this Moment is confirmed, with the final selected labels (cleaned of "Other:" prefixes). */
+  onContinue?: (chosen: string[]) => void
 }
+
+/** A resolution choice for an outstanding item: borrow time from another segment, or defer to tomorrow. */
+export interface ResolutionOption {
+  id: string
+  label: string
+  kind: "borrow" | "defer"
+}
+
+/**
+ * A check-in Moment: reviews a prior Moment's selections as a checklist,
+ * then — only if something's outstanding — offers day-aware ways to handle
+ * it (borrow time from an eligible segment, or defer to tomorrow). If
+ * everything was completed, Cherry Blossom™ simply congratulates.
+ */
+export interface CheckInMomentConfig {
+  kind: "checkin"
+  id: string
+  /** The Moment whose selections this check-in reviews. */
+  sourceMomentId: string
+  /** The single question shown at the top of this Moment. */
+  question: string
+  helperText?: string
+  /** Short label used in the collapsed summary row. */
+  summaryLabel: string
+  /** Gates interactivity — returns false until, e.g., 8:55 AM. Re-evaluated each render. */
+  availableAt?: (now: Date) => boolean
+  /** Copy shown while locked, e.g. "Check-in opens at 8:55 AM." */
+  lockedNote?: string
+  /** Cherry Blossom™ line when everything was completed — no resolution choice needed. */
+  confirmationComplete: string
+  /** Cherry Blossom™ line shown when something's outstanding, before the resolution choice. */
+  confirmationOutstanding: string
+  /** Day-aware resolution options (borrow sources + defer), computed fresh from the current date. */
+  getResolutionOptions: (now: Date) => ResolutionOption[]
+  /** Cherry Blossom™ line after the member picks how to handle what's outstanding. */
+  confirmationResolved: (choice: ResolutionOption) => string
+  /** Called once this Moment resolves, with the full day's story — for persistence. */
+  onResolved?: (result: {
+    completed: string[]
+    outstanding: string[]
+    resolution: "complete" | "borrowed" | "deferred"
+    resolutionChoice: ResolutionOption | null
+  }) => void
+}
+
+export type MomentConfig = SelectMomentConfig | CheckInMomentConfig
 
 export interface GuidedMomentsProps {
   moments: MomentConfig[]
@@ -65,14 +114,28 @@ export interface GuidedMomentsProps {
 
 type MomentStatus = "upcoming" | "open" | "confirming" | "completed"
 
+interface CheckinState {
+  checked: string[]
+  /** "checklist" = ticking items off. "outstanding-ack" = Cherry Blossom acknowledging before options.
+   *  "resolving" = showing borrow/defer options. "resolved-ack" = Cherry Blossom after the choice. */
+  stage: "checklist" | "outstanding-ack" | "resolving" | "resolved-ack"
+  resolutionChoice: ResolutionOption | null
+}
+
+function cleanLabel(v: string): string {
+  return v.startsWith("Other:") ? v.slice("Other:".length).trim() : v
+}
+
 const CONFIRMATION_MS = 1800
 
 export function GuidedMoments({ moments, summaryTitle, summaryLeadIn, summaryConfirmation, copy }: GuidedMomentsProps) {
   const [activeIndex, setActiveIndex] = useState(0)
   const [completedThrough, setCompletedThrough] = useState(-1)
   const [confirmingIndex, setConfirmingIndex] = useState<number | null>(null)
+  const [confirmationText, setConfirmationText] = useState<string | null>(null)
   const [selections, setSelections] = useState<Record<string, string[]>>({})
   const [otherDraft, setOtherDraft] = useState<Record<string, string>>({})
+  const [checkinState, setCheckinState] = useState<Record<string, CheckinState>>({})
   const [copied, setCopied] = useState(false)
   const confirmTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -81,6 +144,16 @@ export function GuidedMoments({ moments, summaryTitle, summaryLeadIn, summaryCon
       if (confirmTimerRef.current) clearTimeout(confirmTimerRef.current)
     }
   }, [])
+
+  // A checkin Moment may be time-gated (e.g. "opens at 8:55 AM"). Re-render
+  // periodically so it unlocks on its own without the member refreshing.
+  const hasTimeGatedCheckin = moments.some((m) => m.kind === "checkin" && m.availableAt)
+  const [, forceTick] = useState(0)
+  useEffect(() => {
+    if (!hasTimeGatedCheckin) return
+    const interval = setInterval(() => forceTick((n) => n + 1), 30_000)
+    return () => clearInterval(interval)
+  }, [hasTimeGatedCheckin])
 
   const isSummary = completedThrough >= moments.length - 1 && confirmingIndex === null
 
@@ -118,15 +191,18 @@ export function GuidedMoments({ moments, summaryTitle, summaryLeadIn, summaryCon
 
   function handleContinue(index: number) {
     const moment = moments[index]
+    if (moment.kind === "checkin") return // handled by the checkin-specific flow below
     const chosen = selections[moment.id] ?? []
     if (chosen.length === 0) return
 
     setConfirmingIndex(index)
+    setConfirmationText(moment.confirmation)
     if (confirmTimerRef.current) clearTimeout(confirmTimerRef.current)
     confirmTimerRef.current = setTimeout(() => {
       setConfirmingIndex(null)
       setCompletedThrough((prev) => Math.max(prev, index))
       setActiveIndex(index + 1)
+      moment.onContinue?.(chosen.map(cleanLabel))
     }, CONFIRMATION_MS)
   }
 
@@ -135,6 +211,78 @@ export function GuidedMoments({ moments, summaryTitle, summaryLeadIn, summaryCon
     setConfirmingIndex(null)
     setCompletedThrough(index - 1)
     setActiveIndex(index)
+  }
+
+  function getCheckinState(momentId: string): CheckinState {
+    return checkinState[momentId] ?? { checked: [], stage: "checklist", resolutionChoice: null }
+  }
+
+  function toggleCheckinItem(momentId: string, item: string) {
+    setCheckinState((prev) => {
+      const current = prev[momentId] ?? { checked: [], stage: "checklist", resolutionChoice: null }
+      const isChecked = current.checked.includes(item)
+      return {
+        ...prev,
+        [momentId]: {
+          ...current,
+          checked: isChecked ? current.checked.filter((v) => v !== item) : [...current.checked, item],
+        },
+      }
+    })
+  }
+
+  /** Member hits Continue on the checklist: either congratulate (all done) or acknowledge + offer resolutions. */
+  function handleCheckinContinue(index: number, moment: CheckInMomentConfig, sourceItems: string[]) {
+    const state = getCheckinState(moment.id)
+    const outstanding = sourceItems.filter((item) => !state.checked.includes(item))
+
+    if (outstanding.length === 0) {
+      setConfirmingIndex(index)
+      setConfirmationText(moment.confirmationComplete)
+      if (confirmTimerRef.current) clearTimeout(confirmTimerRef.current)
+      confirmTimerRef.current = setTimeout(() => {
+        setConfirmingIndex(null)
+        setCompletedThrough((prev) => Math.max(prev, index))
+        setActiveIndex(index + 1)
+        moment.onResolved?.({
+          completed: sourceItems,
+          outstanding: [],
+          resolution: "complete",
+          resolutionChoice: null,
+        })
+      }, CONFIRMATION_MS)
+      return
+    }
+
+    setConfirmingIndex(index)
+    setConfirmationText(moment.confirmationOutstanding)
+    if (confirmTimerRef.current) clearTimeout(confirmTimerRef.current)
+    confirmTimerRef.current = setTimeout(() => {
+      setConfirmingIndex(null)
+      setCheckinState((prev) => ({ ...prev, [moment.id]: { ...state, stage: "resolving" } }))
+    }, CONFIRMATION_MS)
+  }
+
+  /** Member picks a borrow/defer option for what's outstanding. */
+  function handleCheckinResolve(index: number, moment: CheckInMomentConfig, sourceItems: string[], choice: ResolutionOption) {
+    const state = getCheckinState(moment.id)
+    const outstanding = sourceItems.filter((item) => !state.checked.includes(item))
+
+    setConfirmingIndex(index)
+    setConfirmationText(moment.confirmationResolved(choice))
+    if (confirmTimerRef.current) clearTimeout(confirmTimerRef.current)
+    confirmTimerRef.current = setTimeout(() => {
+      setConfirmingIndex(null)
+      setCompletedThrough((prev) => Math.max(prev, index))
+      setActiveIndex(index + 1)
+      setCheckinState((prev) => ({ ...prev, [moment.id]: { ...state, resolutionChoice: choice } }))
+      moment.onResolved?.({
+        completed: state.checked,
+        outstanding,
+        resolution: choice.kind === "borrow" ? "borrowed" : "deferred",
+        resolutionChoice: choice,
+      })
+    }, CONFIRMATION_MS)
   }
 
   async function handleCopy() {
@@ -188,6 +336,25 @@ export function GuidedMoments({ moments, summaryTitle, summaryLeadIn, summaryCon
           const status = statusFor(index)
           if (status === "upcoming") return null
 
+          if (moment.kind === "checkin") {
+            return (
+              <CheckInMomentCard
+                key={moment.id}
+                moment={moment}
+                index={index}
+                status={status}
+                confirmationText={confirmationText}
+                sourceItems={(selections[moment.sourceMomentId] ?? []).map(cleanLabel)}
+                state={getCheckinState(moment.id)}
+                onToggleItem={(item) => toggleCheckinItem(moment.id, item)}
+                onContinueChecklist={(sourceItems) => handleCheckinContinue(index, moment, sourceItems)}
+                onResolve={(sourceItems, choice) => handleCheckinResolve(index, moment, sourceItems, choice)}
+                onPrevious={() => handlePrevious(index)}
+                showPrevious={index > 0}
+              />
+            )
+          }
+
           const chosen = selections[moment.id] ?? []
           const hasOther = chosen.some((v) => v === "Other" || v.startsWith("Other:"))
 
@@ -235,7 +402,9 @@ export function GuidedMoments({ moments, summaryTitle, summaryLeadIn, summaryCon
                     <span className="text-xl leading-none" aria-hidden>
                       🌸
                     </span>
-                    <p className="font-sans text-[15px] leading-relaxed text-brand-ink">{moment.confirmation}</p>
+                    <p className="font-sans text-[15px] leading-relaxed text-brand-ink">
+                      {confirmationText ?? moment.confirmation}
+                    </p>
                   </motion.div>
                 ) : (
                   <motion.div
@@ -384,6 +553,211 @@ export function GuidedMoments({ moments, summaryTitle, summaryLeadIn, summaryCon
           )}
         </motion.div>
       )}
+    </div>
+  )
+}
+
+interface CheckInMomentCardProps {
+  moment: CheckInMomentConfig
+  index: number
+  status: MomentStatus
+  confirmationText: string | null
+  sourceItems: string[]
+  state: CheckinState
+  onToggleItem: (item: string) => void
+  onContinueChecklist: (sourceItems: string[]) => void
+  onResolve: (sourceItems: string[], choice: ResolutionOption) => void
+  onPrevious: () => void
+  showPrevious: boolean
+}
+
+/** Renders the check-in Moment: checklist → (congratulate) or (acknowledge → borrow/defer choice). */
+function CheckInMomentCard({
+  moment,
+  status,
+  confirmationText,
+  sourceItems,
+  state,
+  onToggleItem,
+  onContinueChecklist,
+  onResolve,
+  onPrevious,
+  showPrevious,
+}: CheckInMomentCardProps) {
+  const now = new Date()
+  const available = moment.availableAt ? moment.availableAt(now) : true
+  const outstanding = sourceItems.filter((item) => !state.checked.includes(item))
+
+  if (status === "completed") {
+    const choice = state.resolutionChoice
+    return (
+      <div className="rounded-2xl border border-brand-green/20 bg-brand-green/[0.05] px-5 py-4">
+        <div className="flex items-start justify-between gap-4">
+          <div className="space-y-2">
+            <p className="font-sans text-sm font-bold text-brand-ink">{moment.summaryLabel}</p>
+            {state.checked.length > 0 && (
+              <p className="font-sans text-sm text-brand-ink-soft">
+                <span className="font-semibold text-brand-green-dark">Completed:</span> {state.checked.join(" · ")}
+              </p>
+            )}
+            {outstanding.length > 0 && (
+              <p className="font-sans text-sm text-brand-ink-soft">
+                <span className="font-semibold text-brand-coral">Outstanding:</span> {outstanding.join(" · ")}
+              </p>
+            )}
+            {choice && (
+              <p className="font-sans text-sm text-brand-ink-soft">
+                <span className="font-semibold text-brand-ink">Decision:</span>{" "}
+                {choice.kind === "borrow" ? `Borrowed from ${choice.label}` : "Deferred to tomorrow's Flex Time™"}
+              </p>
+            )}
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={onPrevious}
+              className="inline-flex items-center gap-1 font-sans text-xs font-semibold text-brand-green-dark/70 transition-colors hover:text-brand-green-dark"
+            >
+              <ChevronLeft className="h-3.5 w-3.5" aria-hidden />
+              Previous
+            </button>
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-brand-green text-white">
+              <Check className="h-3.5 w-3.5" aria-hidden />
+            </span>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="rounded-2xl border border-brand-blush bg-white px-5 py-6 sm:px-7">
+      <AnimatePresence mode="wait">
+        {status === "confirming" ? (
+          <motion.div
+            key="confirmation"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="flex items-start gap-3"
+          >
+            <span className="text-xl leading-none" aria-hidden>
+              🌸
+            </span>
+            <p className="font-sans text-[15px] leading-relaxed text-brand-ink">{confirmationText}</p>
+          </motion.div>
+        ) : !available ? (
+          <motion.div
+            key="locked"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="flex items-start gap-3"
+          >
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-black/[0.05] text-brand-ink-soft/60">
+              <Lock className="h-4 w-4" aria-hidden />
+            </span>
+            <div>
+              <h4 className="font-playfair text-xl font-semibold text-brand-ink text-balance">{moment.question}</h4>
+              <p className="mt-1 font-sans text-sm text-brand-ink-soft">
+                {moment.lockedNote ?? "This check-in isn't open yet."}
+              </p>
+            </div>
+          </motion.div>
+        ) : state.stage === "resolving" ? (
+          <motion.div
+            key="resolving"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <h4 className="font-playfair text-xl font-semibold text-brand-ink text-balance">
+              Where should {outstanding.length === 1 ? "this" : "these"} go?
+            </h4>
+            <p className="mt-1 font-sans text-sm text-brand-ink-soft">
+              Still outstanding: {outstanding.join(" · ")}
+            </p>
+            <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+              {moment.getResolutionOptions(now).map((opt) => (
+                <button
+                  key={opt.id}
+                  type="button"
+                  onClick={() => onResolve(sourceItems, opt)}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-brand-blush bg-white px-4 py-2.5 font-sans text-sm font-medium text-brand-ink-soft transition-colors hover:border-brand-green/40 hover:text-brand-green-dark"
+                >
+                  {opt.kind === "borrow" ? `Borrow up to 1 hour from ${opt.label}` : opt.label}
+                </button>
+              ))}
+            </div>
+            {showPrevious && (
+              <button
+                type="button"
+                onClick={onPrevious}
+                className="mt-4 inline-flex items-center gap-1 font-sans text-sm font-semibold text-brand-ink-soft transition-colors hover:text-brand-ink"
+              >
+                <ChevronLeft className="h-4 w-4" aria-hidden />
+                Previous
+              </button>
+            )}
+          </motion.div>
+        ) : (
+          <motion.div
+            key="checklist"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <h4 className="font-playfair text-xl font-semibold text-brand-ink text-balance">{moment.question}</h4>
+            {moment.helperText && <p className="mt-1 font-sans text-sm text-brand-ink-soft">{moment.helperText}</p>}
+
+            <div className="mt-4 flex flex-wrap gap-2">
+              {sourceItems.map((item) => {
+                const checked = state.checked.includes(item)
+                return (
+                  <button
+                    key={item}
+                    type="button"
+                    aria-pressed={checked}
+                    onClick={() => onToggleItem(item)}
+                    className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-2 font-sans text-sm font-medium transition-colors ${
+                      checked
+                        ? "border-brand-green bg-brand-green/10 text-brand-green-dark"
+                        : "border-brand-blush bg-white text-brand-ink-soft hover:border-brand-green/40 hover:text-brand-green-dark"
+                    }`}
+                  >
+                    {checked && <Check className="h-3.5 w-3.5" aria-hidden />}
+                    {item}
+                  </button>
+                )
+              })}
+            </div>
+
+            <div className="mt-5 flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => onContinueChecklist(sourceItems)}
+                className="inline-flex items-center gap-2 rounded-full bg-brand-green px-6 py-2.5 font-sans text-sm font-bold text-white shadow-sm transition-all hover:bg-brand-green-dark"
+              >
+                Continue
+              </button>
+              {showPrevious && (
+                <button
+                  type="button"
+                  onClick={onPrevious}
+                  className="inline-flex items-center gap-1 font-sans text-sm font-semibold text-brand-ink-soft transition-colors hover:text-brand-ink"
+                >
+                  <ChevronLeft className="h-4 w-4" aria-hidden />
+                  Previous
+                </button>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

@@ -25,6 +25,7 @@ import { ArrowRight, CheckCircle2, ChevronDown, Clock, Info, Plus, Trash2 } from
 import type { BlockId } from "@/operating-engine"
 import { PLANNER_CONFIG } from "@/components/operating-planner/planner-config"
 import { FlexTimeGuidedMoments } from "@/components/guided-moments/flex-time-moments"
+import { FlexTimeHistory } from "@/components/guided-moments/flex-time-history"
 import dynamic from "next/dynamic"
 
 // Lazy-load the BCA to keep the main bundle lean — only needed in ceo-workday.
@@ -826,6 +827,10 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
             educational content below so members who just want to move through their morning
             can do so quickly, while members who want to learn more can still expand it. */}
         {blockId === "early-access" && <FlexTimeGuidedMoments />}
+
+        {/* My Flex Time™ History — a record of how the member has been making
+            room for what matters, day by day. Collapsed by default. */}
+        {blockId === "early-access" && <FlexTimeHistory />}
 
         {/* Learn More About This Segment™ accordion — right under title */}
         {data.learnMore && (
