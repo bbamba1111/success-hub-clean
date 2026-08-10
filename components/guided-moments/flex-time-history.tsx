@@ -107,22 +107,27 @@ function DayCard({ record }: { record: FlexTimeDayRecord }) {
 export function FlexTimeHistory() {
   const [isOpen, setIsOpen] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [loaded, setLoaded] = useState(false)
   const [records, setRecords] = useState<FlexTimeDayRecord[]>([])
 
+  // Re-fetches every time the accordion opens (not just the first time) so a
+  // check-in completed moments ago — possibly still mid-sync to Supabase —
+  // is never masked by a stale cached result from an earlier open.
   async function handleToggle() {
     const next = !isOpen
     setIsOpen(next)
-    if (next && !loaded) {
-      setLoading(true)
-      try {
-        const today = getDayKey()
-        const all = await getFlexTimeHistory()
-        setRecords(all.filter((r) => r.dayKey !== today))
-      } finally {
-        setLoading(false)
-        setLoaded(true)
-      }
+    if (!next) return
+
+    setLoading(true)
+    try {
+      const today = getDayKey()
+      const all = await getFlexTimeHistory()
+      // Today only stays off this list while it's still in progress (no
+      // check-in yet) — the live Guided Moments™ card above covers that
+      // case. Once the member has checked in, today's outcome belongs
+      // here too, so "My Flex Time™ History" reflects it immediately.
+      setRecords(all.filter((r) => r.dayKey !== today || r.checkedInAt))
+    } finally {
+      setLoading(false)
     }
   }
 
