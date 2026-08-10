@@ -110,8 +110,9 @@ export interface BlockConfig {
   emoji: string
   /** Space-separated RGB for the panel tint, e.g. "253 246 234". */
   tint: string
-  /** Background image path served from /public. */
-  backgroundImage: string
+  /** Background image path served from /public. Pass an array (2+ paths) to
+   *  slowly crossfade between them on the card (e.g. a laptop screen "changing"). */
+  backgroundImage: string | string[]
   /** Primary CTA label. */
   cta: string
   /** External join/engagement link (optional). */

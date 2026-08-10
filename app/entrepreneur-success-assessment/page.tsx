@@ -1,23 +1,15 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import EntrepreneurSuccessAssessment, {
   CompletionScreen,
 } from "@/components/entrepreneur-success/entrepreneur-success-assessment"
 import { CherryBlossomScene, CherryBlossomSceneCard } from "@/components/cherry-blossom/cherry-blossom-scene"
-import { getStoredAssessmentWindow } from "@/lib/assessment-cadence"
 
 const RESULTS_URL = "/reality-check"
 
 export default function EntrepreneurSuccessAssessmentPage() {
   const [complete, setComplete] = useState(false)
-  // Mirrors the Work-Life Balance Audit™'s cadence for the *same* Reality Check™ —
-  // first Reality Check™ ever = 30-day, every Monday after = 7-day.
-  const [isBaseline, setIsBaseline] = useState(true)
-
-  useEffect(() => {
-    setIsBaseline(getStoredAssessmentWindow() === "30-day")
-  }, [])
 
   if (complete) {
     return (
@@ -45,9 +37,8 @@ export default function EntrepreneurSuccessAssessmentPage() {
             <strong>same period</strong> as your Work-Life Balance Audit™.
           </p>
           <p>
-            {isBaseline
-              ? <>If this is your first <strong>Reality Check™</strong>, you&apos;ll reflect on the past <strong>30 days</strong>.</>
-              : <>Today&apos;s <strong>Reality Check™</strong> reflects on the previous <strong>7 days</strong>, helping you measure your progress since last Monday.</>}
+            Today&apos;s <strong>Reality Check™</strong> reflects on the previous <strong>7 days</strong>,
+            helping you measure your progress since last Monday.
           </p>
           <p>
             Together, these two reflections create your personalized{" "}

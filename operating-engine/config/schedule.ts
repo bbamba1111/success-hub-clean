@@ -40,7 +40,10 @@ export const SCHEDULE: BlockConfig[] = [
       "Before you manage your business, manage your life. Take 45 minutes to honestly examine where you are — boundaries, energy, and commitments — and redesign your entry into the workweek.",
     emoji: "🌸",
     tint: "252 240 238",
-    backgroundImage: "/images/block-monday-reality-check.png",
+    backgroundImage: [
+      "/images/block-monday-reality-check.png",
+      "/images/block-monday-reality-check-2.png",
+    ],
     cta: "Take the Reality Check™",
     engagement: "live-room",
     part: "morning",

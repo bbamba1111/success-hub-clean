@@ -26,11 +26,18 @@ export function getThemeState(time: TimeContext, phase: CircadianPhase): ThemeSt
   const season = time.season
   const seasonLabel = season.charAt(0).toUpperCase() + season.slice(1)
 
+  // ThemeState always resolves to a single "current moment" image — if the
+  // block defines a crossfading array (e.g. Monday Reality Check™), use the
+  // first frame here.
+  const blockBackgroundImage = Array.isArray(phase.block.backgroundImage)
+    ? phase.block.backgroundImage[0]
+    : phase.block.backgroundImage
+
   return {
     period,
     season,
     label: `${PERIOD_LABEL[period]} · ${seasonLabel}`,
-    backgroundImage: phase.block.backgroundImage,
+    backgroundImage: blockBackgroundImage,
     tint: phase.block.tint,
   }
 }

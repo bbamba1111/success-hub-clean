@@ -245,7 +245,12 @@ export function BusinessDayHero() {
 
   // Use the business-day engine's current block image so weekend overrides
   // (Time Freedom all-day on Fri/Sat/Sun) are reflected correctly.
-  const backgroundImage = experience?.businessDay.current.backgroundImage ?? "/images/business-day-hero-bg.png"
+  // The hero shows a single frame, so if the block defines a crossfading
+  // array (e.g. Monday Reality Check™), use the first image here.
+  const currentBlockImage = experience?.businessDay.current.backgroundImage
+  const backgroundImage =
+    (Array.isArray(currentBlockImage) ? currentBlockImage[0] : currentBlockImage) ??
+    "/images/business-day-hero-bg.png"
   // Calendar-driven invitation — day of week + time is the single source of truth.
   // No workflow state (Synchronize/Execute/Optimize/Finish Strong) involved.
   const invitation = getCalendarInvitation()

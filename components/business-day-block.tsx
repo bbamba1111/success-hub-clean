@@ -1,7 +1,7 @@
 "use client"
 
 import { type ReactNode, useEffect, useState } from "react"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { ChevronDown } from "lucide-react"
 import { OperatingPlanner } from "@/components/operating-planner/operating-planner"
@@ -15,8 +15,10 @@ export type BlockStatus = "current" | "upcoming" | "completed"
 
 export interface BusinessDayBlockProps {
   sectionId: string
-  /** Swap this single value when a permanent image is ready. Layout never depends on it. */
-  backgroundImage?: string
+  /** Swap this single value when a permanent image is ready. Layout never depends on it.
+   *  Pass an array (2+ images) to slowly crossfade between them, e.g. to show the
+   *  laptop screen "changing" every few seconds. */
+  backgroundImage?: string | string[]
   emoji?: string
   time: string
   title: string
@@ -83,6 +85,21 @@ export function BusinessDayBlock({
   const [showAbout, setShowAbout] = useState(false)
   const [music, setMusic] = useState<MusicChoice | null>(null)
   const activeSpace = useActiveSpace()
+
+  // Support crossfading through multiple background images (e.g. the laptop
+  // screen "changing" every few seconds) when an array is passed.
+  const backgroundImages = Array.isArray(backgroundImage)
+    ? backgroundImage
+    : [backgroundImage]
+  const [imageIndex, setImageIndex] = useState(0)
+
+  useEffect(() => {
+    if (backgroundImages.length < 2) return
+    const id = setInterval(() => {
+      setImageIndex((i) => (i + 1) % backgroundImages.length)
+    }, 3500)
+    return () => clearInterval(id)
+  }, [backgroundImages.length])
 
   // "Enter the Space™" — auto-expand this accordion when the shared
   // provider targets this block (Hero CTA, Welcome CTA, or the in-flow
@@ -220,12 +237,19 @@ export function BusinessDayBlock({
 
           {/* Right image area — dominant photography, fills the rest of the card */}
           <div className="relative min-h-[200px] flex-1">
-            <img
-              src={backgroundImage || "/placeholder.svg"}
-              alt=""
-              aria-hidden="true"
-              className="absolute inset-0 h-full w-full object-cover object-center"
-            />
+            <AnimatePresence>
+              <motion.img
+                key={imageIndex}
+                src={backgroundImages[imageIndex] || "/placeholder.svg"}
+                alt=""
+                aria-hidden="true"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.8, ease: "easeInOut" }}
+                className="absolute inset-0 h-full w-full object-cover object-center"
+              />
+            </AnimatePresence>
             {/* Soft ~48px horizontal fade blending the panel into the photography (desktop only) */}
             <div
               className="pointer-events-none absolute inset-y-0 left-0 hidden w-12 md:block"
