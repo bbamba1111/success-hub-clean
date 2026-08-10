@@ -43,8 +43,10 @@ export interface SelectMomentConfig {
   allowOther?: boolean
   /** Placeholder question shown above the "Other" text field. */
   otherPrompt?: string
-  /** Short label used in the collapsed summary row, e.g. "What I'm Making Time For". */
+  /** Short label used in the collapsed summary row, e.g. "You are making time for:". */
   summaryLabel: string
+  /** Bold, uppercase standout title shown above summaryLabel in the completed card, e.g. "What You Intended". */
+  standoutTitle?: string
   /** Cherry Blossom™ micro-confirmation (1–2 sentences) shown after Continue. */
   confirmation: string
   /** Called once this Moment is confirmed, with the final selected labels (cleaned of "Other:" prefixes). */
@@ -74,6 +76,8 @@ export interface CheckInMomentConfig {
   helperText?: string
   /** Short label used in the collapsed summary row. */
   summaryLabel: string
+  /** Bold, uppercase standout title shown above summaryLabel in the completed card, e.g. "What You Completed". */
+  standoutTitle?: string
   /** Gates interactivity — returns false until, e.g., 8:55 AM. Re-evaluated each render. */
   availableAt?: (now: Date) => boolean
   /** Copy shown while locked, e.g. "Check-in opens at 8:55 AM." */
@@ -363,10 +367,15 @@ export function GuidedMoments({ moments, summaryTitle, summaryLeadIn, summaryCon
             return (
               <div
                 key={moment.id}
-                className="flex items-start justify-between gap-4 rounded-2xl border border-brand-green/20 bg-brand-green/[0.05] px-5 py-4"
+                className="flex items-start justify-between gap-4 rounded-2xl border-2 border-brand-green/30 bg-brand-green/[0.07] px-5 py-4 shadow-sm"
               >
                 <div>
-                  <p className="font-sans text-sm font-bold text-brand-ink">{moment.summaryLabel}</p>
+                  {moment.standoutTitle && (
+                    <p className="font-sans text-xs font-extrabold uppercase tracking-[0.14em] text-brand-green-dark">
+                      {moment.standoutTitle}
+                    </p>
+                  )}
+                  <p className="mt-1 font-sans text-sm font-bold text-brand-ink">{moment.summaryLabel}</p>
                   <p className="mt-1 font-sans text-sm text-brand-ink-soft">{displayItems.join(" · ")}</p>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
@@ -591,19 +600,32 @@ function CheckInMomentCard({
   if (status === "completed") {
     const choice = state.resolutionChoice
     return (
-      <div className="rounded-2xl border border-brand-green/20 bg-brand-green/[0.05] px-5 py-4">
+      <div className="rounded-2xl border-2 border-brand-green/30 bg-brand-green/[0.07] px-5 py-4 shadow-sm">
         <div className="flex items-start justify-between gap-4">
-          <div className="space-y-2">
-            <p className="font-sans text-sm font-bold text-brand-ink">{moment.summaryLabel}</p>
-            {state.checked.length > 0 && (
-              <p className="font-sans text-sm text-brand-ink-soft">
-                <span className="font-semibold text-brand-green-dark">Completed:</span> {state.checked.join(" · ")}
+          <div className="flex-1 space-y-2">
+            {moment.standoutTitle && (
+              <p className="font-sans text-xs font-extrabold uppercase tracking-[0.14em] text-brand-green-dark">
+                {moment.standoutTitle}
               </p>
             )}
+            <p className="font-sans text-sm font-bold text-brand-ink">{moment.summaryLabel}</p>
+            {state.checked.length > 0 && (
+              <ul className="space-y-1">
+                {state.checked.map((item) => (
+                  <li key={item} className="flex items-center gap-1.5 font-sans text-sm text-brand-ink-soft">
+                    <Check className="h-3.5 w-3.5 shrink-0 text-brand-green-dark" aria-hidden />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            )}
             {outstanding.length > 0 && (
-              <p className="font-sans text-sm text-brand-ink-soft">
-                <span className="font-semibold text-brand-coral">Outstanding:</span> {outstanding.join(" · ")}
-              </p>
+              <div className="rounded-xl border border-brand-coral/30 bg-brand-coral/[0.08] px-3 py-2.5">
+                <p className="font-sans text-xs font-extrabold uppercase tracking-[0.1em] text-brand-coral">
+                  Still Pending
+                </p>
+                <p className="mt-1 font-sans text-sm text-brand-ink">{outstanding.join(" · ")}</p>
+              </div>
             )}
             {choice && (
               <p className="font-sans text-sm text-brand-ink-soft">

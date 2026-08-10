@@ -46,7 +46,8 @@ const FLEX_TIME_MOMENTS: MomentConfig[] = [
     multiSelect: true,
     allowOther: true,
     otherPrompt: "What else are you making time for?",
-    summaryLabel: "What I'm Making Time For",
+    summaryLabel: "You are making time for:",
+    standoutTitle: "What You Intended",
     confirmation:
       "Great choices. You're intentionally making room for what needs your attention this morning while protecting the rhythm of the day ahead.",
     onContinue: (chosen) => {
@@ -74,6 +75,7 @@ const FLEX_TIME_MOMENTS: MomentConfig[] = [
     question: "Which of these did you make time for?",
     helperText: "Select everything you completed — Cherry Blossom will help with the rest.",
     summaryLabel: "8:55 Check-In",
+    standoutTitle: "What You Completed",
     availableAt: isCheckInAvailable,
     lockedNote: "Check-in opens at 8:55 AM — five minutes before Flex Time™ wraps up.",
     confirmationComplete:
