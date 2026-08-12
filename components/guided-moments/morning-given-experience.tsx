@@ -40,7 +40,7 @@ import {
 type StepId = "gratitude" | "ask" | "vision" | "embody" | "nurture"
 type StepStatus = "upcoming" | "open" | "confirming" | "completed"
 
-const CONFIRMATION_MS = 1600
+const CONFIRMATION_MS = 6000
 
 const STEPS: { id: StepId; letter: string; label: string }[] = [
   { id: "gratitude", letter: "G", label: "Gratitude" },
@@ -621,12 +621,19 @@ function FreeTextStepCard({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="flex items-start gap-3"
           >
-            <span className="text-xl leading-none" aria-hidden>
-              🌸
-            </span>
-            <p className="font-sans text-[15px] leading-relaxed text-brand-ink">{confirmation}</p>
+            <p className="font-sans text-xs font-semibold uppercase tracking-[0.12em] text-brand-ink-soft/50">
+              Your words
+            </p>
+            <p className="mt-1.5 font-playfair text-lg leading-snug text-brand-ink text-balance">
+              &ldquo;{value}&rdquo;
+            </p>
+            <div className="mt-4 flex items-start gap-3">
+              <span className="text-xl leading-none" aria-hidden>
+                🌸
+              </span>
+              <p className="font-sans text-[15px] leading-relaxed text-brand-ink">{confirmation}</p>
+            </div>
           </motion.div>
         ) : (
           <motion.div key="question" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
@@ -732,15 +739,31 @@ function VisionStepCard({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="flex items-start gap-3"
           >
-            <span className="text-xl leading-none" aria-hidden>
-              🌸
-            </span>
-            <p className="font-sans text-[15px] leading-relaxed text-brand-ink">
-              You didn&apos;t just picture it — you stepped inside it. Who you&apos;re becoming, what you&apos;re
-              doing, how you&apos;re living: it&apos;s already real in here.
+            <p className="font-sans text-xs font-semibold uppercase tracking-[0.12em] text-brand-ink-soft/50">
+              Your vision
             </p>
+            <ul className="mt-2 space-y-1.5">
+              {senses
+                .filter((sense) => fields[sense.key].trim())
+                .map((sense) => (
+                  <li key={sense.key} className="flex items-start gap-2 font-sans text-sm text-brand-ink">
+                    <span className="leading-none" aria-hidden>
+                      {sense.emoji}
+                    </span>
+                    <span>{fields[sense.key]}</span>
+                  </li>
+                ))}
+            </ul>
+            <div className="mt-4 flex items-start gap-3">
+              <span className="text-xl leading-none" aria-hidden>
+                🌸
+              </span>
+              <p className="font-sans text-[15px] leading-relaxed text-brand-ink">
+                You didn&apos;t just picture it — you stepped inside it. Who you&apos;re becoming, what you&apos;re
+                doing, how you&apos;re living: it&apos;s already real in here.
+              </p>
+            </div>
           </motion.div>
         ) : (
           <motion.div key="question" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
@@ -838,12 +861,27 @@ function MultiSelectStepCard({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="flex items-start gap-3"
           >
-            <span className="text-xl leading-none" aria-hidden>
-              🌸
-            </span>
-            <p className="font-sans text-[15px] leading-relaxed text-brand-ink">{confirmation}</p>
+            <p className="font-sans text-xs font-semibold uppercase tracking-[0.12em] text-brand-ink-soft/50">
+              Your choices
+            </p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {chosen.map((option) => (
+                <span
+                  key={option}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-brand-green/30 bg-brand-green/10 px-4 py-2 font-sans text-sm font-medium text-brand-green-dark"
+                >
+                  <Check className="h-3.5 w-3.5" aria-hidden />
+                  {option}
+                </span>
+              ))}
+            </div>
+            <div className="mt-4 flex items-start gap-3">
+              <span className="text-xl leading-none" aria-hidden>
+                🌸
+              </span>
+              <p className="font-sans text-[15px] leading-relaxed text-brand-ink">{confirmation}</p>
+            </div>
           </motion.div>
         ) : (
           <motion.div key="question" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
