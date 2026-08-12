@@ -40,7 +40,7 @@ import {
 type StepId = "gratitude" | "ask" | "vision" | "embody" | "nurture"
 type StepStatus = "upcoming" | "open" | "confirming" | "completed"
 
-const CONFIRMATION_MS = 6000
+const CONFIRMATION_MS = 11000
 
 const STEPS: { id: StepId; letter: string; label: string }[] = [
   { id: "gratitude", letter: "G", label: "Gratitude" },
@@ -49,6 +49,18 @@ const STEPS: { id: StepId; letter: string; label: string }[] = [
   { id: "embody", letter: "E", label: "Embody" },
   { id: "nurture", letter: "N", label: "Nurture" },
 ]
+
+// Each step's Cherry Blossom affirmation. Shown during the "confirming" pause
+// AND left resting permanently under the member's own words once the step
+// collapses into its completed green summary card.
+const CONFIRMATIONS: Record<StepId, string> = {
+  gratitude: "Gratitude has a way of steadying everything else. Beautiful place to begin.",
+  ask: "You've named what you want and opened the day to something bigger than your own effort. That's the Invitation.",
+  vision:
+    "You didn't just picture it — you stepped inside it. Who you're becoming, what you're doing, how you're living: it's already real in here.",
+  embody: "This is who you're practicing being today. Let it lead you, gently, through whatever comes.",
+  nurture: "Noted, and protected. These aren't extras — they're how the rest of your day stays sustainable.",
+}
 
 const EMBODY_OPTIONS = [
   "Someone who exercises consistently",
@@ -464,7 +476,7 @@ function StepCard({ step, index, status, draft, onAdvance, onPrevious, showPrevi
         status={status}
         question="What are you thankful for this morning?"
         helperText="Take a breath. Let one or two things come to mind."
-        confirmation="Gratitude has a way of steadying everything else. Beautiful place to begin."
+        confirmation={CONFIRMATIONS.gratitude}
         placeholder="I'm thankful for..."
         initialValue={draft.gratitude}
         onContinue={(value) => onAdvance(index, { gratitude: value }, "ask")}
@@ -479,7 +491,7 @@ function StepCard({ step, index, status, draft, onAdvance, onPrevious, showPrevi
         status={status}
         question="What do you want, and how are you inviting your Creator to co-create this day with you?"
         helperText="This is your Ask — name it plainly, and the invitation alongside it."
-        confirmation="You've named what you want and opened the day to something bigger than your own effort. That's the Invitation."
+        confirmation={CONFIRMATIONS.ask}
         placeholder="I'm asking for... and inviting..."
         initialValue={draft.ask}
         multiline
@@ -507,7 +519,7 @@ function StepCard({ step, index, status, draft, onAdvance, onPrevious, showPrevi
         status={status}
         question="Who are you becoming today?"
         helperText="Select all that apply — this is about identity, not a to-do list."
-        confirmation="This is who you're practicing being today. Let it lead you, gently, through whatever comes."
+        confirmation={CONFIRMATIONS.embody}
         options={EMBODY_OPTIONS}
         initialValue={draft.embody}
         onContinue={(value) => onAdvance(index, { embody: value }, "nurture")}
@@ -522,7 +534,7 @@ function StepCard({ step, index, status, draft, onAdvance, onPrevious, showPrevi
       status={status}
       question="Which Non-Negotiable Sustainable Operating Practices™ are you honoring today?"
       helperText="Select all that apply."
-      confirmation="Noted, and protected. These aren't extras — they're how the rest of your day stays sustainable."
+      confirmation={CONFIRMATIONS.nurture}
       options={NURTURE_OPTIONS}
       initialValue={draft.nurture}
       onContinue={(value) => onAdvance(index, { nurture: value }, "complete")}
@@ -564,6 +576,12 @@ function CompletedStepCard({
           {step.letter} — {step.label}
         </p>
         <p className="mt-1 font-sans text-sm text-brand-ink-soft">{summary}</p>
+        <div className="mt-3 flex items-start gap-2 border-t border-brand-green/15 pt-3">
+          <span className="text-base leading-none" aria-hidden>
+            🌸
+          </span>
+          <p className="font-sans text-sm leading-relaxed text-brand-green-dark/80">{CONFIRMATIONS[step.id]}</p>
+        </div>
       </div>
       <div className="flex items-center gap-2 shrink-0">
         <button
@@ -759,10 +777,7 @@ function VisionStepCard({
               <span className="text-xl leading-none" aria-hidden>
                 🌸
               </span>
-              <p className="font-sans text-[15px] leading-relaxed text-brand-ink">
-                You didn&apos;t just picture it — you stepped inside it. Who you&apos;re becoming, what you&apos;re
-                doing, how you&apos;re living: it&apos;s already real in here.
-              </p>
+              <p className="font-sans text-[15px] leading-relaxed text-brand-ink">{CONFIRMATIONS.vision}</p>
             </div>
           </motion.div>
         ) : (
