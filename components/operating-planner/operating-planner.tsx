@@ -10,11 +10,13 @@
  *   2. Segment Body          — all content from /design-my-week ported in:
  *        · Type chip + time + title + description
  *        · Flex Time™ info panel (early-access only)
+ *        · Morning GIV•EN™ guided experience (morning-given only)
  *        · Borrow note (morning-given, lunch-break)
  *        · Learn More About This Segment™ accordion
  *        · Movement Planner (movement-window only)
  *        · Sleep Planner (power-down only)
- *        · Choose one… or create your own — example chips
+ *        · Choose one… or create your own — example chips (skipped for
+ *          early-access and morning-given, which use guided experiences)
  *        · Commitment input ("I am committed to…")
  *        · Create My Intention Declaration™ button
  *        · Confirmed declaration card + Install This™ / Edit buttons
@@ -26,6 +28,7 @@ import type { BlockId } from "@/operating-engine"
 import { PLANNER_CONFIG } from "@/components/operating-planner/planner-config"
 import { FlexTimeGuidedMoments } from "@/components/guided-moments/flex-time-moments"
 import { FlexTimeHistory } from "@/components/guided-moments/flex-time-history"
+import { MorningGivenExperience } from "@/components/guided-moments/morning-given-experience"
 import dynamic from "next/dynamic"
 
 // Lazy-load the BCA to keep the main bundle lean — only needed in ceo-workday.
@@ -832,6 +835,13 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
             room for what matters, day by day. Collapsed by default. */}
         {blockId === "early-access" && <FlexTimeHistory />}
 
+        {/* Morning GIV•EN™ — the primary Morning Alignment Space™ experience.
+            Replaces the old chip-picker / "I am committed to…" workflow for
+            this segment. G-I-V-E-N is a guided, one-step-at-a-time flow whose
+            answers (Ask, Vision, Embody, Nurture) become the input layer for
+            the rest of the member's Work-Life Balance Business Day™. */}
+        {blockId === "morning-given" && <MorningGivenExperience />}
+
         {/* Learn More About This Segment™ accordion — right under title */}
         {data.learnMore && (
           <div className="mb-6 mt-3 rounded-2xl border border-brand-green/20 bg-brand-green/[0.05] overflow-hidden">
@@ -984,8 +994,9 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
 
         {/* Chip picker + "I am committed to" input + Create My Intention Declaration™
             Skip for unplug (digital-detox) segments — they have no commitment workflow —
-            and for Flex Time & Preparation™, which now uses Guided Moments™ above instead. */}
-        {!data.isUnplug && blockId !== "early-access" && (
+            and for Flex Time & Preparation™ and Morning GIV•EN™, which now use their own
+            guided experiences above instead. */}
+        {!data.isUnplug && blockId !== "early-access" && blockId !== "morning-given" && (
           <RepeatAfterMe blockId={blockId} data={data} />
         )}
 
