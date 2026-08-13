@@ -8,6 +8,7 @@ import type { BlockId } from "../types"
 export const SPACE_LABEL: Record<BlockId, string> = {
   "monday-flex": "Flex Time Space™",
   "monday-reality-check": "Reflection Space™",
+  "monday-debrief": "Debrief Space™",
   "early-access": "Flex Time Space™",
   "morning-given": "Alignment Space™",
   "movement-window": "Movement Space™",

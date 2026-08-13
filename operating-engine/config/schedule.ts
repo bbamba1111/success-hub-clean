@@ -23,40 +23,20 @@ const h = (hours: number, minutes = 0) => hours * 60 + minutes
 /**
  * Ordered blocks, beginning at the 7:00 AM open. The final block
  * (Unplug Digital Detox™) wraps past midnight (23:00 → 07:00).
+ *
+ * Monday resequencing — Make Time For More On Mondays™:
+ * On every other weekday, Morning GIV•EN™ runs 9:00–10:30 AM and Movement /
+ * Lunch follow immediately after. On Mondays the morning is resequenced so
+ * members align first, then reflect, then debrief, before moving on:
+ *   Flex Time (7:00–9:00) → Morning GIV•EN™ (9:00–9:45) →
+ *   Reality Check™ (9:45–10:30) → Work-Life Balance Debrief™ (10:30–11:00) →
+ *   Movement Window™ (11:00–11:30) → Lunch Break™ (11:30 AM–1:00 PM).
+ * Each affected block carries its Monday-specific times via
+ * `mondayStartMinutes` / `mondayEndMinutes` / `mondayTimeLabel`; the two
+ * Monday-only blocks (`monday-reality-check`, `monday-debrief`) simply don't
+ * exist on any other day (`mondayOnly: true`) and are hidden by the engine.
  */
 export const SCHEDULE: BlockConfig[] = [
-  // ── Monday-only block ─────────────────────────────────────────────────────
-  // Appears after Early Access on Mondays only (9:00–9:30 AM).
-  // After this block, Morning GIV•EN™ shifts to 9:30–10:30 AM on Mondays.
-  {
-    id: "monday-reality-check",
-    sectionId: "block-monday-reality-check",
-    title: "Take the Work-Life Balance Reality Check™",
-    shortTitle: "Make Time For More On Mondays™",
-    timeLabel: "9:00–9:45 AM",
-    startMinutes: h(9),
-    endMinutes: h(9, 45),
-    description:
-      "Before you manage your business, manage your life. Take 45 minutes to honestly examine where you are — boundaries, energy, and commitments — and redesign your entry into the workweek.",
-    emoji: "🌸",
-    tint: "252 240 238",
-    backgroundImage: [
-      "/images/block-monday-reality-check.png",
-      "/images/block-monday-reality-check-2.png",
-    ],
-    cta: "Take the Reality Check™",
-    engagement: "live-room",
-    part: "morning",
-    greetingPeriod: "Morning",
-    greetingEmoji: "🌸",
-    themePeriod: "morning",
-    communityOpen: true,
-    mondayOnly: true,
-    messages: [
-      "Before you manage your business, manage your life. Redesign your entry into the workweek.",
-    ],
-  },
-  // ─────────────────────────────────────────────────────────────────────────
   {
     id: "early-access",
     sectionId: "block-early-access",
@@ -90,6 +70,11 @@ export const SCHEDULE: BlockConfig[] = [
     timeLabel: "9:00–10:30 AM",
     startMinutes: h(9),
     endMinutes: h(10, 30),
+    // Mondays: Alignment comes first, then Reflection — GIV•EN™ ends at
+    // 9:45 AM instead of the usual 10:30 AM.
+    mondayTimeLabel: "9:00–9:45 AM",
+    mondayStartMinutes: h(9),
+    mondayEndMinutes: h(9, 45),
     description:
       "Align mind, body, spirit, and priorities before work—Gratitude, Invitation, Vision, Emotional Embodiment, and Nurture Non-Negotiables™.",
     emoji: "🌸",
@@ -108,6 +93,63 @@ export const SCHEDULE: BlockConfig[] = [
       "Align your mind, body, and spirit first. Everything you build today flows from this alignment.",
     ],
   },
+  // ── Monday-only block ─────────────────────────────────────────────────────
+  // Appears after Morning GIV•EN™ on Mondays only (9:45–10:30 AM).
+  {
+    id: "monday-reality-check",
+    sectionId: "block-monday-reality-check",
+    title: "Take the Work-Life Balance Reality Check™",
+    shortTitle: "Make Time For More On Mondays™",
+    timeLabel: "9:45–10:30 AM",
+    startMinutes: h(9, 45),
+    endMinutes: h(10, 30),
+    description:
+      "Before you manage your business, manage your life. Take 45 minutes to honestly examine where you are — boundaries, energy, and commitments — and redesign your entry into the workweek.",
+    emoji: "🌸",
+    tint: "252 240 238",
+    backgroundImage: [
+      "/images/block-monday-reality-check.png",
+      "/images/block-monday-reality-check-2.png",
+    ],
+    cta: "Take the Reality Check™",
+    engagement: "live-room",
+    part: "morning",
+    greetingPeriod: "Morning",
+    greetingEmoji: "🌸",
+    themePeriod: "morning",
+    communityOpen: true,
+    mondayOnly: true,
+    messages: [
+      "Before you manage your business, manage your life. Redesign your entry into the workweek.",
+    ],
+  },
+  // ── Monday-only block ─────────────────────────────────────────────────────
+  // Appears after the Reality Check™ on Mondays only (10:30–11:00 AM).
+  {
+    id: "monday-debrief",
+    sectionId: "block-monday-debrief",
+    title: "30-Minute Work-Life Balance Debrief™",
+    shortTitle: "Work-Life Balance Debrief™",
+    timeLabel: "10:30–11:00 AM",
+    startMinutes: h(10, 30),
+    endMinutes: h(11),
+    description:
+      "A protected time and space to sit with what surfaced in your Reality Check™ — before you move into today's Movement Window™.",
+    emoji: "🌸",
+    tint: "252 240 238",
+    backgroundImage: "/images/reality-check-zen-bg.png",
+    cta: "Begin the Debrief™",
+    engagement: "self-guided",
+    part: "morning",
+    greetingPeriod: "Morning",
+    greetingEmoji: "🌸",
+    themePeriod: "morning",
+    communityOpen: true,
+    mondayOnly: true,
+    messages: [
+      "Sit with what surfaced. Awareness without a pause to process it rarely becomes lasting change.",
+    ],
+  },
   {
     id: "movement-window",
     sectionId: "block-movement-window",
@@ -116,6 +158,10 @@ export const SCHEDULE: BlockConfig[] = [
     timeLabel: "10:30–11:00 AM",
     startMinutes: h(10, 30),
     endMinutes: h(11),
+    // Mondays: shifts 30 minutes later to make room for the Reality Check™ + Debrief™.
+    mondayTimeLabel: "11:00–11:30 AM",
+    mondayStartMinutes: h(11),
+    mondayEndMinutes: h(11, 30),
     description:
       "Increase energy, improve circulation, and support cognitive performance—preparing your body for focused work.",
     emoji: "💪",
@@ -142,6 +188,10 @@ export const SCHEDULE: BlockConfig[] = [
     timeLabel: "11:00 AM–1:00 PM",
     startMinutes: h(11),
     endMinutes: h(13),
+    // Mondays: shifts 30 minutes later to follow the resequenced morning.
+    mondayTimeLabel: "11:30 AM–1:00 PM",
+    mondayStartMinutes: h(11, 30),
+    mondayEndMinutes: h(13),
     description:
       "Nourish your body, spend time in nature, and connect with the people who matter—restoring your energy for the afternoon.",
     emoji: "🥗",
@@ -275,3 +325,58 @@ export const SCHEDULE: BlockConfig[] = [
 export const SCHEDULE_BY_ID: Record<string, BlockConfig> = Object.fromEntries(
   SCHEDULE.map((block) => [block.id, block]),
 )
+
+/**
+ * Resolves a block's effective start/end minutes and timeLabel for the given
+ * day of week. Mondays apply each block's `mondayStartMinutes` /
+ * `mondayEndMinutes` / `mondayTimeLabel` overrides (Make Time For More On
+ * Mondays™ resequences the morning); every other day returns the block
+ * unchanged. This is the single place that reconciles a block's default
+ * weekday timing with its Monday-specific timing.
+ */
+export function resolveEffectiveBlock(block: BlockConfig, dayOfWeek: number): BlockConfig {
+  if (dayOfWeek !== 1) return block
+  if (
+    block.mondayStartMinutes === undefined &&
+    block.mondayEndMinutes === undefined &&
+    block.mondayTimeLabel === undefined
+  ) {
+    return block
+  }
+  return {
+    ...block,
+    startMinutes: block.mondayStartMinutes ?? block.startMinutes,
+    endMinutes: block.mondayEndMinutes ?? block.endMinutes,
+    timeLabel: block.mondayTimeLabel ?? block.timeLabel,
+  }
+}
+
+/**
+ * Index of the next block reachable from `fromIndex`, skipping `mondayOnly`
+ * blocks entirely on every day except Monday (they don't exist on those
+ * days). Wraps around the end of SCHEDULE.
+ */
+export function nextReachableIndex(fromIndex: number, dayOfWeek: number): number {
+  const isMonday = dayOfWeek === 1
+  const len = SCHEDULE.length
+  let idx = (fromIndex + 1) % len
+  while (SCHEDULE[idx].mondayOnly && !isMonday) {
+    idx = (idx + 1) % len
+  }
+  return idx
+}
+
+/**
+ * Index of the previous block reachable from `fromIndex`, skipping
+ * `mondayOnly` blocks entirely on every day except Monday. Wraps around the
+ * start of SCHEDULE.
+ */
+export function previousReachableIndex(fromIndex: number, dayOfWeek: number): number {
+  const isMonday = dayOfWeek === 1
+  const len = SCHEDULE.length
+  let idx = (fromIndex - 1 + len) % len
+  while (SCHEDULE[idx].mondayOnly && !isMonday) {
+    idx = (idx - 1 + len) % len
+  }
+  return idx
+}

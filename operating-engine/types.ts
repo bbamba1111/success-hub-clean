@@ -15,6 +15,7 @@
 export type BlockId =
   | "monday-flex"
   | "monday-reality-check"
+  | "monday-debrief"
   | "early-access"
   | "morning-given"
   | "movement-window"
@@ -130,6 +131,12 @@ export interface BlockConfig {
   messages: string[]
   /** If true, this block only appears on Mondays (dayOfWeek === 1). */
   mondayOnly?: boolean
+  /** Override startMinutes used on Mondays (Make Time For More On Mondays™ resequences the morning). */
+  mondayStartMinutes?: number
+  /** Override endMinutes used on Mondays. */
+  mondayEndMinutes?: number
+  /** Override timeLabel shown on Mondays. */
+  mondayTimeLabel?: string
   /** Override timeLabel shown on Fri/Sat/Sun (days 5, 6, 0). */
   weekendTimeLabel?: string
   /** Override startMinutes used on Fri/Sat/Sun. */

@@ -5,7 +5,15 @@
  * timeline with per-block presentation state.
  */
 import type { BlockConfig, BusinessDayState, SessionStatus, TimeContext, TimelineEntry } from "../types"
-import { COMMUNITY_CLOSE_MINUTES, COMMUNITY_OPEN_MINUTES, SCHEDULE, SCHEDULE_BY_ID } from "../config/schedule"
+import {
+  COMMUNITY_CLOSE_MINUTES,
+  COMMUNITY_OPEN_MINUTES,
+  SCHEDULE,
+  SCHEDULE_BY_ID,
+  nextReachableIndex,
+  previousReachableIndex,
+  resolveEffectiveBlock,
+} from "../config/schedule"
 import { buildCountdown } from "./time"
 import { getCurrentBlockIndex } from "./circadian"
 
@@ -42,10 +50,12 @@ export function getNextOperatingSegment(currentIndex: number, time: TimeContext)
   const len = SCHEDULE.length
   const current = SCHEDULE[currentIndex]
 
-  // Only the overnight closure ("digital-detox") needs day-aware logic.
-  // For all other blocks, fall through to the default array-next behaviour.
+  // Only the overnight closure ("digital-detox") needs bespoke day-aware
+  // logic below. For all other blocks, advance to the next reachable block
+  // (skipping `mondayOnly` blocks on every day except Monday) and apply that
+  // block's day-aware timing.
   if (current.id !== "digital-detox") {
-    return SCHEDULE[(currentIndex + 1) % len]
+    return resolveEffectiveBlock(SCHEDULE[nextReachableIndex(currentIndex, time.dayOfWeek)], time.dayOfWeek)
   }
 
   // digital-detox spans 11 PM → 7 AM.  The "next" segment depends on which
@@ -105,18 +115,16 @@ function resolveProgress(minutes: number): number {
 
 /** Build the per-block timeline with current/upcoming/completed states.
  *  Blocks marked `mondayOnly` are excluded on every day except Monday (dayOfWeek === 1).
- *  On Monday, morning-given starts at 9:45 AM (after the Reality Check ends).
+ *  Every block's day-aware timing (see `resolveEffectiveBlock`) is applied, so
+ *  Monday's resequenced morning (Morning GIV•EN™ → Reality Check™ → Debrief™
+ *  → Movement™ → Lunch™) renders with the correct times automatically.
  */
 function buildTimeline(currentIndex: number, dayOfWeek: number): TimelineEntry[] {
   const isMonday = dayOfWeek === 1
   return SCHEDULE.flatMap((block, index) => {
     // Hide mondayOnly blocks on non-Monday days
     if (block.mondayOnly && !isMonday) return []
-    // On Monday, morning-given shifts to 9:45–10:30 AM
-    const resolvedBlock =
-      isMonday && block.id === "morning-given"
-        ? { ...block, timeLabel: "9:45–10:30 AM", startMinutes: 9 * 60 + 45 }
-        : block
+    const resolvedBlock = resolveEffectiveBlock(block, dayOfWeek)
     let state: TimelineEntry["state"] = "upcoming"
     if (index === currentIndex) state = "current"
     else if (index < currentIndex) state = "completed"
@@ -211,15 +219,12 @@ export function getBusinessDayState(time: TimeContext): BusinessDayState {
   // Detox™ (11 PM–7 AM), which getNextOperatingSegment already resolves into
   // Monday's Early Access™.
 
-  const currentIndex = getCurrentBlockIndex(minutes)
-  const isMonday = time.dayOfWeek === 1
-  const rawCurrent = SCHEDULE[currentIndex]
-  // On Mondays, morning-given starts at 9:45 AM (after the Reality Check ends at 9:45).
-  const current: BlockConfig =
-    isMonday && rawCurrent.id === "morning-given"
-      ? { ...rawCurrent, timeLabel: "9:45–10:30 AM", startMinutes: 9 * 60 + 45 }
-      : rawCurrent
-  const previous = SCHEDULE[(currentIndex - 1 + len) % len]
+  const currentIndex = getCurrentBlockIndex(minutes, time.dayOfWeek)
+  const current: BlockConfig = resolveEffectiveBlock(SCHEDULE[currentIndex], time.dayOfWeek)
+  const previous = resolveEffectiveBlock(
+    SCHEDULE[previousReachableIndex(currentIndex, time.dayOfWeek)],
+    time.dayOfWeek,
+  )
   const next = getNextOperatingSegment(currentIndex, time)
 
   const minutesUntilNext = minutesUntil(minutes, next.startMinutes)

@@ -5,7 +5,7 @@
  * Business Day Engine.
  */
 import type { BlockConfig, CircadianPhase, TimeContext } from "../types"
-import { SCHEDULE } from "../config/schedule"
+import { SCHEDULE, resolveEffectiveBlock } from "../config/schedule"
 import { pickDaily } from "./time"
 
 /** Does `minutes` fall within [start, end), accounting for blocks that wrap midnight? */
@@ -18,16 +18,27 @@ function isWithinBlock(minutes: number, block: BlockConfig): boolean {
   return minutes >= startMinutes || minutes < endMinutes
 }
 
-/** Index of the block active at the given minutes-since-midnight. */
-export function getCurrentBlockIndex(minutesSinceMidnight: number): number {
-  const index = SCHEDULE.findIndex((block) => isWithinBlock(minutesSinceMidnight, block))
+/**
+ * Index of the block active at the given minutes-since-midnight, for the
+ * given day of week. `mondayOnly` blocks (Make Time For More On Mondays™)
+ * are only eligible to match on Monday; every block's effective (day-aware)
+ * start/end minutes are used, so Monday's resequenced morning resolves
+ * correctly.
+ */
+export function getCurrentBlockIndex(minutesSinceMidnight: number, dayOfWeek: number): number {
+  const isMonday = dayOfWeek === 1
+  const index = SCHEDULE.findIndex((block) => {
+    if (block.mondayOnly && !isMonday) return false
+    return isWithinBlock(minutesSinceMidnight, resolveEffectiveBlock(block, dayOfWeek))
+  })
   // Fallback to the wrapping detox block if nothing matched (should not happen).
   return index === -1 ? SCHEDULE.length - 1 : index
 }
 
-/** The block active right now. */
+/** The block active right now (with Monday time overrides already applied). */
 export function getCurrentBlock(time: TimeContext): BlockConfig {
-  return SCHEDULE[getCurrentBlockIndex(time.minutesSinceMidnight)]
+  const index = getCurrentBlockIndex(time.minutesSinceMidnight, time.dayOfWeek)
+  return resolveEffectiveBlock(SCHEDULE[index], time.dayOfWeek)
 }
 
 /** Resolve the full circadian phase for the current moment. */
