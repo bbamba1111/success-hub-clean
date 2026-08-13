@@ -359,7 +359,7 @@ export function ReflectionSpace() {
                   Rather than reacting to whatever the week brings, you now have the clarity to intentionally redesign your entry into the workweek.
                 </p>
                 <p className="font-sans text-sm text-[#5A4A52] leading-relaxed">
-                  The next protected time and space — <strong>Alignment Space™ (Morning GIV&bull;EN™)</strong> — will open at its scheduled time.
+                  The next protected time and space — <strong>Work-Life Balance Debrief™</strong> — is ready for you below.
                 </p>
                 <div className="pt-2 space-y-3 border-t border-[#E26C73]/10">
                   <ReflectionPoint

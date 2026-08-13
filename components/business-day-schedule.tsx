@@ -18,7 +18,7 @@ import { BusinessDayBlock } from "@/components/business-day-block"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
 import { useHarmonyWeek } from "@/components/harmony-week/harmony-week-provider"
 import { getActiveRules } from "@/lib/operating-rules/storage"
-import { SCHEDULE, SCHEDULE_BY_ID, type BlockConfig } from "@/operating-engine"
+import { SCHEDULE, type BlockConfig } from "@/operating-engine"
 import { SEGMENT_ABOUT, renderSegmentAbout } from "@/operating-engine/config/segment-about"
 
 /** Smoothly bring the member to the Operating Planner™ workspace below the hero. */

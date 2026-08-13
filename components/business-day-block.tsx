@@ -7,6 +7,7 @@ import { ChevronDown } from "lucide-react"
 import { OperatingPlanner } from "@/components/operating-planner/operating-planner"
 import { PLANNER_CONFIG } from "@/components/operating-planner/planner-config"
 import { ReflectionSpace } from "@/components/reflection-space"
+import { DebriefSpace } from "@/components/debrief-space"
 import { SoundRitual } from "@/components/sound-ritual"
 import { useActiveSpace } from "@/components/active-space-provider"
 import { SPACE_LABEL } from "@/operating-engine/config/space-labels"
@@ -287,10 +288,17 @@ export function BusinessDayBlock({
               </div>
             )}
 
+            {/* Debrief Space™ — placeholder reflective pause between the Reality Check™ and Movement Window™ */}
+            {blockId === "monday-debrief" && (
+              <div className="px-7 py-8">
+                <DebriefSpace />
+              </div>
+            )}
+
             {/* Operating Planner™ — chip picker → commitment → declaration → Install This™
                 Uses the exact same working component as /design-my-week.
-                Skips digital-detox, monday-reality-check and placeholder segments (no PLANNER_CONFIG entry). */}
-            {blockId && blockId !== "digital-detox" && blockId !== "monday-reality-check" && PLANNER_CONFIG[blockId as keyof typeof PLANNER_CONFIG] && (
+                Skips digital-detox and the two Monday-only reflective blocks (no PLANNER_CONFIG entry). */}
+            {blockId && blockId !== "digital-detox" && blockId !== "monday-reality-check" && blockId !== "monday-debrief" && PLANNER_CONFIG[blockId as keyof typeof PLANNER_CONFIG] && (
               <OperatingPlanner blockId={blockId as any} />
             )}
 
