@@ -8,7 +8,7 @@
  * Step 1 — Founder Snapshot™      (display-only, always shown first)
  * Step 2 — Work-Life Balance Audit™
  * Step 3 — Entrepreneur Success Assessment™
- * Step 4 — Work-Life Balance Reality Check™ + Alignment Space™ countdown
+ * Step 4 — Work-Life Balance Reality Check™ → direct hand-off into Debrief Space™
  *
  * Business Context does NOT appear here. It belongs exclusively in Measure Monthly™.
  * Weekly state is keyed by the Monday of the current week so it resets automatically.
