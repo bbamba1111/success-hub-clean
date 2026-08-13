@@ -10,13 +10,10 @@
  * experience right now?" and renders it.
  */
 
-import { AnimatePresence, motion } from "framer-motion"
-import { Sparkles } from "lucide-react"
+import { motion } from "framer-motion"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
 import type { PartOfDay } from "@/operating-engine"
 import { LivingMoments } from "@/components/living-moments"
-import { useActiveSpace } from "@/components/active-space-provider"
-import { SCHEDULE_BY_ID } from "@/operating-engine/config/schedule"
 
 /**
  * Maps each block ID → the full "We're Now ___" phrase (plain + italic parts).
@@ -24,8 +21,9 @@ import { SCHEDULE_BY_ID } from "@/operating-engine/config/schedule"
  * italic: the italic accent phrase
  */
 const BLOCK_SENTENCE: Record<string, { plain: string; italic: string }> = {
-  // Monday-only block
+  // Monday-only blocks
   "monday-reality-check":  { plain: "Making Time For More On", italic: "Mondays™" },
+  "monday-debrief":        { plain: "Sitting With What Surfaced In The",  italic: "Work-Life Balance Debrief™" },
   // Standard blocks
   "early-access":    { plain: "In Flex Time or Preparing For",            italic: "The Work-Life Balance Business Day™" },
   "morning-given":   { plain: "Aligning Our Energy In The",               italic: "Morning GIV\u2022EN™ Routine" },
@@ -162,86 +160,8 @@ function getDayIntention(part: PartOfDay): string {
   }
 }
 
-/**
- * CeremonialOpening — the Hero's temporary takeover during the last 30
- * seconds before Alignment Space™ (Morning GIV•EN™) opens, and the moment
- * just after it does. Replaces the normal heading/subline/CTA entirely so
- * the opening of the next protected Space™ feels ceremonial rather than
- * like a small status update.
- */
-function CeremonialOpening({ seconds, onEnter }: { seconds: number; onEnter: () => void }) {
-  const isOpen = seconds <= 0
-
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      className="flex flex-col items-center gap-1.5 text-center"
-    >
-      {isOpen ? (
-        <>
-          <motion.span
-            initial={{ scale: 0.6, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.6, type: "spring" }}
-            className="text-5xl select-none"
-            role="img"
-            aria-label="Cherry blossom"
-          >
-            🌸
-          </motion.span>
-          <motion.h1
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-            className="font-playfair text-[27px] font-semibold leading-tight text-[#1C161A] sm:text-[32px] lg:text-[38px]"
-          >
-            {"Alignment Space\u2122 is Now Open"}
-          </motion.h1>
-          <motion.button
-            type="button"
-            onClick={onEnter}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
-            className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#C13B6B] px-7 py-3 font-montserrat text-sm font-bold uppercase tracking-[0.08em] text-white shadow-md transition-colors hover:bg-[#A8305A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C13B6B]/40 focus-visible:ring-offset-2"
-          >
-            <Sparkles className="h-4 w-4 shrink-0" aria-hidden />
-            {"Enter Alignment Space\u2122"}
-          </motion.button>
-        </>
-      ) : (
-        <>
-          <p className="font-sans text-xs font-semibold uppercase tracking-[0.25em] text-[#C0545A]">
-            {"Morning GIV\u2022EN\u2122"}
-          </p>
-          <p className="font-montserrat text-sm font-medium uppercase tracking-[0.18em] text-[#6B5860]">
-            Opens In
-          </p>
-          <AnimatePresence mode="wait">
-            <motion.span
-              key={seconds}
-              initial={{ opacity: 0, y: 12, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -12, scale: 0.9 }}
-              transition={{ duration: 0.3, ease: "easeOut" }}
-              className="block font-playfair text-[64px] font-bold leading-none tabular-nums text-[#C13B6B] sm:text-[84px]"
-              aria-live="polite"
-              aria-label={`Alignment Space opens in ${seconds} seconds`}
-            >
-              {seconds}
-            </motion.span>
-          </AnimatePresence>
-        </>
-      )}
-    </motion.div>
-  )
-}
-
 export function BusinessDayHero() {
   const experience = useOperatingEngine()
-  const activeSpace = useActiveSpace()
 
   // Use the business-day engine's current block image so weekend overrides
   // (Time Freedom all-day on Fri/Sat/Sun) are reflected correctly.
@@ -273,13 +193,6 @@ export function BusinessDayHero() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="mx-auto flex max-w-4xl flex-col items-center px-6 py-5 text-center sm:py-6"
         >
-          {activeSpace?.ceremonyActive ? (
-            <CeremonialOpening
-              seconds={activeSpace.secondsUntilAlignment}
-              onEnter={() => activeSpace.enterAlignmentCeremony(SCHEDULE_BY_ID["morning-given"].sectionId)}
-            />
-          ) : (
-          <>
           {/* Lines 1+2 — special static heading for Monday, "We're Now..." for all others */}
           {experience ? (() => {
             const isMondayBlock = experience.businessDay.current.id === "monday-reality-check"
@@ -319,14 +232,15 @@ export function BusinessDayHero() {
             </h1>
           )}
 
-          {/* Sub-line — timeLabel • Next: [shortTitle] · countdown
-              On the Monday block, always show "Next: Morning GIV•EN™" regardless
-              of what the engine's next pointer resolves to. */}
+          {/* Sub-line — timeLabel • Next: [shortTitle] · countdown.
+              The engine already resolves Monday's resequenced morning
+              (Morning GIV•EN™ → Reality Check™ → Debrief™ → Movement™) via
+              `resolveEffectiveBlock` / `nextReachableIndex`, so no manual
+              day-of-week overrides are needed here. */}
           {experience && (() => {
             const currentId = experience.businessDay.current.id
-            const isMondayBlock = currentId === "monday-reality-check"
-            const timeLabel = isMondayBlock ? "9:00–9:45 AM" : experience.businessDay.current.timeLabel
-            const nextLabel = isMondayBlock ? "Morning GIV\u2022EN\u2122" : experience.businessDay.next.shortTitle
+            const timeLabel = experience.businessDay.current.timeLabel
+            const nextLabel = experience.businessDay.next.shortTitle
             const livingLabel =
               currentId === "ceo-workday" ? "Working Now"
               : currentId === "digital-detox" ? "Sleeping Now"
@@ -334,6 +248,8 @@ export function BusinessDayHero() {
               : currentId === "movement-window" ? "Moving Now"
               : currentId === "morning-given" ? "Aligning Now"
               : currentId === "lunch-break" ? "Nourishing Now"
+              : currentId === "monday-reality-check" ? "Reflecting Now"
+              : currentId === "monday-debrief" ? "Debriefing Now"
               : "Living Now"
             return (
               <p className="mt-1.5 inline-flex flex-wrap items-center gap-2.5 font-montserrat text-[13px] font-medium text-[#5A4A52] sm:text-[14px]">
@@ -356,9 +272,6 @@ export function BusinessDayHero() {
               </p>
             )
           })()}
-
-          </>
-          )}
         </motion.div>
       </div>
 

@@ -17,6 +17,9 @@ import type { BlockId } from "@/operating-engine"
  * so it maps to null (the member should be unplugged and asleep).
  */
 export const ENGINE_BLOCK_TO_SDD_SEGMENT: Record<BlockId, string | null> = {
+  "monday-flex": "early-access",
+  "monday-reality-check": null,
+  "monday-debrief": null,
   "early-access": "early-access",
   "morning-given": "morning-given",
   "movement-window": "movement",

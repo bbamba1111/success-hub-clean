@@ -294,10 +294,10 @@ export function BusinessDayBlock({
               <OperatingPlanner blockId={blockId as any} />
             )}
 
-            {/* Row 1 — Join Us Live™. Flex Time & Preparation™ is intentionally
-                independent of Zoom — members may be driving, at drop-off, in
-                appointments, or otherwise away from a screen during this window. */}
-            {blockId !== "early-access" && (
+            {/* Row 1 — Join Us Live™. Flex Time & Preparation™ and the Work-Life
+                Balance Debrief™ are intentionally independent of Zoom — these
+                are self-guided windows, not live rooms. */}
+            {blockId !== "early-access" && blockId !== "monday-debrief" && (
               <>
                 <div className="px-7 py-5">
                   <a

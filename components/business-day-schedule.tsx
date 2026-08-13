@@ -73,47 +73,13 @@ export function BusinessDaySchedule() {
   }, [activeRules])
 
   // Before the first client tick, render the schedule with no active highlight
-  // (every block "upcoming") so the markup is stable and SSR-safe.
-  const rawTimeline =
+  // (every block "upcoming") so the markup is stable and SSR-safe. The engine's
+  // `buildTimeline` already inserts Monday-only blocks (Reality Check™,
+  // Debrief™) in the correct chronological position and applies each block's
+  // Monday-specific timing via `resolveEffectiveBlock` — no manual
+  // re-sequencing is needed here.
+  const timeline =
     experience?.businessDay.timeline ?? SCHEDULE.map((block) => ({ block, state: "upcoming" as const }))
-
-  // Monday-only logic:
-  //   - Insert "Make Time For More On Mondays™" (monday-reality-check) after early-access.
-  //   - Shift morning-given time label to 9:30–10:30 AM on Mondays.
-  //   - On Tue–Thu morning-given stays at 9:00–10:30 AM.
-  //   - monday-reality-check auto-hides once past 9:30 AM.
-  const isMonday = experience ? experience.time.dayOfWeek === 1 : new Date().getDay() === 1
-  const currentMinutes = experience?.time.minutesSinceMidnight ?? (new Date().getHours() * 60 + new Date().getMinutes())
-
-  const mondayRealityCheck = SCHEDULE_BY_ID["monday-reality-check"]
-  // Show all day on Mondays — no time gate. The card state (upcoming/current/completed)
-  // reflects where it sits in the day, but it always appears in the Monday schedule.
-  const showRealityCheck = isMonday
-
-  // Strip monday-reality-check from wherever the engine placed it —
-  // the flatMap below re-inserts it in the correct position (after early-access).
-  const dedupedTimeline = rawTimeline.filter(({ block }) => block.id !== "monday-reality-check")
-
-  const timeline = dedupedTimeline.flatMap(({ block, state }) => {
-    // On Mondays, shift morning-given to 9:45–10:30 AM
-    if (isMonday && block.id === "morning-given") {
-      const shifted = { ...block, timeLabel: "9:45–10:30 AM", startMinutes: 9 * 60 + 45 }
-      return [{ block: shifted, state }]
-    }
-    // After early-access on Mondays, inject the reality check card
-    if (block.id === "early-access") {
-      const result: typeof rawTimeline = [{ block, state }]
-      if (showRealityCheck && mondayRealityCheck) {
-        const checkState: "current" | "upcoming" | "completed" =
-          currentMinutes >= 9 * 60 + 45 ? "completed"
-          : currentMinutes >= 9 * 60 ? "current"
-          : "upcoming"
-        result.push({ block: mondayRealityCheck, state: checkState })
-      }
-      return result
-    }
-    return [{ block, state }]
-  })
 
   // Build a lookup from block id → next block's shortTitle for transition labels
   const nextBlockById = useMemo(() => {

@@ -83,8 +83,8 @@ export function getNextOperatingSegment(currentIndex: number, time: TimeContext)
   }
 
   // Tue / Wed / Thu night → standard weekday morning (Early Access™ at 7 AM).
-  // Never fall through to array-next here because index 0 is monday-reality-check,
-  // which would incorrectly appear as "Next" on non-Monday nights.
+  // Resolved explicitly by id (rather than falling through to array-next)
+  // so this stays correct regardless of where blocks sit in SCHEDULE.
   return SCHEDULE_BY_ID["early-access"] ?? SCHEDULE[(currentIndex + 1) % len]
 }
 

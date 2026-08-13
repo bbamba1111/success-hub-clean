@@ -92,17 +92,6 @@ function loadFounderSnapshot(): FounderSnapshot {
   return { name: "", businessName: "", currentFocus: "", quarterlyIntention: "" }
 }
 
-// ─── Countdown to 9:45 AM ────────────────────────────────────────────────────
-// The countdown itself is now owned by ActiveSpaceProvider (one shared clock
-// for the whole app) — this component only formats and reads it.
-
-function formatCountdown(seconds: number): string {
-  if (seconds <= 0) return "00:00"
-  const m = Math.floor(seconds / 60)
-  const s = seconds % 60
-  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`
-}
-
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export function ReflectionSpace() {
@@ -115,8 +104,6 @@ export function ReflectionSpace() {
   const [completedAt, setCompletedAt]       = useState<string | null>(null)
   const [activeStep, setActiveStep]         = useState<1 | 2 | 3 | 4>(1)
   const activeSpace = useActiveSpace()
-  const secondsLeft = activeSpace?.secondsUntilAlignment ?? 0
-  const unlocked = activeSpace?.alignmentUnlocked ?? false
 
   useEffect(() => {
     const ws = loadWeekly()
@@ -166,13 +153,6 @@ export function ReflectionSpace() {
   }
 
   const bothDone = auditDone && assessmentDone
-
-  // Let the shared provider know Monday's gate is now "waiting on time,"
-  // not "waiting on the member," so the Hero/Welcome CTA can show the
-  // countdown instead of a clickable "Enter Reflection Space™" action.
-  useEffect(() => {
-    if (bothDone) activeSpace?.setReflectionComplete(true)
-  }, [bothDone, activeSpace])
 
   // Cherry Blossom™ — message changes by step and whether this is the First Reality Check™
   const period = isBaseline ? "30 days" : "7 days"
@@ -403,99 +383,42 @@ export function ReflectionSpace() {
               </div>
             </div>
 
-            {/* ── Alignment Space™ countdown ──────────────────────────────── */}
+            {/* ── Next Space™ handoff ─────────────────────────────────────── */}
             <div className="rounded-3xl border border-[#C8A4A7]/30 bg-white overflow-hidden shadow-sm">
               <div className="bg-gradient-to-r from-[#F5EEF0] to-[#EEF3EC] px-8 py-6 flex flex-col gap-1">
                 <p className="font-sans text-xs font-semibold uppercase tracking-[0.25em] text-[#C0545A]">
                   Next Space™
                 </p>
-                <p className="font-serif text-2xl font-semibold text-[#2E1F27]">Alignment Space™</p>
-                <p className="font-sans text-sm font-medium text-[#5A4A52]">Morning GIV&bull;EN™ opens at 9:45 AM</p>
+                <p className="font-serif text-2xl font-semibold text-[#2E1F27]">Work-Life Balance Debrief™</p>
+                <p className="font-sans text-sm font-medium text-[#5A4A52]">A protected pause before Movement Window™</p>
               </div>
 
               <div className="px-8 py-6 space-y-6">
                 <p className="font-sans text-sm text-[#5A4A52] leading-relaxed">
-                  A protected time and space to align your mind, body, spirit, and intentions before beginning your day.
+                  A protected time and space to sit with what surfaced here — before you move into today&apos;s Movement Window™.
                 </p>
 
                 <div className="rounded-2xl border border-[#7FB069]/20 bg-[#F7FBF4] px-6 py-5 text-center space-y-2">
-                  {unlocked ? (
-                    <>
-                      <motion.div
-                        initial={{ scale: 0.8, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ duration: 0.5, type: "spring" }}
-                        className="flex justify-center"
-                      >
-                        <span className="text-4xl select-none" role="img" aria-label="Cherry blossom">🌸</span>
-                      </motion.div>
-                      <motion.p
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.3 }}
-                        className="font-serif text-base font-semibold text-[#5B835F]"
-                      >
-                        Alignment Space™ is now open.
-                      </motion.p>
-                      <p className="font-sans text-xs text-[#6B5860]">
-                        Morning GIV&bull;EN™ has begun. Enter the space.
-                      </p>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          activeSpace?.enterAlignmentCeremony(SCHEDULE_BY_ID["morning-given"].sectionId)
-                        }
-                        className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#C13B6B] px-6 py-2.5 font-montserrat text-sm font-bold uppercase tracking-[0.08em] text-white shadow-sm transition-colors hover:bg-[#A8305A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C13B6B]/40 focus-visible:ring-offset-2"
-                      >
-                        <Sparkles className="h-4 w-4 shrink-0" aria-hidden />
-                        Enter Alignment Space™
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <div className="flex justify-center">
-                        <Lock className="h-5 w-5 text-[#C0545A]/60" aria-hidden />
-                      </div>
-                      <p className="font-sans text-xs font-semibold uppercase tracking-[0.2em] text-[#C0545A]/80">
-                        Opens at 9:45 AM
-                      </p>
-                      <p className="font-sans text-xs text-[#6B5860]">Alignment Space™ opens in</p>
-                      <p
-                        className="font-mono text-4xl font-bold text-[#2E1F27] tabular-nums"
-                        aria-live="polite"
-                        aria-label={`${formatCountdown(secondsLeft)} until Alignment Space opens`}
-                      >
-                        {formatCountdown(secondsLeft)}
-                      </p>
-                    </>
-                  )}
-                </div>
-
-                {!unlocked && (
-                  <div className="space-y-3">
-                    <p className="font-sans text-xs font-semibold uppercase tracking-[0.2em] text-[#5A4A52]">
-                      While you wait...
-                    </p>
-                    <ul className="space-y-2">
-                      {[
-                        "Review your Reality Check™ insights.",
-                        "Fill your water bottle.",
-                        "Grab your journal.",
-                        "Find a quiet place.",
-                        "Join the live Zoom room if participating with the community.",
-                        "Take a few slow breaths before Morning GIV\u2022EN™ begins.",
-                      ].map((item) => (
-                        <li key={item} className="flex items-start gap-2.5">
-                          <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#E26C73]/60" aria-hidden />
-                          <span className="font-sans text-sm text-[#5A4A52] leading-relaxed">{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <p className="font-sans text-xs text-[#6B5860] leading-relaxed pt-1">
-                      The waiting period is intentional. Members are honoring a protected time and space — not waiting for software.
-                    </p>
+                  <div className="flex justify-center">
+                    <span className="text-4xl select-none" role="img" aria-label="Cherry blossom">🌸</span>
                   </div>
-                )}
+                  <p className="font-serif text-base font-semibold text-[#5B835F]">
+                    Ready when you are.
+                  </p>
+                  <p className="font-sans text-xs text-[#6B5860]">
+                    Carry these insights straight into the Debrief™.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      activeSpace?.enterSpace("monday-debrief", SCHEDULE_BY_ID["monday-debrief"].sectionId)
+                    }
+                    className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#C13B6B] px-6 py-2.5 font-montserrat text-sm font-bold uppercase tracking-[0.08em] text-white shadow-sm transition-colors hover:bg-[#A8305A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C13B6B]/40 focus-visible:ring-offset-2"
+                  >
+                    <Sparkles className="h-4 w-4 shrink-0" aria-hidden />
+                    Enter Debrief Space™
+                  </button>
+                </div>
               </div>
             </div>
           </motion.div>
