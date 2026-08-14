@@ -27,12 +27,6 @@ import { getWeekKey, loadWeek, addLifeIntention, removeLifeIntention, setBusines
 import { getGpsRecommendation } from "@/lib/wlbb-week/gps"
 import type { BusinessOutcome, LifeIntention, LifeIntentionKind, WlbbWeekState } from "@/lib/wlbb-week/types"
 
-const PROMPTS = [
-  "What surfaced during your Reality Check™ that deserves a second look?",
-  "What is one thing you're ready to let go of before the week gets moving?",
-  "What would make today's Movement Window™ feel like a fresh start?",
-]
-
 const QUICK_INTENTIONS: { label: string; kind: LifeIntentionKind; isRelationshipRepair?: boolean }[] = [
   { label: "Family dinner", kind: "family" },
   { label: "Walk", kind: "movement" },
@@ -256,20 +250,6 @@ export function DebriefSpace() {
             Awareness without a pause to process it rarely becomes lasting change. Take a few quiet minutes, then
             build this week&apos;s Weekly WLBB Menu™ below — what you choose here carries you through Tuesday–Thursday.
           </p>
-        </div>
-      </div>
-
-      {/* ── Reflective prompts — placeholder, display-only ─────────────────── */}
-      <div className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm px-8 py-7 space-y-5">
-        <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60">
-          A Few Questions to Sit With
-        </p>
-        <div className="space-y-4">
-          {PROMPTS.map((prompt) => (
-            <div key={prompt} className="rounded-2xl border border-[#C8A4A7]/25 bg-[#FDFAF6] px-5 py-4">
-              <p className="font-sans text-sm text-[#3A2E33] leading-relaxed">{prompt}</p>
-            </div>
-          ))}
         </div>
       </div>
 
