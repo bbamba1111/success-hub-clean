@@ -126,7 +126,14 @@ export function BusinessDayBlock({
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
-        viewport={{ once: true, amount: 0.3 }}
+        // `amount` is a fraction of THIS element's own height, not the viewport's.
+        // These cards are ~365px collapsed but can grow to 2000px+ once expanded
+        // (e.g. via "Enter the Space™" hand-offs), and 30% of a 2000px+ tall card
+        // can never fit in the viewport — so the fade-in never fired and the card
+        // stayed stuck at opacity: 0 (invisible) until the member scrolled far
+        // enough to satisfy the old, much-shorter collapsed height. `amount: 0`
+        // fires as soon as any pixel of the card is visible, regardless of height.
+        viewport={{ once: true, amount: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
         whileHover={{ boxShadow: "0 24px 50px -12px rgba(28,22,26,0.35)" }}
         className={`relative w-full overflow-hidden rounded-3xl shadow-lg transition-shadow duration-700 ${
