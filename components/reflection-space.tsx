@@ -16,10 +16,13 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { AnimatePresence, motion } from "framer-motion"
-import { CheckCircle2, ChevronDown, Lock } from "lucide-react"
+import { CheckCircle2, ChevronDown, Clock, Lock } from "lucide-react"
 import { getAuditResults, type AuditData } from "@/utils/audit-storage"
 import { getEsaResults } from "@/lib/entrepreneur-success/esa-storage"
 import type { EsaResults } from "@/lib/entrepreneur-success/types"
+import { SCHEDULE_BY_ID } from "@/operating-engine/config/schedule"
+import WorkLifeBalanceAudit from "@/components/work-life-balance-audit"
+import EntrepreneurSuccessAssessment from "@/components/entrepreneur-success/entrepreneur-success-assessment"
 
 // ─── Storage ─────────────────────────────────────────────────────────────────
 
@@ -75,6 +78,7 @@ function realityColor(score: number): string {
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export function ReflectionSpace() {
+  const realityCheckSchedule = SCHEDULE_BY_ID["monday-reality-check"]
   const [mounted, setMounted]               = useState(false)
   const [isBaseline, setIsBaseline]         = useState(true)
   const [auditDone, setAuditDone]           = useState(false)
@@ -163,14 +167,35 @@ export function ReflectionSpace() {
         </p>
       </div>
 
-      {/* ── Step progress ribbon ──────────────────────────────────────────── */}
-      <StepRibbon
-        steps={["Audit", "Assessment", "Reality Check"]}
-        doneFlags={[auditDone, assessmentDone, bothDone]}
-      />
+      {/* ── Full card wrapper ─────────────────────────────────────────────── */}
+      <div className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm px-8 py-7 space-y-5">
+        <div className="flex items-center gap-2">
+          <Clock className="h-3.5 w-3.5 text-[#C0545A]" aria-hidden />
+          <p className="font-sans text-[10px] font-bold uppercase tracking-[0.18em] text-[#C0545A]">
+            Monday Ritual™ · {realityCheckSchedule?.timeLabel ?? "9:45–10:30 AM"}
+          </p>
+        </div>
+        <p className="font-serif text-2xl font-semibold text-[#2E1F27] leading-snug">
+          Take My Work-Life Balance Reality Check™
+        </p>
 
-      {/* ── Cherry Blossom coaching ─────────────────────────────────────────── */}
-      <CherryBlossomCoach message={cherryBlossomMessage} />
+        {/* ── Permission-giving intro ──────────────────────────────────────── */}
+        <div className="rounded-2xl border border-[#7FB069]/25 bg-[#F7FBF4] px-5 py-4">
+          <p className="font-sans text-sm text-[#3A2E33] leading-relaxed">
+            You have permission to pause before you produce. There&apos;s nowhere to rush to — just two short
+            reflections, one at a time.
+          </p>
+        </div>
+
+        {/* ── Step progress ribbon ────────────────────────────────────────── */}
+        <StepRibbon
+          steps={["Audit", "Assessment", "Reality Check"]}
+          doneFlags={[auditDone, assessmentDone, bothDone]}
+        />
+
+        {/* ── Cherry Blossom coaching ──────────────────────────────────────── */}
+        <CherryBlossomCoach message={cherryBlossomMessage} />
+      </div>
 
       {/* ── Step 1 — Work-Life Balance Audit™ ──────────────────────────────── */}
       <StepCard
@@ -184,13 +209,22 @@ export function ReflectionSpace() {
         <p className="font-sans text-sm text-[#5A4A52] leading-relaxed">
           Reflect on how you&apos;ve been living over the past <strong>{period}</strong>. This audit provides a snapshot of your overall work-life balance and helps you identify the areas of your life that may need more attention before the week begins.
         </p>
-        <div className="flex flex-col gap-3 pt-2">
-          <Link
-            href="/audit"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#E26C73] px-6 py-3 font-sans text-sm font-semibold text-white transition-colors hover:bg-[#C0545A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E26C73]"
-          >
-            Begin Work-Life Balance Audit™
-          </Link>
+
+        <div className="rounded-2xl border border-[#E8DFE2] overflow-hidden">
+          <WorkLifeBalanceAudit
+            assessmentWindow={isBaseline ? "30-day" : "7-day"}
+            assessmentType={isBaseline ? "baseline_30_day" : "weekly_7_day"}
+            onComplete={markAuditDone}
+          />
+        </div>
+
+        <div className="flex items-center gap-3 pt-2">
+          <div className="h-px flex-1 bg-[#E8DFE2]" aria-hidden />
+          <span className="font-sans text-xs font-semibold uppercase tracking-[0.15em] text-[#6B5860]">or</span>
+          <div className="h-px flex-1 bg-[#E8DFE2]" aria-hidden />
+        </div>
+
+        <div className="flex flex-col gap-3">
           <button
             onClick={markAuditDone}
             disabled={auditDone}
@@ -222,13 +256,18 @@ export function ReflectionSpace() {
         <p className="font-sans text-sm text-[#5A4A52] leading-relaxed">
           Now reflect on how your business has been operating over the past <strong>{period}</strong>. This assessment helps you understand whether your business systems, leadership, and daily practices are supporting the life you&apos;re intentionally creating.
         </p>
-        <div className="flex flex-col gap-3 pt-2">
-          <Link
-            href="/entrepreneur-success-assessment"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#E26C73] px-6 py-3 font-sans text-sm font-semibold text-white transition-colors hover:bg-[#C0545A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E26C73]"
-          >
-            Begin Entrepreneur Success Assessment™
-          </Link>
+
+        <div className="rounded-2xl border border-[#E8DFE2] overflow-hidden">
+          <EntrepreneurSuccessAssessment onComplete={markAssessmentDone} />
+        </div>
+
+        <div className="flex items-center gap-3 pt-2">
+          <div className="h-px flex-1 bg-[#E8DFE2]" aria-hidden />
+          <span className="font-sans text-xs font-semibold uppercase tracking-[0.15em] text-[#6B5860]">or</span>
+          <div className="h-px flex-1 bg-[#E8DFE2]" aria-hidden />
+        </div>
+
+        <div className="flex flex-col gap-3">
           <button
             onClick={markAssessmentDone}
             disabled={assessmentDone}

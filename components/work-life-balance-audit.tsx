@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { ArrowRight, RotateCcw } from "lucide-react"
-import { saveAuditResults } from "@/utils/audit-storage"
+import { saveAuditResults, type AuditData } from "@/utils/audit-storage"
 import { saveRealityCheckSnapshot } from "@/utils/reality-check-storage"
 import { useRouter } from "next/navigation"
 import { getTimePhrase, saveAssessmentMeta, type AssessmentWindow, type AssessmentType } from "@/lib/assessment-cadence"
@@ -59,12 +59,15 @@ interface WorkLifeBalanceAuditProps {
   resultsUrl?: string
   assessmentWindow?: AssessmentWindow
   assessmentType?: AssessmentType
+  /** When provided, the audit fires this immediately on completion instead of showing its own "Audit Complete" screen — used to embed the audit inline (e.g. Reflection Space™). */
+  onComplete?: (results: AuditData) => void
 }
 
 export default function WorkLifeBalanceAudit({
   resultsUrl = "/my-results",
   assessmentWindow = "30-day" as AssessmentWindow,
   assessmentType = "baseline_30_day" as AssessmentType,
+  onComplete,
 }: WorkLifeBalanceAuditProps) {
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState<Record<number, number>>({})
@@ -135,10 +138,14 @@ export default function WorkLifeBalanceAudit({
     )
     const auditResults = { overallScore, results: categoryResults, timestamp: Date.now(), assessmentType }
     setResults(auditResults)
-    setIsComplete(true)
     saveAssessmentMeta({ assessmentType, assessmentWindow, submittedAt: auditResults.timestamp })
     saveAuditResults(auditResults)
     void saveRealityCheckSnapshot({ overallScore, results: categoryResults, assessmentType })
+    if (onComplete) {
+      onComplete(auditResults)
+    } else {
+      setIsComplete(true)
+    }
   }
 
   const progress = ((currentQuestion + 1) / questions.length) * 100

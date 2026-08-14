@@ -17,13 +17,12 @@
  */
 
 import { useEffect, useMemo, useState } from "react"
-import { Sparkles, Plus, X, Compass, Briefcase } from "lucide-react"
-import { useActiveSpace } from "@/components/active-space-provider"
+import { Plus, X, Compass, Clock } from "lucide-react"
 import { SCHEDULE_BY_ID } from "@/operating-engine/config/schedule"
 import { FUNCTIONS, type FunctionArea } from "@/components/founder-os/ai-executive-leadership-team"
 import { humanSkills } from "@/components/founder-os/human-zone-of-genius"
 import { BUSINESS_AREAS, getAreaById } from "@/lib/wlbb-week/catalog"
-import { getWeekKey, loadWeek, addLifeIntention, removeLifeIntention, setBusinessArea, setOutcomes, setHumanZoneOfGeniusPractice, setGpsRecommendation, markDebriefComplete, getDailyEntry } from "@/lib/wlbb-week/storage"
+import { getWeekKey, loadWeek, addLifeIntention, removeLifeIntention, setBusinessArea, setOutcomes, setHumanZoneOfGeniusPractice, setGpsRecommendation, getDailyEntry } from "@/lib/wlbb-week/storage"
 import { getGpsRecommendation } from "@/lib/wlbb-week/gps"
 import type { BusinessOutcome, LifeIntention, LifeIntentionKind, WlbbWeekState } from "@/lib/wlbb-week/types"
 import { getAuditResults } from "@/utils/audit-storage"
@@ -111,10 +110,7 @@ function ExecutiveMiniCard({ area }: { area: FunctionArea }) {
 }
 
 export function DebriefSpace() {
-  const activeSpace = useActiveSpace()
-  const movementWindow = SCHEDULE_BY_ID["movement-window"]
-  const ceoWorkday = SCHEDULE_BY_ID["ceo-workday"]
-
+  const debriefSchedule = SCHEDULE_BY_ID["monday-debrief"]
   const [week, setWeek] = useState<WlbbWeekState | null>(null)
   const [customLabel, setCustomLabel] = useState("")
   const [customDay, setCustomDay] = useState("")
@@ -284,14 +280,6 @@ export function DebriefSpace() {
     setWeek(setHumanZoneOfGeniusPractice(currentWeek, next))
   }
 
-  function handleEnterCeoWorkspace() {
-    const withCompletion = markDebriefComplete(currentWeek)
-    setWeek(withCompletion)
-    if (ceoWorkday) {
-      activeSpace?.enterSpace("ceo-workday", ceoWorkday.sectionId)
-    }
-  }
-
   return (
     <section className="w-full space-y-6">
       {/* ── Header ─────────────────────────────────────────────────────────── */}
@@ -304,22 +292,43 @@ export function DebriefSpace() {
         </h2>
       </div>
 
-      {/* ── Cherry Blossom coaching ─────────────────────────────────────────── */}
-      <div className="rounded-2xl border border-[#E26C73]/20 bg-[#FDF8F5] px-6 py-5 flex gap-4 items-start">
-        <div className="shrink-0 mt-0.5">
-          <span className="text-xl select-none" role="img" aria-label="Cherry blossom">
-            🌸
-          </span>
+      {/* ── Repeated title card ────────────────────────────────────────────── */}
+      <div className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm px-8 py-7 space-y-5">
+        <div className="flex items-center gap-2">
+          <Clock className="h-3.5 w-3.5 text-[#5B835F]" aria-hidden />
+          <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
+            Monday Ritual™ · {debriefSchedule?.timeLabel ?? "10:30–11:00 AM"}
+          </p>
         </div>
-        <div className="space-y-2">
-          <p className="font-sans text-xs font-semibold uppercase tracking-[0.2em] text-[#E26C73]">Cherry Blossom™</p>
-          <p className="font-serif text-base font-semibold text-[#2E1F27] leading-snug">
-            Sit with what surfaced — then choose deliberately.
-          </p>
+        <p className="font-serif text-2xl font-semibold text-[#2E1F27] leading-snug">
+          Design My Work-Life Balance Business Week™
+        </p>
+
+        {/* ── Permission-giving intro ──────────────────────────────────────── */}
+        <div className="rounded-2xl border border-[#7FB069]/25 bg-[#F7FBF4] px-5 py-4">
           <p className="font-sans text-sm text-[#3A2E33] leading-relaxed">
-            Awareness without a pause to process it rarely becomes lasting change. Take a few quiet minutes, then
-            build this week&apos;s Weekly WLBB Menu™ below — what you choose here carries you through Tuesday–Thursday.
+            You have permission to design intentionally, not react. There&apos;s nowhere to rush to — build this week
+            one section at a time.
           </p>
+        </div>
+
+        {/* ── Cherry Blossom coaching ───────────────────────────────────────── */}
+        <div className="rounded-2xl border border-[#E26C73]/20 bg-[#FDF8F5] px-6 py-5 flex gap-4 items-start">
+          <div className="shrink-0 mt-0.5">
+            <span className="text-xl select-none" role="img" aria-label="Cherry blossom">
+              🌸
+            </span>
+          </div>
+          <div className="space-y-2">
+            <p className="font-sans text-xs font-semibold uppercase tracking-[0.2em] text-[#E26C73]">Cherry Blossom™</p>
+            <p className="font-serif text-base font-semibold text-[#2E1F27] leading-snug">
+              Sit with what surfaced — then choose deliberately.
+            </p>
+            <p className="font-sans text-sm text-[#3A2E33] leading-relaxed">
+              Awareness without a pause to process it rarely becomes lasting change. Take a few quiet minutes, then
+              build this week&apos;s Weekly WLBB Menu™ below — what you choose here carries you through Tuesday–Thursday.
+            </p>
+          </div>
         </div>
       </div>
 
@@ -684,35 +693,6 @@ export function DebriefSpace() {
         )}
       </div>
 
-      {/* ── 7. Hand-off ───────────────────────────────────────────────────────── */}
-      <div className="rounded-3xl border border-[#7FB069]/20 bg-[#F7FBF4] px-6 py-5 text-center space-y-3">
-        <p className="font-serif text-base font-semibold text-[#5B835F]">Ready when you are.</p>
-        <p className="font-sans text-xs text-[#6B5860]">
-          Carry this week&apos;s Menu straight into your CEO Workspace™ — or continue into today&apos;s Movement Window™.
-        </p>
-        <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
-          {ceoWorkday && (
-            <button
-              type="button"
-              onClick={handleEnterCeoWorkspace}
-              className="inline-flex items-center gap-2 rounded-full bg-[#3A2E33] px-6 py-2.5 font-montserrat text-sm font-bold uppercase tracking-[0.08em] text-white shadow-sm transition-colors hover:bg-[#2E1F27] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3A2E33]/40 focus-visible:ring-offset-2"
-            >
-              <Briefcase className="h-4 w-4 shrink-0" aria-hidden />
-              Enter CEO Workspace™
-            </button>
-          )}
-          {movementWindow && (
-            <button
-              type="button"
-              onClick={() => activeSpace?.enterSpace("movement-window", movementWindow.sectionId)}
-              className="inline-flex items-center gap-2 rounded-full bg-[#7FB069] px-6 py-2.5 font-montserrat text-sm font-bold uppercase tracking-[0.08em] text-white shadow-sm transition-colors hover:bg-[#6FA058] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7FB069]/40 focus-visible:ring-offset-2"
-            >
-              <Sparkles className="h-4 w-4 shrink-0" aria-hidden />
-              Enter Movement Space™
-            </button>
-          )}
-        </div>
-      </div>
     </section>
   )
 }
