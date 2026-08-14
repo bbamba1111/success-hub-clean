@@ -29,13 +29,29 @@ import type { BusinessOutcome, LifeIntention, LifeIntentionKind, WlbbWeekState }
 import { getAuditResults } from "@/utils/audit-storage"
 import { getEsaResults } from "@/lib/entrepreneur-success/esa-storage"
 
-/** Same threshold used on the Reality Check™ page — keeps "Focus This Week™" consistent everywhere. */
+/** Same threshold used on the Reality Check™ page — keeps "Focus Areas" consistent everywhere. */
 const FOCUS_THRESHOLD = 60
 
 interface FocusArea {
+  /** Audit™ `category` for Life areas, ESA™ `pillarId` for Business areas — used to toggle selection. */
+  id: string
   name: string
   score: number
-  source: "Life" | "Business"
+}
+
+/**
+ * Best-effort mapping from an ESA™ Operating Pillar to the Business Area
+ * it most closely corresponds to in `lib/wlbb-week/catalog.ts`. Pillars with
+ * no clean match (Strategic Foundation™, People & Leadership™, Human
+ * Sustainability™) are shown for awareness but aren't clickable — there's
+ * no Business Area to select for them.
+ */
+const PILLAR_TO_BUSINESS_AREA: Record<string, string> = {
+  "revenue-engine": "sales-revenue",
+  "operations-systems": "operations",
+  "financial-intelligence": "finance",
+  "client-excellence": "client-experience",
+  "growth-innovation": "growth-innovation",
 }
 
 const QUICK_INTENTIONS: { label: string; kind: LifeIntentionKind; isRelationshipRepair?: boolean }[] = [
@@ -104,7 +120,8 @@ export function DebriefSpace() {
   const [customDay, setCustomDay] = useState("")
   const [customTime, setCustomTime] = useState("")
   const [selectedBehaviors, setSelectedBehaviors] = useState<string[]>([])
-  const [focusAreas, setFocusAreas] = useState<FocusArea[] | null>(null)
+  const [lifeFocusAreas, setLifeFocusAreas] = useState<FocusArea[]>([])
+  const [businessFocusAreas, setBusinessFocusAreas] = useState<FocusArea[]>([])
 
   useEffect(() => {
     const loaded = loadWeek(getWeekKey())
@@ -115,18 +132,22 @@ export function DebriefSpace() {
 
     // Pull this week's Audit™ + ESA™ results straight from storage so anything
     // that scored at or below the focus threshold on the Reality Check™ shows
-    // up here automatically — no data needs to be passed through a link/query.
+    // up as real, selectable focus areas under Step 1 / Step 2 below — no
+    // data needs to be passed through a link/query.
     const auditData = getAuditResults()
     const esaData = getEsaResults()
-    const areas: FocusArea[] = [
-      ...(auditData?.results ?? [])
+    setLifeFocusAreas(
+      (auditData?.results ?? [])
         .filter((r) => r.percentage <= FOCUS_THRESHOLD)
-        .map((r) => ({ name: r.label, score: r.percentage, source: "Life" as const })),
-      ...(esaData?.pillarScores ?? [])
+        .map((r) => ({ id: r.category, name: r.label, score: r.percentage }))
+        .sort((a, b) => a.score - b.score),
+    )
+    setBusinessFocusAreas(
+      (esaData?.pillarScores ?? [])
         .filter((p) => p.percentage <= FOCUS_THRESHOLD)
-        .map((p) => ({ name: p.pillarName, score: p.percentage, source: "Business" as const })),
-    ].sort((a, b) => a.score - b.score)
-    setFocusAreas(areas)
+        .map((p) => ({ id: p.pillarId, name: p.pillarName, score: p.percentage }))
+        .sort((a, b) => a.score - b.score),
+    )
   }, [])
 
   const selectedArea = week?.business.businessAreaId ? getAreaById(week.business.businessAreaId) : undefined
@@ -202,6 +223,22 @@ export function DebriefSpace() {
     setWeek(removeLifeIntention(currentWeek, id))
   }
 
+  /** Toggles a real Audit™ focus area in/out of this week's Life Intentions — matched by label since the area's real category name doubles as the intention text. */
+  function toggleLifeFocusArea(area: FocusArea) {
+    const existing = currentWeek.life.intentions.find((i) => i.label === area.name)
+    if (existing) {
+      removeIntention(existing.id)
+      return
+    }
+    const intention: LifeIntention = {
+      id: makeId(),
+      kind: "other",
+      label: area.name,
+      addedOn: new Date().toISOString(),
+    }
+    setWeek(addLifeIntention(currentWeek, intention))
+  }
+
   function selectArea(areaId: string) {
     if (currentWeek.business.businessAreaId === areaId) return
     // Switching areas resets outcomes + behaviors — they're scoped to the area.
@@ -209,6 +246,12 @@ export function DebriefSpace() {
     next = setOutcomes(next, [])
     setSelectedBehaviors([])
     setWeek(next)
+  }
+
+  /** Selects the Business Area a low-scoring ESA™ pillar maps to (a no-op for pillars with no clean Business Area match — those render as non-interactive badges). */
+  function selectBusinessFocusArea(area: FocusArea) {
+    const mappedAreaId = PILLAR_TO_BUSINESS_AREA[area.id]
+    if (mappedAreaId) selectArea(mappedAreaId)
   }
 
   function toggleOutcome(outcomeId: string) {
@@ -280,45 +323,6 @@ export function DebriefSpace() {
         </div>
       </div>
 
-      {/* ── Focus This Week™ — any category ≤60% on the Audit™ / ESA™ ────────── */}
-      {focusAreas && focusAreas.length > 0 && (
-        <div className="rounded-3xl border border-[#E26C73]/20 bg-white shadow-sm px-8 py-7 space-y-4">
-          <div>
-            <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#C0545A]">
-              Focus This Week™
-            </p>
-            <p className="mt-2 font-sans text-sm text-[#3A2E33] leading-relaxed">
-              These areas scored at or below {FOCUS_THRESHOLD} on your Work-Life Balance Audit™ and
-              Entrepreneur Success Assessment™ — not a judgment, just a shortlist to design around below.
-            </p>
-          </div>
-          <div className="space-y-2">
-            {focusAreas.map((area) => {
-              const accent = area.source === "Life" ? "#E26C73" : "#5D9D61"
-              return (
-                <div
-                  key={`${area.source}-${area.name}`}
-                  className="flex items-center justify-between gap-3 rounded-xl border border-[#E8DFE2] bg-[#FDFAF6] px-4 py-3"
-                >
-                  <div className="flex items-center gap-2 min-w-0">
-                    <span
-                      className="inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.14em]"
-                      style={{ backgroundColor: accent + "15", color: accent }}
-                    >
-                      {area.source}
-                    </span>
-                    <p className="font-sans text-sm font-semibold text-[#2E1F27] truncate">{area.name}</p>
-                  </div>
-                  <span className="shrink-0 font-sans text-sm font-bold tabular-nums" style={{ color: accent }}>
-                    {area.score}/100
-                  </span>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      )}
-
       {/* ── 1. Life Intentions ───────────────────────────────────────────────── */}
       <div className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm px-8 py-7 space-y-5">
         <div>
@@ -329,6 +333,42 @@ export function DebriefSpace() {
             What do you want to make time for this week? Relationship-repair entries stay private to you.
           </p>
         </div>
+
+        {/* Real Audit™ categories at or below {FOCUS_THRESHOLD} — select any to add as a life intention. */}
+        {lifeFocusAreas.length > 0 && (
+          <div className="rounded-2xl border border-[#E26C73]/20 bg-[#FDF8F5] px-5 py-4 space-y-3">
+            <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#C0545A]">
+              Focus Areas · from your Work-Life Balance Audit™
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {lifeFocusAreas.map((area) => {
+                const selected = week.life.intentions.some((i) => i.label === area.name)
+                return (
+                  <button
+                    key={area.id}
+                    type="button"
+                    onClick={() => toggleLifeFocusArea(area)}
+                    aria-pressed={selected}
+                    className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 font-sans text-sm transition-colors ${
+                      selected
+                        ? "border-[#E26C73] bg-[#E26C73] text-white"
+                        : "border-[#E26C73]/30 bg-white text-[#3A2E33] hover:bg-[#E26C73]/10"
+                    }`}
+                  >
+                    {area.name}
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-xs font-bold tabular-nums ${
+                        selected ? "bg-white/20 text-white" : "bg-[#E26C73]/10 text-[#C0545A]"
+                      }`}
+                    >
+                      {area.score}/100
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        )}
         <div className="flex flex-wrap gap-2">
           {QUICK_INTENTIONS.map((item) => (
             <button
@@ -414,6 +454,58 @@ export function DebriefSpace() {
             Choose one Business Area, then 1–3 outcomes you want to move this week.
           </p>
         </div>
+
+        {/* Real ESA™ pillars at or below {FOCUS_THRESHOLD} — select a mapped one to jump straight to its Business Area below. */}
+        {businessFocusAreas.length > 0 && (
+          <div className="rounded-2xl border border-[#5D9D61]/20 bg-[#F7FBF4] px-5 py-4 space-y-3">
+            <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#4A7D4D]">
+              Focus Areas · from your Entrepreneur Success Assessment™
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {businessFocusAreas.map((area) => {
+                const mappedAreaId = PILLAR_TO_BUSINESS_AREA[area.id]
+                const selected = Boolean(mappedAreaId) && selectedArea?.id === mappedAreaId
+                if (!mappedAreaId) {
+                  return (
+                    <span
+                      key={area.id}
+                      className="inline-flex items-center gap-2 rounded-full border border-[#E8DFE2] bg-white px-4 py-2 font-sans text-sm text-[#6B5860]"
+                      title="No matching Business Area yet — noted for awareness."
+                    >
+                      {area.name}
+                      <span className="rounded-full bg-[#E8DFE2] px-2 py-0.5 text-xs font-bold tabular-nums text-[#6B5860]">
+                        {area.score}/100
+                      </span>
+                    </span>
+                  )
+                }
+                return (
+                  <button
+                    key={area.id}
+                    type="button"
+                    onClick={() => selectBusinessFocusArea(area)}
+                    aria-pressed={selected}
+                    className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 font-sans text-sm transition-colors ${
+                      selected
+                        ? "border-[#5D9D61] bg-[#5D9D61] text-white"
+                        : "border-[#5D9D61]/30 bg-white text-[#3A2E33] hover:bg-[#5D9D61]/10"
+                    }`}
+                  >
+                    {area.name}
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-xs font-bold tabular-nums ${
+                        selected ? "bg-white/20 text-white" : "bg-[#5D9D61]/10 text-[#4A7D4D]"
+                      }`}
+                    >
+                      {area.score}/100
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
         <div className="flex flex-wrap gap-2">
           {BUSINESS_AREAS.map((area) => (
             <button
