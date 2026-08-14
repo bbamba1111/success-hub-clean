@@ -4,20 +4,12 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import {
   ArrowRight,
-  CheckCircle2,
   ChevronDown,
   User,
   Heart,
   BarChart2,
-  Calendar,
   Briefcase,
-  TrendingUp,
-  Brain,
   Compass,
-  Archive,
-  Sprout,
-  BookOpen,
-  Clock,
 } from "lucide-react"
 import { getAuditResults } from "@/utils/audit-storage"
 import { getEsaResults } from "@/lib/entrepreneur-success/esa-storage"
@@ -28,6 +20,9 @@ import { MonthlyHarmonyCalendar } from "@/components/harmony-blueprint/monthly-h
 import type { AuditData } from "@/utils/audit-storage"
 import type { EsaResults } from "@/lib/entrepreneur-success/types"
 import type { BusinessContextProfile } from "@/lib/business-context/types"
+
+/** Any area at or below this score becomes a "Focus This Week™" candidate. */
+const FOCUS_THRESHOLD = 60
 
 // ── Score ring ──────────────────────────────────────────────────────────────
 
@@ -81,11 +76,11 @@ function harmonyLabel(score: number): string {
   return "Starting Point"
 }
 
-// ── Chapter accordion wrapper ───────────────────────────────────────────────
+// ── Blueprint Card™ accordion wrapper ───────────────────────────────────────
 
-function Chapter({
+function BlueprintCard({
   icon: Icon,
-  chapter,
+  cardNumber,
   title,
   subtitle,
   accentColor = "#5B835F",
@@ -93,7 +88,7 @@ function Chapter({
   children,
 }: {
   icon: React.ElementType
-  chapter: string
+  cardNumber: string
   title: string
   subtitle: string
   accentColor?: string
@@ -103,7 +98,7 @@ function Chapter({
   const [open, setOpen] = useState(defaultOpen)
   return (
     <div className="rounded-3xl border border-brand-blush bg-white overflow-hidden shadow-sm">
-      {/* Chapter accent bar */}
+      {/* Blueprint Card™ accent bar */}
       <div className="h-1" style={{ backgroundColor: accentColor }} aria-hidden />
       <button
         type="button"
@@ -120,7 +115,7 @@ function Chapter({
           </div>
           <div className="text-left">
             <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.22em] mb-1" style={{ color: accentColor }}>
-              {chapter}
+              {cardNumber}
             </p>
             <h3 className="font-playfair text-xl font-bold text-brand-ink leading-tight">{title}</h3>
             <p className="font-sans text-sm text-brand-ink-soft mt-0.5 text-pretty">{subtitle}</p>
@@ -201,6 +196,15 @@ export function HarmonyBlueprintClient() {
   const hColor = harmonyColor(harmonyScore)
   const hLabel = harmonyLabel(harmonyScore)
 
+  const focusAreas = [
+    ...(lifeData?.results ?? [])
+      .filter((r) => r.percentage <= FOCUS_THRESHOLD)
+      .map((r) => ({ name: r.label, score: r.percentage, source: "Life" as const })),
+    ...(bizData?.pillarScores ?? [])
+      .filter((p) => p.percentage <= FOCUS_THRESHOLD)
+      .map((p) => ({ name: p.pillarName, score: p.percentage, source: "Business" as const })),
+  ].sort((a, b) => a.score - b.score)
+
   return (
     <div className="min-h-screen bg-brand-cream">
 
@@ -269,44 +273,70 @@ export function HarmonyBlueprintClient() {
           </div>
         )}
 
-        {/* ── Chapter 1: Founder Profile™ ─────────────────────────────────── */}
-        <Chapter
-          icon={User}
-          chapter="Chapter 1"
-          title="Founder Profile™"
-          subtitle="Everything about you — the person behind the business."
-          accentColor="#E26C73"
+        {/* ── Blueprint Card 1: Work-Life Balance Reality Check™ ───────────── */}
+        <BlueprintCard
+          icon={Compass}
+          cardNumber="Blueprint Card 1"
+          title="Work-Life Balance Reality Check™"
+          subtitle="Where you currently stand — a condensed read of your latest measurements."
+          accentColor="#E8A84E"
           defaultOpen
         >
-          <div className="space-y-4">
-            <div className="flex flex-wrap gap-3">
-              {[
-                { label: "Personal Profile", href: "/founder-profile" },
-                { label: "Relationships", href: "/founder-profile" },
-                { label: "Family", href: "/founder-profile" },
-                { label: "Pets", href: "/founder-profile" },
-                { label: "Hobbies & Interests", href: "/founder-profile" },
-                { label: "Vision & Goals", href: "/founder-profile" },
-                { label: "Support System", href: "/founder-profile" },
-              ].map(({ label, href }) => (
-                <Link key={label} href={href} className="inline-flex items-center gap-1.5 rounded-full border border-[#E26C73]/20 bg-[#E26C73]/5 px-4 py-2 font-sans text-xs font-semibold text-brand-ink hover:bg-[#E26C73]/10 transition-colors">
-                  {label}
-                </Link>
-              ))}
+          {ready && (lifeData || bizData) ? (
+            <div className="space-y-5">
+              <div className="flex flex-col items-center gap-8 sm:flex-row sm:justify-around">
+                {lifeScore !== null ? (
+                  <ScoreRing score={lifeScore} color="#E26C73" label="Life Balance Score™" size={100} />
+                ) : (
+                  <div className="flex flex-col items-center gap-2 opacity-40">
+                    <div className="h-[100px] w-[100px] rounded-full border-8 border-dashed border-brand-blush" />
+                    <p className="font-sans text-xs font-semibold uppercase tracking-wider text-brand-ink-soft text-center">Life Balance Score™</p>
+                  </div>
+                )}
+                <ScoreRing score={harmonyScore} color={hColor} label="Overall Harmony Score™" size={120} stroke={9} />
+                {bizScore !== null ? (
+                  <ScoreRing score={bizScore} color="#5B835F" label="Business Score™" size={100} />
+                ) : (
+                  <div className="flex flex-col items-center gap-2 opacity-40">
+                    <div className="h-[100px] w-[100px] rounded-full border-8 border-dashed border-brand-blush" />
+                    <p className="font-sans text-xs font-semibold uppercase tracking-wider text-brand-ink-soft text-center">Business Score™</p>
+                  </div>
+                )}
+              </div>
+              {focusAreas.length > 0 && (
+                <div className="rounded-2xl border border-brand-coral/20 bg-brand-coral/[0.04] px-5 py-5">
+                  <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-brand-coral mb-3">
+                    Focus This Week™
+                  </p>
+                  <ul className="space-y-2">
+                    {focusAreas.slice(0, 3).map((f) => (
+                      <li key={`${f.source}-${f.name}`} className="flex items-center justify-between font-sans text-sm text-brand-ink">
+                        <span>{f.name}</span>
+                        <span className="font-semibold text-brand-ink-soft">{f.score} / 100</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              <Link href="/reality-check" className="inline-flex items-center gap-1.5 font-sans text-xs font-semibold text-[#E8A84E] hover:underline">
+                View Full Reality Check™
+                <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+              </Link>
             </div>
+          ) : (
             <EmptyState
-              label="Complete your Founder Profile™ to personalize every recommendation Cherry Blossom™ makes."
-              href="/founder-profile"
-              hrefLabel="Complete Founder Profile™"
+              label="Complete your Work-Life Balance Audit™ and Entrepreneur Success Assessment™ to unlock your Reality Check™."
+              href="/audit"
+              hrefLabel="Take the Audit™"
             />
-          </div>
-        </Chapter>
+          )}
+        </BlueprintCard>
 
-        {/* ── Chapter 2: Work-Life Balance™ ───────────────────────────────── */}
-        <Chapter
+        {/* ── Blueprint Card 2: Work-Life Balance Audit™ ───────────────────── */}
+        <BlueprintCard
           icon={Heart}
-          chapter="Chapter 2"
-          title="Work-Life Balance™"
+          cardNumber="Blueprint Card 2"
+          title="Work-Life Balance Audit™"
           subtitle="Your weekly life audit history, Harmony Score, and trends over time."
           accentColor="#E26C73"
         >
@@ -334,48 +364,43 @@ export function HarmonyBlueprintClient() {
           ) : (
             <div className="space-y-5">
               <EmptyState
-                label="Complete your Work-Life Balance Audit™ to populate this chapter."
+                label="Complete your Work-Life Balance Audit™ to populate this card."
                 href="/audit"
                 hrefLabel="Take the Audit™"
               />
               <MonthlyHarmonyCalendar />
             </div>
           )}
-        </Chapter>
+        </BlueprintCard>
 
-        {/* ── Chapter 3: Founder Assessments™ ────────────────────────────── */}
-        <Chapter
+        {/* ── Blueprint Card 3: Entrepreneur Success Assessment™ ───────────── */}
+        <BlueprintCard
           icon={BarChart2}
-          chapter="Chapter 3"
-          title="Founder Assessments™"
-          subtitle="Your Entrepreneur Success Assessment™, historical results, and retake schedule."
+          cardNumber="Blueprint Card 3"
+          title="Entrepreneur Success Assessment™"
+          subtitle="Your business measurements, historical results, and retake schedule."
           accentColor="#5B835F"
         >
           <div className="space-y-5">
-            {/* ESA result */}
-            <div className="rounded-2xl border border-brand-green/20 bg-brand-green/[0.03] px-5 py-5">
-              <div className="flex items-center justify-between mb-3">
-                <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-brand-green">
-                  Entrepreneur Success Assessment™
-                </p>
-                <Link href="/entrepreneur-success-assessment" className="font-sans text-xs font-semibold text-brand-green hover:underline">
-                  Retake
-                </Link>
+            {ready && bizData ? (
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                <DataCard label="Business Score™" value={`${bizData.overallScore} / 100`} accent="#5B835F" />
+                {Array.isArray(bizData.pillarScores) && bizData.pillarScores.slice(0, 5).map((p) => (
+                  <DataCard key={p.pillarId} label={p.pillarName} value={`${p.percentage} / 100`} accent="#5B835F" />
+                ))}
               </div>
-              {ready && bizData ? (
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                  <DataCard label="Business Score™" value={`${bizData.overallScore} / 100`} accent="#5B835F" />
-                  {Array.isArray(bizData.pillarScores) && bizData.pillarScores.slice(0, 5).map((p) => (
-                    <DataCard key={p.pillarId} label={p.pillarName} value={`${p.percentage} / 100`} accent="#5B835F" />
-                  ))}
-                </div>
-              ) : (
-                <EmptyState
-                  label="Complete your Entrepreneur Success Assessment™ to populate this section."
-                  href="/entrepreneur-success-assessment"
-                  hrefLabel="Take Assessment™"
-                />
-              )}
+            ) : (
+              <EmptyState
+                label="Complete your Entrepreneur Success Assessment™ to populate this card."
+                href="/entrepreneur-success-assessment"
+                hrefLabel="Take Assessment™"
+              />
+            )}
+            <div className="flex items-center justify-between">
+              <p className="font-sans text-xs text-brand-ink-soft">Current week</p>
+              <Link href="/entrepreneur-success-assessment" className="font-sans text-xs font-semibold text-brand-green hover:underline">
+                Retake
+              </Link>
             </div>
             <div>
               <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-brand-green mb-3">
@@ -384,245 +409,26 @@ export function HarmonyBlueprintClient() {
               <MonthlyHarmonyCalendar />
             </div>
           </div>
-        </Chapter>
+        </BlueprintCard>
 
-        {/* ── Chapter 4: Weekly Operating System™ ─────────────────────────── */}
-        <Chapter
-          icon={Calendar}
-          chapter="Chapter 4"
-          title="Weekly Operating System™"
-          subtitle="Current and past weeks, intentions, goals, wins, reflections, and installed weeks."
-          accentColor="#5B835F"
-        >
-          <div className="space-y-4">
-            <div className="flex flex-wrap gap-3">
-              {[
-                { label: "Design My Week™", href: "/design-my-week" },
-                { label: "Weekly Intentions™", href: "/design-my-week" },
-                { label: "Sunday Design Day™", href: "/sunday-shift" },
-                { label: "My Harmony™", href: "/my-harmony" },
-              ].map(({ label, href }) => (
-                <Link key={label} href={href} className="inline-flex items-center gap-1.5 rounded-full border border-brand-green/20 bg-brand-green/5 px-4 py-2 font-sans text-xs font-semibold text-brand-ink hover:bg-brand-green/10 transition-colors">
-                  {label}
-                </Link>
-              ))}
-            </div>
-            <div className="rounded-2xl border border-dashed border-brand-blush py-8 text-center">
-              <p className="font-sans text-sm text-brand-ink-soft mb-3">
-                Design your first Work-Life Balance Business Week™ to begin populating this chapter.
-              </p>
-              <Link href="/design-my-week" className="inline-flex items-center gap-1.5 rounded-full bg-brand-green px-5 py-2.5 font-sans text-xs font-bold text-white hover:bg-brand-green-dark transition-colors">
-                Design My Week™
-                <ArrowRight className="h-3.5 w-3.5" aria-hidden />
-              </Link>
-            </div>
-          </div>
-        </Chapter>
-
-        {/* ── Chapter 5: CEO Workspace™ ────────────────────────────────────── */}
-        <Chapter
-          icon={Briefcase}
-          chapter="Chapter 5"
-          title="CEO Workspace™"
-          subtitle="Everything your business creates — strategy, assets, decisions, SOPs, AI workflows, and more."
-          accentColor="#C9A96E"
-        >
-          <div className="space-y-5">
-            {/* Business Context™ */}
-            <div className="rounded-2xl border border-[#C9A96E]/25 bg-[#FBF7EE] px-5 py-5">
-              <div className="flex items-center justify-between mb-3">
-                <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#C9A96E]">
-                  Business Context™
-                </p>
-                <Link href="/business-context" className="font-sans text-xs font-semibold text-[#C9A96E] hover:underline">
-                  {bcData ? "Edit" : "Complete"}
-                </Link>
-              </div>
-              {ready && bcData ? (
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                  {[
-                    { label: "Business Name", value: bcData.businessName },
-                    { label: "Business Stage™", value: fmt(bcData.businessStage) },
-                    { label: "Founder Role™", value: fmt(bcData.founderRole) },
-                    { label: "Revenue Stage™", value: fmt(bcData.revenueStage) },
-                    bcData.operatingEnvironment ? { label: "Operating Environment™", value: fmt(bcData.operatingEnvironment) } : null,
-                    { label: "Growth Vision™", value: fmt(bcData.growthVision) },
-                    bcData.biggestGoals?.length ? { label: "Primary Goal™", value: fmt(bcData.biggestGoals[0]) } : null,
-                    bcData.biggestChallenges?.length ? { label: "Primary Challenge™", value: fmt(bcData.biggestChallenges[0]) } : null,
-                    bcData.biggestOpportunities?.length ? { label: "Greatest Opportunity™", value: fmt(bcData.biggestOpportunities[0]) } : null,
-                  ].filter((item): item is { label: string; value: string } => item !== null && !!item?.value)
-                    .map(({ label, value }) => (
-                      <DataCard key={label} label={label} value={value} accent="#C9A96E" />
-                    ))}
-                </div>
-              ) : (
-                <EmptyState
-                  label="Complete your Business Context™ to unlock personalized CEO recommendations."
-                  href="/business-context"
-                  hrefLabel="Complete Business Context™"
-                />
-              )}
-            </div>
-
-            {/* Business asset categories — future auto-population */}
-            <div>
-              <p className="font-sans text-xs font-semibold text-brand-ink-soft mb-3">
-                Everything created in your CEO Workspace automatically appears here.
-              </p>
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
-                {[
-                  "Mission, Vision, Values",
-                  "Products & Services",
-                  "Offers & Pricing",
-                  "Customer Avatars",
-                  "Marketing Strategy",
-                  "Sales Systems",
-                  "Operations & Processes",
-                  "Team & Delegation",
-                  "SOPs",
-                  "AI Workflows",
-                  "Templates",
-                  "Knowledge Base",
-                  "Business Assets",
-                  "Quarterly Plans",
-                  "Documents",
-                  "Reports",
-                ].map((item) => (
-                  <div key={item} className="rounded-xl border border-dashed border-brand-blush bg-white/60 px-3 py-2.5 text-center">
-                    <p className="font-sans text-[11px] font-medium text-brand-ink-soft">{item}</p>
-                  </div>
-                ))}
-              </div>
-              <p className="mt-3 font-sans text-[11px] text-brand-ink-soft/60 text-center">
-                Auto-populated as you build inside your CEO Workspace™
-              </p>
-            </div>
-          </div>
-        </Chapter>
-
-        {/* ── Chapter 6: Executive Performance™ ───��──────────────────────── */}
-        <Chapter
-          icon={TrendingUp}
-          chapter="Chapter 6"
-          title="Executive Performance™"
-          subtitle="Daily Non-Negotiables™, Business Assets™, KPIs, and operating metrics."
-          accentColor="#5B835F"
-        >
-          <div className="space-y-4">
-            <div className="flex flex-wrap gap-3">
-              {[
-                { label: "Executive Reviews™", href: "/executive-reviews" },
-                { label: "Excellence Intelligence™", href: "/excellence-intelligence-engine" },
-                { label: "Focus Areas™", href: "/focus-areas" },
-                { label: "Output Architecture™", href: "/output-architecture" },
-              ].map(({ label, href }) => (
-                <Link key={label} href={href} className="inline-flex items-center gap-1.5 rounded-full border border-brand-green/20 bg-brand-green/5 px-4 py-2 font-sans text-xs font-semibold text-brand-ink hover:bg-brand-green/10 transition-colors">
-                  {label}
-                </Link>
-              ))}
-            </div>
-            <EmptyState label="Daily Non-Negotiables™, Business Assets™, KPIs, and operating metrics will populate here as you complete your weekly operating system." />
-          </div>
-        </Chapter>
-
-        {/* ── Chapter 7: Executive Intelligence™ ──────────────────────────── */}
-        <Chapter
-          icon={Brain}
-          chapter="Chapter 7"
-          title="Executive Intelligence™"
-          subtitle="Cherry Blossom™ recommendations, Executive Capability™, and Executive Knowledge™."
-          accentColor="#7B6FA0"
-        >
-          <div className="space-y-4">
-            <div className="flex flex-wrap gap-3">
-              {[
-                { label: "Cherry Blossom™", href: "/cherry-blossom" },
-                { label: "AI Executive Team™", href: "/ai-executive-team" },
-                { label: "Executive Knowledge Library™", href: "/executive-knowledge-library" },
-                { label: "Harmony Business Academy™", href: "/harmony-business-academy" },
-                { label: "Decision Workspace™", href: "/decision-workspace" },
-              ].map(({ label, href }) => (
-                <Link key={label} href={href} className="inline-flex items-center gap-1.5 rounded-full border border-[#7B6FA0]/20 bg-[#7B6FA0]/5 px-4 py-2 font-sans text-xs font-semibold text-brand-ink hover:bg-[#7B6FA0]/10 transition-colors">
-                  {label}
-                </Link>
-              ))}
-            </div>
-            <EmptyState label="Cherry Blossom™ recommendations and executive intelligence insights will populate here as you use the platform." />
-          </div>
-        </Chapter>
-
-        {/* ── Chapter 8: Decision Intelligence™ ──────────────────────────── */}
-        <Chapter
-          icon={Compass}
-          chapter="Chapter 8"
-          title="Decision Intelligence™"
-          subtitle="Your decision history, patterns, lessons learned, and foresight analysis."
-          accentColor="#7B6FA0"
-        >
-          <div className="space-y-4">
-            <div className="flex flex-wrap gap-3">
-              {[
-                { label: "Decision Workspace™", href: "/decision-workspace" },
-              ].map(({ label, href }) => (
-                <Link key={label} href={href} className="inline-flex items-center gap-1.5 rounded-full border border-[#7B6FA0]/20 bg-[#7B6FA0]/5 px-4 py-2 font-sans text-xs font-semibold text-brand-ink hover:bg-[#7B6FA0]/10 transition-colors">
-                  {label}
-                </Link>
-              ))}
-            </div>
-            {/* Decision Intelligence™ — shows placeholder instead of crashing error */}
-            <div className="rounded-2xl border border-[#7B6FA0]/15 bg-[#7B6FA0]/[0.03] px-5 py-6">
-              <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#7B6FA0] mb-2">
-                Decision History™
-              </p>
-              <p className="font-sans text-sm text-brand-ink-soft leading-relaxed">
-                Your decisions, patterns, foresight analysis, and lessons learned will appear here
-                as you use the Decision Workspace™. Begin by opening the workspace and recording
-                your first decision.
-              </p>
-              <Link href="/decision-workspace" className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-[#7B6FA0]/10 px-4 py-2 font-sans text-xs font-bold text-[#7B6FA0] hover:bg-[#7B6FA0]/20 transition-colors">
-                Open Decision Workspace™
-                <ArrowRight className="h-3.5 w-3.5" aria-hidden />
-              </Link>
-            </div>
-          </div>
-        </Chapter>
-
-        {/* ── Chapter 9: Founder Evolution™ ───────────────────────────────── */}
-        <Chapter
-          icon={Sprout}
-          chapter="Chapter 9"
-          title="Founder Evolution™"
-          subtitle="Your milestones, timeline, behavior patterns, and personal evolution over time."
-          accentColor="#5B835F"
-        >
-          <div className="space-y-4">
-            <div className="flex flex-wrap gap-3">
-              {[
-                { label: "Founder Memory™", href: "/founder-memory" },
-                { label: "My Harmony™", href: "/my-harmony" },
-              ].map(({ label, href }) => (
-                <Link key={label} href={href} className="inline-flex items-center gap-1.5 rounded-full border border-brand-green/20 bg-brand-green/5 px-4 py-2 font-sans text-xs font-semibold text-brand-ink hover:bg-brand-green/10 transition-colors">
-                  {label}
-                </Link>
-              ))}
-            </div>
-            <EmptyState label="Your milestones, timeline, pattern recognition, and predictions will populate here as Cherry Blossom™ observes your operating habits over time." />
-          </div>
-        </Chapter>
-
-        {/* ── Chapter 10: Whole-Life Context™ ─────────────────────────────── */}
-        <Chapter
-          icon={Heart}
-          chapter="Chapter 10"
-          title="Whole-Life Context™"
-          subtitle="Birthdays, anniversaries, family, health goals, travel, important events, and life goals."
+        {/* ── Blueprint Card 4: Founder Profile™ ───────────────────────────── */}
+        <BlueprintCard
+          icon={User}
+          cardNumber="Blueprint Card 4"
+          title="Founder Profile™"
+          subtitle="Everything about you — the person behind the business."
           accentColor="#E26C73"
         >
           <div className="space-y-4">
             <div className="flex flex-wrap gap-3">
               {[
-                { label: "Founder Profile™", href: "/founder-profile" },
-                { label: "Time Freedom™", href: "/time-freedom" },
+                { label: "Personal Profile", href: "/founder-profile" },
+                { label: "Relationships", href: "/founder-profile" },
+                { label: "Family", href: "/founder-profile" },
+                { label: "Pets", href: "/founder-profile" },
+                { label: "Hobbies & Interests", href: "/founder-profile" },
+                { label: "Vision & Goals", href: "/founder-profile" },
+                { label: "Support System", href: "/founder-profile" },
               ].map(({ label, href }) => (
                 <Link key={label} href={href} className="inline-flex items-center gap-1.5 rounded-full border border-[#E26C73]/20 bg-[#E26C73]/5 px-4 py-2 font-sans text-xs font-semibold text-brand-ink hover:bg-[#E26C73]/10 transition-colors">
                   {label}
@@ -630,36 +436,56 @@ export function HarmonyBlueprintClient() {
               ))}
             </div>
             <EmptyState
-              label="Your life context — family, health, travel, important dates, and personal milestones — will live here and inform Cherry Blossom™ recommendations."
+              label="Complete your Founder Profile™ to personalize every recommendation Cherry Blossom™ makes."
               href="/founder-profile"
-              hrefLabel="Add Life Context™"
+              hrefLabel="Complete Founder Profile™"
             />
           </div>
-        </Chapter>
+        </BlueprintCard>
 
-        {/* ── Chapter 11: Executive Vault™ ─────────────────���──────────────── */}
-        <Chapter
-          icon={Archive}
-          chapter="Chapter 11"
-          title="Executive Vault™"
-          subtitle="Everything you create — PDFs, SOPs, contracts, templates, AI documents, reports, and more."
+        {/* ── Blueprint Card 5: Business Context™ ──────────────────────────── */}
+        <BlueprintCard
+          icon={Briefcase}
+          cardNumber="Blueprint Card 5"
+          title="Business Context™"
+          subtitle="What you're building — foundational information about your business."
           accentColor="#C9A96E"
         >
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
-              {[
-                "Uploaded Files", "PDFs", "SOPs", "AI-Generated Documents",
-                "Meeting Notes", "Contracts", "Templates", "Worksheets",
-                "Reports", "Images", "Videos", "Other",
-              ].map((item) => (
-                <div key={item} className="rounded-xl border border-dashed border-[#C9A96E]/30 bg-[#FBF7EE]/60 px-3 py-2.5 text-center">
-                  <p className="font-sans text-[11px] font-medium text-brand-ink-soft">{item}</p>
-                </div>
-              ))}
+          <div className="rounded-2xl border border-[#C9A96E]/25 bg-[#FBF7EE] px-5 py-5">
+            <div className="flex items-center justify-between mb-3">
+              <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#C9A96E]">
+                Business Context™
+              </p>
+              <Link href="/business-context" className="font-sans text-xs font-semibold text-[#C9A96E] hover:underline">
+                {bcData ? "Edit" : "Complete"}
+              </Link>
             </div>
-            <EmptyState label="Your Executive Vault™ is searchable and version-controlled. Files created or uploaded inside Harmony Lane™ will appear here automatically." />
+            {ready && bcData ? (
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {[
+                  { label: "Business Name", value: bcData.businessName },
+                  { label: "Business Stage™", value: fmt(bcData.businessStage) },
+                  { label: "Founder Role™", value: fmt(bcData.founderRole) },
+                  { label: "Revenue Stage™", value: fmt(bcData.revenueStage) },
+                  bcData.operatingEnvironment ? { label: "Operating Environment™", value: fmt(bcData.operatingEnvironment) } : null,
+                  { label: "Growth Vision™", value: fmt(bcData.growthVision) },
+                  bcData.biggestGoals?.length ? { label: "Primary Goal™", value: fmt(bcData.biggestGoals[0]) } : null,
+                  bcData.biggestChallenges?.length ? { label: "Primary Challenge™", value: fmt(bcData.biggestChallenges[0]) } : null,
+                  bcData.biggestOpportunities?.length ? { label: "Greatest Opportunity™", value: fmt(bcData.biggestOpportunities[0]) } : null,
+                ].filter((item): item is { label: string; value: string } => item !== null && !!item?.value)
+                  .map(({ label, value }) => (
+                    <DataCard key={label} label={label} value={value} accent="#C9A96E" />
+                  ))}
+              </div>
+            ) : (
+              <EmptyState
+                label="Complete your Business Context™ to unlock personalized recommendations."
+                href="/business-context"
+                hrefLabel="Complete Business Context™"
+              />
+            )}
           </div>
-        </Chapter>
+        </BlueprintCard>
 
         {/* ── Cherry Blossom forward guidance ──────────────────────────────── */}
         <div className="rounded-2xl border border-brand-blush bg-white/70 backdrop-blur-sm shadow-sm overflow-hidden relative">
