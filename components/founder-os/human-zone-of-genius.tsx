@@ -19,7 +19,12 @@ import {
  * that generates 80% of results. Content reused from the original page.
  */
 
-const humanSkills = [
+/**
+ * The canonical 8 Human Zone of Genius™ practices. Exported so other
+ * Founder Operating System™ features (e.g. the Weekly WLBB Debrief™) can
+ * reuse this single source of truth instead of duplicating the list.
+ */
+export const humanSkills = [
   {
     icon: Heart,
     title: "Authentic Client Relationships",

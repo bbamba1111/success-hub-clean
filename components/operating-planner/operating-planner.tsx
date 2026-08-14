@@ -29,7 +29,17 @@ import { PLANNER_CONFIG } from "@/components/operating-planner/planner-config"
 import { FlexTimeGuidedMoments } from "@/components/guided-moments/flex-time-moments"
 import { FlexTimeHistory } from "@/components/guided-moments/flex-time-history"
 import { MorningGivenExperience } from "@/components/guided-moments/morning-given-experience"
+import { WeeklyMenu } from "@/components/wlbb-week/weekly-menu"
+import { LifeIntentionsCard } from "@/components/wlbb-week/life-intentions-card"
+import { useOperatingEngine } from "@/components/operating-engine-provider"
 import dynamic from "next/dynamic"
+
+/** Tue/Wed/Thu (JS getDay 2/3/4) see the Weekly WLBB Menu™ inline in the CEO Workspace™. Monday uses the Debrief™ flow instead; Fri/Sat/Sun have no CEO Workday. */
+const WLBB_MENU_DAY_BY_WEEKDAY: Record<number, "tuesday" | "wednesday" | "thursday" | undefined> = {
+  2: "tuesday",
+  3: "wednesday",
+  4: "thursday",
+}
 
 // Lazy-load the BCA to keep the main bundle lean — only needed in ceo-workday.
 // BusinessContextProfile is a named export so we re-export it as default here.
@@ -134,7 +144,7 @@ const SEGMENT_DATA: Partial<Record<BlockId, SegmentData>> = {
       "journaling my intentions and setting a clear focus for the day",
     ],
     borrowNote:
-      "Up to 1 hour of this 90-minute segment may be temporarily reallocated to Flex Time™ when life requires it — preserving at least 30 minutes for Morning GIV•EN™.",
+      "Up to 1 hour of this 90-minute segment may be temporarily reallocated to Flex Time™ when life requires it �� preserving at least 30 minutes for Morning GIV•EN™.",
     learnMore: {
       purpose:
         "Morning GIV•EN™ is your 90-minute intentional morning operating ritual. GIV•EN™ stands for: Gratitude • Invitation to Your Creator • Vision & Visualization • Emotional Embodiment • Nurture. It combines spiritual alignment with scientific habit formation to create sustainable transformation from the inside out.",
@@ -796,6 +806,8 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
   const [showBca, setShowBca] = useState(false)
   const [plannedActivities, setPlannedActivities] = useState<PlannedActivity[]>([])
   const [plannedSleep, setPlannedSleep] = useState<number | null>(null)
+  const experience = useOperatingEngine()
+  const wlbbMenuDay = experience ? WLBB_MENU_DAY_BY_WEEKDAY[experience.time.dayOfWeek] : undefined
 
   const isWorkout = blockId === "movement-window"
   const isPowerDown = blockId === "power-down"
@@ -824,6 +836,9 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
         <h2 className="font-playfair text-3xl font-bold text-brand-ink mb-4 text-balance">
           {config.title}
         </h2>
+
+        {/* 🌸 Your WLBB Life Intentions — read-only hand-off from the Monday Debrief™. */}
+        {blockId === "time-freedom" && <LifeIntentionsCard />}
 
         {/* Guided Moments™ — the daily interactive experience for Flex Time & Preparation™.
             Replaces the old chip-picker / Intention Declaration™ workflow. Kept above the
@@ -958,6 +973,9 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
         {isPowerDown && (
           <SleepPlanner value={plannedSleep} onChange={setPlannedSleep} />
         )}
+
+        {/* This Week's Weekly WLBB Menu™ — ceo-workday, Tue/Wed/Thu only (Monday uses the Debrief™ flow). */}
+        {blockId === "ceo-workday" && wlbbMenuDay && <WeeklyMenu day={wlbbMenuDay} />}
 
         {/* Business Context Assessment™ accordion — ceo-workday only */}
         {blockId === "ceo-workday" && (

@@ -35,7 +35,7 @@ import CherryBlossomChatModal from "@/components/cherry-blossom-chat-modal"
 
 type Permission = "pending" | "yes" | "later" | "no"
 
-interface FunctionArea {
+export interface FunctionArea {
   id: string
   name: string
   icon: typeof Settings
@@ -46,7 +46,13 @@ interface FunctionArea {
   chatPrompt: string
 }
 
-const FUNCTIONS: FunctionArea[] = [
+/**
+ * The canonical 8 AI Executive function areas. Exported so other Founder
+ * Operating System™ features (e.g. the Weekly WLBB Debrief™ → GPS →
+ * AI Executive assignment flow) can reuse this single source of truth
+ * instead of duplicating the 8-executive architecture.
+ */
+export const FUNCTIONS: FunctionArea[] = [
   {
     id: "operations",
     name: "Operations",
