@@ -170,6 +170,33 @@ export async function getLatestRealityCheck(): Promise<RealityCheckRecord | null
   }
 }
 
+/**
+ * Loads every weekly Reality Check™ record the member has (newest first).
+ * Used by the Work-Life Harmony Blueprint™ calendar to show "Week of…" cards
+ * for the whole month at a glance and to build the Archive once a week rolls
+ * out of the current calendar month. Returns [] for anonymous sessions.
+ */
+export async function getRealityChecksHistory(): Promise<RealityCheckRecord[]> {
+  const userId = await getUserId()
+  if (!userId) return []
+
+  try {
+    const supabase = createClient()
+    const { data } = await supabase
+      .from("reality_checks")
+      .select(
+        "week_key, overall_score, life_value_scores, selected_priority_areas, operating_declaration, weekly_reflection, scored_at, completed_at",
+      )
+      .eq("user_id", userId)
+      .order("week_key", { ascending: false })
+
+    return (data as RealityCheckRecord[]) ?? []
+  } catch (error) {
+    console.log("[v0] getRealityChecksHistory skipped:", (error as Error)?.message)
+    return []
+  }
+}
+
 /** True if THIS week's Reality Check has been scored (the snapshot exists). */
 export async function hasCompletedThisWeeksRealityCheck(): Promise<boolean> {
   const userId = await getUserId()

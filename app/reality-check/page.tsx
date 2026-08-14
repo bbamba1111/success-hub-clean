@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, Loader2 } from "lucide-react"
 import { getAuditResults } from "@/utils/audit-storage"
 import { getEsaResults } from "@/lib/entrepreneur-success/esa-storage"
 import { getStoredAssessmentWindow } from "@/lib/assessment-cadence"
@@ -13,6 +13,9 @@ import type { EsaResults } from "@/lib/entrepreneur-success/types"
 
 /** Any area at or below this score becomes a "Focus This Week™" candidate. */
 const FOCUS_THRESHOLD = 60
+
+/** Seconds the branded loading state holds before the scores reveal — gives the founder a deliberate pause instead of an instant, jarring reveal. */
+const LOADING_DURATION = 15
 
 interface FocusArea {
   name: string
@@ -116,6 +119,40 @@ function FocusAreaRow({ area }: { area: FocusArea }) {
   )
 }
 
+// ── Branded loading state — holds for LOADING_DURATION so the founder has a
+// deliberate pause before the scores reveal, rather than an instant jump. ──
+
+function RealityCheckLoading({ secondsLeft }: { secondsLeft: number }) {
+  const pct = ((LOADING_DURATION - secondsLeft) / LOADING_DURATION) * 100
+  return (
+    <div className="mx-auto w-full max-w-md px-4 py-24 flex flex-col items-center text-center gap-6">
+      <span className="relative inline-flex h-16 w-16 shrink-0 overflow-hidden rounded-full border-2 border-brand-blush shadow-md">
+        <img src="/images/logo.png" alt="Cherry Blossom" className="h-full w-full object-cover" />
+      </span>
+      <Loader2 className="h-6 w-6 animate-spin text-brand-coral" aria-hidden />
+      <div className="space-y-1.5">
+        <p className="font-playfair text-xl font-bold text-brand-ink">
+          Bringing your life and business together&hellip;
+        </p>
+        <p className="font-sans text-sm text-brand-ink-soft">
+          Your Work-Life Balance Reality Check™ is almost ready.
+        </p>
+      </div>
+      <div className="w-full">
+        <div className="h-1.5 w-full rounded-full bg-brand-green/15 overflow-hidden">
+          <div
+            className="h-full rounded-full bg-gradient-to-r from-brand-coral via-[#E8A84E] to-brand-green transition-all duration-1000 ease-linear"
+            style={{ width: `${pct}%` }}
+          />
+        </div>
+        <p className="mt-1.5 font-sans text-xs font-semibold tabular-nums text-brand-ink-soft">
+          {secondsLeft}s
+        </p>
+      </div>
+    </div>
+  )
+}
+
 // ── Main page ─────────────────────────────────────────────────────────────
 
 export default function RealityCheckPage() {
@@ -123,13 +160,25 @@ export default function RealityCheckPage() {
   const [bizData, setBizData] = useState<EsaResults | null>(null)
   const [period, setPeriod] = useState("7 days")
   const [ready, setReady] = useState(false)
+  const [secondsLeft, setSecondsLeft] = useState(LOADING_DURATION)
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" })
     setLifeData(getAuditResults())
     setBizData(getEsaResults())
     setPeriod(getStoredAssessmentWindow() === "30-day" ? "30 days" : "7 days")
-    setReady(true)
+
+    const interval = setInterval(() => {
+      setSecondsLeft((s) => {
+        if (s <= 1) {
+          clearInterval(interval)
+          setReady(true)
+          return 0
+        }
+        return s - 1
+      })
+    }, 1000)
+    return () => clearInterval(interval)
   }, [])
 
   const lifeScore = lifeData?.overallScore ?? null
@@ -175,6 +224,9 @@ export default function RealityCheckPage() {
       </CherryBlossomScene>
 
       {/* ── Body ─────────────────────────────────────────────────────────── */}
+      {!ready ? (
+        <RealityCheckLoading secondsLeft={secondsLeft} />
+      ) : (
       <section className="mx-auto w-full max-w-4xl px-4 py-14 space-y-8">
         {/* Score snapshot */}
         {ready && (
@@ -258,7 +310,7 @@ export default function RealityCheckPage() {
         <CherryBlossomTransitionCard
           greeting="Now let's design your week."
           ctaLabel="Design My Week™"
-          ctaHref="/design-my-week"
+          ctaHref="/?openSpace=monday-debrief"
         >
           <p>
             {focusAreas.length > 0
@@ -271,6 +323,7 @@ export default function RealityCheckPage() {
           </p>
         </CherryBlossomTransitionCard>
       </section>
+      )}
     </div>
   )
 }

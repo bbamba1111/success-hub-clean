@@ -10,11 +10,12 @@
  * engine's timeline into cards — it owns no schedule data or time logic.
  */
 
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { AnimatePresence } from "framer-motion"
 import useSWR from "swr"
 import { DailyTransition } from "@/components/cherry-blossom/daily-transition"
 import { BusinessDayBlock } from "@/components/business-day-block"
+import { useActiveSpace } from "@/components/active-space-provider"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
 import { useHarmonyWeek } from "@/components/harmony-week/harmony-week-provider"
 import { getActiveRules } from "@/lib/operating-rules/storage"
@@ -59,7 +60,32 @@ interface TransitionState {
 export function BusinessDaySchedule() {
   const experience = useOperatingEngine()
   const harmonyWeek = useHarmonyWeek()
+  const activeSpace = useActiveSpace()
   const [activeTransition, setActiveTransition] = useState<TransitionState | null>(null)
+
+  // Hand-off from other pages (e.g. Reality Check™'s "Design My Week™" CTA)
+  // arrives as `?openSpace=<blockId>`. Once the timeline/DOM has mounted, force
+  // that block's accordion open and scroll to it via the same `enterSpace()`
+  // used by every other "Enter the Space™" trigger, then strip the param so a
+  // refresh doesn't re-trigger the jump. Read via plain `window.location` (not
+  // `useSearchParams`) since this only ever needs to run once, client-side,
+  // after mount — no Suspense boundary required.
+  useEffect(() => {
+    if (!activeSpace) return
+    const params = new URLSearchParams(window.location.search)
+    const openSpaceId = params.get("openSpace")
+    if (!openSpaceId) return
+    const block = SCHEDULE.find((b) => b.id === openSpaceId)
+    if (!block) return
+    const timer = setTimeout(() => {
+      activeSpace.enterSpace(block.id, block.sectionId)
+      params.delete("openSpace")
+      const query = params.toString()
+      window.history.replaceState({}, "", query ? `/?${query}` : "/")
+    }, 50)
+    return () => clearTimeout(timer)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeSpace])
 
   // Each segment's current Operating Rule™, loaded once (newest-first) and
   // mapped by segment so every card can preview its guiding commitment.

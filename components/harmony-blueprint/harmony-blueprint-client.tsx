@@ -24,6 +24,7 @@ import { getEsaResults } from "@/lib/entrepreneur-success/esa-storage"
 import { getBusinessContext } from "@/lib/business-context/business-context-store"
 import { scoreLabel } from "@/lib/entrepreneur-success/scoring"
 import { CherryBlossomScene, CherryBlossomSceneCard } from "@/components/cherry-blossom/cherry-blossom-scene"
+import { MonthlyHarmonyCalendar } from "@/components/harmony-blueprint/monthly-harmony-calendar"
 import type { AuditData } from "@/utils/audit-storage"
 import type { EsaResults } from "@/lib/entrepreneur-success/types"
 import type { BusinessContextProfile } from "@/lib/business-context/types"
@@ -203,7 +204,7 @@ export function HarmonyBlueprintClient() {
   return (
     <div className="min-h-screen bg-brand-cream">
 
-      {/* ── Hero ───────────────────��─────────────────────────────────────── */}
+      {/* ── Hero ───────────────────���─────────────────────────────────────── */}
       <CherryBlossomScene variant="garden" minHeight="min-h-[60vh]" noBackground>
         <CherryBlossomSceneCard
           title="My Work-Life Harmony Blueprint™"
@@ -323,18 +324,22 @@ export function HarmonyBlueprintClient() {
                   Retake Audit
                 </Link>
               </div>
-              <div className="rounded-2xl border border-dashed border-brand-blush py-6 text-center">
-                <p className="font-sans text-xs text-brand-ink-soft">
-                  Previous weeks, weekly trends, and monthly trends will appear here as you complete more weekly audits.
+              <div>
+                <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-brand-coral mb-3">
+                  This Month, at a Glance
                 </p>
+                <MonthlyHarmonyCalendar />
               </div>
             </div>
           ) : (
-            <EmptyState
-              label="Complete your Work-Life Balance Audit™ to populate this chapter."
-              href="/audit"
-              hrefLabel="Take the Audit™"
-            />
+            <div className="space-y-5">
+              <EmptyState
+                label="Complete your Work-Life Balance Audit™ to populate this chapter."
+                href="/audit"
+                hrefLabel="Take the Audit™"
+              />
+              <MonthlyHarmonyCalendar />
+            </div>
           )}
         </Chapter>
 
@@ -372,10 +377,11 @@ export function HarmonyBlueprintClient() {
                 />
               )}
             </div>
-            <div className="rounded-2xl border border-dashed border-brand-blush py-6 text-center">
-              <p className="font-sans text-xs text-brand-ink-soft">
-                Future assessments and historical results will appear here on a 7-day cycle.
+            <div>
+              <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-brand-green mb-3">
+                This Month, at a Glance
               </p>
+              <MonthlyHarmonyCalendar />
             </div>
           </div>
         </Chapter>

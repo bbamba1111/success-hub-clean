@@ -26,6 +26,17 @@ import { BUSINESS_AREAS, getAreaById } from "@/lib/wlbb-week/catalog"
 import { getWeekKey, loadWeek, addLifeIntention, removeLifeIntention, setBusinessArea, setOutcomes, setHumanZoneOfGeniusPractice, setGpsRecommendation, markDebriefComplete, getDailyEntry } from "@/lib/wlbb-week/storage"
 import { getGpsRecommendation } from "@/lib/wlbb-week/gps"
 import type { BusinessOutcome, LifeIntention, LifeIntentionKind, WlbbWeekState } from "@/lib/wlbb-week/types"
+import { getAuditResults } from "@/utils/audit-storage"
+import { getEsaResults } from "@/lib/entrepreneur-success/esa-storage"
+
+/** Same threshold used on the Reality Check™ page — keeps "Focus This Week™" consistent everywhere. */
+const FOCUS_THRESHOLD = 60
+
+interface FocusArea {
+  name: string
+  score: number
+  source: "Life" | "Business"
+}
 
 const QUICK_INTENTIONS: { label: string; kind: LifeIntentionKind; isRelationshipRepair?: boolean }[] = [
   { label: "Family dinner", kind: "family" },
@@ -93,6 +104,7 @@ export function DebriefSpace() {
   const [customDay, setCustomDay] = useState("")
   const [customTime, setCustomTime] = useState("")
   const [selectedBehaviors, setSelectedBehaviors] = useState<string[]>([])
+  const [focusAreas, setFocusAreas] = useState<FocusArea[] | null>(null)
 
   useEffect(() => {
     const loaded = loadWeek(getWeekKey())
@@ -100,6 +112,21 @@ export function DebriefSpace() {
     // Seed the behaviors picker from whatever's already saved on this week's outcomes.
     const existingBehaviors = loaded.business.outcomes[0]?.operatingBehaviors ?? []
     setSelectedBehaviors(existingBehaviors)
+
+    // Pull this week's Audit™ + ESA™ results straight from storage so anything
+    // that scored at or below the focus threshold on the Reality Check™ shows
+    // up here automatically — no data needs to be passed through a link/query.
+    const auditData = getAuditResults()
+    const esaData = getEsaResults()
+    const areas: FocusArea[] = [
+      ...(auditData?.results ?? [])
+        .filter((r) => r.percentage <= FOCUS_THRESHOLD)
+        .map((r) => ({ name: r.label, score: r.percentage, source: "Life" as const })),
+      ...(esaData?.pillarScores ?? [])
+        .filter((p) => p.percentage <= FOCUS_THRESHOLD)
+        .map((p) => ({ name: p.pillarName, score: p.percentage, source: "Business" as const })),
+    ].sort((a, b) => a.score - b.score)
+    setFocusAreas(areas)
   }, [])
 
   const selectedArea = week?.business.businessAreaId ? getAreaById(week.business.businessAreaId) : undefined
@@ -252,6 +279,45 @@ export function DebriefSpace() {
           </p>
         </div>
       </div>
+
+      {/* ── Focus This Week™ — any category ≤60% on the Audit™ / ESA™ ────────── */}
+      {focusAreas && focusAreas.length > 0 && (
+        <div className="rounded-3xl border border-[#E26C73]/20 bg-white shadow-sm px-8 py-7 space-y-4">
+          <div>
+            <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#C0545A]">
+              Focus This Week™
+            </p>
+            <p className="mt-2 font-sans text-sm text-[#3A2E33] leading-relaxed">
+              These areas scored at or below {FOCUS_THRESHOLD} on your Work-Life Balance Audit™ and
+              Entrepreneur Success Assessment™ — not a judgment, just a shortlist to design around below.
+            </p>
+          </div>
+          <div className="space-y-2">
+            {focusAreas.map((area) => {
+              const accent = area.source === "Life" ? "#E26C73" : "#5D9D61"
+              return (
+                <div
+                  key={`${area.source}-${area.name}`}
+                  className="flex items-center justify-between gap-3 rounded-xl border border-[#E8DFE2] bg-[#FDFAF6] px-4 py-3"
+                >
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span
+                      className="inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.14em]"
+                      style={{ backgroundColor: accent + "15", color: accent }}
+                    >
+                      {area.source}
+                    </span>
+                    <p className="font-sans text-sm font-semibold text-[#2E1F27] truncate">{area.name}</p>
+                  </div>
+                  <span className="shrink-0 font-sans text-sm font-bold tabular-nums" style={{ color: accent }}>
+                    {area.score}/100
+                  </span>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
 
       {/* ── 1. Life Intentions ───────────────────────────────────────────────── */}
       <div className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm px-8 py-7 space-y-5">

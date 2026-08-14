@@ -12,7 +12,7 @@ import { saveEsaResults } from "@/lib/entrepreneur-success/esa-storage"
 import type { AssessmentQuestion } from "@/lib/entrepreneur-success/types"
 import { ArrowRight } from "lucide-react"
 
-const REDIRECT_DELAY = 6 // seconds before auto-redirect
+const REDIRECT_DELAY = 10 // seconds before auto-redirect — gives the founder time to actually read the message
 
 /* ── Cherry Blossom completion screen ──────────────────────────────────── */
 function CompletionScreen({ resultsUrl }: { resultsUrl: string }) {
