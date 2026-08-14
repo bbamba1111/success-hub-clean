@@ -5,10 +5,9 @@
  *
  * The guided experience inside Make Time For More On Mondays™.
  *
- * Step 1 — Founder Snapshot™      (display-only, always shown first)
- * Step 2 — Work-Life Balance Audit™
- * Step 3 — Entrepreneur Success Assessment™
- * Step 4 — Work-Life Balance Reality Check™ → direct hand-off into Debrief Space™
+ * Step 1 — Work-Life Balance Audit™
+ * Step 2 — Entrepreneur Success Assessment™
+ * Step 3 — Work-Life Balance Reality Check™ → direct hand-off into Debrief Space™
  *
  * Business Context does NOT appear here. It belongs exclusively in Measure Monthly™.
  * Weekly state is keyed by the Monday of the current week so it resets automatically.
@@ -17,7 +16,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { AnimatePresence, motion } from "framer-motion"
-import { CheckCircle2, Lock, Sparkles, User } from "lucide-react"
+import { CheckCircle2, Lock, Sparkles } from "lucide-react"
 import { useActiveSpace } from "@/components/active-space-provider"
 import { SCHEDULE_BY_ID } from "@/operating-engine/config/schedule"
 
@@ -45,7 +44,6 @@ function getWeekKey(date = new Date()): string {
 
 interface WeeklyState {
   weekKey: string
-  snapshotDone: boolean
   auditDone: boolean
   assessmentDone: boolean
   completedAt: string | null
@@ -60,36 +58,11 @@ function loadWeekly(): WeeklyState {
       if (parsed.weekKey === current) return parsed
     }
   } catch { /* ignore */ }
-  return { weekKey: current, snapshotDone: false, auditDone: false, assessmentDone: false, completedAt: null }
+  return { weekKey: current, auditDone: false, assessmentDone: false, completedAt: null }
 }
 
 function saveWeekly(s: WeeklyState) {
   try { localStorage.setItem(WEEKLY_KEY, JSON.stringify(s)) } catch { /* ignore */ }
-}
-
-// ─── Founder profile reader ──────────────────────────────────────────────────
-
-interface FounderSnapshot {
-  name: string
-  businessName: string
-  currentFocus: string
-  quarterlyIntention: string
-}
-
-function loadFounderSnapshot(): FounderSnapshot {
-  try {
-    const raw = localStorage.getItem("founderProfile")
-    if (raw) {
-      const p = JSON.parse(raw)
-      return {
-        name: p.firstName ? `${p.firstName}${p.lastName ? " " + p.lastName : ""}` : (p.name ?? ""),
-        businessName: p.businessName ?? "",
-        currentFocus: p.currentFocus ?? p.primaryOffer ?? "",
-        quarterlyIntention: p.quarterlyIntention ?? p.quarterlyGoal ?? "",
-      }
-    }
-  } catch { /* ignore */ }
-  return { name: "", businessName: "", currentFocus: "", quarterlyIntention: "" }
 }
 
 // ─── Component ───────────────────────────────────────────────────────────────
@@ -97,29 +70,22 @@ function loadFounderSnapshot(): FounderSnapshot {
 export function ReflectionSpace() {
   const [mounted, setMounted]               = useState(false)
   const [isBaseline, setIsBaseline]         = useState(true)
-  const [snapshot, setSnapshot]             = useState<FounderSnapshot>({ name: "", businessName: "", currentFocus: "", quarterlyIntention: "" })
-  const [snapshotDone, setSnapshotDone]     = useState(false)
   const [auditDone, setAuditDone]           = useState(false)
   const [assessmentDone, setAssessmentDone] = useState(false)
   const [completedAt, setCompletedAt]       = useState<string | null>(null)
-  const [activeStep, setActiveStep]         = useState<1 | 2 | 3 | 4>(1)
+  const [activeStep, setActiveStep]         = useState<1 | 2 | 3>(1)
   const activeSpace = useActiveSpace()
 
   useEffect(() => {
     const ws = loadWeekly()
-    const fp = loadFounderSnapshot()
     setIsBaseline(!hasCompletedFirstRealityCheck())
-    setSnapshot(fp)
-    setSnapshotDone(ws.snapshotDone)
     setAuditDone(ws.auditDone)
     setAssessmentDone(ws.assessmentDone)
     setCompletedAt(ws.completedAt)
 
     if (ws.auditDone && ws.assessmentDone) {
-      setActiveStep(4)
-    } else if (ws.auditDone) {
       setActiveStep(3)
-    } else if (ws.snapshotDone) {
+    } else if (ws.auditDone) {
       setActiveStep(2)
     } else {
       setActiveStep(1)
@@ -127,29 +93,22 @@ export function ReflectionSpace() {
     setMounted(true)
   }, [])
 
-  const markSnapshotDone = () => {
-    const next: WeeklyState = { weekKey: getWeekKey(), snapshotDone: true, auditDone, assessmentDone, completedAt }
-    saveWeekly(next)
-    setSnapshotDone(true)
-    setTimeout(() => setActiveStep(2), 400)
-  }
-
   const markAuditDone = () => {
-    const next: WeeklyState = { weekKey: getWeekKey(), snapshotDone, auditDone: true, assessmentDone, completedAt }
+    const next: WeeklyState = { weekKey: getWeekKey(), auditDone: true, assessmentDone, completedAt }
     saveWeekly(next)
     setAuditDone(true)
-    setTimeout(() => setActiveStep(3), 500)
+    setTimeout(() => setActiveStep(2), 500)
   }
 
   const markAssessmentDone = () => {
     const now = new Date().toISOString()
-    const next: WeeklyState = { weekKey: getWeekKey(), snapshotDone, auditDone, assessmentDone: true, completedAt: now }
+    const next: WeeklyState = { weekKey: getWeekKey(), auditDone, assessmentDone: true, completedAt: now }
     saveWeekly(next)
     // Persist First Reality Check™ completion forever so future visits switch to 7-day wording
     if (isBaseline) markFirstRealityCheckComplete()
     setAssessmentDone(true)
     setCompletedAt(now)
-    setTimeout(() => setActiveStep(4), 500)
+    setTimeout(() => setActiveStep(3), 500)
   }
 
   const bothDone = auditDone && assessmentDone
@@ -162,10 +121,8 @@ export function ReflectionSpace() {
     ? "Reflection Complete\n\nYou have just created something many founders never do.\n\nYou created a protected time and space to reflect on both your life and your business before reacting to the week ahead.\n\nMost founders begin Monday by opening their inbox. You began by creating awareness.\n\nThat single decision changes how the rest of your week unfolds."
     : auditDone
     ? "Life Reflection Complete\n\nThank you for taking the time to reflect on your life.\n\nYour responses have created a clear picture of how your life has been operating over the past " + period + ".\n\nNext, we\u2019ll reflect on how your business has been operating during that same period so we can bring both perspectives together in your Work-Life Balance Reality Check\u2122."
-    : snapshotDone
-    ? "Business Reflection\n\nOver the past " + period + ", your business has been operating in its own unique way.\n\nThis assessment measures how your business has been operating alongside your life during that same period so we can compare both experiences and better understand where they are working together \u2014 and where they may be competing with one another.\n\nThere are no right or wrong answers. Simply answer honestly. Honest reflection creates the awareness needed to intentionally redesign your entry into the workweek."
     : isBaseline
-    ? "Welcome to Reflection Space\u2122.\n\nBefore you redesign your entry into the workweek, let\u2019s begin with you.\n\nYour Founder Profile\u2122 helps me understand who you are, the business you\u2019re building, and what matters most to you so I can guide you throughout your Work-Life Balance Business Day\u2122.\n\nComplete your profile once. We\u2019ll use it as the foundation for your Monday reflections and your experience inside Harmony Lane\u2122."
+    ? "Welcome to Reflection Space\u2122.\n\nBefore you redesign your entry into the workweek, let\u2019s begin with two short reflections \u2014 your Work-Life Balance Audit\u2122 and your Entrepreneur Success Assessment\u2122.\n\nThe audit helps me understand how your life has been operating, and the assessment helps me understand how your business has been operating, so I can guide you throughout your Work-Life Balance Business Day\u2122.\n\nComplete both once. We\u2019ll use them as the foundation for your Monday reflections and your experience inside Harmony Lane\u2122."
     : "Welcome back.\n\nBefore you redesign your entry into the workweek, let\u2019s take a few moments to reflect on the past 7 days.\n\nEach Monday is an opportunity to celebrate your progress, learn from the previous week, and intentionally create the week ahead."
 
   if (!mounted) {
@@ -188,82 +145,14 @@ export function ReflectionSpace() {
       {/* ── Cherry Blossom coaching ─────────────────────────────────────────── */}
       <CherryBlossomCoach message={cherryBlossomMessage} />
 
-      {/* ── Step 1 — Founder Snapshot™ ──────────────────────────────────────── */}
+      {/* ── Step 1 — Work-Life Balance Audit™ ──────────────────────────────── */}
       <StepCard
         stepNumber={1}
-        label="Your Founder Snapshot™"
-        title="Good morning."
-        done={snapshotDone}
-        active={activeStep === 1}
-        onToggle={() => setActiveStep(activeStep === 1 ? (snapshotDone ? 2 : 1) : 1)}
-        accentColor="gold"
-      >
-        {/* Display-only snapshot pulled from Founder Profile™ */}
-        <div className="rounded-2xl border border-[#C9A84C]/20 bg-[#FDFAF4] px-6 py-5 space-y-4">
-          {snapshot.name ? (
-            <>
-              <div className="space-y-1">
-                <p className="font-sans text-xs font-semibold uppercase tracking-[0.18em] text-[#8B6914]">Founder</p>
-                <p className="font-serif text-lg font-semibold text-[#2E1F27]">{snapshot.name}</p>
-                {snapshot.businessName && (
-                  <p className="font-sans text-sm text-[#5A4A52]">{snapshot.businessName}</p>
-                )}
-              </div>
-              {snapshot.currentFocus && (
-                <div className="space-y-1 pt-1 border-t border-[#C9A84C]/15">
-                  <p className="font-sans text-xs font-semibold uppercase tracking-[0.18em] text-[#8B6914]">Current Focus</p>
-                  <p className="font-sans text-sm text-[#5A4A52] leading-relaxed">{snapshot.currentFocus}</p>
-                </div>
-              )}
-              {snapshot.quarterlyIntention && (
-                <div className="space-y-1 pt-1 border-t border-[#C9A84C]/15">
-                  <p className="font-sans text-xs font-semibold uppercase tracking-[0.18em] text-[#8B6914]">Current Quarterly Intention</p>
-                  <p className="font-sans text-sm text-[#5A4A52] leading-relaxed">{snapshot.quarterlyIntention}</p>
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="space-y-3">
-              <p className="font-sans text-sm text-[#5A4A52] leading-relaxed">
-                Your Founder Profile™ has not been completed yet. Complete it once so Cherry Blossom™ can understand who you are, the business you&apos;re building, and what matters most to you — and guide you throughout your Work-Life Balance Business Day™.
-              </p>
-              <Link
-                href="/founder-profile"
-                className="inline-flex items-center gap-2 rounded-xl bg-[#C9A84C] px-5 py-2.5 font-sans text-sm font-semibold text-white transition-colors hover:bg-[#8B6914] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A84C]"
-              >
-                <User className="h-4 w-4" aria-hidden />
-                Complete My Founder Profile™
-              </Link>
-            </div>
-          )}
-        </div>
-
-        <button
-          onClick={markSnapshotDone}
-          disabled={snapshotDone}
-          className={`w-full inline-flex items-center justify-center gap-2 rounded-xl border px-6 py-3 font-sans text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A84C] ${
-            snapshotDone
-              ? "border-[#7FB069] bg-[#7FB069]/10 text-[#5B835F] cursor-default"
-              : "border-[#C9A84C]/40 bg-white text-[#8B6914] hover:bg-[#C9A84C]/10"
-          }`}
-        >
-          <CheckCircle2 className={`h-4 w-4 ${snapshotDone ? "text-[#7FB069]" : "text-[#C9A84C]/60"}`} />
-          {snapshotDone ? "Snapshot Reviewed — Continue" : "I\u2019ve Reviewed My Snapshot — Begin Reflection"}
-        </button>
-      </StepCard>
-
-      {/* ── Step 2 — Work-Life Balance Audit™ ──────────────────────────────── */}
-      <StepCard
-        stepNumber={2}
         label="Activity 1"
         title="Work-Life Balance Audit™"
         done={auditDone}
-        active={activeStep === 2}
-        locked={!snapshotDone}
-        onToggle={() => {
-          if (!snapshotDone) return
-          setActiveStep(activeStep === 2 ? (auditDone ? 3 : 2) : 2)
-        }}
+        active={activeStep === 1}
+        onToggle={() => setActiveStep(activeStep === 1 ? (auditDone ? 2 : 1) : 1)}
       >
         <p className="font-sans text-sm text-[#5A4A52] leading-relaxed">
           Reflect on how you&apos;ve been living over the past <strong>{period}</strong>. This audit provides a snapshot of your overall work-life balance and helps you identify the areas of your life that may need more attention before the week begins.
@@ -290,17 +179,17 @@ export function ReflectionSpace() {
         </div>
       </StepCard>
 
-      {/* ── Step 3 — Entrepreneur Success Assessment™ ──────────────────────── */}
+      {/* ── Step 2 — Entrepreneur Success Assessment™ ──────────────────────── */}
       <StepCard
-        stepNumber={3}
+        stepNumber={2}
         label="Activity 2"
         title="Entrepreneur Success Assessment™"
         done={assessmentDone}
-        active={activeStep === 3}
+        active={activeStep === 2}
         locked={!auditDone}
         onToggle={() => {
           if (!auditDone) return
-          setActiveStep(activeStep === 3 ? (assessmentDone ? 4 : 3) : 3)
+          setActiveStep(activeStep === 2 ? (assessmentDone ? 3 : 2) : 2)
         }}
       >
         <p className="font-sans text-sm text-[#5A4A52] leading-relaxed">
@@ -439,7 +328,6 @@ interface StepCardProps {
   locked?: boolean
   onToggle: () => void
   children: React.ReactNode
-  accentColor?: "coral" | "gold"
 }
 
 function StepCard({
@@ -451,20 +339,12 @@ function StepCard({
   locked = false,
   onToggle,
   children,
-  accentColor = "coral",
 }: StepCardProps) {
   const accent = {
-    coral: {
-      activeBg: "bg-[#E26C73]/15",
-      activeText: "text-[#C0545A]",
-      doneBg:    "bg-[#7FB069]",
-    },
-    gold: {
-      activeBg: "bg-[#C9A84C]/15",
-      activeText: "text-[#8B6914]",
-      doneBg:    "bg-[#C9A84C]",
-    },
-  }[accentColor]
+    activeBg: "bg-[#E26C73]/15",
+    activeText: "text-[#C0545A]",
+    doneBg:    "bg-[#7FB069]",
+  }
 
   return (
     <div
@@ -494,7 +374,7 @@ function StepCard({
           }`}
           aria-hidden
         >
-          {done ? <CheckCircle2 className="h-4 w-4" /> : stepNumber === 1 && accentColor === "gold" ? <User className="h-4 w-4" /> : stepNumber}
+          {done ? <CheckCircle2 className="h-4 w-4" /> : stepNumber}
         </span>
 
         <div className="flex-1 min-w-0">
