@@ -1,7 +1,7 @@
 "use client"
 
 /**
- * DebriefSpace™ — the 30-Minute Work-Life Balance Debrief™ (Monday only).
+ * DebriefSpace™ — Design My Work-Life Balance Business Week™ (Monday only).
  *
  * Builds this WLBB Week's Weekly WLBB Menu™:
  *  1. Life Intentions (incl. private relationship-repair entries)
@@ -300,7 +300,7 @@ export function DebriefSpace() {
           Debrief Space™
         </p>
         <h2 className="font-serif text-3xl font-semibold text-[#2E1F27] text-balance leading-tight">
-          Design your Work-Life Balance Blueprint™ for this WLBB Week.
+          Design My Work-Life Balance Business Week™
         </h2>
       </div>
 

@@ -23,7 +23,7 @@ import { LivingMoments } from "@/components/living-moments"
 const BLOCK_SENTENCE: Record<string, { plain: string; italic: string }> = {
   // Monday-only blocks
   "monday-reality-check":  { plain: "Making Time For More On", italic: "Mondays™" },
-  "monday-debrief":        { plain: "Sitting With What Surfaced In The",  italic: "Work-Life Balance Debrief™" },
+  "monday-debrief":        { plain: "Designing My Work-Life Balance",  italic: "Business Week™" },
   // Standard blocks
   "early-access":    { plain: "In Flex Time or Preparing For",            italic: "The Work-Life Balance Business Day™" },
   "morning-given":   { plain: "Aligning Our Energy In The",               italic: "Morning GIV\u2022EN™ Routine" },

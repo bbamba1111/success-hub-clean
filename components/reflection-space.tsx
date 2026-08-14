@@ -16,9 +16,10 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { AnimatePresence, motion } from "framer-motion"
-import { CheckCircle2, Lock, Sparkles } from "lucide-react"
-import { useActiveSpace } from "@/components/active-space-provider"
-import { SCHEDULE_BY_ID } from "@/operating-engine/config/schedule"
+import { CheckCircle2, ChevronDown, Lock } from "lucide-react"
+import { getAuditResults, type AuditData } from "@/utils/audit-storage"
+import { getEsaResults } from "@/lib/entrepreneur-success/esa-storage"
+import type { EsaResults } from "@/lib/entrepreneur-success/types"
 
 // ─── Storage ─────────────────────────────────────────────────────────────────
 
@@ -65,6 +66,12 @@ function saveWeekly(s: WeeklyState) {
   try { localStorage.setItem(WEEKLY_KEY, JSON.stringify(s)) } catch { /* ignore */ }
 }
 
+function realityColor(score: number): string {
+  if (score > 60) return "#5B835F"
+  if (score >= 40) return "#E8A84E"
+  return "#E26C73"
+}
+
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export function ReflectionSpace() {
@@ -74,7 +81,9 @@ export function ReflectionSpace() {
   const [assessmentDone, setAssessmentDone] = useState(false)
   const [completedAt, setCompletedAt]       = useState<string | null>(null)
   const [activeStep, setActiveStep]         = useState<1 | 2 | 3>(1)
-  const activeSpace = useActiveSpace()
+  const [auditData, setAuditData]           = useState<AuditData | null>(null)
+  const [esaData, setEsaData]               = useState<EsaResults | null>(null)
+  const [showBreakdown, setShowBreakdown]   = useState(false)
 
   useEffect(() => {
     const ws = loadWeekly()
@@ -82,6 +91,8 @@ export function ReflectionSpace() {
     setAuditDone(ws.auditDone)
     setAssessmentDone(ws.assessmentDone)
     setCompletedAt(ws.completedAt)
+    setAuditData(getAuditResults())
+    setEsaData(getEsaResults())
 
     if (ws.auditDone && ws.assessmentDone) {
       setActiveStep(3)
@@ -97,6 +108,7 @@ export function ReflectionSpace() {
     const next: WeeklyState = { weekKey: getWeekKey(), auditDone: true, assessmentDone, completedAt }
     saveWeekly(next)
     setAuditDone(true)
+    setAuditData(getAuditResults())
     setTimeout(() => setActiveStep(2), 500)
   }
 
@@ -108,10 +120,16 @@ export function ReflectionSpace() {
     if (isBaseline) markFirstRealityCheckComplete()
     setAssessmentDone(true)
     setCompletedAt(now)
+    setEsaData(getEsaResults())
     setTimeout(() => setActiveStep(3), 500)
   }
 
   const bothDone = auditDone && assessmentDone
+
+  const lifeScore = auditData?.overallScore ?? null
+  const businessScore = esaData?.overallScore ?? null
+  const realityScore =
+    lifeScore !== null && businessScore !== null ? Math.round((lifeScore + businessScore) / 2) : null
 
   // Cherry Blossom™ — message changes by step and whether this is the First Reality Check™
   const period = isBaseline ? "30 days" : "7 days"
@@ -122,8 +140,8 @@ export function ReflectionSpace() {
     : auditDone
     ? "Life Reflection Complete\n\nThank you for taking the time to reflect on your life.\n\nYour responses have created a clear picture of how your life has been operating over the past " + period + ".\n\nNext, we\u2019ll reflect on how your business has been operating during that same period so we can bring both perspectives together in your Work-Life Balance Reality Check\u2122."
     : isBaseline
-    ? "Welcome to Reflection Space\u2122.\n\nBefore you redesign your entry into the workweek, let\u2019s begin with two short reflections \u2014 your Work-Life Balance Audit\u2122 and your Entrepreneur Success Assessment\u2122.\n\nThe audit helps me understand how your life has been operating, and the assessment helps me understand how your business has been operating, so I can guide you throughout your Work-Life Balance Business Day\u2122.\n\nComplete both once. We\u2019ll use them as the foundation for your Monday reflections and your experience inside Harmony Lane\u2122."
-    : "Welcome back.\n\nBefore you redesign your entry into the workweek, let\u2019s take a few moments to reflect on the past 7 days.\n\nEach Monday is an opportunity to celebrate your progress, learn from the previous week, and intentionally create the week ahead."
+    ? "There\u2019s nowhere to rush to.\n\nBefore you redesign your entry into the workweek, let\u2019s begin with two short reflections \u2014 your Work-Life Balance Audit\u2122 and your Entrepreneur Success Assessment\u2122.\n\nThe audit helps me understand how your life has been operating, and the assessment helps me understand how your business has been operating, so I can guide you throughout your Work-Life Balance Business Day\u2122.\n\nComplete both once. We\u2019ll use them as the foundation for your Monday reflections and your experience inside Harmony Lane\u2122."
+    : "There\u2019s nowhere to rush to.\n\nBefore you redesign your entry into the workweek, let\u2019s take a few moments to reflect on the past 7 days.\n\nEach Monday is an opportunity to celebrate your progress, learn from the previous week, and intentionally create the week ahead."
 
   if (!mounted) {
     return <div className="h-64 rounded-3xl bg-[#FDF8F5]" aria-hidden />
@@ -138,9 +156,18 @@ export function ReflectionSpace() {
           Reflection Space™
         </p>
         <h2 className="font-serif text-3xl font-semibold text-[#2E1F27] text-balance leading-tight">
-          A protected time and space to reflect on your life and your business before you redesign your entry into the workweek.
+          Take My Work-Life Balance Reality Check™
         </h2>
+        <p className="font-sans text-sm text-[#6B5860] max-w-xl mx-auto leading-relaxed">
+          There&apos;s nowhere to rush to. A protected time and space to reflect on your life and your business before you redesign your entry into the workweek.
+        </p>
       </div>
+
+      {/* ── Step progress ribbon ──────────────────────────────────────────── */}
+      <StepRibbon
+        steps={["Audit", "Assessment", "Reality Check"]}
+        doneFlags={[auditDone, assessmentDone, bothDone]}
+      />
 
       {/* ── Cherry Blossom coaching ─────────────────────────────────────────── */}
       <CherryBlossomCoach message={cherryBlossomMessage} />
@@ -237,6 +264,51 @@ export function ReflectionSpace() {
                 </p>
               </div>
 
+              {/* Real Reality Check scores */}
+              {realityScore !== null && (
+                <div className="rounded-2xl border border-[#E8DFE2] bg-white px-6 py-6 space-y-5">
+                  <div className="grid grid-cols-3 gap-3 text-center">
+                    <ScoreDial label="Life" score={lifeScore ?? 0} accent="#E26C73" />
+                    <ScoreDial label="Reality Check" score={realityScore} accent={realityColor(realityScore)} />
+                    <ScoreDial label="Business" score={businessScore ?? 0} accent="#5B835F" />
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setShowBreakdown((v) => !v)}
+                    aria-expanded={showBreakdown}
+                    className="w-full flex items-center justify-between rounded-xl border border-[#E8DFE2] bg-[#FAF8F9] px-4 py-3 font-sans text-sm font-semibold text-[#3A2E33] transition-colors hover:bg-[#F5EEF0]"
+                  >
+                    See Full Breakdown
+                    <ChevronDown
+                      className={`h-4 w-4 text-[#6B5860] transition-transform duration-300 ${showBreakdown ? "rotate-180" : ""}`}
+                      aria-hidden
+                    />
+                  </button>
+
+                  <AnimatePresence>
+                    {showBreakdown && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3, ease: "easeOut" }}
+                        className="overflow-hidden"
+                      >
+                        <div className="space-y-2 pt-1">
+                          {auditData?.results.map((r) => (
+                            <BreakdownRow key={`life-${r.category}`} source="Life" label={r.label} score={r.percentage} />
+                          ))}
+                          {esaData?.pillarScores.map((p) => (
+                            <BreakdownRow key={`biz-${p.pillarId}`} source="Business" label={p.pillarName} score={p.percentage} />
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              )}
+
               {/* Cherry Blossom Reality Check response */}
               <div className="rounded-2xl border border-[#E26C73]/20 bg-white px-6 py-6 space-y-4">
                 <div className="flex items-center gap-2">
@@ -248,7 +320,11 @@ export function ReflectionSpace() {
                   Rather than reacting to whatever the week brings, you now have the clarity to intentionally redesign your entry into the workweek.
                 </p>
                 <p className="font-sans text-sm text-[#5A4A52] leading-relaxed">
-                  The next protected time and space — <strong>Work-Life Balance Debrief™</strong> — is ready for you below.
+                  These scores are now saved to your{" "}
+                  <Link href="/harmony-blueprint" className="font-semibold text-[#C0545A] underline underline-offset-2 hover:text-[#A8305A]">
+                    My Work-Life Harmony Blueprint™
+                  </Link>
+                  , and this space resets fresh next Monday.
                 </p>
                 <div className="pt-2 space-y-3 border-t border-[#E26C73]/10">
                   <ReflectionPoint
@@ -269,45 +345,6 @@ export function ReflectionSpace() {
               <div className="space-y-2">
                 <CompletionBadge label="Life Reflection Complete" />
                 <CompletionBadge label="Business Reflection Complete" />
-              </div>
-            </div>
-
-            {/* ── Next Space™ handoff ─────────────────────────────────────── */}
-            <div className="rounded-3xl border border-[#C8A4A7]/30 bg-white overflow-hidden shadow-sm">
-              <div className="bg-gradient-to-r from-[#F5EEF0] to-[#EEF3EC] px-8 py-6 flex flex-col gap-1">
-                <p className="font-sans text-xs font-semibold uppercase tracking-[0.25em] text-[#C0545A]">
-                  Next Space™
-                </p>
-                <p className="font-serif text-2xl font-semibold text-[#2E1F27]">Work-Life Balance Debrief™</p>
-                <p className="font-sans text-sm font-medium text-[#5A4A52]">A protected pause before Movement Window™</p>
-              </div>
-
-              <div className="px-8 py-6 space-y-6">
-                <p className="font-sans text-sm text-[#5A4A52] leading-relaxed">
-                  A protected time and space to sit with what surfaced here — before you move into today&apos;s Movement Window™.
-                </p>
-
-                <div className="rounded-2xl border border-[#7FB069]/20 bg-[#F7FBF4] px-6 py-5 text-center space-y-2">
-                  <div className="flex justify-center">
-                    <span className="text-4xl select-none" role="img" aria-label="Cherry blossom">🌸</span>
-                  </div>
-                  <p className="font-serif text-base font-semibold text-[#5B835F]">
-                    Ready when you are.
-                  </p>
-                  <p className="font-sans text-xs text-[#6B5860]">
-                    Carry these insights straight into the Debrief™.
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      activeSpace?.enterSpace("monday-debrief", SCHEDULE_BY_ID["monday-debrief"].sectionId)
-                    }
-                    className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#C13B6B] px-6 py-2.5 font-montserrat text-sm font-bold uppercase tracking-[0.08em] text-white shadow-sm transition-colors hover:bg-[#A8305A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C13B6B]/40 focus-visible:ring-offset-2"
-                  >
-                    <Sparkles className="h-4 w-4 shrink-0" aria-hidden />
-                    Enter Debrief Space™
-                  </button>
-                </div>
               </div>
             </div>
           </motion.div>
@@ -449,6 +486,79 @@ function ReflectionPoint({ label, text }: { label: string; text: string }) {
     <div className="space-y-0.5">
       <p className="font-sans text-xs font-semibold uppercase tracking-[0.18em] text-[#C0545A]">{label}</p>
       <p className="font-sans text-sm text-[#5A4A52] leading-relaxed">{text}</p>
+    </div>
+  )
+}
+
+/** Connected numbered-step progress ribbon — mirrors Morning GIV•EN's / Flex Time's step indicator. */
+function StepRibbon({ steps, doneFlags }: { steps: string[]; doneFlags: boolean[] }) {
+  return (
+    <div className="flex items-center justify-center gap-2 px-2">
+      {steps.map((label, i) => {
+        const done = doneFlags[i]
+        const isLast = i === steps.length - 1
+        return (
+          <div key={label} className="flex items-center gap-2">
+            <div className="flex flex-col items-center gap-1.5">
+              <span
+                className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold transition-colors ${
+                  done ? "bg-[#7FB069] text-white" : "bg-[#E8DFE2] text-[#6B5860]"
+                }`}
+                aria-hidden
+              >
+                {done ? <CheckCircle2 className="h-3.5 w-3.5" /> : i + 1}
+              </span>
+              <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.12em] text-[#6B5860]">
+                {label}
+              </span>
+            </div>
+            {!isLast && (
+              <div className={`h-px w-8 sm:w-14 -translate-y-2.5 ${done ? "bg-[#7FB069]/50" : "bg-[#E8DFE2]"}`} aria-hidden />
+            )}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+/** Small ring-style score readout used in the completed Reality Check summary. */
+function ScoreDial({ label, score, accent }: { label: string; score: number; accent: string }) {
+  return (
+    <div className="space-y-1.5">
+      <div
+        className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-2 font-sans text-lg font-bold"
+        style={{ borderColor: accent, color: accent }}
+      >
+        {score}
+      </div>
+      <p className="font-sans text-xs font-semibold uppercase tracking-[0.14em] text-[#6B5860]">{label}</p>
+    </div>
+  )
+}
+
+/** Category/pillar breakdown row shown inside the "See Full Breakdown" disclosure. */
+function BreakdownRow({ source, label, score }: { source: "Life" | "Business"; label: string; score: number }) {
+  const accent = source === "Life" ? "#E26C73" : "#5B835F"
+  return (
+    <div className="rounded-xl border border-[#E8DFE2] bg-[#FAF8F9] px-4 py-3">
+      <div className="flex items-center justify-between gap-3 mb-1.5">
+        <div className="flex items-center gap-2">
+          <span
+            className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em]"
+            style={{ backgroundColor: accent + "15", color: accent }}
+          >
+            {source}
+          </span>
+          <p className="font-sans text-sm font-semibold text-[#2E1F27]">{label}</p>
+        </div>
+        <span className="font-sans text-sm font-bold tabular-nums" style={{ color: accent }}>
+          {score}/100
+        </span>
+      </div>
+      <div className="h-1.5 w-full rounded-full bg-[#E8DFE2] overflow-hidden">
+        <div className="h-full rounded-full transition-all" style={{ width: `${score}%`, backgroundColor: accent }} />
+      </div>
     </div>
   )
 }
