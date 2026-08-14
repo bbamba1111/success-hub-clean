@@ -145,6 +145,11 @@ export function DebriefSpace() {
     return <section className="w-full py-10 text-center text-sm text-[#6B5860]">Loading this week&apos;s Debrief™…</section>
   }
 
+  // Capture a non-null local so the handlers below don't need to re-check `week`
+  // on every reference (TypeScript can't narrow a hoisted function declaration's
+  // closure over outer `week` state across the early return above).
+  const currentWeek = week
+
   function addQuickIntention(item: (typeof QUICK_INTENTIONS)[number]) {
     const intention: LifeIntention = {
       id: makeId(),
@@ -153,7 +158,7 @@ export function DebriefSpace() {
       isRelationshipRepair: item.isRelationshipRepair,
       addedOn: new Date().toISOString(),
     }
-    setWeek(addLifeIntention(week, intention))
+    setWeek(addLifeIntention(currentWeek, intention))
   }
 
   function addCustomIntention() {
@@ -166,20 +171,20 @@ export function DebriefSpace() {
       time: customTime.trim() || undefined,
       addedOn: new Date().toISOString(),
     }
-    setWeek(addLifeIntention(week, intention))
+    setWeek(addLifeIntention(currentWeek, intention))
     setCustomLabel("")
     setCustomDay("")
     setCustomTime("")
   }
 
   function removeIntention(id: string) {
-    setWeek(removeLifeIntention(week, id))
+    setWeek(removeLifeIntention(currentWeek, id))
   }
 
   function selectArea(areaId: string) {
-    if (week.business.businessAreaId === areaId) return
+    if (currentWeek.business.businessAreaId === areaId) return
     // Switching areas resets outcomes + behaviors — they're scoped to the area.
-    let next = setBusinessArea(week, areaId)
+    let next = setBusinessArea(currentWeek, areaId)
     next = setOutcomes(next, [])
     setSelectedBehaviors([])
     setWeek(next)
@@ -195,8 +200,8 @@ export function DebriefSpace() {
       if (selectedOutcomeIds.length >= MAX_OUTCOMES) return
       nextIds = [...selectedOutcomeIds, outcomeId]
     }
-    const outcomes = buildOutcomes(week, selectedArea.id, nextIds, selectedBehaviors)
-    setWeek(setOutcomes(week, outcomes))
+    const outcomes = buildOutcomes(currentWeek, selectedArea.id, nextIds, selectedBehaviors)
+    setWeek(setOutcomes(currentWeek, outcomes))
   }
 
   function toggleBehavior(behavior: string) {
@@ -205,18 +210,18 @@ export function DebriefSpace() {
       : [...selectedBehaviors, behavior]
     setSelectedBehaviors(next)
     if (selectedArea && selectedOutcomeIds.length > 0) {
-      const outcomes = buildOutcomes(week, selectedArea.id, selectedOutcomeIds, next)
-      setWeek(setOutcomes(week, outcomes))
+      const outcomes = buildOutcomes(currentWeek, selectedArea.id, selectedOutcomeIds, next)
+      setWeek(setOutcomes(currentWeek, outcomes))
     }
   }
 
   function selectPractice(title: string) {
-    const next = week.business.humanZoneOfGeniusPracticeTitle === title ? null : title
-    setWeek(setHumanZoneOfGeniusPractice(week, next))
+    const next = currentWeek.business.humanZoneOfGeniusPracticeTitle === title ? null : title
+    setWeek(setHumanZoneOfGeniusPractice(currentWeek, next))
   }
 
   function handleEnterCeoWorkspace() {
-    const withCompletion = markDebriefComplete(week)
+    const withCompletion = markDebriefComplete(currentWeek)
     setWeek(withCompletion)
     if (ceoWorkday) {
       activeSpace?.enterSpace("ceo-workday", ceoWorkday.sectionId)
