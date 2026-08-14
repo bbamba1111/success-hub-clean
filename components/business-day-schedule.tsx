@@ -134,7 +134,10 @@ export function BusinessDaySchedule() {
                 description={block.description}
                 onAction={scrollToOperatingPlanner}
                 onTransition={
-                  state === "current" && nextBlock
+                  // Self-guided Monday-only blocks (Reality Check™, Debrief™) use their
+                  // own "Begin the ___™" CTA to open their in-card accordion — they must
+                  // never skip straight into the Daily Transition™ overlay.
+                  state === "current" && nextBlock && !block.mondayOnly
                     ? () =>
                         setActiveTransition({
                           from: { id: block.id, shortTitle: block.shortTitle },
