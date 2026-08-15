@@ -25,6 +25,7 @@ export default function WelcomePage() {
   const emailParam = searchParams.get("email")
   const productParam = searchParams.get("product") || searchParams.get("product_name")
   const firstNameParam = searchParams.get("first_name")
+  const tokenParam = searchParams.get("token")
 
   const isValidEmail = (email: string | null): boolean => {
     if (!email) return false
@@ -65,6 +66,14 @@ export default function WelcomePage() {
       return
     }
 
+    if (!tokenParam) {
+      setError(
+        "This link is missing or invalid. Please use the account setup link from your purchase confirmation email.",
+      )
+      setIsLoading(false)
+      return
+    }
+
     if (password !== confirmPassword) {
       setError("Passwords do not match")
       setIsLoading(false)
@@ -85,7 +94,7 @@ export default function WelcomePage() {
           email: userEmail,
           password: password,
           name: userName || userEmail.split("@")[0],
-          membershipTier: productName || "Make Time For More Experience",
+          token: tokenParam,
         }),
       })
 
@@ -105,6 +114,51 @@ export default function WelcomePage() {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  // SECURITY: this page must never let someone create/claim an account by
+  // just knowing an email address. Without a token from the purchase
+  // confirmation email, there is nothing to set up here.
+  if (!tokenParam) {
+    return (
+      <div className="flex min-h-screen w-full items-center justify-center p-5 bg-gradient-to-br from-[#F5F1E8] to-white">
+        <div className="w-full max-w-xl">
+          <div className="flex flex-col gap-5">
+            <div className="flex justify-center mb-3">
+              <img
+                src="/images/logo.png"
+                alt="Make Time For More Logo"
+                width={68}
+                height={68}
+                className="rounded-full shadow-lg"
+              />
+            </div>
+            <Card className="border-2 border-[#7FB069]/20 shadow-xl">
+              <CardHeader className="text-center pb-3">
+                <CardTitle className="text-2xl text-[#7FB069]">Link Invalid or Missing</CardTitle>
+                <CardDescription className="text-base text-gray-600">
+                  We couldn&apos;t verify this account setup link. Please use the link from your purchase
+                  confirmation email, or check out below to get started.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col gap-3">
+                  <Button asChild className="w-full bg-gradient-to-r from-[#7FB069] to-[#E26C73] font-semibold text-white">
+                    <Link href="/pricing">Go to Checkout</Link>
+                  </Button>
+                  <p className="text-xs text-center text-gray-500">
+                    Already have an account?{" "}
+                    <Link href="/auth/login" className="text-[#7FB069] hover:text-[#6FA055] hover:underline font-medium">
+                      Log in here
+                    </Link>
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (

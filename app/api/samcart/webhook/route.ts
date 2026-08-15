@@ -1,5 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin"
 import { NextResponse } from "next/server"
+import { Resend } from "resend"
 import crypto from "crypto"
 
 export async function GET() {
@@ -10,8 +11,42 @@ export async function GET() {
   })
 }
 
+/**
+ * SECURITY: SamCart's "Notify URL" webhooks do not support custom headers or
+ * HMAC request signing. The mechanism SamCart itself supports for
+ * authenticating these requests is a shared secret embedded directly in the
+ * Notify URL configured in the SamCart Webhooks app (Settings > Webhooks),
+ * e.g. https://yourdomain.com/api/samcart/webhook?secret=<SAMCART_WEBHOOK_SECRET>.
+ *
+ * This verifies that query-string secret against SAMCART_WEBHOOK_SECRET using
+ * a timing-safe comparison before any account or entitlement is touched. If
+ * the secret is not configured, or does not match, the request is rejected —
+ * this endpoint fails closed, never open.
+ */
+function isVerifiedSamCartRequest(request: Request): boolean {
+  const expected = process.env.SAMCART_WEBHOOK_SECRET
+  if (!expected) {
+    console.error("[v0] SamCart webhook rejected: SAMCART_WEBHOOK_SECRET is not configured")
+    return false
+  }
+
+  const url = new URL(request.url)
+  const provided = url.searchParams.get("secret") ?? ""
+
+  const expectedBuf = Buffer.from(expected)
+  const providedBuf = Buffer.from(provided)
+  if (expectedBuf.length !== providedBuf.length) return false
+
+  return crypto.timingSafeEqual(expectedBuf, providedBuf)
+}
+
 export async function POST(request: Request) {
   try {
+    if (!isVerifiedSamCartRequest(request)) {
+      console.error("[v0] SamCart webhook rejected: invalid or missing secret")
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
     const body = await request.json()
 
     console.log("[v0] SamCart webhook received with enhanced data:", {
@@ -179,6 +214,52 @@ export async function POST(request: Request) {
       token_expiry: tokenExpiresAt.toISOString(),
       profile: profileData,
     })
+
+    // Email the customer their personalized onboarding link. The link
+    // carries the onboarding_token generated above — this is the credential
+    // that /api/auth/send-confirmation requires before it will ever set a
+    // password for this email, so account setup stays tied to this verified
+    // purchase and can't be triggered by guessing an email address.
+    try {
+      const resend = new Resend(process.env.RESEND_API_KEY)
+      const welcomeUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://success-hub-clean.vercel.app"}/welcome?email=${encodeURIComponent(email)}&product=${encodeURIComponent(productName)}&token=${onboardingToken}`
+
+      await resend.emails.send({
+        from: "Make Time For More <noreply@hub.maketimeformore.com>",
+        to: email,
+        subject: "Set Up Your Account - Make Time For More Success Hub",
+        html: `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            </head>
+            <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+              <div style="background: linear-gradient(135deg, #7FB069 0%, #E26C73 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+                <h1 style="color: white; margin: 0; font-size: 28px;">Welcome to Make Time For More!</h1>
+              </div>
+              <div style="background: #ffffff; padding: 30px; border: 2px solid #7FB069; border-top: none; border-radius: 0 0 10px 10px;">
+                <p style="font-size: 16px; color: #333;">Hi ${firstName || "there"},</p>
+                <p style="font-size: 16px; color: #333;">Thank you for your purchase! Let's finish setting up your Success Hub account.</p>
+                <p style="font-size: 16px; color: #333;">Click the button below to create your password and get started:</p>
+                <div style="text-align: center; margin: 30px 0;">
+                  <a href="${welcomeUrl}" style="background: linear-gradient(135deg, #7FB069 0%, #E26C73 100%); color: white; padding: 15px 40px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block; font-size: 16px;">Set Up My Account</a>
+                </div>
+                <p style="font-size: 14px; color: #666;">Or copy and paste this link:</p>
+                <p style="font-size: 14px; color: #7FB069; word-break: break-all;">${welcomeUrl}</p>
+                <p style="font-size: 14px; color: #666; margin-top: 30px;">This link expires in 48 hours.</p>
+              </div>
+            </body>
+          </html>
+        `,
+      })
+      console.log("[v0] Onboarding email sent successfully to:", email)
+    } catch (emailError) {
+      console.error("[v0] Error sending onboarding email:", emailError)
+      // Don't fail the webhook over an email delivery issue — the purchase
+      // and account are already recorded; support can resend manually.
+    }
 
     return NextResponse.json({
       success: true,

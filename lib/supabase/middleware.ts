@@ -19,11 +19,16 @@ const PUBLIC_ROUTES = [
   "/my-results",
   "/preview-results",
   "/pricing",
+  // /welcome is the brand-new customer's FIRST visit after purchase — they
+  // have no session yet, so it must be reachable pre-login. Its security is
+  // enforced independently by the one-time onboarding_token required by
+  // /api/auth/send-confirmation (see that route for details), not by
+  // Supabase session auth.
+  "/welcome",
 ]
 
 // Routes that require authentication but NOT paid membership (free access after login)
 const AUTH_ONLY_ROUTES = [
-  "/welcome",
   "/installation",
   "/human-zone-of-genius-team",
   "/ai-executive-team",
