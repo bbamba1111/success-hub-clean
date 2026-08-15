@@ -4,7 +4,13 @@ import { createClient } from "@/lib/supabase/server"
 import { getPostLoginDestination } from "@/utils/reality-check-storage"
 import { MondayCtaLink } from "@/components/monday/monday-cta-link"
 import { MondayHero } from "@/components/monday/monday-hero"
+import { LandingNav } from "@/components/landing/landing-nav"
 import { BusinessDayShowcase } from "@/components/landing/business-day-showcase"
+import { RitualSection } from "@/components/landing/ritual-section"
+import { CherryBlossomSection } from "@/components/landing/cherry-blossom-section"
+import { TestimonialsSection } from "@/components/landing/testimonials-section"
+import { ExperiencesSection } from "@/components/landing/experiences-section"
+import { LandingFooter } from "@/components/landing/landing-footer"
 
 export const metadata = {
   title: "Make Time For More Monday™ | Success Hub",
@@ -32,7 +38,8 @@ export default async function MondayLandingPage() {
   const primaryHref = user ? await getPostLoginDestination() : "/pricing"
 
   return (
-    <main className="min-h-screen bg-[#F5F1E8]">
+    <main className="min-h-screen bg-white">
+      <LandingNav />
       <MondayHero primaryHref={primaryHref} />
 
       {/* Monday explainer */}
@@ -74,6 +81,14 @@ export default async function MondayLandingPage() {
           pulled live from the canonical SCHEDULE so it can never drift. */}
       <BusinessDayShowcase />
 
+      {/* The rest of the /landing story, reused as-is so Monday visitors see
+          the full picture: the weekly ritual, Cherry Blossom™, social proof,
+          and pricing — not just the Monday-specific framing above. */}
+      <RitualSection />
+      <CherryBlossomSection />
+      <TestimonialsSection />
+      <ExperiencesSection />
+
       {/* What it's not */}
       <section className="py-20 md:py-28 bg-white">
         <div className="max-w-3xl mx-auto px-6 text-center">
@@ -109,6 +124,8 @@ export default async function MondayLandingPage() {
           </MondayCtaLink>
         </div>
       </section>
+
+      <LandingFooter />
     </main>
   )
 }
