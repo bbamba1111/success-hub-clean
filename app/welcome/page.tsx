@@ -9,6 +9,8 @@ import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from "react"
 import { CheckCircle2, Eye, EyeOff, X } from 'lucide-react'
 import Link from "next/link"
+import { createClient } from "@/lib/supabase/client"
+import { getPostLoginDestination } from "@/utils/reality-check-storage"
 
 export default function WelcomePage() {
   const [password, setPassword] = useState("")
@@ -104,8 +106,28 @@ export default function WelcomePage() {
         throw new Error(data.error || "Failed to create account")
       }
 
-      // Show success message
-      window.location.href = `/auth/signup-success?email=${encodeURIComponent(userEmail)}`
+      // The account and password are now set server-side (send-confirmation
+      // already marks the email confirmed), so sign the member in
+      // immediately with the same credentials — no separate "check your
+      // email" step needed — then route through the same on-ramp gate logic
+      // used everywhere else post-login. For a brand-new member this lands
+      // on Cherry Blossom Welcome™, the first step of the required on-ramp.
+      const supabase = createClient()
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: userEmail,
+        password,
+      })
+
+      if (signInError) {
+        // Password was set successfully server-side even if this client-side
+        // sign-in call fails (e.g. transient network issue) — send the
+        // member to login rather than stranding them on this form.
+        window.location.href = `/auth/login?email=${encodeURIComponent(userEmail)}`
+        return
+      }
+
+      const destination = await getPostLoginDestination()
+      window.location.href = destination
     } catch (err) {
       console.error("[v0] Signup error:", err)
       setPassword("")

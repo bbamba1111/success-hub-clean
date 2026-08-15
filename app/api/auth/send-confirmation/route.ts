@@ -1,6 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin"
 import { NextResponse } from "next/server"
-import { Resend } from "resend"
 
 /**
  * SECURITY: This endpoint sets the initial password for a member's account.
@@ -113,61 +112,12 @@ export async function POST(request: Request) {
       console.error("[v0] Error updating profile:", updateProfileError)
     }
 
-    // Generate confirmation token
-    const confirmToken = crypto.randomUUID()
-    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000)
-
-    const { error: tokenError } = await adminClient.from("password_reset_tokens").insert({
-      token: confirmToken,
-      user_id: userId,
-      expires_at: expiresAt.toISOString(),
-      used: false,
-      created_at: new Date().toISOString(),
-    })
-
-    if (tokenError) {
-      console.error("[v0] Error creating token:", tokenError)
-    }
-
-    // Send confirmation email
-    try {
-      const resend = new Resend(process.env.RESEND_API_KEY)
-      const confirmUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://success-hub-clean.vercel.app"}/auth/confirm-email?token=${confirmToken}`
-
-      await resend.emails.send({
-        from: "Make Time For More <noreply@hub.maketimeformore.com>",
-        to: email,
-        subject: "Confirm Your Email - Make Time For More Success Hub",
-        html: `
-          <!DOCTYPE html>
-          <html>
-            <head>
-              <meta charset="utf-8">
-              <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            </head>
-            <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-              <div style="background: linear-gradient(135deg, #7FB069 0%, #E26C73 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-                <h1 style="color: white; margin: 0; font-size: 28px;">Welcome to Make Time For More!</h1>
-              </div>
-              <div style="background: #ffffff; padding: 30px; border: 2px solid #7FB069; border-top: none; border-radius: 0 0 10px 10px;">
-                <p style="font-size: 16px; color: #333;">Hi ${name || "there"},</p>
-                <p style="font-size: 16px; color: #333;">Thank you for joining the Make Time For More Success Hub!</p>
-                <p style="font-size: 16px; color: #333;">Please confirm your email address by clicking the button below:</p>
-                <div style="text-align: center; margin: 30px 0;">
-                  <a href="${confirmUrl}" style="background: linear-gradient(135deg, #7FB069 0%, #E26C73 100%); color: white; padding: 15px 40px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block; font-size: 16px;">Confirm Email</a>
-                </div>
-                <p style="font-size: 14px; color: #666;">Or copy and paste this link:</p>
-                <p style="font-size: 14px; color: #7FB069; word-break: break-all;">${confirmUrl}</p>
-                <p style="font-size: 14px; color: #666; margin-top: 30px;">This link expires in 24 hours.</p>
-              </div>
-            </body>
-          </html>
-        `,
-      })
-      console.log("[v0] Confirmation email sent successfully")
-    } catch (emailError) {
-      console.error("[v0] Error sending email:", emailError)
-    }
+    // NOTE: no separate "confirm your email" step is needed here — the
+    // updateUserById call above already set email_confirm: true, so the
+    // member's email is confirmed and their password is live immediately.
+    // The client signs them in right after this call succeeds and routes
+    // them into the required on-ramp (Cherry Blossom Welcome™ → Founder
+    // Profile™ → Business Context™) via getPostLoginDestination().
 
     return NextResponse.json({ success: true })
   } catch (error) {
