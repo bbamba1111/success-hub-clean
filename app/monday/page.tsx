@@ -4,23 +4,13 @@ import { createClient } from "@/lib/supabase/server"
 import { getPostLoginDestination } from "@/utils/reality-check-storage"
 import { MondayCtaLink } from "@/components/monday/monday-cta-link"
 import { MondayHero } from "@/components/monday/monday-hero"
+import { BusinessDayShowcase } from "@/components/landing/business-day-showcase"
 
 export const metadata = {
   title: "Make Time For More Monday™ | Success Hub",
   description:
     "Redesign your entry into the workweek. Experience your first (or next) Work-Life Balance Business Day™.",
 }
-
-const MONDAY_RHYTHM = [
-  { time: "7:00–9:00", label: "Flex Time™" },
-  { time: "9:00–9:45", label: "Morning GIV•EN™" },
-  { time: "9:45–10:30", label: "Reality Check™ — WLB Audit + Entrepreneur Success Assessment™" },
-  { time: "10:30–11:00", label: "Design My Work-Life Balance Business Week™" },
-  { time: "11:00–11:30", label: "Movement™" },
-  { time: "11:30–1:00", label: "Extended Healthy Hybrid Lunch™" },
-  { time: "1:00–5:00", label: "4-Hour Focused CEO Workday™" },
-  { time: "5:00–10:00", label: "Time Freedom™" },
-]
 
 const WEEK_RHYTHM = [
   { day: "Monday", role: "Measure + Design + Begin" },
@@ -72,28 +62,17 @@ export default async function MondayLandingPage() {
             ))}
           </div>
 
-          <div className="bg-white rounded-3xl p-8 md:p-12 border border-[#7FB069]/20 shadow-sm">
-            <p className="font-poppins text-sm font-semibold tracking-widest text-[#7FB069] uppercase mb-6">
-              Your First (Or Next) Monday
-            </p>
-            <ol className="space-y-4">
-              {MONDAY_RHYTHM.map((block) => (
-                <li key={block.label} className="flex items-start gap-4">
-                  <span className="font-poppins text-sm font-semibold text-[#E26C73] w-28 shrink-0 pt-0.5">
-                    {block.time}
-                  </span>
-                  <span className="font-poppins text-base md:text-lg text-gray-700">{block.label}</span>
-                </li>
-              ))}
-            </ol>
-            <p className="font-poppins text-sm text-gray-500 mt-8 pt-6 border-t border-gray-100">
-              New members begin with a one-time 30-day baseline Audit + Entrepreneur Success Assessment™. Returning
-              members reflect on the past 7 days — once measured, it&apos;s locked until next Monday, so you can spend
-              the week living it rather than re-measuring it.
-            </p>
-          </div>
+          <p className="font-poppins text-sm text-gray-500 text-center max-w-2xl mx-auto">
+            New members begin with a one-time 30-day baseline Audit + Entrepreneur Success Assessment™. Returning
+            members reflect on the past 7 days — once measured, it&apos;s locked until next Monday, so you can spend
+            the week living it rather than re-measuring it.
+          </p>
         </div>
       </section>
+
+      {/* Cards of the day — the same editorial, image-led rhythm shown on /landing,
+          pulled live from the canonical SCHEDULE so it can never drift. */}
+      <BusinessDayShowcase />
 
       {/* What it's not */}
       <section className="py-20 md:py-28 bg-white">
