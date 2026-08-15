@@ -7,14 +7,16 @@ import type { ReactNode } from "react"
 /**
  * Wraps the Monday landing page's primary CTA for authenticated visitors.
  *
- * `Business Context™` completion only lives in localStorage today (no
- * Supabase table — see lib/business-context/business-context-store.ts), so
- * it can't be checked from the server component that renders this page.
- * `serverHref` already reflects every *server-checkable* gate (Reality
- * Check™ via Supabase, or "/" once fully onboarded). On mount, this checks
- * the one remaining client-only gate and swaps the href in place if it's
- * incomplete — same destination `getPostLoginDestination()` would return,
- * just resolved where its data actually lives.
+ * The Founder Profile™ / Business Context™ / Cherry Blossom Welcome™ /
+ * Cherry Blossom Thank-You™ on-ramp gates only live in localStorage today (no
+ * Supabase table — see lib/founder-profile/founder-profile-store.ts,
+ * lib/business-context/business-context-store.ts, and
+ * lib/onboarding/onboarding-welcome-store.ts), so they can't be checked from
+ * the server component that renders this page. `serverHref` already reflects
+ * every *server-checkable* gate (Reality Check™ via Supabase, or "/" once
+ * fully onboarded). On mount, this checks the remaining client-only gates in
+ * the same precedence order as `getPostLoginDestination()` and swaps the
+ * href in place if any is incomplete.
  */
 export function MondayCtaLink({
   serverHref,
@@ -27,14 +29,33 @@ export function MondayCtaLink({
 
   useEffect(() => {
     // Only the "fully onboarded, going to the daily front door" case needs
-    // the extra client-side check — /pricing and /begin already take
-    // precedence server-side regardless of Business Context state.
+    // the extra client-side checks — /pricing and /begin already take
+    // precedence server-side regardless of on-ramp state.
     if (serverHref !== "/") return
-    import("@/lib/business-context/business-context-store").then(({ hasCompletedBusinessContext }) => {
-      if (!hasCompletedBusinessContext()) {
-        setHref("/business-context")
-      }
-    })
+
+    Promise.all([
+      import("@/lib/founder-profile/founder-profile-store"),
+      import("@/lib/business-context/business-context-store"),
+      import("@/lib/onboarding/onboarding-welcome-store"),
+    ]).then(
+      ([
+        { hasCompletedFounderProfile },
+        { hasCompletedBusinessContext },
+        { hasSeenCherryBlossomWelcome, hasSeenCherryBlossomThankYou },
+      ]) => {
+        if (!hasCompletedFounderProfile()) {
+          setHref(hasSeenCherryBlossomWelcome() ? "/founder-profile" : "/welcome/cherry-blossom")
+          return
+        }
+        if (!hasCompletedBusinessContext()) {
+          setHref("/business-context")
+          return
+        }
+        if (!hasSeenCherryBlossomThankYou()) {
+          setHref("/welcome/cherry-blossom/complete")
+        }
+      },
+    )
   }, [serverHref])
 
   return <Link href={href}>{children}</Link>

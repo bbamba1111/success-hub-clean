@@ -1,8 +1,9 @@
 "use client"
 
 import { useState, useRef } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Camera, ChevronRight, ChevronLeft, User, Plus, X } from "lucide-react"
+import { hasCompletedFounderProfile, saveFounderProfile } from "@/lib/founder-profile/founder-profile-store"
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -131,8 +132,21 @@ function Divider() {
 
 export function FounderProfileForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [saving, setSaving] = useState(false)
+
+  // /founder-profile is reached two ways: first-time on-ramp (routes on to
+  // /business-context) or a returning member editing from My Work-Life
+  // Harmony Blueprint™ (should return home, not replay onboarding). Captured
+  // on mount, before this session's save can change completion state.
+  const wasAlreadyComplete = useRef(hasCompletedFounderProfile())
+
+  // Demo/test-only bypass for the demo account to exercise the incomplete
+  // Founder Profile state end-to-end. Never rendered for real members — no
+  // production UI links to this query param, and it never marks the
+  // profile as complete, so it can never satisfy the production on-ramp gate.
+  const isDemoBypass = searchParams.get("demo") === "skip-founder-profile"
 
   const [form, setForm] = useState<FormData>({
     profilePhoto: null,
@@ -201,11 +215,21 @@ export function FounderProfileForm() {
 
   async function handleSaveAndContinue() {
     setSaving(true)
-    // TODO: persist to Supabase
+    // TODO: also persist to Supabase (localStorage is the source of truth for
+    // instant UX and the completion gate today — mirrors business-context-store.ts).
+    saveFounderProfile(form)
     await new Promise((r) => setTimeout(r, 600))
-    // Business Context™ is a required onboarding gate between Founder Profile
-    // and Reality Check — every founder passes through it once before their
-    // first Work-Life Balance Business Day™.
+
+    if (wasAlreadyComplete.current) {
+      // Returning member editing an already-complete profile — return home,
+      // don't replay the onboarding on-ramp.
+      router.push("/")
+      return
+    }
+
+    // First-time completion: Business Context™ is the required onboarding
+    // gate between Founder Profile and the Cherry Blossom Thank-You™
+    // transition, before the founder's first Work-Life Balance Business Day™.
     router.push("/business-context")
   }
 
@@ -688,13 +712,21 @@ export function FounderProfileForm() {
             </button>
 
             <div className="flex items-center gap-3">
-              <button
-                type="button"
-                onClick={() => router.push("/")}
-                className="rounded-xl border border-[#E8DDD8] bg-white px-5 py-3 font-sans text-sm font-semibold text-brand-ink/50 hover:bg-brand-cream hover:text-brand-ink transition-colors"
-              >
-                Skip for Now
-              </button>
+              {/* Founder Profile™ is a REQUIRED onboarding gate for every real
+                  member — there is no production "Skip for Now" path. This
+                  bypass only renders when ?demo=skip-founder-profile is
+                  explicitly present, and it navigates without calling
+                  saveFounderProfile(), so it can never satisfy the production
+                  on-ramp completion check. */}
+              {isDemoBypass && (
+                <button
+                  type="button"
+                  onClick={() => router.push("/business-context")}
+                  className="rounded-xl border border-dashed border-brand-coral/40 bg-brand-coral/5 px-5 py-3 font-sans text-sm font-semibold text-brand-coral hover:bg-brand-coral/10 transition-colors"
+                >
+                  Skip (Demo Only)
+                </button>
+              )}
               <button
                 type="button"
                 onClick={handleSaveAndContinue}

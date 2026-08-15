@@ -1,4 +1,4 @@
-import { BusinessContextProfile } from "@/components/business-context/business-context-profile"
+import { BusinessContextOnboardingFlow } from "@/components/business-context/business-context-onboarding-flow"
 import { CherryBlossomScene, CherryBlossomSceneCard } from "@/components/cherry-blossom/cherry-blossom-scene"
 
 export const metadata = {
@@ -35,7 +35,7 @@ export default function BusinessContextPage() {
 
       {/* ── Business Context Profile™ wizard — flows below the scene ─── */}
       <div className="bg-white">
-        <BusinessContextProfile />
+        <BusinessContextOnboardingFlow />
       </div>
 
     </div>

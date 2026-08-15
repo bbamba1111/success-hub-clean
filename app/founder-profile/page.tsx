@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { Suspense } from "react"
 import { CherryBlossomScene, CherryBlossomSceneCard } from "@/components/cherry-blossom/cherry-blossom-scene"
 import { FounderProfileForm } from "@/components/founder-profile/founder-profile-form"
 
@@ -9,16 +10,16 @@ export const metadata: Metadata = {
 }
 
 /**
- * /founder-profile — Step 1 of the Harmony Lane™ onboarding flow.
+ * /founder-profile — REQUIRED Step 1 of the Harmony Lane™ onboarding on-ramp.
  *
  * One-time onboarding experience — Founder & Business Profile™.
- * After saving, the member returns to / (Harmony Lane™ home).
- *
- * Business Context™ is NOT part of this flow. It belongs exclusively to
- * the Measure Monthly™ process.
+ * There is no production "skip" path — completion is required before a
+ * member can proceed to Business Context™ and, ultimately, their first
+ * Work-Life Balance Business Day™.
  *
  * Flow:
- *   /begin → /founder-profile → /  (home — Reflection Space™ reads profile on first Monday)
+ *   Cherry Blossom Welcome™ → /founder-profile → /business-context
+ *     → Cherry Blossom Thank-You™ → current Work-Life Balance Business Day™
  */
 export default function FounderProfilePage() {
   return (
@@ -53,7 +54,9 @@ export default function FounderProfilePage() {
       </CherryBlossomScene>
 
       {/* ── Founder & Business Profile™ Form ────────────────────────── */}
-      <FounderProfileForm />
+      <Suspense fallback={null}>
+        <FounderProfileForm />
+      </Suspense>
 
     </div>
   )

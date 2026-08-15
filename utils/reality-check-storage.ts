@@ -285,23 +285,55 @@ export async function getOperatingCenterData(): Promise<OperatingCenterData> {
 
 /**
  * Decides where a member lands right after login. Checks required onboarding
- * gates in order before falling back to the recurring measurement/daily logic:
- *   1. Business Context™ NOT completed → /business-context (required gate
- *      between Founder Profile and Reality Check for every member).
- *   2. This week's Weekly Reality Check™ NOT done → /begin, the Welcome
- *      ritual that introduces the week and leads into the check.
- *      (First-time members always fall here until onboarding is complete.)
- *   3. Otherwise → "/", the daily Work-Life Balance Business Day™ front door.
- * Falls back to /begin on any uncertainty (the ritual is always safe to re-enter).
+ * gates in order before falling back to the recurring measurement/daily logic.
+ *
+ * Production on-ramp (every real member must complete BOTH steps — there is
+ * no skip path):
+ *   1. Founder Profile™ NOT completed → Cherry Blossom Welcome™ (first time)
+ *      or straight to /founder-profile (if Welcome was already seen but the
+ *      member left before finishing).
+ *   2. Business Context™ NOT completed → /business-context.
+ *   3. Both complete but the Cherry Blossom Thank-You™ transition hasn't been
+ *      shown yet → /welcome/cherry-blossom/complete.
+ *   4. On-ramp fully complete → fall back to the recurring measurement/daily
+ *      logic: this week's Weekly Reality Check™ NOT done → /begin; otherwise
+ *      → "/", the daily Work-Life Balance Business Day™ front door.
+ *
+ * IMPORTANT — SSR: the on-ramp gates above live in localStorage, which does
+ * not exist on the server. Rather than let that silently resolve to "every
+ * gate incomplete" (which would send every /monday-style server component
+ * visitor to Cherry Blossom Welcome™ regardless of their real state), this
+ * function explicitly skips those gates when `window` is undefined and falls
+ * straight to the Supabase-backed daily logic — exactly the prior behavior
+ * for the Business Context™ gate. Server callers must layer the skipped
+ * gates back in on the client (see components/monday/monday-cta-link.tsx for
+ * the established pattern) before trusting this as a final destination.
  */
 export async function getPostLoginDestination(): Promise<string> {
-  try {
-    const { hasCompletedBusinessContext } = await import("@/lib/business-context/business-context-store")
-    if (!hasCompletedBusinessContext()) {
-      return "/business-context"
+  if (typeof window !== "undefined") {
+    try {
+      const { hasCompletedFounderProfile } = await import("@/lib/founder-profile/founder-profile-store")
+      const { hasCompletedBusinessContext } = await import("@/lib/business-context/business-context-store")
+      const {
+        hasSeenCherryBlossomWelcome,
+        hasSeenCherryBlossomThankYou,
+      } = await import("@/lib/onboarding/onboarding-welcome-store")
+
+      if (!hasCompletedFounderProfile()) {
+        return hasSeenCherryBlossomWelcome() ? "/founder-profile" : "/welcome/cherry-blossom"
+      }
+
+      if (!hasCompletedBusinessContext()) {
+        return "/business-context"
+      }
+
+      if (!hasSeenCherryBlossomThankYou()) {
+        return "/welcome/cherry-blossom/complete"
+      }
+    } catch {
+      // Unexpected localStorage failure on the client — fall through to
+      // reality-check logic rather than hard-failing at the front door.
     }
-  } catch {
-    // localStorage unavailable (e.g. SSR) — fall through to reality-check logic.
   }
 
   const done = await hasCompletedThisWeeksRealityCheck()

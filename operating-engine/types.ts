@@ -18,6 +18,7 @@ export type BlockId =
   | "monday-debrief"
   | "early-access"
   | "morning-given"
+  | "daily-planning-gps"
   | "movement-window"
   | "lunch-break"
   | "ceo-workday"
