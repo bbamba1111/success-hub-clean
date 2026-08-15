@@ -21,14 +21,17 @@ function isWithinBlock(minutes: number, block: BlockConfig): boolean {
 /**
  * Index of the block active at the given minutes-since-midnight, for the
  * given day of week. `mondayOnly` blocks (Make Time For More On Mondays™)
- * are only eligible to match on Monday; every block's effective (day-aware)
- * start/end minutes are used, so Monday's resequenced morning resolves
- * correctly.
+ * are only eligible to match on Monday; `excludeMonday` blocks (Tuesday–
+ * Thursday's Daily Planning + GPS™, which shares its 9:45–10:30 AM slot with
+ * Monday's Reality Check™) are only eligible on every day EXCEPT Monday.
+ * Every block's effective (day-aware) start/end minutes are used, so
+ * Monday's resequenced morning resolves correctly.
  */
 export function getCurrentBlockIndex(minutesSinceMidnight: number, dayOfWeek: number): number {
   const isMonday = dayOfWeek === 1
   const index = SCHEDULE.findIndex((block) => {
     if (block.mondayOnly && !isMonday) return false
+    if (block.excludeMonday && isMonday) return false
     return isWithinBlock(minutesSinceMidnight, resolveEffectiveBlock(block, dayOfWeek))
   })
   // Fallback to the wrapping detox block if nothing matched (should not happen).

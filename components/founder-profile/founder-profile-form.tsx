@@ -217,7 +217,7 @@ export function FounderProfileForm() {
     setSaving(true)
     // TODO: also persist to Supabase (localStorage is the source of truth for
     // instant UX and the completion gate today — mirrors business-context-store.ts).
-    saveFounderProfile(form)
+    saveFounderProfile(form as unknown as Record<string, unknown>)
     await new Promise((r) => setTimeout(r, 600))
 
     if (wasAlreadyComplete.current) {

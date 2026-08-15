@@ -132,6 +132,12 @@ export interface BlockConfig {
   messages: string[]
   /** If true, this block only appears on Mondays (dayOfWeek === 1). */
   mondayOnly?: boolean
+  /**
+   * If true, this block is hidden on Mondays (dayOfWeek === 1). Used for
+   * the Tuesday–Thursday "Daily Planning + GPS™" block, which replaces
+   * Monday's `monday-reality-check` in the same 9:45–10:30 AM slot.
+   */
+  excludeMonday?: boolean
   /** Override startMinutes used on Mondays (Make Time For More On Mondays™ resequences the morning). */
   mondayStartMinutes?: number
   /** Override endMinutes used on Mondays. */

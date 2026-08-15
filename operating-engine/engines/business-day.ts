@@ -115,6 +115,8 @@ function resolveProgress(minutes: number): number {
 
 /** Build the per-block timeline with current/upcoming/completed states.
  *  Blocks marked `mondayOnly` are excluded on every day except Monday (dayOfWeek === 1).
+ *  Blocks marked `excludeMonday` (Tuesday–Thursday's Daily Planning + GPS™) are
+ *  excluded on Monday, which shows Reality Check™ + Debrief™ in that slot instead.
  *  Every block's day-aware timing (see `resolveEffectiveBlock`) is applied, so
  *  Monday's resequenced morning (Morning GIV•EN™ → Reality Check™ → Debrief™
  *  → Movement™ → Lunch™) renders with the correct times automatically.
@@ -122,8 +124,9 @@ function resolveProgress(minutes: number): number {
 function buildTimeline(currentIndex: number, dayOfWeek: number): TimelineEntry[] {
   const isMonday = dayOfWeek === 1
   return SCHEDULE.flatMap((block, index) => {
-    // Hide mondayOnly blocks on non-Monday days
+    // Hide mondayOnly blocks on non-Monday days, and excludeMonday blocks on Monday.
     if (block.mondayOnly && !isMonday) return []
+    if (block.excludeMonday && isMonday) return []
     const resolvedBlock = resolveEffectiveBlock(block, dayOfWeek)
     let state: TimelineEntry["state"] = "upcoming"
     if (index === currentIndex) state = "current"

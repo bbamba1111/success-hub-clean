@@ -22,6 +22,7 @@ export const ENGINE_BLOCK_TO_SDD_SEGMENT: Record<BlockId, string | null> = {
   "monday-debrief": null,
   "early-access": "early-access",
   "morning-given": "morning-given",
+  "daily-planning-gps": "morning-given",
   "movement-window": "movement",
   "lunch-break": "lunch",
   "ceo-workday": "ceo-workday",

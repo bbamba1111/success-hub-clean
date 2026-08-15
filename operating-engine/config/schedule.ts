@@ -67,14 +67,9 @@ export const SCHEDULE: BlockConfig[] = [
     sectionId: "block-morning-given",
     title: "Morning GIV•EN™ Routine™",
     shortTitle: "Morning GIV•EN™",
-    timeLabel: "9:00–10:30 AM",
+    timeLabel: "9:00–9:45 AM",
     startMinutes: h(9),
-    endMinutes: h(10, 30),
-    // Mondays: Alignment comes first, then Reflection — GIV•EN™ ends at
-    // 9:45 AM instead of the usual 10:30 AM.
-    mondayTimeLabel: "9:00–9:45 AM",
-    mondayStartMinutes: h(9),
-    mondayEndMinutes: h(9, 45),
+    endMinutes: h(9, 45),
     description:
       "Align mind, body, spirit, and priorities before work—Gratitude, Invitation, Vision, Emotional Embodiment, and Nurture Non-Negotiables™.",
     emoji: "🌸",
@@ -148,6 +143,38 @@ export const SCHEDULE: BlockConfig[] = [
     mondayOnly: true,
     messages: [
       "Sit with what surfaced. Awareness without a pause to process it rarely becomes lasting change.",
+    ],
+  },
+  // ── Tuesday–Thursday-only block ───────────────────────────────────────────
+  // Occupies the same 9:45–10:30 AM slot Monday gives to Reality Check™.
+  // This is where Monday's measurement becomes daily operating intelligence:
+  // Weekly Data Review → Founder GPS™ → Daily Planning → Design Today's
+  // Workday. The founder does NOT retake the Audit or ESA here — those stay
+  // locked until the next Monday.
+  {
+    id: "daily-planning-gps",
+    sectionId: "block-daily-planning-gps",
+    title: "Daily Planning + Founder GPS™",
+    shortTitle: "Daily Planning + GPS™",
+    timeLabel: "9:45–10:30 AM",
+    startMinutes: h(9, 45),
+    endMinutes: h(10, 30),
+    description:
+      "Review this week's data, consult your Founder GPS™, and design today's workday — built on Monday's Reality Check™, without retaking the Audit or ESA.",
+    emoji: "🧭",
+    tint: "237 242 247",
+    backgroundImage: "/images/block-ceo-workday.png",
+    cta: "Open Daily Planning + GPS™",
+    engagement: "self-guided",
+    part: "morning",
+    greetingPeriod: "Morning",
+    greetingEmoji: "🌸",
+    themePeriod: "morning",
+    communityOpen: true,
+    excludeMonday: true,
+    messages: [
+      "This week's data is already yours. Let it guide today's focus instead of starting from zero.",
+      "Your Founder GPS™ turns this week's numbers into today's next right step.",
     ],
   },
   {
@@ -351,31 +378,36 @@ export function resolveEffectiveBlock(block: BlockConfig, dayOfWeek: number): Bl
   }
 }
 
+/** True if `block` doesn't exist on `dayOfWeek` (0=Sun … 6=Sat). */
+function isHiddenOnDay(block: BlockConfig, dayOfWeek: number): boolean {
+  const isMonday = dayOfWeek === 1
+  if (block.mondayOnly && !isMonday) return true
+  if (block.excludeMonday && isMonday) return true
+  return false
+}
+
 /**
- * Index of the next block reachable from `fromIndex`, skipping `mondayOnly`
- * blocks entirely on every day except Monday (they don't exist on those
- * days). Wraps around the end of SCHEDULE.
+ * Index of the next block reachable from `fromIndex`, skipping blocks that
+ * don't exist on `dayOfWeek` (`mondayOnly` on every day except Monday,
+ * `excludeMonday` on Monday). Wraps around the end of SCHEDULE.
  */
 export function nextReachableIndex(fromIndex: number, dayOfWeek: number): number {
-  const isMonday = dayOfWeek === 1
   const len = SCHEDULE.length
   let idx = (fromIndex + 1) % len
-  while (SCHEDULE[idx].mondayOnly && !isMonday) {
+  while (isHiddenOnDay(SCHEDULE[idx], dayOfWeek)) {
     idx = (idx + 1) % len
   }
   return idx
 }
 
 /**
- * Index of the previous block reachable from `fromIndex`, skipping
- * `mondayOnly` blocks entirely on every day except Monday. Wraps around the
- * start of SCHEDULE.
+ * Index of the previous block reachable from `fromIndex`, skipping blocks
+ * that don't exist on `dayOfWeek`. Wraps around the start of SCHEDULE.
  */
 export function previousReachableIndex(fromIndex: number, dayOfWeek: number): number {
-  const isMonday = dayOfWeek === 1
   const len = SCHEDULE.length
   let idx = (fromIndex - 1 + len) % len
-  while (SCHEDULE[idx].mondayOnly && !isMonday) {
+  while (isHiddenOnDay(SCHEDULE[idx], dayOfWeek)) {
     idx = (idx - 1 + len) % len
   }
   return idx
