@@ -2,8 +2,9 @@ import { createServerClient } from "@supabase/ssr"
 import { NextResponse, type NextRequest } from "next/server"
 
 // Routes that are publicly accessible without any authentication
+// NOTE: "/" is intentionally NOT public — it is the authenticated daily
+// Work-Life Balance Business Day experience and must require a paid membership.
 const PUBLIC_ROUTES = [
-  "/",
   "/auth",
   "/api",
   "/_next",

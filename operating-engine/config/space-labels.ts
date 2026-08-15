@@ -11,6 +11,7 @@ export const SPACE_LABEL: Record<BlockId, string> = {
   "monday-debrief": "Debrief Space™",
   "early-access": "Flex Time Space™",
   "morning-given": "Alignment Space™",
+  "daily-planning-gps": "Daily Planning + GPS Space™",
   "movement-window": "Movement Space™",
   "lunch-break": "Midday Space™",
   "ceo-workday": "CEO Workspace™",
