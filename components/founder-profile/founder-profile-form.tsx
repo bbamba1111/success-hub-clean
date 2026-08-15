@@ -203,8 +203,10 @@ export function FounderProfileForm() {
     setSaving(true)
     // TODO: persist to Supabase
     await new Promise((r) => setTimeout(r, 600))
-    // Return home — Business Context belongs to Measure Monthly™, not this flow.
-    router.push("/")
+    // Business Context™ is a required onboarding gate between Founder Profile
+    // and Reality Check — every founder passes through it once before their
+    // first Work-Life Balance Business Day™.
+    router.push("/business-context")
   }
 
   return (

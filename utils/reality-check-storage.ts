@@ -284,15 +284,26 @@ export async function getOperatingCenterData(): Promise<OperatingCenterData> {
 }
 
 /**
- * Decides where a member lands right after login, per the new 4-section IA:
- *   - If this week's Weekly Reality Check™ is NOT done → send to the Welcome
- *     ritual page (/begin), which introduces the week and leads into the check.
- *     (First-time members always fall here until onboarding is complete.)
- *   - If it IS done → send straight to "/", the daily Work-Life Balance
- *     Business Day™ front door for returning members.
+ * Decides where a member lands right after login. Checks required onboarding
+ * gates in order before falling back to the recurring measurement/daily logic:
+ *   1. Business Context™ NOT completed → /business-context (required gate
+ *      between Founder Profile and Reality Check for every member).
+ *   2. This week's Weekly Reality Check™ NOT done → /begin, the Welcome
+ *      ritual that introduces the week and leads into the check.
+ *      (First-time members always fall here until onboarding is complete.)
+ *   3. Otherwise → "/", the daily Work-Life Balance Business Day™ front door.
  * Falls back to /begin on any uncertainty (the ritual is always safe to re-enter).
  */
 export async function getPostLoginDestination(): Promise<string> {
+  try {
+    const { hasCompletedBusinessContext } = await import("@/lib/business-context/business-context-store")
+    if (!hasCompletedBusinessContext()) {
+      return "/business-context"
+    }
+  } catch {
+    // localStorage unavailable (e.g. SSR) — fall through to reality-check logic.
+  }
+
   const done = await hasCompletedThisWeeksRealityCheck()
   return done ? "/" : "/begin"
 }
