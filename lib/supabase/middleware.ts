@@ -10,6 +10,7 @@ const PUBLIC_ROUTES = [
   "/images",
   "/marketing",
   "/landing",
+  "/monday",
   "/sunday-shift",
   "/garden",
   "/audit",
