@@ -10,6 +10,7 @@ import {
 import { computeEsaResults, type ResponseValue } from "@/lib/entrepreneur-success/scoring"
 import { saveEsaResults } from "@/lib/entrepreneur-success/esa-storage"
 import type { AssessmentQuestion } from "@/lib/entrepreneur-success/types"
+import { getTimePhrase, saveAssessmentMeta, type AssessmentWindow, type AssessmentType } from "@/lib/assessment-cadence"
 import { ArrowRight } from "lucide-react"
 
 const REDIRECT_DELAY = 10 // seconds before auto-redirect — gives the founder time to actually read the message
@@ -165,9 +166,13 @@ export { CompletionScreen }
 
 export default function EntrepreneurSuccessAssessment({
   resultsUrl = "/reality-check",
+  assessmentWindow = "30-day" as AssessmentWindow,
+  assessmentType = "baseline_30_day" as AssessmentType,
   onComplete,
 }: {
   resultsUrl?: string
+  assessmentWindow?: AssessmentWindow
+  assessmentType?: AssessmentType
   onComplete?: () => void
 }) {
   const router = useRouter()
@@ -183,7 +188,8 @@ export default function EntrepreneurSuccessAssessment({
     window.scrollTo({ top: 0, behavior: "instant" })
   }, [])
 
-  const question = ORDERED_QUESTIONS[currentIndex]
+  const timePhrase = getTimePhrase(assessmentWindow)
+  const question = { ...ORDERED_QUESTIONS[currentIndex], question: `${timePhrase}, ${ORDERED_QUESTIONS[currentIndex].question}` }
   const pillar = OPERATING_PILLARS.find((p) => p.id === question.pillarId)
   const practice = OPERATING_PRACTICES.find((p) => p.id === question.practiceId)
 
@@ -213,10 +219,11 @@ export default function EntrepreneurSuccessAssessment({
       } else {
         const results = computeEsaResults(updated)
         saveEsaResults(results)
+        saveAssessmentMeta({ assessmentType, assessmentWindow, submittedAt: Date.now() })
         onComplete?.()
       }
     },
-    [currentIndex, onComplete, question.id, responses]
+    [assessmentType, assessmentWindow, currentIndex, onComplete, question.id, responses]
   )
 
   const handleBack = useCallback(() => {

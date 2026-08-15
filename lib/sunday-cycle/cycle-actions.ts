@@ -1,10 +1,12 @@
 "use server"
 
 /**
- * Sunday Cycle™ — server actions (Phase 6.1)
+ * Personal Cycle™ — server actions (Phase 6.2)
  * ---------------------------------------------------------------------------
- * All Supabase I/O for the cycle engine. Kept separate from the pure
- * cycle-engine.ts so the logic remains testable without a DB.
+ * All Supabase I/O for the personal 30-Day Work-Life Balance Experience
+ * Cycle™ engine. Kept separate from the pure cycle-engine.ts so the logic
+ * remains testable without a DB. The Monday weekly measurement anchor is a
+ * separate, calendar-based concept — see cycle-engine.ts's `isMonday`.
  */
 
 import { createClient } from "@/lib/supabase/server"
@@ -13,9 +15,9 @@ import { deriveCycleContext, type CycleContext } from "@/lib/sunday-cycle/cycle-
 /* ---- Read ---------------------------------------------------------------- */
 
 /**
- * getCycleContext — called from the /begin Server Component.
+ * getCycleContext — called from onboarding/measurement Server Components.
  * Reads user_profiles once and returns the complete CycleContext.
- * Returns a "first-sunday" context on any error (safe default).
+ * Returns an "initial_baseline" context on any error (safe default).
  */
 export async function getCycleContext(userId: string): Promise<CycleContext> {
   try {
@@ -41,22 +43,24 @@ export async function getCycleContext(userId: string): Promise<CycleContext> {
 /**
  * installWeekAction — called when the founder clicks "Install My Week™".
  *
- * First Sunday: sets cycle_start_date = now, cycle_end_date = now + 28 days,
- *               current_cycle = 1.
- * Subsequent weeks: increments current_cycle.
+ * Initial baseline: sets cycle_start_date = now, cycle_end_date = now + 30
+ *                    days, current_cycle = 1.
+ * Subsequent weeks: increments current_cycle. Does not touch cycle_start_date
+ *                    — the personal 30-day cycle stays anchored to the
+ *                    founder's original installation date.
  *
  * Returns { success: true } or { success: false, error: string }.
  */
 export async function installWeekAction(
   userId: string,
-  isFirstSunday: boolean,
+  isInitialBaseline: boolean,
 ): Promise<{ success: boolean; error?: string }> {
   try {
     const supabase = await createClient()
     const now = new Date()
-    const cycleEnd = new Date(now.getTime() + 28 * 24 * 60 * 60 * 1000)
+    const cycleEnd = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000)
 
-    if (isFirstSunday) {
+    if (isInitialBaseline) {
       const { error } = await supabase
         .from("user_profiles")
         .update({

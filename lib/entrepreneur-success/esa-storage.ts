@@ -14,7 +14,7 @@ const STORAGE_KEY = "entrepreneurSuccessAssessmentResults"
 const HISTORY_KEY = "entrepreneurSuccessAssessmentHistory"
 
 /** Returns the Monday (start) of the given week as YYYY-MM-DD — matches utils/reality-check-storage.ts's getWeekKey so records line up across Life + Business. */
-function getWeekKey(date = new Date()): string {
+export function getWeekKey(date = new Date()): string {
   const d = new Date(date)
   const day = d.getDay()
   const diff = (day + 6) % 7

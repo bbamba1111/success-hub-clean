@@ -68,11 +68,11 @@ function RitualShell({
   const { state } = useSdd()
   const [started, setStarted] = useState(false)
   const installed = Boolean(state.data.installedAt)
-  const mode = cycleContext?.mode ?? "first-sunday"
+  const mode = cycleContext?.mode ?? "initial_baseline"
   const router = useRouter()
 
   const handleBegin = () => {
-    if (mode === "first-sunday") {
+    if (mode === "initial_baseline") {
       // First-time founders start with the two assessments before ritual phases.
       router.push("/audit")
     } else {
@@ -110,9 +110,11 @@ function WelcomeScreen({
   cycleContext?: CycleContext
   onBegin: () => void
 }) {
-  const welcome = getCherryBlossomWelcome(cycleContext ?? { mode, cycleWeek: 1, cycleNumber: 0, firstName: null, firstInstalledAt: null })
-  const isFirst = mode === "first-sunday"
-  const isReview = mode === "review-28"
+  const welcome = getCherryBlossomWelcome(
+    cycleContext ?? { mode, cycleDay: 1, cycleWeek: 1, cycleNumber: 0, firstName: null, firstInstalledAt: null, isMonday: false },
+  )
+  const isFirst = mode === "initial_baseline"
+  const isReview = mode === "thirty_day_review"
 
   return (
     <main className="min-h-screen bg-brand-cream">
@@ -124,7 +126,7 @@ function WelcomeScreen({
           <p>{welcome}</p>
           {isReview && (
             <p className="font-semibold text-brand-coral">
-              28-Day Operating System Review™ — today&apos;s reflection covers the full past 28 days.
+              30-Day Work-Life Balance Experience Cycle™ Review — today&apos;s reflection covers the full past 30 days.
             </p>
           )}
           <div className="mt-4 flex justify-center">
@@ -167,7 +169,7 @@ function PhaseScreen({
   const installed = Boolean(state.data.installedAt)
 
   // For repeat visits, override Cherry Blossom guidance with shorter weekly voice.
-  const isRepeat = mode !== "first-sunday"
+  const isRepeat = mode !== "initial_baseline"
   const guidance = isRepeat
     ? (getWeeklyGuidance(phase.id) ?? phase.guidance)
     : phase.guidance
@@ -355,7 +357,7 @@ function InstallBriefScreen({
   const brief: OperatingBrief | null = harmony ? assembleOperatingBrief(harmony) : null
 
   const firstName = cycleContext?.firstName ?? harmony?.firstName ?? null
-  const mode = cycleContext?.mode ?? "first-sunday"
+  const mode = cycleContext?.mode ?? "initial_baseline"
   const declaration = state.data.weekly.declaration
 
   const focusAreaLabels = state.data.focusAreas.map((id) => {
@@ -365,17 +367,17 @@ function InstallBriefScreen({
 
   // Cherry Blossom's "week installed" message, per cycle mode.
   const installedMessage =
-    mode === "first-sunday"
+    mode === "initial_baseline"
       ? `Your Work-Life Balance Operating System™ is now installed${firstName ? `, ${firstName}` : ""}. Everything you need for a designed, intentional week is in place.`
-      : mode === "review-28"
-        ? `Another 28-day cycle complete${firstName ? `, ${firstName}` : ""}. I've reviewed your reflections, your priorities, and the way you've designed your week. Your Operating Brief™ for the next cycle is below.`
+      : mode === "thirty_day_review"
+        ? `Another 30-Day Work-Life Balance Experience Cycle™ complete${firstName ? `, ${firstName}` : ""}. I've reviewed your reflections, your priorities, and the way you've designed your week. Your Operating Brief™ for the next cycle is below.`
         : `I've reviewed your reflections, your priorities, your declaration, and the way you've designed your week${firstName ? `, ${firstName}` : ""}. Based on everything you've shared, I've assembled your Operating Brief™ for the week ahead.`
 
   function handleInstall() {
     setInstallError(null)
     startTransition(async () => {
       if (userId) {
-        const result = await installWeekAction(userId, mode === "first-sunday")
+        const result = await installWeekAction(userId, mode === "initial_baseline")
         if (!result.success) {
           setInstallError("Your week was designed — we just had trouble saving it. You can continue to Live Today™.")
         }

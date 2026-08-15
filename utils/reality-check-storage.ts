@@ -288,11 +288,11 @@ export async function getOperatingCenterData(): Promise<OperatingCenterData> {
  *   - If this week's Weekly Reality Check™ is NOT done → send to the Welcome
  *     ritual page (/begin), which introduces the week and leads into the check.
  *     (First-time members always fall here until onboarding is complete.)
- *   - If it IS done → send straight to Live Today™ (/live-today), the new daily
- *     front door for returning members.
+ *   - If it IS done → send straight to "/", the daily Work-Life Balance
+ *     Business Day™ front door for returning members.
  * Falls back to /begin on any uncertainty (the ritual is always safe to re-enter).
  */
 export async function getPostLoginDestination(): Promise<string> {
   const done = await hasCompletedThisWeeksRealityCheck()
-  return done ? "/live-today" : "/begin"
+  return done ? "/" : "/begin"
 }
