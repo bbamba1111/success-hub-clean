@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button"
 import { createClient } from "@/lib/supabase/server"
 import { getPostLoginDestination } from "@/utils/reality-check-storage"
 import { MondayCtaLink } from "@/components/monday/monday-cta-link"
+import { MondayHero } from "@/components/monday/monday-hero"
 
 export const metadata = {
   title: "Make Time For More Monday™ | Success Hub",
@@ -42,33 +43,10 @@ export default async function MondayLandingPage() {
 
   return (
     <main className="min-h-screen bg-[#F5F1E8]">
-      {/* Hero */}
-      <section className="bg-gradient-to-br from-[#2F4F4F] to-[#1a3535] text-white py-24 md:py-32">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <p className="font-poppins text-sm md:text-base font-semibold tracking-widest text-[#F8C8C8] uppercase mb-6">
-            Make Time For More Monday™
-          </p>
-          <h1 className="font-playfair text-4xl md:text-6xl font-bold leading-tight mb-8 text-balance">
-            Redesign Your Entry Into The Workweek™
-          </h1>
-          <p className="font-poppins text-lg md:text-2xl text-white/80 max-w-2xl mx-auto leading-relaxed mb-10 text-pretty">
-            Experience your first (or next) Work-Life Balance Business Day™ — the weekly anchor where you measure,
-            design, and begin.
-          </p>
-          <MondayCtaLink serverHref={primaryHref}>
-            <Button
-              size="lg"
-              className="bg-[#7FB069] hover:bg-[#6FA055] text-white px-10 py-7 text-lg md:text-xl font-poppins font-semibold rounded-full shadow-lg hover:shadow-xl transition-all"
-            >
-              Experience Your First Work-Life Balance Business Day™
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
-          </MondayCtaLink>
-        </div>
-      </section>
+      <MondayHero primaryHref={primaryHref} />
 
       {/* Monday explainer */}
-      <section className="py-20 md:py-28">
+      <section id="monday-rhythm" className="py-20 md:py-28">
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="font-playfair text-3xl md:text-5xl font-bold text-[#2F4F4F] mb-6 text-balance">
