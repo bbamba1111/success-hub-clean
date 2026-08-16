@@ -25,18 +25,23 @@ export default function LoginPage() {
     setError(null)
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      console.log("[v0] login attempt starting", { email })
+      const { error, data } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
+
+      console.log("[v0] signInWithPassword result", { error, data })
 
       if (error) throw error
 
       // Returning-member routing: if this week's Weekly Reality Check™ isn't
       // done, open the onboarding ritual (/begin); otherwise land on Live Today™.
       const destination = await getPostLoginDestination()
+      console.log("[v0] redirecting to", destination)
       window.location.href = destination
     } catch (error: unknown) {
+      console.log("[v0] login error", error)
       setError(error instanceof Error ? error.message : "An error occurred")
     } finally {
       setIsLoading(false)
