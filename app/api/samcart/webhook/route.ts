@@ -168,20 +168,31 @@ export async function POST(request: Request) {
 
     console.log("[v0] Auth user created:", authData.user.id, "Now creating profile...")
 
+    // NOTE: creating the auth user above fires the `on_auth_user_created`
+    // trigger (scripts/001_create_user_profiles.sql), which immediately
+    // inserts a bare default user_profiles row for this id (membership_tier
+    // "free", no onboarding_token). A plain .insert() here always collides
+    // with that row (23505 duplicate key on user_profiles_pkey) — reproduced
+    // on every new signup, not just re-sent webhook notifications. Use
+    // upsert so this call completes the trigger's placeholder row with the
+    // real purchase data instead of failing against it.
     const { data: profileData, error: profileError } = await supabase
       .from("user_profiles")
-      .insert({
-        id: authData.user.id,
-        email,
-        name,
-        membership_tier: membershipTier,
-        onboarding_token: onboardingToken,
-        token_expires_at: tokenExpiresAt.toISOString(),
-        password_set: false,
-        joined_date: new Date().toISOString(),
-        cycle_start_date: new Date().toISOString(),
-        current_cycle: 1,
-      })
+      .upsert(
+        {
+          id: authData.user.id,
+          email,
+          name,
+          membership_tier: membershipTier,
+          onboarding_token: onboardingToken,
+          token_expires_at: tokenExpiresAt.toISOString(),
+          password_set: false,
+          joined_date: new Date().toISOString(),
+          cycle_start_date: new Date().toISOString(),
+          current_cycle: 1,
+        },
+        { onConflict: "id" },
+      )
       .select()
 
     if (profileError) {
