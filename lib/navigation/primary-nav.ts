@@ -1,22 +1,25 @@
 /**
- * Primary Information Architecture — Pass 4A.1 (Operating System IA Reset)
- * ------------------------------------------------------------------------
+ * Primary Information Architecture — Pass 4B (Live → Blueprint → Experiences)
+ * ----------------------------------------------------------------------------
  * Single source of truth for the platform's authenticated navigation.
  *
- * The app is now organized around the Work-Life Balance Operating System™.
- * The visible navigation contains only four permanent destinations:
+ * The visible navigation contains exactly three permanent destinations:
  *
- *   Design My Week™        → /begin         (weekly installation experience)
- *   Live & Lead Today™     → /live-today    (primary daily operating workspace)
- *   Time Freedom™          → /time-freedom  (the life your business supports)
- *   My Work-Life Harmony™  → /my-harmony    (results, memory, profile, growth)
+ *   Live, Lead & Love Today™            → /            (daily operating environment)
+ *   My Work-Life Harmony Blueprint™      → /my-harmony  (personal operating intelligence)
+ *   Make Time For More Experiences™      → /experiences (upgrade / continuation pathway)
  *
- * IMPORTANT (Pass 4A.1 rules):
- *   - This pass only REORGANIZES. No functionality is built or deleted.
- *   - The legacy Lead™ / Share™ / Grow™ sections are removed from the nav but
- *     preserved as developer-only INTERNAL_MODULES. Their routes and components
- *     remain fully operational and will be embedded into the four workspaces
- *     above in later passes.
+ * IMPORTANT (Pass 4B rules):
+ *   - This pass only REORGANIZES. No functionality is built or deleted, and no
+ *     Week/Month/Quarter pricing is hard-coded anywhere in this file.
+ *   - The former "Measure Monthly" and "Design Weekly" top-level nav items are
+ *     removed from PRIMARY_NAV (so they no longer render in the nav bar), but —
+ *     same as the legacy Lead™ / Share™ / Grow™ groups — are preserved as
+ *     developer-only INTERNAL_MODULES. Every route they point to (/founder-profile,
+ *     /audit, /entrepreneur-success-assessment, /design-my-week, /sunday-shift)
+ *     remains fully operational. Their individual workspaces are also folded
+ *     into the Blueprint™ (assessments/profile) and Live™ (weekly rhythm)
+ *     sections below, so members can still reach them from the new nav.
  */
 
 import {
@@ -27,15 +30,15 @@ import {
   Flower2,
   Briefcase,
   Sprout,
-  BarChart2,
+  Sparkles,
   type LucideIcon,
 } from "lucide-react"
 
-/** The four permanent, user-facing destinations. */
-export type PrimarySectionId = "sunday-design-day" | "live-today" | "design-weekly" | "my-harmony"
+/** The three permanent, user-facing destinations. */
+export type PrimarySectionId = "live-today" | "my-harmony" | "experiences"
 
 /** Developer-only module groups (not shown in navigation). */
-export type InternalModuleId = "lead" | "share" | "grow"
+export type InternalModuleId = "lead" | "share" | "grow" | "measure-monthly" | "design-weekly"
 
 /** Any addressable section — primary destination or internal module. */
 export type SectionId = PrimarySectionId | InternalModuleId
@@ -47,12 +50,20 @@ export interface Workspace {
   href: string
   /** One-line description for the hub landing card. */
   description: string
+  /**
+   * Roadmap item with no page or pricing yet (e.g. Week/Month/Quarter tiers
+   * still being finalized). Rendered as a disabled "Coming Soon" card instead
+   * of a link — never hard-code a price here.
+   */
+  comingSoon?: boolean
 }
 
 export interface PrimarySection {
   id: SectionId
   /** Short navigation label. */
   navLabel: string
+  /** Optional sub-label shown under the nav label (e.g. "Upgrade"). */
+  navBadge?: string
   /** Full brand name for hub headers. */
   title: string
   /** Brand-aligned destination URL for the hub page. */
@@ -68,18 +79,58 @@ export interface PrimarySection {
 }
 
 /**
- * PRIMARY_NAV — the four permanent destinations that appear in the navigation,
- * in their intended order: Sunday Design Day™ → Live Today™ → Time Freedom™ →
- * My Harmony™.
+ * PRIMARY_NAV — the three permanent destinations that appear in the
+ * navigation, in their intended order: Live™ → Blueprint™ → Experiences™.
  */
 export const PRIMARY_NAV: PrimarySection[] = [
   {
-    id: "sunday-design-day",
-    navLabel: "Measure Monthly",
-    title: "Measure Monthly™",
-    href: "/founder-profile",
-    icon: CalendarCheck,
-    tagline: "Complete your monthly Work-Life Balance Reality Check™ and Entrepreneur Success Assessment™.",
+    id: "live-today",
+    navLabel: "Live, Lead & Love Today™",
+    title: "Live, Lead & Love Today™",
+    href: "/",
+    icon: Sunrise,
+    tagline: "Experience your current Harmony Lane™ rhythm in real time — Daily Non-Negotiables™ and the 4-Hour CEO Workday™.",
+    built: true,
+    workspaces: [
+      {
+        label: "Executive Headquarters™",
+        href: "/headquarters",
+        description: "Your real-time operating dashboard — Harmony Score™, daily focus, rhythm, events, and journey.",
+      },
+      {
+        label: "Live & Lead Today™",
+        href: "/",
+        description: "Your daily operating workspace — Daily Non-Negotiables™ and the 4-Hour CEO Workday™.",
+      },
+      {
+        label: "Design My Week™",
+        href: "/design-my-week",
+        description: "Install your Daily Non-Negotiables™, Intention Declarations™, and weekly operating rhythm.",
+      },
+      {
+        label: "Sunday Design Day™",
+        href: "/sunday-shift",
+        description: "Your full Sunday reset ritual — audit, intentions, prep sheet, and weekly design.",
+      },
+      {
+        label: "Community Events™",
+        href: "/events",
+        description: "Live Co-Working™, Monday Sync™, Office Hours™, Founder Circle™, and more — the full community calendar.",
+      },
+      {
+        label: "Community™",
+        href: "/community",
+        description: "Daily accountability, founder wins, discussions, challenges, and your community calendar — all in one place.",
+      },
+    ],
+  },
+  {
+    id: "my-harmony",
+    navLabel: "My Work-Life Harmony Blueprint™",
+    title: "My Work-Life Harmony Blueprint™",
+    href: "/my-harmony",
+    icon: Flower2,
+    tagline: "Your personal operating intelligence — profile, assessments, memory, and whole-life progress.",
     built: true,
     workspaces: [
       {
@@ -97,70 +148,6 @@ export const PRIMARY_NAV: PrimarySection[] = [
         href: "/entrepreneur-success-assessment",
         description: "Measure how your business has been operating over the past 30 days.",
       },
-    ],
-  },
-  {
-    id: "design-weekly",
-    navLabel: "Design Weekly",
-    title: "Design Weekly™",
-    href: "/design-my-week",
-    icon: Calendar,
-    tagline: "Design and install your Work-Life Balance Business Week™ every Sunday.",
-    built: true,
-    workspaces: [
-      {
-        label: "Design My Week™",
-        href: "/design-my-week",
-        description: "Install your Daily Non-Negotiables™, Intention Declarations™, and weekly operating rhythm.",
-      },
-      {
-        label: "Sunday Design Day™",
-        href: "/sunday-shift",
-        description: "Your full Sunday reset ritual — audit, intentions, prep sheet, and weekly design.",
-      },
-    ],
-  },
-  {
-    id: "live-today",
-    navLabel: "Live & Lead Daily",
-    title: "Live & Lead Daily™",
-    href: "/",
-    icon: Sunrise,
-    tagline: "Live your Daily Non-Negotiables™ and lead your 4-Hour CEO Workday™ — every day.",
-    built: true,
-    workspaces: [
-      {
-        label: "Executive Headquarters™",
-        href: "/headquarters",
-        description: "Your real-time operating dashboard — Harmony Score™, daily focus, rhythm, events, and journey.",
-      },
-      {
-        label: "Live & Lead Today™",
-        href: "/",
-        description: "Your daily operating workspace — Daily Non-Negotiables™ and the 4-Hour CEO Workday™.",
-      },
-      {
-        label: "Community Events™",
-        href: "/events",
-        description: "Live Co-Working™, Monday Sync™, Office Hours™, Founder Circle™, and more — the full community calendar.",
-      },
-      {
-        label: "Community™",
-        href: "/community",
-        description: "Daily accountability, founder wins, discussions, challenges, and your community calendar — all in one place.",
-        built: true,
-      },
-    ],
-  },
-  {
-    id: "my-harmony",
-    navLabel: "My Work-Life Harmony",
-    title: "My Work-Life Harmony™",
-    href: "/my-harmony",
-    icon: Flower2,
-    tagline: "Your long-term growth center — audit history, operating maturity, milestones, and whole-life progress.",
-    built: false,
-    workspaces: [
       {
         label: "Founder Memory™",
         href: "/founder-memory",
@@ -190,6 +177,47 @@ export const PRIMARY_NAV: PrimarySection[] = [
         label: "Executive Review Engine™",
         href: "/executive-reviews",
         description: "Weekly, monthly, and quarterly operating reviews synthesised from your Harmony data.",
+      },
+    ],
+  },
+  {
+    id: "experiences",
+    navLabel: "Make Time For More Experiences™",
+    navBadge: "Upgrade",
+    title: "Make Time For More Experiences™",
+    href: "/experiences",
+    icon: Sparkles,
+    tagline: "Your pathway to continue or deepen your Harmony Lane™ experience.",
+    built: true,
+    workspaces: [
+      {
+        label: "Make Time For More™ on Mondays",
+        href: "/monday",
+        description: "The confirmed front-door Work-Life Balance Business Day™ experience.",
+      },
+      {
+        label: "Work-Life Balance Business Week™",
+        href: "/experiences",
+        description: "Deepen your Harmony Lane™ rhythm across a full business week. Pricing not yet finalized.",
+        comingSoon: true,
+      },
+      {
+        label: "Work-Life Balance Business Month™",
+        href: "/experiences",
+        description: "Extend your Harmony Lane™ operating rhythm across a full business month. Pricing not yet finalized.",
+        comingSoon: true,
+      },
+      {
+        label: "Work-Life Balance Business Quarter™",
+        href: "/experiences",
+        description: "Install your Harmony Lane™ rhythm across a full business quarter. Pricing not yet finalized.",
+        comingSoon: true,
+      },
+      {
+        label: "Harmony Lane™ Membership",
+        href: "/experiences",
+        description: "Ongoing membership inside Harmony Lane™. Pricing not yet finalized.",
+        comingSoon: true,
       },
     ],
   },
@@ -290,12 +318,66 @@ export const INTERNAL_MODULES: PrimarySection[] = [
       },
     ],
   },
+  {
+    // Demoted from PRIMARY_NAV in Pass 4B. Workspaces are now also reachable
+    // from "My Work-Life Harmony Blueprint™" — this entry stays only so the
+    // route/lookup is preserved, same as Lead/Share/Grow above.
+    id: "measure-monthly",
+    navLabel: "Measure Monthly",
+    title: "Measure Monthly™",
+    href: "/founder-profile",
+    icon: CalendarCheck,
+    tagline: "Complete your monthly Work-Life Balance Reality Check™ and Entrepreneur Success Assessment™.",
+    built: true,
+    workspaces: [
+      {
+        label: "Founder & Business Profile™",
+        href: "/founder-profile",
+        description: "Update your personal and business profile — the foundation of your Harmony Blueprint™.",
+      },
+      {
+        label: "Work-Life Balance Reality Check™",
+        href: "/audit",
+        description: "Measure how your life has been operating over the past 30 days.",
+      },
+      {
+        label: "Entrepreneur Success Assessment™",
+        href: "/entrepreneur-success-assessment",
+        description: "Measure how your business has been operating over the past 30 days.",
+      },
+    ],
+  },
+  {
+    // Demoted from PRIMARY_NAV in Pass 4B. Workspaces are now also reachable
+    // from "Live, Lead & Love Today™" — this entry stays only so the
+    // route/lookup is preserved, same as Lead/Share/Grow above.
+    id: "design-weekly",
+    navLabel: "Design Weekly",
+    title: "Design Weekly™",
+    href: "/design-my-week",
+    icon: Calendar,
+    tagline: "Design and install your Work-Life Balance Business Week™ every Sunday.",
+    built: true,
+    workspaces: [
+      {
+        label: "Design My Week™",
+        href: "/design-my-week",
+        description: "Install your Daily Non-Negotiables™, Intention Declarations™, and weekly operating rhythm.",
+      },
+      {
+        label: "Sunday Design Day™",
+        href: "/sunday-shift",
+        description: "Your full Sunday reset ritual — audit, intentions, prep sheet, and weekly design.",
+      },
+    ],
+  },
 ]
 
-/** Convenience lookup for the four primary destinations (for nav rendering). */
-export const PRIMARY_DESTINATIONS = PRIMARY_NAV.map(({ id, navLabel, title, href, icon, tagline, built }) => ({
+/** Convenience lookup for the three primary destinations (for nav rendering). */
+export const PRIMARY_DESTINATIONS = PRIMARY_NAV.map(({ id, navLabel, navBadge, title, href, icon, tagline, built }) => ({
   id,
   navLabel,
+  navBadge,
   title,
   href,
   icon,

@@ -32,6 +32,11 @@ const AUTH_ONLY_ROUTES = [
   "/installation",
   "/human-zone-of-genius-team",
   "/ai-executive-team",
+  // "Make Time For More Experiences™" is the upgrade/continuation decision
+  // point itself — every logged-in member (paid or not) must be able to
+  // reach it, otherwise non-paid members bounce straight to /pricing and
+  // never see it.
+  "/experiences",
 ]
 
 // Valid paid membership tiers (from database constraint)
