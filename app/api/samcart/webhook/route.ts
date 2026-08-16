@@ -233,9 +233,29 @@ export async function POST(request: Request) {
     // purchase and can't be triggered by guessing an email address.
     try {
       const resend = new Resend(process.env.RESEND_API_KEY)
-      const welcomeUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://success-hub-clean.vercel.app"}/welcome?email=${encodeURIComponent(email)}&product=${encodeURIComponent(productName)}&token=${onboardingToken}`
+      // Build the welcome link from whichever domain actually received this
+      // webhook call, so a preview-branch webhook produces a link back to
+      // that same preview deployment instead of always pointing at
+      // production via NEXT_PUBLIC_APP_URL. This matters while this branch
+      // is not yet merged to main — production and preview are running
+      // different code. Once SamCart's real Notify URL is pointed at the
+      // production domain at launch, this naturally resolves to production.
+      const forwardedHost = request.headers.get("x-forwarded-host")
+      const forwardedProto = request.headers.get("x-forwarded-proto") || "https"
+      let requestOrigin: string | null = null
+      if (forwardedHost) {
+        requestOrigin = `${forwardedProto}://${forwardedHost}`
+      } else {
+        try {
+          requestOrigin = new URL(request.url).origin
+        } catch {
+          requestOrigin = null
+        }
+      }
+      const baseUrl = requestOrigin || process.env.NEXT_PUBLIC_APP_URL || "https://success-hub-clean.vercel.app"
+      const welcomeUrl = `${baseUrl}/welcome?email=${encodeURIComponent(email)}&product=${encodeURIComponent(productName)}&token=${onboardingToken}`
 
-      await resend.emails.send({
+      const { data: sendData, error: sendError } = await resend.emails.send({
         from: "Make Time For More <noreply@hub.maketimeformore.com>",
         to: email,
         subject: "Set Up Your Account - Make Time For More Success Hub",
@@ -265,7 +285,16 @@ export async function POST(request: Request) {
           </html>
         `,
       })
-      console.log("[v0] Onboarding email sent successfully to:", email)
+      // The Resend SDK does NOT throw on API-level failures (e.g. invalid
+      // recipient, unverified domain) — it resolves successfully with an
+      // { error } field instead. Checking only "did the promise resolve"
+      // silently reported failed sends as successful; check the error field
+      // explicitly so a real send failure is actually logged as one.
+      if (sendError) {
+        console.error("[v0] Resend API returned an error for onboarding email:", sendError)
+      } else {
+        console.log("[v0] Onboarding email sent successfully to:", email, "Resend id:", sendData?.id)
+      }
     } catch (emailError) {
       console.error("[v0] Error sending onboarding email:", emailError)
       // Don't fail the webhook over an email delivery issue — the purchase
