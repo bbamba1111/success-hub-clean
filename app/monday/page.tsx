@@ -9,7 +9,7 @@ import { BusinessDayShowcase } from "@/components/landing/business-day-showcase"
 import { RitualSection } from "@/components/landing/ritual-section"
 import { CherryBlossomSection } from "@/components/landing/cherry-blossom-section"
 import { TestimonialsSection } from "@/components/landing/testimonials-section"
-import { ExperiencesSection } from "@/components/landing/experiences-section"
+import { MondayCheckout } from "@/components/monday/monday-checkout"
 import { LandingFooter } from "@/components/landing/landing-footer"
 
 export const metadata = {
@@ -35,7 +35,11 @@ export default async function MondayLandingPage() {
   // completed. getPostLoginDestination() covers every server-checkable gate
   // (Supabase-backed Reality Check); MondayCtaLink below layers in the one
   // gate that only lives in localStorage (Business Context™) on the client.
-  const primaryHref = user ? await getPostLoginDestination() : "/pricing"
+  //
+  // Unauthenticated visitors scroll to the embedded SamCart checkout further
+  // down this same page — /pricing is a separate legacy catalog and is not
+  // part of this offer.
+  const primaryHref = user ? await getPostLoginDestination() : "#monday-checkout"
 
   return (
     <main className="min-h-screen bg-white">
@@ -87,7 +91,10 @@ export default async function MondayLandingPage() {
       <RitualSection />
       <CherryBlossomSection />
       <TestimonialsSection />
-      <ExperiencesSection />
+
+      {/* The live $497 one-time offer — embedded SamCart checkout, not a
+          link out to /pricing (that page is a separate legacy catalog). */}
+      <MondayCheckout />
 
       {/* What it's not */}
       <section className="py-20 md:py-28 bg-white">
