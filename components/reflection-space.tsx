@@ -13,10 +13,10 @@
  * Weekly state is keyed by the Monday of the current week so it resets automatically.
  */
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { AnimatePresence, motion } from "framer-motion"
-import { CheckCircle2, ChevronDown, Clock, Lock } from "lucide-react"
+import { CheckCircle2, ChevronDown, ChevronLeft, Clock, Lock } from "lucide-react"
 import { getAuditResults, type AuditData } from "@/utils/audit-storage"
 import { getEsaResults } from "@/lib/entrepreneur-success/esa-storage"
 import type { EsaResults } from "@/lib/entrepreneur-success/types"
@@ -49,6 +49,14 @@ function getWeekKey(date = new Date()): string {
 interface WeeklyState {
   weekKey: string
   auditDone: boolean
+  /** How many times the Audit has been completed this week — max 2 (the
+   *  original pass plus one retake). Resets automatically every Monday since
+   *  the whole WeeklyState is keyed by `weekKey`. */
+  auditAttempts: number
+  /** The member's saved per-question answers from their most recent Audit
+   *  completion — persisted so reopening the card to review or change an
+   *  answer starts pre-filled instead of blank. */
+  auditAnswers: Record<number, number> | null
   assessmentDone: boolean
   completedAt: string | null
 }
@@ -59,10 +67,13 @@ function loadWeekly(): WeeklyState {
     const raw = localStorage.getItem(WEEKLY_KEY)
     if (raw) {
       const parsed = JSON.parse(raw) as WeeklyState
-      if (parsed.weekKey === current) return parsed
+      if (parsed.weekKey === current) {
+        // Backfill defaults for state saved before attempt-tracking existed.
+        return { auditAttempts: parsed.auditDone ? 1 : 0, auditAnswers: null, ...parsed }
+      }
     }
   } catch { /* ignore */ }
-  return { weekKey: current, auditDone: false, assessmentDone: false, completedAt: null }
+  return { weekKey: current, auditDone: false, auditAttempts: 0, auditAnswers: null, assessmentDone: false, completedAt: null }
 }
 
 function saveWeekly(s: WeeklyState) {
@@ -82,17 +93,35 @@ export function ReflectionSpace() {
   const [mounted, setMounted]               = useState(false)
   const [isBaseline, setIsBaseline]         = useState(true)
   const [auditDone, setAuditDone]           = useState(false)
+  const [auditAttempts, setAuditAttempts]   = useState(0)
+  const [auditAnswers, setAuditAnswers]     = useState<Record<number, number> | null>(null)
+  // Whether the completed Audit's card body (the quiz itself) is currently
+  // shown — independent of the accordion `activeStep` machinery so collapsing
+  // it never yanks the page's scroll position the way closing the whole
+  // accordion used to.
+  const [auditExpanded, setAuditExpanded]   = useState(false)
+  // True when the member reopened via the "Previous" control — jumps the
+  // reopened quiz straight to the last question instead of the first.
+  const [auditEditMode, setAuditEditMode]   = useState(false)
   const [assessmentDone, setAssessmentDone] = useState(false)
   const [completedAt, setCompletedAt]       = useState<string | null>(null)
   const [activeStep, setActiveStep]         = useState<1 | 2 | 3>(1)
   const [auditData, setAuditData]           = useState<AuditData | null>(null)
   const [esaData, setEsaData]               = useState<EsaResults | null>(null)
   const [showBreakdown, setShowBreakdown]   = useState(false)
+  const auditCompleteRef = useRef<HTMLDivElement>(null)
+
+  // Locked once the member has completed the Audit twice this week (the
+  // original pass + one retake) — the card cannot be reopened again until
+  // next Monday resets `auditAttempts` back to 0 via `getWeekKey()`.
+  const auditLocked = auditAttempts >= 2
 
   useEffect(() => {
     const ws = loadWeekly()
     setIsBaseline(!hasCompletedFirstRealityCheck())
     setAuditDone(ws.auditDone)
+    setAuditAttempts(ws.auditAttempts)
+    setAuditAnswers(ws.auditAnswers)
     setAssessmentDone(ws.assessmentDone)
     setCompletedAt(ws.completedAt)
     setAuditData(getAuditResults())
@@ -108,12 +137,43 @@ export function ReflectionSpace() {
     setMounted(true)
   }, [])
 
-  const markAuditDone = () => {
-    const next: WeeklyState = { weekKey: getWeekKey(), auditDone: true, assessmentDone, completedAt }
+  const markAuditDone = (answers: Record<number, number>) => {
+    const attempts = Math.min(2, auditAttempts + 1)
+    const next: WeeklyState = {
+      weekKey: getWeekKey(),
+      auditDone: true,
+      auditAttempts: attempts,
+      auditAnswers: answers,
+      assessmentDone,
+      completedAt,
+    }
     saveWeekly(next)
     setAuditDone(true)
+    setAuditAttempts(attempts)
+    setAuditAnswers(answers)
+    setAuditExpanded(false)
+    setAuditEditMode(false)
     setAuditData(getAuditResults())
     setTimeout(() => setActiveStep(2), 500)
+
+    // The Audit card collapses from the full quiz down to a compact
+    // "Completed" header in the same tick — a big height change that can
+    // otherwise leave the browser's scroll position stranded above the fold.
+    // Two-pass scroll (mirroring ActiveSpaceProvider's enterSpace()) brings
+    // the member to the confirmation message once collapse + layout settle.
+    const scrollToConfirmation = () => {
+      auditCompleteRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+    }
+    requestAnimationFrame(() => requestAnimationFrame(scrollToConfirmation))
+    setTimeout(scrollToConfirmation, 550)
+  }
+
+  /** Reopen the completed Audit to review answers (chevron) or jump straight to
+   *  the last question to change one (Previous arrow) — disabled once locked. */
+  const openAuditForReview = (editMode: boolean) => {
+    if (auditLocked) return
+    setAuditEditMode(editMode)
+    setAuditExpanded((v) => (editMode ? true : !v))
   }
 
   const markAssessmentDone = () => {
@@ -138,11 +198,12 @@ export function ReflectionSpace() {
   // Cherry Blossom™ — message changes by step and whether this is the First Reality Check™
   const period = isBaseline ? "30 days" : "7 days"
 
-  // Cherry Blossom™ — message changes by step and whether this is the First Reality Check™
+  // Cherry Blossom™ — message changes by step and whether this is the First Reality Check™.
+  // The "Life Reflection Complete" message (shown once the Audit is done but the
+  // Assessment isn't yet) has its own dedicated block between the two step cards
+  // instead of living in this top banner — see `auditCompleteRef` below.
   const cherryBlossomMessage = bothDone
     ? "Reflection Complete\n\nYou have just created something many founders never do.\n\nYou created a protected time and space to reflect on both your life and your business before reacting to the week ahead.\n\nMost founders begin Monday by opening their inbox. You began by creating awareness.\n\nThat single decision changes how the rest of your week unfolds."
-    : auditDone
-    ? "Life Reflection Complete\n\nThank you for taking the time to reflect on your life.\n\nYour responses have created a clear picture of how your life has been operating over the past " + period + ".\n\nNext, we\u2019ll reflect on how your business has been operating during that same period so we can bring both perspectives together in your Work-Life Balance Reality Check\u2122."
     : isBaseline
     ? "There\u2019s nowhere to rush to.\n\nBefore you redesign your entry into the workweek, let\u2019s begin with two short reflections \u2014 your Work-Life Balance Audit\u2122 and your Entrepreneur Success Assessment\u2122.\n\nThe audit helps me understand how your life has been operating, and the assessment helps me understand how your business has been operating, so I can guide you throughout your Work-Life Balance Business Day\u2122.\n\nComplete both once. We\u2019ll use them as the foundation for your Monday reflections and your experience inside Harmony Lane\u2122."
     : "There\u2019s nowhere to rush to.\n\nBefore you redesign your entry into the workweek, let\u2019s take a few moments to reflect on the past 7 days.\n\nEach Monday is an opportunity to celebrate your progress, learn from the previous week, and intentionally create the week ahead."
@@ -198,26 +259,104 @@ export function ReflectionSpace() {
       </div>
 
       {/* ── Step 1 — Work-Life Balance Audit™ ──────────────────────────────── */}
-      <StepCard
-        stepNumber={1}
-        label="Activity 1"
-        title="Work-Life Balance Audit™"
-        done={auditDone}
-        active={activeStep === 1}
-        onToggle={() => setActiveStep(activeStep === 1 ? (auditDone ? 2 : 1) : 1)}
+      {/* Bespoke card (not the shared StepCard) — once done, shows its own
+          top-right "Completed" / "Completed & Locked" indicator plus a chevron
+          to reopen/collapse the quiz for review and a Previous arrow to jump
+          straight to the last question and change an answer. The quiz body's
+          visibility is driven by local `auditExpanded` state rather than the
+          accordion's `active` step, so collapsing it back down never causes
+          the large, scroll-yanking layout jump the shared accordion produced
+          here before. */}
+      <div
+        className={`rounded-3xl border transition-colors duration-300 overflow-hidden ${
+          auditDone ? "border-[#7FB069]/30 bg-[#F7FBF4]" : "border-[#E8DFE2] bg-white shadow-sm"
+        }`}
       >
+        <div className="w-full px-8 py-6 flex items-start gap-4">
+          <span
+            className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold transition-colors ${
+              auditDone ? "bg-[#7FB069] text-white" : "bg-[#E26C73]/15 text-[#C0545A]"
+            }`}
+            aria-hidden
+          >
+            {auditDone ? <CheckCircle2 className="h-4 w-4" /> : 1}
+          </span>
+
+          <div className="flex-1 min-w-0">
+            <p className="font-sans text-xs font-semibold uppercase tracking-[0.2em] text-[#6B5860] mb-1">
+              Step 1 — Activity 1
+            </p>
+            <p className="font-serif text-xl font-semibold text-[#2E1F27] leading-snug">
+              Work-Life Balance Audit™
+            </p>
+          </div>
+
+          {/* Top-right: Audit Complete Indicator™ + reopen/edit controls */}
+          {auditDone && (
+            <div className="flex items-center gap-1.5 shrink-0 pt-0.5">
+              <span
+                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] whitespace-nowrap ${
+                  auditLocked ? "bg-black/10 text-[#6B5860]" : "bg-[#7FB069] text-white"
+                }`}
+              >
+                <CheckCircle2 className="h-3 w-3" />
+                {auditLocked ? "Completed & Locked" : "Completed"}
+              </span>
+
+              {!auditLocked && (
+                <>
+                  <button
+                    type="button"
+                    aria-label="Change an answer"
+                    title="Previous — change an answer"
+                    onClick={() => openAuditForReview(true)}
+                    className="flex h-7 w-7 items-center justify-center rounded-full border border-[#DDD5D8] text-[#6B5860] transition-colors hover:bg-black/[0.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7FB069]"
+                  >
+                    <ChevronLeft className="h-4 w-4" aria-hidden />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label={auditExpanded ? "Collapse audit" : "Reopen audit"}
+                    aria-expanded={auditExpanded}
+                    title={auditExpanded ? "Collapse" : "Reopen"}
+                    onClick={() => openAuditForReview(false)}
+                    className="flex h-7 w-7 items-center justify-center rounded-full border border-[#DDD5D8] text-[#6B5860] transition-colors hover:bg-black/[0.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7FB069]"
+                  >
+                    <ChevronDown
+                      className={`h-4 w-4 transition-transform duration-200 ${auditExpanded ? "rotate-180" : ""}`}
+                      aria-hidden
+                    />
+                  </button>
+                </>
+              )}
+            </div>
+          )}
+        </div>
+
+        {(!auditDone || auditExpanded) && (
+          <div className="px-8 pb-8 pt-0 space-y-4 border-t border-black/[0.04]">
+            <div className="pt-5 space-y-3">
         <p className="font-sans text-sm text-[#5A4A52] leading-relaxed">
-          Reflect on how you&apos;ve been living over the past <strong>{period}</strong>. This audit provides a snapshot of your overall work-life balance and helps you identify the areas of your life that may need more attention before the week begins.
+          {auditDone
+            ? (auditEditMode
+                ? "Use ← Previous to step back through your responses and change an answer. Retaking counts as your second and final attempt this week."
+                : "Reviewing your saved responses from this week's audit.")
+            : (<>Reflect on how you&apos;ve been living over the past <strong>{period}</strong>. This audit provides a snapshot of your overall work-life balance and helps you identify the areas of your life that may need more attention before the week begins.</>)}
         </p>
 
         <div className="rounded-2xl border border-[#E8DFE2] overflow-hidden">
           <WorkLifeBalanceAudit
+            key={auditAttempts}
             assessmentWindow={isBaseline ? "30-day" : "7-day"}
             assessmentType={isBaseline ? "baseline_30_day" : "weekly_7_day"}
+            initialAnswers={auditDone ? auditAnswers ?? undefined : undefined}
+            startAtLastQuestion={auditDone && auditEditMode}
             onComplete={markAuditDone}
           />
         </div>
 
+        {!auditDone && (
+          <>
         <div className="flex items-center gap-3 pt-2">
           <div className="h-px flex-1 bg-[#E8DFE2]" aria-hidden />
           <span className="font-sans text-xs font-semibold uppercase tracking-[0.15em] text-[#6B5860]">or</span>
@@ -226,19 +365,42 @@ export function ReflectionSpace() {
 
         <div className="flex flex-col gap-3">
           <button
-            onClick={markAuditDone}
-            disabled={auditDone}
-            className={`inline-flex items-center justify-center gap-2 rounded-xl border px-6 py-3 font-sans text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7FB069] ${
-              auditDone
-                ? "border-[#7FB069] bg-[#7FB069]/10 text-[#5B835F] cursor-default"
-                : "border-[#7FB069]/40 bg-white text-[#5B835F] hover:bg-[#7FB069]/10"
-            }`}
+            onClick={() => markAuditDone({})}
+            className="inline-flex items-center justify-center gap-2 rounded-xl border px-6 py-3 font-sans text-sm font-semibold transition-colors border-[#7FB069]/40 bg-white text-[#5B835F] hover:bg-[#7FB069]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7FB069]"
           >
-            <CheckCircle2 className={`h-4 w-4 ${auditDone ? "text-[#7FB069]" : "text-[#7FB069]/50"}`} />
-            {auditDone ? "Work-Life Balance Audit™ Complete" : "Mark Audit Complete"}
+            <CheckCircle2 className="h-4 w-4 text-[#7FB069]/50" />
+            Mark Audit Complete
           </button>
         </div>
-      </StepCard>
+          </>
+        )}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ── Cherry Blossom™ confirmation — rests below the Audit card and above
+          the Assessment card, exactly where the member's attention already is
+          once they finish the last question (no more scroll-to-hero jump). */}
+      <AnimatePresence>
+        {auditDone && !assessmentDone && (
+          <motion.div
+            ref={auditCompleteRef}
+            key="audit-complete-message"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+          >
+            <CherryBlossomCoach
+              message={
+                "Life Reflection Complete\n\nThank you for taking the time to reflect on your life.\n\nYour responses have created a clear picture of how your life has been operating over the past " +
+                period +
+                ".\n\nNext, we\u2019ll reflect on how your business has been operating during that same period so we can bring both perspectives together in your Work-Life Balance Reality Check\u2122."
+              }
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── Step 2 — Entrepreneur Success Assessment™ ──────────────────────── */}
       <StepCard

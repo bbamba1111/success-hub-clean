@@ -59,8 +59,16 @@ interface WorkLifeBalanceAuditProps {
   resultsUrl?: string
   assessmentWindow?: AssessmentWindow
   assessmentType?: AssessmentType
-  /** When provided, the audit fires this immediately on completion instead of showing its own "Audit Complete" screen — used to embed the audit inline (e.g. Reflection Space™). */
-  onComplete?: (results: AuditData) => void
+  /** When provided, the audit fires this immediately on completion instead of showing its own "Audit Complete" screen — used to embed the audit inline (e.g. Reflection Space™). Receives the final per-question answer map so the caller can persist it for reopening/retaking later. */
+  onComplete?: (results: AuditData, answers: Record<number, number>) => void
+  /** Reopening a previously completed audit (review or retake) — pre-fills every
+   *  answer so selections are highlighted and nothing is lost if the member
+   *  doesn't change anything. */
+  initialAnswers?: Record<number, number>
+  /** Jump straight to the last question when reopening — lets the member land on
+   *  "← Previous" immediately to step backward and change an earlier answer,
+   *  rather than re-clicking through all 15 questions from the top. */
+  startAtLastQuestion?: boolean
 }
 
 export default function WorkLifeBalanceAudit({
@@ -68,9 +76,13 @@ export default function WorkLifeBalanceAudit({
   assessmentWindow = "30-day" as AssessmentWindow,
   assessmentType = "baseline_30_day" as AssessmentType,
   onComplete,
+  initialAnswers,
+  startAtLastQuestion = false,
 }: WorkLifeBalanceAuditProps) {
-  const [currentQuestion, setCurrentQuestion] = useState(0)
-  const [answers, setAnswers] = useState<Record<number, number>>({})
+  const [currentQuestion, setCurrentQuestion] = useState(
+    startAtLastQuestion ? questionBodies.length - 1 : 0,
+  )
+  const [answers, setAnswers] = useState<Record<number, number>>(initialAnswers ?? {})
   const [isComplete, setIsComplete] = useState(false)
   const [results, setResults] = useState<any>(null)
   const router = useRouter()
@@ -80,9 +92,15 @@ export default function WorkLifeBalanceAudit({
   // On initial page load the hero is visible and the founder scrolls down naturally.
   const hasAnsweredRef = useRef(false)
 
-  // Hero-first: always start at the top of the page on mount.
+  // Hero-first: always start at the top of the page on mount — but only on the
+  // standalone /audit page. When embedded (onComplete provided, e.g. Reflection
+  // Space™), the audit lives inside an already-scrolled-to accordion, so forcing
+  // the whole page back to its top here would yank the member away from the
+  // card they just opened.
   useEffect(() => {
+    if (onComplete) return
     window.scrollTo({ top: 0, behavior: "instant" })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const timePhrase = getTimePhrase(assessmentWindow)
@@ -142,7 +160,7 @@ export default function WorkLifeBalanceAudit({
     saveAuditResults(auditResults)
     void saveRealityCheckSnapshot({ overallScore, results: categoryResults, assessmentType })
     if (onComplete) {
-      onComplete(auditResults)
+      onComplete(auditResults, finalAnswers)
     } else {
       setIsComplete(true)
     }
@@ -231,27 +249,34 @@ export default function WorkLifeBalanceAudit({
             On a scale from 1 to 5 &mdash; 1 being never, 5 being always.
           </p>
 
-          {/* Answer options — descending pink */}
+          {/* Answer options — descending pink. Previously-saved selections (when
+              reopening a completed audit to review or change an answer) are
+              highlighted with a ring so the member can see what they picked. */}
           <div className="flex flex-col gap-2.5 pb-7">
-            {AUDIT_OPTIONS.map((option) => (
-              <button
-                key={option.value}
-                type="button"
-                onClick={() => handleAnswer(currentQ.id, option.value)}
-                className={`
-                  ${option.bg} ${option.hover} ${option.text}
-                  w-full flex items-center gap-4 rounded-2xl px-5 py-4
-                  font-sans font-semibold text-[15px] text-left
-                  transition-all duration-150 hover:scale-[1.015] active:scale-[0.99]
-                  focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-coral/50
-                `}
-              >
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/20 font-bold text-sm">
-                  {option.value}
-                </span>
-                {option.label}
-              </button>
-            ))}
+            {AUDIT_OPTIONS.map((option) => {
+              const isSelected = answers[currentQ.id] === option.value
+              return (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => handleAnswer(currentQ.id, option.value)}
+                  aria-pressed={isSelected}
+                  className={`
+                    ${option.bg} ${option.hover} ${option.text}
+                    w-full flex items-center gap-4 rounded-2xl px-5 py-4
+                    font-sans font-semibold text-[15px] text-left
+                    transition-all duration-150 hover:scale-[1.015] active:scale-[0.99]
+                    focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-coral/50
+                    ${isSelected ? "ring-2 ring-offset-2 ring-brand-coral" : ""}
+                  `}
+                >
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/20 font-bold text-sm">
+                    {option.value}
+                  </span>
+                  {option.label}
+                </button>
+              )
+            })}
           </div>
         </div>
 

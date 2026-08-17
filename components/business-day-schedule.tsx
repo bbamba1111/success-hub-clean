@@ -159,7 +159,6 @@ export function BusinessDaySchedule() {
                 blockId={block.id}
                 isClosed={block.engagement === "closed"}
                 description={block.description}
-                onAction={scrollToOperatingPlanner}
                 onTransition={
                   // Self-guided Monday-only blocks (Reality Check™, Debrief™) use their
                   // own "Begin the ___™" CTA to open their in-card accordion — they must
@@ -171,6 +170,18 @@ export function BusinessDaySchedule() {
                           to: nextBlock,
                         })
                     : undefined
+                }
+                onAction={
+                  // Self-guided Monday-only blocks (Reality Check™, Debrief™) render
+                  // their own ReflectionSpace™/DebriefSpace™ inline — they have no
+                  // Operating Planner™ at all, so scrolling to "#operating-planner"
+                  // lands on an unrelated element near the hero instead of opening
+                  // this card. Use the same "Enter the Space™" expand+scroll used by
+                  // every other in-flow hand-off so the CTA opens and scrolls to this
+                  // block's own accordion.
+                  block.mondayOnly
+                    ? () => activeSpace?.enterSpace(block.id, block.sectionId)
+                    : scrollToOperatingPlanner
                 }
                 segmentProgress={timing?.progress}
                 segmentRemaining={timing?.remaining}
