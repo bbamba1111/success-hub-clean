@@ -612,7 +612,7 @@ export const ASSESSMENT_QUESTIONS: AssessmentQuestion[] = [
     practiceId: "offer-clarity",
     pillarId: "strategic-foundation",
     question:
-      "In the past 7 days, how often have you been able to describe your primary offer clearly and confidently in one sentence to a potential client?",
+      "how often have you been able to describe your primary offer clearly and confidently in one sentence to a potential client?",
     coachingContext:
       "Offer clarity is the foundation of consistent revenue. When you can articulate what you do and for whom in one sentence, closing becomes confirming.",
     order: 1,
@@ -623,7 +623,7 @@ export const ASSESSMENT_QUESTIONS: AssessmentQuestion[] = [
     practiceId: "vision-direction",
     pillarId: "strategic-foundation",
     question:
-      "In the past 7 days, how often have you used a documented vision or long-term direction to guide your business decisions?",
+      "how often have you used a documented vision or long-term direction to guide your business decisions?",
     coachingContext:
       "A documented vision acts as a permanent decision filter — it says yes and no on your behalf so you don't have to keep re-deciding.",
     order: 2,
@@ -634,7 +634,7 @@ export const ASSESSMENT_QUESTIONS: AssessmentQuestion[] = [
     practiceId: "operating-rules",
     pillarId: "strategic-foundation",
     question:
-      "In the past 7 days, how often have your documented Business Operating Rules™ guided how your business actually operated?",
+      "how often have your documented Business Operating Rules™ guided how your business actually operated?",
     coachingContext:
       "Operating Rules™ turn your best thinking into standing decisions. Every time a rule handles a situation, it frees your energy for higher-leverage work.",
     order: 3,
@@ -646,7 +646,7 @@ export const ASSESSMENT_QUESTIONS: AssessmentQuestion[] = [
     practiceId: "marketing-consistency",
     pillarId: "revenue-engine",
     question:
-      "In the past 7 days, how often have you shown up consistently in front of your ideal clients through content, outreach, or visibility activities?",
+      "how often have you shown up consistently in front of your ideal clients through content, outreach, or visibility activities?",
     coachingContext:
       "Consistency compounds. Ideal clients decide to work with founders they've seen over time — not necessarily the most talented, but the most consistently present.",
     order: 1,
@@ -657,7 +657,7 @@ export const ASSESSMENT_QUESTIONS: AssessmentQuestion[] = [
     practiceId: "sales-process",
     pillarId: "revenue-engine",
     question:
-      "In the past 7 days, how often have you followed a defined, repeatable process when converting interested prospects into paying clients?",
+      "how often have you followed a defined, repeatable process when converting interested prospects into paying clients?",
     coachingContext:
       "A repeatable sales process protects both the founder and the client — it ensures quality, consistency, and eventually, the ability to delegate.",
     order: 2,
@@ -668,7 +668,7 @@ export const ASSESSMENT_QUESTIONS: AssessmentQuestion[] = [
     practiceId: "pricing-confidence",
     pillarId: "revenue-engine",
     question:
-      "In the past 7 days, how often have you stated your prices confidently, without discounting or apologizing for your rates?",
+      "how often have you stated your prices confidently, without discounting or apologizing for your rates?",
     coachingContext:
       "Pricing confidence is a skill. It comes from knowing your value and trusting your offer — and it affects both revenue and the quality of clients you attract.",
     order: 3,
@@ -680,7 +680,7 @@ export const ASSESSMENT_QUESTIONS: AssessmentQuestion[] = [
     practiceId: "delegation-practice",
     pillarId: "operations-systems",
     question:
-      "In the past 7 days, how often have you delegated or automated work that did not require your personal expertise or decision-making?",
+      "how often have you delegated or automated work that did not require your personal expertise or decision-making?",
     coachingContext:
       "Delegation is not just about saving time — it is about protecting the quality of your thinking for the work only you can do.",
     order: 1,
@@ -691,7 +691,7 @@ export const ASSESSMENT_QUESTIONS: AssessmentQuestion[] = [
     practiceId: "sop-documentation",
     pillarId: "operations-systems",
     question:
-      "In the past 7 days, how often have you documented a recurring process or workflow so it could be followed without your direct involvement?",
+      "how often have you documented a recurring process or workflow so it could be followed without your direct involvement?",
     order: 2,
     status: "active",
   },
@@ -700,7 +700,7 @@ export const ASSESSMENT_QUESTIONS: AssessmentQuestion[] = [
     practiceId: "ai-integration",
     pillarId: "operations-systems",
     question:
-      "In the past 7 days, how often have you used AI tools to meaningfully reduce the time or effort required for a regular business task?",
+      "how often have you used AI tools to meaningfully reduce the time or effort required for a regular business task?",
     coachingContext:
       "AI adoption is not about technology — it is about creating leverage. Even one well-integrated AI workflow can reclaim hours every week.",
     order: 3,
@@ -712,7 +712,7 @@ export const ASSESSMENT_QUESTIONS: AssessmentQuestion[] = [
     practiceId: "financial-review-rhythm",
     pillarId: "financial-intelligence",
     question:
-      "In the past 7 days, how often have you reviewed your key financial metrics — revenue, expenses, and cash position — on a scheduled basis?",
+      "how often have you reviewed your key financial metrics — revenue, expenses, and cash position — on a scheduled basis?",
     coachingContext:
       "Financial reviews are not accounting — they are strategic. Knowing your numbers before problems arrive is the difference between a decision and a crisis.",
     order: 1,
@@ -723,7 +723,7 @@ export const ASSESSMENT_QUESTIONS: AssessmentQuestion[] = [
     practiceId: "cash-flow-awareness",
     pillarId: "financial-intelligence",
     question:
-      "In the past 7 days, how often have you had a clear understanding of your business's cash flow — what is coming in, what is going out, and when?",
+      "how often have you had a clear understanding of your business's cash flow — what is coming in, what is going out, and when?",
     order: 2,
     status: "active",
   },
@@ -733,7 +733,7 @@ export const ASSESSMENT_QUESTIONS: AssessmentQuestion[] = [
     practiceId: "hiring-practice",
     pillarId: "people-leadership",
     question:
-      "In the past 7 days, how often have you made or advanced intentional decisions about who on your team (human or AI) handles what work?",
+      "how often have you made or advanced intentional decisions about who on your team (human or AI) handles what work?",
     coachingContext:
       "Team design is not just for founders with staff — it begins the moment you decide that some work should be done by someone or something other than you.",
     order: 1,
@@ -744,7 +744,7 @@ export const ASSESSMENT_QUESTIONS: AssessmentQuestion[] = [
     practiceId: "leadership-development",
     pillarId: "people-leadership",
     question:
-      "In the past 7 days, how often have you intentionally invested in developing your leadership capabilities — communication, culture, conflict, or vision?",
+      "how often have you intentionally invested in developing your leadership capabilities — communication, culture, conflict, or vision?",
     order: 2,
     status: "active",
   },
@@ -754,7 +754,7 @@ export const ASSESSMENT_QUESTIONS: AssessmentQuestion[] = [
     practiceId: "client-onboarding",
     pillarId: "client-excellence",
     question:
-      "In the past 7 days, how often have you onboarded new clients through a consistent, documented process that set them up for early success?",
+      "how often have you onboarded new clients through a consistent, documented process that set them up for early success?",
     order: 1,
     status: "active",
   },
@@ -763,7 +763,7 @@ export const ASSESSMENT_QUESTIONS: AssessmentQuestion[] = [
     practiceId: "retention-referral",
     pillarId: "client-excellence",
     question:
-      "In the past 7 days, how often have you taken intentional action to strengthen client relationships, improve retention, or generate referrals?",
+      "how often have you taken intentional action to strengthen client relationships, improve retention, or generate referrals?",
     coachingContext:
       "Retention and referrals are the highest-ROI marketing strategy available to a founder. Every invested relationship compounds over time.",
     order: 2,
@@ -775,7 +775,7 @@ export const ASSESSMENT_QUESTIONS: AssessmentQuestion[] = [
     practiceId: "thought-leadership",
     pillarId: "growth-innovation",
     question:
-      "In the past 7 days, how often have you published, spoken, or created content that demonstrated your expertise to an audience beyond your existing clients?",
+      "how often have you published, spoken, or created content that demonstrated your expertise to an audience beyond your existing clients?",
     order: 1,
     status: "active",
   },
@@ -784,7 +784,7 @@ export const ASSESSMENT_QUESTIONS: AssessmentQuestion[] = [
     practiceId: "continuous-learning",
     pillarId: "growth-innovation",
     question:
-      "In the past 7 days, how often have you applied something you recently learned directly to improving or building your business?",
+      "how often have you applied something you recently learned directly to improving or building your business?",
     coachingContext:
       "Learning that does not lead to execution is entertainment. The measure of good learning is what changed in the business afterward.",
     order: 2,
@@ -796,7 +796,7 @@ export const ASSESSMENT_QUESTIONS: AssessmentQuestion[] = [
     practiceId: "protected-recovery",
     pillarId: "human-sustainability",
     question:
-      "In the past 7 days, how often have you protected intentional recovery time — evenings, weekends, or days off — from business work?",
+      "how often have you protected intentional recovery time — evenings, weekends, or days off — from business work?",
     coachingContext:
       "Recovery is not a reward for finishing work. It is the system that makes high-quality work possible in the first place.",
     order: 1,
@@ -807,7 +807,7 @@ export const ASSESSMENT_QUESTIONS: AssessmentQuestion[] = [
     practiceId: "daily-non-negotiables",
     pillarId: "human-sustainability",
     question:
-      "In the past 7 days, how often have you honored your personal Daily Non-Negotiables™ — sleep, movement, nutrition, and personal boundaries?",
+      "how often have you honored your personal Daily Non-Negotiables™ — sleep, movement, nutrition, and personal boundaries?",
     order: 2,
     status: "active",
   },
@@ -816,7 +816,7 @@ export const ASSESSMENT_QUESTIONS: AssessmentQuestion[] = [
     practiceId: "boundary-practice",
     pillarId: "human-sustainability",
     question:
-      "In the past 7 days, how often have you honored clear boundaries between work time and personal time — ending work at the designed time and not resuming?",
+      "how often have you honored clear boundaries between work time and personal time — ending work at the designed time and not resuming?",
     coachingContext:
       "Boundaries are not about discipline — they are about design. When work has a scheduled end, the founder can be fully present on both sides of the line.",
     order: 3,
