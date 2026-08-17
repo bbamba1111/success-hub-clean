@@ -1,6 +1,7 @@
 import { ArrowRight, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { createClient } from "@/lib/supabase/server"
+import { getEntitlements } from "@/lib/entitlements"
 import { getPostLoginDestination } from "@/utils/reality-check-storage"
 import { MondayCtaLink } from "@/components/monday/monday-cta-link"
 import { MondayHero } from "@/components/monday/monday-hero"
@@ -29,17 +30,16 @@ export default async function MondayLandingPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Authenticated members: reuse the existing onboarding/assessment state
-  // check so the CTA takes them straight into their correct current
-  // destination — never re-running checkout or onboarding they've already
-  // completed. getPostLoginDestination() covers every server-checkable gate
-  // (Supabase-backed Reality Check); MondayCtaLink below layers in the one
-  // gate that only lives in localStorage (Business Context™) on the client.
-  //
-  // Unauthenticated visitors scroll to the embedded SamCart checkout further
-  // down this same page — this $497 one-time Monday offer is separate from
-  // the /experiences membership plans and isn't part of that catalog.
-  const primaryHref = user ? await getPostLoginDestination() : "#monday-checkout"
+  // Being logged in is NOT the same as having bought anything — a visitor
+  // can have an account (e.g. from a prior free step) with no paid
+  // membership yet. Only route already-paying members into their
+  // onboarding/daily destination via getPostLoginDestination(); everyone
+  // else (anonymous OR logged in but not paid) scrolls to the embedded
+  // SamCart checkout further down this same page so this $497 offer's CTA
+  // always leads to checkout, not into a gated app page.
+  const entitlements = user ? await getEntitlements() : null
+  const primaryHref =
+    user && entitlements?.active ? await getPostLoginDestination() : "#monday-checkout"
 
   return (
     <main className="min-h-screen bg-white">
