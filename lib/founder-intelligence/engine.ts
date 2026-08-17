@@ -91,7 +91,7 @@ export function deriveNextBestStep(ctx: FounderIntelligenceContext): NextBestSte
       id: "upgrade_locked_day",
       title: "Continue Your Work-Life Balance Business Week™",
       reason: `${today.day.weekday}'s experience continues the installation you began on Monday — unlock it whenever you're ready.`,
-      cta: { label: "Continue Your Business Week™", href: "/pricing" },
+      cta: { label: "Continue Your Business Week™", href: "/experiences" },
       traceableTo: [`Membership access: Monday Installation`, `Today: ${today.day.title}`],
     }
   }

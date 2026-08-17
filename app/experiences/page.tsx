@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { ArrowRight, Sparkles } from "lucide-react"
+import { AlertCircle, ArrowRight, Sparkles } from "lucide-react"
 import { ExperiencesSection } from "@/components/landing/experiences-section"
 
 export const metadata: Metadata = {
@@ -12,13 +12,23 @@ export const metadata: Metadata = {
 /**
  * /experiences — "More Experiences™" (Upgrade)
  *
- * The member's upgrade / continuation pathway. Reuses the exact same
+ * The ONE canonical pricing/upgrade destination in the app. Every entry
+ * point that used to lead to a separate /pricing page (the middleware's
+ * paywall redirect, the /welcome "Link Invalid" fallback, founder-intelligence
+ * CTAs) now points here instead, so there is a single page — not three
+ * differently-styled ones — showing plans. Reuses the exact same
  * <ExperiencesSection> card design shown publicly at /landing#experiences —
  * same PLANS catalog (lib/payments/config.ts), same provider-agnostic
- * `startCheckout` (SamCart today, Stripe later with no code change here) —
- * so members see one consistent pricing experience everywhere it appears.
+ * `startCheckout` (SamCart today, Stripe later with no code change here).
  */
-export default function ExperiencesPage() {
+export default async function ExperiencesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
+  const params = await searchParams
+  const isUpgradeRedirect = params.upgrade === "true"
+
   return (
     <main className="min-h-screen bg-[#FDF6F3]">
       <div className="mx-auto max-w-3xl px-6 pt-16 text-center">
@@ -31,6 +41,18 @@ export default function ExperiencesPage() {
         <p className="mx-auto mt-3 max-w-xl text-[#5C4F55] leading-relaxed text-pretty">
           Your pathway to continue or deepen your Harmony Lane™ experience.
         </p>
+
+        {isUpgradeRedirect && (
+          <div className="mx-auto mt-8 flex max-w-xl items-center gap-3 rounded-2xl border border-[#E26C73]/30 bg-white p-4 text-left shadow-sm">
+            <AlertCircle className="h-5 w-5 shrink-0 text-[#C13B6B]" aria-hidden />
+            <div>
+              <p className="font-poppins text-sm font-semibold text-[#4A3A42]">Membership Required</p>
+              <p className="font-poppins text-sm text-[#6B5860]">
+                The page you tried to access requires a paid membership. Choose a plan below to unlock full access.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Monday is the confirmed, already-purchasable single-day entry
             point — kept as a callout above the membership tiers below rather

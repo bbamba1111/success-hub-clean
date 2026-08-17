@@ -163,7 +163,7 @@ export function WeeklyRhythmGate({ children }: { children: ReactNode }) {
       <LockedDayPreview
         day={access.day}
         progress={buildWeekProgress(accessLevel, new Date(refDateForDay(day)))}
-        onUpgrade={() => router.push("/pricing")}
+        onUpgrade={() => router.push("/experiences")}
         onAskCherryBlossom={() => router.push("/cherry-blossom")}
       />
     )

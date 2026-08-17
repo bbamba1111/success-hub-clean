@@ -166,7 +166,7 @@ export default function WelcomePage() {
               <CardContent>
                 <div className="flex flex-col gap-3">
                   <Button asChild className="w-full bg-gradient-to-r from-[#7FB069] to-[#E26C73] font-semibold text-white">
-                    <Link href="/pricing">Go to Checkout</Link>
+                    <Link href="/experiences">Go to Checkout</Link>
                   </Button>
                   <p className="text-xs text-center text-gray-500">
                     Already have an account?{" "}

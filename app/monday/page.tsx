@@ -37,8 +37,8 @@ export default async function MondayLandingPage() {
   // gate that only lives in localStorage (Business Context™) on the client.
   //
   // Unauthenticated visitors scroll to the embedded SamCart checkout further
-  // down this same page — /pricing is a separate legacy catalog and is not
-  // part of this offer.
+  // down this same page — this $497 one-time Monday offer is separate from
+  // the /experiences membership plans and isn't part of that catalog.
   const primaryHref = user ? await getPostLoginDestination() : "#monday-checkout"
 
   return (
@@ -96,7 +96,7 @@ export default async function MondayLandingPage() {
       <TestimonialsSection />
 
       {/* The live $497 one-time offer — embedded SamCart checkout, not a
-          link out to /pricing (that page is a separate legacy catalog). */}
+          link out to /experiences (that page is the separate membership catalog). */}
       <MondayCheckout />
 
       {/* What it's not */}

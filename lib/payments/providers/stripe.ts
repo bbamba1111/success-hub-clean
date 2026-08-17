@@ -44,7 +44,7 @@ export const stripeProvider: PaymentProvider = {
       mode: isRecurring(plan) ? "subscription" : "payment",
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: request.successUrl || `${appUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: request.cancelUrl || `${appUrl}/pricing`,
+      cancel_url: request.cancelUrl || `${appUrl}/experiences`,
       customer_email: request.email,
       // planId travels with the session so the webhook can resolve the exact
       // plan/tier purchased without re-deriving it from product name strings.

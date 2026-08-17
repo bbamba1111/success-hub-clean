@@ -18,6 +18,9 @@ const PUBLIC_ROUTES = [
   "/focus-areas",
   "/my-results",
   "/preview-results",
+  // /pricing no longer has its own page — it's a thin redirect to
+  // /experiences (the one canonical pricing page) and must stay public so
+  // that redirect resolves before the auth check below runs.
   "/pricing",
   // /welcome is the brand-new customer's FIRST visit after purchase — they
   // have no session yet, so it must be reachable pre-login. Its security is
@@ -34,8 +37,8 @@ const AUTH_ONLY_ROUTES = [
   "/ai-executive-team",
   // "Make Time For More Experiences™" is the upgrade/continuation decision
   // point itself — every logged-in member (paid or not) must be able to
-  // reach it, otherwise non-paid members bounce straight to /pricing and
-  // never see it.
+  // reach it, otherwise non-paid members bounce straight back to the same
+  // page and never see it.
   "/experiences",
 ]
 
@@ -119,9 +122,9 @@ export async function updateSession(request: NextRequest) {
   const isPaid = PAID_TIERS.includes(membershipTier)
 
   if (!isPaid) {
-    // Redirect non-paid users to pricing/upgrade page
+    // Redirect non-paid users to the one canonical upgrade page.
     const url = request.nextUrl.clone()
-    url.pathname = "/pricing"
+    url.pathname = "/experiences"
     url.searchParams.set("upgrade", "true")
     return NextResponse.redirect(url)
   }
