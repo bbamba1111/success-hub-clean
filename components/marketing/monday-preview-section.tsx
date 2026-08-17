@@ -75,7 +75,10 @@ export function MondayPreviewSection() {
               </p>
             </div>
 
-            <Link href="/monday">
+            {/* Public marketing teaser — always takes the visitor straight to
+                the embedded SamCart checkout on /monday, never into a gated
+                app page like Founder Profile™ (that's post-purchase). */}
+            <Link href="/monday#monday-checkout">
               <Button
                 size="lg"
                 className="bg-[#7FB069] hover:bg-[#6FA055] text-white px-10 py-7 text-xl font-poppins font-semibold rounded-full shadow-lg hover:shadow-xl transition-all"
