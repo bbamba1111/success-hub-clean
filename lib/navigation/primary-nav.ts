@@ -5,7 +5,7 @@
  *
  * The visible navigation contains exactly three permanent destinations:
  *
- *   Live & Lead Today™          → /            (daily operating environment)
+ *   Live, Lead & Love Today™     → /            (daily operating environment)
  *   My Harmony Blueprint™        → /my-harmony  (personal operating intelligence)
  *   More Experiences™ (Upgrade)  → /experiences (upgrade / continuation pathway)
  *
@@ -85,7 +85,7 @@ export interface PrimarySection {
 export const PRIMARY_NAV: PrimarySection[] = [
   {
     id: "live-today",
-    navLabel: "Live & Lead Today™",
+    navLabel: "Live, Lead & Love Today™",
     title: "Live, Lead & Love Today™",
     href: "/",
     icon: Sunrise,
@@ -98,7 +98,7 @@ export const PRIMARY_NAV: PrimarySection[] = [
         description: "Your real-time operating dashboard — Harmony Score™, daily focus, rhythm, events, and journey.",
       },
       {
-        label: "Live & Lead Today™",
+        label: "Live, Lead & Love Today™",
         href: "/",
         description: "Your daily operating workspace — Daily Non-Negotiables™ and the 4-Hour CEO Workday™.",
       },
