@@ -85,7 +85,7 @@ export interface PrimarySection {
 export const PRIMARY_NAV: PrimarySection[] = [
   {
     id: "live-today",
-    navLabel: "Live, Lead & Love Today™",
+    navLabel: "Live & Lead Today™",
     title: "Live, Lead & Love Today™",
     href: "/",
     icon: Sunrise,
@@ -126,7 +126,7 @@ export const PRIMARY_NAV: PrimarySection[] = [
   },
   {
     id: "my-harmony",
-    navLabel: "My Work-Life Harmony Blueprint™",
+    navLabel: "My Harmony Blueprint™",
     title: "My Work-Life Harmony Blueprint™",
     href: "/my-harmony",
     icon: Flower2,
@@ -373,17 +373,27 @@ export const INTERNAL_MODULES: PrimarySection[] = [
   },
 ]
 
-/** Convenience lookup for the three primary destinations (for nav rendering). */
-export const PRIMARY_DESTINATIONS = PRIMARY_NAV.map(({ id, navLabel, navBadge, title, href, icon, tagline, built }) => ({
-  id,
-  navLabel,
-  navBadge,
-  title,
-  href,
-  icon,
-  tagline,
-  built,
-}))
+/**
+ * Convenience lookup for the top-nav-visible destinations.
+ *
+ * The nav bar shows only "Live & Lead Today™" and "My Harmony Blueprint™" —
+ * "Make Time For More Experiences™" is intentionally left out here to keep
+ * the bar short and avoid crowding/overlap. Its route, hub page, and the
+ * "Begin Your Journey"/Upgrade pathway elsewhere on the site are unaffected;
+ * it's still fully reachable via getSection("experiences") and PRIMARY_NAV.
+ */
+export const PRIMARY_DESTINATIONS = PRIMARY_NAV.filter(({ id }) => id !== "experiences").map(
+  ({ id, navLabel, navBadge, title, href, icon, tagline, built }) => ({
+    id,
+    navLabel,
+    navBadge,
+    title,
+    href,
+    icon,
+    tagline,
+    built,
+  }),
+)
 
 /** The post-login home for returning members. */
 export const LIVE_TODAY_HREF = "/"
