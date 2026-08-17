@@ -5,9 +5,9 @@
  *
  * The visible navigation contains exactly three permanent destinations:
  *
- *   Live, Lead & Love Today™            → /            (daily operating environment)
- *   My Work-Life Harmony Blueprint™      → /my-harmony  (personal operating intelligence)
- *   Make Time For More Experiences™      → /experiences (upgrade / continuation pathway)
+ *   Live & Lead Today™          → /            (daily operating environment)
+ *   My Harmony Blueprint™        → /my-harmony  (personal operating intelligence)
+ *   More Experiences™ (Upgrade)  → /experiences (upgrade / continuation pathway)
  *
  * IMPORTANT (Pass 4B rules):
  *   - This pass only REORGANIZES. No functionality is built or deleted, and no
@@ -182,7 +182,7 @@ export const PRIMARY_NAV: PrimarySection[] = [
   },
   {
     id: "experiences",
-    navLabel: "Make Time For More Experiences™",
+    navLabel: "More Experiences™",
     navBadge: "Upgrade",
     title: "Make Time For More Experiences™",
     href: "/experiences",
@@ -373,16 +373,8 @@ export const INTERNAL_MODULES: PrimarySection[] = [
   },
 ]
 
-/**
- * Convenience lookup for the top-nav-visible destinations.
- *
- * The nav bar shows only "Live & Lead Today™" and "My Harmony Blueprint™" —
- * "Make Time For More Experiences™" is intentionally left out here to keep
- * the bar short and avoid crowding/overlap. Its route, hub page, and the
- * "Begin Your Journey"/Upgrade pathway elsewhere on the site are unaffected;
- * it's still fully reachable via getSection("experiences") and PRIMARY_NAV.
- */
-export const PRIMARY_DESTINATIONS = PRIMARY_NAV.filter(({ id }) => id !== "experiences").map(
+/** Convenience lookup for the three top-nav-visible destinations (for nav rendering). */
+export const PRIMARY_DESTINATIONS = PRIMARY_NAV.map(
   ({ id, navLabel, navBadge, title, href, icon, tagline, built }) => ({
     id,
     navLabel,

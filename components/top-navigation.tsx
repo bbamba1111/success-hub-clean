@@ -43,11 +43,13 @@ export function TopNavigation() {
   return (
     <nav className="sticky top-0 z-50 border-b border-black/[0.06] bg-white/95 shadow-ds-sm backdrop-blur-sm">
       <div className="max-w-7xl mx-auto px-3 py-4">
-        {/* Relative container: logo left, auth right, nav absolutely centered */}
-        <div className="relative flex items-center justify-between">
+        {/* Flex-in-flow layout (no absolute positioning): logo, nav, and auth
+            share the row via flex so three nav items can never overlap the
+            account email/logout controls, no matter the viewport width. */}
+        <div className="flex items-center gap-3">
 
           {/* Logo — far left */}
-          <Link href="/" className="flex items-center gap-2 shrink-0 relative z-10">
+          <Link href="/" className="flex items-center gap-2 shrink-0">
             <img
               src="/images/logo.png"
               alt="Make Time For More Logo"
@@ -57,9 +59,10 @@ export function TopNavigation() {
             />
           </Link>
 
-          {/* Primary navigation — absolutely centered in the bar */}
+          {/* Primary navigation — centered in the remaining space, shrinks
+              and wraps its own items before it can ever collide with auth. */}
           {user && (
-            <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1 sm:gap-2" style={{ marginLeft: "-168px" }}>
+            <div className="flex min-w-0 flex-1 flex-wrap items-center justify-center gap-1 sm:gap-2">
               {PRIMARY_DESTINATIONS.map(({ id, navLabel, navBadge, href }) => {
                 const active = isActive(href)
                 return (
@@ -73,9 +76,9 @@ export function TopNavigation() {
                       }`}
                       data-testid={`button-nav-${id}`}
                     >
-                      <span className="hidden sm:inline">{navLabel}</span>
+                      <span className="hidden lg:inline">{navLabel}</span>
                       {navBadge && (
-                        <span className="hidden sm:inline rounded-full bg-[#E8C4A0]/40 px-2 py-0.5 font-montserrat text-[10px] font-bold uppercase tracking-[0.1em] text-[#3A2E33]">
+                        <span className="hidden lg:inline rounded-full bg-[#E8C4A0]/40 px-2 py-0.5 font-montserrat text-[10px] font-bold uppercase tracking-[0.1em] text-[#3A2E33]">
                           {navBadge}
                         </span>
                       )}
@@ -87,12 +90,12 @@ export function TopNavigation() {
           )}
 
           {/* Auth — far right */}
-          <div className="flex items-center gap-3 relative z-10 shrink-0">
+          <div className={`flex items-center gap-3 shrink-0 ${user ? "" : "ml-auto"}`}>
             {!loading && (
               <>
                 {user ? (
                   <div className="flex items-center gap-3">
-                    <span className="hidden md:inline text-sm text-muted-foreground">
+                    <span className="hidden xl:inline text-sm text-muted-foreground">
                       {user.email}
                     </span>
                     <Button
