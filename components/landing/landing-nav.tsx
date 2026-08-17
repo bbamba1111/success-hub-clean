@@ -3,15 +3,21 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 
-const LINKS = [
-  { label: "The Business Day", href: "#business-day" },
-  { label: "The Ritual", href: "#ritual" },
-  { label: "Cherry Blossom AI", href: "#cherry-blossom" },
-  { label: "Experiences", href: "#experiences" },
-]
-
-export function LandingNav() {
+/**
+ * `experiencesHref` lets pages that reuse this nav but don't render the
+ * `#experiences` section (e.g. /monday) point "Experiences" and "Begin Your
+ * Journey" somewhere that actually exists on that page instead — the $497
+ * embedded checkout on /monday, rather than a section that isn't there.
+ */
+export function LandingNav({ experiencesHref = "#experiences" }: { experiencesHref?: string }) {
   const [scrolled, setScrolled] = useState(false)
+
+  const links = [
+    { label: "The Business Day", href: "#business-day" },
+    { label: "The Ritual", href: "#ritual" },
+    { label: "Cherry Blossom AI", href: "#cherry-blossom" },
+    { label: "Experiences", href: experiencesHref },
+  ]
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
@@ -41,7 +47,7 @@ export function LandingNav() {
         </Link>
 
         <div className="hidden items-center gap-8 lg:flex">
-          {LINKS.map((link) => (
+          {links.map((link) => (
             <a
               key={link.href}
               href={link.href}
@@ -60,7 +66,7 @@ export function LandingNav() {
             Log In
           </Link>
           <a
-            href="#experiences"
+            href={experiencesHref}
             className="font-poppins rounded-full bg-[#E26C73] px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-[#E26C73]/25 transition-transform hover:scale-[1.03] hover:bg-[#d65a62]"
           >
             Begin Your Journey

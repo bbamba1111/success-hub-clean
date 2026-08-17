@@ -43,7 +43,10 @@ export default async function MondayLandingPage() {
 
   return (
     <main className="min-h-screen bg-white">
-      <LandingNav />
+      {/* /monday doesn't render the #experiences showcase section, so send
+          "Experiences" and "Begin Your Journey" straight to the embedded
+          $497 checkout below instead of a section that isn't on this page. */}
+      <LandingNav experiencesHref="#monday-checkout" />
       <MondayHero primaryHref={primaryHref} />
 
       {/* Monday explainer */}

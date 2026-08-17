@@ -36,7 +36,7 @@ export function MondayCheckout() {
             // JSX intrinsic declaration for a third-party custom element.
             dangerouslySetInnerHTML={{
               __html:
-                '<sc-checkout product="1122707" subdomain="enrollnow" domain="mysamcart.com" style="width:100%"></sc-checkout>',
+                '<sc-checkout product="1122707" subdomain="enrollnow" domain="samcart.com" style="width:100%"></sc-checkout>',
             }}
           />
         </div>
