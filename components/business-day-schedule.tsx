@@ -157,6 +157,7 @@ export function BusinessDaySchedule() {
                 buttonText={block.mondayOnly ? block.cta : "Continue Segment™"}
                 status={state}
                 blockId={block.id}
+                isClosed={block.engagement === "closed"}
                 description={block.description}
                 onAction={scrollToOperatingPlanner}
                 onTransition={

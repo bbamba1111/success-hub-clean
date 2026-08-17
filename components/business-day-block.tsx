@@ -45,6 +45,10 @@ export interface BusinessDayBlockProps {
   operatingRulePreview?: string
   /** Rich content for the "About This Segment" accordion. Falls back to description. */
   aboutContent?: ReactNode
+  /** Overnight closure (e.g. Unplug Space™ / Digital Detox™) — nothing is
+   *  actionable here, so both the expand toggle and the "Continue Segment™"
+   *  CTA are hidden entirely rather than opening onto an empty accordion. */
+  isClosed?: boolean
 }
 
 const STATUS_LABEL: Record<BlockStatus, string> = {
@@ -79,6 +83,7 @@ export function BusinessDayBlock({
   segmentRemaining,
   operatingRulePreview,
   aboutContent,
+  isClosed = false,
 }: BusinessDayBlockProps) {
   const isCurrent = status === "current"
   const showProgress = isCurrent && typeof segmentProgress === "number"
@@ -221,8 +226,10 @@ export function BusinessDayBlock({
 
               {/* One clear next action: only the live segment invites the member
                   into the Operating Planner™ workspace below the hero. Upcoming
-                  and completed segments stay calm and action-free. */}
-              {isCurrent && (
+                  and completed segments stay calm and action-free. Overnight
+                  closures (Unplug Space™) have no action at all — there is
+                  nothing to continue into while the community is closed. */}
+              {isCurrent && !isClosed && (
                 <div className="mt-4 flex flex-wrap items-center gap-2.5">
                   <Button
                     size="sm"
@@ -266,26 +273,30 @@ export function BusinessDayBlock({
           </div>
         </div>
 
-        {/* Expand toggle — always visible */}
-        <button
-          type="button"
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
-          className="flex w-full items-center justify-center gap-1.5 border-t border-black/[0.06] py-3 font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60 transition-colors hover:bg-black/[0.02]"
-        >
-          <ChevronDown
-            className={`h-3.5 w-3.5 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
-            aria-hidden
-          />
-          {open
-            ? "Close"
-            : blockId && SPACE_LABEL[blockId as keyof typeof SPACE_LABEL]
-              ? `Enter ${SPACE_LABEL[blockId as keyof typeof SPACE_LABEL]}`
-              : "Open Segment"}
-        </button>
+        {/* Expand toggle — hidden entirely for overnight closures (Unplug
+            Space™): there is no live room, planner, or music to open while
+            the community is closed for the night. */}
+        {!isClosed && (
+          <button
+            type="button"
+            aria-expanded={open}
+            onClick={() => setOpen((v) => !v)}
+            className="flex w-full items-center justify-center gap-1.5 border-t border-black/[0.06] py-3 font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60 transition-colors hover:bg-black/[0.02]"
+          >
+            <ChevronDown
+              className={`h-3.5 w-3.5 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+              aria-hidden
+            />
+            {open
+              ? "Close"
+              : blockId && SPACE_LABEL[blockId as keyof typeof SPACE_LABEL]
+                ? `Enter ${SPACE_LABEL[blockId as keyof typeof SPACE_LABEL]}`
+                : "Open Segment"}
+          </button>
+        )}
 
         {/* 3-part expandable body */}
-        {open && (
+        {!isClosed && open && (
           <div className="border-t border-black/[0.06]">
 
             {/* Reflection Space™ — guided Work-Life Balance Reality Check™ for Monday */}
