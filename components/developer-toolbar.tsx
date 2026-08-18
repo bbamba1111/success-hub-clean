@@ -194,16 +194,6 @@ export function DeveloperToolbar() {
             ))}
           </Field>
 
-          {/* TEMP-QA: verifying Cherry Blossom Check-in™ 5-min gate, remove after testing */}
-          <Field label="QA: GPS 4m left">
-            <Pill
-              active={override.minutesSinceMidnight === 626}
-              onClick={() => setOverride({ dayOfWeek: 2, minutesSinceMidnight: 626, blockId: undefined })}
-            >
-              10:26 Tue
-            </Pill>
-          </Field>
-
           <Field label="Installation Week">
             {WEEK_PRESETS.map((w) => (
               <Pill
