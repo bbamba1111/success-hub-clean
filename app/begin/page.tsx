@@ -1,15 +1,17 @@
 import { redirect } from "next/navigation"
 
 /**
- * /begin — Onboarding entry point.
+ * /begin — Weekly Reality Check™ entry point.
  *
- * Updated flow (Phase 11):
- *   /begin → /founder-profile → /audit → /entrepreneur-success-assessment
- *   → /reality-check → /design-my-week → /live-today
+ * Reached from getPostLoginDestination() when the founder's one-time
+ * Founder Profile™ + Business Context™ on-ramp is already complete but
+ * this week's Weekly Reality Check™ (the Work-Life Balance Audit™) hasn't
+ * been done yet. /founder-profile is a REQUIRED ONE-TIME on-ramp gate —
+ * completed members must never be sent back through it here.
  *
- * /begin now redirects immediately to /founder-profile so any existing
- * links or email campaigns that point to /begin continue to work.
+ * /begin redirects to /audit so any existing links or email campaigns that
+ * point to /begin continue to work.
  */
 export default function BeginPage() {
-  redirect("/founder-profile")
+  redirect("/audit")
 }

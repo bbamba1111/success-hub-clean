@@ -30,7 +30,7 @@ export function CherryBlossomThankYouClient() {
 
   return (
     <CherryBlossomScene variant="ceo-office" minHeight="min-h-screen">
-      <CherryBlossomSceneCard title="Beautiful. Your on-ramp is complete." time="Ready when you are">
+      <CherryBlossomSceneCard title="Beautiful. Your On-Ramp Into Harmony Lane is complete." time="Ready when you are">
         <p>
           Thank you for introducing yourself — and your business — to Harmony Lane™.
         </p>
