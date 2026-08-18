@@ -5,9 +5,13 @@
  *
  * The visible navigation contains exactly three permanent destinations:
  *
- *   Live, Lead & Love Today™     → /            (daily operating environment)
- *   My Harmony Blueprint™        → /my-harmony  (personal operating intelligence)
- *   More Experiences™ (Upgrade)  → /experiences (upgrade / continuation pathway)
+ *   Live, Lead & Love Today™     → /             (daily operating environment)
+ *   My Blueprint™                → /my-blueprint (personal operating intelligence)
+ *   More Experiences™ (Upgrade)  → /experiences  (upgrade / continuation pathway)
+ *
+ * NOTE: /my-harmony remains live as a fallback route (not linked from nav)
+ * until the new /my-blueprint experience is fully verified. Do not delete or
+ * redirect it yet.
  *
  * IMPORTANT (Pass 4B rules):
  *   - This pass only REORGANIZES. No functionality is built or deleted, and no
@@ -126,9 +130,9 @@ export const PRIMARY_NAV: PrimarySection[] = [
   },
   {
     id: "my-harmony",
-    navLabel: "My Harmony Blueprint™",
+    navLabel: "My Blueprint™",
     title: "My Work-Life Harmony Blueprint™",
-    href: "/my-harmony",
+    href: "/my-blueprint",
     icon: Flower2,
     tagline: "Your personal operating intelligence — profile, assessments, memory, and whole-life progress.",
     built: true,
