@@ -8,6 +8,7 @@ import { OperatingPlanner } from "@/components/operating-planner/operating-plann
 import { PLANNER_CONFIG } from "@/components/operating-planner/planner-config"
 import { ReflectionSpace } from "@/components/reflection-space"
 import { DebriefSpace } from "@/components/debrief-space"
+import { DecideIdentitySpace } from "@/components/daily-identity/decide-identity-space"
 import { SoundRitual } from "@/components/sound-ritual"
 import { useActiveSpace } from "@/components/active-space-provider"
 import { SPACE_LABEL } from "@/operating-engine/config/space-labels"
@@ -313,17 +314,27 @@ export function BusinessDayBlock({
               </div>
             )}
 
+            {/* Decide My Identity & Design My Business Boundaries For Today™ (Tue–Thu) —
+                Weekly Data Review + Founder GPS™ recap, identity + boundary decision,
+                and the CEO Workday™ outcome picker that feeds directly into the
+                Weekly WLBB Menu™'s DailyEntry (same store the CEO Workspace™ reads). */}
+            {blockId === "daily-planning-gps" && (
+              <div className="px-7 py-8">
+                <DecideIdentitySpace segmentRemaining={segmentRemaining} />
+              </div>
+            )}
+
             {/* Operating Planner™ — chip picker → commitment → declaration → Install This™
                 Uses the exact same working component as /design-my-week.
                 Skips digital-detox and the two Monday-only reflective blocks (no PLANNER_CONFIG entry). */}
-            {blockId && blockId !== "digital-detox" && blockId !== "monday-reality-check" && blockId !== "monday-debrief" && PLANNER_CONFIG[blockId as keyof typeof PLANNER_CONFIG] && (
+            {blockId && blockId !== "digital-detox" && blockId !== "monday-reality-check" && blockId !== "monday-debrief" && blockId !== "daily-planning-gps" && PLANNER_CONFIG[blockId as keyof typeof PLANNER_CONFIG] && (
               <OperatingPlanner blockId={blockId as any} />
             )}
 
             {/* Row 1 — Join Us Live™. Flex Time & Preparation™ and the Work-Life
                 Balance Debrief™ are intentionally independent of Zoom — these
                 are self-guided windows, not live rooms. */}
-            {blockId !== "early-access" && blockId !== "monday-debrief" && (
+            {blockId !== "early-access" && blockId !== "monday-debrief" && blockId !== "daily-planning-gps" && (
               <>
                 <div className="px-7 py-5">
                   <a
