@@ -51,41 +51,54 @@ export function AdaptiveWorkspaceSectionClient() {
 
   useEffect(() => {
     // Derive workspace config directly from localStorage stores — no HarmonyProvider needed.
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { getBusinessContext } = require("@/lib/business-context/business-context-store")
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { getBusinessStage } = require("@/lib/business-stage/business-stage-store")
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { analyzePatterns } = require("@/lib/harmony-memory/pattern-recognition-engine")
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { getRecommendationHistory } = require("@/lib/founder-gps/history/recommendation-history-store")
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { getBusinessContext, saveBusinessContext } = require("@/lib/business-context/business-context-store")
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { getBusinessStage } = require("@/lib/business-stage/business-stage-store")
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { analyzePatterns } = require("@/lib/harmony-memory/pattern-recognition-engine")
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { getRecommendationHistory } = require("@/lib/founder-gps/history/recommendation-history-store")
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { getBusinessContextFromDb } = require("@/utils/business-context-storage")
 
-      const bc = getBusinessContext()
-      const stage = getBusinessStage()
-      const gpsHistory: RecommendationHistoryEntry[] = getRecommendationHistory()
-      const patterns: PatternSignal[] = analyzePatterns(gpsHistory).slice(0, 3)
+    const buildDerived = (bc: ReturnType<typeof getBusinessContext>) => {
+      try {
+        const stage = getBusinessStage()
+        const gpsHistory: RecommendationHistoryEntry[] = getRecommendationHistory()
+        const patterns: PatternSignal[] = analyzePatterns(gpsHistory).slice(0, 3)
 
-      // Build a minimal aggregate object matching what deriveWorkspaceConfig expects
-      const miniAgg = {
-        businessStage: stage,
-        businessContext: bc,
-        patternSignals: patterns,
-        inLifeProtectionMode: false,
-        consecutiveCompletions: 0,
-        hasMomentum: false,
-        upcomingLifeEvents: [],
-        daysUntilNextSignificantEvent: null,
-        biggestOpportunities: bc?.biggestOpportunities ?? [],
-        biggestGoals: bc?.biggestGoals ?? [],
+        // Build a minimal aggregate object matching what deriveWorkspaceConfig expects
+        const miniAgg = {
+          businessStage: stage,
+          businessContext: bc,
+          patternSignals: patterns,
+          inLifeProtectionMode: false,
+          consecutiveCompletions: 0,
+          hasMomentum: false,
+          upcomingLifeEvents: [],
+          daysUntilNextSignificantEvent: null,
+          biggestOpportunities: bc?.biggestOpportunities ?? [],
+          biggestGoals: bc?.biggestGoals ?? [],
+        }
+
+        const config = deriveWorkspaceConfig(miniAgg as unknown as Parameters<typeof deriveWorkspaceConfig>[0], patterns)
+        const rituals = derivePersonalizedRituals(patterns, gpsHistory)
+        setDerived({ config, rituals })
+      } catch {
+        // no-op — component shows empty state
       }
-
-      const config = deriveWorkspaceConfig(miniAgg as unknown as Parameters<typeof deriveWorkspaceConfig>[0], patterns)
-      const rituals = derivePersonalizedRituals(patterns, gpsHistory)
-      setDerived({ config, rituals })
-    } catch {
-      // no-op — component shows empty state
     }
+
+    // Instant paint from the local cache, then reconcile with the database —
+    // the account's canonical Business Context Profile™ — once it resolves.
+    buildDerived(getBusinessContext())
+    getBusinessContextFromDb().then((record: { updatedAt: string | null } | null) => {
+      if (!record) return
+      const { updatedAt: _updatedAt, ...profile } = record
+      saveBusinessContext(profile)
+      buildDerived(profile)
+    })
 
     // Adaptation history
     setAdaptHistory(getAdaptationHistory())

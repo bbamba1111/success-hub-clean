@@ -1,9 +1,15 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Camera, ChevronRight, ChevronLeft, User, Plus, X } from "lucide-react"
-import { hasCompletedFounderProfile, saveFounderProfile } from "@/lib/founder-profile/founder-profile-store"
+import { hasCompletedFounderProfile, saveFounderProfile, getFounderProfile } from "@/lib/founder-profile/founder-profile-store"
+import {
+  getFounderProfileFromDb,
+  saveFounderProfileToDb,
+  uploadFounderProfilePhoto,
+  type FounderProfileData,
+} from "@/utils/founder-profile-storage"
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -135,6 +141,8 @@ export function FounderProfileForm() {
   const searchParams = useSearchParams()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [saving, setSaving] = useState(false)
+  const [uploadingPhoto, setUploadingPhoto] = useState(false)
+  const [pendingPhotoFile, setPendingPhotoFile] = useState<File | null>(null)
 
   // /founder-profile is reached two ways: first-time on-ramp (routes on to
   // /business-context) or a returning member editing from My Work-Life
@@ -175,6 +183,24 @@ export function FounderProfileForm() {
     accountabilityPartner: "",
   })
 
+  // Hydrate from the local cache first (instant), then reconcile with the
+  // database — the account's canonical Founder Profile™ — so this page and
+  // every other engine reading it (Cherry Blossom, Harmony Context, etc.)
+  // stay in sync across devices and browser sessions.
+  useEffect(() => {
+    const cached = getFounderProfile()
+    if (cached) {
+      setForm((prev) => ({ ...prev, ...(cached as Partial<FormData>) }))
+    }
+
+    getFounderProfileFromDb().then((record) => {
+      if (!record) return
+      const { completedAt: _completedAt, updatedAt: _updatedAt, ...profileData } = record
+      setForm((prev) => ({ ...prev, ...profileData }))
+      saveFounderProfile(profileData as unknown as Record<string, unknown>)
+    })
+  }, [])
+
   function set<K extends keyof FormData>(key: K, value: FormData[K]) {
     setForm((prev) => ({ ...prev, [key]: value }))
   }
@@ -182,7 +208,11 @@ export function FounderProfileForm() {
   function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
+    // Show the picked photo instantly via a local object URL preview, then
+    // upload it to private storage in the background and swap in the
+    // durable URL once ready so refresh/other devices see the same photo.
     set("profilePhoto", URL.createObjectURL(file))
+    setPendingPhotoFile(file)
   }
 
   // Children helpers
@@ -215,10 +245,25 @@ export function FounderProfileForm() {
 
   async function handleSaveAndContinue() {
     setSaving(true)
-    // TODO: also persist to Supabase (localStorage is the source of truth for
-    // instant UX and the completion gate today — mirrors business-context-store.ts).
-    saveFounderProfile(form as unknown as Record<string, unknown>)
-    await new Promise((r) => setTimeout(r, 600))
+
+    // If a new photo was picked, upload it to private storage first so we
+    // save a durable URL rather than the temporary local object URL.
+    let finalForm = form
+    if (pendingPhotoFile) {
+      setUploadingPhoto(true)
+      const uploadedUrl = await uploadFounderProfilePhoto(pendingPhotoFile)
+      setUploadingPhoto(false)
+      if (uploadedUrl) {
+        finalForm = { ...form, profilePhoto: uploadedUrl }
+        setForm(finalForm)
+      }
+    }
+
+    // Local cache for instant loads, then the database — the account's
+    // canonical Founder Profile™ — so Cherry Blossom and every other engine
+    // reading it can see this the moment it's saved, from any device.
+    saveFounderProfile(finalForm as unknown as Record<string, unknown>)
+    await saveFounderProfileToDb(finalForm as FounderProfileData)
 
     if (wasAlreadyComplete.current) {
       // Returning member editing an already-complete profile — return home,
@@ -490,7 +535,7 @@ export function FounderProfileForm() {
                   />
                   <input
                     type="date"
-                    className={`${inputClass} w-full sm:w-[11.5rem] sm:shrink-0`}
+                    className={`${inputClass} w-full sm:w-[13.5rem] sm:shrink-0`}
                     value={child.birthday}
                     onChange={(e) => updateChild(i, "birthday", e.target.value)}
                     aria-label="Birthday"

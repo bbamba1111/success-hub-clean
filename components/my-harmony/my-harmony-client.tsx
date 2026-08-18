@@ -22,7 +22,8 @@ import {
   TrendingUp,
   Users,
 } from "lucide-react"
-import { getBusinessContext } from "@/lib/business-context/business-context-store"
+import { getBusinessContext, saveBusinessContext } from "@/lib/business-context/business-context-store"
+import { getBusinessContextFromDb } from "@/utils/business-context-storage"
 import { getFounderLearning } from "@/lib/founder-learning/founder-learning-store"
 import type { BusinessContextProfile } from "@/lib/business-context/types"
 import type { FounderLearningProfile } from "@/lib/founder-learning/types"
@@ -292,9 +293,17 @@ export function MyHarmonyContextSections() {
   const [ready, setReady] = useState(false)
 
   useEffect(() => {
+    // Instant paint from the local cache, then reconcile with the database —
+    // the account's canonical Business Context Profile™ — once it resolves.
     setBc(getBusinessContext())
     setFl(getFounderLearning())
     setReady(true)
+    getBusinessContextFromDb().then((record) => {
+      if (!record) return
+      const { updatedAt: _updatedAt, ...profile } = record
+      setBc(profile)
+      saveBusinessContext(profile)
+    })
   }, [])
 
   if (!ready) return null

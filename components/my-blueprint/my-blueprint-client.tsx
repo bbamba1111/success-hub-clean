@@ -31,8 +31,10 @@ import {
 
 import { getAuditResults, type AuditData } from "@/utils/audit-storage"
 import { getEsaResults } from "@/lib/entrepreneur-success/esa-storage"
-import { getBusinessContext } from "@/lib/business-context/business-context-store"
-import { getFounderProfile } from "@/lib/founder-profile/founder-profile-store"
+import { getBusinessContext, saveBusinessContext } from "@/lib/business-context/business-context-store"
+import { getFounderProfile, saveFounderProfile } from "@/lib/founder-profile/founder-profile-store"
+import { getBusinessContextFromDb } from "@/utils/business-context-storage"
+import { getFounderProfileFromDb } from "@/utils/founder-profile-storage"
 import { getOperatingCenterData, type OperatingCenterData } from "@/utils/reality-check-storage"
 import { CADENCES } from "@/lib/assessment-cadence"
 import type { EsaResults } from "@/lib/entrepreneur-success/types"
@@ -248,8 +250,23 @@ export function MyBlueprintClient() {
     window.scrollTo({ top: 0, behavior: "instant" })
     setLifeData(getAuditResults())
     setBizData(getEsaResults())
+    // Instant paint from the local cache, then reconcile with the database —
+    // the account's canonical Founder Profile™ / Business Context Profile™ —
+    // once each resolves.
     setFounder(getFounderProfile())
     setBizContext(getBusinessContext())
+    getFounderProfileFromDb().then((record) => {
+      if (!record) return
+      const { completedAt: _completedAt, updatedAt: _updatedAt, ...profile } = record
+      setFounder(profile)
+      saveFounderProfile(profile as unknown as Record<string, unknown>)
+    })
+    getBusinessContextFromDb().then((record) => {
+      if (!record) return
+      const { updatedAt: _updatedAt, ...profile } = record
+      setBizContext(profile)
+      saveBusinessContext(profile)
+    })
     getOperatingCenterData()
       .then(setReality)
       .finally(() => setReady(true))
@@ -353,7 +370,7 @@ export function MyBlueprintClient() {
 
         <LayerDivider label="Life + Business" />
 
-        {/* 02 + 03 — LIFE & BUSINESS ───────────────────────────────────── */}
+        {/* 02 + 03 — LIFE & BUSINESS ─────────────────────────���─────────── */}
         <div className="grid gap-6 sm:grid-cols-2">
           <BlueprintSection
             eyebrow="02 — Life"

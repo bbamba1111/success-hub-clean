@@ -13,7 +13,8 @@ import {
 } from "lucide-react"
 import { getAuditResults } from "@/utils/audit-storage"
 import { getEsaResults } from "@/lib/entrepreneur-success/esa-storage"
-import { getBusinessContext } from "@/lib/business-context/business-context-store"
+import { getBusinessContext, saveBusinessContext } from "@/lib/business-context/business-context-store"
+import { getBusinessContextFromDb } from "@/utils/business-context-storage"
 import { scoreLabel } from "@/lib/entrepreneur-success/scoring"
 import { CherryBlossomScene, CherryBlossomSceneCard } from "@/components/cherry-blossom/cherry-blossom-scene"
 import { MonthlyHarmonyCalendar } from "@/components/harmony-blueprint/monthly-harmony-calendar"
@@ -182,8 +183,16 @@ export function HarmonyBlueprintClient() {
     window.scrollTo({ top: 0, behavior: "instant" })
     setLifeData(getAuditResults())
     setBizData(getEsaResults())
+    // Instant paint from the local cache, then reconcile with the database —
+    // the account's canonical Business Context Profile™ — once it resolves.
     setBcData(getBusinessContext())
     setReady(true)
+    getBusinessContextFromDb().then((record) => {
+      if (!record) return
+      const { updatedAt: _updatedAt, ...profile } = record
+      setBcData(profile)
+      saveBusinessContext(profile)
+    })
   }, [])
 
   const lifeScore = lifeData?.overallScore ?? null

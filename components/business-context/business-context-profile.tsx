@@ -17,8 +17,9 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import { ArrowRight, Check, ChevronRight, Plus, X } from "lucide-react"
-import { saveBusinessContext } from "@/lib/business-context/business-context-store"
+import { saveBusinessContext, getBusinessContext } from "@/lib/business-context/business-context-store"
 import { saveFounderLearning } from "@/lib/founder-learning/founder-learning-store"
+import { saveBusinessContextToDb, getBusinessContextFromDb } from "@/utils/business-context-storage"
 import {
   COMMUNICATION_LEVELS,
   LEARNING_TOPIC_OPTIONS,
@@ -531,6 +532,49 @@ export function BusinessContextProfile({ onDone }: { onDone?: () => void } = {})
     }, 60)
   }, [step])
 
+  // Reconcile the local cache with the database — the account's canonical
+  // Business Context Profile™ — so a founder editing this on a new device or
+  // after clearing local storage picks up right where they left off.
+  useEffect(() => {
+    getBusinessContextFromDb().then((record) => {
+      if (!record) return
+      const cached = getBusinessContext()
+      // Local cache already reflects the DB (or is newer); don't clobber
+      // in-progress edits with a stale fetch.
+      if (cached && cached.completedAt === record.completedAt) return
+
+      setBusinessName(record.businessName)
+      setBusinessStage(record.businessStage)
+      setBusinessModel(record.businessModel)
+      setIndustry(record.industry)
+      setFounderRole(record.founderRole)
+      setTeamSize(record.teamSize)
+      setRevenueStage(record.revenueStage)
+      setBiggestGoals(record.biggestGoals)
+      setBiggestChallenges(record.biggestChallenges)
+      setOperatingEnvironment(record.operatingEnvironment ?? null)
+      setSupportNetwork(record.supportNetwork ?? [])
+      setBiggestOpportunities(record.biggestOpportunities ?? [])
+      setBiggestGoalText(record.biggestGoalText ?? "")
+      setBiggestChallengeText(record.biggestChallengeText ?? "")
+      setSuccessVision(record.successVision ?? "")
+      setVision(record.longTermVision)
+      setCapitalStrategy(record.capitalStrategy)
+      setGrowthVision(record.growthVision)
+      setExitVision(record.exitVision)
+      setBusinessCredit(record.businessCredit)
+      setBusinessBanking(record.businessBanking)
+      setFinancialFoundation(record.financialFoundation)
+      setWealthBuilding(record.wealthBuildingInterests)
+      setCommLevel(record.communicationLevel)
+      setLearningInterests(record.learningInterests)
+
+      const { updatedAt: _updatedAt, ...profileData } = record
+      saveBusinessContext(profileData)
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const advance = useCallback(() => {
     hasAdvancedRef.current = true
     setStep((s) => Math.min(s + 1, TOTAL_STEPS - 1))
@@ -556,7 +600,7 @@ export function BusinessContextProfile({ onDone }: { onDone?: () => void } = {})
     const resolvedIndustry = industry === "Other" ? (customIndustry || "Other") : (industry ?? "")
     const learningQueue = collectLearningQueue()
 
-    saveBusinessContext({
+    const profile = {
       completedAt: new Date().toISOString(),
       businessName,
       businessStage: businessStage!,
@@ -583,7 +627,13 @@ export function BusinessContextProfile({ onDone }: { onDone?: () => void } = {})
       wealthBuildingInterests: wealthBuilding,
       communicationLevel: commLevel!,
       learningInterests,
-    })
+    }
+
+    // Local cache for instant loads, then the database — the account's
+    // canonical Business Context Profile™ — so every engine reading it can
+    // see this the moment it's saved, from any device.
+    saveBusinessContext(profile)
+    void saveBusinessContextToDb(profile)
 
     saveFounderLearning({
       completedAt: new Date().toISOString(),

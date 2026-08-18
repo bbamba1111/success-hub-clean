@@ -175,4 +175,14 @@ export interface HarmonyContextValue {
    * Drives Learn Before You Launch™ curriculum prioritization.
    */
   founderLearning: FounderLearningProfile | null
+
+  /* -- Founder Profile™ -------------------------------------------------- */
+  /**
+   * The founder's Founder Profile™ — identity, family, and lifestyle context
+   * collected on the required onboarding on-ramp. Null until the founder
+   * completes the Founder Profile™ form. Loosely typed (mirrors the real
+   * form's `FormData` shape) since this engine only passes it through to
+   * consumers like Cherry Blossom™ — it does not interpret individual fields.
+   */
+  founderProfile: Record<string, unknown> | null
 }

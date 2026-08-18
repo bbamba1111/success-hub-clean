@@ -30,38 +30,51 @@ export function ExecutiveOfficePanelClient() {
   const [derived, setDerived] = useState<Derived | null>(null)
 
   useEffect(() => {
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { getBusinessContext } = require("@/lib/business-context/business-context-store")
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { getBusinessStage } = require("@/lib/business-stage/business-stage-store")
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { getRecommendationHistory } = require("@/lib/founder-gps/history/recommendation-history-store")
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { analyzePatterns } = require("@/lib/harmony-memory/pattern-recognition-engine")
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { getBusinessContext, saveBusinessContext } = require("@/lib/business-context/business-context-store")
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { getBusinessStage } = require("@/lib/business-stage/business-stage-store")
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { getRecommendationHistory } = require("@/lib/founder-gps/history/recommendation-history-store")
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { analyzePatterns } = require("@/lib/harmony-memory/pattern-recognition-engine")
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { getBusinessContextFromDb } = require("@/utils/business-context-storage")
 
-      const bc = getBusinessContext()
-      const stage = getBusinessStage()
-      const gpsHistory = getRecommendationHistory()
-      const patterns = analyzePatterns(gpsHistory).slice(0, 3)
+    const buildDerived = (bc: ReturnType<typeof getBusinessContext>) => {
+      try {
+        const stage = getBusinessStage()
+        const gpsHistory = getRecommendationHistory()
+        const patterns = analyzePatterns(gpsHistory).slice(0, 3)
 
-      // Build a minimal context object that satisfies assembleHarmonyContext
-      const miniCtx = {
-        ready: true,
-        businessStage: stage,
-        businessContext: bc,
-        patternSignals: patterns,
-        hasDesignedWeek: gpsHistory.length > 0,
+        // Build a minimal context object that satisfies assembleHarmonyContext
+        const miniCtx = {
+          ready: true,
+          businessStage: stage,
+          businessContext: bc,
+          patternSignals: patterns,
+          hasDesignedWeek: gpsHistory.length > 0,
+        }
+
+        const agg = assembleHarmonyContext(miniCtx as Parameters<typeof assembleHarmonyContext>[0])
+        const findings = deriveExecutiveFindings(agg)
+        const brief = buildExecutiveBrief(findings, agg)
+        const statuses = deriveExecutiveStatuses(findings)
+        setDerived({ findings, brief, statuses })
+      } catch {
+        // no-op — component will render loading state
       }
-
-      const agg = assembleHarmonyContext(miniCtx as Parameters<typeof assembleHarmonyContext>[0])
-      const findings = deriveExecutiveFindings(agg)
-      const brief = buildExecutiveBrief(findings, agg)
-      const statuses = deriveExecutiveStatuses(findings)
-      setDerived({ findings, brief, statuses })
-    } catch {
-      // no-op — component will render loading state
     }
+
+    // Instant paint from the local cache, then reconcile with the database —
+    // the account's canonical Business Context Profile™ — once it resolves.
+    buildDerived(getBusinessContext())
+    getBusinessContextFromDb().then((record: { updatedAt: string | null } | null) => {
+      if (!record) return
+      const { updatedAt: _updatedAt, ...profile } = record
+      saveBusinessContext(profile)
+      buildDerived(profile)
+    })
   }, [])
 
   if (!derived) {
