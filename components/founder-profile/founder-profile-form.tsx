@@ -490,7 +490,7 @@ export function FounderProfileForm() {
                   />
                   <input
                     type="date"
-                    className={`${inputClass} w-full sm:w-[8.5rem] sm:shrink-0`}
+                    className={`${inputClass} w-full sm:w-[11.5rem] sm:shrink-0`}
                     value={child.birthday}
                     onChange={(e) => updateChild(i, "birthday", e.target.value)}
                     aria-label="Birthday"
