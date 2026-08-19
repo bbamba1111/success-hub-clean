@@ -15,6 +15,11 @@ export async function POST(req: NextRequest) {
     movement_type,
     duration_minutes,
     intention_notes,
+    // Phase 1: Decide → Embody — present only when the founder started from
+    // the "Where do I need to focus today?" opportunity picker.
+    opportunity_source,
+    opportunity_area,
+    opportunity_score,
   } = body
 
   if (!segment_id) {
@@ -33,6 +38,9 @@ export async function POST(req: NextRequest) {
         movement_type: movement_type ?? null,
         duration_minutes: duration_minutes ?? null,
         intention_notes: intention_notes ?? null,
+        opportunity_source: opportunity_source ?? null,
+        opportunity_area: opportunity_area ?? null,
+        opportunity_score: opportunity_score ?? null,
         updated_at: new Date().toISOString(),
       },
       { onConflict: "user_id,segment_id,segment_date" }

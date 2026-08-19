@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { ChevronDown } from "lucide-react"
 import { OperatingPlanner } from "@/components/operating-planner/operating-planner"
 import { PLANNER_CONFIG } from "@/components/operating-planner/planner-config"
+import { TodaysMoveCard } from "@/components/operating-planner/todays-move-card"
 import { ReflectionSpace } from "@/components/reflection-space"
 import { DebriefSpace } from "@/components/debrief-space"
 import { DecideIdentitySpace } from "@/components/daily-identity/decide-identity-space"
@@ -322,6 +323,14 @@ export function BusinessDayBlock({
               <div className="px-7 py-8">
                 <DecideIdentitySpace segmentRemaining={segmentRemaining} />
               </div>
+            )}
+
+            {/* Today's Move™ (Phase 1: Execute → Check) — shows the Decide-originated
+                declaration + why-it-matters for THIS segment, if the founder set one
+                today via the "Where do I need to focus today?" picker. Renders nothing
+                (no regression) when no such declaration exists. */}
+            {blockId && blockId !== "digital-detox" && blockId !== "monday-reality-check" && blockId !== "monday-debrief" && blockId !== "daily-planning-gps" && PLANNER_CONFIG[blockId as keyof typeof PLANNER_CONFIG] && (
+              <TodaysMoveCard segmentId={blockId} segmentRemaining={segmentRemaining} />
             )}
 
             {/* Operating Planner™ — chip picker → commitment → declaration → Install This™

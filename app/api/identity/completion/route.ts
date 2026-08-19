@@ -109,6 +109,10 @@ export async function POST(req: NextRequest) {
     // context for reflection generation
     intended_type,
     intended_duration,
+    // Phase 1: Check — the raw 4-state founder-facing value
+    // (done | partial | not-yet | changed) alongside the mapped 3-state
+    // completion_status the reflection prompts above already expect.
+    founder_check_in_status,
   } = body
 
   if (!segment_id || !completion_status) {
@@ -167,6 +171,7 @@ export async function POST(req: NextRequest) {
         wake_time: wake_time ?? null,
         sleep_quality: sleep_quality ?? null,
         cb_reflection: fullReflection.trim(),
+        founder_check_in_status: founder_check_in_status ?? null,
       })
     },
   })

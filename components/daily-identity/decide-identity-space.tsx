@@ -27,6 +27,7 @@ import type { WlbbWeekState } from "@/lib/wlbb-week/types"
 import { getDateKey, loadDailyIdentity, updateDailyIdentity } from "@/lib/daily-identity/storage"
 import type { DailyIdentityRecord, IdentityCheckInStatus } from "@/lib/daily-identity/types"
 import { IdentityCheckIn } from "@/components/daily-identity/identity-check-in"
+import { OpportunityFocusPicker } from "@/components/daily-identity/opportunity-focus-picker"
 
 const IDENTITY_QUICK_PICKS = [
   "A calm, decisive CEO",
@@ -99,6 +100,9 @@ export function DecideIdentitySpace({ segmentRemaining }: DecideIdentitySpacePro
 
   return (
     <div className="space-y-6">
+      {/* ── 0. Where do I need to focus today? (opportunity picker) ──────── */}
+      <OpportunityFocusPicker />
+
       {/* ── 1. Weekly Data Review + Founder GPS™ ─────────────────────────── */}
       <div className="rounded-3xl border border-[#7FB069]/25 bg-[#F7FBF4] px-6 py-5 sm:px-7 sm:py-6">
         <div className="mb-2 flex items-center gap-2">

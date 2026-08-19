@@ -1,8 +1,61 @@
 import { type NextRequest } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import OpenAI from "openai"
+import { SEGMENT_DISPLAY_NAMES } from "@/lib/founder-opportunities/segment-options"
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+
+/**
+ * Phase 1: Decide → Embody. Builds a generic, non-per-segment-hardcoded
+ * identity declaration prompt from a founder-chosen opportunity area + the
+ * action they decided to take, regardless of which segment they forward it
+ * to. Used only when the request carries opportunity context — every other
+ * caller (e.g. a remounted IdentityInstallationPanel) keeps using the
+ * per-segment DECLARATION_PROMPTS below unchanged.
+ */
+function buildOpportunityDeclarationPrompt(ctx: {
+  opportunity_area: string
+  chosen_action: string
+  segment_id: string
+}): string {
+  const segmentName = SEGMENT_DISPLAY_NAMES[ctx.segment_id] ?? "today's Time & Space Boundary™"
+  return `You are Cherry Blossom™, Barbara's warm and empowering AI guide for the Make Time For More™ community.
+
+A founder identified "${ctx.opportunity_area}" as an area they want to focus on today, and decided on this action:
+"${ctx.chosen_action}"
+
+They will carry out this action during their ${segmentName}.
+
+Generate a single personalized identity-based declaration, written in first person ("As someone who values..., I will..."), that:
+- Names the value or identity behind their chosen focus area (not the score, not "opportunity")
+- States their specific chosen action in their own words
+- Names the segment (${segmentName}) naturally, once
+- Is 1-2 sentences, warm, grounding, and never generic or motivational-poster-ish
+
+Output only the declaration text. No quotes, no labels, no extra commentary.`
+}
+
+/**
+ * Short, first-person "why this matters" companion to the declaration above.
+ * Non-streaming — generated once, after the declaration, and appended to the
+ * response after a delimiter so the client can split it out without a second
+ * round-trip.
+ */
+function buildWhyItMattersPrompt(ctx: { opportunity_area: string; chosen_action: string }): string {
+  return `You are Cherry Blossom™, Barbara's warm AI guide for the Make Time For More™ community.
+
+A founder decided to do the following today: "${ctx.chosen_action}" — to make progress on "${ctx.opportunity_area}".
+
+Write 1-2 first-person sentences explaining why this specific action matters, in plain, concrete, encouraging language.
+
+Requirements:
+- First person ("This matters because...")
+- Specific to the chosen action, not a generic wellness lecture
+- Concise and evidence-informed
+- No unsupported medical claims
+
+Output only the explanation text.`
+}
 
 // Per-segment system prompt templates for Cherry Blossom™ declarations
 const DECLARATION_PROMPTS: Record<string, (ctx: Record<string, string>) => string> = {
@@ -110,18 +163,34 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json()
-  const { intention_id, segment_id, movement_type, duration_minutes, intention_notes } = body
+  const {
+    intention_id,
+    segment_id,
+    movement_type,
+    duration_minutes,
+    intention_notes,
+    // Phase 1: Decide → Embody — present only when the founder started from
+    // the opportunity picker. intention_notes doubles as the chosen action.
+    opportunity_area,
+  } = body
 
   if (!intention_id || !segment_id) {
     return new Response("intention_id and segment_id required", { status: 400 })
   }
 
-  const promptFn = DECLARATION_PROMPTS[segment_id]
-  if (!promptFn) {
+  const isOpportunityDeclaration = Boolean(opportunity_area && intention_notes)
+
+  const systemPrompt = isOpportunityDeclaration
+    ? buildOpportunityDeclarationPrompt({
+        opportunity_area,
+        chosen_action: intention_notes,
+        segment_id,
+      })
+    : DECLARATION_PROMPTS[segment_id]?.({ movement_type, duration_minutes, intention_notes })
+
+  if (!systemPrompt) {
     return new Response(`No declaration prompt for segment: ${segment_id}`, { status: 400 })
   }
-
-  const systemPrompt = promptFn({ movement_type, duration_minutes, intention_notes })
 
   // Stream the declaration from OpenAI
   const stream = await openai.chat.completions.create({
@@ -135,6 +204,7 @@ export async function POST(req: NextRequest) {
   // Collect the full text while streaming to the client
   let fullText = ""
   const encoder = new TextEncoder()
+  const WHY_DELIMITER = "\n\n---WHY---\n\n"
 
   const readableStream = new ReadableStream({
     async start(controller) {
@@ -145,16 +215,46 @@ export async function POST(req: NextRequest) {
           controller.enqueue(encoder.encode(delta))
         }
       }
+
+      const declaration = fullText.trim()
+
+      // Educate: one short, non-streaming follow-up call for "why this
+      // matters," only for opportunity-originated declarations.
+      let whyItMatters = ""
+      if (isOpportunityDeclaration) {
+        try {
+          const whyCompletion = await openai.chat.completions.create({
+            model: "gpt-4o-mini",
+            max_tokens: 120,
+            temperature: 0.7,
+            messages: [
+              {
+                role: "system",
+                content: buildWhyItMattersPrompt({ opportunity_area, chosen_action: intention_notes }),
+              },
+            ],
+          })
+          whyItMatters = whyCompletion.choices[0]?.message?.content?.trim() ?? ""
+          if (whyItMatters) {
+            controller.enqueue(encoder.encode(WHY_DELIMITER + whyItMatters))
+          }
+        } catch (error) {
+          console.error("[identity/declaration] why-it-matters generation failed:", error)
+        }
+      }
+
       controller.close()
 
-      // Persist the full declaration once streaming is complete
+      // Persist the full declaration (and why-it-matters, if generated) once
+      // streaming is complete.
       const today = new Date().toISOString().split("T")[0]
       await supabase.from("segment_declarations").insert({
         user_id: user.id,
         intention_id,
         segment_id,
         segment_date: today,
-        declaration: fullText.trim(),
+        declaration,
+        why_it_matters: whyItMatters || null,
       })
     },
   })
