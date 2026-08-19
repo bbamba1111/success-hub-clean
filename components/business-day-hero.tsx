@@ -193,9 +193,10 @@ export function BusinessDayHero() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="mx-auto flex max-w-4xl flex-col items-center px-6 py-5 text-center sm:py-6"
         >
-          {/* Lines 1+2 — special static heading for Monday, "We're Now..." for all others */}
+          {/* Lines 1+2 — special static heading for Monday and Daily Planning + GPS™, "We're Now..." for all others */}
           {experience ? (() => {
             const isMondayBlock = experience.businessDay.current.id === "monday-reality-check"
+            const isDecideDesignBlock = experience.businessDay.current.id === "daily-planning-gps"
             const s = BLOCK_SENTENCE[experience.businessDay.current.id]
             const isLunch = experience.businessDay.current.id === "lunch-break"
 
@@ -210,6 +211,15 @@ export function BusinessDayHero() {
                   <span className="italic font-normal text-[18px] sm:text-[21px] lg:text-[28px] bg-gradient-to-r from-[#C13B6B] to-[#4A7C59] bg-clip-text text-transparent">
                     {"Redesign Your Entry Into The Workweek\u2122"}
                   </span>
+                </h1>
+              )
+            }
+
+            if (isDecideDesignBlock) {
+              return (
+                <h1 className="flex flex-col items-center font-playfair text-[27px] font-semibold leading-tight tracking-tight sm:text-[32px] lg:text-[43px] gap-0">
+                  <span className="text-[#1C161A]">{"We\u2019re Deciding & Designing Our"}</span>
+                  <span className="italic text-[#C13B6B]">{"Work-Life Balance Business Day"}</span>
                 </h1>
               )
             }
