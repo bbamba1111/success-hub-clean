@@ -88,26 +88,38 @@ export function DailyDeclaration() {
           boxShadow: "0 24px 60px rgba(193,59,107,0.14), 0 6px 20px rgba(0,0,0,0.06)",
         }}
       >
+        {/* A light scrim only at the very top/bottom edges keeps the badge and
+            card legible without washing out the background image itself —
+            the vibrancy of the photo is the point now. */}
         <div
           className="absolute inset-0"
-          style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,250,245,0.55) 45%, rgba(255,247,240,0.8) 100%)" }}
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0) 22%, rgba(0,0,0,0) 78%, rgba(0,0,0,0.14) 100%)",
+          }}
           aria-hidden
         />
-        <div className="relative flex flex-col items-center gap-4 px-8 py-12 text-center sm:px-16 sm:py-14">
-          <span className="inline-flex items-center gap-2 rounded-full border border-[#C9A227]/50 bg-white/80 px-4 py-1.5 font-montserrat text-[11px] font-bold uppercase tracking-[0.2em] text-[#8A6D2F] shadow-sm backdrop-blur-sm">
+        <div className="relative flex flex-col items-center gap-5 px-6 py-12 text-center sm:px-16 sm:py-14">
+          <span className="inline-flex items-center gap-2 rounded-full border border-[#C9A227]/50 bg-white/85 px-4 py-1.5 font-montserrat text-[11px] font-bold uppercase tracking-[0.2em] text-[#8A6D2F] shadow-sm backdrop-blur-sm">
             {"My Intention Today"}
           </span>
 
-          <p className="max-w-[760px] font-playfair text-xl italic leading-relaxed text-[#2E1F27] sm:text-2xl lg:text-[27px]">
-            {data.declaration}
-          </p>
-
-          {data.whyItMatters && (
-            <p className="max-w-[640px] rounded-xl bg-white/55 px-5 py-3 font-montserrat text-[13px] leading-relaxed text-[#4A3A42] backdrop-blur-sm">
-              <span className="font-semibold text-[#5C8A63]">{"Why this matters: "}</span>
-              {data.whyItMatters}
+          {/* Frosted glass panel: translucent white + heavy blur so the vibrant
+              background stays visible through it, while the sage-green
+              declaration text stays fully readable on top. Opacity is tuned
+              just high enough for text contrast without going opaque. */}
+          <div className="max-w-[820px] rounded-[1.5rem] border border-white/60 bg-white/55 px-8 py-8 shadow-[0_8px_32px_rgba(0,0,0,0.14)] backdrop-blur-xl sm:px-12 sm:py-10">
+            <p className="font-playfair text-xl italic leading-relaxed text-[#3D6B44] sm:text-2xl lg:text-[27px]">
+              {data.declaration}
             </p>
-          )}
+
+            {data.whyItMatters && (
+              <p className="mx-auto mt-5 max-w-[640px] rounded-xl bg-white/60 px-5 py-3 font-montserrat text-[13px] leading-relaxed text-[#4A3A42] backdrop-blur-sm">
+                <span className="font-semibold text-[#3D6B44]">{"Why this matters: "}</span>
+                {data.whyItMatters}
+              </p>
+            )}
+          </div>
         </div>
       </motion.div>
     </section>
