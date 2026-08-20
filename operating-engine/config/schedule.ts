@@ -163,7 +163,7 @@ export const SCHEDULE: BlockConfig[] = [
       "Review this week's data, consult your Founder GPS™, and design today's workday — built on Monday's Reality Check™, without retaking the Audit or ESA.",
     emoji: "🧭",
     tint: "237 242 247",
-    backgroundImage: "/images/block-ceo-workday.png",
+    backgroundImage: "/images/block-decide-design.png",
     cta: "Decide & Design Your Work-Life Balance Business Day™",
     engagement: "self-guided",
     part: "morning",
