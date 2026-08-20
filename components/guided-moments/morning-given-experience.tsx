@@ -6,8 +6,20 @@
  * A calm, five-step guided flow (not a productivity checklist):
  *
  *   G — Gratitude              "What are you thankful for this morning?"
- *   I — Invitation + Intention "What do you want, and how are you inviting
- *                               your Creator to co-create this day with you?"
+ *   I — Invitation + Intention Two separate entries, one after another:
+ *                                 1. Invitation — "How are you inviting your
+ *                                    Creator to co-create this day with you?"
+ *                                 2. Intention — "What do you want from today?"
+ *                                    Set using the same Cherry Blossom™
+ *                                    identity-declaration technology that
+ *                                    powers the Identity Installation
+ *                                    System™ (/api/identity/intention +
+ *                                    /api/identity/declaration, segment_id
+ *                                    "morning-given"). The resulting
+ *                                    declaration is what surfaces as "My
+ *                                    Intention Today" above the day's
+ *                                    segment cards (components/daily-
+ *                                    declaration.tsx).
  *   V — Five-Sense Vision      See / Hear / Feel / Smell / Taste — adaptive
  *                               to whatever the member just asked for.
  *   E — Embody                 Who are you becoming today? (multi-select)
@@ -40,7 +52,7 @@ import {
 type StepId = "gratitude" | "ask" | "vision" | "embody" | "nurture"
 type StepStatus = "upcoming" | "open" | "confirming" | "completed"
 
-const CONFIRMATION_MS = 11000
+const CONFIRMATION_MS = 6000
 
 const STEPS: { id: StepId; letter: string; label: string }[] = [
   { id: "gratitude", letter: "G", label: "Gratitude" },
@@ -55,12 +67,20 @@ const STEPS: { id: StepId; letter: string; label: string }[] = [
 // collapses into its completed green summary card.
 const CONFIRMATIONS: Record<StepId, string> = {
   gratitude: "Gratitude has a way of steadying everything else. Beautiful place to begin.",
-  ask: "You've named what you want and opened the day to something bigger than your own effort. That's the Invitation.",
+  ask: "Named, invited, and now carried into the rest of your day as today's Declaration™.",
   vision:
     "You didn't just picture it — you stepped inside it. Who you're becoming, what you're doing, how you're living: it's already real in here.",
   embody: "This is who you're practicing being today. Let it lead you, gently, through whatever comes.",
   nurture: "Noted, and protected. These aren't extras — they're how the rest of your day stays sustainable.",
 }
+
+// The "I" step's two internal entries each get their own Cherry Blossom line.
+// INTENTION_FALLBACK only shows if the Cherry Blossom declaration technology
+// couldn't run (e.g. not signed in) — the flow still moves forward either way.
+const INVITATION_CONFIRMATION =
+  "You've opened the day to something bigger than your own effort. That's the Invitation."
+const INTENTION_FALLBACK_CONFIRMATION =
+  "You've named exactly what you want from today. Hold onto it — it's already leading you."
 
 const EMBODY_OPTIONS = [
   "Someone who exercises consistently",
@@ -119,7 +139,9 @@ function emptyDraft(): MorningGivenDayRecord {
   return {
     dayKey,
     gratitude: "",
-    ask: "",
+    invitation: "",
+    intention: "",
+    intentionDeclaration: null,
     visionSee: "",
     visionHear: "",
     visionFeel: "",
@@ -146,7 +168,13 @@ export function MorningGivenExperience() {
     const existing = getLocalMorningGivenDay(getDayKey())
     if (existing) {
       setDraft(existing)
-      const idx = STEPS.findIndex((s) => s.id === existing.stepCompleted)
+      // "invitation" and "intention" are both internal sub-entries of the
+      // single "ask" (I) step in STEPS — they resolve to that step's index.
+      const stepCompleted = existing.stepCompleted
+      const idx =
+        stepCompleted === "invitation" || stepCompleted === "intention"
+          ? STEPS.findIndex((s) => s.id === "ask")
+          : STEPS.findIndex((s) => s.id === stepCompleted)
       if (existing.completedAt) {
         setCompletedThrough(STEPS.length - 1)
         setActiveIndex(STEPS.length)
@@ -190,6 +218,13 @@ export function MorningGivenExperience() {
     }, CONFIRMATION_MS)
   }
 
+  // Saves the Invitation entry without advancing the step or triggering the
+  // confirmation pause — the "I" card stays open and moves straight into its
+  // second entry, Intention.
+  function saveInvitation(value: string) {
+    persist({ invitation: value }, "invitation")
+  }
+
   function handlePrevious(index: number) {
     if (confirmTimerRef.current) clearTimeout(confirmTimerRef.current)
     setConfirmingIndex(null)
@@ -208,7 +243,8 @@ export function MorningGivenExperience() {
     const lines = [
       "MY MORNING ALIGNMENT",
       draft.gratitude && `Gratitude: ${draft.gratitude}`,
-      draft.ask && `Ask: ${draft.ask}`,
+      draft.invitation && `Invitation: ${draft.invitation}`,
+      draft.intention && `Intention: ${draft.intention}`,
       (draft.visionSee || draft.visionHear || draft.visionFeel || draft.visionSmell || draft.visionTaste) &&
         "Vision:",
       draft.visionSee && `  See: ${draft.visionSee}`,
@@ -286,6 +322,7 @@ export function MorningGivenExperience() {
               status={status}
               draft={draft}
               onAdvance={advance}
+              onSaveInvitation={saveInvitation}
               onPrevious={handlePrevious}
               showPrevious={index > 0}
             />
@@ -309,7 +346,10 @@ export function MorningGivenExperience() {
             {draft.gratitude && (
               <AlignmentLine label="Gratitude" value={draft.gratitude} />
             )}
-            {draft.ask && <AlignmentLine label="Ask" value={draft.ask} />}
+            {draft.invitation && <AlignmentLine label="Invitation" value={draft.invitation} />}
+            {draft.intention && (
+              <AlignmentLine label="Intention" value={draft.intentionDeclaration || draft.intention} />
+            )}
             {(draft.visionSee || draft.visionHear || draft.visionFeel || draft.visionSmell || draft.visionTaste) && (
               <div>
                 <p className="font-sans text-sm font-semibold text-brand-ink">Vision</p>
@@ -368,6 +408,35 @@ export function MorningGivenExperience() {
               </button>
             )}
           </div>
+
+          {/* Cherry Blossom's acknowledgment once the founder taps "Begin My Day" */}
+          {draft.completedAt && (
+            <motion.div
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              className="mt-4 flex items-start gap-3 rounded-xl border border-brand-green/20 bg-white/70 px-4 py-4"
+            >
+              <span className="text-lg leading-none" aria-hidden>
+                🌸
+              </span>
+              <div className="space-y-2 font-sans text-sm leading-relaxed text-brand-ink">
+                <p>
+                  Beautifully done — your Morning GIV•EN™ is complete. You&apos;re starting today already grounded:
+                  clear on what you&apos;re grateful for, what you&apos;re inviting in, and who you&apos;re
+                  practicing being. That steadiness is doing real work before your first task even begins.
+                </p>
+                <p>
+                  About 5 minutes before this segment ends, Cherry Blossom Check-in™ will check in with you to see
+                  how your Morning GIV•EN™ went.
+                </p>
+                <p>
+                  If you still have a few minutes before Flex Time™ begins, feel free to explore a Morning Style
+                  below — it&apos;s a gentle way to keep shaping the tone of your Work-Life Balance Business Day™.
+                </p>
+              </div>
+            </motion.div>
+          )}
         </motion.div>
       )}
 
@@ -461,11 +530,12 @@ interface StepCardProps {
   status: StepStatus
   draft: MorningGivenDayRecord
   onAdvance: (index: number, patch: Partial<MorningGivenDayRecord>, nextStep: MorningGivenDayRecord["stepCompleted"]) => void
+  onSaveInvitation: (value: string) => void
   onPrevious: (index: number) => void
   showPrevious: boolean
 }
 
-function StepCard({ step, index, status, draft, onAdvance, onPrevious, showPrevious }: StepCardProps) {
+function StepCard({ step, index, status, draft, onAdvance, onSaveInvitation, onPrevious, showPrevious }: StepCardProps) {
   if (status === "completed") {
     return <CompletedStepCard step={step} draft={draft} onPrevious={() => onPrevious(index)} />
   }
@@ -487,15 +557,12 @@ function StepCard({ step, index, status, draft, onAdvance, onPrevious, showPrevi
 
   if (step.id === "ask") {
     return (
-      <FreeTextStepCard
+      <InvitationIntentionStepCard
         status={status}
-        question="What do you want, and how are you inviting your Creator to co-create this day with you?"
-        helperText="This is your Ask — name it plainly, and the invitation alongside it."
-        confirmation={CONFIRMATIONS.ask}
-        placeholder="I'm asking for... and inviting..."
-        initialValue={draft.ask}
-        multiline
-        onContinue={(value) => onAdvance(index, { ask: value }, "vision")}
+        initialInvitation={draft.invitation}
+        initialIntention={draft.intention}
+        onSaveInvitation={onSaveInvitation}
+        onAdvance={(patch) => onAdvance(index, patch, "vision")}
         onPrevious={showPrevious ? () => onPrevious(index) : undefined}
       />
     )
@@ -505,7 +572,7 @@ function StepCard({ step, index, status, draft, onAdvance, onPrevious, showPrevi
     return (
       <VisionStepCard
         status={status}
-        ask={draft.ask}
+        intention={draft.intentionDeclaration || draft.intention}
         initial={draft}
         onContinue={(vision) => onAdvance(index, vision, "embody")}
         onPrevious={showPrevious ? () => onPrevious(index) : undefined}
@@ -557,7 +624,9 @@ function CompletedStepCard({
       case "gratitude":
         return draft.gratitude
       case "ask":
-        return draft.ask
+        return [draft.invitation && `Invitation: ${draft.invitation}`, draft.intention && `Intention: ${draft.intention}`]
+          .filter(Boolean)
+          .join("  ·  ")
       case "vision":
         return [draft.visionSee, draft.visionHear, draft.visionFeel, draft.visionSmell, draft.visionTaste]
           .filter(Boolean)
@@ -568,6 +637,10 @@ function CompletedStepCard({
         return draft.nurture.join(" · ")
     }
   })()
+
+  // The "I" step shows Cherry Blossom's actual generated declaration when
+  // available, instead of the generic static confirmation line.
+  const note = step.id === "ask" && draft.intentionDeclaration ? draft.intentionDeclaration : CONFIRMATIONS[step.id]
 
   return (
     <div className="flex items-start justify-between gap-4 rounded-2xl border-2 border-brand-green/30 bg-brand-green/[0.07] px-5 py-4 shadow-sm">
@@ -580,7 +653,7 @@ function CompletedStepCard({
           <span className="text-base leading-none" aria-hidden>
             🌸
           </span>
-          <p className="font-sans text-sm leading-relaxed text-brand-green-dark/80">{CONFIRMATIONS[step.id]}</p>
+          <p className="font-sans text-sm leading-relaxed text-brand-green-dark/80">{note}</p>
         </div>
       </div>
       <div className="flex items-center gap-2 shrink-0">

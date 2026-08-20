@@ -20,12 +20,14 @@ import { createClient } from "@/lib/supabase/client"
 
 const STORAGE_KEY = "morning-given-days"
 
-export type MorningGivenStep = "gratitude" | "ask" | "vision" | "embody" | "nurture" | "complete"
+export type MorningGivenStep = "gratitude" | "invitation" | "intention" | "vision" | "embody" | "nurture" | "complete"
 
 export interface MorningGivenDayRecord {
   dayKey: string // YYYY-MM-DD, local date
   gratitude: string
-  ask: string // Invitation + Intention
+  invitation: string // "How are you inviting your Creator to co-create this day with you?"
+  intention: string // "What do you want from today?" — the founder's own words
+  intentionDeclaration: string | null // Cherry Blossom's™ identity-based declaration, generated from `intention`
   visionSee: string
   visionHear: string
   visionFeel: string
@@ -41,7 +43,9 @@ function emptyRecord(dayKey: string): MorningGivenDayRecord {
   return {
     dayKey,
     gratitude: "",
-    ask: "",
+    invitation: "",
+    intention: "",
+    intentionDeclaration: null,
     visionSee: "",
     visionHear: "",
     visionFeel: "",
@@ -127,7 +131,9 @@ export async function syncMorningGivenDay(record: MorningGivenDayRecord): Promis
         user_id: userId,
         day_key: record.dayKey,
         gratitude: record.gratitude,
-        ask: record.ask,
+        invitation: record.invitation,
+        intention: record.intention,
+        intention_declaration: record.intentionDeclaration,
         vision_see: record.visionSee,
         vision_hear: record.visionHear,
         vision_feel: record.visionFeel,
@@ -149,7 +155,9 @@ export async function syncMorningGivenDay(record: MorningGivenDayRecord): Promis
 interface MorningGivenDayRow {
   day_key: string
   gratitude: string | null
-  ask: string | null
+  invitation: string | null
+  intention: string | null
+  intention_declaration: string | null
   vision_see: string | null
   vision_hear: string | null
   vision_feel: string | null
@@ -165,7 +173,9 @@ function rowToRecord(row: MorningGivenDayRow): MorningGivenDayRecord {
   return {
     dayKey: row.day_key,
     gratitude: row.gratitude ?? "",
-    ask: row.ask ?? "",
+    invitation: row.invitation ?? "",
+    intention: row.intention ?? "",
+    intentionDeclaration: row.intention_declaration ?? null,
     visionSee: row.vision_see ?? "",
     visionHear: row.vision_hear ?? "",
     visionFeel: row.vision_feel ?? "",
@@ -192,7 +202,7 @@ export async function getTodaysAlignment(dayKey = getDayKey()): Promise<MorningG
     const { data } = await supabase
       .from("morning_given_days")
       .select(
-        "day_key, gratitude, ask, vision_see, vision_hear, vision_feel, vision_smell, vision_taste, embody, nurture, step_completed, completed_at",
+        "day_key, gratitude, invitation, intention, intention_declaration, vision_see, vision_hear, vision_feel, vision_smell, vision_taste, embody, nurture, step_completed, completed_at",
       )
       .eq("user_id", userId)
       .eq("day_key", dayKey)
