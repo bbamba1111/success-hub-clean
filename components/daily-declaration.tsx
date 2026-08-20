@@ -81,7 +81,7 @@ export function DailyDeclaration() {
       >
         <div className="relative flex flex-col items-center gap-4 px-8 py-10 text-center sm:px-16 sm:py-11">
           <span className="inline-flex items-center gap-2 rounded-full border border-[#C9A227]/50 bg-white/75 px-4 py-1.5 font-montserrat text-[11px] font-bold uppercase tracking-[0.2em] text-[#8A6D2F] backdrop-blur-sm">
-            {"Today\u2019s Declaration\u2122"}
+            {"My Intention Today"}
           </span>
 
           <p className="max-w-[760px] font-playfair text-xl italic leading-relaxed text-[#2E1F27] sm:text-2xl lg:text-[27px]">
