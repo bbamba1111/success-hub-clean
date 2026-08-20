@@ -12,6 +12,7 @@ import { SimpleChatModal } from "@/components/simple-chat-modal"
 import { CherryBlossomCoGuide } from "@/components/cherry-blossom-co-guide"
 import { BusinessDayHero } from "@/components/business-day-hero"
 import { BarbaraWelcome } from "@/components/barbara-welcome"
+import { DailyDeclaration } from "@/components/daily-declaration"
 import { BusinessDaySchedule } from "@/components/business-day-schedule"
 import { OperatingPlannerSection } from "@/components/operating-planner/operating-planner-section"
 import { DeveloperToolbar } from "@/components/developer-toolbar"
@@ -79,6 +80,10 @@ export default function HomePage() {
 
       {/* 2. Barbara Welcome — the WHY */}
       <BarbaraWelcome />
+
+      {/* Today's Declaration™ — set during Morning GIV•EN™, persistent
+          reminder above the rest of the Work-Life Balance Business Day™. */}
+      <DailyDeclaration />
 
       {/* 3. Operating Planner™ — hidden during Time Freedom™ window. */}
       <OperatingPlannerSection />
