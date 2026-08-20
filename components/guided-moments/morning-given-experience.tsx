@@ -52,7 +52,7 @@ import {
 type StepId = "gratitude" | "ask" | "vision" | "embody" | "nurture"
 type StepStatus = "upcoming" | "open" | "confirming" | "completed"
 
-const CONFIRMATION_MS = 6000
+const CONFIRMATION_MS = 3500
 
 const STEPS: { id: StepId; letter: string; label: string }[] = [
   { id: "gratitude", letter: "G", label: "Gratitude" },
@@ -92,7 +92,11 @@ const EMBODY_OPTIONS = [
 const NURTURE_OPTIONS = [
   "30-Minute Workday Movement Window™",
   "Focused 4-Hour CEO Workday™",
-  "Family connection",
+  "Mid-Day Lunch Break",
+  "Healthy Eating",
+  "Adequate Hydration",
+  "Nurturing important relationships",
+  "Connecting to Nature",
   "Time Freedom™",
   "Sleep & recovery",
   "Digital detox / Unplug",
@@ -433,8 +437,9 @@ export function MorningGivenExperience() {
                   how your Morning GIV•EN™ went.
                 </p>
                 <p>
-                  If you still have a few minutes before Flex Time™ begins, feel free to explore a Morning Style
-                  below — it&apos;s a gentle way to keep shaping the tone of your Work-Life Balance Business Day™.
+                  If you still have a few minutes before you begin Deciding &amp; Designing Your Work-Life Balance
+                  Business Day in the next segment, feel free to explore a Morning Style below — as a gentle way to
+                  keep shaping the tone, energy and vibrational frequency of your Work-Life Balance Business Day™.
                 </p>
               </div>
             </motion.div>
