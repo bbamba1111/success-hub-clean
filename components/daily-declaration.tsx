@@ -73,14 +73,19 @@ export function DailyDeclaration() {
         transition={{ duration: 0.6 }}
         className="relative mx-auto max-w-[1320px] overflow-hidden rounded-[1.75rem]"
         style={{
-          backgroundImage: "url('/images/stained-glass-declaration-bg.png')",
+          backgroundImage: "url('/images/cherry-blossom-intention-bg.png')",
           backgroundSize: "cover",
-          backgroundPosition: "center",
+          backgroundPosition: "center 60%",
           boxShadow: "0 24px 60px rgba(193,59,107,0.14), 0 6px 20px rgba(0,0,0,0.06)",
         }}
       >
-        <div className="relative flex flex-col items-center gap-4 px-8 py-10 text-center sm:px-16 sm:py-11">
-          <span className="inline-flex items-center gap-2 rounded-full border border-[#C9A227]/50 bg-white/75 px-4 py-1.5 font-montserrat text-[11px] font-bold uppercase tracking-[0.2em] text-[#8A6D2F] backdrop-blur-sm">
+        <div
+          className="absolute inset-0"
+          style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,250,245,0.55) 45%, rgba(255,247,240,0.8) 100%)" }}
+          aria-hidden
+        />
+        <div className="relative flex flex-col items-center gap-4 px-8 py-12 text-center sm:px-16 sm:py-14">
+          <span className="inline-flex items-center gap-2 rounded-full border border-[#C9A227]/50 bg-white/80 px-4 py-1.5 font-montserrat text-[11px] font-bold uppercase tracking-[0.2em] text-[#8A6D2F] shadow-sm backdrop-blur-sm">
             {"My Intention Today"}
           </span>
 
@@ -89,8 +94,8 @@ export function DailyDeclaration() {
           </p>
 
           {data.whyItMatters && (
-            <p className="max-w-[640px] font-montserrat text-[13px] leading-relaxed text-[#5A4A52]">
-              <span className="font-semibold text-[#78AD7D]">{"Why this matters: "}</span>
+            <p className="max-w-[640px] rounded-xl bg-white/55 px-5 py-3 font-montserrat text-[13px] leading-relaxed text-[#4A3A42] backdrop-blur-sm">
+              <span className="font-semibold text-[#5C8A63]">{"Why this matters: "}</span>
               {data.whyItMatters}
             </p>
           )}

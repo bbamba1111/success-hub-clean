@@ -5,19 +5,6 @@ import { useOperatingEngine } from "@/components/operating-engine-provider"
 import { EnterSpaceButton } from "@/components/enter-space-button"
 
 
-const VALUES = [
-  "Your Spirit",
-  "Mind",
-  "Body",
-  "Health",
-  "Energy",
-  "Relationships",
-  "80/20 Leveraged High-Value Work",
-  "Time Freedom",
-  "Recovery",
-  "Sleep",
-]
-
 /** Per-block live coaching messages from Barbara. */
 const BLOCK_COACHING: Record<string, { message: string; reflection: { text: string; author?: string } }> = {
   "monday-reality-check": {
@@ -189,47 +176,6 @@ export function BarbaraWelcome() {
           </motion.div>
 
         </div>
-      </div>
-
-      {/* ── Non-Negotiables — full-width centered, stained-glass bg ── */}
-      <div
-        className="relative w-full overflow-hidden"
-        style={{
-          backgroundImage: "url('/images/stained-glass-declaration-bg.png')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-        }}
-      >
-        <div className="absolute inset-0 bg-[#FDFAF6]/60" aria-hidden />
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="relative mx-auto max-w-[1320px] px-6 pb-8 pt-12 text-center sm:px-10 sm:pb-10 sm:pt-14 lg:px-16 lg:pb-10 lg:pt-16"
-        >
-          <div className="flex flex-wrap items-baseline justify-center gap-3">
-            <h2 className="text-balance font-playfair text-3xl font-semibold text-[#1C161A] sm:text-4xl lg:text-5xl">
-              {"Your New 9\u20115 & Nighttime Non-Negotiables\u2122"}
-            </h2>
-            <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#C13B6B] font-montserrat text-[11px] font-bold text-white">
-              {VALUES.length}
-            </span>
-          </div>
-          <div className="mx-auto mt-4 flex flex-nowrap items-center justify-center gap-x-3 overflow-x-auto">
-            {VALUES.map((value, i) => (
-              <span key={value} className="flex shrink-0 items-center gap-x-3">
-                <span className="font-montserrat text-[13px] font-semibold tracking-wide text-[#1C161A]">
-                  {value}
-                </span>
-                {i < VALUES.length - 1 && (
-                  <span className="text-[#C13B6B] opacity-70" aria-hidden>&bull;</span>
-                )}
-              </span>
-            ))}
-          </div>
-        </motion.div>
       </div>
 
     </section>
