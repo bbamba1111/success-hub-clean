@@ -74,13 +74,10 @@ const CONFIRMATIONS: Record<StepId, string> = {
   nurture: "Noted, and protected. These aren't extras — they're how the rest of your day stays sustainable.",
 }
 
-// The "I" step's two internal entries each get their own Cherry Blossom line.
-// INTENTION_FALLBACK only shows if the Cherry Blossom declaration technology
-// couldn't run (e.g. not signed in) — the flow still moves forward either way.
+// Shown as a small recap when the "I" step moves from Invitation into
+// Intention, so the founder sees both entries acknowledged in sequence.
 const INVITATION_CONFIRMATION =
   "You've opened the day to something bigger than your own effort. That's the Invitation."
-const INTENTION_FALLBACK_CONFIRMATION =
-  "You've named exactly what you want from today. Hold onto it — it's already leading you."
 
 const EMBODY_OPTIONS = [
   "Someone who exercises consistently",
@@ -233,10 +230,15 @@ export function MorningGivenExperience() {
   }
 
   function handleComplete() {
-    const next = persist({}, "complete")
-    const withCompletedAt = saveLocalMorningGivenDay(next.dayKey, { completedAt: new Date().toISOString() })
-    setDraft(withCompletedAt)
-    void syncMorningGivenDay(withCompletedAt)
+  const next = persist({}, "complete")
+  const withCompletedAt = saveLocalMorningGivenDay(next.dayKey, { completedAt: new Date().toISOString() })
+  setDraft(withCompletedAt)
+  void syncMorningGivenDay(withCompletedAt)
+  // Lets DailyDeclaration ("My Intention Today," above the day's segment
+  // cards) refetch immediately instead of waiting for a full page reload.
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("morning-given:completed"))
+  }
   }
 
   const summaryText = useMemo(() => {
@@ -777,6 +779,210 @@ function FreeTextStepCard({
 }
 
 // ---------------------------------------------------------------------------
+// InvitationIntentionStepCard — the "I" step, two separate entries:
+//   1. Invitation — free text, saved immediately, no Cherry Blossom call.
+//   2. Intention — free text, then run through the same Cherry Blossom™
+//      identity-declaration technology as the rest of Identity Installation™
+//      (POST /api/identity/intention → POST /api/identity/declaration,
+//      segment_id "morning-given"). The resulting declaration is what
+//      DailyDeclaration reads back as "My Intention Today."
+// ---------------------------------------------------------------------------
+
+function InvitationIntentionStepCard({
+  status,
+  initialInvitation,
+  initialIntention,
+  onSaveInvitation,
+  onAdvance,
+  onPrevious,
+}: {
+  status: StepStatus
+  initialInvitation: string
+  initialIntention: string
+  onSaveInvitation: (value: string) => void
+  onAdvance: (patch: { invitation: string; intention: string; intentionDeclaration: string | null }) => void
+  onPrevious?: () => void
+}) {
+  const [entry, setEntry] = useState<"invitation" | "intention">(initialInvitation ? "intention" : "invitation")
+  const [invitationValue, setInvitationValue] = useState(initialInvitation)
+  const [intentionValue, setIntentionValue] = useState(initialIntention)
+  const [generating, setGenerating] = useState(false)
+  const [generationError, setGenerationError] = useState(false)
+
+  function handleInvitationContinue() {
+    const value = invitationValue.trim()
+    if (!value) return
+    onSaveInvitation(value)
+    setEntry("intention")
+  }
+
+  async function handleIntentionContinue() {
+    const value = intentionValue.trim()
+    if (!value || generating) return
+
+    setGenerating(true)
+    setGenerationError(false)
+
+    let declaration: string | null = null
+    try {
+      const intentionRes = await fetch("/api/identity/intention", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ segment_id: "morning-given", intention_notes: value }),
+      })
+
+      if (intentionRes.ok) {
+        const { intention: savedIntention } = await intentionRes.json()
+
+        const declarationRes = await fetch("/api/identity/declaration", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            intention_id: savedIntention.id,
+            segment_id: "morning-given",
+            intention_notes: value,
+          }),
+        })
+
+        if (declarationRes.ok && declarationRes.body) {
+          const reader = declarationRes.body.getReader()
+          const decoder = new TextDecoder()
+          let fullText = ""
+          let done = false
+          while (!done) {
+            const { value: chunk, done: readerDone } = await reader.read()
+            done = readerDone
+            if (chunk) fullText += decoder.decode(chunk)
+          }
+          declaration = fullText.split("---WHY---")[0].trim() || null
+        }
+      }
+    } catch (error) {
+      console.error("[v0] Cherry Blossom intention declaration failed:", error)
+      setGenerationError(true)
+    }
+
+    setGenerating(false)
+    onAdvance({ invitation: invitationValue.trim(), intention: value, intentionDeclaration: declaration })
+  }
+
+  return (
+    <div className="rounded-2xl border border-brand-blush bg-white px-5 py-6 sm:px-7">
+      <AnimatePresence mode="wait">
+        {status === "confirming" ? (
+          <motion.div
+            key="confirmation"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <p className="font-sans text-xs font-semibold uppercase tracking-[0.12em] text-brand-ink-soft/50">
+              Your words
+            </p>
+            <p className="mt-1.5 font-playfair text-lg leading-snug text-brand-ink text-balance">
+              &ldquo;{intentionValue}&rdquo;
+            </p>
+            <div className="mt-4 flex items-start gap-3">
+              <span className="text-xl leading-none" aria-hidden>
+                🌸
+              </span>
+              <p className="font-sans text-[15px] leading-relaxed text-brand-ink">{CONFIRMATIONS.ask}</p>
+            </div>
+          </motion.div>
+        ) : entry === "invitation" ? (
+          <motion.div key="invitation" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
+            <h4 className="font-playfair text-xl font-semibold text-brand-ink text-balance">
+              How are you inviting your Creator to co-create this day with you?
+            </h4>
+            <p className="mt-1 font-sans text-sm text-brand-ink-soft">This is your Invitation — name it plainly.</p>
+
+            <textarea
+              value={invitationValue}
+              onChange={(e) => setInvitationValue(e.target.value)}
+              placeholder="I'm inviting..."
+              rows={3}
+              className="mt-4 w-full rounded-xl border border-brand-blush bg-white px-4 py-3 font-sans text-sm text-brand-ink placeholder:text-brand-ink-soft/40 focus:border-brand-green focus:outline-none focus:ring-2 focus:ring-brand-green/20"
+            />
+
+            <div className="mt-5 flex items-center gap-3">
+              <button
+                type="button"
+                onClick={handleInvitationContinue}
+                disabled={!invitationValue.trim()}
+                className="inline-flex items-center gap-2 rounded-full bg-brand-green px-6 py-2.5 font-sans text-sm font-bold text-white shadow-sm transition-all hover:bg-brand-green-dark disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Continue
+              </button>
+              {onPrevious && (
+                <button
+                  type="button"
+                  onClick={onPrevious}
+                  className="inline-flex items-center gap-1 font-sans text-sm font-semibold text-brand-ink-soft transition-colors hover:text-brand-ink"
+                >
+                  <ChevronLeft className="h-4 w-4" aria-hidden />
+                  Previous
+                </button>
+              )}
+            </div>
+          </motion.div>
+        ) : (
+          <motion.div key="intention" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
+            {invitationValue && (
+              <div className="mb-4 flex items-start gap-2 rounded-xl bg-brand-blush/20 px-4 py-3">
+                <span className="text-base leading-none" aria-hidden>
+                  🌸
+                </span>
+                <p className="font-sans text-sm leading-relaxed text-brand-ink-soft">{INVITATION_CONFIRMATION}</p>
+              </div>
+            )}
+            <h4 className="font-playfair text-xl font-semibold text-brand-ink text-balance">What do you want from today?</h4>
+            <p className="mt-1 font-sans text-sm text-brand-ink-soft">
+              This is your Intention — Cherry Blossom™ will turn it into today&apos;s Declaration.
+            </p>
+
+            <textarea
+              value={intentionValue}
+              onChange={(e) => setIntentionValue(e.target.value)}
+              placeholder="Today, I want..."
+              rows={3}
+              disabled={generating}
+              className="mt-4 w-full rounded-xl border border-brand-blush bg-white px-4 py-3 font-sans text-sm text-brand-ink placeholder:text-brand-ink-soft/40 focus:border-brand-green focus:outline-none focus:ring-2 focus:ring-brand-green/20 disabled:opacity-60"
+            />
+
+            {generationError && (
+              <p className="mt-2 font-sans text-xs text-brand-ink-soft">
+                Cherry Blossom couldn&apos;t reach your declaration just now — your intention is still saved, and
+                you can move forward.
+              </p>
+            )}
+
+            <div className="mt-5 flex items-center gap-3">
+              <button
+                type="button"
+                onClick={handleIntentionContinue}
+                disabled={!intentionValue.trim() || generating}
+                className="inline-flex items-center gap-2 rounded-full bg-brand-green px-6 py-2.5 font-sans text-sm font-bold text-white shadow-sm transition-all hover:bg-brand-green-dark disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                {generating ? "Setting your intention…" : "Continue"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setEntry("invitation")}
+                className="inline-flex items-center gap-1 font-sans text-sm font-semibold text-brand-ink-soft transition-colors hover:text-brand-ink"
+              >
+                <ChevronLeft className="h-4 w-4" aria-hidden />
+                Previous
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
 // VisionStepCard — Five-Sense Visualization, adaptive to the member's Ask
 // ---------------------------------------------------------------------------
 
@@ -790,13 +996,13 @@ interface VisionFields {
 
 function VisionStepCard({
   status,
-  ask,
+  intention,
   initial,
   onContinue,
   onPrevious,
 }: {
   status: StepStatus
-  ask: string
+  intention: string
   initial: VisionFields
   onContinue: (vision: VisionFields) => void
   onPrevious?: () => void
@@ -809,7 +1015,9 @@ function VisionStepCard({
     visionTaste: initial.visionTaste,
   })
 
-  const hint = ask.trim() ? `Step into "${ask.trim()}" — you're already living it.` : "Step into the day you're creating — you're already living it."
+  const hint = intention.trim()
+    ? `Step into "${intention.trim()}" — you're already living it.`
+    : "Step into the day you're creating — you're already living it."
   const hasAny = Object.values(fields).some((v) => v.trim().length > 0)
 
   const senses: { key: keyof VisionFields; emoji: string; label: string; prompt: string }[] = [

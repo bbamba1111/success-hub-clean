@@ -57,8 +57,17 @@ export function DailyDeclaration() {
     }
 
     load()
+
+    // Refetch the moment Morning GIV•EN™ is completed, so this card
+    // populates automatically without a full page reload.
+    function handleCompleted() {
+      load()
+    }
+    window.addEventListener("morning-given:completed", handleCompleted)
+
     return () => {
       cancelled = true
+      window.removeEventListener("morning-given:completed", handleCompleted)
     }
   }, [])
 
