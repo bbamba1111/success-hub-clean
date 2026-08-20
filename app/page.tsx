@@ -81,12 +81,12 @@ export default function HomePage() {
       {/* 2. Barbara Welcome — the WHY */}
       <BarbaraWelcome />
 
-      {/* Today's Declaration™ — set during Morning GIV•EN™, persistent
-          reminder above the rest of the Work-Life Balance Business Day™. */}
-      <DailyDeclaration />
-
       {/* 3. Operating Planner™ — hidden during Time Freedom™ window. */}
       <OperatingPlannerSection />
+
+      {/* Today's Declaration™ — set during Morning GIV•EN™, sits directly
+          above the Work-Life Balance Business Day™ segment cards below. */}
+      <DailyDeclaration />
 
       {/* 5. Today's Segments — the HOW (detailed cards) */}
       <BusinessDaySchedule />
