@@ -40,10 +40,11 @@
  *     buildExplainability,
  *   } from "@/lib/executive-decision-engine"
  *
- * Architecture note:
- *   The EDE engine function (`evaluateContext()`) that consumes all registries
- *   and produces an `EdeDecisionOutput` is deferred to Phase 7. This barrel
- *   exports the complete data and type surface that engine will consume.
+ * Phase 5 note:
+ *   The EDE evaluation engine (`evaluateCandidate()` / `rankCandidates()`)
+ *   that consumes all registries below and produces `EdeDecisionOutput`
+ *   records is implemented in `./decision-engine`. It is the function
+ *   Founder GPS™'s Next Best Move™ engine calls.
  */
 
 /* ---------------------------------------------------------------------------
@@ -170,3 +171,18 @@ export {
   ARCHITECTURE_EXPLAINABILITY,
 } from "./explainability"
 export type { ExplainabilityInput } from "./explainability"
+
+/* ---------------------------------------------------------------------------
+ * Decision Engine™ — the EDE evaluation engine (Phase 5)
+ * ------------------------------------------------------------------------ */
+export {
+  evaluateFounderPriority,
+  classifyLeverage,
+  evaluateCandidate,
+  rankCandidates,
+} from "./decision-engine"
+export type {
+  LeverageCandidateSignals,
+  EdeCandidateInput,
+  RankedEdeCandidate,
+} from "./decision-engine"

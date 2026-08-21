@@ -35,6 +35,8 @@ import type { BusinessStage } from "@/lib/business-stage/business-stage"
 import type { BusinessModelId } from "@/lib/entrepreneur-success/types"
 import type { GpsOutcome } from "@/lib/entrepreneur-success/types"
 import type { OperatingPillarId } from "@/lib/entrepreneur-success/types"
+import type { LeverageClassId, DecisionExplainability } from "@/lib/executive-decision-engine/types"
+import type { ReadinessConfidence } from "@/lib/founder-intelligence/readiness-relevance"
 
 /* ===========================================================================
  * GPS Context™
@@ -195,6 +197,40 @@ export interface GpsRecommendation {
   businessModelRelevance: BusinessModelId[] | "all"
   /** Architecture hook for future Business Stage™ adaptation. */
   stageRelevance: BusinessStage[] | "all"
+
+  /**
+   * Phase 5 fields — Next Best Move™ engine output.
+   * All additive and optional; existing consumers are unaffected.
+   */
+
+  /** Why this recommendation advances the founder's Founder Destination™. */
+  destinationAlignment?: string
+  /** The Readiness Capability™ this recommendation traces back to, if any. */
+  readinessCapabilityId?: string
+  /** The founder's current situation (`ReadinessCapability.appliesWhen`). */
+  currentState?: string
+  /** The capability that should exist once this move is complete. */
+  targetState?: string
+  /** The long-term outcome expected from following this recommendation. */
+  expectedOutcome?: string
+  /** The Executive™ domain best positioned to own this move. */
+  executiveDomain?: string | null
+  /** Who is best positioned to close this gap. */
+  owner?: "founder" | "team-or-ai" | "unspecified"
+  /** The Leverage Class™ the Executive Decision Engine™ assigned to this move. */
+  leverageMode?: LeverageClassId
+  /** Ordered installation steps for this move (`ReadinessCapability.sequencing`). */
+  sequencing?: string[]
+  /** How strongly this recommendation is grounded in real evidence vs. inference. */
+  confidence?: ReadinessConfidence
+  /** Traceable signal/evidence labels behind this recommendation. */
+  evidence?: string[]
+  /** Which system produced this recommendation. */
+  source?: "excellence-intelligence" | "founder-intelligence" | "executive-decision-engine"
+  /** Whether this move is compatible with the founder's current capacity. */
+  workLifeBalanceCompatibility?: string
+  /** The full EDE explainability record behind this recommendation. */
+  explainability?: DecisionExplainability
 }
 
 /* ===========================================================================
