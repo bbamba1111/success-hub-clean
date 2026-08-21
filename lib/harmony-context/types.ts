@@ -16,7 +16,8 @@
 import type { BusinessStage } from "@/lib/business-stage/business-stage"
 import type { CommunicationStyle } from "@/lib/business-comprehension/business-comprehension"
 import type { BusinessContextProfile } from "@/lib/business-context/types"
-import type { FounderLearningProfile } from "@/lib/founder-learning/types"
+ import type { FounderLearningProfile } from "@/lib/founder-learning/types"
+ import type { FounderDestinationData } from "@/utils/founder-destination-storage"
 import type { LanguageCode, TextDirection } from "@/lib/i18n/language"
 import type {
   DateFormat,
@@ -185,4 +186,14 @@ export interface HarmonyContextValue {
    * consumers like Cherry Blossom™ — it does not interpret individual fields.
    */
   founderProfile: Record<string, unknown> | null
+
+  /* -- Founder Destination™ (Phase 2) ------------------------------------ */
+  /**
+   * The founder's Founder Destination™ — where they want their business,
+   * their own role, their life, and their future workplace to end up. Null
+   * until the founder saves at least one field of the Founder Destination™
+   * form. This engine only passes it through to consumers (Founder GPS™,
+   * Cherry Blossom™, the Executive Team) — it does not interpret fields.
+   */
+  founderDestination: FounderDestinationData | null
 }

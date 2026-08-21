@@ -68,8 +68,14 @@ import {
   getFounderProfile,
   saveFounderProfile,
 } from "@/lib/founder-profile/founder-profile-store"
+import {
+  FOUNDER_DESTINATION_EVENT,
+  getFounderDestination,
+  saveFounderDestination,
+} from "@/lib/founder-destination/founder-destination-store"
 import { getBusinessContextFromDb } from "@/utils/business-context-storage"
 import { getFounderProfileFromDb } from "@/utils/founder-profile-storage"
+import { getFounderDestinationFromDb, type FounderDestinationData } from "@/utils/founder-destination-storage"
 import type { BusinessContextProfile } from "@/lib/business-context/types"
 import type { FounderLearningProfile } from "@/lib/founder-learning/types"
 
@@ -127,6 +133,7 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
   const [businessContext, setBusinessContext] = useState<BusinessContextProfile | null>(null)
   const [founderLearning, setFounderLearning] = useState<FounderLearningProfile | null>(null)
   const [founderProfile, setFounderProfile] = useState<Record<string, unknown> | null>(null)
+  const [founderDestination, setFounderDestination] = useState<FounderDestinationData | null>(null)
 
   useEffect(() => {
     setInstalled(getInstalledWeek())
@@ -136,6 +143,7 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
     setBusinessContext(getBusinessContext())
     setFounderLearning(getFounderLearning())
     setFounderProfile(getFounderProfile())
+    setFounderDestination(getFounderDestination() as FounderDestinationData | null)
     setLoaded(true)
 
     // Database is authoritative — reconcile the cache-first paint above with
@@ -153,6 +161,12 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
       setFounderProfile(profile)
       saveFounderProfile(profile as unknown as Record<string, unknown>)
     })
+    getFounderDestinationFromDb().then((record) => {
+      if (!record) return
+      const { completedAt: _completedAt, ...destination } = record
+      setFounderDestination(destination)
+      saveFounderDestination(destination as unknown as Record<string, unknown>)
+    })
 
     // Keep in sync if any signal changes elsewhere in this tab.
     const onStageChange = () => setStage(readBusinessStage())
@@ -161,12 +175,14 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
     const onBcChange = () => setBusinessContext(getBusinessContext())
     const onFlChange = () => setFounderLearning(getFounderLearning())
     const onFpChange = () => setFounderProfile(getFounderProfile())
+    const onFdChange = () => setFounderDestination(getFounderDestination() as FounderDestinationData | null)
     window.addEventListener(BUSINESS_STAGE_EVENT, onStageChange)
     window.addEventListener(BUSINESS_COMPREHENSION_EVENT, onStyleChange)
     window.addEventListener(LOCALE_PREFERENCES_EVENT, onLocaleChange)
     window.addEventListener(BUSINESS_CONTEXT_EVENT, onBcChange)
     window.addEventListener(FOUNDER_LEARNING_EVENT, onFlChange)
     window.addEventListener(FOUNDER_PROFILE_EVENT, onFpChange)
+    window.addEventListener(FOUNDER_DESTINATION_EVENT, onFdChange)
     return () => {
       window.removeEventListener(BUSINESS_STAGE_EVENT, onStageChange)
       window.removeEventListener(BUSINESS_COMPREHENSION_EVENT, onStyleChange)
@@ -174,6 +190,7 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
       window.removeEventListener(BUSINESS_CONTEXT_EVENT, onBcChange)
       window.removeEventListener(FOUNDER_LEARNING_EVENT, onFlChange)
       window.removeEventListener(FOUNDER_PROFILE_EVENT, onFpChange)
+      window.removeEventListener(FOUNDER_DESTINATION_EVENT, onFdChange)
     }
   }, [])
 
@@ -296,6 +313,7 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
       businessContext,
       founderLearning,
       founderProfile,
+      founderDestination,
     }
   }, [
     engine,
@@ -312,6 +330,7 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
     businessContext,
     founderLearning,
     founderProfile,
+    founderDestination,
   ])
 
   return <HarmonyContext.Provider value={value}>{children}</HarmonyContext.Provider>
