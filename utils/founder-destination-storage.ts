@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/client"
+import type { FounderDestinationProfile } from "@/lib/founder-destination/types"
 
 /**
  * Founder Destination™ persistence layer — database-backed.
@@ -19,40 +20,7 @@ import { createClient } from "@/lib/supabase/client"
  * on the local cache alone.
  */
 
-export interface FounderDestinationData {
-  // Business Destination
-  desiredBusinessSize?: string
-  desiredTeamSize?: string
-  desiredGeographicReach?: string
-  desiredMarketPosition?: string
-  revenueAmbition?: string
-
-  // Founder Destination
-  desiredFounderRole?: string
-  remainResponsibleFor?: string[]
-  notResponsibleFor?: string[]
-  desiredWorkingHoursPerWeek?: string
-  desiredFounderInvolvement?: string
-  desiredZoneOfGenius?: string
-  desiredFounderIndependence?: string
-
-  // Life Destination
-  desiredWorkLifeBalanceModel?: string
-  desiredTimeFreedomLevel?: string
-  desiredLifestyle?: string
-  nonNegotiableLifeBoundaries?: string[]
-  businessLifePurpose?: string
-
-  // Future Workplace Destination
-  desiredWorkplaceType?: string
-  desiredEmployeeExperience?: string
-  desiredWorkDesign?: string
-  desiredAiHumanRelationship?: string
-  desiredLeadershipCulture?: string
-  desiredHumanSustainabilityStandard?: string
-}
-
-export interface FounderDestinationRecord extends FounderDestinationData {
+export interface FounderDestinationRecord extends FounderDestinationProfile {
   completedAt?: string
 }
 
@@ -68,7 +36,7 @@ async function getUserId(): Promise<string | null> {
   }
 }
 
-function toColumns(d: FounderDestinationData) {
+function toColumns(d: FounderDestinationProfile): Record<string, unknown> {
   return {
     desired_business_size: d.desiredBusinessSize,
     desired_team_size: d.desiredTeamSize,
@@ -99,29 +67,30 @@ function toColumns(d: FounderDestinationData) {
 function mapRow(row: Record<string, unknown> | null): FounderDestinationRecord | null {
   if (!row) return null
   return {
-    desiredBusinessSize: row.desired_business_size as string | undefined,
-    desiredTeamSize: row.desired_team_size as string | undefined,
-    desiredGeographicReach: row.desired_geographic_reach as string | undefined,
-    desiredMarketPosition: row.desired_market_position as string | undefined,
-    revenueAmbition: row.revenue_ambition as string | undefined,
-    desiredFounderRole: row.desired_founder_role as string | undefined,
-    remainResponsibleFor: (row.remain_responsible_for as string[] | undefined) ?? [],
-    notResponsibleFor: (row.not_responsible_for as string[] | undefined) ?? [],
-    desiredWorkingHoursPerWeek: row.desired_working_hours_per_week as string | undefined,
-    desiredFounderInvolvement: row.desired_founder_involvement as string | undefined,
-    desiredZoneOfGenius: row.desired_zone_of_genius as string | undefined,
-    desiredFounderIndependence: row.desired_founder_independence as string | undefined,
-    desiredWorkLifeBalanceModel: row.desired_work_life_balance_model as string | undefined,
-    desiredTimeFreedomLevel: row.desired_time_freedom_level as string | undefined,
-    desiredLifestyle: row.desired_lifestyle as string | undefined,
-    nonNegotiableLifeBoundaries: (row.non_negotiable_life_boundaries as string[] | undefined) ?? [],
-    businessLifePurpose: row.business_life_purpose as string | undefined,
-    desiredWorkplaceType: row.desired_workplace_type as string | undefined,
-    desiredEmployeeExperience: row.desired_employee_experience as string | undefined,
-    desiredWorkDesign: row.desired_work_design as string | undefined,
-    desiredAiHumanRelationship: row.desired_ai_human_relationship as string | undefined,
-    desiredLeadershipCulture: row.desired_leadership_culture as string | undefined,
-    desiredHumanSustainabilityStandard: row.desired_human_sustainability_standard as string | undefined,
+    desiredBusinessSize: row.desired_business_size as FounderDestinationProfile["desiredBusinessSize"],
+    desiredTeamSize: row.desired_team_size as FounderDestinationProfile["desiredTeamSize"],
+    desiredGeographicReach: row.desired_geographic_reach as FounderDestinationProfile["desiredGeographicReach"],
+    desiredMarketPosition: row.desired_market_position as FounderDestinationProfile["desiredMarketPosition"],
+    revenueAmbition: row.revenue_ambition as FounderDestinationProfile["revenueAmbition"],
+    desiredFounderRole: row.desired_founder_role as FounderDestinationProfile["desiredFounderRole"],
+    remainResponsibleFor: (row.remain_responsible_for as FounderDestinationProfile["remainResponsibleFor"]) ?? [],
+    notResponsibleFor: (row.not_responsible_for as FounderDestinationProfile["notResponsibleFor"]) ?? [],
+    desiredWorkingHoursPerWeek: row.desired_working_hours_per_week as FounderDestinationProfile["desiredWorkingHoursPerWeek"],
+    desiredFounderInvolvement: row.desired_founder_involvement as FounderDestinationProfile["desiredFounderInvolvement"],
+    desiredZoneOfGenius: row.desired_zone_of_genius as FounderDestinationProfile["desiredZoneOfGenius"],
+    desiredFounderIndependence: row.desired_founder_independence as FounderDestinationProfile["desiredFounderIndependence"],
+    desiredWorkLifeBalanceModel: row.desired_work_life_balance_model as FounderDestinationProfile["desiredWorkLifeBalanceModel"],
+    desiredTimeFreedomLevel: row.desired_time_freedom_level as FounderDestinationProfile["desiredTimeFreedomLevel"],
+    desiredLifestyle: row.desired_lifestyle as FounderDestinationProfile["desiredLifestyle"],
+    nonNegotiableLifeBoundaries: (row.non_negotiable_life_boundaries as FounderDestinationProfile["nonNegotiableLifeBoundaries"]) ?? [],
+    businessLifePurpose: row.business_life_purpose as FounderDestinationProfile["businessLifePurpose"],
+    desiredWorkplaceType: row.desired_workplace_type as FounderDestinationProfile["desiredWorkplaceType"],
+    desiredEmployeeExperience: row.desired_employee_experience as FounderDestinationProfile["desiredEmployeeExperience"],
+    desiredWorkDesign: row.desired_work_design as FounderDestinationProfile["desiredWorkDesign"],
+    desiredAiHumanRelationship: row.desired_ai_human_relationship as FounderDestinationProfile["desiredAiHumanRelationship"],
+    desiredLeadershipCulture: row.desired_leadership_culture as FounderDestinationProfile["desiredLeadershipCulture"],
+    desiredHumanSustainabilityStandard:
+      row.desired_human_sustainability_standard as FounderDestinationProfile["desiredHumanSustainabilityStandard"],
     completedAt: row.completed_at as string | undefined,
   }
 }
@@ -130,7 +99,7 @@ function mapRow(row: Record<string, unknown> | null): FounderDestinationRecord |
  * Saves the Founder Destination™ for the current member to the database.
  * No-ops silently when signed out (localStorage cache still applies).
  */
-export async function saveFounderDestinationToDb(destination: FounderDestinationData): Promise<void> {
+export async function saveFounderDestinationToDb(destination: FounderDestinationProfile): Promise<void> {
   const userId = await getUserId()
   if (!userId) return
 

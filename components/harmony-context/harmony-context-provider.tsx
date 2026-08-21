@@ -75,9 +75,10 @@ import {
 } from "@/lib/founder-destination/founder-destination-store"
 import { getBusinessContextFromDb } from "@/utils/business-context-storage"
 import { getFounderProfileFromDb } from "@/utils/founder-profile-storage"
-import { getFounderDestinationFromDb, type FounderDestinationData } from "@/utils/founder-destination-storage"
+import { getFounderDestinationFromDb } from "@/utils/founder-destination-storage"
 import type { BusinessContextProfile } from "@/lib/business-context/types"
 import type { FounderLearningProfile } from "@/lib/founder-learning/types"
+import type { FounderDestinationProfile } from "@/lib/founder-destination/types"
 
 /** id → human label / config lookups (built once). */
 const FOCUS_LABEL = new Map(FOCUS_AREA_OPTIONS.map((o) => [o.id, o.label]))
@@ -133,7 +134,7 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
   const [businessContext, setBusinessContext] = useState<BusinessContextProfile | null>(null)
   const [founderLearning, setFounderLearning] = useState<FounderLearningProfile | null>(null)
   const [founderProfile, setFounderProfile] = useState<Record<string, unknown> | null>(null)
-  const [founderDestination, setFounderDestination] = useState<FounderDestinationData | null>(null)
+  const [founderDestination, setFounderDestination] = useState<FounderDestinationProfile | null>(null)
 
   useEffect(() => {
     setInstalled(getInstalledWeek())
@@ -143,7 +144,7 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
     setBusinessContext(getBusinessContext())
     setFounderLearning(getFounderLearning())
     setFounderProfile(getFounderProfile())
-    setFounderDestination(getFounderDestination() as FounderDestinationData | null)
+    setFounderDestination(getFounderDestination())
     setLoaded(true)
 
     // Database is authoritative — reconcile the cache-first paint above with
@@ -165,7 +166,7 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
       if (!record) return
       const { completedAt: _completedAt, ...destination } = record
       setFounderDestination(destination)
-      saveFounderDestination(destination as unknown as Record<string, unknown>)
+      saveFounderDestination(destination)
     })
 
     // Keep in sync if any signal changes elsewhere in this tab.
@@ -175,7 +176,7 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
     const onBcChange = () => setBusinessContext(getBusinessContext())
     const onFlChange = () => setFounderLearning(getFounderLearning())
     const onFpChange = () => setFounderProfile(getFounderProfile())
-    const onFdChange = () => setFounderDestination(getFounderDestination() as FounderDestinationData | null)
+    const onFdChange = () => setFounderDestination(getFounderDestination())
     window.addEventListener(BUSINESS_STAGE_EVENT, onStageChange)
     window.addEventListener(BUSINESS_COMPREHENSION_EVENT, onStyleChange)
     window.addEventListener(LOCALE_PREFERENCES_EVENT, onLocaleChange)

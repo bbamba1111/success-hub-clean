@@ -16,8 +16,8 @@
 import type { BusinessStage } from "@/lib/business-stage/business-stage"
 import type { CommunicationStyle } from "@/lib/business-comprehension/business-comprehension"
 import type { BusinessContextProfile } from "@/lib/business-context/types"
- import type { FounderLearningProfile } from "@/lib/founder-learning/types"
- import type { FounderDestinationData } from "@/utils/founder-destination-storage"
+import type { FounderLearningProfile } from "@/lib/founder-learning/types"
+import type { FounderDestinationProfile } from "@/lib/founder-destination/types"
 import type { LanguageCode, TextDirection } from "@/lib/i18n/language"
 import type {
   DateFormat,
@@ -195,5 +195,5 @@ export interface HarmonyContextValue {
    * form. This engine only passes it through to consumers (Founder GPS™,
    * Cherry Blossom™, the Executive Team) — it does not interpret fields.
    */
-  founderDestination: FounderDestinationData | null
+  founderDestination: FounderDestinationProfile | null
 }

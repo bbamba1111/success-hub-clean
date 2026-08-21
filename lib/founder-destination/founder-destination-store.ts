@@ -12,12 +12,14 @@
  * Founder Profile™ (who the founder is today).
  */
 
+import type { FounderDestinationProfile } from "./types"
+
 const STORAGE_KEY = "hl:founder-destination:v1"
 
 /** Fired on window after a save so any live listeners can refresh. */
 export const FOUNDER_DESTINATION_EVENT = "hl:founder-destination:changed"
 
-export function saveFounderDestination(data: Record<string, unknown>): void {
+export function saveFounderDestination(data: FounderDestinationProfile): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
     window.dispatchEvent(new CustomEvent(FOUNDER_DESTINATION_EVENT))
@@ -26,11 +28,11 @@ export function saveFounderDestination(data: Record<string, unknown>): void {
   }
 }
 
-export function getFounderDestination(): Record<string, unknown> | null {
+export function getFounderDestination(): FounderDestinationProfile | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return null
-    return JSON.parse(raw) as Record<string, unknown>
+    return JSON.parse(raw) as FounderDestinationProfile
   } catch (error) {
     console.error("[FounderDestination] Error reading destination:", error)
     return null
