@@ -10,18 +10,32 @@
  * and presents the result. No AI, no network, no client state.
  */
 
+import { useEffect, useState } from "react"
 import Link from "next/link"
-import { Sparkles, Compass, Users, Shield, GraduationCap, FileText, ArrowRight, ListTree } from "lucide-react"
+import { Sparkles, Compass, Users, Shield, GraduationCap, FileText, ArrowRight, ListTree, Target } from "lucide-react"
 import { useHarmonyContext } from "@/components/harmony-context/harmony-context-provider"
-import { assembleOperatingBrief } from "@/lib/founder-intelligence/founder-intelligence"
+import { assembleOperatingBrief, type OperatingBriefExtra } from "@/lib/founder-intelligence/founder-intelligence"
+import { loadReadinessContext } from "@/lib/founder-intelligence/load-readiness-context"
 
 export function OperatingBrief() {
   const ctx = useHarmonyContext()
 
+  // Phase 4 — optional Excellence Intelligence™ evidence (ESA + Work-Life
+  // Balance Audit™), loaded client-side from existing storage utilities.
+  // Starts empty so the brief still assembles on first paint; deepens once
+  // this resolves. `assembleOperatingBrief` treats an empty `extra` exactly
+  // like Phase 3's stage/destination-only behavior, so there is no flash of
+  // incorrect content — only a possible upgrade in relevance after mount.
+  const [readinessExtra, setReadinessExtra] = useState<OperatingBriefExtra>({})
+
+  useEffect(() => {
+    setReadinessExtra(loadReadinessContext())
+  }, [])
+
   // Wait for the engine + session to be ready before assembling anything.
   if (!ctx.ready) return null
 
-  const brief = assembleOperatingBrief(ctx)
+  const brief = assembleOperatingBrief(ctx, readinessExtra)
 
   return (
     <section
@@ -134,6 +148,29 @@ export function OperatingBrief() {
                   ))}
                 </div>
                 <BlockLink href="/output-architecture" label="Explore your Deliverable Output Architecture™" />
+              </BriefBlock>
+            )}
+
+            {/* Readiness Capabilities™ — Excellence Intelligence™, reasoned through Readiness Relevance™ (Phase 4) */}
+            {brief.readinessCapabilities.length > 0 && (
+              <BriefBlock icon={Target} title="Build Ahead Of Need">
+                <div className="space-y-3">
+                  {brief.readinessCapabilities.map((r) => (
+                    <div key={r.id} className="rounded-xl bg-[#F5F1E8]/60 px-4 py-3">
+                      <div className="flex items-baseline justify-between gap-3">
+                        <p className="font-playfair text-lg font-medium text-[#3A2E33]">{r.title}</p>
+                        {r.relevanceStatus === "priority" && (
+                          <span className="shrink-0 rounded-full bg-[#C13B6B]/10 px-2.5 py-0.5 font-montserrat text-[11px] font-semibold uppercase tracking-[0.08em] text-[#C13B6B]">
+                            Priority
+                          </span>
+                        )}
+                      </div>
+                      <p className="mt-1.5 font-montserrat text-[13px] italic leading-relaxed text-[#5B835F]">
+                        {r.reason}
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </BriefBlock>
             )}
 

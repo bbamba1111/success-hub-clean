@@ -33,8 +33,14 @@ import { getExecutive, type Executive } from "@/lib/executive-team/executive-reg
 import { getAdvisor, type Advisor } from "@/lib/advisory-network/advisor-registry"
 import { EXECUTIVE_INSIGHTS, type AcademyItem } from "@/lib/harmony-academy/academy-registry"
 import { DELIVERABLES, type Deliverable } from "@/lib/output-architecture/deliverable-registry"
-import { deriveRequiredCapabilities } from "@/lib/excellence-intelligence/readiness"
 import type { ReadinessCapability } from "@/lib/excellence-intelligence/excellence-intelligence-registry"
+import {
+  deriveReadinessRelevance,
+  pickTopReadinessCapabilities,
+  type ReadinessConfidence,
+  type ReadinessRelevanceStatus,
+} from "@/lib/founder-intelligence/readiness-relevance"
+import type { EsaResults } from "@/lib/entrepreneur-success/types"
 
 /* ===========================================================================
  * Operating Brief™ shape
@@ -89,12 +95,36 @@ export interface BriefReasoningStep {
  * A Readiness Capability™ (Excellence Intelligence Engine™, Phase 3) surfaced
  * for today's brief — proactively, ahead of the founder's next Business
  * Stage™ transition, not only reactively to their current one.
+ *
+ * Phase 4 adds `relevanceStatus`, `confidence`, and `whyNow` — all OPTIONAL,
+ * so existing consumers reading only `.id/.title/.readinessDomain/.reason`
+ * are unaffected. They are populated once `assembleOperatingBrief` is called
+ * with the optional `extra` context (see `OperatingBriefExtra` below).
  */
 export interface BriefReadinessCapability {
   id: string
   title: string
   readinessDomain: string
   reason: string
+  /** Phase 4 — how relevant this is to THIS founder, right now. */
+  relevanceStatus?: ReadinessRelevanceStatus
+  /** Phase 4 — how strongly that call is grounded in real evidence. */
+  confidence?: ReadinessConfidence
+  /** Phase 4 — a short, explainable "why this, why now" line. */
+  whyNow?: string
+}
+
+/**
+ * Optional Excellence Intelligence™ evidence `assembleOperatingBrief` can be
+ * given, alongside `HarmonyContextValue`, to deepen Readiness Capability™
+ * relevance beyond stage + destination alone. Every field is optional and
+ * defaults to absent — callers that don't pass `extra` at all keep getting
+ * exactly Phase 3's stage/destination-only behavior.
+ */
+export interface OperatingBriefExtra {
+  esaResults?: EsaResults | null
+  workLifeBalanceScore?: number | null
+  hasCompletedAudit?: boolean
 }
 
 /** The complete Operating Brief™ for the current founder + moment. */
@@ -258,39 +288,43 @@ function chooseDeliverables(
 
 /**
  * Choose up to two Readiness Capabilities™ (Excellence Intelligence Engine™,
- * Phase 3) — preferring ones connected to an executive already on today's
- * team, so the brief stays coherent, same as `chooseDeliverables`.
+ * Phase 3) — now reasoned through Readiness Relevance™ (Phase 4), which adds
+ * Business Context Profile™, Entrepreneur Success Assessment™, and Work-Life
+ * Balance Audit™ evidence on top of Phase 3's Business Stage™ + Founder
+ * Destination™ candidate pool. Ordering preference is unchanged in spirit —
+ * corroborated (`priority`) capabilities surface first, same as
+ * "owned-by-today's-team" did before — but is now driven by real signals
+ * instead of only executive overlap.
  *
- * Deterministic: `deriveRequiredCapabilities` is a pure filter over Business
- * Stage™ + Founder Destination™; this only orders and caps the result.
+ * Deterministic: `deriveReadinessRelevance` is a pure function of Harmony
+ * Context™ + the optional `extra` evidence; this only caps the result.
  */
 function chooseReadinessCapabilities(
   ctx: HarmonyContextValue,
-  executives: BriefExecutive[],
+  extra: OperatingBriefExtra,
 ): BriefReadinessCapability[] {
-  const stage = ctx.businessStage
-  const execIds = new Set(executives.map((e) => e.id))
-
-  const candidates: ReadinessCapability[] = deriveRequiredCapabilities({
-    businessStage: stage,
+  const reasoned = deriveReadinessRelevance({
+    businessStage: ctx.businessStage,
     founderDestination: ctx.founderDestination,
+    businessContext: ctx.businessContext
+      ? {
+          biggestChallenges: ctx.businessContext.biggestChallenges,
+          biggestOpportunities: ctx.businessContext.biggestOpportunities,
+        }
+      : null,
+    esaResults: extra.esaResults ?? null,
+    workLifeBalanceScore: extra.workLifeBalanceScore ?? null,
   })
-  if (candidates.length === 0) return []
+  if (reasoned.length === 0) return []
 
-  // Owned-by-today's-team first, then the rest — stable order preserved.
-  const ordered = [
-    ...candidates.filter((c) => c.relatedExecutives.some((id) => execIds.has(id))),
-    ...candidates.filter((c) => !c.relatedExecutives.some((id) => execIds.has(id))),
-  ]
-
-  return ordered.slice(0, MAX_READINESS_CAPABILITIES).map((c) => ({
-    id: c.id,
-    title: c.title,
-    readinessDomain: c.readinessDomain,
-    reason:
-      c.businessStages.includes(stage)
-        ? `Prepares you for the transition out of your ${capitalize(stage)}™ stage.`
-        : `Building ahead of need, based on where you've said you want this to go.`,
+  return pickTopReadinessCapabilities(reasoned, MAX_READINESS_CAPABILITIES).map((r) => ({
+    id: r.id,
+    title: r.title,
+    readinessDomain: r.readinessDomain,
+    reason: r.whyNow,
+    relevanceStatus: r.relevanceStatus,
+    confidence: r.confidence,
+    whyNow: r.whyNow,
   }))
 }
 
@@ -332,10 +366,16 @@ function buildExplanation(
 /**
  * assembleOperatingBrief — the heart of Founder Intelligence™.
  *
- * Pure function: (Harmony Context™) → Operating Brief™. Deterministic and
- * side-effect-free, so it is trivially testable and safe to call during render.
+ * Pure function: (Harmony Context™, optional Excellence Intelligence™
+ * evidence) → Operating Brief™. Deterministic and side-effect-free, so it is
+ * trivially testable and safe to call during render.
+ *
+ * `extra` is OPTIONAL and additive (Phase 4) — existing callers that invoke
+ * `assembleOperatingBrief(ctx)` with no second argument keep compiling and
+ * behaving exactly as before (Readiness Capabilities™ reasoned from Business
+ * Stage™ + Founder Destination™ + Business Context Profile™ only).
  */
-export function assembleOperatingBrief(ctx: HarmonyContextValue): OperatingBrief {
+export function assembleOperatingBrief(ctx: HarmonyContextValue, extra: OperatingBriefExtra = {}): OperatingBrief {
   const name = ctx.firstName?.trim()
   const greeting = name ? `${ctx.greeting}, ${name}.` : `${ctx.greeting}.`
 
@@ -355,7 +395,7 @@ export function assembleOperatingBrief(ctx: HarmonyContextValue): OperatingBrief
   const advisors = assembleAdvisors(ctx)
   const insight = chooseInsight(ctx, executives)
   const deliverables = chooseDeliverables(ctx, executives)
-  const readinessCapabilities = chooseReadinessCapabilities(ctx, executives)
+  const readinessCapabilities = chooseReadinessCapabilities(ctx, extra)
   const explanation = buildExplanation(ctx, executives)
 
   const seg = ctx.currentSegment
@@ -367,7 +407,7 @@ export function assembleOperatingBrief(ctx: HarmonyContextValue): OperatingBrief
       system: "Excellence Intelligence Engine™",
       note:
         readinessCapabilities.length > 0
-          ? `Grounded the brief in enduring business principles and surfaced ${readinessCapabilities.length} readiness ${readinessCapabilities.length === 1 ? "capability" : "capabilities"} for what comes next.`
+          ? `Grounded the brief in enduring business principles and prioritized ${readinessCapabilities.length} readiness ${readinessCapabilities.length === 1 ? "capability" : "capabilities"} for what comes next${readinessCapabilities.some((c) => c.relevanceStatus === "priority") ? ", corroborated by your own signals" : ""}.`
           : "Grounded the brief in enduring business principles (no duplicated knowledge).",
     },
     { system: "Business Concepts Registry™", note: "Kept every term in one shared business language." },

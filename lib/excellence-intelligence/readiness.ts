@@ -30,8 +30,12 @@ import {
  * (size, team, market position, reach, revenue) beyond a bare minimum —
  * the signal that Growth Readiness™ or Scale Readiness™ should be surfaced
  * a stage early.
+ *
+ * Exported so `lib/founder-intelligence/readiness-relevance.ts` (Phase 4)
+ * can reuse the exact same destination-signal logic instead of re-deriving
+ * it — same rule, one source of truth.
  */
-function hasBusinessAmbitionSignal(fd: FounderDestinationProfile): boolean {
+export function hasBusinessAmbitionSignal(fd: FounderDestinationProfile): boolean {
   const isSet = (v: string | undefined) => !!v && v !== "undecided"
   return (
     isSet(fd.desiredBusinessSize) ||
@@ -46,8 +50,10 @@ function hasBusinessAmbitionSignal(fd: FounderDestinationProfile): boolean {
  * True when the founder has already expressed intent about the WORKPLACE
  * they want to build — the signal that Future Workplace Readiness™ should be
  * surfaced ahead of Legacy™, at Growth™ or Scale™.
+ *
+ * Exported for the same reason as `hasBusinessAmbitionSignal` above.
  */
-function hasFutureWorkplaceSignal(fd: FounderDestinationProfile): boolean {
+export function hasFutureWorkplaceSignal(fd: FounderDestinationProfile): boolean {
   const isSet = (v: string | undefined) => !!v && v !== "undecided"
   return (
     isSet(fd.desiredWorkplaceType) ||
