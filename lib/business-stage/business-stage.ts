@@ -215,3 +215,82 @@ export function getBusinessStage(id: BusinessStage | string | null | undefined):
 export function isBusinessStage(value: unknown): value is BusinessStage {
   return typeof value === "string" && ALL_BUSINESS_STAGES.includes(value as BusinessStage)
 }
+
+/**
+ * The subset of the Business Context Profile™ needed to derive a Business
+ * Stage™. Declared locally (rather than importing the full profile type) to
+ * keep this module dependency-light — any object with these three fields
+ * works, whether it comes from the local cache, the database record, or a
+ * test fixture.
+ */
+export interface BusinessStageSignals {
+  businessStage:
+    | "idea"
+    | "pre-revenue"
+    | "early-revenue"
+    | "growth"
+    | "scaling"
+    | "established"
+    | "pivoting"
+    | "multi-business"
+    | "acquisition"
+  teamSize?: "solo" | "1-3" | "4-10" | "11-25" | "26-50" | "50-plus"
+  revenueStage?:
+    | "pre-revenue"
+    | "under-50k"
+    | "50k-100k"
+    | "100k-250k"
+    | "250k-500k"
+    | "500k-1m"
+    | "1m-5m"
+    | "5m-plus"
+}
+
+/**
+ * Derives a canonical Business Stage™ from the founder's persisted Business
+ * Context Profile™ — the real, multi-signal business state, not the
+ * founder's session-only self-selection.
+ *
+ * Mapping (documented here as the single source of truth):
+ *   - launch  ⊂ idea, pre-revenue, early-revenue
+ *   - growth  ⊂ growth (upgraded to scale if team size or revenue already
+ *     reflect a scale-stage business — the 9-option value can go stale)
+ *   - scale   ⊂ scaling, established, multi-business
+ *   - legacy  ⊂ acquisition
+ *   - pivoting is cross-cutting, not a fixed stage — falls back to the
+ *     objective revenue/team-size signals since a pivoting founder can be at
+ *     any macro stage.
+ *
+ * Returns the default stage if no context is available.
+ */
+export function deriveBusinessStage(context: BusinessStageSignals | null | undefined): BusinessStage {
+  if (!context) return DEFAULT_BUSINESS_STAGE
+
+  const { businessStage, teamSize, revenueStage } = context
+
+  const hasStrongScaleSignal =
+    teamSize === "26-50" || teamSize === "50-plus" || revenueStage === "1m-5m" || revenueStage === "5m-plus"
+
+  const hasEarnedRevenueSignal =
+    !!revenueStage && revenueStage !== "pre-revenue" && revenueStage !== "under-50k"
+
+  switch (businessStage) {
+    case "idea":
+    case "pre-revenue":
+    case "early-revenue":
+      return "launch"
+    case "growth":
+      return hasStrongScaleSignal ? "scale" : "growth"
+    case "scaling":
+    case "established":
+    case "multi-business":
+      return "scale"
+    case "acquisition":
+      return "legacy"
+    case "pivoting":
+      if (hasStrongScaleSignal) return "scale"
+      return hasEarnedRevenueSignal ? "growth" : "launch"
+    default:
+      return DEFAULT_BUSINESS_STAGE
+  }
+}
