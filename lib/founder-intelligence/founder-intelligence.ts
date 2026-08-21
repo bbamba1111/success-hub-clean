@@ -33,6 +33,8 @@ import { getExecutive, type Executive } from "@/lib/executive-team/executive-reg
 import { getAdvisor, type Advisor } from "@/lib/advisory-network/advisor-registry"
 import { EXECUTIVE_INSIGHTS, type AcademyItem } from "@/lib/harmony-academy/academy-registry"
 import { DELIVERABLES, type Deliverable } from "@/lib/output-architecture/deliverable-registry"
+import { deriveRequiredCapabilities } from "@/lib/excellence-intelligence/readiness"
+import type { ReadinessCapability } from "@/lib/excellence-intelligence/excellence-intelligence-registry"
 
 /* ===========================================================================
  * Operating Brief™ shape
@@ -83,6 +85,18 @@ export interface BriefReasoningStep {
   note: string
 }
 
+/**
+ * A Readiness Capability™ (Excellence Intelligence Engine™, Phase 3) surfaced
+ * for today's brief — proactively, ahead of the founder's next Business
+ * Stage™ transition, not only reactively to their current one.
+ */
+export interface BriefReadinessCapability {
+  id: string
+  title: string
+  readinessDomain: string
+  reason: string
+}
+
 /** The complete Operating Brief™ for the current founder + moment. */
 export interface OperatingBrief {
   /** Whether a week has been designed — drives the empty vs full brief. */
@@ -109,6 +123,8 @@ export interface OperatingBrief {
   insight: BriefInsight | null
   /** One or more recommended Deliverables™. */
   deliverables: BriefDeliverable[]
+  /** Readiness Capabilities™ (Phase 3) to prepare for the founder's next Business Stage™. */
+  readinessCapabilities: BriefReadinessCapability[]
   /** A concise explanation, written at the founder's Comprehension™ level. */
   explanation: string
   /** The Communication Style™ the explanation is written in (brand name). */
@@ -131,6 +147,7 @@ export interface OperatingBrief {
 const MAX_EXECUTIVES = 3
 const MAX_ADVISORS = 2
 const MAX_DELIVERABLES = 2
+const MAX_READINESS_CAPABILITIES = 2
 
 /** Resolve recommended executive ids (from Business Stage™) into a today team. */
 function assembleExecutives(ctx: HarmonyContextValue): BriefExecutive[] {
@@ -240,6 +257,44 @@ function chooseDeliverables(
 }
 
 /**
+ * Choose up to two Readiness Capabilities™ (Excellence Intelligence Engine™,
+ * Phase 3) — preferring ones connected to an executive already on today's
+ * team, so the brief stays coherent, same as `chooseDeliverables`.
+ *
+ * Deterministic: `deriveRequiredCapabilities` is a pure filter over Business
+ * Stage™ + Founder Destination™; this only orders and caps the result.
+ */
+function chooseReadinessCapabilities(
+  ctx: HarmonyContextValue,
+  executives: BriefExecutive[],
+): BriefReadinessCapability[] {
+  const stage = ctx.businessStage
+  const execIds = new Set(executives.map((e) => e.id))
+
+  const candidates: ReadinessCapability[] = deriveRequiredCapabilities({
+    businessStage: stage,
+    founderDestination: ctx.founderDestination,
+  })
+  if (candidates.length === 0) return []
+
+  // Owned-by-today's-team first, then the rest — stable order preserved.
+  const ordered = [
+    ...candidates.filter((c) => c.relatedExecutives.some((id) => execIds.has(id))),
+    ...candidates.filter((c) => !c.relatedExecutives.some((id) => execIds.has(id))),
+  ]
+
+  return ordered.slice(0, MAX_READINESS_CAPABILITIES).map((c) => ({
+    id: c.id,
+    title: c.title,
+    readinessDomain: c.readinessDomain,
+    reason:
+      c.businessStages.includes(stage)
+        ? `Prepares you for the transition out of your ${capitalize(stage)}™ stage.`
+        : `Building ahead of need, based on where you've said you want this to go.`,
+  }))
+}
+
+/**
  * Build a concise explanation ADAPTED to the founder's Communication Style™.
  * Same underlying message (stage + intention + what's assembled), expressed at
  * the founder's preferred level. This is the "adapt HOW, not WHAT" principle,
@@ -300,6 +355,7 @@ export function assembleOperatingBrief(ctx: HarmonyContextValue): OperatingBrief
   const advisors = assembleAdvisors(ctx)
   const insight = chooseInsight(ctx, executives)
   const deliverables = chooseDeliverables(ctx, executives)
+  const readinessCapabilities = chooseReadinessCapabilities(ctx, executives)
   const explanation = buildExplanation(ctx, executives)
 
   const seg = ctx.currentSegment
@@ -307,7 +363,13 @@ export function assembleOperatingBrief(ctx: HarmonyContextValue): OperatingBrief
 
   const reasoning: BriefReasoningStep[] = [
     { system: "Harmony Context Engine™", note: `Read your ${capitalize(ctx.businessStage)}™ stage, ${ctx.communicationStyleName} style, and ${ctx.languageName}.` },
-    { system: "Excellence Intelligence Engine™", note: "Grounded the brief in enduring business principles (no duplicated knowledge)." },
+    {
+      system: "Excellence Intelligence Engine™",
+      note:
+        readinessCapabilities.length > 0
+          ? `Grounded the brief in enduring business principles and surfaced ${readinessCapabilities.length} readiness ${readinessCapabilities.length === 1 ? "capability" : "capabilities"} for what comes next.`
+          : "Grounded the brief in enduring business principles (no duplicated knowledge).",
+    },
     { system: "Business Concepts Registry™", note: "Kept every term in one shared business language." },
     { system: "Executive Leadership Team™", note: `Assembled ${executives.length} executive${executives.length === 1 ? "" : "s"} for today's priorities.` },
     { system: "Professional Advisory Network™", note: advisors.length > 0 ? `Flagged ${advisors.length} advisor${advisors.length === 1 ? "" : "s"} that may become relevant.` : "No specialized advisor needed right now." },
@@ -328,6 +390,7 @@ export function assembleOperatingBrief(ctx: HarmonyContextValue): OperatingBrief
     advisors,
     insight,
     deliverables,
+    readinessCapabilities,
     explanation,
     reasoning,
   }
@@ -348,4 +411,4 @@ function nameForExec(id: string): string {
 }
 
 /** Re-exported registry types for consumers of the brief. */
-export type { Executive, Advisor, AcademyItem, Deliverable }
+export type { Executive, Advisor, AcademyItem, Deliverable, ReadinessCapability }

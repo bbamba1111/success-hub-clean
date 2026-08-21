@@ -31,6 +31,7 @@
 import { ALL_BUSINESS_STAGES, type BusinessStage } from "@/lib/business-stage/business-stage"
 import { ALL_COMMUNICATION_STYLES, type CommunicationStyle } from "@/lib/business-comprehension/business-comprehension"
 import { SUPPORTED_LANGUAGES, type LanguageCode } from "@/lib/i18n/language"
+import type { BusinessModelId } from "@/lib/entrepreneur-success/types"
 
 /** All Preferred Language™ codes — derived so the two never drift. */
 export const ALL_LANGUAGE_CODES: LanguageCode[] = SUPPORTED_LANGUAGES.map((l) => l.code)
@@ -176,6 +177,13 @@ export type KnowledgeSourceType =
   | "enduring-principle"
   | "practice-pattern"
   | "harmony-methodology"
+  /**
+   * Knowledge independently synthesized from EXTERNAL practice research (see
+   * `ExternalSourceAttribution` below) — distinct from Harmony Lane's own
+   * methodology. Populated sparingly and only with generic, non-attributed
+   * source categories (never a named course, operator, or copyrighted work).
+   */
+  | "external-practice-synthesis"
 
 /** A qualitative signal of how well-supported the knowledge is (display only). */
 export type EvidenceLevel = "foundational" | "well-established" | "emerging" | "proprietary"
@@ -524,3 +532,605 @@ export const CHERRY_BLOSSOM_REASONING_HIERARCHY: ReasoningLayer[] = [
   { order: 8, system: "AI Augmentation Hour™", role: "Where human judgment and AI leverage combine." },
   { order: 9, system: "Founder Recommendation", role: "The single, contextualized next step for the founder." },
 ]
+
+/* ===========================================================================
+ * Proactive Start, Growth & Scale Readiness™ (Phase 3)
+ * ---------------------------------------------------------------------------
+ * A structured answer to a question the Engine did not yet ask: "what must
+ * exist BEFORE the next Business Stage™, not just what helps at the current
+ * one?" This is additive architecture inside the existing Excellence
+ * Intelligence Engine™ — not a new engine, not a scoring system, not AI.
+ *
+ * Every Readiness Capability™ below is a KNOWLEDGE unit, in the same spirit
+ * as `KnowledgeObject` — it never duplicates definitions (Business Concepts™
+ * Registry) or ownership (Executive Leadership Team™, Deliverables™); it only
+ * references them and adds the one thing those registries do not express:
+ * SEQUENCE — what should exist before what, and why.
+ * ======================================================================== */
+
+/** The four Readiness domains™. Every Readiness Capability™ belongs to exactly one. */
+export type ReadinessDomainId =
+  | "start-readiness"
+  | "growth-readiness"
+  | "scale-readiness"
+  | "future-workplace-readiness"
+
+export interface ReadinessDomain {
+  id: ReadinessDomainId
+  /** Brand name (e.g. "Start Readiness™"). */
+  name: string
+  tagline: string
+  description: string
+  purpose: string
+  examples: string[]
+  status: ExcellenceStatus
+}
+
+export const READINESS_DOMAINS: ReadinessDomain[] = [
+  {
+    id: "start-readiness",
+    name: "Start Readiness™",
+    tagline: "What must exist before Growth™ — not just what helps at Launch™.",
+    description:
+      "The foundational clarity a business needs installed during Launch™ so that Growth™ adds leverage instead of chaos: who the customer is, what the offer is, what it costs, and what rhythm the founder runs on.",
+    purpose: "Prepare a Launch™-stage founder for the transition into Growth™, proactively.",
+    examples: ["Customer clarity", "Offer clarity", "Pricing clarity", "A foundational operating rhythm"],
+    status: "architecture",
+  },
+  {
+    id: "growth-readiness",
+    name: "Growth Readiness™",
+    tagline: "What must exist before Scale™ — not just what helps at Growth™.",
+    description:
+      "The systems, delegation, and early leverage a business needs installed during Growth™ so that Scale™ adds people and complexity onto a foundation, not into a vacuum.",
+    purpose: "Prepare a Growth™-stage founder for the transition into Scale™, proactively.",
+    examples: ["Systems before hiring", "Delegation capacity", "Governed AI workflows", "Financial visibility"],
+    status: "architecture",
+  },
+  {
+    id: "scale-readiness",
+    name: "Scale Readiness™",
+    tagline: "What must exist before Legacy™ — not just what helps at Scale™.",
+    description:
+      "The leadership depth, organizational design, and executive rhythm a business needs installed during Scale™ so that Legacy™ inherits a company that can outlast the founder, not one that depends on them.",
+    purpose: "Prepare a Scale™-stage founder for the transition into Legacy™, proactively.",
+    examples: ["Leadership depth", "Organizational design", "Executive rhythm & KPI discipline", "Exit-readiness foundations"],
+    status: "architecture",
+  },
+  {
+    id: "future-workplace-readiness",
+    name: "Future Workplace Readiness™",
+    tagline: "The workplace a founder is proactively building, not just the business.",
+    description:
+      "A cross-cutting readiness domain that extends the founder's own Human Sustainability™ and AI-human collaboration standards into an organizational design — so the workplace the founder builds reflects the life they intended, at every level of the team.",
+    purpose: "Prepare a Scale™ or Legacy™-stage founder to design a workplace, not only a business.",
+    examples: [
+      "Organizational Human Sustainability™ standards",
+      "Governed AI-human collaboration at team scale",
+      "Work design",
+      "People & culture at scale",
+    ],
+    status: "architecture",
+  },
+]
+
+const READINESS_DOMAIN_BY_ID = new Map<ReadinessDomainId, ReadinessDomain>(READINESS_DOMAINS.map((d) => [d.id, d]))
+
+export function getReadinessDomain(id: ReadinessDomainId): ReadinessDomain | undefined {
+  return READINESS_DOMAIN_BY_ID.get(id)
+}
+
+/**
+ * Structured attribution for knowledge synthesized from EXTERNAL practice
+ * research (as opposed to Harmony Lane's own methodology). Deliberately
+ * generic — a source CATEGORY and a plain description, never a named course,
+ * operator, guru, or copyrighted framework.
+ */
+export interface ExternalSourceAttribution {
+  sourceCategory: "operator-practice-research" | "academic-research" | "industry-body-research"
+  /** A plain, generic description of the kind of source (never a proper name). */
+  sourceDescriptor: string
+  /** The single principle retrieved and generalized from that source category. */
+  retrievedPrinciple: string
+}
+
+/**
+ * A Readiness Capability™ — a single "what must exist before the next stage"
+ * knowledge unit. Mirrors `KnowledgeObject`'s cross-reference discipline:
+ * knowledge is never duplicated, only referenced by id.
+ */
+export interface ReadinessCapability {
+  /** Stable identifier — safe for routing, storage, and cross-references. */
+  id: string
+  /** Human title (e.g. "Customer Clarity Before Scale"). */
+  title: string
+  readinessDomain: ReadinessDomainId
+  /** Cross-reference into the Four Knowledge Domains™ this capability draws on. */
+  knowledgeDomain: KnowledgeDomainId
+  /** The enduring truth beneath the capability. */
+  principle: string
+  /** The concrete capability the founder needs installed. */
+  capability: string
+  /** The situation that signals this capability is not yet installed. */
+  appliesWhen: string
+  /** A plain, testable rule for whether to install this now. */
+  decisionRule: string
+  /** Observable signals that this capability is (or isn't) in place. */
+  leadingIndicators: string[]
+  /** Business Stages™ during which this capability should be installed. */
+  businessStages: BusinessStage[]
+  /** The Business Stage™ this capability prepares the founder for. */
+  nextReadinessStage: BusinessStage
+  /** Ordered installation steps (illustrative, not exhaustive). */
+  sequencing: string[]
+  /** What becomes true once this capability is installed. */
+  expectedOutcome: string
+  evidenceLevel: EvidenceLevel
+  sourceType: KnowledgeSourceType
+  /** Present only when `sourceType` draws on external practice research. */
+  externalSource?: ExternalSourceAttribution
+  /** Known boundaries or caveats on this capability (display only). */
+  limitations?: string[]
+  /** Business Models™ this capability applies to (architecture hook). */
+  businessModels: BusinessModelId[] | "all"
+  /** Industries this capability applies to (architecture hook, freeform). */
+  industries: string[] | "all"
+
+  /* -- Cross-references (ids only — knowledge is never duplicated) ------- */
+  businessConcepts: string[]
+  relatedExecutives: string[]
+  relatedAdvisors: string[]
+  relatedAcademyItems: string[]
+  relatedDeliverables: string[]
+  relatedOperatingSegments: string[]
+  /** Excellence Intelligence Engine™ `KnowledgeObject` ids this grounds in. */
+  relatedKnowledgeObjects: string[]
+  /** Other Readiness Capability™ ids this sequences with or follows. */
+  relatedPractices: string[]
+
+  status: ExcellenceStatus
+}
+
+/* ===========================================================================
+ * The canonical Readiness Capabilities™
+ * ---------------------------------------------------------------------------
+ * A representative, well-connected seed set — not an exhaustive checklist.
+ * Every id referenced below already exists in a connected registry.
+ * ======================================================================== */
+
+export const READINESS_CAPABILITIES: ReadinessCapability[] = [
+  /* --- Start Readiness™ (prepares Launch™ → Growth™) ------------------- */
+  {
+    id: "start-customer-clarity",
+    title: "Customer Clarity Before Growth",
+    readinessDomain: "start-readiness",
+    knowledgeDomain: "enduring-business-principles",
+    principle: "A business that knows exactly who it serves grows on purpose, not by accident.",
+    capability: "A validated, specific description of the ideal customer the business is built for.",
+    appliesWhen: "The founder cannot yet describe their best customer in one clear sentence.",
+    decisionRule:
+      "If the founder cannot name their top customer's three defining characteristics, install this before adding new offers or spend.",
+    leadingIndicators: [
+      "Can describe the ideal customer in one sentence",
+      "A repeat referral pattern already exists",
+    ],
+    businessStages: ["launch"],
+    nextReadinessStage: "growth",
+    sequencing: [
+      "Review the last five real clients",
+      "Document what they shared in common",
+      "Write one clear sentence describing the ideal customer",
+    ],
+    expectedOutcome: "Every future offer and message can be pointed at one clear customer, not a guess.",
+    evidenceLevel: "well-established",
+    sourceType: "enduring-principle",
+    businessModels: "all",
+    industries: "all",
+    businessConcepts: ["customer-lifetime-value"],
+    relatedExecutives: ["strategy", "sales"],
+    relatedAdvisors: [],
+    relatedAcademyItems: ["insight-pricing-fundamentals"],
+    relatedDeliverables: ["strategic-plan"],
+    relatedOperatingSegments: ["reality-check"],
+    relatedKnowledgeObjects: ["principle-pareto-8020"],
+    relatedPractices: ["start-offer-clarity"],
+    status: "architecture",
+  },
+  {
+    id: "start-offer-clarity",
+    title: "Offer Clarity Before Growth",
+    readinessDomain: "start-readiness",
+    knowledgeDomain: "enduring-business-principles",
+    principle: "One offer, well understood, outperforms many offers vaguely explained.",
+    capability: "A single core offer described simply enough to sell without lengthy explanation.",
+    appliesWhen: "The founder is selling several variations of an idea rather than one clear offer.",
+    decisionRule: "If a new customer needs more than one sentence to understand the offer, simplify before scaling it.",
+    leadingIndicators: ["The offer can be explained in one sentence", "Customers repeat the offer's value back accurately"],
+    businessStages: ["launch"],
+    nextReadinessStage: "growth",
+    sequencing: ["List every current variation of the offer", "Identify the version that sells fastest", "Retire or fold in the rest"],
+    expectedOutcome: "A single, sellable offer that Growth™-stage systems can be built around.",
+    evidenceLevel: "foundational",
+    sourceType: "enduring-principle",
+    businessModels: "all",
+    industries: "all",
+    businessConcepts: ["margin", "gross-profit"],
+    relatedExecutives: ["strategy", "finance"],
+    relatedAdvisors: [],
+    relatedAcademyItems: ["insight-understanding-margin"],
+    relatedDeliverables: ["strategic-plan"],
+    relatedOperatingSegments: ["design-tomorrow"],
+    relatedKnowledgeObjects: ["principle-pareto-8020", "principle-financial-discipline"],
+    relatedPractices: ["start-customer-clarity", "start-pricing-clarity"],
+    status: "architecture",
+  },
+  {
+    id: "start-pricing-clarity",
+    title: "Pricing Clarity Before Volume",
+    readinessDomain: "start-readiness",
+    knowledgeDomain: "enduring-business-principles",
+    principle: "Price is a statement of value, not a reaction to fear.",
+    capability: "Pricing set from margin math, reviewed on a rhythm — not from anxiety or guesswork.",
+    appliesWhen: "Prices were set once, early, and have not been revisited against real costs and margin.",
+    decisionRule: "If margin has never been calculated for the core offer, resolve pricing before pursuing volume.",
+    leadingIndicators: ["Margin is known and reviewed", "Price changes are deliberate, not reactive"],
+    businessStages: ["launch"],
+    nextReadinessStage: "growth",
+    sequencing: ["Calculate true margin on the core offer", "Compare price against the value delivered", "Set a review rhythm for pricing"],
+    expectedOutcome: "Pricing that can support Growth™-stage systems instead of eroding under volume.",
+    evidenceLevel: "foundational",
+    sourceType: "enduring-principle",
+    businessModels: "all",
+    industries: "all",
+    businessConcepts: ["margin", "gross-profit"],
+    relatedExecutives: ["finance"],
+    relatedAdvisors: [],
+    relatedAcademyItems: ["insight-pricing-fundamentals", "insight-understanding-margin"],
+    relatedDeliverables: ["annual-budget"],
+    relatedOperatingSegments: ["ceo-workday"],
+    relatedKnowledgeObjects: ["principle-financial-discipline"],
+    relatedPractices: ["start-offer-clarity"],
+    status: "architecture",
+  },
+  {
+    id: "start-foundational-operating-rhythm",
+    title: "A Foundational Operating Rhythm Before Delegation",
+    readinessDomain: "start-readiness",
+    knowledgeDomain: "executive-practice-patterns",
+    principle: "Cadence beats intensity, even for a business of one.",
+    capability: "A simple, installed weekly rhythm the business runs on — before anyone else is added to it.",
+    appliesWhen: "The week is reactive rather than designed; there is no repeatable rhythm to hand to a future hire.",
+    decisionRule: "If the founder's week has no repeatable structure, install one before delegating any part of it.",
+    leadingIndicators: ["A weekly rhythm exists and is followed", "The founder can describe the rhythm without checking notes"],
+    businessStages: ["launch"],
+    nextReadinessStage: "growth",
+    sequencing: ["Install Sunday Design Day™", "Run the designed week for four consecutive weeks", "Note what should be handed off next"],
+    expectedOutcome: "A rhythm stable enough that Growth™-stage delegation has something real to hand off.",
+    evidenceLevel: "well-established",
+    sourceType: "practice-pattern",
+    businessModels: "all",
+    industries: "all",
+    businessConcepts: ["operating-rule", "capacity-planning"],
+    relatedExecutives: ["operations"],
+    relatedAdvisors: [],
+    relatedAcademyItems: ["insight-designing-meetings"],
+    relatedDeliverables: ["meeting-rules"],
+    relatedOperatingSegments: ["reality-check", "design-tomorrow", "commit-prepare"],
+    relatedKnowledgeObjects: ["pattern-operating-rhythm", "methodology-sunday-design-day"],
+    relatedPractices: ["growth-sop-before-hiring"],
+    status: "architecture",
+  },
+
+  /* --- Growth Readiness™ (prepares Growth™ → Scale™) ------------------- */
+  {
+    id: "growth-sop-before-hiring",
+    title: "Systems Before the Next Hire",
+    readinessDomain: "growth-readiness",
+    knowledgeDomain: "enduring-business-principles",
+    principle: "Document the repeatable work before delegating it, or you delegate the confusion too.",
+    capability: "Standard operating procedures exist for the top repeatable tasks before hiring for them.",
+    appliesWhen: "A hire is being planned for work that has never been written down.",
+    decisionRule: "If a task has no SOP, write it before posting the role that will own it.",
+    leadingIndicators: ["Top repeatable tasks have a written SOP", "A new hire could follow the SOP without the founder present"],
+    businessStages: ["growth"],
+    nextReadinessStage: "scale",
+    sequencing: ["List the top five repeatable tasks", "Write a simple SOP for each", "Test the SOP with someone unfamiliar with the task"],
+    expectedOutcome: "New hires add leverage to a documented system instead of inheriting undocumented chaos.",
+    evidenceLevel: "well-established",
+    sourceType: "enduring-principle",
+    businessModels: "all",
+    industries: "all",
+    businessConcepts: ["sop", "delegation"],
+    relatedExecutives: ["operations"],
+    relatedAdvisors: [],
+    relatedAcademyItems: ["insight-delegation"],
+    relatedDeliverables: ["onboarding-checklist", "job-description"],
+    relatedOperatingSegments: ["download-delegate"],
+    relatedKnowledgeObjects: ["principle-systems-before-complexity", "research-cognitive-load-and-delegation"],
+    relatedPractices: ["start-foundational-operating-rhythm", "growth-delegation-capacity"],
+    status: "architecture",
+  },
+  {
+    id: "growth-delegation-capacity",
+    title: "Delegation Capacity Before Team Growth",
+    readinessDomain: "growth-readiness",
+    knowledgeDomain: "evidence-based-research",
+    principle: "Attention is finite; protecting it is not abdication, it's leverage.",
+    capability: "A clear map of what the founder keeps, and what gets handed off, before the team grows.",
+    appliesWhen: "The founder is still personally doing work that a documented system could carry.",
+    decisionRule: "If the founder cannot name what they will stop doing this quarter, delegation capacity is not yet ready.",
+    leadingIndicators: ["The founder can name what they've stopped doing", "Handed-off work is still getting done to standard"],
+    businessStages: ["growth"],
+    nextReadinessStage: "scale",
+    sequencing: ["List everything the founder does in a typical week", "Mark what only the founder can do", "Plan the handoff for everything else"],
+    expectedOutcome: "The founder's capacity is protected for judgment work as the team grows around them.",
+    evidenceLevel: "well-established",
+    sourceType: "research-synthesis",
+    businessModels: "all",
+    industries: "all",
+    businessConcepts: ["delegation", "human-zone-of-genius"],
+    relatedExecutives: ["people-culture", "operations"],
+    relatedAdvisors: [],
+    relatedAcademyItems: ["insight-delegation"],
+    relatedDeliverables: ["job-description", "onboarding-checklist"],
+    relatedOperatingSegments: ["download-delegate", "ceo-workday"],
+    relatedKnowledgeObjects: ["research-cognitive-load-and-delegation", "pattern-protected-strategic-time"],
+    relatedPractices: ["growth-sop-before-hiring", "scale-leadership-depth"],
+    status: "architecture",
+  },
+  {
+    id: "growth-ai-workflow-adoption",
+    title: "Governed AI Workflow Adoption Before Team Scale",
+    readinessDomain: "growth-readiness",
+    knowledgeDomain: "harmony-lane-methodology",
+    principle: "Human judgment leads; AI amplifies leverage before headcount has to.",
+    capability: "At least one AI-augmented workflow is installed, trusted, and governed by the founder.",
+    appliesWhen: "Every new unit of output still requires a new hour of human time.",
+    decisionRule: "If no workflow yet pairs the founder with AI, install one inside the AI Augmentation Hour™ before scaling headcount to solve the same problem.",
+    leadingIndicators: ["At least one AI-augmented workflow runs weekly", "The founder trusts and reviews its output"],
+    businessStages: ["growth"],
+    nextReadinessStage: "scale",
+    sequencing: ["Identify one high-volume, judgment-light task", "Pair it with AI inside the AI Augmentation Hour™", "Review and refine weekly"],
+    expectedOutcome: "Capacity grows without every unit of growth requiring a new hire.",
+    evidenceLevel: "proprietary",
+    sourceType: "harmony-methodology",
+    businessModels: "all",
+    industries: "all",
+    businessConcepts: ["human-zone-of-genius", "delegation"],
+    relatedExecutives: ["innovation", "operations"],
+    relatedAdvisors: [],
+    relatedAcademyItems: ["insight-ai-fundamentals"],
+    relatedDeliverables: [],
+    relatedOperatingSegments: ["ai-augmentation-hour"],
+    relatedKnowledgeObjects: ["methodology-ai-augmentation-hour"],
+    relatedPractices: ["future-workplace-ai-human-collaboration"],
+    status: "architecture",
+  },
+  {
+    id: "growth-financial-visibility",
+    title: "Financial Visibility Before Scaling Spend",
+    readinessDomain: "growth-readiness",
+    knowledgeDomain: "enduring-business-principles",
+    principle: "Profit is opinion; cash is fact — especially before spend increases.",
+    capability: "A reviewed budget and cash-flow rhythm exists before growth spend accelerates.",
+    appliesWhen: "Spend decisions are being made faster than the numbers are being reviewed.",
+    decisionRule: "If cash flow has not been reviewed this month, review it before approving new recurring spend.",
+    leadingIndicators: ["Cash flow is reviewed on a set rhythm", "Burn rate is a known number, not a guess"],
+    businessStages: ["growth"],
+    nextReadinessStage: "scale",
+    sequencing: ["Build or refresh the annual budget", "Install a monthly cash-flow review", "Tie new spend decisions to that review"],
+    expectedOutcome: "Growth spend is funded by visibility, not optimism.",
+    evidenceLevel: "foundational",
+    sourceType: "enduring-principle",
+    businessModels: "all",
+    industries: "all",
+    businessConcepts: ["cash-flow", "burn-rate", "margin"],
+    relatedExecutives: ["finance"],
+    relatedAdvisors: ["tax"],
+    relatedAcademyItems: ["insight-understanding-margin"],
+    relatedDeliverables: ["annual-budget", "tax-prep-checklist"],
+    relatedOperatingSegments: ["ceo-workday"],
+    relatedKnowledgeObjects: ["principle-financial-discipline", "pattern-leading-and-lagging-indicators"],
+    relatedPractices: ["scale-executive-rhythm"],
+    status: "architecture",
+  },
+
+  /* --- Scale Readiness™ (prepares Scale™ → Legacy™) -------------------- */
+  {
+    id: "scale-leadership-depth",
+    title: "Leadership Depth Before Legacy",
+    readinessDomain: "scale-readiness",
+    knowledgeDomain: "evidence-based-research",
+    principle: "A business that depends only on its founder cannot yet become a legacy.",
+    capability: "At least one leader beyond the founder owns outcomes, not just assigned tasks.",
+    appliesWhen: "Every significant decision still routes back through the founder personally.",
+    decisionRule: "If no one besides the founder owns a full outcome end-to-end, install this before pursuing Legacy™-stage plans.",
+    leadingIndicators: ["At least one leader owns a full outcome without founder sign-off", "Decisions are made at more than one level"],
+    businessStages: ["scale"],
+    nextReadinessStage: "legacy",
+    sequencing: ["Identify one outcome to fully hand off", "Select and develop the leader to own it", "Remove the founder from routine sign-off on it"],
+    expectedOutcome: "The business can make sound decisions in the founder's absence.",
+    evidenceLevel: "well-established",
+    sourceType: "research-synthesis",
+    businessModels: "all",
+    industries: "all",
+    businessConcepts: ["delegation", "human-zone-of-genius"],
+    relatedExecutives: ["people-culture", "operations"],
+    relatedAdvisors: [],
+    relatedAcademyItems: ["insight-delegation"],
+    relatedDeliverables: ["job-description"],
+    relatedOperatingSegments: ["download-delegate"],
+    relatedKnowledgeObjects: ["research-cognitive-load-and-delegation"],
+    relatedPractices: ["growth-delegation-capacity", "scale-org-design"],
+    status: "architecture",
+  },
+  {
+    id: "scale-org-design",
+    title: "Organizational Design Before Complexity Compounds",
+    readinessDomain: "scale-readiness",
+    knowledgeDomain: "enduring-business-principles",
+    principle: "Structure should be designed on purpose, not discovered by accident.",
+    capability: "A documented organizational design with clear roles, ownership, and reporting lines.",
+    appliesWhen: "Roles and reporting lines have grown organically and are no longer clear to the team.",
+    decisionRule: "If two team members would describe the reporting structure differently, redesign it before adding more people.",
+    leadingIndicators: ["Roles and reporting lines are documented", "New hires understand structure without asking"],
+    businessStages: ["scale"],
+    nextReadinessStage: "legacy",
+    sequencing: ["Document current roles and reporting lines as they actually are", "Redesign for clarity, not just history", "Communicate the design to the full team"],
+    expectedOutcome: "Complexity is absorbed by intentional structure instead of accumulating as confusion.",
+    evidenceLevel: "well-established",
+    sourceType: "enduring-principle",
+    businessModels: "all",
+    industries: "all",
+    businessConcepts: ["operating-rule", "sop"],
+    relatedExecutives: ["operations", "people-culture"],
+    relatedAdvisors: ["compliance"],
+    relatedAcademyItems: ["insight-designing-meetings"],
+    relatedDeliverables: ["meeting-rules", "compliance-checklist"],
+    relatedOperatingSegments: ["reality-check"],
+    relatedKnowledgeObjects: ["principle-systems-before-complexity"],
+    relatedPractices: ["scale-leadership-depth", "future-workplace-human-sustainability-standard"],
+    status: "architecture",
+  },
+  {
+    id: "scale-executive-rhythm",
+    title: "Executive Rhythm & KPI Discipline",
+    readinessDomain: "scale-readiness",
+    knowledgeDomain: "executive-practice-patterns",
+    principle: "Leading and lagging indicators, reviewed on a rhythm, turn strategy into feedback.",
+    capability: "An installed KPI review rhythm shared across the leadership team, not just the founder.",
+    appliesWhen: "Leadership meetings review outcomes only after the fact, with no shared leading indicators.",
+    decisionRule: "If the leadership team cannot name the leading indicators they steer by, install a shared KPI rhythm before adding more leaders.",
+    leadingIndicators: ["The leadership team reviews the same KPIs on a set cadence", "Leading indicators are tracked, not only lagging ones"],
+    businessStages: ["scale"],
+    nextReadinessStage: "legacy",
+    sequencing: ["Select a small set of leading and lagging indicators", "Install a recurring leadership review", "Tie decisions to what the indicators show"],
+    expectedOutcome: "Leadership steers by shared, current information instead of the founder's individual read.",
+    evidenceLevel: "well-established",
+    sourceType: "practice-pattern",
+    businessModels: "all",
+    industries: "all",
+    businessConcepts: ["cash-flow", "customer-lifetime-value"],
+    relatedExecutives: ["finance", "growth"],
+    relatedAdvisors: [],
+    relatedAcademyItems: ["insight-pricing-fundamentals"],
+    relatedDeliverables: ["annual-budget", "strategic-plan"],
+    relatedOperatingSegments: ["ceo-workday", "reality-check"],
+    relatedKnowledgeObjects: ["pattern-leading-and-lagging-indicators"],
+    relatedPractices: ["growth-financial-visibility", "scale-exit-readiness-foundations"],
+    status: "architecture",
+  },
+  {
+    id: "scale-exit-readiness-foundations",
+    title: "Exit-Readiness Foundations",
+    readinessDomain: "scale-readiness",
+    knowledgeDomain: "enduring-business-principles",
+    principle: "Optionality — to sell, to hand down, or to keep building — is built years before it is used.",
+    capability: "Financials, contracts, and intellectual property clean enough to survive real due diligence.",
+    appliesWhen: "Financial records, contracts, or IP ownership have never been reviewed with a future transaction in mind.",
+    decisionRule: "If the business could not survive a due-diligence review today, begin cleaning up records now, regardless of exit timing.",
+    leadingIndicators: ["Financial records are clean and current", "Key contracts and IP ownership are documented and clear"],
+    businessStages: ["scale"],
+    nextReadinessStage: "legacy",
+    sequencing: ["Review financial records for completeness and accuracy", "Confirm contracts and IP ownership are documented", "Address gaps with legal and tax counsel"],
+    expectedOutcome: "The founder keeps every option open — sale, succession, or continued ownership — instead of foreclosing them by neglect.",
+    evidenceLevel: "well-established",
+    sourceType: "enduring-principle",
+    externalSource: {
+      sourceCategory: "operator-practice-research",
+      sourceDescriptor: "Publicly available small-business succession and exit-planning research literature.",
+      retrievedPrinciple: "Businesses that maintain clean financial and legal records continuously face far fewer surprises when a transition — planned or unplanned — arrives.",
+    },
+    businessModels: "all",
+    industries: "all",
+    businessConcepts: ["margin", "gross-profit"],
+    relatedExecutives: ["finance", "strategy"],
+    relatedAdvisors: ["tax"],
+    relatedAcademyItems: [],
+    relatedDeliverables: ["annual-budget", "tax-prep-checklist"],
+    relatedOperatingSegments: ["ceo-workday"],
+    relatedKnowledgeObjects: ["principle-financial-discipline"],
+    relatedPractices: ["scale-executive-rhythm"],
+    status: "architecture",
+  },
+
+  /* --- Future Workplace Readiness™ (extends Scale™/Legacy™) ------------ */
+  {
+    id: "future-workplace-human-sustainability-standard",
+    title: "Human Sustainability™ as an Organizational Standard",
+    readinessDomain: "future-workplace-readiness",
+    knowledgeDomain: "harmony-lane-methodology",
+    principle: "The standard the founder lives by only becomes a legacy once the organization lives by it too.",
+    capability: "Human Sustainability™ practices exist as organizational design, not only on the founder's own calendar.",
+    appliesWhen: "Balance and recovery are things the founder practices personally but has not designed into the team's operating model.",
+    decisionRule: "If Human Sustainability™ practices exist only for the founder, extend them into team design before Legacy™-stage planning.",
+    leadingIndicators: ["Team members have designed recovery, not just the founder", "Wellbeing is reviewed as an operating metric, not an afterthought"],
+    businessStages: ["scale", "legacy"],
+    nextReadinessStage: "legacy",
+    sequencing: ["Audit which Human Sustainability™ practices exist only for the founder", "Design an equivalent for the team", "Review it on the same rhythm as financial KPIs"],
+    expectedOutcome: "A workplace that sustains the humans building it at every level, not just at the top.",
+    evidenceLevel: "well-established",
+    sourceType: "external-practice-synthesis",
+    externalSource: {
+      sourceCategory: "industry-body-research",
+      sourceDescriptor: "Publicly published occupational-wellbeing and workplace-design research from established industry research bodies.",
+      retrievedPrinciple: "Sustainable performance at an organizational level depends on designed recovery and boundaries, not individual willpower alone.",
+    },
+    limitations: ["Generalized from broad workplace-wellbeing research, not a clinical or individualized assessment."],
+    businessModels: "all",
+    industries: "all",
+    businessConcepts: ["human-zone-of-genius", "capacity-planning"],
+    relatedExecutives: ["people-culture", "client-success"],
+    relatedAdvisors: [],
+    relatedAcademyItems: ["insight-human-sustainability-basics"],
+    relatedDeliverables: [],
+    relatedOperatingSegments: ["morning-given", "movement", "lunch", "time-freedom", "power-down"],
+    relatedKnowledgeObjects: ["methodology-human-sustainability", "research-progress-principle"],
+    relatedPractices: ["scale-org-design", "future-workplace-ai-human-collaboration"],
+    status: "architecture",
+  },
+  {
+    id: "future-workplace-ai-human-collaboration",
+    title: "Governed AI-Human Collaboration at Organizational Scale",
+    readinessDomain: "future-workplace-readiness",
+    knowledgeDomain: "harmony-lane-methodology",
+    principle: "AI should extend every team member's Human Zone of Genius™, not only the founder's.",
+    capability: "Documented governance for how the whole team — not only the founder — uses AI.",
+    appliesWhen: "AI augmentation is something the founder practices personally but has not extended, or governed, across the team.",
+    decisionRule: "If AI workflows exist only for the founder, design team-level governance before scaling headcount further.",
+    leadingIndicators: ["More than one team member has a governed AI-augmented workflow", "AI use is reviewed the same way any operating practice is reviewed"],
+    businessStages: ["scale", "legacy"],
+    nextReadinessStage: "legacy",
+    sequencing: ["Audit where AI augmentation already exists for the founder", "Design equivalent, governed workflows for the team", "Set a review rhythm for AI-augmented work"],
+    expectedOutcome: "AI leverage compounds across the organization, always with human judgment leading.",
+    evidenceLevel: "proprietary",
+    sourceType: "harmony-methodology",
+    businessModels: "all",
+    industries: "all",
+    businessConcepts: ["human-zone-of-genius", "delegation"],
+    relatedExecutives: ["innovation", "people-culture"],
+    relatedAdvisors: [],
+    relatedAcademyItems: ["insight-ai-fundamentals"],
+    relatedDeliverables: [],
+    relatedOperatingSegments: ["ai-augmentation-hour"],
+    relatedKnowledgeObjects: ["methodology-ai-augmentation-hour"],
+    relatedPractices: ["growth-ai-workflow-adoption", "future-workplace-human-sustainability-standard"],
+    status: "architecture",
+  },
+]
+
+const READINESS_CAPABILITY_BY_ID = new Map<string, ReadinessCapability>(READINESS_CAPABILITIES.map((c) => [c.id, c]))
+
+export function getReadinessCapability(id: string): ReadinessCapability | undefined {
+  return READINESS_CAPABILITY_BY_ID.get(id)
+}
+
+/** All Readiness Capabilities™ belonging to a given domain, in registry order. */
+export function getReadinessCapabilitiesByDomain(domain: ReadinessDomainId): ReadinessCapability[] {
+  return READINESS_CAPABILITIES.filter((c) => c.readinessDomain === domain)
+}
+
+/** All Readiness Capabilities™ to install DURING a given Business Stage™. */
+export function getReadinessCapabilitiesForStage(stage: BusinessStage): ReadinessCapability[] {
+  return READINESS_CAPABILITIES.filter((c) => c.businessStages.includes(stage))
+}

@@ -3,11 +3,16 @@ import Link from "next/link"
 import { BackLink } from "@/components/navigation/page-nav"
 import { KnowledgeDomainCard } from "@/components/excellence-intelligence/knowledge-domain-card"
 import { KnowledgeObjectCard } from "@/components/excellence-intelligence/knowledge-object-card"
+import { ReadinessDomainCard } from "@/components/excellence-intelligence/readiness-domain-card"
+import { ReadinessCapabilityCard } from "@/components/excellence-intelligence/readiness-capability-card"
 import { ReasoningHierarchy } from "@/components/excellence-intelligence/reasoning-hierarchy"
 import {
   KNOWLEDGE_DOMAINS,
   KNOWLEDGE_OBJECTS,
+  READINESS_DOMAINS,
+  READINESS_CAPABILITIES,
   getKnowledgeObjectsByDomain,
+  getReadinessCapabilitiesByDomain,
 } from "@/lib/excellence-intelligence/excellence-intelligence-registry"
 
 export const metadata: Metadata = {
@@ -122,6 +127,59 @@ export default function ExcellenceIntelligenceEnginePage() {
               )
             })}
           </div>
+        </section>
+
+        {/* Proactive Start, Growth & Scale Readiness™ (Phase 3) */}
+        <section className="harmony-section pt-0" aria-labelledby="readiness-heading">
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="ds-eyebrow">Phase 3</p>
+            <h2 id="readiness-heading" className="ds-page-title mt-3">
+              Proactive Start, Growth &amp; Scale Readiness™
+            </h2>
+            <p className="mt-3 text-base leading-relaxed text-brand-ink-soft">
+              What must exist BEFORE the next Business Stage™ — not only what helps at the current one. Readiness
+              Capabilities™ sequence knowledge that already lives in this Engine, so a founder is prepared for the
+              transition ahead of time, not only supported once they arrive.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-6 md:grid-cols-2">
+            {READINESS_DOMAINS.map((domain) => (
+              <ReadinessDomainCard
+                key={domain.id}
+                domain={domain}
+                count={getReadinessCapabilitiesByDomain(domain.id).length}
+              />
+            ))}
+          </div>
+
+          <div className="mt-12 space-y-14">
+            {READINESS_DOMAINS.map((domain) => {
+              const capabilities = getReadinessCapabilitiesByDomain(domain.id)
+              if (capabilities.length === 0) return null
+              return (
+                <div key={domain.id}>
+                  <div className="mb-6 flex items-baseline gap-3">
+                    <h3 className="ds-section-title">{domain.name}</h3>
+                    <span className="text-sm text-brand-ink-soft">
+                      {capabilities.length} {capabilities.length === 1 ? "capability" : "capabilities"}
+                    </span>
+                  </div>
+                  <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    {capabilities.map((capability) => (
+                      <ReadinessCapabilityCard key={capability.id} capability={capability} />
+                    ))}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
+          <p className="mx-auto mt-10 max-w-2xl text-center text-sm leading-relaxed text-brand-ink-soft">
+            {READINESS_CAPABILITIES.length} Readiness Capabilities™ across {READINESS_DOMAINS.length} domains —
+            connected to Founder Destination™ so ambition surfaces the next stage&apos;s preparation early, never
+            replacing what Business Stage™ already provides.
+          </p>
         </section>
 
         {/* Canonical knowledge principle */}
