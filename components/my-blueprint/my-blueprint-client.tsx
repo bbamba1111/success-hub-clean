@@ -27,6 +27,7 @@ import {
   BarChart2,
   User,
   Briefcase,
+  MapPin,
 } from "lucide-react"
 
 import { getAuditResults, type AuditData } from "@/utils/audit-storage"
@@ -35,10 +36,13 @@ import { getBusinessContext, saveBusinessContext } from "@/lib/business-context/
 import { getFounderProfile, saveFounderProfile } from "@/lib/founder-profile/founder-profile-store"
 import { getBusinessContextFromDb } from "@/utils/business-context-storage"
 import { getFounderProfileFromDb } from "@/utils/founder-profile-storage"
+import { getFounderDestination } from "@/lib/founder-destination/founder-destination-store"
+import { getFounderDestinationFromDb } from "@/utils/founder-destination-storage"
 import { getOperatingCenterData, type OperatingCenterData } from "@/utils/reality-check-storage"
 import { CADENCES } from "@/lib/assessment-cadence"
 import type { EsaResults } from "@/lib/entrepreneur-success/types"
 import type { BusinessContextProfile } from "@/lib/business-context/types"
+import type { FounderDestinationProfile } from "@/lib/founder-destination/types"
 
 // ── Small formatting helpers ─────────────────────────────────────────────────
 
@@ -244,6 +248,7 @@ export function MyBlueprintClient() {
   const [bizData, setBizData] = useState<EsaResults | null>(null)
   const [founder, setFounder] = useState<Record<string, unknown> | null>(null)
   const [bizContext, setBizContext] = useState<BusinessContextProfile | null>(null)
+  const [destination, setDestination] = useState<FounderDestinationProfile | null>(null)
   const [ready, setReady] = useState(false)
 
   useEffect(() => {
@@ -251,10 +256,11 @@ export function MyBlueprintClient() {
     setLifeData(getAuditResults())
     setBizData(getEsaResults())
     // Instant paint from the local cache, then reconcile with the database —
-    // the account's canonical Founder Profile™ / Business Context Profile™ —
-    // once each resolves.
+    // the account's canonical Founder Profile™ / Business Context Profile™ /
+    // Founder Destination™ — once each resolves.
     setFounder(getFounderProfile())
     setBizContext(getBusinessContext())
+    setDestination(getFounderDestination())
     getFounderProfileFromDb().then((record) => {
       if (!record) return
       const { completedAt: _completedAt, updatedAt: _updatedAt, ...profile } = record
@@ -267,10 +273,66 @@ export function MyBlueprintClient() {
       setBizContext(profile)
       saveBusinessContext(profile)
     })
+    getFounderDestinationFromDb().then((record) => {
+      if (!record) return
+      const { completedAt: _completedAt, ...profile } = record
+      setDestination(profile)
+    })
     getOperatingCenterData()
       .then(setReality)
       .finally(() => setReady(true))
   }, [])
+
+  // Which of the four Founder Destination™ layers have been started —
+  // mirrors the section-completion logic in the destination form itself.
+  const destinationLayers = destination
+    ? [
+        {
+          label: "Business",
+          started: Boolean(
+            destination.desiredBusinessSize ||
+              destination.desiredTeamSize ||
+              destination.desiredGeographicReach ||
+              destination.desiredMarketPosition ||
+              destination.revenueAmbition,
+          ),
+        },
+        {
+          label: "Founder",
+          started: Boolean(
+            destination.desiredFounderRole ||
+              destination.remainResponsibleFor?.length ||
+              destination.notResponsibleFor?.length ||
+              destination.desiredWorkingHoursPerWeek ||
+              destination.desiredFounderInvolvement ||
+              destination.desiredZoneOfGenius ||
+              destination.desiredFounderIndependence,
+          ),
+        },
+        {
+          label: "Life",
+          started: Boolean(
+            destination.desiredWorkLifeBalanceModel ||
+              destination.desiredTimeFreedomLevel ||
+              destination.desiredLifestyle ||
+              destination.nonNegotiableLifeBoundaries?.length ||
+              destination.businessLifePurpose,
+          ),
+        },
+        {
+          label: "Future Workplace",
+          started: Boolean(
+            destination.desiredWorkplaceType ||
+              destination.desiredEmployeeExperience ||
+              destination.desiredWorkDesign ||
+              destination.desiredAiHumanRelationship ||
+              destination.desiredLeadershipCulture ||
+              destination.desiredHumanSustainabilityStandard,
+          ),
+        },
+      ]
+    : []
+  const destinationCompletedCount = destinationLayers.filter((l) => l.started).length
 
   const founderName = (founder?.fullName as string) || (founder?.preferredName as string) || null
   const founderTitle = (founder?.customTitle as string) || (founder?.professionalTitle as string) || null
@@ -540,6 +602,61 @@ export function MyBlueprintClient() {
             )}
           </BlueprintSection>
         </div>
+
+        <LayerDivider label="Where I'm Going" />
+
+        {/* 06 — FOUNDER DESTINATION ─────────────────────────────────────── */}
+        <BlueprintSection
+          eyebrow="06 — Destination"
+          icon={MapPin}
+          title="Founder Destination™"
+          subtitle="Where You're Intentionally Going"
+          accent="#5D9D61"
+          emphasize
+        >
+          {ready && destinationCompletedCount > 0 ? (
+            <div className="space-y-5">
+              <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex flex-wrap items-center gap-2">
+                  {destinationLayers.map((layer) => (
+                    <span
+                      key={layer.label}
+                      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-sans text-xs font-semibold ${
+                        layer.started
+                          ? "bg-brand-green/10 text-brand-green-dark"
+                          : "bg-brand-ink/[0.05] text-brand-ink-soft/60"
+                      }`}
+                    >
+                      <span
+                        className={`h-1.5 w-1.5 rounded-full ${layer.started ? "bg-brand-green" : "border border-brand-ink/30"}`}
+                        aria-hidden
+                      />
+                      {layer.label}
+                    </span>
+                  ))}
+                </div>
+                <p className="font-sans text-sm font-semibold text-brand-ink-soft shrink-0">
+                  {destinationCompletedCount} of {destinationLayers.length} complete
+                </p>
+              </div>
+              <Link
+                href="/founder-destination"
+                className="inline-flex items-center gap-1.5 font-sans text-xs font-semibold text-brand-green-dark hover:underline"
+              >
+                {destinationCompletedCount === destinationLayers.length
+                  ? "Update Your Founder Destination™"
+                  : "Continue Your Founder Destination™"}
+                <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+              </Link>
+            </div>
+          ) : (
+            <EmptyState
+              message="Founder Profile™ is who you are. Business Context™ is what you're building now. Founder Destination™ is where you're intentionally going — set it to help Cherry Blossom™ guide what matters next."
+              href="/founder-destination"
+              cta="Set Your Founder Destination™"
+            />
+          )}
+        </BlueprintSection>
       </section>
     </div>
   )

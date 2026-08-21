@@ -56,3 +56,27 @@ export function hasCompletedFounderDestination(): boolean {
     return false
   }
 }
+
+/* ── Resume position ────────────────────────────────────────────────────
+ * If a founder leaves mid-way through the four sections, the form should
+ * reopen on the same section rather than sending them back to the start.
+ * This is presentation state only — never sent to the database. */
+
+const SECTION_KEY = "hl:founder-destination:section:v1"
+
+export function saveFounderDestinationSection(sectionIndex: number): void {
+  try {
+    localStorage.setItem(SECTION_KEY, String(sectionIndex))
+  } catch {
+    // Non-fatal — worst case the founder resumes from the first section.
+  }
+}
+
+export function getFounderDestinationSection(): number {
+  try {
+    const raw = localStorage.getItem(SECTION_KEY)
+    return raw ? Number.parseInt(raw, 10) : 0
+  } catch {
+    return 0
+  }
+}
