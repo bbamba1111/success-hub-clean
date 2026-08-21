@@ -18,6 +18,7 @@ import type { CommunicationStyle } from "@/lib/business-comprehension/business-c
 import type { BusinessContextProfile } from "@/lib/business-context/types"
 import type { FounderLearningProfile } from "@/lib/founder-learning/types"
 import type { FounderDestinationProfile } from "@/lib/founder-destination/types"
+import type { HarmonyContextSnapshot } from "./engine"
 import type { LanguageCode, TextDirection } from "@/lib/i18n/language"
 import type {
   DateFormat,
@@ -196,4 +197,17 @@ export interface HarmonyContextValue {
    * Cherry Blossom™, the Executive Team) — it does not interpret fields.
    */
   founderDestination: FounderDestinationProfile | null
+
+  /* -- Harmony Context Snapshot™ (Phase 6.2) ----------------------------- */
+  /**
+   * The single, canonical `HarmonyContextSnapshot` assembled by
+   * `assembleHarmonySnapshot()` from every signal this provider already
+   * loads (ESA, Audit, Whole-Life Context™, Founder Destination™, the
+   * latest Reality Check™, and the founder's real Operating History™).
+   * Consumers that need the unified, cross-domain view (Founder
+   * Intelligence™, Founder GPS™) should prefer this over re-deriving
+   * context themselves. `snapshot.ready` is false until the client has
+   * mounted and all best-effort loads have settled.
+   */
+  snapshot: HarmonyContextSnapshot
 }

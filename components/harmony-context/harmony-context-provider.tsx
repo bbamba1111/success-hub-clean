@@ -79,6 +79,22 @@ import { getFounderDestinationFromDb } from "@/utils/founder-destination-storage
 import type { BusinessContextProfile } from "@/lib/business-context/types"
 import type { FounderLearningProfile } from "@/lib/founder-learning/types"
 import type { FounderDestinationProfile } from "@/lib/founder-destination/types"
+import { getEsaResults } from "@/lib/entrepreneur-success/esa-storage"
+import { getAuditResults } from "@/utils/audit-storage"
+import { getWholeLifeContext } from "@/lib/whole-life-context/storage"
+import type { WholeLifeContext } from "@/lib/whole-life-context/types"
+import { EMPTY_WHOLE_LIFE_CONTEXT } from "@/lib/whole-life-context/types"
+import { getLatestRealityCheck } from "@/utils/reality-check-storage"
+import { getOperatingHistorySummary } from "@/lib/harmony-context/operating-history"
+import {
+  assembleHarmonySnapshot,
+  EMPTY_HARMONY_SNAPSHOT,
+  type HarmonyContextSnapshot,
+  type RealityCheckInput,
+  type OperatingHistorySummary,
+} from "@/lib/harmony-context/engine"
+import type { EsaResults } from "@/lib/entrepreneur-success/types"
+import { createClient } from "@/lib/supabase/client"
 
 /** id → human label / config lookups (built once). */
 const FOCUS_LABEL = new Map(FOCUS_AREA_OPTIONS.map((o) => [o.id, o.label]))
@@ -136,6 +152,18 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
   const [founderProfile, setFounderProfile] = useState<Record<string, unknown> | null>(null)
   const [founderDestination, setFounderDestination] = useState<FounderDestinationProfile | null>(null)
 
+  // Harmony Context Snapshot™ inputs (Phase 6.2) — instant-local where a
+  // localStorage cache exists (ESA, Audit, Whole-Life Context™), best-effort
+  // real data otherwise (Reality Check™, Operating History™). None of these
+  // block first paint; `snapshot.ready` reflects whether the initial load
+  // has settled.
+  const [esaResults, setEsaResults] = useState<EsaResults | null>(null)
+  const [auditScore, setAuditScore] = useState<number | null>(null)
+  const [wholeLife, setWholeLife] = useState<WholeLifeContext>(EMPTY_WHOLE_LIFE_CONTEXT)
+  const [realityCheck, setRealityCheck] = useState<RealityCheckInput | null>(null)
+  const [operatingHistory, setOperatingHistory] = useState<OperatingHistorySummary | null>(null)
+  const [userId, setUserId] = useState<string | null>(null)
+
   useEffect(() => {
     setInstalled(getInstalledWeek())
     setStage(readBusinessStage())
@@ -145,7 +173,27 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
     setFounderLearning(getFounderLearning())
     setFounderProfile(getFounderProfile())
     setFounderDestination(getFounderDestination())
+    // Harmony Context Snapshot™ inputs — instant-local cache first.
+    setEsaResults(getEsaResults())
+    setAuditScore(getAuditResults()?.overallScore ?? null)
+    setWholeLife(getWholeLifeContext())
     setLoaded(true)
+
+    // Best-effort real data — anonymous sessions resolve to null/empty and
+    // the snapshot still assembles cleanly (never blocks paint or throws).
+    createClient()
+      .auth.getUser()
+      .then(({ data }) => setUserId(data.user?.id ?? null))
+      .catch(() => setUserId(null))
+    getLatestRealityCheck().then((record) => {
+      if (!record) return
+      setRealityCheck({
+        week_key: record.week_key,
+        overall_score: record.overall_score,
+        selected_priority_areas: record.selected_priority_areas,
+      })
+    })
+    getOperatingHistorySummary().then(setOperatingHistory)
 
     // Database is authoritative — reconcile the cache-first paint above with
     // the account's real record once it resolves. Best-effort: no-ops when
@@ -267,7 +315,7 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
     const languageDef = getLanguage(localePrefs.language)
     const localization = resolveLocalization(localePrefs.language, localePrefs.localization)
 
-    return {
+    const withoutSnapshot: Omit<HarmonyContextValue, "snapshot"> = {
       ready,
       hasDesignedWeek: Boolean(installed),
       dayName: engine?.time.dayName ?? "",
@@ -316,6 +364,25 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
       founderProfile,
       founderDestination,
     }
+
+    // Harmony Context Snapshot™ (Phase 6.2) — assembled from every signal
+    // this provider already loads. `harmonyContext` here only reads fields
+    // already computed above (firstName, businessStage, dayName, etc.), so
+    // this has no circular dependency on the `snapshot` field itself.
+    const snapshot: HarmonyContextSnapshot = ready
+      ? assembleHarmonySnapshot({
+          userId,
+          harmonyContext: withoutSnapshot as HarmonyContextValue,
+          wholeLife,
+          esaResults,
+          auditScore,
+          founderDestination,
+          realityCheck,
+          operatingHistory,
+        })
+      : EMPTY_HARMONY_SNAPSHOT
+
+    return { ...withoutSnapshot, snapshot }
   }, [
     engine,
     installed,
@@ -332,6 +399,12 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
     founderLearning,
     founderProfile,
     founderDestination,
+    userId,
+    wholeLife,
+    esaResults,
+    auditScore,
+    realityCheck,
+    operatingHistory,
   ])
 
   return <HarmonyContext.Provider value={value}>{children}</HarmonyContext.Provider>

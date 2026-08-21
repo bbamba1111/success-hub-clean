@@ -49,6 +49,7 @@ import {
 } from "@/lib/executive-decision-engine/decision-engine"
 import { PRIORITY_FRAMEWORK } from "@/lib/executive-decision-engine/priority-framework"
 import type { PriorityTierId } from "@/lib/executive-decision-engine/types"
+import type { HarmonyContextSnapshot } from "@/lib/harmony-context/engine"
 
 /* ===========================================================================
  * GpsContext™ assembly
@@ -120,6 +121,21 @@ export function buildGpsContext(input: NextBestMoveInput): GpsContext {
     daysUntilNextSignificantEvent: daysUntil,
     inLifeProtectionMode: daysUntil != null && daysUntil <= 3,
   }
+}
+
+/**
+ * Phase 6.2 sibling — maps the canonical `HarmonyContextSnapshot` straight
+ * to `GpsContext`. The aggregator (`assembleHarmonySnapshot`) already builds
+ * a complete, degrades-gracefully `GpsContext` at `intelligence.gpsContext`
+ * for exactly this purpose (see `lib/harmony-context/engine.ts`'s "Layer 5 —
+ * Intelligence Hooks™" doc comment) — this function is a thin pass-through,
+ * not a second implementation. Prefer this over `buildGpsContext()` wherever
+ * a `HarmonyContextSnapshot` is already available (e.g. inside
+ * `<HarmonyProvider>`); `buildGpsContext()` remains for callers that only
+ * have the raw signals.
+ */
+export function buildGpsContextFromSnapshot(snapshot: HarmonyContextSnapshot): GpsContext {
+  return snapshot.intelligence.gpsContext
 }
 
 /* ===========================================================================

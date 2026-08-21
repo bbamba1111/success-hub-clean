@@ -15,6 +15,7 @@
 import { getEsaHistory } from "@/lib/entrepreneur-success/esa-storage"
 import { getAuditResults } from "@/utils/audit-storage"
 import type { OperatingBriefExtra } from "./founder-intelligence"
+import type { HarmonyContextSnapshot } from "@/lib/harmony-context/engine"
 
 /**
  * Assembles the `extra` object `assembleOperatingBrief(ctx, extra)` accepts.
@@ -32,5 +33,21 @@ export function loadReadinessContext(): OperatingBriefExtra {
     }
   } catch {
     return { esaResults: null, workLifeBalanceScore: null, hasCompletedAudit: false }
+  }
+}
+
+/**
+ * Phase 6.2 sibling — reads the same `OperatingBriefExtra` shape straight off
+ * the canonical `HarmonyContextSnapshot` instead of hitting localStorage
+ * directly. Prefer this inside `<HarmonyProvider>`, where the snapshot is
+ * already assembled once for every consumer; `loadReadinessContext()` above
+ * remains the fallback for callers outside the provider tree (e.g. isolated
+ * testing of the still-dormant `OperatingBrief` component).
+ */
+export function loadReadinessContextFromSnapshot(snapshot: HarmonyContextSnapshot): OperatingBriefExtra {
+  return {
+    esaResults: snapshot.business.esaResults,
+    workLifeBalanceScore: snapshot.business.workLifeBalanceScore,
+    hasCompletedAudit: snapshot.business.hasCompletedAudit,
   }
 }

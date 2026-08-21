@@ -27,6 +27,7 @@ import type { EsaResults } from "@/lib/entrepreneur-success/types"
 import type { GpsContext, BusinessPerformanceSnapshot } from "@/lib/founder-gps/types"
 import type { BusinessStage } from "@/lib/business-stage/business-stage"
 import type { OperatingPillarId } from "@/lib/entrepreneur-success/types"
+import type { FounderDestinationProfile } from "@/lib/founder-destination/types"
 
 /* ===========================================================================
  * Harmony Context Snapshot™
@@ -67,6 +68,14 @@ export interface HarmonyContextSnapshot {
    * Layer 3 — Whole-Life Context™
    * ---------------------------------------------------------------------- */
   life: WholeLifeContext
+
+  /* -------------------------------------------------------------------------
+   * Layer 3.5 — Founder Destination™ (Phase 6.2)
+   * Where the founder wants things to end up — distinct from `business`
+   * (current state). Null-safe: every field defaults to null/"undecided"
+   * absent data, matching the engine's "never throws" contract.
+   * ---------------------------------------------------------------------- */
+  destination: DestinationContext
 
   /* -------------------------------------------------------------------------
    * Layer 4 — Operating Context™
@@ -122,6 +131,52 @@ export interface BusinessContext {
   hasCompletedEsa: boolean
   /** Whether the Work-Life Balance Audit™ has been completed. */
   hasCompletedAudit: boolean
+  /**
+   * Latest Reality Check™ score (0–100), sourced from Supabase `reality_checks`
+   * — the founder's most recent weekly snapshot, not a re-derived value.
+   * Null for anonymous sessions or founders with no recorded Reality Check™.
+   */
+  latestRealityCheckScore: number | null
+  /** The week key (Monday, YYYY-MM-DD) the latest Reality Check™ belongs to. */
+  latestRealityCheckWeekKey: string | null
+  /** Priority areas the founder selected on their latest Reality Check™. */
+  latestRealityCheckPriorityAreas: string[]
+  /** Whether the latest Reality Check™ belongs to the current calendar week. */
+  realityCheckIsCurrentWeek: boolean
+}
+
+/* ---------------------------------------------------------------------------
+ * Layer 3.5 — Founder Destination™
+ * ------------------------------------------------------------------------- */
+export interface DestinationContext {
+  /** True once the founder has saved at least one Founder Destination™ field. */
+  hasDestination: boolean
+  /** The full Founder Destination™ profile, unmodified — null if not started. */
+  profile: FounderDestinationProfile | null
+  /** Business Destination™ — where the business itself is headed. */
+  businessDestination: {
+    desiredBusinessSize: string | null
+    revenueAmbition: string | null
+    desiredMarketPosition: string | null
+  }
+  /** Founder Destination™ — the founder's own future role. */
+  founderRoleDestination: {
+    desiredFounderRole: string | null
+    desiredFounderIndependence: string | null
+    desiredWorkingHoursPerWeek: string | null
+  }
+  /** Life Destination™ — the life the business should support. */
+  lifeDestination: {
+    desiredWorkLifeBalanceModel: string | null
+    desiredTimeFreedomLevel: string | null
+    nonNegotiableLifeBoundaries: string[]
+  }
+  /** Future Workplace Destination™ — the workplace they want to build. */
+  futureWorkplaceDestination: {
+    desiredWorkplaceType: string | null
+    desiredAiHumanRelationship: string | null
+    desiredLeadershipCulture: string | null
+  }
 }
 
 /* ---------------------------------------------------------------------------
@@ -201,6 +256,32 @@ export interface IntelligenceHooks {
    * Derived deterministically — architecture only, no UI reads this yet.
    */
   topPrioritySignal: string | null
+
+  /**
+   * Derived summary over the founder's real DECIDE→EMBODY→EXECUTE execution
+   * history (Supabase `segment_completions`) — counts and a streak only,
+   * never raw rows. Architecture hook: no logic reads this yet.
+   */
+  operatingHistory: OperatingHistorySummary
+}
+
+/**
+ * A bounded, aggregated summary of the founder's real Operating Segment™
+ * completion history — never a raw row dump. Mirrors the honored/modified/
+ * not-completed vocabulary already used by `segment_completions.completion_status`.
+ */
+export interface OperatingHistorySummary {
+  /** Whether any `segment_completions` rows exist for this founder. */
+  hasHistory: boolean
+  /** Total completions considered in this summary's bounded window. */
+  totalCompletions: number
+  honoredCount: number
+  modifiedCount: number
+  notCompletedCount: number
+  /** Consecutive honored days counting back from today (0 if broken/none). */
+  currentStreak: number
+  /** ISO date of the most recent completion, or null. */
+  lastCompletedAt: string | null
 }
 
 /** A ranked urgent outcome — the GPS would surface recommendations against these first. */
@@ -264,8 +345,36 @@ export const EMPTY_HARMONY_SNAPSHOT: HarmonyContextSnapshot = {
     performance: null,
     hasCompletedEsa: false,
     hasCompletedAudit: false,
+    latestRealityCheckScore: null,
+    latestRealityCheckWeekKey: null,
+    latestRealityCheckPriorityAreas: [],
+    realityCheckIsCurrentWeek: false,
   },
   life: EMPTY_WHOLE_LIFE_CONTEXT,
+  destination: {
+    hasDestination: false,
+    profile: null,
+    businessDestination: {
+      desiredBusinessSize: null,
+      revenueAmbition: null,
+      desiredMarketPosition: null,
+    },
+    founderRoleDestination: {
+      desiredFounderRole: null,
+      desiredFounderIndependence: null,
+      desiredWorkingHoursPerWeek: null,
+    },
+    lifeDestination: {
+      desiredWorkLifeBalanceModel: null,
+      desiredTimeFreedomLevel: null,
+      nonNegotiableLifeBoundaries: [],
+    },
+    futureWorkplaceDestination: {
+      desiredWorkplaceType: null,
+      desiredAiHumanRelationship: null,
+      desiredLeadershipCulture: null,
+    },
+  },
   operating: {
     dayName: "",
     timeOfDay: "Morning",
@@ -314,6 +423,15 @@ export const EMPTY_HARMONY_SNAPSHOT: HarmonyContextSnapshot = {
     weakestPillar: null,
     strongestPillar: null,
     topPrioritySignal: null,
+    operatingHistory: {
+      hasHistory: false,
+      totalCompletions: 0,
+      honoredCount: 0,
+      modifiedCount: 0,
+      notCompletedCount: 0,
+      currentStreak: 0,
+      lastCompletedAt: null,
+    },
   },
 }
 
@@ -328,7 +446,16 @@ export const EMPTY_HARMONY_SNAPSHOT: HarmonyContextSnapshot = {
  * may call it with localStorage data on the client.
  * ======================================================================== */
 export function assembleHarmonySnapshot(input: AssemblyInput): HarmonyContextSnapshot {
-  const { harmonyContext, wholeLife, esaResults, auditScore, performance } = input
+  const {
+    harmonyContext,
+    wholeLife,
+    esaResults,
+    auditScore,
+    performance,
+    founderDestination,
+    realityCheck,
+    operatingHistory: operatingHistoryInput,
+  } = input
 
   // --- Identity ---
   const identity: IdentityContext = {
@@ -344,10 +471,10 @@ export function assembleHarmonySnapshot(input: AssemblyInput): HarmonyContextSna
 
   // --- Business ---
   const weakestPillar = esaResults?.pillarScores
-    ? [...esaResults.pillarScores].sort((a, b) => a.score - b.score)[0]?.pillarId ?? null
+    ? [...esaResults.pillarScores].sort((a, b) => a.percentage - b.percentage)[0]?.pillarId ?? null
     : null
   const strongestPillar = esaResults?.pillarScores
-    ? [...esaResults.pillarScores].sort((a, b) => b.score - a.score)[0]?.pillarId ?? null
+    ? [...esaResults.pillarScores].sort((a, b) => b.percentage - a.percentage)[0]?.pillarId ?? null
     : null
 
   const business: BusinessContext = {
@@ -359,6 +486,37 @@ export function assembleHarmonySnapshot(input: AssemblyInput): HarmonyContextSna
     performance: performance ?? null,
     hasCompletedEsa: !!esaResults,
     hasCompletedAudit: auditScore != null,
+    latestRealityCheckScore: realityCheck?.overall_score ?? null,
+    latestRealityCheckWeekKey: realityCheck?.week_key ?? null,
+    latestRealityCheckPriorityAreas: realityCheck?.selected_priority_areas ?? [],
+    realityCheckIsCurrentWeek: realityCheck?.week_key === getCurrentWeekKey(),
+  }
+
+  // --- Founder Destination™ ---
+  const fd = founderDestination ?? null
+  const destination: DestinationContext = {
+    hasDestination: !!fd,
+    profile: fd,
+    businessDestination: {
+      desiredBusinessSize: fd?.desiredBusinessSize ?? null,
+      revenueAmbition: fd?.revenueAmbition ?? null,
+      desiredMarketPosition: fd?.desiredMarketPosition ?? null,
+    },
+    founderRoleDestination: {
+      desiredFounderRole: fd?.desiredFounderRole ?? null,
+      desiredFounderIndependence: fd?.desiredFounderIndependence ?? null,
+      desiredWorkingHoursPerWeek: fd?.desiredWorkingHoursPerWeek ?? null,
+    },
+    lifeDestination: {
+      desiredWorkLifeBalanceModel: fd?.desiredWorkLifeBalanceModel ?? null,
+      desiredTimeFreedomLevel: fd?.desiredTimeFreedomLevel ?? null,
+      nonNegotiableLifeBoundaries: fd?.nonNegotiableLifeBoundaries ?? [],
+    },
+    futureWorkplaceDestination: {
+      desiredWorkplaceType: fd?.desiredWorkplaceType ?? null,
+      desiredAiHumanRelationship: fd?.desiredAiHumanRelationship ?? null,
+      desiredLeadershipCulture: fd?.desiredLeadershipCulture ?? null,
+    },
   }
 
   // --- Operating ---
@@ -475,11 +633,22 @@ export function assembleHarmonySnapshot(input: AssemblyInput): HarmonyContextSna
     inLifeProtectionMode,
   }
 
+  const resolvedOperatingHistory: OperatingHistorySummary = operatingHistoryInput ?? {
+    hasHistory: false,
+    totalCompletions: 0,
+    honoredCount: 0,
+    modifiedCount: 0,
+    notCompletedCount: 0,
+    currentStreak: 0,
+    lastCompletedAt: null,
+  }
+
   return {
     ready: true,
     identity,
     business,
     life: wholeLife ?? EMPTY_WHOLE_LIFE_CONTEXT,
+    destination,
     operating,
     intelligence: {
       gpsContext,
@@ -490,13 +659,32 @@ export function assembleHarmonySnapshot(input: AssemblyInput): HarmonyContextSna
       weakestPillar: weakestPillar as OperatingPillarId | null,
       strongestPillar: strongestPillar as OperatingPillarId | null,
       topPrioritySignal,
+      operatingHistory: resolvedOperatingHistory,
     },
   }
+}
+
+/** Returns the Monday (start) of the current week as YYYY-MM-DD — mirrors utils/reality-check-storage.ts's getWeekKey. */
+function getCurrentWeekKey(date = new Date()): string {
+  const d = new Date(date)
+  const day = d.getDay()
+  const diff = (day + 6) % 7
+  d.setDate(d.getDate() - diff)
+  d.setHours(0, 0, 0, 0)
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`
 }
 
 /* ===========================================================================
  * Assembly input type
  * ======================================================================== */
+
+/** Minimal shape of a `reality_checks` row this engine needs — matches `RealityCheckRecord` in utils/reality-check-storage.ts. */
+export interface RealityCheckInput {
+  week_key: string
+  overall_score: number | null
+  selected_priority_areas: string[] | null
+}
+
 export interface AssemblyInput {
   /** The authenticated user's Supabase id. */
   userId?: string | null
@@ -508,6 +696,12 @@ export interface AssemblyInput {
   esaResults?: EsaResults | null
   /** Work-Life Balance Audit™ overall score (0–100). */
   auditScore?: number | null
+  /** The founder's Founder Destination™ profile — null if not started. */
+  founderDestination?: FounderDestinationProfile | null
+  /** The founder's most recent Reality Check™ record — null if none exists. */
+  realityCheck?: RealityCheckInput | null
+  /** Pre-derived Operating History™ summary — null/omitted defaults to empty. */
+  operatingHistory?: OperatingHistorySummary | null
   /** Business Performance™ snapshot. */
   performance?: Partial<BusinessPerformanceSnapshot> | null
 }

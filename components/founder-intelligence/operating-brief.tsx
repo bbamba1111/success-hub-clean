@@ -10,30 +10,25 @@
  * and presents the result. No AI, no network, no client state.
  */
 
-import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Sparkles, Compass, Users, Shield, GraduationCap, FileText, ArrowRight, ListTree, Target } from "lucide-react"
 import { useHarmonyContext } from "@/components/harmony-context/harmony-context-provider"
-import { assembleOperatingBrief, type OperatingBriefExtra } from "@/lib/founder-intelligence/founder-intelligence"
-import { loadReadinessContext } from "@/lib/founder-intelligence/load-readiness-context"
+import { assembleOperatingBrief } from "@/lib/founder-intelligence/founder-intelligence"
+import { loadReadinessContextFromSnapshot } from "@/lib/founder-intelligence/load-readiness-context"
 
 export function OperatingBrief() {
   const ctx = useHarmonyContext()
 
-  // Phase 4 — optional Excellence Intelligence™ evidence (ESA + Work-Life
-  // Balance Audit™), loaded client-side from existing storage utilities.
-  // Starts empty so the brief still assembles on first paint; deepens once
-  // this resolves. `assembleOperatingBrief` treats an empty `extra` exactly
-  // like Phase 3's stage/destination-only behavior, so there is no flash of
-  // incorrect content — only a possible upgrade in relevance after mount.
-  const [readinessExtra, setReadinessExtra] = useState<OperatingBriefExtra>({})
-
-  useEffect(() => {
-    setReadinessExtra(loadReadinessContext())
-  }, [])
-
   // Wait for the engine + session to be ready before assembling anything.
   if (!ctx.ready) return null
+
+  // Phase 4 — optional Excellence Intelligence™ evidence (ESA + Work-Life
+  // Balance Audit™). Phase 6.2: read straight off the canonical
+  // `HarmonyContextSnapshot` this provider already assembles — no separate
+  // client-side load, no flash of incorrect content, no duplicate source of
+  // truth. `assembleOperatingBrief` treats an empty `extra` exactly like
+  // Phase 3's stage/destination-only behavior when the snapshot has no data.
+  const readinessExtra = loadReadinessContextFromSnapshot(ctx.snapshot)
 
   const brief = assembleOperatingBrief(ctx, readinessExtra)
 
