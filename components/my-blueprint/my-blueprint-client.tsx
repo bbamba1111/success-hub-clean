@@ -52,6 +52,11 @@ import type { BusinessContextProfile } from "@/lib/business-context/types"
 import type { FounderDestinationProfile } from "@/lib/founder-destination/types"
 import { useHarmonyContext } from "@/components/harmony-context/harmony-context-provider"
 import { buildGpsContextFromSnapshot, deriveNextBestMove } from "@/lib/founder-gps/next-best-move-engine"
+import { BuildPathPicker } from "@/components/build-strategy/build-path-picker"
+import { BuildBlueprintCard } from "@/components/build-strategy/build-blueprint-card"
+import { deriveBuildBlueprint } from "@/lib/build-strategy/blueprint-engine"
+import { getBuildStrategy, saveBuildStrategy, clearBuildStrategy } from "@/lib/build-strategy/storage"
+import type { BuildPathId } from "@/lib/build-strategy/types"
 
 // ── Small formatting helpers ─────────────────────────────────────────────────
 
@@ -287,6 +292,43 @@ export function MyBlueprintClient() {
   const [bizContext, setBizContext] = useState<BusinessContextProfile | null>(null)
   const [destination, setDestination] = useState<FounderDestinationProfile | null>(null)
   const [ready, setReady] = useState(false)
+
+  // Build Strategy™ / Build Blueprint™ (Phase 9F) — the founder's chosen
+  // Build Path™ for the current Next Best Move™, and the resulting
+  // blueprint. Read/written via localStorage only this phase, keyed by the
+  // recommendation's id so it resets naturally as the recommendation changes.
+  const recommendationId = nextBestMove?.readinessCapabilityId ?? nextBestMove?.id ?? null
+  const [buildPath, setBuildPath] = useState<BuildPathId | null>(null)
+
+  useEffect(() => {
+    if (!recommendationId) {
+      setBuildPath(null)
+      return
+    }
+    const saved = getBuildStrategy(recommendationId)
+    setBuildPath(saved?.buildPath ?? null)
+  }, [recommendationId])
+
+  const buildBlueprint =
+    nextBestMove && recommendationId && buildPath
+      ? deriveBuildBlueprint(nextBestMove, buildPath, { businessModelProfile: snapshot.businessModelProfile, founderDestination })
+      : null
+
+  function handleSelectBuildPath(id: BuildPathId) {
+    if (!nextBestMove || !recommendationId) return
+    const blueprint = deriveBuildBlueprint(nextBestMove, id, {
+      businessModelProfile: snapshot.businessModelProfile,
+      founderDestination,
+    })
+    saveBuildStrategy(recommendationId, id, blueprint)
+    setBuildPath(id)
+  }
+
+  function handleChooseDifferentPath() {
+    if (!recommendationId) return
+    clearBuildStrategy(recommendationId)
+    setBuildPath(null)
+  }
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" })
@@ -761,6 +803,15 @@ export function MyBlueprintClient() {
                 {nextBestMove.cta.label}
                 <ArrowRight className="h-3.5 w-3.5" aria-hidden />
               </Link>
+
+              {/* Build Strategy™ / Build Blueprint™ (Phase 9F) — begins only
+                  when the founder explicitly chooses a Build Path™; the
+                  recommendation above is never modified by this. */}
+              {buildBlueprint ? (
+                <BuildBlueprintCard blueprint={buildBlueprint} onChooseDifferentPath={handleChooseDifferentPath} />
+              ) : (
+                <BuildPathPicker selected={buildPath} onSelect={handleSelectBuildPath} />
+              )}
             </div>
           ) : (
             <EmptyState
