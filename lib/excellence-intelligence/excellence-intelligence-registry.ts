@@ -32,6 +32,13 @@ import { ALL_BUSINESS_STAGES, type BusinessStage } from "@/lib/business-stage/bu
 import { ALL_COMMUNICATION_STYLES, type CommunicationStyle } from "@/lib/business-comprehension/business-comprehension"
 import { SUPPORTED_LANGUAGES, type LanguageCode } from "@/lib/i18n/language"
 import type { BusinessModelId } from "@/lib/entrepreneur-success/types"
+import type { LeverageClassId } from "@/lib/executive-decision-engine/types"
+import type {
+  AcquisitionModelId,
+  CustomerModelId,
+  DeliveryModelId,
+  RevenueModelId,
+} from "@/lib/business-model-classification/types"
 
 /** All Preferred Language™ codes — derived so the two never drift. */
 export const ALL_LANGUAGE_CODES: LanguageCode[] = SUPPORTED_LANGUAGES.map((l) => l.code)
@@ -689,6 +696,55 @@ export interface ReadinessCapability {
   relatedPractices: string[]
 
   status: ExcellenceStatus
+
+  /* -- Business Capability Registry™ extension (Phase 9C, all optional) -
+   * Additive only — every field below is optional so the seeded set above
+   * keeps compiling untouched. Populated where the existing capability
+   * content already implies an answer; left undefined where it would
+   * otherwise be invented.
+   * ----------------------------------------------------------------------- */
+
+  /** The concrete installation objective — what "done" looks like, plainly stated. */
+  installationObjective?: string
+  /** The real decisions a founder must make to install this capability. */
+  requiredDecisions?: string[]
+  /** The concrete artifacts/assets that must exist once installed (documents, SOPs, dashboards, etc.). */
+  requiredAssets?: string[]
+  /** The roles (founder, team, or otherwise) that must exist or act for this to be installed. */
+  requiredRoles?: string[]
+  /**
+   * Who owns this capability day-to-day once installed. Reuses the
+   * Executive Decision Engine's `LeverageClassId` — no parallel ownership
+   * vocabulary.
+   */
+  ownership?: { founder: string; team?: string; ai?: string; leverageClass: LeverageClassId }
+  /** Measurable outcomes that indicate the capability is working — distinct from `leadingIndicators`, which signals installation, not performance. */
+  successMetrics?: string[]
+  /** Common ways this capability fails or degrades even after installation. */
+  failureModes?: string[]
+  /** Conditions under which this capability should NOT be recommended. */
+  contraindications?: string[]
+  /**
+   * The evidence-provenance axis: how this specific capability's content was
+   * produced. Distinct from the existing display-only `evidenceLevel`, which
+   * grades confidence, not origin.
+   */
+  evidenceClassification?: "established" | "adapted" | "generated" | "founder-specific"
+  /** Readiness Capability™ ids that should be installed before this one. */
+  prerequisiteCapabilityIds?: string[]
+  /** Readiness Capability™ ids this capability unlocks or makes easier once installed. */
+  enablesCapabilityIds?: string[]
+  /**
+   * Business Model Profile™ (Phase 9B) characteristics this capability is
+   * especially relevant to. Optional — absence means the capability applies
+   * regardless of operating characteristics, same as `businessModels: "all"`.
+   */
+  applicableCharacteristics?: Partial<{
+    customerModel: CustomerModelId[]
+    revenueModel: RevenueModelId[]
+    deliveryModel: DeliveryModelId[]
+    acquisitionModel: AcquisitionModelId[]
+  }>
 }
 
 /* ===========================================================================
@@ -735,6 +791,16 @@ export const READINESS_CAPABILITIES: ReadinessCapability[] = [
     relatedKnowledgeObjects: ["principle-pareto-8020"],
     relatedPractices: ["start-offer-clarity"],
     status: "architecture",
+    installationObjective: "A written, one-sentence description of the ideal customer that the founder can recite without checking notes.",
+    requiredDecisions: ["Which of the last five real clients best represent who to build for going forward"],
+    requiredAssets: ["A one-sentence ideal customer description"],
+    requiredRoles: ["founder"],
+    ownership: { founder: "Defines and maintains the ideal customer description.", leverageClass: "keep" },
+    successMetrics: ["New offers and messages are written with a specific customer in mind, not a general audience"],
+    failureModes: ["The description is written once and never revisited as the customer base evolves"],
+    contraindications: ["The founder has fewer than five real clients — describe from direct conversations instead of inferring a pattern that doesn't exist yet"],
+    evidenceClassification: "established",
+    enablesCapabilityIds: ["start-offer-clarity"],
   },
   {
     id: "start-offer-clarity",
@@ -763,6 +829,17 @@ export const READINESS_CAPABILITIES: ReadinessCapability[] = [
     relatedKnowledgeObjects: ["principle-pareto-8020", "principle-financial-discipline"],
     relatedPractices: ["start-customer-clarity", "start-pricing-clarity"],
     status: "architecture",
+    installationObjective: "A single core offer that can be explained, and repeated back accurately, in one sentence.",
+    requiredDecisions: ["Which current variation of the offer sells fastest and should become the single core offer"],
+    requiredAssets: ["A one-sentence offer description"],
+    requiredRoles: ["founder"],
+    ownership: { founder: "Decides which offer variation to keep and retires the rest.", leverageClass: "keep" },
+    successMetrics: ["Customers can repeat the offer's value back accurately without a lengthy explanation"],
+    failureModes: ["Old variations quietly creep back in because they were never formally retired"],
+    contraindications: [],
+    evidenceClassification: "established",
+    prerequisiteCapabilityIds: ["start-customer-clarity"],
+    enablesCapabilityIds: ["start-pricing-clarity"],
   },
   {
     id: "start-pricing-clarity",
@@ -791,6 +868,16 @@ export const READINESS_CAPABILITIES: ReadinessCapability[] = [
     relatedKnowledgeObjects: ["principle-financial-discipline"],
     relatedPractices: ["start-offer-clarity"],
     status: "architecture",
+    installationObjective: "Known, calculated margin on the core offer, with a set rhythm for reviewing price against it.",
+    requiredDecisions: ["What the true margin is on the core offer", "How often price will be reviewed going forward"],
+    requiredAssets: ["A margin calculation for the core offer", "A pricing review rhythm"],
+    requiredRoles: ["founder"],
+    ownership: { founder: "Sets and reviews pricing against real margin.", leverageClass: "keep" },
+    successMetrics: ["Margin is known at all times, not recalculated from scratch under pressure"],
+    failureModes: ["Pricing is changed reactively in response to a single lost sale rather than on the review rhythm"],
+    contraindications: [],
+    evidenceClassification: "established",
+    prerequisiteCapabilityIds: ["start-offer-clarity"],
   },
   {
     id: "start-foundational-operating-rhythm",
@@ -819,6 +906,16 @@ export const READINESS_CAPABILITIES: ReadinessCapability[] = [
     relatedKnowledgeObjects: ["pattern-operating-rhythm", "methodology-sunday-design-day"],
     relatedPractices: ["growth-sop-before-hiring"],
     status: "architecture",
+    installationObjective: "A repeatable weekly rhythm, run for four consecutive weeks, that the founder can describe without checking notes.",
+    requiredDecisions: ["What Sunday Design Day™ will cover each week"],
+    requiredAssets: ["A documented weekly rhythm"],
+    requiredRoles: ["founder"],
+    ownership: { founder: "Designs and runs the weekly rhythm.", leverageClass: "keep" },
+    successMetrics: ["The rhythm runs for four consecutive weeks without being skipped"],
+    failureModes: ["The rhythm is designed once but abandoned the first busy week"],
+    contraindications: [],
+    evidenceClassification: "established",
+    enablesCapabilityIds: ["growth-sop-before-hiring"],
   },
 
   /* --- Growth Readiness™ (prepares Growth™ → Scale™) ------------------- */
@@ -849,6 +946,17 @@ export const READINESS_CAPABILITIES: ReadinessCapability[] = [
     relatedKnowledgeObjects: ["principle-systems-before-complexity", "research-cognitive-load-and-delegation"],
     relatedPractices: ["start-foundational-operating-rhythm", "growth-delegation-capacity"],
     status: "architecture",
+    installationObjective: "A written SOP for each of the top five repeatable tasks, tested by someone unfamiliar with the task.",
+    requiredDecisions: ["Which five repeatable tasks to document first"],
+    requiredAssets: ["Five written SOPs"],
+    requiredRoles: ["founder", "a test reader unfamiliar with the task"],
+    ownership: { founder: "Writes and validates each SOP before a hire is made.", team: "Follows the SOP once hired.", leverageClass: "delegate" },
+    successMetrics: ["A new hire can follow the SOP without the founder present"],
+    failureModes: ["SOPs are written but never tested with someone outside the task, so gaps surface only after hiring"],
+    contraindications: [],
+    evidenceClassification: "established",
+    prerequisiteCapabilityIds: ["start-foundational-operating-rhythm"],
+    enablesCapabilityIds: ["growth-delegation-capacity"],
   },
   {
     id: "growth-delegation-capacity",
@@ -877,6 +985,17 @@ export const READINESS_CAPABILITIES: ReadinessCapability[] = [
     relatedKnowledgeObjects: ["research-cognitive-load-and-delegation", "pattern-protected-strategic-time"],
     relatedPractices: ["growth-sop-before-hiring", "scale-leadership-depth"],
     status: "architecture",
+    installationObjective: "A clear, written map of what the founder keeps versus hands off, with the handed-off work verified still done to standard.",
+    requiredDecisions: ["What the founder will stop doing this quarter"],
+    requiredAssets: ["A weekly time map split into keep / hand off"],
+    requiredRoles: ["founder"],
+    ownership: { founder: "Decides what to keep versus delegate.", team: "Owns handed-off work.", leverageClass: "delegate" },
+    successMetrics: ["Handed-off work continues to meet standard without founder involvement"],
+    failureModes: ["Work is handed off without a documented standard, so quality quietly slips"],
+    contraindications: [],
+    evidenceClassification: "established",
+    prerequisiteCapabilityIds: ["growth-sop-before-hiring"],
+    enablesCapabilityIds: ["scale-leadership-depth"],
   },
   {
     id: "growth-ai-workflow-adoption",
@@ -905,6 +1024,16 @@ export const READINESS_CAPABILITIES: ReadinessCapability[] = [
     relatedKnowledgeObjects: ["methodology-ai-augmentation-hour"],
     relatedPractices: ["future-workplace-ai-human-collaboration"],
     status: "architecture",
+    installationObjective: "At least one AI-augmented workflow running weekly, with founder review built into its rhythm.",
+    requiredDecisions: ["Which single high-volume, judgment-light task to pair with AI first"],
+    requiredAssets: ["A documented, running AI-augmented workflow"],
+    requiredRoles: ["founder"],
+    ownership: { founder: "Reviews and governs the workflow's output.", ai: "Executes the paired task.", leverageClass: "automate" },
+    successMetrics: ["The workflow runs weekly without the founder rebuilding it each time"],
+    failureModes: ["The workflow is installed once and never reviewed, so quality drifts unnoticed"],
+    contraindications: ["No task exists yet that is both high-volume and judgment-light — install the operating rhythm first"],
+    evidenceClassification: "founder-specific",
+    enablesCapabilityIds: ["future-workplace-ai-human-collaboration"],
   },
   {
     id: "growth-financial-visibility",
@@ -933,6 +1062,16 @@ export const READINESS_CAPABILITIES: ReadinessCapability[] = [
     relatedKnowledgeObjects: ["principle-financial-discipline", "pattern-leading-and-lagging-indicators"],
     relatedPractices: ["scale-executive-rhythm"],
     status: "architecture",
+    installationObjective: "A refreshed annual budget and a monthly cash-flow review that new spend decisions are tied to.",
+    requiredDecisions: ["What the monthly cash-flow review rhythm will be"],
+    requiredAssets: ["An annual budget", "A monthly cash-flow review"],
+    requiredRoles: ["founder"],
+    ownership: { founder: "Reviews cash flow and approves new spend.", leverageClass: "keep" },
+    successMetrics: ["Burn rate is a known number, checked before approving new recurring spend"],
+    failureModes: ["Spend is approved from optimism between reviews rather than from the reviewed number"],
+    contraindications: [],
+    evidenceClassification: "established",
+    enablesCapabilityIds: ["scale-executive-rhythm"],
   },
 
   /* --- Scale Readiness™ (prepares Scale™ → Legacy™) -------------------- */
@@ -963,6 +1102,17 @@ export const READINESS_CAPABILITIES: ReadinessCapability[] = [
     relatedKnowledgeObjects: ["research-cognitive-load-and-delegation"],
     relatedPractices: ["growth-delegation-capacity", "scale-org-design"],
     status: "architecture",
+    installationObjective: "At least one leader beyond the founder who owns a full outcome end-to-end without routine sign-off.",
+    requiredDecisions: ["Which single outcome to fully hand off first", "Who is selected and developed to own it"],
+    requiredAssets: ["A documented outcome ownership handoff"],
+    requiredRoles: ["founder", "at least one non-founder leader"],
+    ownership: { founder: "Removes themselves from routine sign-off on the handed-off outcome.", team: "Owns the outcome end-to-end.", leverageClass: "delegate" },
+    successMetrics: ["Decisions on that outcome are made without founder sign-off"],
+    failureModes: ["The leader is given the title but the founder still quietly makes the real decisions"],
+    contraindications: [],
+    evidenceClassification: "established",
+    prerequisiteCapabilityIds: ["growth-delegation-capacity"],
+    enablesCapabilityIds: ["scale-org-design"],
   },
   {
     id: "scale-org-design",
@@ -991,6 +1141,17 @@ export const READINESS_CAPABILITIES: ReadinessCapability[] = [
     relatedKnowledgeObjects: ["principle-systems-before-complexity"],
     relatedPractices: ["scale-leadership-depth", "future-workplace-human-sustainability-standard"],
     status: "architecture",
+    installationObjective: "A documented organizational design that any two team members would describe the same way.",
+    requiredDecisions: ["What the redesigned reporting structure should be, not just what it has organically become"],
+    requiredAssets: ["A documented org design with roles, ownership, and reporting lines"],
+    requiredRoles: ["founder", "the full team"],
+    ownership: { founder: "Designs and communicates the structure.", team: "Operates within it.", leverageClass: "keep" },
+    successMetrics: ["New hires understand the structure without asking"],
+    failureModes: ["The design is documented once but never updated as the team grows, so it silently goes stale again"],
+    contraindications: [],
+    evidenceClassification: "established",
+    prerequisiteCapabilityIds: ["scale-leadership-depth"],
+    enablesCapabilityIds: ["future-workplace-human-sustainability-standard"],
   },
   {
     id: "scale-executive-rhythm",
@@ -1019,6 +1180,17 @@ export const READINESS_CAPABILITIES: ReadinessCapability[] = [
     relatedKnowledgeObjects: ["pattern-leading-and-lagging-indicators"],
     relatedPractices: ["growth-financial-visibility", "scale-exit-readiness-foundations"],
     status: "architecture",
+    installationObjective: "A recurring leadership KPI review shared across the leadership team, tracking leading and lagging indicators together.",
+    requiredDecisions: ["Which small set of leading and lagging indicators the leadership team will steer by"],
+    requiredAssets: ["A recurring leadership review with a shared KPI set"],
+    requiredRoles: ["founder", "leadership team"],
+    ownership: { founder: "Installs the rhythm.", team: "Shares accountability for the reviewed KPIs.", leverageClass: "delegate" },
+    successMetrics: ["The leadership team reviews the same KPIs on a set cadence, not only after the fact"],
+    failureModes: ["Only lagging indicators are tracked, so problems surface after they're already unrecoverable"],
+    contraindications: [],
+    evidenceClassification: "established",
+    prerequisiteCapabilityIds: ["growth-financial-visibility"],
+    enablesCapabilityIds: ["scale-exit-readiness-foundations"],
   },
   {
     id: "scale-exit-readiness-foundations",
@@ -1052,6 +1224,16 @@ export const READINESS_CAPABILITIES: ReadinessCapability[] = [
     relatedKnowledgeObjects: ["principle-financial-discipline"],
     relatedPractices: ["scale-executive-rhythm"],
     status: "architecture",
+    installationObjective: "Financial records, contracts, and IP ownership clean enough to survive a real due-diligence review today.",
+    requiredDecisions: ["Which gaps in financial records, contracts, or IP ownership to address first"],
+    requiredAssets: ["Clean, current financial records", "Documented contracts and IP ownership"],
+    requiredRoles: ["founder", "legal counsel", "tax advisor"],
+    ownership: { founder: "Initiates and oversees the cleanup.", leverageClass: "delegate" },
+    successMetrics: ["The business could survive a due-diligence review at any time, not only when a transaction is imminent"],
+    failureModes: ["Cleanup is deferred until a transaction is already underway, when there is no longer time to fix real gaps"],
+    contraindications: [],
+    evidenceClassification: "adapted",
+    prerequisiteCapabilityIds: ["scale-executive-rhythm"],
   },
 
   /* --- Future Workplace Readiness™ (extends Scale™/Legacy™) ------------ */
@@ -1088,6 +1270,17 @@ export const READINESS_CAPABILITIES: ReadinessCapability[] = [
     relatedKnowledgeObjects: ["methodology-human-sustainability", "research-progress-principle"],
     relatedPractices: ["scale-org-design", "future-workplace-ai-human-collaboration"],
     status: "architecture",
+    installationObjective: "Human Sustainability™ practices designed for the team, reviewed on the same rhythm as financial KPIs.",
+    requiredDecisions: ["Which founder-only Human Sustainability™ practices to extend into team design first"],
+    requiredAssets: ["A documented team-level Human Sustainability™ standard"],
+    requiredRoles: ["founder", "people & culture leadership"],
+    ownership: { founder: "Sponsors the standard.", team: "Lives the standard day-to-day.", leverageClass: "delegate" },
+    successMetrics: ["Wellbeing is reviewed as an operating metric alongside financial KPIs"],
+    failureModes: ["The standard is announced but never reviewed, so it quietly reverts to founder-only practice"],
+    contraindications: [],
+    evidenceClassification: "adapted",
+    prerequisiteCapabilityIds: ["scale-org-design"],
+    enablesCapabilityIds: ["future-workplace-ai-human-collaboration"],
   },
   {
     id: "future-workplace-ai-human-collaboration",
@@ -1116,6 +1309,16 @@ export const READINESS_CAPABILITIES: ReadinessCapability[] = [
     relatedKnowledgeObjects: ["methodology-ai-augmentation-hour"],
     relatedPractices: ["growth-ai-workflow-adoption", "future-workplace-human-sustainability-standard"],
     status: "architecture",
+    installationObjective: "Documented, governed AI-human collaboration for more than one team member, reviewed on a set rhythm.",
+    requiredDecisions: ["Which founder-only AI workflows to design equivalent, governed versions of for the team"],
+    requiredAssets: ["Documented AI governance covering the whole team"],
+    requiredRoles: ["founder", "team members using AI-augmented workflows"],
+    ownership: { founder: "Sets governance and reviews team AI use.", team: "Operates governed AI-augmented workflows.", ai: "Executes paired tasks under human review.", leverageClass: "automate" },
+    successMetrics: ["More than one team member has a governed AI-augmented workflow"],
+    failureModes: ["AI use spreads across the team without governance, so quality and judgment leadership erode"],
+    contraindications: ["No AI-augmented workflow yet exists for the founder — install growth-ai-workflow-adoption first"],
+    evidenceClassification: "founder-specific",
+    prerequisiteCapabilityIds: ["growth-ai-workflow-adoption", "future-workplace-human-sustainability-standard"],
   },
 ]
 
