@@ -110,6 +110,16 @@ export function IdentityCheckIn({ onRecord, recorded, changedAction }: IdentityC
       {activeOption?.status === "changed" && changedAction && (
         <a
           href={changedAction.href}
+          // `business-day-schedule.tsx` reads `?openSpace=` from
+          // `window.location` in a mount-only effect so a page refresh can't
+          // re-trigger the jump. A same-route Next.js client transition
+          // (e.g. next/link, or a plain <a> intercepted by the router) would
+          // change the URL without remounting that effect, so the accordion
+          // would never open. Forcing a full reload here guarantees it does.
+          onClick={(event) => {
+            event.preventDefault()
+            window.location.href = changedAction.href
+          }}
           className="mt-3 inline-flex items-center gap-1.5 font-sans text-xs font-semibold text-[#C0545A] underline underline-offset-2 hover:text-[#A5424A]"
         >
           {changedAction.label}
