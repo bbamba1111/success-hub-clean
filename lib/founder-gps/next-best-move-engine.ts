@@ -49,7 +49,7 @@ import {
 } from "@/lib/executive-decision-engine/decision-engine"
 import { PRIORITY_FRAMEWORK } from "@/lib/executive-decision-engine/priority-framework"
 import type { PriorityTierId } from "@/lib/executive-decision-engine/types"
-import type { HarmonyContextSnapshot } from "@/lib/harmony-context/engine"
+import type { HarmonyContextSnapshot, OperatingHistorySummary } from "@/lib/harmony-context/engine"
 
 /* ===========================================================================
  * GpsContext™ assembly
@@ -346,6 +346,18 @@ function fallbackRecommendation(activeSignals: GpsSignalId[]): GpsRecommendation
 export interface NextBestMoveExtra {
   founderDestination?: FounderDestinationProfile | null
   esaResults?: EsaResults | null
+  /**
+   * Phase 8 — Operating History™ feedback loop. The founder's real, persisted
+   * DECIDE→EMBODY→EXECUTE→CHECK-IN execution history (`segment_completions`,
+   * already summarized by `getOperatingHistorySummary()` and carried on
+   * every `HarmonyContextSnapshot` at `intelligence.operatingHistory`).
+   * Purely additive evidence: only ever appends the already-declared
+   * `strong-streak-7plus` / `consecutive-completions-3plus` `GpsSignalId`s
+   * to `activeSignals` below — it never changes which candidate pool is
+   * ranked or how, so a single new completion cannot flip the top-line
+   * recommendation on its own.
+   */
+  operatingHistory?: OperatingHistorySummary | null
 }
 
 /**
@@ -357,6 +369,20 @@ export interface NextBestMoveExtra {
  */
 export function deriveNextBestMove(ctx: GpsContext, extra?: NextBestMoveExtra): GpsRecommendation {
   const activeSignals = deriveActiveGpsSignals(ctx)
+
+  // Phase 8 — Operating History™ feedback loop. Additive only: appends
+  // evidence of real execution momentum to `activeSignals` (surfaced in the
+  // recommendation's `evidence`/`triggeredBy`) without altering the
+  // candidate pool or ranking logic above/below. A single new completion
+  // can only ever add a signal here, never remove one or force a different
+  // candidate — satisfying "GPS should not blindly change its
+  // recommendation every time a segment is completed."
+  const history = extra?.operatingHistory
+  if (history?.hasHistory) {
+    if (history.currentStreak >= 7) activeSignals.push("strong-streak-7plus")
+    else if (history.currentStreak >= 3) activeSignals.push("consecutive-completions-3plus")
+  }
+
   const businessStage = ctx.businessStage ?? "launch"
 
   const relevance = deriveReadinessRelevance({

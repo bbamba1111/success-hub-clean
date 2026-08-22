@@ -19,7 +19,10 @@
  *     (future) CEO Workspace™ will read, via `updateDailyEntry`, so nothing
  *     is re-entered later and the choice can be changed any time.
  *
- * A Cherry Blossom Check-in™ appears when the block has ~5 minutes left.
+ * The Cherry Blossom Check-in™ for this loop lives on `TodaysMoveCard`
+ * (Phase 8) — gated by the EXECUTION segment's own remaining time, not this
+ * decision block's. A decision hasn't been executed yet, so there is
+ * nothing to check in on here.
  */
 
 import { useEffect, useState } from "react"
@@ -28,8 +31,7 @@ import { getWeekKey, loadWeek, getDailyEntry, updateDailyEntry, getWlbbDayKey } 
 import { getGpsRecommendation } from "@/lib/wlbb-week/gps"
 import type { WlbbWeekState } from "@/lib/wlbb-week/types"
 import { getDateKey, loadDailyIdentity, updateDailyIdentity } from "@/lib/daily-identity/storage"
-import type { DailyIdentityRecord, IdentityCheckInStatus } from "@/lib/daily-identity/types"
-import { IdentityCheckIn } from "@/components/daily-identity/identity-check-in"
+import type { DailyIdentityRecord } from "@/lib/daily-identity/types"
 import { OpportunityFocusPicker } from "@/components/daily-identity/opportunity-focus-picker"
 import { useHarmonyContextOptional } from "@/components/harmony-context/harmony-context-provider"
 import { buildGpsContextFromSnapshot, deriveNextBestMove } from "@/lib/founder-gps/next-best-move-engine"
@@ -44,20 +46,7 @@ const IDENTITY_QUICK_PICKS = [
 
 const MAX_OUTCOMES = 3
 
-/** Shows the Cherry Blossom Check-in™ once 5 minutes or fewer remain in the segment. */
-function isEndingSoon(segmentRemaining?: string): boolean {
-  if (!segmentRemaining) return false
-  const match = segmentRemaining.match(/(\d+)/)
-  if (!match) return false
-  return Number.parseInt(match[1], 10) <= 5
-}
-
-interface DecideIdentitySpaceProps {
-  /** Human label for time left in the segment, e.g. "4m left" — passed through from BusinessDayBlock. */
-  segmentRemaining?: string
-}
-
-export function DecideIdentitySpace({ segmentRemaining }: DecideIdentitySpaceProps) {
+export function DecideIdentitySpace() {
   const [week, setWeek] = useState<WlbbWeekState | null>(null)
   const [record, setRecord] = useState<DailyIdentityRecord | null>(null)
   const [customIdentity, setCustomIdentity] = useState("")
@@ -75,6 +64,7 @@ export function DecideIdentitySpace({ segmentRemaining }: DecideIdentitySpacePro
       ? deriveNextBestMove(buildGpsContextFromSnapshot(harmony.snapshot), {
           founderDestination: harmony.founderDestination,
           esaResults: harmony.snapshot.business.esaResults,
+          operatingHistory: harmony.snapshot.intelligence.operatingHistory,
         })
       : null
 
@@ -112,11 +102,6 @@ export function DecideIdentitySpace({ segmentRemaining }: DecideIdentitySpacePro
         : [...current, outcomeId]
     setRecord(updateDailyIdentity(record.dateKey, { ceoOutcomeIds: next }))
     setWeek(updateDailyEntry(week, dayKey, { selectedOutcomeIds: next }))
-  }
-
-  function handleCheckIn(status: IdentityCheckInStatus) {
-    if (!record) return
-    setRecord(updateDailyIdentity(record.dateKey, { checkIn: { status, recordedAt: new Date().toISOString() } }))
   }
 
   return (
@@ -270,11 +255,6 @@ export function DecideIdentitySpace({ segmentRemaining }: DecideIdentitySpacePro
           </p>
         )}
       </div>
-
-      {/* ── Cherry Blossom Check-in™ — ~5 minutes before the block ends ──── */}
-      {isEndingSoon(segmentRemaining) && (
-        <IdentityCheckIn onRecord={handleCheckIn} recorded={record.checkIn?.status} />
-      )}
     </div>
   )
 }

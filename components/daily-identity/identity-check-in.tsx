@@ -44,9 +44,16 @@ const OPTIONS: CheckInOption[] = [
 interface IdentityCheckInProps {
   onRecord: (status: IdentityCheckInStatus) => void
   recorded?: IdentityCheckInStatus
+  /**
+   * Phase 8 — course correction (§11). When the founder selects "Something
+   * changed," shown alongside that state's response as a way back to
+   * re-decide — e.g. a link to Decide & Design. Ignored for the other three
+   * states, which need no redirect.
+   */
+  changedAction?: { label: string; href: string }
 }
 
-export function IdentityCheckIn({ onRecord, recorded }: IdentityCheckInProps) {
+export function IdentityCheckIn({ onRecord, recorded, changedAction }: IdentityCheckInProps) {
   const [selected, setSelected] = useState<IdentityCheckInStatus | undefined>(recorded)
 
   const handleSelect = (status: IdentityCheckInStatus) => {
@@ -98,6 +105,15 @@ export function IdentityCheckIn({ onRecord, recorded }: IdentityCheckInProps) {
 
       {activeOption && (
         <p className="mt-4 font-sans text-sm leading-relaxed text-[#5C4F55]">{activeOption.response}</p>
+      )}
+
+      {activeOption?.status === "changed" && changedAction && (
+        <a
+          href={changedAction.href}
+          className="mt-3 inline-flex items-center gap-1.5 font-sans text-xs font-semibold text-[#C0545A] underline underline-offset-2 hover:text-[#A5424A]"
+        >
+          {changedAction.label}
+        </a>
       )}
     </div>
   )

@@ -164,7 +164,11 @@ export function TodaysMoveCard({ segmentId, segmentRemaining }: TodaysMoveCardPr
       </div>
 
       {isEndingSoon(segmentRemaining) && (
-        <IdentityCheckIn onRecord={handleCheckIn} recorded={checkInStatus} />
+        <IdentityCheckIn
+          onRecord={handleCheckIn}
+          recorded={checkInStatus}
+          changedAction={{ label: "Adjust in Decide & Design", href: "/?openSpace=daily-planning-gps" }}
+        />
       )}
     </div>
   )

@@ -322,7 +322,7 @@ export function BusinessDayBlock({
                 (same store the CEO Workspace™ reads). */}
             {blockId === "daily-planning-gps" && (
               <div className="px-7 py-8">
-                <DecideIdentitySpace segmentRemaining={segmentRemaining} />
+                <DecideIdentitySpace />
               </div>
             )}
 
