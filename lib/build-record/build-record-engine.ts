@@ -19,6 +19,8 @@ import type {
   BuildRecord,
   BuildRecordContext,
   BuildTask,
+  BuildTaskStatus,
+  CommunicationPackage,
   FounderAttentionState,
   InstalledChecklist,
   QaChecklistItem,
@@ -316,4 +318,162 @@ export function applyBuildStatusTransition(record: BuildRecord, next: BuildLifec
 
   updated = appendActivityLogEntry(updated, "status-change", `Status changed to "${next}"`)
   return updated
+}
+
+/** Toggles one task's status between "done" and "not-started" — the founder's own action, never auto-derived. */
+export function toggleTaskStatus(record: BuildRecord, taskId: string): BuildRecord {
+  const task = record.tasks.find((t) => t.id === taskId)
+  if (!task) return record
+  const nextStatus: BuildTaskStatus = task.status === "done" ? "not-started" : "done"
+  const tasks = record.tasks.map((t) => (t.id === taskId ? { ...t, status: nextStatus } : t))
+  return appendActivityLogEntry(
+    { ...record, tasks, updatedAt: new Date().toISOString() },
+    "note",
+    `Task "${task.title}" marked ${nextStatus === "done" ? "done" : "not started"}`,
+  )
+}
+
+/** Toggles one QA checklist item — founder-confirmed, never auto-checked. */
+export function toggleQaItem(record: BuildRecord, itemId: string): BuildRecord {
+  const item = record.qaGate.items.find((i) => i.id === itemId)
+  if (!item) return record
+  const items = record.qaGate.items.map((i) => (i.id === itemId ? { ...i, checked: !i.checked } : i))
+  return appendActivityLogEntry(
+    { ...record, qaGate: { ...record.qaGate, items }, updatedAt: new Date().toISOString() },
+    "qa",
+    `QA item "${item.label}" marked ${!item.checked ? "checked" : "unchecked"}`,
+  )
+}
+
+/** Saves the founder's free-text QA notes. */
+export function setQaNotes(record: BuildRecord, notes: string): BuildRecord {
+  return { ...record, qaGate: { ...record.qaGate, notes }, updatedAt: new Date().toISOString() }
+}
+
+/**
+ * setLiveEvidence — records what actually proves the capability is
+ * operating in the business. Required, non-empty text before `"installed"`
+ * is reachable (enforced by `canTransitionTo`).
+ */
+export function setLiveEvidence(record: BuildRecord, note: string): BuildRecord {
+  const confirmedAt = note.trim().length > 0 ? new Date().toISOString() : null
+  return appendActivityLogEntry(
+    { ...record, liveEvidence: { note, confirmedAt }, updatedAt: new Date().toISOString() },
+    "live",
+    note.trim().length > 0 ? `LIVE evidence recorded: ${note}` : "LIVE evidence cleared",
+  )
+}
+
+/** Toggles one INSTALLED checklist item — founder-confirmed, never auto-checked. */
+export function toggleInstalledItem(record: BuildRecord, itemId: string): BuildRecord {
+  const item = record.installedChecklist.items.find((i) => i.id === itemId)
+  if (!item) return record
+  const items = record.installedChecklist.items.map((i) => (i.id === itemId ? { ...i, checked: !i.checked } : i))
+  return appendActivityLogEntry(
+    { ...record, installedChecklist: { ...record.installedChecklist, items }, updatedAt: new Date().toISOString() },
+    "installed",
+    `INSTALLED condition "${item.label}" marked ${!item.checked ? "confirmed" : "unconfirmed"}`,
+  )
+}
+
+/** Sets the blocker note and, when non-empty, moves status to "blocked" — a founder-driven action, not automatic. */
+export function setBlockerNote(record: BuildRecord, note: string): BuildRecord {
+  const trimmed = note.trim()
+  const status: BuildLifecycleStatus = trimmed.length > 0 ? "blocked" : record.status === "blocked" ? "in-progress" : record.status
+  return appendActivityLogEntry(
+    { ...record, blockerNote: trimmed.length > 0 ? trimmed : null, status, updatedAt: new Date().toISOString() },
+    "note",
+    trimmed.length > 0 ? `Blocker noted: ${trimmed}` : "Blocker cleared",
+  )
+}
+
+/** Saves the founder-entered executor (who's actually doing the day-to-day work). */
+export function setExecutor(record: BuildRecord, executor: string): BuildRecord {
+  const trimmed = executor.trim()
+  return { ...record, executor: trimmed.length > 0 ? trimmed : null, updatedAt: new Date().toISOString() }
+}
+
+/** Per-path default audience for a generated communication package — plain data, matching `ownerSummaryFor`'s style. */
+function defaultAudienceFor(buildPath: BuildPathId): string {
+  switch (buildPath) {
+    case "delegate":
+      return "Team member"
+    case "hire":
+      return "Candidate"
+    case "outsource":
+      return "Contractor"
+    case "partner":
+      return "Partner"
+    case "buy":
+      return "Vendor"
+    default:
+      return "Recipient"
+  }
+}
+
+/**
+ * generateCommunicationPackage — drafts a handoff/communication package from
+ * the record's own Build Blueprint™ detail. Generate-then-approve only:
+ * `approvedAt` starts `null` and this function NEVER sends anything.
+ */
+export function generateCommunicationPackage(record: BuildRecord): BuildRecord {
+  const { blueprint } = record
+  const audience = defaultAudienceFor(blueprint.buildPath)
+
+  const bodyLines: string[] = [
+    `What: ${blueprint.what}`,
+    `Why it matters: ${blueprint.why}`,
+    `Desired outcome: ${blueprint.desiredOutcome}`,
+  ]
+
+  switch (blueprint.detail.kind) {
+    case "delegate":
+      bodyLines.push("", "Context to brief:", ...blueprint.detail.briefingPoints.map((p) => `- ${p}`))
+      bodyLines.push("", `Handoff is done when: ${blueprint.detail.handoffDefinitionOfDone}`)
+      break
+    case "hire":
+      bodyLines.push("", "Core responsibilities:", ...blueprint.detail.coreResponsibilities.map((r) => `- ${r}`))
+      break
+    case "outsource":
+      bodyLines.push("", "Scope of work:", ...blueprint.detail.scopeOfWork.map((s) => `- ${s}`))
+      break
+    case "partner":
+      bodyLines.push("", "Scope handed to you:", ...blueprint.detail.scopeHandedToPartner.map((s) => `- ${s}`))
+      bodyLines.push("", "We retain:", ...blueprint.detail.founderRetains.map((s) => `- ${s}`))
+      break
+    case "buy":
+      bodyLines.push("", "What we're evaluating:", ...blueprint.detail.evaluationCriteria.map((c) => `- ${c}`))
+      break
+    default:
+      bodyLines.push("", "No handoff-specific detail applies to this Build Path™.")
+  }
+
+  const pkg: CommunicationPackage = {
+    id: makeId("comms"),
+    audience,
+    subject: `${blueprint.what} — ${audience.toLowerCase()} brief`,
+    body: bodyLines.join("\n"),
+    generatedAt: new Date().toISOString(),
+    approvedAt: null,
+  }
+
+  return appendActivityLogEntry(
+    { ...record, communicationPackages: [...record.communicationPackages, pkg], updatedAt: new Date().toISOString() },
+    "communication",
+    `Communication package drafted for ${audience.toLowerCase()}`,
+  )
+}
+
+/** Founder-explicit approval stamp — required before treating a package as sendable; this function still never sends anything. */
+export function approveCommunicationPackage(record: BuildRecord, packageId: string): BuildRecord {
+  const pkg = record.communicationPackages.find((p) => p.id === packageId)
+  if (!pkg) return record
+  const communicationPackages = record.communicationPackages.map((p) =>
+    p.id === packageId ? { ...p, approvedAt: new Date().toISOString() } : p,
+  )
+  return appendActivityLogEntry(
+    { ...record, communicationPackages, updatedAt: new Date().toISOString() },
+    "communication",
+    `Communication package for ${pkg.audience.toLowerCase()} approved by founder`,
+  )
 }

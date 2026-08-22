@@ -7,16 +7,31 @@ import {
   ArrowLeft,
   ArrowRight,
   CheckCircle2,
+  Circle,
   CircleDot,
   Clock,
   Hammer,
+  Mail,
   ShieldAlert,
   Users,
 } from "lucide-react"
 import type { BuildLifecycleStatus, BuildRecord, FounderAttentionState } from "@/lib/build-record/types"
 import { getAllBuildRecords, replaceAllBuildRecords, saveBuildRecord, BUILD_RECORD_EVENT } from "@/lib/build-record/build-record-store"
 import { getBuildRecordsFromDb, upsertBuildRecordToDb } from "@/utils/build-record-storage"
-import { deriveFounderAttention, applyBuildStatusTransition } from "@/lib/build-record/build-record-engine"
+import {
+  deriveFounderAttention,
+  applyBuildStatusTransition,
+  canTransitionTo,
+  toggleTaskStatus,
+  toggleQaItem,
+  setQaNotes,
+  setLiveEvidence,
+  toggleInstalledItem,
+  setBlockerNote,
+  setExecutor,
+  generateCommunicationPackage,
+  approveCommunicationPackage,
+} from "@/lib/build-record/build-record-engine"
 import { getBuildPathDefinition } from "@/lib/build-strategy/build-path-registry"
 
 type Filter = "all" | "needs-attention" | "in-progress" | "awaiting-external" | "installed"
@@ -81,14 +96,20 @@ export function BuildCommandCenterClient() {
   )
 
   function handleTransition(record: BuildRecord, next: BuildLifecycleStatus) {
-    const updated = applyBuildStatusTransition(record, next)
+    persist(applyBuildStatusTransition(record, next))
+  }
+
+  // Phase 11 — one persistence path for every interactive action (QA
+  // toggles, LIVE evidence, INSTALLED checklist, tasks, blockers,
+  // communication packages) so local cache + DB + list state always agree.
+  function persist(updated: BuildRecord) {
     saveBuildRecord(updated)
     void upsertBuildRecordToDb(updated)
     setRecords((prev) => prev.map((r) => (r.readinessCapabilityId === updated.readinessCapabilityId ? updated : r)))
   }
 
   if (focusedRecord) {
-    return <BuildRecordDetail record={focusedRecord} onTransition={handleTransition} />
+    return <BuildRecordDetail record={focusedRecord} onTransition={handleTransition} onUpdate={persist} />
   }
 
   const filtered = records.filter((r) => matchesFilter(r, filter, deriveFounderAttention(r)))
@@ -179,14 +200,25 @@ function BuildRecordCard({ record }: { record: BuildRecord }) {
 function BuildRecordDetail({
   record,
   onTransition,
+  onUpdate,
 }: {
   record: BuildRecord
   onTransition: (record: BuildRecord, next: BuildLifecycleStatus) => void
+  onUpdate: (record: BuildRecord) => void
 }) {
   const attention = deriveFounderAttention(record)
   const meta = ATTENTION_META[attention]
   const Icon = meta.icon
   const pathLabel = getBuildPathDefinition(record.buildPath).label
+
+  const [blockerDraft, setBlockerDraft] = useState(record.blockerNote ?? "")
+  const [executorDraft, setExecutorDraft] = useState(record.executor ?? "")
+  const [liveEvidenceDraft, setLiveEvidenceDraft] = useState(record.liveEvidence.note ?? "")
+  const [qaNotesDraft, setQaNotesDraft] = useState(record.qaGate.notes ?? "")
+
+  const readyToInstallGate = canTransitionTo(record, "ready-to-install")
+  const installingGate = canTransitionTo(record, "installing")
+  const installedGate = canTransitionTo(record, "installed")
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-12">
@@ -210,16 +242,59 @@ function BuildRecordDetail({
         <p className="font-sans text-xs font-semibold uppercase tracking-[0.1em] text-brand-green">
           {pathLabel} · {record.ownerSummary}
         </p>
+        {record.recommendedBuildPath && record.recommendedBuildPath !== record.buildPath ? (
+          <p className="font-sans text-xs leading-relaxed text-brand-ink-soft text-pretty">
+            Recommended path was <span className="font-semibold">{getBuildPathDefinition(record.recommendedBuildPath).label}</span>.
+            {record.pathSelectionReason ? ` Founder's reason for choosing differently: ${record.pathSelectionReason}` : null}
+          </p>
+        ) : null}
       </header>
 
-      {record.blockedByCapabilityIds.length > 0 || record.blockerNote ? (
-        <div className="mb-6 rounded-2xl border border-red-200 bg-red-50 px-5 py-4">
-          <p className="font-sans text-sm font-semibold text-red-700">Blocked</p>
-          <p className="mt-1 font-sans text-xs leading-relaxed text-red-700/80">
-            {record.blockerNote ?? `Waiting on: ${record.blockedByCapabilityIds.join(", ")}`}
-          </p>
+      {/* Owner / executor — team/external ownership block */}
+      <section className="mb-6 rounded-2xl border border-brand-blush/70 bg-white p-5 shadow-sm">
+        <h2 className="font-sans text-xs font-bold uppercase tracking-[0.1em] text-brand-ink-soft mb-2">Who&apos;s doing this</h2>
+        <p className="font-sans text-xs text-brand-ink-soft mb-3">{record.ownerSummary}</p>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <input
+            type="text"
+            value={executorDraft}
+            onChange={(e) => setExecutorDraft(e.target.value)}
+            placeholder="Who is actually doing the day-to-day work? (optional)"
+            className="flex-1 rounded-lg border border-brand-blush/70 bg-white px-3 py-2 font-sans text-sm text-brand-ink placeholder:text-brand-ink-soft/60 focus:border-[#C13B6B]/50 focus:outline-none"
+          />
+          <button
+            onClick={() => onUpdate(setExecutor(record, executorDraft))}
+            className="shrink-0 rounded-lg border border-brand-blush px-4 py-2 font-sans text-xs font-semibold text-brand-ink-soft hover:bg-brand-blush/30"
+          >
+            Save
+          </button>
         </div>
-      ) : null}
+      </section>
+
+      {/* Blocker editor */}
+      <section className="mb-6 rounded-2xl border border-brand-blush/70 bg-white p-5 shadow-sm">
+        <h2 className="font-sans text-xs font-bold uppercase tracking-[0.1em] text-brand-ink-soft mb-2">Blocker</h2>
+        {record.blockedByCapabilityIds.length > 0 ? (
+          <p className="mb-2 font-sans text-xs leading-relaxed text-red-700/80">
+            Waiting on: {record.blockedByCapabilityIds.join(", ")}
+          </p>
+        ) : null}
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <input
+            type="text"
+            value={blockerDraft}
+            onChange={(e) => setBlockerDraft(e.target.value)}
+            placeholder="Describe what's blocking this, or leave empty to clear"
+            className="flex-1 rounded-lg border border-brand-blush/70 bg-white px-3 py-2 font-sans text-sm text-brand-ink placeholder:text-brand-ink-soft/60 focus:border-[#C13B6B]/50 focus:outline-none"
+          />
+          <button
+            onClick={() => onUpdate(setBlockerNote(record, blockerDraft))}
+            className="shrink-0 rounded-lg border border-brand-blush px-4 py-2 font-sans text-xs font-semibold text-brand-ink-soft hover:bg-brand-blush/30"
+          >
+            {blockerDraft.trim() ? "Mark blocked" : "Clear blocker"}
+          </button>
+        </div>
+      </section>
 
       <section className="mb-8 space-y-4">
         <h2 className="font-sans text-xs font-bold uppercase tracking-[0.1em] text-brand-ink-soft">Milestones</h2>
@@ -231,8 +306,20 @@ function BuildRecordDetail({
               {record.tasks
                 .filter((t) => milestone.taskIds.includes(t.id))
                 .map((task) => (
-                  <li key={task.id} className="flex items-center justify-between gap-3 text-xs">
-                    <span className={task.status === "done" ? "text-brand-ink-soft line-through" : "text-brand-ink"}>
+                  <li key={task.id} className="flex items-center gap-2.5 text-xs">
+                    <button
+                      type="button"
+                      onClick={() => onUpdate(toggleTaskStatus(record, task.id))}
+                      aria-pressed={task.status === "done"}
+                      className="shrink-0"
+                    >
+                      {task.status === "done" ? (
+                        <CheckCircle2 className="h-4 w-4 text-brand-green-dark" aria-hidden />
+                      ) : (
+                        <Circle className="h-4 w-4 text-brand-ink-soft/50" aria-hidden />
+                      )}
+                    </button>
+                    <span className={`flex-1 ${task.status === "done" ? "text-brand-ink-soft line-through" : "text-brand-ink"}`}>
                       {task.title}
                     </span>
                     <span className="shrink-0 font-semibold text-brand-ink-soft">{task.owner}</span>
@@ -243,7 +330,136 @@ function BuildRecordDetail({
         ))}
       </section>
 
-      <section className="flex flex-wrap gap-2">
+      {/* QA gate */}
+      <section className="mb-6 rounded-2xl border border-brand-blush/70 bg-white p-5 shadow-sm">
+        <h2 className="font-sans text-xs font-bold uppercase tracking-[0.1em] text-brand-ink-soft mb-3">
+          Quality check before install
+        </h2>
+        <ul className="space-y-2">
+          {record.qaGate.items.map((item) => (
+            <li key={item.id} className="flex items-start gap-2.5 text-xs">
+              <button type="button" onClick={() => onUpdate(toggleQaItem(record, item.id))} className="mt-0.5 shrink-0">
+                {item.checked ? (
+                  <CheckCircle2 className="h-4 w-4 text-brand-green-dark" aria-hidden />
+                ) : (
+                  <Circle className="h-4 w-4 text-brand-ink-soft/50" aria-hidden />
+                )}
+              </button>
+              <span className={item.checked ? "text-brand-ink-soft line-through" : "text-brand-ink"}>{item.label}</span>
+            </li>
+          ))}
+        </ul>
+        <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+          <input
+            type="text"
+            value={qaNotesDraft}
+            onChange={(e) => setQaNotesDraft(e.target.value)}
+            placeholder="Notes on what was tested (optional)"
+            className="flex-1 rounded-lg border border-brand-blush/70 bg-white px-3 py-2 font-sans text-sm text-brand-ink placeholder:text-brand-ink-soft/60 focus:border-[#C13B6B]/50 focus:outline-none"
+          />
+          <button
+            onClick={() => onUpdate(setQaNotes(record, qaNotesDraft))}
+            className="shrink-0 rounded-lg border border-brand-blush px-4 py-2 font-sans text-xs font-semibold text-brand-ink-soft hover:bg-brand-blush/30"
+          >
+            Save notes
+          </button>
+        </div>
+      </section>
+
+      {/* LIVE evidence */}
+      <section className="mb-6 rounded-2xl border border-brand-blush/70 bg-white p-5 shadow-sm">
+        <h2 className="font-sans text-xs font-bold uppercase tracking-[0.1em] text-brand-ink-soft mb-2">
+          Evidence this is actually live
+        </h2>
+        <p className="mb-3 font-sans text-xs text-brand-ink-soft">
+          Describe how this is operating in the business right now — not that a document exists, but that it&apos;s in use.
+        </p>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <input
+            type="text"
+            value={liveEvidenceDraft}
+            onChange={(e) => setLiveEvidenceDraft(e.target.value)}
+            placeholder="e.g. First real customer order processed through this workflow on..."
+            className="flex-1 rounded-lg border border-brand-blush/70 bg-white px-3 py-2 font-sans text-sm text-brand-ink placeholder:text-brand-ink-soft/60 focus:border-[#C13B6B]/50 focus:outline-none"
+          />
+          <button
+            onClick={() => onUpdate(setLiveEvidence(record, liveEvidenceDraft))}
+            className="shrink-0 rounded-lg border border-brand-blush px-4 py-2 font-sans text-xs font-semibold text-brand-ink-soft hover:bg-brand-blush/30"
+          >
+            Save
+          </button>
+        </div>
+        {record.liveEvidence.confirmedAt ? (
+          <p className="mt-2 font-sans text-xs text-brand-green-dark">Recorded {new Date(record.liveEvidence.confirmedAt).toLocaleDateString()}</p>
+        ) : null}
+      </section>
+
+      {/* INSTALLED checklist */}
+      <section className="mb-6 rounded-2xl border border-brand-blush/70 bg-white p-5 shadow-sm">
+        <h2 className="font-sans text-xs font-bold uppercase tracking-[0.1em] text-brand-ink-soft mb-3">
+          Part of the business&apos;s operating rhythm
+        </h2>
+        <ul className="space-y-2">
+          {record.installedChecklist.items.map((item) => (
+            <li key={item.id} className="flex items-start gap-2.5 text-xs">
+              <button type="button" onClick={() => onUpdate(toggleInstalledItem(record, item.id))} className="mt-0.5 shrink-0">
+                {item.checked ? (
+                  <CheckCircle2 className="h-4 w-4 text-brand-green-dark" aria-hidden />
+                ) : (
+                  <Circle className="h-4 w-4 text-brand-ink-soft/50" aria-hidden />
+                )}
+              </button>
+              <span className={item.checked ? "text-brand-ink-soft line-through" : "text-brand-ink"}>{item.label}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* Communication packages */}
+      <section className="mb-8 rounded-2xl border border-brand-blush/70 bg-white p-5 shadow-sm">
+        <div className="flex items-center justify-between gap-3 mb-3">
+          <h2 className="font-sans text-xs font-bold uppercase tracking-[0.1em] text-brand-ink-soft">Communication packages</h2>
+          <button
+            onClick={() => onUpdate(generateCommunicationPackage(record))}
+            className="inline-flex items-center gap-1.5 rounded-full border border-brand-blush px-3 py-1.5 font-sans text-xs font-semibold text-brand-ink-soft hover:bg-brand-blush/30"
+          >
+            <Mail className="h-3.5 w-3.5" aria-hidden />
+            Draft one
+          </button>
+        </div>
+        {record.communicationPackages.length === 0 ? (
+          <p className="font-sans text-xs text-brand-ink-soft">
+            No drafts yet. Generating one never sends anything — it&apos;s a draft you review and approve.
+          </p>
+        ) : (
+          <ul className="space-y-3">
+            {record.communicationPackages.map((pkg) => (
+              <li key={pkg.id} className="rounded-xl border border-brand-blush/60 bg-brand-cream/50 p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="font-sans text-sm font-bold text-brand-ink">
+                    {pkg.subject} <span className="font-normal text-brand-ink-soft">· {pkg.audience}</span>
+                  </p>
+                  {pkg.approvedAt ? (
+                    <span className="shrink-0 rounded-full bg-brand-green/10 px-2.5 py-0.5 font-sans text-[10px] font-bold text-brand-green-dark">
+                      Approved
+                    </span>
+                  ) : (
+                    <button
+                      onClick={() => onUpdate(approveCommunicationPackage(record, pkg.id))}
+                      className="shrink-0 rounded-full bg-brand-green px-3 py-1 font-sans text-[10px] font-bold text-white hover:bg-brand-green-dark"
+                    >
+                      Approve
+                    </button>
+                  )}
+                </div>
+                <pre className="mt-2 whitespace-pre-wrap font-sans text-xs leading-relaxed text-brand-ink-soft">{pkg.body}</pre>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section className="mb-8 flex flex-wrap gap-2">
         {record.status !== "in-progress" && record.status !== "installed" ? (
           <button
             onClick={() => onTransition(record, "in-progress")}
@@ -252,10 +468,32 @@ function BuildRecordDetail({
             Mark in progress
           </button>
         ) : null}
+        {record.status !== "ready-to-install" && record.status !== "installing" && record.status !== "installed" ? (
+          <button
+            onClick={() => onTransition(record, "ready-to-install")}
+            disabled={!readyToInstallGate.allowed}
+            title={readyToInstallGate.reason ?? undefined}
+            className="rounded-full bg-brand-blush px-4 py-2 font-sans text-xs font-bold text-brand-ink hover:bg-brand-coral hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Mark ready to install
+          </button>
+        ) : null}
+        {record.status === "ready-to-install" ? (
+          <button
+            onClick={() => onTransition(record, "installing")}
+            disabled={!installingGate.allowed}
+            title={installingGate.reason ?? undefined}
+            className="rounded-full bg-brand-blush px-4 py-2 font-sans text-xs font-bold text-brand-ink hover:bg-brand-coral hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Start installing
+          </button>
+        ) : null}
         {record.status !== "installed" ? (
           <button
             onClick={() => onTransition(record, "installed")}
-            className="rounded-full bg-brand-blush px-4 py-2 font-sans text-xs font-bold text-brand-ink hover:bg-brand-coral hover:text-white"
+            disabled={!installedGate.allowed}
+            title={installedGate.reason ?? undefined}
+            className="rounded-full bg-brand-green px-4 py-2 font-sans text-xs font-bold text-white hover:bg-brand-green-dark disabled:cursor-not-allowed disabled:opacity-50"
           >
             Mark installed
           </button>
@@ -268,6 +506,32 @@ function BuildRecordDetail({
             Pause
           </button>
         ) : null}
+      </section>
+
+      {!readyToInstallGate.allowed && record.status !== "installed" ? (
+        <p className="mb-4 font-sans text-xs text-brand-ink-soft">{readyToInstallGate.reason}</p>
+      ) : null}
+      {record.status === "ready-to-install" && !installedGate.allowed ? (
+        <p className="mb-4 font-sans text-xs text-brand-ink-soft">{installedGate.reason}</p>
+      ) : null}
+
+      {/* Activity log */}
+      <section>
+        <h2 className="font-sans text-xs font-bold uppercase tracking-[0.1em] text-brand-ink-soft mb-3">Activity</h2>
+        {record.activityLog.length === 0 ? (
+          <p className="font-sans text-xs text-brand-ink-soft">No activity yet.</p>
+        ) : (
+          <ul className="space-y-1.5">
+            {[...record.activityLog]
+              .slice()
+              .reverse()
+              .map((entry) => (
+                <li key={entry.id} className="font-sans text-xs text-brand-ink-soft">
+                  <span className="text-brand-ink-soft/70">{new Date(entry.at).toLocaleString()}</span> — {entry.label}
+                </li>
+              ))}
+          </ul>
+        )}
       </section>
     </main>
   )

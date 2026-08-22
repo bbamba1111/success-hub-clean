@@ -869,7 +869,18 @@ export function MyBlueprintClient() {
                   recommendation above is never modified by this. */}
               {buildBlueprint ? (
                 <div className="space-y-3">
-                  <BuildBlueprintCard blueprint={buildBlueprint} onChooseDifferentPath={handleChooseDifferentPath} />
+                  <BuildBlueprintCard
+                    blueprint={buildBlueprint}
+                    onChooseDifferentPath={handleChooseDifferentPath}
+                    recommendedBuildPath={buildRecord?.recommendedBuildPath ?? recommendedPath?.buildPath ?? null}
+                    recommendedBuildPathReason={buildRecord?.recommendedBuildPathReason ?? recommendedPath?.reason ?? null}
+                    pathSelectionReason={buildRecord?.pathSelectionReason ?? null}
+                    onSavePathSelectionReason={handleSavePathSelectionReason}
+                  />
+                  {/* Phase 11 — Second Opinion™: explains the existing
+                      recommendation signals against the founder's actual
+                      choice; never a second recommendation engine. */}
+                  {secondOpinion ? <SecondOpinionPanel secondOpinion={secondOpinion} /> : null}
                   {/* Phase 10 — once a Build Path™ is chosen, the founder acts
                       once here, then leaves to track execution in Build
                       Command Center™ rather than only seeing a static card. */}
@@ -884,7 +895,12 @@ export function MyBlueprintClient() {
                   ) : null}
                 </div>
               ) : (
-                <BuildPathPicker selected={buildPath} onSelect={handleSelectBuildPath} />
+                <BuildPathPicker
+                  selected={buildPath}
+                  onSelect={handleSelectBuildPath}
+                  recommendedPath={recommendedPath?.buildPath ?? null}
+                  recommendedReason={recommendedPath?.reason ?? null}
+                />
               )}
             </div>
           ) : (
