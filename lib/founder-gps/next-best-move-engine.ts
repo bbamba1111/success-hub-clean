@@ -227,7 +227,10 @@ function tierRankOf(tierId: PriorityTierId): number {
 }
 
 /** Map a Founder Intelligence™ candidate into the EDE's candidate input shape. */
-function toEdeCandidate(r: RelevantReadinessCapability): EdeCandidateInput {
+function toEdeCandidate(
+  r: RelevantReadinessCapability,
+  ctx: Pick<GpsContext, "businessModelProfile" | "businessOperatingFingerprint">,
+): EdeCandidateInput {
   return {
     id: r.id,
     isDelegable: r.suggestedOwner === "team-or-ai",
@@ -238,17 +241,33 @@ function toEdeCandidate(r: RelevantReadinessCapability): EdeCandidateInput {
     // first, otherwise the default is building the compounding asset the
     // capability itself describes.
     prioritizedOutcome: r.capacityConstrained ? "honor-non-negotiables" : "build-compounding-assets",
+    // Phase 9E — traceability passthrough only (Phase 9D fields on
+    // `EdeCandidateInput`). `evaluateCandidate()` does not read these; EDE's
+    // ranking logic is untouched.
+    businessModelProfile: ctx.businessModelProfile ?? null,
+    businessOperatingFingerprint: ctx.businessOperatingFingerprint ?? null,
   }
 }
+
+const FOUNDER_DEPENDENT_LEVELS = new Set(["fully-dependent", "mostly-dependent"])
 
 /**
  * Within the top-ranked Priority Tier™, prefer a candidate whose leverage
  * class is NOT "keep" when the founder is capacity-constrained — honoring
  * the Work-Life Balance™ constraint without a second scoring pass.
+ *
+ * Phase 9E adds one more optional, same-shape tie-break: when the founder's
+ * Business Operating Fingerprint™ (falling back to the Business Model
+ * Profile™) shows `founderDependency` of `"fully-dependent"` or
+ * `"mostly-dependent"`, prefer a top-tier candidate whose ownership
+ * `leverageClass` is not `"keep"` — moving the founder toward delegation
+ * rather than adding more to what only they can do. Only applied when the
+ * capacity tie-break above didn't already pick a candidate.
  */
 function pickBestCandidate(
   ranked: RankedEdeCandidate[],
-  pool: RelevantReadinessCapability[]
+  pool: RelevantReadinessCapability[],
+  ctx: Pick<GpsContext, "businessModelProfile" | "businessOperatingFingerprint">,
 ): { ranked: RankedEdeCandidate; capability: RelevantReadinessCapability } | null {
   if (ranked.length === 0) return null
   const byId = new Map(pool.map((r) => [r.id, r]))
@@ -260,7 +279,17 @@ function pickBestCandidate(
     return capability?.capacityConstrained && r.recommendedLeverageClass !== "keep"
   })
 
-  const chosen = capacityPick ?? ranked[0]
+  const founderDependency = ctx.businessOperatingFingerprint?.founderDependency ?? ctx.businessModelProfile?.founderDependency
+  const founderDependencyPick =
+    !capacityPick && founderDependency && FOUNDER_DEPENDENT_LEVELS.has(founderDependency)
+      ? topTierGroup.find((r) => {
+          const capability = byId.get(r.candidateId)
+          const ownershipLeverageClass = capability?.capability.ownership?.leverageClass
+          return ownershipLeverageClass != null && ownershipLeverageClass !== "keep"
+        })
+      : undefined
+
+  const chosen = capacityPick ?? founderDependencyPick ?? ranked[0]
   const capability = byId.get(chosen.candidateId)
   return capability ? { ranked: chosen, capability } : null
 }
@@ -302,6 +331,19 @@ function toRecommendation(
       ? "Chosen because it can be delegated or automated rather than added to your plate."
       : undefined,
     explainability: ranked.explainability,
+
+    // Phase 9E — Business Capability Registry™ selection reasoning, all
+    // derived from data already computed above; no new copy invented.
+    capabilityName: capability.title,
+    whyNow: capability.whyNow,
+    businessModelFit: capability.businessModelFit,
+    stageFit: capability.relevanceStatus === "emerging" ? "build-ahead-of-need" : "current-stage",
+    prerequisites: capability.unmetPrerequisites?.length ? capability.unmetPrerequisites : undefined,
+    unlocksCapabilities: capability.unlocks?.length ? capability.unlocks : undefined,
+    definitionOfDone: capability.capability.expectedOutcome,
+    futureWorkplaceAlignment: capability.gap.destination?.includes("future workplace")
+      ? capability.gap.destination
+      : undefined,
   }
 }
 
@@ -390,18 +432,29 @@ export function deriveNextBestMove(ctx: GpsContext, extra?: NextBestMoveExtra): 
     founderDestination: extra?.founderDestination ?? null,
     esaResults: extra?.esaResults ?? null,
     workLifeBalanceScore: ctx.workLifeBalanceScore,
+    businessModelProfile: ctx.businessModelProfile ?? null,
   })
 
   // Case G: never recommend rebuilding something already installed.
-  const pool = relevance.filter((r) => r.relevanceStatus !== "already-installed")
+  let pool = relevance.filter((r) => r.relevanceStatus !== "already-installed")
+
+  // Phase 9E — narrow (never empty) the pool toward capabilities that are
+  // actually ready to install and that fit the founder's Business Model
+  // Profile™. Each filter falls back to the wider pool if it would leave
+  // zero candidates — narrowing preference, never a hard requirement.
+  const prerequisiteReady = pool.filter((r) => r.prerequisiteSatisfied !== false)
+  if (prerequisiteReady.length > 0) pool = prerequisiteReady
+
+  const modelFitPool = pool.filter((r) => r.businessModelFit !== "possible-mismatch")
+  if (modelFitPool.length > 0) pool = modelFitPool
 
   if (pool.length === 0) {
     return fallbackRecommendation(activeSignals)
   }
 
-  const candidates = pool.map(toEdeCandidate)
+  const candidates = pool.map((r) => toEdeCandidate(r, ctx))
   const ranked = rankCandidates(candidates, activeSignals)
-  const best = pickBestCandidate(ranked, pool)
+  const best = pickBestCandidate(ranked, pool, ctx)
 
   if (!best) {
     return fallbackRecommendation(activeSignals)

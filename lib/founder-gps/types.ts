@@ -244,6 +244,28 @@ export interface GpsRecommendation {
   workLifeBalanceCompatibility?: string
   /** The full EDE explainability record behind this recommendation. */
   explainability?: DecisionExplainability
+
+  /**
+   * Phase 9E fields — Business Capability Registry™ selection reasoning.
+   * All additive and optional; existing consumers are unaffected.
+   */
+
+  /** The capability's own title (`ReadinessCapability.title`) — distinct from the phrased `nextTurn`. */
+  capabilityName?: string
+  /** A short, explainable "why this, why now" line (`RelevantReadinessCapability.whyNow`). */
+  whyNow?: string
+  /** How well this move fits the founder's classified Business Model Profile™. */
+  businessModelFit?: "strong-fit" | "neutral" | "possible-mismatch"
+  /** Whether this move belongs to the founder's current Business Stage™ or is being surfaced ahead of need. */
+  stageFit?: "current-stage" | "build-ahead-of-need"
+  /** Same-stage prerequisite capabilities NOT yet installed — build these first. Empty/undefined means nothing is blocking. */
+  prerequisites?: { id: string; title: string }[]
+  /** Capabilities this move unlocks once complete. */
+  unlocksCapabilities?: { id: string; title: string }[]
+  /** What "done" looks like for this move (`ReadinessCapability.expectedOutcome`). */
+  definitionOfDone?: string
+  /** Why this move matters for the future workplace the founder is building toward, if that signal is present. */
+  futureWorkplaceAlignment?: string
 }
 
 /* ===========================================================================

@@ -30,6 +30,7 @@ import type { BusinessStage } from "@/lib/business-stage/business-stage"
 import type { FounderDestinationProfile, FounderResponsibilityOption } from "@/lib/founder-destination/types"
 import type { ChallengeOption, OpportunityOption } from "@/lib/business-context/types"
 import type { EsaResults } from "@/lib/entrepreneur-success/types"
+import type { BusinessModelProfile } from "@/lib/business-model-classification/types"
 import {
   READINESS_CAPABILITIES,
   type ReadinessCapability,
@@ -83,6 +84,33 @@ export interface RelevantReadinessCapability {
   whyNow: string
   /** Full registry reference, for callers that need more (e.g. `sequencing`, `businessConcepts`). */
   capability: ReadinessCapability
+
+  /**
+   * Phase 9E — Business Capability Registry™ selection reasoning. All three
+   * optional; computed once inside `deriveReadinessRelevance()` as a second
+   * pass over the same candidate pool, never altering `relevanceStatus`,
+   * `confidence`, or sort order above.
+   */
+  /**
+   * Whether every same-stage prerequisite in `capability.prerequisiteCapabilityIds`
+   * already shows `"already-installed"` in this same pool. A prerequisite
+   * from an earlier stage — not present in this stage's candidate pool at
+   * all — is presumed already handled (the registry never surfaces
+   * behind-schedule work), so it is not counted as unmet. Undefined when the
+   * capability declares no prerequisites.
+   */
+  prerequisiteSatisfied?: boolean
+  /** The same-stage prerequisites that are NOT yet `"already-installed"`. */
+  unmetPrerequisites?: { id: string; title: string }[]
+  /** The capabilities this one unlocks (`capability.enablesCapabilityIds`), title-resolved from the full registry. */
+  unlocks?: { id: string; title: string }[]
+  /**
+   * How well this capability fits the founder's classified Business Model
+   * Profile™. `"neutral"` whenever the capability applies to `"all"` business
+   * models or no `businessModelProfile` signal was supplied — never invented
+   * from a missing signal.
+   */
+  businessModelFit?: "strong-fit" | "neutral" | "possible-mismatch"
 }
 
 export interface FounderReadinessContextInput {
@@ -94,6 +122,13 @@ export interface FounderReadinessContextInput {
   } | null
   esaResults?: EsaResults | null
   workLifeBalanceScore?: number | null
+  /**
+   * Business Model Profile™ (Phase 9B), already assembled by
+   * `assembleHarmonySnapshot()` (Phase 9D). Optional — when absent,
+   * `businessModelFit` below degrades to `"neutral"` for every capability,
+   * same as before this field existed.
+   */
+  businessModelProfile?: BusinessModelProfile | null
 }
 
 /* ===========================================================================
@@ -218,6 +253,22 @@ function destinationPhraseFor(isCurrentStage: boolean, ambitious: boolean, futur
   return null
 }
 
+/**
+ * Phase 9E — a plain, explainable lookup: does this capability's declared
+ * `businessModels` list include the founder's classified `primaryArchetype`?
+ * Both sides share the same `BusinessModelId` vocabulary
+ * (`business-model-classification/types.ts`'s `primaryArchetype` is typed
+ * directly as `BusinessModelId | "unknown"`) — no crosswalk needed.
+ */
+function businessModelFitFor(
+  capability: ReadinessCapability,
+  businessModelProfile: BusinessModelProfile | null | undefined,
+): "strong-fit" | "neutral" | "possible-mismatch" {
+  if (capability.businessModels === "all") return "neutral"
+  if (!businessModelProfile || businessModelProfile.primaryArchetype === "unknown") return "neutral"
+  return capability.businessModels.includes(businessModelProfile.primaryArchetype) ? "strong-fit" : "possible-mismatch"
+}
+
 function whyNowFor(status: ReadinessRelevanceStatus, capability: ReadinessCapability): string {
   switch (status) {
     case "priority":
@@ -244,7 +295,8 @@ function whyNowFor(status: ReadinessRelevanceStatus, capability: ReadinessCapabi
  * duplicates its filtering logic.
  */
 export function deriveReadinessRelevance(input: FounderReadinessContextInput): RelevantReadinessCapability[] {
-  const { businessStage, founderDestination, businessContext, esaResults, workLifeBalanceScore } = input
+  const { businessStage, founderDestination, businessContext, esaResults, workLifeBalanceScore, businessModelProfile } =
+    input
 
   const candidates = deriveRequiredCapabilities({ businessStage, founderDestination })
   const ambitious = founderDestination ? hasBusinessAmbitionSignal(founderDestination) : false
@@ -290,6 +342,37 @@ export function deriveReadinessRelevance(input: FounderReadinessContextInput): R
       capability,
     }
   })
+
+  // Phase 9E — second pass over the same pool, appending prerequisite,
+  // unlock, and Business Model Profile™ fit reasoning. Never alters
+  // `relevanceStatus`, `confidence`, or any field computed above.
+  const statusById = new Map(results.map((r) => [r.id, r]))
+  for (const r of results) {
+    const prereqIds = r.capability.prerequisiteCapabilityIds
+    if (prereqIds?.length) {
+      const unmet: { id: string; title: string }[] = []
+      for (const prereqId of prereqIds) {
+        const inPool = statusById.get(prereqId)
+        // Not present in this stage's candidate pool at all → an earlier-stage
+        // prerequisite, presumed already handled (never surfaced as unmet).
+        if (inPool && inPool.relevanceStatus !== "already-installed") {
+          unmet.push({ id: inPool.id, title: inPool.title })
+        }
+      }
+      r.prerequisiteSatisfied = unmet.length === 0
+      r.unmetPrerequisites = unmet
+    }
+
+    const enablesIds = r.capability.enablesCapabilityIds
+    if (enablesIds?.length) {
+      r.unlocks = enablesIds.map((id) => {
+        const registryMatch = READINESS_CAPABILITIES.find((c) => c.id === id)
+        return { id, title: registryMatch?.title ?? id }
+      })
+    }
+
+    r.businessModelFit = businessModelFitFor(r.capability, businessModelProfile)
+  }
 
   const statusOrder: Record<ReadinessRelevanceStatus, number> = {
     priority: 0,
