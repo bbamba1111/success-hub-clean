@@ -54,7 +54,9 @@ import { useHarmonyContext } from "@/components/harmony-context/harmony-context-
 import { buildGpsContextFromSnapshot, deriveNextBestMove } from "@/lib/founder-gps/next-best-move-engine"
 import { BuildPathPicker } from "@/components/build-strategy/build-path-picker"
 import { BuildBlueprintCard } from "@/components/build-strategy/build-blueprint-card"
+import { SecondOpinionPanel } from "@/components/build-strategy/second-opinion-panel"
 import { deriveBuildBlueprint } from "@/lib/build-strategy/blueprint-engine"
+import { deriveRecommendedBuildPath, deriveSecondOpinion } from "@/lib/build-strategy/build-path-recommendation"
 import { getBuildStrategy, saveBuildStrategy, clearBuildStrategy } from "@/lib/build-strategy/storage"
 import type { BuildPathId } from "@/lib/build-strategy/types"
 import {
@@ -62,7 +64,8 @@ import {
   getBuildRecord,
   saveBuildRecord,
 } from "@/lib/build-record/build-record-store"
-import { deriveBuildRecord } from "@/lib/build-record/build-record-engine"
+import { deriveBuildRecord, appendActivityLogEntry } from "@/lib/build-record/build-record-engine"
+import type { BuildRecord } from "@/lib/build-record/types"
 import { upsertBuildRecordToDb } from "@/utils/build-record-storage"
 
 // ── Small formatting helpers ─────────────────────────────────────────────────
@@ -309,20 +312,31 @@ export function MyBlueprintClient() {
   // recommendation's id so it resets naturally as the recommendation changes.
   const recommendationId = nextBestMove?.readinessCapabilityId ?? nextBestMove?.id ?? null
   const [buildPath, setBuildPath] = useState<BuildPathId | null>(null)
+  // Phase 11 — the current Build Record™, kept in sync so the UI can show
+  // the founder's saved `pathSelectionReason` without re-deriving it.
+  const [buildRecord, setBuildRecordState] = useState<BuildRecord | null>(null)
 
   useEffect(() => {
     if (!recommendationId) {
       setBuildPath(null)
+      setBuildRecordState(null)
       return
     }
     const saved = getBuildStrategy(recommendationId)
     setBuildPath(saved?.buildPath ?? null)
+    setBuildRecordState(getBuildRecord(recommendationId))
   }, [recommendationId])
 
   const buildBlueprint =
     nextBestMove && recommendationId && buildPath
       ? deriveBuildBlueprint(nextBestMove, buildPath, { businessModelProfile: snapshot.businessModelProfile, founderDestination })
       : null
+
+  // Phase 11 — Build Path Selection™ + Second Opinion™. Both explain the
+  // existing Founder GPS™/EDE recommendation; neither is a new engine, and
+  // neither blocks the founder from choosing a different path.
+  const recommendedPath = nextBestMove ? deriveRecommendedBuildPath(nextBestMove) : null
+  const secondOpinion = nextBestMove && recommendedPath ? deriveSecondOpinion(nextBestMove, recommendedPath, buildPath, buildBlueprint) : null
 
   function handleSelectBuildPath(id: BuildPathId) {
     if (!nextBestMove || !recommendationId) return
@@ -336,9 +350,20 @@ export function MyBlueprintClient() {
     // Phase 10 — the moment a Build Path™ is chosen, a Build Record™ is
     // created (or re-derived, preserving its existing id) so the founder can
     // act once here and then track execution from Build Command Center™.
+    // Phase 11 — the recommended path/reason are carried through so the
+    // record can show recommended-vs-selected without re-deriving it later.
     const existing = getBuildRecord(recommendationId)
-    const record = deriveBuildRecord(blueprint, { prerequisiteCapabilityIds: nextBestMove.prerequisites?.map((p) => p.id) }, existing?.id)
+    const record = deriveBuildRecord(
+      blueprint,
+      {
+        prerequisiteCapabilityIds: nextBestMove.prerequisites?.map((p) => p.id),
+        recommendedBuildPath: recommendedPath?.buildPath ?? null,
+        recommendedBuildPathReason: recommendedPath?.reason ?? null,
+      },
+      existing?.id,
+    )
     saveBuildRecord(record)
+    setBuildRecordState(record)
     void upsertBuildRecordToDb(record)
   }
 
@@ -346,6 +371,23 @@ export function MyBlueprintClient() {
     if (!recommendationId) return
     clearBuildStrategy(recommendationId)
     setBuildPath(null)
+    setBuildRecordState(null)
+  }
+
+  // Phase 11 — optional, founder-entered explanation when the chosen path
+  // differs from the recommendation. Never required, never invented.
+  function handleSavePathSelectionReason(reason: string) {
+    if (!recommendationId) return
+    const existing = getBuildRecord(recommendationId)
+    if (!existing) return
+    const updated = appendActivityLogEntry(
+      { ...existing, pathSelectionReason: reason },
+      "path-change",
+      `Reason for choosing "${existing.buildPath}" over the recommended "${existing.recommendedBuildPath}": ${reason}`,
+    )
+    saveBuildRecord(updated)
+    setBuildRecordState(updated)
+    void upsertBuildRecordToDb(updated)
   }
 
   useEffect(() => {
@@ -702,7 +744,7 @@ export function MyBlueprintClient() {
 
         <LayerDivider label="Where I'm Going" />
 
-        {/* 06 — FOUNDER DESTINATION ─────────────────────────────────────── */}
+        {/* 06 — FOUNDER DESTINATION ────────────────���────────────────────── */}
         <BlueprintSection
           eyebrow="06 — Destination"
           icon={MapPin}

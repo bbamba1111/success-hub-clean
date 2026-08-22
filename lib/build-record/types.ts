@@ -186,7 +186,7 @@ export type BuildPathExecution =
  * it. Dependencies reuse the SAME registry ids as
  * `prerequisiteCapabilityIds`/`enablesCapabilityIds` — no new graph.
  */
-export interface BuildRecord {
+export interface BuildRecord extends BuildPathExecutionFields {
   id: string
   /** The `RelevantReadinessCapability.id` / `GpsRecommendation.readinessCapabilityId` this fulfills. */
   readinessCapabilityId: string
@@ -222,7 +222,97 @@ export interface BuildRecord {
 /** What `deriveBuildRecord()` needs beyond the Blueprint itself. */
 export interface BuildRecordContext {
   prerequisiteCapabilityIds?: string[]
+  /** From `deriveRecommendedBuildPath()` — carried through so the record can show recommended-vs-selected. */
+  recommendedBuildPath?: BuildPathId | null
+  recommendedBuildPathReason?: string | null
+  /** Founder-entered reason when `buildPath` differs from `recommendedBuildPath`. */
+  pathSelectionReason?: string | null
 }
 
 /** The list-view filters Build Command Center™ supports — no invented ones. */
 export type BuildCommandCenterFilter = "all" | "needs-attention" | "in-progress" | "awaiting-external" | "installed"
+
+/* ===========================================================================
+ * PHASE 11 — Build Path Execution™ additive fields
+ * ---------------------------------------------------------------------------
+ * Everything below is ADDITIVE to the Phase 10 `BuildRecord` above. No
+ * existing field is renamed, removed, or repurposed. These fields turn the
+ * existing lifecycle into a true execution loop: recommended-vs-selected
+ * path, a QA gate before LIVE, evidence before LIVE, a founder-confirmed
+ * checklist before INSTALLED, an activity log, and generate-then-approve
+ * communication packages. No new engine, no new statuses.
+ * ======================================================================== */
+
+/** One capability-specific QA check — never a fake universal test. */
+export interface QaChecklistItem {
+  id: string
+  label: string
+  checked: boolean
+}
+
+/** The QA gate a build must pass before it can move to `"ready-to-install"`. */
+export interface QaGate {
+  items: QaChecklistItem[]
+  /** Founder-entered free text — e.g. what was tested, or why an item doesn't apply. */
+  notes: string | null
+}
+
+/**
+ * What actually proves the capability is operating in the business — never
+ * "the document was created" or "the checklist was completed." Required,
+ * non-empty, before a build can move from `"installing"` to `"installed"`.
+ */
+export interface LiveEvidence {
+  note: string | null
+  confirmedAt: string | null
+}
+
+/** One founder-confirmed condition of "part of the business's operating rhythm." */
+export interface InstalledChecklistItem {
+  id: string
+  label: string
+  checked: boolean
+}
+
+/** The Phase 11 INSTALLED checklist — never auto-checked. */
+export interface InstalledChecklist {
+  items: InstalledChecklistItem[]
+}
+
+export type BuildActivityKind = "status-change" | "qa" | "live" | "installed" | "note" | "path-change" | "communication"
+
+/** One entry in the build's activity log — a plain, human-readable trail, not a full audit system. */
+export interface BuildActivityLogEntry {
+  id: string
+  at: string
+  kind: BuildActivityKind
+  label: string
+}
+
+/** A generate-then-approve handoff/communication draft — never auto-sent. */
+export interface CommunicationPackage {
+  id: string
+  /** Who this is for — e.g. "Team member", "Candidate", "Contractor", "Partner", "Vendor". */
+  audience: string
+  subject: string
+  body: string
+  generatedAt: string
+  /** Set only when the founder explicitly approves — required before treating this as sendable. */
+  approvedAt: string | null
+}
+
+/** Phase 11 additive fields carried on every `BuildRecord`. */
+export interface BuildPathExecutionFields {
+  /** The Build Path™ Founder GPS™/Build Strategy™ recommended, if derivable — distinct from `buildPath`, the founder's actual choice. */
+  recommendedBuildPath: BuildPathId | null
+  /** Plain-language reason the path above was recommended. */
+  recommendedBuildPathReason: string | null
+  /** Founder-entered note explaining a choice that differs from the recommendation — never required, never invented. */
+  pathSelectionReason: string | null
+
+  qaGate: QaGate
+  liveEvidence: LiveEvidence
+  installedChecklist: InstalledChecklist
+  activityLog: BuildActivityLogEntry[]
+  communicationPackages: CommunicationPackage[]
+}

@@ -11,6 +11,8 @@
 
 import type { BuildBlueprint, BuildPathId } from "@/lib/build-strategy/types"
 import type {
+  BuildActivityKind,
+  BuildActivityLogEntry,
   BuildLifecycleStatus,
   BuildMilestone,
   BuildPathExecution,
@@ -18,10 +20,122 @@ import type {
   BuildRecordContext,
   BuildTask,
   FounderAttentionState,
+  InstalledChecklist,
+  QaChecklistItem,
+  QaGate,
 } from "@/lib/build-record/types"
 
 function makeId(prefix: string): string {
   return `${prefix}-${Math.random().toString(36).slice(2, 10)}`
+}
+
+/**
+ * deriveQaChecklist — capability-specific QA items derived from the actual
+ * Build Blueprint™ fields for the chosen path. Never a fake universal test:
+ * every item traces to something real in the blueprint (the desired outcome,
+ * the owner, or a path-specific detail field).
+ */
+export function deriveQaChecklist(blueprint: BuildBlueprint): QaChecklistItem[] {
+  const items: string[] = [
+    `Result matches the desired outcome: "${blueprint.desiredOutcome}"`,
+    `Owner is ready to operate this: ${blueprint.ownerSummary}`,
+  ]
+
+  switch (blueprint.detail.kind) {
+    case "build-steps":
+      items.push("Every build step's definition of done has been verified")
+      break
+    case "ai-build":
+      for (const action of blueprint.detail.remainingHumanActions) {
+        items.push(`Confirmed: ${action}`)
+      }
+      break
+    case "delegate":
+      items.push(`Handoff brief reviewed and accepted by ${blueprint.detail.suggestedOwnerRole}`)
+      break
+    case "hire":
+      items.push("Role scorecard and definition of success reviewed before extending an offer")
+      break
+    case "outsource":
+      items.push("Contractor scope of work confirmed against the desired outcome")
+      break
+    case "buy":
+      items.push(`Solution evaluated against: ${blueprint.detail.evaluationCriteria.join("; ")}`)
+      break
+    case "partner":
+      items.push("Partner scope and founder-retained decisions confirmed in writing")
+      break
+  }
+
+  return items.map((label) => ({ id: makeId("qa"), label, checked: false }))
+}
+
+/**
+ * deriveInstalledChecklist — the Phase 11 INSTALLED conditions ("part of the
+ * business's operating rhythm"). Founder-confirmed only; never auto-checked.
+ */
+export function deriveInstalledChecklist(): InstalledChecklist {
+  const labels = [
+    "The owner understands their responsibility",
+    "A process exists for this to keep happening",
+    "Documentation exists",
+    "Tools are configured",
+    "The workflow is actually being used",
+    "Metrics can be monitored",
+    "The founder is no longer unnecessarily required",
+    "Handoff is complete",
+  ]
+  return { items: labels.map((label) => ({ id: makeId("installed"), label, checked: false })) }
+}
+
+/** Appends one entry to the build's activity log — immutable, never overwrites history. */
+export function appendActivityLogEntry(record: BuildRecord, kind: BuildActivityKind, label: string): BuildRecord {
+  const entry: BuildActivityLogEntry = { id: makeId("activity"), at: new Date().toISOString(), kind, label }
+  return { ...record, activityLog: [...record.activityLog, entry] }
+}
+
+/**
+ * canTransitionTo — the "no false completion" gate. Only three transitions
+ * are gated (the ones the spec calls out): QA before ready-to-install,
+ * having passed QA before installing, and LIVE evidence + the founder-
+ * confirmed INSTALLED checklist before installed. Every other transition in
+ * the existing 17-state vocabulary remains founder-driven and ungated.
+ */
+export function canTransitionTo(record: BuildRecord, next: BuildLifecycleStatus): { allowed: boolean; reason: string | null } {
+  if (next === "ready-to-install") {
+    const items = record.qaGate.items
+    if (items.length === 0) return { allowed: false, reason: "No QA checklist exists yet for this build." }
+    const uncheckedCount = items.filter((i) => !i.checked).length
+    if (uncheckedCount > 0) {
+      return { allowed: false, reason: `QA is not complete — ${uncheckedCount} of ${items.length} item(s) still unchecked.` }
+    }
+    return { allowed: true, reason: null }
+  }
+
+  if (next === "installing") {
+    if (record.status !== "ready-to-install" && record.status !== "installing") {
+      return { allowed: false, reason: "This build must pass QA and be marked ready-to-install before installing." }
+    }
+    return { allowed: true, reason: null }
+  }
+
+  if (next === "installed") {
+    const hasEvidence = Boolean(record.liveEvidence.note && record.liveEvidence.note.trim().length > 0)
+    if (!hasEvidence) {
+      return {
+        allowed: false,
+        reason: "LIVE evidence is required — describe how this capability is actually operating in the business before marking it installed.",
+      }
+    }
+    const items = record.installedChecklist.items
+    const uncheckedCount = items.filter((i) => !i.checked).length
+    if (uncheckedCount > 0) {
+      return { allowed: false, reason: `Not all INSTALLED conditions are confirmed — ${uncheckedCount} of ${items.length} remaining.` }
+    }
+    return { allowed: true, reason: null }
+  }
+
+  return { allowed: true, reason: null }
 }
 
 /** The initial, per-path execution shape — every flag honestly false/null. */
@@ -113,8 +227,10 @@ function initialMilestonesAndTasksFor(
 export function deriveBuildRecord(blueprint: BuildBlueprint, context: BuildRecordContext = {}, id?: string): BuildRecord {
   const now = new Date().toISOString()
   const { milestones, tasks } = initialMilestonesAndTasksFor(blueprint.buildPath, blueprint)
+  const recommendedBuildPath = context.recommendedBuildPath ?? null
+  const pathDiffersFromRecommendation = Boolean(recommendedBuildPath) && recommendedBuildPath !== blueprint.buildPath
 
-  return {
+  const record: BuildRecord = {
     id: id ?? makeId("build"),
     readinessCapabilityId: blueprint.recommendationId,
     title: blueprint.what,
@@ -135,7 +251,26 @@ export function deriveBuildRecord(blueprint: BuildBlueprint, context: BuildRecor
     completedAt: null,
     installedAt: null,
     updatedAt: now,
+
+    recommendedBuildPath,
+    recommendedBuildPathReason: context.recommendedBuildPathReason ?? null,
+    pathSelectionReason: context.pathSelectionReason ?? null,
+    qaGate: { items: deriveQaChecklist(blueprint), notes: null },
+    liveEvidence: { note: null, confirmedAt: null },
+    installedChecklist: deriveInstalledChecklist(),
+    activityLog: [],
+    communicationPackages: [],
   }
+
+  const withInitialEntry = appendActivityLogEntry(
+    record,
+    "path-change",
+    pathDiffersFromRecommendation
+      ? `Build Path™ chosen: "${blueprint.buildPath}" (recommendation was "${recommendedBuildPath}")`
+      : `Build Path™ chosen: "${blueprint.buildPath}"`,
+  )
+
+  return withInitialEntry
 }
 
 /**
@@ -158,14 +293,27 @@ export function deriveFounderAttention(record: BuildRecord): FounderAttentionSta
  * transitionBuildStatus — a small, explicit state helper. Not a full state
  * machine (the spec's 17 states allow many founder-driven paths); this only
  * stamps the matching timestamp fields so callers never invent dates by hand.
+ *
+ * Phase 11: gated by `canTransitionTo()` first — a build cannot become
+ * "ready-to-install" without a completed QA gate, cannot become "installing"
+ * without having passed QA, and cannot become "installed" without LIVE
+ * evidence and a founder-confirmed INSTALLED checklist. A blocked attempt is
+ * a no-op on `status` but is still recorded in the activity log so the
+ * founder can see why nothing changed.
  */
 export function applyBuildStatusTransition(record: BuildRecord, next: BuildLifecycleStatus): BuildRecord {
+  const gate = canTransitionTo(record, next)
+  if (!gate.allowed) {
+    return appendActivityLogEntry(record, "status-change", `Blocked: cannot move to "${next}" — ${gate.reason}`)
+  }
+
   const now = new Date().toISOString()
-  const updated: BuildRecord = { ...record, status: next, updatedAt: now }
+  let updated: BuildRecord = { ...record, status: next, updatedAt: now }
 
   if (next === "in-progress" && !record.startedAt) updated.startedAt = now
   if (next === "ready-to-install" && !record.completedAt) updated.completedAt = now
   if (next === "installed" && !record.installedAt) updated.installedAt = now
 
+  updated = appendActivityLogEntry(updated, "status-change", `Status changed to "${next}"`)
   return updated
 }

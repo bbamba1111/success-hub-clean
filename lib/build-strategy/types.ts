@@ -221,3 +221,47 @@ export interface BuildBlueprintContext {
   businessModelProfile?: import("@/lib/business-model-classification/types").BusinessModelProfile | null
   founderDestination?: import("@/lib/founder-destination/types").FounderDestinationProfile | null
 }
+
+/* ===========================================================================
+ * PHASE 11 — Build Path Selection™ + Second Opinion™
+ * ---------------------------------------------------------------------------
+ * Neither of these is a new intelligence engine. Both are explanations of
+ * signals the existing Founder GPS™/Executive Decision Engine™/Build
+ * Blueprint™ already produced — no new scoring, no new inference.
+ * ======================================================================== */
+
+/** The output of `deriveRecommendedBuildPath()` — a Build Path™ suggestion the founder can accept, override, or ask about. */
+export interface RecommendedBuildPath {
+  /** `null` only when the underlying Leverage Class™ is "eliminate" — no Build Path applies to work that shouldn't be done. */
+  buildPath: BuildPathId | null
+  /** Plain-language reason, traceable to real GPS/EDE signals — never invented. */
+  reason: string
+}
+
+/**
+ * Second Opinion™ — answers the founder's 9 questions about a Build Path™
+ * decision by EXPLAINING existing signals (Founder GPS™, Business Model
+ * Profile™, Business Operating Fingerprint™, Founder Destination™,
+ * Readiness Capability™, EDE reasoning, Build Strategy™, capacity
+ * information). Not a second recommendation engine.
+ */
+export interface SecondOpinion {
+  isRightThingToBuild: string
+  isRightTime: string
+  isRightBuildPath: string
+  /** Other Build Path™ options the founder could reasonably choose instead. */
+  alternatives: string[]
+  tradeoffs: string[]
+  whatWouldChangeThisRecommendation: string[]
+  founderShouldRetain: string[]
+  canBeHandedOff: string[]
+  riskOfDoingNothing: string
+}
+
+/** What `deriveRecommendedBuildPath()`/`deriveSecondOpinion()` need beyond the recommendation itself — all optional, honestly degrading when absent. */
+export interface BuildPathSelectionContext {
+  /** Whether the founder already has an internal team member with real capacity — never assumed true by default. */
+  hasInternalTeamCapacity?: boolean
+  businessModelProfile?: import("@/lib/business-model-classification/types").BusinessModelProfile | null
+  founderDestination?: import("@/lib/founder-destination/types").FounderDestinationProfile | null
+}

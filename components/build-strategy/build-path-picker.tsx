@@ -18,6 +18,7 @@ import {
   Briefcase,
   ShoppingCart,
   Handshake,
+  Compass,
   type LucideIcon,
 } from "lucide-react"
 
@@ -35,12 +36,21 @@ const ICONS: Record<string, LucideIcon> = {
   Handshake,
 }
 
+/**
+ * `recommendedPath`/`recommendedReason` are additive (Phase 11) — the
+ * founder can still accept, ignore, or override the recommendation. Nothing
+ * here silently forces a choice.
+ */
 export function BuildPathPicker({
   selected,
   onSelect,
+  recommendedPath = null,
+  recommendedReason = null,
 }: {
   selected: BuildPathId | null
   onSelect: (id: BuildPathId) => void
+  recommendedPath?: BuildPathId | null
+  recommendedReason?: string | null
 }) {
   return (
     <div className="rounded-2xl border border-brand-blush/60 bg-brand-cream/60 px-5 py-5 sm:px-6 sm:py-6">
@@ -50,22 +60,39 @@ export function BuildPathPicker({
       <h3 className="font-display text-base font-semibold text-brand-ink mb-4 text-pretty">
         How would you like to build this?
       </h3>
+
+      {recommendedPath && recommendedReason && (
+        <div className="mb-4 flex items-start gap-2.5 rounded-xl border border-[#C13B6B]/25 bg-[#C13B6B]/[0.06] px-4 py-3">
+          <Compass className="mt-0.5 h-4 w-4 shrink-0 text-[#C13B6B]" aria-hidden />
+          <p className="font-sans text-xs leading-relaxed text-brand-ink text-pretty">
+            <span className="font-bold">Recommended: </span>
+            {BUILD_PATH_DEFINITIONS.find((p) => p.id === recommendedPath)?.label ?? recommendedPath}. {recommendedReason}
+          </p>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
         {BUILD_PATH_DEFINITIONS.map((path) => {
           const Icon = ICONS[path.icon] ?? Hammer
           const isSelected = selected === path.id
+          const isRecommended = recommendedPath === path.id
           return (
             <button
               key={path.id}
               type="button"
               onClick={() => onSelect(path.id)}
               aria-pressed={isSelected}
-              className={`flex items-start gap-3 rounded-xl border px-4 py-3.5 text-left transition-colors ${
+              className={`relative flex items-start gap-3 rounded-xl border px-4 py-3.5 text-left transition-colors ${
                 isSelected
                   ? "border-[#C13B6B] bg-[#C13B6B]/[0.06]"
                   : "border-brand-blush/70 bg-white hover:border-[#C13B6B]/40"
               }`}
             >
+              {isRecommended && (
+                <span className="absolute -top-2 right-3 rounded-full bg-[#C13B6B] px-2 py-0.5 font-sans text-[9px] font-bold uppercase tracking-wider text-white">
+                  Recommended
+                </span>
+              )}
               <div
                 className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
                   isSelected ? "bg-[#C13B6B]/15" : "bg-brand-blush/50"
