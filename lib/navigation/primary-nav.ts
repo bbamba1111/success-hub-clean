@@ -102,6 +102,11 @@ export const PRIMARY_NAV: PrimarySection[] = [
         description: "Your real-time operating dashboard — Harmony Score™, daily focus, rhythm, events, and journey.",
       },
       {
+        label: "Build Command Center™",
+        href: "/build-command-center",
+        description: "Track every Build Record™ from Build Path™ chosen through installed — milestones, tasks, and what needs your attention.",
+      },
+      {
         label: "Live, Lead & Love Today™",
         href: "/",
         description: "Your daily operating workspace — Daily Non-Negotiables™ and the 4-Hour CEO Workday™.",

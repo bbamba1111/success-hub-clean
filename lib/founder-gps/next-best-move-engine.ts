@@ -400,6 +400,17 @@ export interface NextBestMoveExtra {
    * recommendation on its own.
    */
   operatingHistory?: OperatingHistorySummary | null
+  /**
+   * Phase 10 — Build Record™ feedback loop. Sourced from
+   * `getActiveBuildStatusByCapabilityId()` (`lib/build-record/build-record-store.ts`)
+   * and passed straight through to `deriveReadinessRelevance()`, which forces
+   * `relevanceStatus = "already-installed"` for any capability with a real,
+   * non-terminal build status. Combined with the existing Case G filter
+   * below, this is how "GPS does not repeat an in-progress capability" and
+   * "an installed capability feeds back into GPS" are satisfied without a
+   * second recommendation engine. Absent ⇒ unchanged behavior.
+   */
+  capabilityBuildStatusById?: Record<string, string> | null
 }
 
 /**
@@ -433,6 +444,7 @@ export function deriveNextBestMove(ctx: GpsContext, extra?: NextBestMoveExtra): 
     esaResults: extra?.esaResults ?? null,
     workLifeBalanceScore: ctx.workLifeBalanceScore,
     businessModelProfile: ctx.businessModelProfile ?? null,
+    capabilityBuildStatusById: extra?.capabilityBuildStatusById ?? null,
   })
 
   // Case G: never recommend rebuilding something already installed.

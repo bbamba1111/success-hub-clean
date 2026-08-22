@@ -5,9 +5,11 @@
 --
 -- One active build per (user_id, capability_id): starting a new Build Path™
 -- for the same capability upserts this row rather than creating a parallel
--- history. execution_package holds all Build Path™-specific fields (per the
--- 8 paths) as JSON so this single table serves every path without a schema
--- migration per path.
+-- history. milestones/tasks/dependencies are JSONB, matching this codebase's
+-- existing business_foundations-style convention — intentionally not a
+-- normalized project-management schema. `blueprint`/`execution` hold all
+-- Build Path™-specific fields (per the 8 paths) as JSON so this single table
+-- serves every path without a schema migration per path.
 
 create table if not exists public.build_records (
   id uuid primary key default gen_random_uuid(),
@@ -17,8 +19,17 @@ create table if not exists public.build_records (
   status text not null default 'not_started',
   title text,
   summary text,
-  execution_package jsonb not null default '{}'::jsonb,
-  founder_attention jsonb not null default '[]'::jsonb,
+  -- The full Build Blueprint™ (Phase 9F) this record was created from.
+  blueprint jsonb not null default '{}'::jsonb,
+  -- The per-Build-Path execution progress (BuildPathExecution).
+  execution jsonb not null default '{}'::jsonb,
+  milestones jsonb not null default '[]'::jsonb,
+  tasks jsonb not null default '[]'::jsonb,
+  prerequisite_capability_ids jsonb not null default '[]'::jsonb,
+  blocked_by_capability_ids jsonb not null default '[]'::jsonb,
+  blocker_note text,
+  owner_summary text,
+  executor text,
   started_at timestamp with time zone,
   completed_at timestamp with time zone,
   installed_at timestamp with time zone,

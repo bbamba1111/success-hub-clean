@@ -129,7 +129,41 @@ export interface FounderReadinessContextInput {
    * same as before this field existed.
    */
   businessModelProfile?: BusinessModelProfile | null
+  /**
+   * Phase 10 — Build Record™ feedback loop. A capability id → its current
+   * `BuildLifecycleStatus`, sourced from `getActiveBuildStatusByCapabilityId()`
+   * (`lib/build-record/build-record-store.ts`). Optional and untyped here
+   * (a plain string) to avoid a dependency from Founder Intelligence™ onto
+   * Build Record™'s types — only string equality against the small set of
+   * non-terminal/installed status values is ever performed. Absent/empty
+   * map ⇒ byte-identical behavior to today (backward compatible).
+   */
+  capabilityBuildStatusById?: Record<string, string> | null
 }
+
+/**
+ * Phase 10 — statuses that mean "this capability's build is already spoken
+ * for" and should force `relevanceStatus = "already-installed"` (reusing the
+ * existing value, never a new one) so Founder GPS™ never repeats it. Mirrors
+ * `ACTIVE_BUILD_STATUSES` + `"installed"` from `lib/build-record/types.ts`,
+ * duplicated as plain strings here rather than imported, to keep this module
+ * independent of Build Record™'s types (see `capabilityBuildStatusById` doc).
+ */
+const BUILD_STATUSES_MEANING_ALREADY_SPOKEN_FOR = new Set<string>([
+  "path-selected",
+  "accepted",
+  "in-progress",
+  "briefed",
+  "awaiting-external",
+  "blocked",
+  "paused",
+  "review",
+  "revision-requested",
+  "ready-to-install",
+  "installing",
+  "measuring",
+  "installed",
+])
 
 /* ===========================================================================
  * Explainable crosswalks
@@ -295,8 +329,15 @@ function whyNowFor(status: ReadinessRelevanceStatus, capability: ReadinessCapabi
  * duplicates its filtering logic.
  */
 export function deriveReadinessRelevance(input: FounderReadinessContextInput): RelevantReadinessCapability[] {
-  const { businessStage, founderDestination, businessContext, esaResults, workLifeBalanceScore, businessModelProfile } =
-    input
+  const {
+    businessStage,
+    founderDestination,
+    businessContext,
+    esaResults,
+    workLifeBalanceScore,
+    businessModelProfile,
+    capabilityBuildStatusById,
+  } = input
 
   const candidates = deriveRequiredCapabilities({ businessStage, founderDestination })
   const ambitious = founderDestination ? hasBusinessAmbitionSignal(founderDestination) : false
@@ -320,6 +361,16 @@ export function deriveReadinessRelevance(input: FounderReadinessContextInput): R
       status = "already-installed"
     } else if (overlap || corroboratedGap) {
       status = "priority"
+    }
+
+    // Phase 10 — Build Record™ feedback loop. A real build status (in
+    // progress, awaiting external, or installed) always wins over the ESA
+    // proxy above: it is ground truth, the proxy is a guess. Absent/empty
+    // map ⇒ this block never runs, so behavior is byte-identical to before
+    // this field existed.
+    const buildStatus = capabilityBuildStatusById?.[capability.id]
+    if (buildStatus && BUILD_STATUSES_MEANING_ALREADY_SPOKEN_FOR.has(buildStatus)) {
+      status = "already-installed"
     }
 
     const confidence: ReadinessConfidence = overlap || corroboratedGap ? "high" : isCurrentStage ? "medium" : "low"

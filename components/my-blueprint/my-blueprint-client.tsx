@@ -57,6 +57,13 @@ import { BuildBlueprintCard } from "@/components/build-strategy/build-blueprint-
 import { deriveBuildBlueprint } from "@/lib/build-strategy/blueprint-engine"
 import { getBuildStrategy, saveBuildStrategy, clearBuildStrategy } from "@/lib/build-strategy/storage"
 import type { BuildPathId } from "@/lib/build-strategy/types"
+import {
+  getActiveBuildStatusByCapabilityId,
+  getBuildRecord,
+  saveBuildRecord,
+} from "@/lib/build-record/build-record-store"
+import { deriveBuildRecord } from "@/lib/build-record/build-record-engine"
+import { upsertBuildRecordToDb } from "@/utils/build-record-storage"
 
 // ── Small formatting helpers ─────────────────────────────────────────────────
 
@@ -282,6 +289,9 @@ export function MyBlueprintClient() {
     ? deriveNextBestMove(buildGpsContextFromSnapshot(snapshot), {
         founderDestination,
         esaResults: snapshot.business.esaResults,
+        // Phase 10 — Build Record™ feedback loop: an already-building or
+        // installed capability is never re-recommended here either.
+        capabilityBuildStatusById: getActiveBuildStatusByCapabilityId(),
       })
     : null
 
@@ -322,6 +332,14 @@ export function MyBlueprintClient() {
     })
     saveBuildStrategy(recommendationId, id, blueprint)
     setBuildPath(id)
+
+    // Phase 10 — the moment a Build Path™ is chosen, a Build Record™ is
+    // created (or re-derived, preserving its existing id) so the founder can
+    // act once here and then track execution from Build Command Center™.
+    const existing = getBuildRecord(recommendationId)
+    const record = deriveBuildRecord(blueprint, { prerequisiteCapabilityIds: nextBestMove.prerequisites?.map((p) => p.id) }, existing?.id)
+    saveBuildRecord(record)
+    void upsertBuildRecordToDb(record)
   }
 
   function handleChooseDifferentPath() {
@@ -808,7 +826,21 @@ export function MyBlueprintClient() {
                   when the founder explicitly chooses a Build Path™; the
                   recommendation above is never modified by this. */}
               {buildBlueprint ? (
-                <BuildBlueprintCard blueprint={buildBlueprint} onChooseDifferentPath={handleChooseDifferentPath} />
+                <div className="space-y-3">
+                  <BuildBlueprintCard blueprint={buildBlueprint} onChooseDifferentPath={handleChooseDifferentPath} />
+                  {/* Phase 10 — once a Build Path™ is chosen, the founder acts
+                      once here, then leaves to track execution in Build
+                      Command Center™ rather than only seeing a static card. */}
+                  {recommendationId ? (
+                    <Link
+                      href={`/build-command-center?id=${encodeURIComponent(recommendationId)}`}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-brand-blush/70 px-4 py-2 font-sans text-xs font-semibold text-brand-ink-soft hover:border-[#C13B6B]/40 hover:text-[#C13B6B] transition-colors"
+                    >
+                      View build in Build Command Center™
+                      <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+                    </Link>
+                  ) : null}
+                </div>
               ) : (
                 <BuildPathPicker selected={buildPath} onSelect={handleSelectBuildPath} />
               )}

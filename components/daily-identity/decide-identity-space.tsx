@@ -35,6 +35,7 @@ import type { DailyIdentityRecord } from "@/lib/daily-identity/types"
 import { OpportunityFocusPicker } from "@/components/daily-identity/opportunity-focus-picker"
 import { useHarmonyContextOptional } from "@/components/harmony-context/harmony-context-provider"
 import { buildGpsContextFromSnapshot, deriveNextBestMove } from "@/lib/founder-gps/next-best-move-engine"
+import { getActiveBuildStatusByCapabilityId } from "@/lib/build-record/build-record-store"
 
 const IDENTITY_QUICK_PICKS = [
   "A calm, decisive CEO",
@@ -65,6 +66,10 @@ export function DecideIdentitySpace() {
           founderDestination: harmony.founderDestination,
           esaResults: harmony.snapshot.business.esaResults,
           operatingHistory: harmony.snapshot.intelligence.operatingHistory,
+          // Phase 10 — Build Record™ feedback loop, read synchronously from
+          // the localStorage cache so this component never needs its own
+          // effect/fetch just for GPS non-repeat/installed-feedback.
+          capabilityBuildStatusById: getActiveBuildStatusByCapabilityId(),
         })
       : null
 
