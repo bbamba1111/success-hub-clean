@@ -28,6 +28,10 @@ import type { GpsContext, BusinessPerformanceSnapshot } from "@/lib/founder-gps/
 import type { BusinessStage } from "@/lib/business-stage/business-stage"
 import type { OperatingPillarId } from "@/lib/entrepreneur-success/types"
 import type { FounderDestinationProfile } from "@/lib/founder-destination/types"
+import type { BusinessModelProfile } from "@/lib/business-model-classification/types"
+import { classifyBusinessModel } from "@/lib/business-model-classification/classify"
+import type { BusinessOperatingFingerprint } from "@/lib/business-operating-fingerprint/types"
+import { deriveBusinessOperatingFingerprint } from "@/lib/business-operating-fingerprint/derive"
 
 /* ===========================================================================
  * Harmony Context Snapshot™
@@ -63,6 +67,19 @@ export interface HarmonyContextSnapshot {
    * Layer 2 — Business Context™
    * ---------------------------------------------------------------------- */
   business: BusinessContext
+
+  /* -------------------------------------------------------------------------
+   * Layer 2.5 — Business Model Profile™ / Business Operating Fingerprint™
+   * (Phase 9D)
+   * Assembled once here from `classifyBusinessModel()` (Phase 9B) and
+   * `deriveBusinessOperatingFingerprint()` (Phase 9A) — pure, additive
+   * derivations over signals this engine already loads. Architecture hook:
+   * no recommendation logic reads these yet.
+   * ---------------------------------------------------------------------- */
+  /** The founder's classified Business Model Profile™ — archetype + operating characteristics, all "unknown"-safe. */
+  businessModelProfile: BusinessModelProfile
+  /** The founder's assembled Business Operating Fingerprint™ — the cross-domain operating snapshot. */
+  businessOperatingFingerprint: BusinessOperatingFingerprint
 
   /* -------------------------------------------------------------------------
    * Layer 3 — Whole-Life Context™
@@ -324,6 +341,16 @@ export interface PersonalGoalSignal {
 import { EMPTY_WHOLE_LIFE_CONTEXT } from "@/lib/whole-life-context/types"
 import { DEFAULT_BUSINESS_STAGE } from "@/lib/business-stage/business-stage"
 
+// Both derived by calling the real Phase 9A/9B functions with null inputs —
+// their own "unknown"-safe defaults, never a hand-duplicated empty shape.
+// Extracted so the same empty values can be reused inside `gpsContext` below.
+const EMPTY_BUSINESS_MODEL_PROFILE: BusinessModelProfile = classifyBusinessModel(null)
+const EMPTY_BUSINESS_OPERATING_FINGERPRINT: BusinessOperatingFingerprint = deriveBusinessOperatingFingerprint({
+  businessContext: null,
+  founderDestination: null,
+  businessStage: DEFAULT_BUSINESS_STAGE,
+})
+
 export const EMPTY_HARMONY_SNAPSHOT: HarmonyContextSnapshot = {
   ready: false,
   identity: {
@@ -350,6 +377,8 @@ export const EMPTY_HARMONY_SNAPSHOT: HarmonyContextSnapshot = {
     latestRealityCheckPriorityAreas: [],
     realityCheckIsCurrentWeek: false,
   },
+  businessModelProfile: EMPTY_BUSINESS_MODEL_PROFILE,
+  businessOperatingFingerprint: EMPTY_BUSINESS_OPERATING_FINGERPRINT,
   life: EMPTY_WHOLE_LIFE_CONTEXT,
   destination: {
     hasDestination: false,
@@ -415,6 +444,8 @@ export const EMPTY_HARMONY_SNAPSHOT: HarmonyContextSnapshot = {
       hasRelationships: false,
       daysUntilNextSignificantEvent: null,
       inLifeProtectionMode: false,
+      businessModelProfile: EMPTY_BUSINESS_MODEL_PROFILE,
+      businessOperatingFingerprint: EMPTY_BUSINESS_OPERATING_FINGERPRINT,
     },
     urgentOutcomes: [],
     upcomingLifeEvents: [],
@@ -492,8 +523,21 @@ export function assembleHarmonySnapshot(input: AssemblyInput): HarmonyContextSna
     realityCheckIsCurrentWeek: realityCheck?.week_key === getCurrentWeekKey(),
   }
 
+  // --- Business Model Profile™ (Phase 9B) / Business Operating Fingerprint™ (Phase 9A) ---
+  // `harmonyContext.businessContext` is the same Business Context Profile™ the
+  // provider already loads (Phase 10.1) — reused here, never re-fetched.
+  const businessContextProfile = harmonyContext?.businessContext ?? null
+  const businessModelProfile: BusinessModelProfile = classifyBusinessModel(businessContextProfile)
+
   // --- Founder Destination™ ---
   const fd = founderDestination ?? null
+
+  const businessOperatingFingerprint: BusinessOperatingFingerprint = deriveBusinessOperatingFingerprint({
+    businessContext: businessContextProfile,
+    founderDestination: fd,
+    businessStage: business.businessStage,
+    businessModelProfile,
+  })
   const destination: DestinationContext = {
     hasDestination: !!fd,
     profile: fd,
@@ -606,7 +650,9 @@ export function assembleHarmonySnapshot(input: AssemblyInput): HarmonyContextSna
   const gpsContext: GpsContext = {
     firstName: identity.preferredName,
     businessStage: business.businessStage,
-    businessModel: null, // Architecture hook — business model selection deferred
+    // Filled from Business Model Classification™ (Phase 9B) — "unknown" (no
+    // supporting signal yet) maps to null, same as every other GpsContext field.
+    businessModel: businessModelProfile.primaryArchetype === "unknown" ? null : businessModelProfile.primaryArchetype,
     preferredLanguage: identity.preferredLanguage,
     businessPerformance: performance ?? null,
     workLifeBalanceScore: business.workLifeBalanceScore,
@@ -631,6 +677,10 @@ export function assembleHarmonySnapshot(input: AssemblyInput): HarmonyContextSna
     hasRelationships: (wholeLife?.relationships ?? []).length > 0,
     daysUntilNextSignificantEvent,
     inLifeProtectionMode,
+    // Business Model Profile™ (Phase 9B) / Business Operating Fingerprint™
+    // (Phase 9A) passthrough — same values as the top-level snapshot fields.
+    businessModelProfile,
+    businessOperatingFingerprint,
   }
 
   const resolvedOperatingHistory: OperatingHistorySummary = operatingHistoryInput ?? {
@@ -647,6 +697,8 @@ export function assembleHarmonySnapshot(input: AssemblyInput): HarmonyContextSna
     ready: true,
     identity,
     business,
+    businessModelProfile,
+    businessOperatingFingerprint,
     life: wholeLife ?? EMPTY_WHOLE_LIFE_CONTEXT,
     destination,
     operating,

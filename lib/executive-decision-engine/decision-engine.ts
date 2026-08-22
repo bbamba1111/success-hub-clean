@@ -40,6 +40,8 @@ import { REASONING_RULES } from "./reasoning-rules"
 import { LEVERAGE_EVALUATION_ORDER } from "./leverage-framework"
 import { getAssetById, getAssetsForPractice } from "./asset-registry"
 import { buildExplainability, primarySignal, firedRule as firedRuleEntry } from "./explainability"
+import type { BusinessModelProfile } from "@/lib/business-model-classification/types"
+import type { BusinessOperatingFingerprint } from "@/lib/business-operating-fingerprint/types"
 
 /* ===========================================================================
  * Priority resolution
@@ -124,6 +126,16 @@ export interface EdeCandidateInput extends LeverageCandidateSignals {
   expectedLongTermOutcome: string
   /** The GPS Outcome™ this candidate most directly serves. */
   prioritizedOutcome: GpsOutcome
+
+  /**
+   * Business Model Profile™ (Phase 9B) / Business Operating Fingerprint™
+   * (Phase 9A) passthrough — additive, Phase 9D. EDE has no prior "context"
+   * contract to extend, so these are carried on the candidate itself.
+   * Optional and NOT read by `evaluateCandidate()` this phase — no ranking
+   * or leverage behavior changes.
+   */
+  businessModelProfile?: BusinessModelProfile | null
+  businessOperatingFingerprint?: BusinessOperatingFingerprint | null
 }
 
 /**

@@ -49,5 +49,10 @@ export function loadReadinessContextFromSnapshot(snapshot: HarmonyContextSnapsho
     esaResults: snapshot.business.esaResults,
     workLifeBalanceScore: snapshot.business.workLifeBalanceScore,
     hasCompletedAudit: snapshot.business.hasCompletedAudit,
+    // Business Model Profile™ (Phase 9B) / Business Operating Fingerprint™
+    // (Phase 9A) passthrough — additive, Phase 9D. `assembleOperatingBrief()`
+    // does not read these yet; this only makes them available.
+    businessModelProfile: snapshot.businessModelProfile,
+    businessOperatingFingerprint: snapshot.businessOperatingFingerprint,
   }
 }

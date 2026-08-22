@@ -37,6 +37,8 @@ import type { GpsOutcome } from "@/lib/entrepreneur-success/types"
 import type { OperatingPillarId } from "@/lib/entrepreneur-success/types"
 import type { LeverageClassId, DecisionExplainability } from "@/lib/executive-decision-engine/types"
 import type { ReadinessConfidence } from "@/lib/founder-intelligence/readiness-relevance"
+import type { BusinessModelProfile } from "@/lib/business-model-classification/types"
+import type { BusinessOperatingFingerprint } from "@/lib/business-operating-fingerprint/types"
 
 /* ===========================================================================
  * GPS Context™
@@ -149,6 +151,17 @@ export interface GpsContext {
    * Architecture hook — when true, GPS prioritizes Non-Negotiable protection.
    */
   inLifeProtectionMode: boolean
+
+  /**
+   * BUSINESS MODEL PROFILE™ SIGNALS (Phase 9D)
+   * Optional passthrough of the Business Model Classification™ (Phase 9B) and
+   * Business Operating Fingerprint™ (Phase 9A) results already assembled by
+   * `assembleHarmonySnapshot()`. Optional — and additive to `businessModel`
+   * above, never a replacement for it — so nothing currently reading
+   * `GpsContext` needs to change. No GPS logic reads these yet.
+   */
+  businessModelProfile?: BusinessModelProfile
+  businessOperatingFingerprint?: BusinessOperatingFingerprint
 }
 
 /** A point-in-time snapshot of Business Performance™ signals. */
@@ -399,7 +412,7 @@ export const GPS_SIGNAL_WEIGHTS: GpsSignalWeight[] = [
     signalId: "event-requires-preparation",
     priority: 5,
     urgentOutcome: "honor-non-negotiables",
-    description: "An upcoming life event requires preparation — Cherry Blossom™ will offer to help plan.",
+    description: "An upcoming life event requires preparation �� Cherry Blossom™ will offer to help plan.",
     status: "architecture",
   },
   {

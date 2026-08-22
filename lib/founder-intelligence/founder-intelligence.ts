@@ -41,6 +41,8 @@ import {
   type ReadinessRelevanceStatus,
 } from "@/lib/founder-intelligence/readiness-relevance"
 import type { EsaResults } from "@/lib/entrepreneur-success/types"
+import type { BusinessModelProfile } from "@/lib/business-model-classification/types"
+import type { BusinessOperatingFingerprint } from "@/lib/business-operating-fingerprint/types"
 
 /* ===========================================================================
  * Operating Brief™ shape
@@ -125,6 +127,14 @@ export interface OperatingBriefExtra {
   esaResults?: EsaResults | null
   workLifeBalanceScore?: number | null
   hasCompletedAudit?: boolean
+  /**
+   * Business Model Profile™ (Phase 9B) / Business Operating Fingerprint™
+   * (Phase 9A) passthrough — additive, Phase 9D. Optional and currently
+   * unread by `assembleOperatingBrief()`; carried here so a future brief
+   * revision can reason over them without another plumbing change.
+   */
+  businessModelProfile?: BusinessModelProfile | null
+  businessOperatingFingerprint?: BusinessOperatingFingerprint | null
 }
 
 /** The complete Operating Brief™ for the current founder + moment. */
