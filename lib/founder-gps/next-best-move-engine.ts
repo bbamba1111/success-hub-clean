@@ -274,7 +274,12 @@ function toRecommendation(
     id: capability.id,
     nextTurn: capability.capability.capability,
     reason: ranked.explainability.primaryReason,
-    cta: { label: "View this move", href: `/founder-gps/next-best-move/${capability.id}` },
+    // Founder GPS™ is read-only intelligence — it never has its own detail
+    // page. The CTA hands the founder off to Decide & Design (the
+    // "daily-planning-gps" segment on the home Business Day timeline) using
+    // the same `?openSpace=<blockId>` deep-link business-day-schedule.tsx
+    // already reads to force-expand and scroll to that segment.
+    cta: { label: "View this move", href: "/?openSpace=daily-planning-gps" },
     primaryOutcome: ranked.primaryOutcome,
     secondaryOutcomes: [],
     targetPillar: pillarForExecutive(capability.owningExecutiveId),
@@ -323,7 +328,7 @@ function fallbackRecommendation(activeSignals: GpsSignalId[]): GpsRecommendation
     id: candidate.id,
     nextTurn: item.label,
     reason: decision.explainability.primaryReason,
-    cta: { label: "Get started", href: "/founder-gps/next-best-move" },
+    cta: { label: "Get started", href: "/?openSpace=daily-planning-gps" },
     primaryOutcome: decision.primaryOutcome,
     secondaryOutcomes: tier.primaryOutcomes.slice(1),
     targetPillar: null,
