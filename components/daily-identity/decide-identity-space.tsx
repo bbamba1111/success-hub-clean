@@ -5,8 +5,11 @@
  * (Tue–Thu, 9:45–10:30 AM — `daily-planning-gps` block).
  *
  * Flow:
- *  1. Weekly Data Review + Founder GPS™ — read-only recap of this week's
- *     Business Outcome(s) and the live GPS next-best-move.
+ *  0. Founder GPS™ — Your Next Best Move™ — read-only strategic context
+ *     from the canonical Founder GPS™ (`deriveNextBestMove`). Informs the
+ *     founder's decision below; never auto-written as the decision itself.
+ *  1. This Week's Menu — Weekly Data Review — read-only recap of this week's
+ *     Business Outcome(s) and the weekly-outcomes carry-forward note.
  *  2. Decide who you're being today — a quick-pick + free-text identity
  *     statement, stored per calendar day.
  *  3. Design today's Business Boundaries™ — a short free-text boundary
@@ -20,7 +23,7 @@
  */
 
 import { useEffect, useState } from "react"
-import { Compass, Plus } from "lucide-react"
+import { Compass, Navigation, Plus } from "lucide-react"
 import { getWeekKey, loadWeek, getDailyEntry, updateDailyEntry, getWlbbDayKey } from "@/lib/wlbb-week/storage"
 import { getGpsRecommendation } from "@/lib/wlbb-week/gps"
 import type { WlbbWeekState } from "@/lib/wlbb-week/types"
@@ -28,6 +31,8 @@ import { getDateKey, loadDailyIdentity, updateDailyIdentity } from "@/lib/daily-
 import type { DailyIdentityRecord, IdentityCheckInStatus } from "@/lib/daily-identity/types"
 import { IdentityCheckIn } from "@/components/daily-identity/identity-check-in"
 import { OpportunityFocusPicker } from "@/components/daily-identity/opportunity-focus-picker"
+import { useHarmonyContextOptional } from "@/components/harmony-context/harmony-context-provider"
+import { buildGpsContextFromSnapshot, deriveNextBestMove } from "@/lib/founder-gps/next-best-move-engine"
 
 const IDENTITY_QUICK_PICKS = [
   "A calm, decisive CEO",
@@ -56,6 +61,22 @@ export function DecideIdentitySpace({ segmentRemaining }: DecideIdentitySpacePro
   const [week, setWeek] = useState<WlbbWeekState | null>(null)
   const [record, setRecord] = useState<DailyIdentityRecord | null>(null)
   const [customIdentity, setCustomIdentity] = useState("")
+
+  // Founder GPS™ — Your Next Best Move™ (Phase 7) — read-only strategic
+  // context, sourced from the same canonical engine and Harmony Context
+  // Engine™ snapshot as My Blueprint™'s section 07. `useHarmonyContextOptional`
+  // never throws, so this degrades to nothing if ever rendered outside
+  // <HarmonyProvider> — no new recommendation logic is introduced here, and
+  // this never writes to `segment_intentions` / `segment_declarations` /
+  // `segment_completions`; it only informs the founder's own decision below.
+  const harmony = useHarmonyContextOptional()
+  const nextBestMove =
+    harmony?.snapshot.ready
+      ? deriveNextBestMove(buildGpsContextFromSnapshot(harmony.snapshot), {
+          founderDestination: harmony.founderDestination,
+          esaResults: harmony.snapshot.business.esaResults,
+        })
+      : null
 
   useEffect(() => {
     setWeek(loadWeek(getWeekKey()))
@@ -103,12 +124,31 @@ export function DecideIdentitySpace({ segmentRemaining }: DecideIdentitySpacePro
       {/* ── 0. Where do I need to focus today? (opportunity picker) ──────── */}
       <OpportunityFocusPicker />
 
-      {/* ── 1. Weekly Data Review + Founder GPS™ ─────────────────────────── */}
+      {/* ── Founder GPS™ — Your Next Best Move™ (read-only context) ──────── */}
+      {nextBestMove && (
+        <div className="rounded-3xl border border-[#C13B6B]/25 bg-[#FBF1F5] px-6 py-5 sm:px-7 sm:py-6">
+          <div className="mb-2 flex items-center gap-2">
+            <Navigation className="h-4 w-4 text-[#C13B6B]" aria-hidden />
+            <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#C13B6B]">
+              Founder GPS™ — Your Next Best Move™
+            </p>
+          </div>
+          <p className="font-sans text-sm leading-relaxed text-[#3A2E33] font-semibold">{nextBestMove.nextTurn}</p>
+          {nextBestMove.reason && (
+            <p className="mt-1.5 font-sans text-xs leading-relaxed text-[#6B5860]">{nextBestMove.reason}</p>
+          )}
+          <p className="mt-3 font-sans text-xs italic text-[#6B5860]/80">
+            Context to consider — is this what you&apos;re choosing to focus on today?
+          </p>
+        </div>
+      )}
+
+      {/* ── 1. This Week's Menu — Weekly Data Review ─────────────────────── */}
       <div className="rounded-3xl border border-[#7FB069]/25 bg-[#F7FBF4] px-6 py-5 sm:px-7 sm:py-6">
         <div className="mb-2 flex items-center gap-2">
           <Compass className="h-4 w-4 text-[#5A7A45]" aria-hidden />
           <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5A7A45]">
-            Founder GPS™ — Weekly Data Review
+            This Week's Menu — Weekly Data Review
           </p>
         </div>
         <p className="font-sans text-sm leading-relaxed text-[#3A2E33]">{gpsRecommendation}</p>

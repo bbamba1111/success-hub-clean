@@ -16,6 +16,7 @@ import { DailyDeclaration } from "@/components/daily-declaration"
 import { BusinessDaySchedule } from "@/components/business-day-schedule"
 import { OperatingPlannerSection } from "@/components/operating-planner/operating-planner-section"
 import { DeveloperToolbar } from "@/components/developer-toolbar"
+import { HarmonyProvider } from "@/components/harmony-context/harmony-context-provider"
 import { createBrowserClient } from "@supabase/ssr"
 
 export default function HomePage() {
@@ -73,35 +74,39 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white">
       {/* Operating Engine providers now live at root layout — no per-page wrapper
-          needed. Components read useOperatingEngine() and useHarmonyWeek() freely. */}
+          needed. Components read useOperatingEngine() and useHarmonyWeek() freely.
+          <HarmonyProvider> is added here (Phase 7) so DecideIdentitySpace (inside
+          BusinessDaySchedule) can read the canonical Founder GPS™ Next Best Move™
+          via useHarmonyContextOptional(). */}
+      <HarmonyProvider>
+        {/* 1. Hero — orientation */}
+        <BusinessDayHero />
 
-      {/* 1. Hero — orientation */}
-      <BusinessDayHero />
+        {/* 2. Barbara Welcome — the WHY */}
+        <BarbaraWelcome />
 
-      {/* 2. Barbara Welcome — the WHY */}
-      <BarbaraWelcome />
+        {/* 3. Operating Planner™ — hidden during Time Freedom™ window. */}
+        <OperatingPlannerSection />
 
-      {/* 3. Operating Planner™ — hidden during Time Freedom™ window. */}
-      <OperatingPlannerSection />
+        {/* Today's Declaration™ — set during Morning GIV•EN™, sits directly
+            above the Work-Life Balance Business Day™ segment cards below. */}
+        <DailyDeclaration />
 
-      {/* Today's Declaration™ — set during Morning GIV•EN™, sits directly
-          above the Work-Life Balance Business Day™ segment cards below. */}
-      <DailyDeclaration />
+        {/* 5. Today's Segments — the HOW (detailed cards) */}
+        <BusinessDaySchedule />
 
-      {/* 5. Today's Segments — the HOW (detailed cards) */}
-      <BusinessDaySchedule />
+        {/* Admin-only Developer Toolbar */}
+        <DeveloperToolbar />
 
-      {/* Admin-only Developer Toolbar */}
-      <DeveloperToolbar />
-
-      {/* Chat + Co-Guide modals retained so members can still launch guidance */}
-      <SimpleChatModal
-        isOpen={isChatOpen}
-        onClose={() => setIsChatOpen(false)}
-        context={chatContext}
-        title={chatTitle}
-      />
-      <CherryBlossomCoGuide isOpen={isCoGuideOpen} onClose={() => setIsCoGuideOpen(false)} userId={userId} />
+        {/* Chat + Co-Guide modals retained so members can still launch guidance */}
+        <SimpleChatModal
+          isOpen={isChatOpen}
+          onClose={() => setIsChatOpen(false)}
+          context={chatContext}
+          title={chatTitle}
+        />
+        <CherryBlossomCoGuide isOpen={isCoGuideOpen} onClose={() => setIsCoGuideOpen(false)} userId={userId} />
+      </HarmonyProvider>
     </div>
   )
 }

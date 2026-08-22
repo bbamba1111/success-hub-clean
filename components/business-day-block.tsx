@@ -316,9 +316,10 @@ export function BusinessDayBlock({
             )}
 
             {/* Decide My Identity & Design My Business Boundaries For Today™ (Tue–Thu) —
-                Weekly Data Review + Founder GPS™ recap, identity + boundary decision,
-                and the CEO Workday™ outcome picker that feeds directly into the
-                Weekly WLBB Menu™'s DailyEntry (same store the CEO Workspace™ reads). */}
+                Founder GPS™ Next Best Move™ (read-only) + This Week's Menu recap,
+                identity + boundary decision, and the CEO Workday™ outcome picker
+                that feeds directly into the Weekly WLBB Menu™'s DailyEntry
+                (same store the CEO Workspace™ reads). */}
             {blockId === "daily-planning-gps" && (
               <div className="px-7 py-8">
                 <DecideIdentitySpace segmentRemaining={segmentRemaining} />

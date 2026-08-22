@@ -13,6 +13,12 @@
  *   3. Entrepreneur Success Assessment™ → lib/entrepreneur-success/esa-storage.ts (localStorage)
  *   4. Founder Profile™             → lib/founder-profile/founder-profile-store.ts (localStorage)
  *   5. Business Context™            → lib/business-context/business-context-store.ts (localStorage)
+ *
+ * Section 07 (Phase 7) is a sixth view, not a sixth data source: it reads the
+ * canonical Founder GPS™ / Next Best Move™ (`deriveNextBestMove`, already
+ * built in Phases 5–6) through the existing Harmony Context Engine™
+ * (`useHarmonyContext()` → `snapshot`), via `<HarmonyProvider>` now wrapping
+ * this page. No new recommendation logic is added here.
  */
 
 import { useEffect, useState } from "react"
@@ -28,6 +34,7 @@ import {
   User,
   Briefcase,
   MapPin,
+  Navigation,
 } from "lucide-react"
 
 import { getAuditResults, type AuditData } from "@/utils/audit-storage"
@@ -43,6 +50,8 @@ import { CADENCES } from "@/lib/assessment-cadence"
 import type { EsaResults } from "@/lib/entrepreneur-success/types"
 import type { BusinessContextProfile } from "@/lib/business-context/types"
 import type { FounderDestinationProfile } from "@/lib/founder-destination/types"
+import { useHarmonyContext } from "@/components/harmony-context/harmony-context-provider"
+import { buildGpsContextFromSnapshot, deriveNextBestMove } from "@/lib/founder-gps/next-best-move-engine"
 
 // ── Small formatting helpers ─────────────────────────────────────────────────
 
@@ -71,6 +80,21 @@ function scoreBand(score: number): string {
   if (score >= 40) return "Establishing"
   if (score >= 20) return "Foundation"
   return "Starting Point"
+}
+
+// ── Next Best Move™ label helpers (Section 07) ─────────────────────────────
+
+const LEVERAGE_LABEL: Record<string, string> = {
+  keep: "Keep — do it yourself",
+  delegate: "Delegate — hand it to your team",
+  automate: "Automate — build the system",
+  eliminate: "Eliminate — stop doing this",
+}
+
+const CONFIDENCE_LABEL: Record<string, string> = {
+  high: "Strong",
+  medium: "Good",
+  low: "Building context…",
 }
 
 // ── Score ring ────────────────────────────────────────────────────────────
@@ -243,6 +267,19 @@ function LayerDivider({ label }: { label: string }) {
 // ── Main client component ───────────────────────────────────────────────────
 
 export function MyBlueprintClient() {
+  // Canonical Founder GPS™ / Next Best Move™ (Phase 7) — read-only, via the
+  // Harmony Context Engine™. `snapshot.intelligence.gpsContext` and
+  // `founderDestination` are already assembled by <HarmonyProvider>; this
+  // calls the same, already-built `deriveNextBestMove()` engine, never a
+  // second one.
+  const { snapshot, founderDestination } = useHarmonyContext()
+  const nextBestMove = snapshot.ready
+    ? deriveNextBestMove(buildGpsContextFromSnapshot(snapshot), {
+        founderDestination,
+        esaResults: snapshot.business.esaResults,
+      })
+    : null
+
   const [reality, setReality] = useState<OperatingCenterData | null>(null)
   const [lifeData, setLifeData] = useState<AuditData | null>(null)
   const [bizData, setBizData] = useState<EsaResults | null>(null)
@@ -652,6 +689,82 @@ export function MyBlueprintClient() {
           ) : (
             <EmptyState
               message="Founder Profile™ is who you are. Business Context™ is what you're building now. Founder Destination™ is where you're intentionally going — set it to help Cherry Blossom™ guide what matters next."
+              href="/founder-destination"
+              cta="Set Your Founder Destination™"
+            />
+          )}
+        </BlueprintSection>
+
+        <LayerDivider label="What Should I Build Next" />
+
+        {/* 07 — FOUNDER GPS™ NEXT BEST MOVE™ ─────────────────────────────── */}
+        <BlueprintSection
+          eyebrow="07 — Founder GPS™"
+          icon={Navigation}
+          title="Your Next Best Move™"
+          subtitle="The Single Highest-Leverage Next Step, Right Now"
+          accent="#C13B6B"
+          emphasize
+        >
+          {nextBestMove ? (
+            <div className="space-y-5">
+              <div>
+                <p className="font-display text-lg font-semibold text-brand-ink text-pretty">
+                  {nextBestMove.nextTurn}
+                </p>
+                <p className="mt-2 font-sans text-sm leading-relaxed text-brand-ink-soft text-pretty">
+                  {nextBestMove.reason}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+                {nextBestMove.destinationAlignment && (
+                  <DataChip label="Advances Your Destination™" value={nextBestMove.destinationAlignment} />
+                )}
+                {nextBestMove.executiveDomain && (
+                  <DataChip label="Executive Domain™" value={nextBestMove.executiveDomain} />
+                )}
+                {nextBestMove.leverageMode && (
+                  <DataChip
+                    label="Leverage Class™"
+                    value={LEVERAGE_LABEL[nextBestMove.leverageMode] ?? fmt(nextBestMove.leverageMode)}
+                  />
+                )}
+                {nextBestMove.confidence && (
+                  <DataChip
+                    label="Confidence"
+                    value={CONFIDENCE_LABEL[nextBestMove.confidence] ?? fmt(nextBestMove.confidence)}
+                  />
+                )}
+              </div>
+
+              {Array.isArray(nextBestMove.sequencing) && nextBestMove.sequencing.length > 0 && (
+                <div className="rounded-2xl border border-brand-blush/60 bg-brand-cream/60 px-5 py-4">
+                  <p className="font-sans text-[10px] font-bold uppercase tracking-[0.18em] text-brand-ink-soft/80 mb-3">
+                    How To Install This
+                  </p>
+                  <ol className="space-y-1.5">
+                    {nextBestMove.sequencing.map((step, i) => (
+                      <li key={i} className="flex gap-2 font-sans text-sm text-brand-ink">
+                        <span className="font-semibold text-brand-ink-soft shrink-0">{i + 1}.</span>
+                        <span className="text-pretty">{step}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+
+              <Link
+                href={nextBestMove.cta.href}
+                className="inline-flex items-center gap-1.5 rounded-full bg-[#C13B6B] px-5 py-2.5 font-sans text-xs font-bold text-white hover:opacity-90 transition-opacity"
+              >
+                {nextBestMove.cta.label}
+                <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+              </Link>
+            </div>
+          ) : (
+            <EmptyState
+              message="Your Founder GPS™ Next Best Move™ will appear here once your Blueprint has enough signal to reason over — complete a few of the sections above to activate it."
               href="/founder-destination"
               cta="Set Your Founder Destination™"
             />
