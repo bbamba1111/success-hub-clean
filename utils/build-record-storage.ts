@@ -45,6 +45,14 @@ function toColumns(r: BuildRecord): Record<string, unknown> {
     started_at: r.startedAt,
     completed_at: r.completedAt,
     installed_at: r.installedAt,
+    recommended_build_path: r.recommendedBuildPath,
+    recommended_build_path_reason: r.recommendedBuildPathReason,
+    path_selection_reason: r.pathSelectionReason,
+    qa_gate: r.qaGate,
+    live_evidence: r.liveEvidence,
+    installed_checklist: r.installedChecklist,
+    activity_log: r.activityLog,
+    communication_packages: r.communicationPackages,
   }
 }
 
@@ -71,6 +79,14 @@ function mapRow(row: Record<string, unknown> | null): BuildRecord | null {
     completedAt: (row.completed_at as string | null) ?? null,
     installedAt: (row.installed_at as string | null) ?? null,
     updatedAt: row.updated_at as string,
+    recommendedBuildPath: (row.recommended_build_path as BuildRecord["buildPath"] | null) ?? null,
+    recommendedBuildPathReason: (row.recommended_build_path_reason as string | null) ?? null,
+    pathSelectionReason: (row.path_selection_reason as string | null) ?? null,
+    qaGate: (row.qa_gate as BuildRecord["qaGate"]) ?? { items: [], notes: null },
+    liveEvidence: (row.live_evidence as BuildRecord["liveEvidence"]) ?? { note: null, confirmedAt: null },
+    installedChecklist: (row.installed_checklist as BuildRecord["installedChecklist"]) ?? { items: [] },
+    activityLog: (row.activity_log as BuildRecord["activityLog"]) ?? [],
+    communicationPackages: (row.communication_packages as BuildRecord["communicationPackages"]) ?? [],
   }
 }
 
