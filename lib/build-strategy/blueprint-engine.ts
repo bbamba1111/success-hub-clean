@@ -74,7 +74,8 @@ const ARCHETYPE_PHRASES: Partial<
   },
 }
 
-function archetypePhrases(archetype: BusinessModelId | "unknown") {
+/** Exported (Phase 12) so `lib/founder-guidance/` can reuse the same archetype phrase table for "Show Me an Example" instead of duplicating it. */
+export function archetypePhrases(archetype: BusinessModelId | "unknown") {
   if (archetype === "unknown") return null
   return ARCHETYPE_PHRASES[archetype] ?? null
 }
