@@ -83,6 +83,7 @@ import {
   teachMeThis,
 } from "@/lib/founder-guidance/business-building-guide-engine"
 import { UnderstandingLevelPicker } from "@/components/founder-guidance/understanding-level-picker"
+import { InPlaceResultsReview } from "@/components/my-blueprint/in-place-results-review"
 import { DecisionSnapshotCard } from "@/components/founder-guidance/decision-snapshot-card"
 import { BusinessBuildingGuidePanel } from "@/components/founder-guidance/business-building-guide-panel"
 import { BuildPathEducationPanel } from "@/components/founder-guidance/build-path-education-panel"
@@ -666,19 +667,23 @@ export function MyBlueprintClient() {
                         <span className="font-semibold">{r.percentage} / 100</span>
                       </div>
                     ))}
+                    <InPlaceResultsReview
+                      rows={lifeData.results.map((r) => ({ key: r.category, label: fmt(r.category), percentage: r.percentage }))}
+                      accent="#C9545B"
+                    />
                   </div>
                 )}
                 <Link
                   href="/audit"
                   className="inline-flex items-center gap-1.5 font-sans text-xs font-semibold text-[#C9545B] hover:underline"
                 >
-                  Open Your Audit™
+                  Retake Your Audit™
                   <ArrowRight className="h-3.5 w-3.5" aria-hidden />
                 </Link>
               </div>
             ) : (
               <EmptyState
-                message="Your Life Blueprint will appear here after you complete your Work-Life Balance Audit™."
+                message="Your Life Blueprint will appear here after you complete your Work-Life Balance Audit���."
                 href="/audit"
                 cta="Take the Audit™"
               />
@@ -708,13 +713,17 @@ export function MyBlueprintClient() {
                         <span className="font-semibold">{p.percentage} / 100</span>
                       </div>
                     ))}
+                    <InPlaceResultsReview
+                      rows={bizData.pillarScores.map((p) => ({ key: p.pillarId, label: p.pillarName, percentage: p.percentage }))}
+                      accent="#5D9D61"
+                    />
                   </div>
                 )}
                 <Link
                   href="/entrepreneur-success-assessment"
                   className="inline-flex items-center gap-1.5 font-sans text-xs font-semibold text-brand-green-dark hover:underline"
                 >
-                  Open Your ESA™
+                  Retake Your ESA™
                   <ArrowRight className="h-3.5 w-3.5" aria-hidden />
                 </Link>
               </div>

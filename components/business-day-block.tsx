@@ -10,6 +10,11 @@ import { TodaysMoveCard } from "@/components/operating-planner/todays-move-card"
 import { ReflectionSpace } from "@/components/reflection-space"
 import { DebriefSpace } from "@/components/debrief-space"
 import { DecideIdentitySpace } from "@/components/daily-identity/decide-identity-space"
+import { TodaysMovementCard } from "@/components/daily-plan/todays-movement-card"
+import { TodaysLunchCard } from "@/components/daily-plan/todays-lunch-card"
+import { TodaysCeoWorkdayCard } from "@/components/daily-plan/todays-ceo-workday-card"
+import { TimeFreedomTodayCard } from "@/components/daily-plan/time-freedom-today-card"
+import { PowerDownReleaseCard } from "@/components/daily-plan/power-down-release-card"
 import { SoundRitual } from "@/components/sound-ritual"
 import { useActiveSpace } from "@/components/active-space-provider"
 import { SPACE_LABEL } from "@/operating-engine/config/space-labels"
@@ -51,6 +56,13 @@ export interface BusinessDayBlockProps {
    *  actionable here, so both the expand toggle and the "Continue Segment™"
    *  CTA are hidden entirely rather than opening onto an empty accordion. */
   isClosed?: boolean
+  /**
+   * "green" gives the segment a solid Work-Life Balance green (#7FB069)
+   * background with white text — used for the four Decide → Populate →
+   * Execute segments (Decide & Design™, Movement Window™, Lunch Break™,
+   * CEO Workday™). Everything else keeps the original cream/blush gradient.
+   */
+  theme?: "default" | "green"
 }
 
 const STATUS_LABEL: Record<BlockStatus, string> = {
@@ -64,6 +76,36 @@ const STATUS_BADGE: Record<BlockStatus, string> = {
   upcoming: "bg-[#7FB069]/15 text-[#5A7A45]",
   completed: "bg-black/10 text-[#6B5860]",
 }
+
+const STATUS_BADGE_GREEN: Record<BlockStatus, string> = {
+  current: "bg-white text-[#4C6B3B]",
+  upcoming: "bg-white/20 text-white",
+  completed: "bg-white/15 text-white/80",
+}
+
+const CREAM_GRADIENT = "linear-gradient(135deg, #FDF6F0 0%, #FBF0F4 40%, #F0F5EE 70%, #FDFAF6 100%)"
+const SOLID_GREEN = "#7FB069"
+/** Soft, legible tint for the expanded accordion body on green-themed segments — the existing dark-text content inside (identity pickers, music, etc.) still assumes a light surface. */
+const SOFT_GREEN_SURFACE = "#EAF3E4"
+
+/** These 5 segments now get a dedicated "Today's X" card (reading Today's Plan™) instead of the old generic Operating Planner™ chip-picker flow. `daily-planning-gps` was already excluded — it renders `DecideIdentitySpace` instead. */
+const LEGACY_PLANNER_EXCLUDED_IDS = new Set([
+  "movement-window",
+  "lunch-break",
+  "ceo-workday",
+  "time-freedom",
+  "power-down",
+])
+
+/** Sound Ritual™ is removed from these 6 segments only — kept everywhere else (morning-given, time-freedom, power-down, monday-debrief, and any other segment). */
+const SOUND_RITUAL_EXCLUDED_IDS = new Set([
+  "early-access",
+  "movement-window",
+  "monday-reality-check",
+  "daily-planning-gps",
+  "lunch-break",
+  "ceo-workday",
+])
 
 type MusicChoice = "barbara" | "my-playlist" | "silent"
 
@@ -86,8 +128,10 @@ export function BusinessDayBlock({
   operatingRulePreview,
   aboutContent,
   isClosed = false,
+  theme = "default",
 }: BusinessDayBlockProps) {
   const isCurrent = status === "current"
+  const isGreen = theme === "green"
   const showProgress = isCurrent && typeof segmentProgress === "number"
   const [open, setOpen] = useState(false)
   const [showAbout, setShowAbout] = useState(false)
@@ -150,7 +194,7 @@ export function BusinessDayBlock({
               ? "ring-2 ring-[#7FB069] ring-offset-2 ring-offset-[#F5F1E8]"
               : ""
         }`}
-        style={{ background: "linear-gradient(135deg, #FDF6F0 0%, #FBF0F4 40%, #F0F5EE 70%, #FDFAF6 100%)" }}
+        style={{ background: isGreen ? SOLID_GREEN : CREAM_GRADIENT }}
       >
 
         {/* Segment progress — thin bar showing how much of the in-session block remains */}
@@ -175,7 +219,7 @@ export function BusinessDayBlock({
           {/* Left content panel — 42% tablet, 34–38% desktop, capped at 600px */}
           <div
             className="flex items-center px-5 py-6 sm:px-8 md:w-[42%] md:max-w-[600px] md:px-10 lg:w-[36%]"
-            style={{ background: "linear-gradient(135deg, #FDF6F0 0%, #FBF0F4 40%, #F0F5EE 70%, #FDFAF6 100%)" }}
+            style={{ background: isGreen ? SOLID_GREEN : CREAM_GRADIENT }}
           >
             <div className="w-full">
               <div className="mb-2.5 flex flex-wrap items-center gap-2.5">
@@ -204,25 +248,43 @@ export function BusinessDayBlock({
                   )
                 })() : (
                   <span
-                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] ${STATUS_BADGE[status]}`}
+                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] ${
+                      isGreen ? STATUS_BADGE_GREEN[status] : STATUS_BADGE[status]
+                    }`}
                   >
                     {STATUS_LABEL[status]}
                   </span>
                 )}
-                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#6B5860]">{time}</span>
+                <span className={`text-xs font-semibold uppercase tracking-[0.18em] ${isGreen ? "text-white/85" : "text-[#6B5860]"}`}>
+                  {time}
+                </span>
                 {isCurrent && segmentRemaining && (
-                  <span className="inline-flex items-center rounded-full bg-[#7FB069]/15 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#5A7A45]">
+                  <span
+                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] ${
+                      isGreen ? "bg-white/20 text-white" : "bg-[#7FB069]/15 text-[#5A7A45]"
+                    }`}
+                  >
                     {segmentRemaining}
                   </span>
                 )}
               </div>
 
-              <h3 className="font-playfair text-xl font-medium leading-tight text-balance text-[#3A2E33] sm:text-2xl">
+              <h3
+                className={`font-playfair text-xl font-medium leading-tight text-balance sm:text-2xl ${
+                  isGreen ? "text-white" : "text-[#3A2E33]"
+                }`}
+              >
                 {emoji ? <span className="mr-2">{emoji}</span> : null}
                 {title}
               </h3>
 
-              <div className="mt-2 line-clamp-2 text-pretty text-sm leading-relaxed text-[#5C4F55]">{description}</div>
+              <div
+                className={`mt-2 line-clamp-2 text-pretty text-sm leading-relaxed ${
+                  isGreen ? "text-white/85" : "text-[#5C4F55]"
+                }`}
+              >
+                {description}
+              </div>
 
               {children}
 
@@ -243,7 +305,11 @@ export function BusinessDayBlock({
                         setOpen(true)
                       }
                     }}
-                    className="animate-[pulse_2.4s_ease-in-out_infinite] bg-[#7FB069] text-white hover:bg-[#6FA058]"
+                    className={
+                      isGreen
+                        ? "animate-[pulse_2.4s_ease-in-out_infinite] bg-white text-[#4C6B3B] hover:bg-white/90"
+                        : "animate-[pulse_2.4s_ease-in-out_infinite] bg-[#7FB069] text-white hover:bg-[#6FA058]"
+                    }
                   >
                     {buttonText}
                   </Button>
@@ -270,7 +336,7 @@ export function BusinessDayBlock({
             {/* Soft ~48px horizontal fade blending the panel into the photography (desktop only) */}
             <div
               className="pointer-events-none absolute inset-y-0 left-0 hidden w-12 md:block"
-              style={{ background: "linear-gradient(90deg, #FDF6F0 0%, transparent 100%)" }}
+              style={{ background: `linear-gradient(90deg, ${isGreen ? SOLID_GREEN : "#FDF6F0"} 0%, transparent 100%)` }}
             />
           </div>
         </div>
@@ -283,7 +349,11 @@ export function BusinessDayBlock({
             type="button"
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
-            className="flex w-full items-center justify-center gap-1.5 border-t border-black/[0.06] py-3 font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60 transition-colors hover:bg-black/[0.02]"
+            className={`flex w-full items-center justify-center gap-1.5 border-t py-3 font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] transition-colors ${
+              isGreen
+                ? "border-white/15 text-white/75 hover:bg-white/10"
+                : "border-black/[0.06] text-[#6B5860]/60 hover:bg-black/[0.02]"
+            }`}
           >
             <ChevronDown
               className={`h-3.5 w-3.5 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
@@ -297,9 +367,14 @@ export function BusinessDayBlock({
           </button>
         )}
 
-        {/* 3-part expandable body */}
+        {/* 3-part expandable body — green-themed segments get a soft light
+            surface here (not the solid brand green) so the existing dark-text
+            content inside (identity pickers, music, etc.) stays legible. */}
         {!isClosed && open && (
-          <div className="border-t border-black/[0.06]">
+          <div
+            className="border-t border-black/[0.06]"
+            style={isGreen ? { background: SOFT_GREEN_SURFACE } : undefined}
+          >
 
             {/* Reflection Space™ — guided Work-Life Balance Reality Check™ for Monday */}
             {blockId === "monday-reality-check" && (
@@ -329,22 +404,34 @@ export function BusinessDayBlock({
             {/* Today's Move™ (Phase 1: Execute → Check) — shows the Decide-originated
                 declaration + why-it-matters for THIS segment, if the founder set one
                 today via the "Where do I need to focus today?" picker. Renders nothing
-                (no regression) when no such declaration exists. */}
-            {blockId && blockId !== "digital-detox" && blockId !== "monday-reality-check" && blockId !== "monday-debrief" && blockId !== "daily-planning-gps" && PLANNER_CONFIG[blockId as keyof typeof PLANNER_CONFIG] && (
+                (no regression) when no such declaration exists. Excluded for the 5
+                segments that now render a dedicated "Today's X" card instead. */}
+            {blockId && blockId !== "digital-detox" && blockId !== "monday-reality-check" && blockId !== "monday-debrief" && blockId !== "daily-planning-gps" && !LEGACY_PLANNER_EXCLUDED_IDS.has(blockId) && PLANNER_CONFIG[blockId as keyof typeof PLANNER_CONFIG] && (
               <TodaysMoveCard segmentId={blockId} segmentRemaining={segmentRemaining} />
             )}
 
             {/* Operating Planner™ — chip picker → commitment → declaration → Install This™
                 Uses the exact same working component as /design-my-week.
-                Skips digital-detox and the two Monday-only reflective blocks (no PLANNER_CONFIG entry). */}
-            {blockId && blockId !== "digital-detox" && blockId !== "monday-reality-check" && blockId !== "monday-debrief" && blockId !== "daily-planning-gps" && PLANNER_CONFIG[blockId as keyof typeof PLANNER_CONFIG] && (
+                Skips digital-detox, the two Monday-only reflective blocks, and the 5
+                segments that now render a dedicated "Today's X" card instead. */}
+            {blockId && blockId !== "digital-detox" && blockId !== "monday-reality-check" && blockId !== "monday-debrief" && blockId !== "daily-planning-gps" && !LEGACY_PLANNER_EXCLUDED_IDS.has(blockId) && PLANNER_CONFIG[blockId as keyof typeof PLANNER_CONFIG] && (
               <OperatingPlanner blockId={blockId as any} />
             )}
 
-            {/* Row 1 — Join Us Live™. Flex Time & Preparation™ and the Work-Life
-                Balance Debrief™ are intentionally independent of Zoom — these
-                are self-guided windows, not live rooms. */}
-            {blockId !== "early-access" && blockId !== "monday-debrief" && blockId !== "daily-planning-gps" && (
+            {/* Today's X cards — Decide → Populate → Execute. Each reads the
+                SAME `TodaysPlanRecord` the founder decided in Decide &
+                Design™; nothing is re-entered here. */}
+            {blockId === "movement-window" && <TodaysMovementCard />}
+            {blockId === "lunch-break" && <TodaysLunchCard />}
+            {blockId === "ceo-workday" && <TodaysCeoWorkdayCard />}
+            {blockId === "time-freedom" && <TimeFreedomTodayCard />}
+            {blockId === "power-down" && <PowerDownReleaseCard />}
+
+            {/* Row 1 — Join Us Live™. The Work-Life Balance Debrief™ and Decide &
+                Design™ are intentionally independent of Zoom — self-guided windows,
+                not live rooms. Flex Time™ (early-access) now also carries the
+                Join Us Live™ link. */}
+            {blockId !== "monday-debrief" && blockId !== "daily-planning-gps" && (
               <>
                 <div className="px-7 py-5">
                   <a
@@ -362,8 +449,9 @@ export function BusinessDayBlock({
               </>
             )}
 
-            {/* Sound Ritual™ — curated ambient soundscapes per segment */}
-            {blockId && <SoundRitual blockId={blockId} />}
+            {/* Sound Ritual™ — curated ambient soundscapes per segment. Removed
+                from the 6 segments in SOUND_RITUAL_EXCLUDED_IDS; kept everywhere else. */}
+            {blockId && !SOUND_RITUAL_EXCLUDED_IDS.has(blockId) && <SoundRitual blockId={blockId} />}
 
             <div className="mx-7 border-t border-black/[0.05]" />
 

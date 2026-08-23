@@ -36,6 +36,7 @@ import { OpportunityFocusPicker } from "@/components/daily-identity/opportunity-
 import { useHarmonyContextOptional } from "@/components/harmony-context/harmony-context-provider"
 import { buildGpsContextFromSnapshot, deriveNextBestMove } from "@/lib/founder-gps/next-best-move-engine"
 import { getActiveBuildStatusByCapabilityId } from "@/lib/build-record/build-record-store"
+import { DecideDesignAdditions } from "@/components/daily-plan/decide-design-additions"
 
 const IDENTITY_QUICK_PICKS = [
   "A calm, decisive CEO",
@@ -260,6 +261,11 @@ export function DecideIdentitySpace() {
           </p>
         )}
       </div>
+
+      {/* ── Decide → Populate → Execute: Movement / Lunch / CEO Workday
+          activities / Time Freedom / Power Down — feeds every downstream
+          segment's "Today's X" card so nothing is re-entered later. ────── */}
+      <DecideDesignAdditions />
     </div>
   )
 }
