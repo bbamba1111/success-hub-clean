@@ -6,12 +6,16 @@ import Link from "next/link"
 import {
   ArrowLeft,
   ArrowRight,
+  BookOpen,
   CheckCircle2,
   Circle,
   CircleDot,
   Clock,
+  Compass,
   Hammer,
+  Lightbulb,
   Mail,
+  Signpost,
   ShieldAlert,
   Users,
 } from "lucide-react"
@@ -34,6 +38,17 @@ import {
   isCommunicationPackageApplicable,
 } from "@/lib/build-record/build-record-engine"
 import { getBuildPathDefinition } from "@/lib/build-strategy/build-path-registry"
+import { getReadinessCapability } from "@/lib/excellence-intelligence/excellence-intelligence-registry"
+import { getUnderstandingLevel, UNDERSTANDING_LEVEL_EVENT, type UnderstandingLevelId } from "@/lib/founder-guidance/understanding-level"
+import {
+  teachMeThis,
+  showMeAnExample,
+  goDeeper,
+  derivePathInstructions,
+  deriveHandoffEducation,
+} from "@/lib/founder-guidance/business-building-guide-engine"
+import { TeachMeThisPanel } from "@/components/founder-guidance/teach-me-this-panel"
+import { HandoffEducationPanel } from "@/components/founder-guidance/handoff-education-panel"
 
 type Filter = "all" | "needs-attention" | "in-progress" | "awaiting-external" | "installed"
 
@@ -221,6 +236,29 @@ function BuildRecordDetail({
   const installingGate = canTransitionTo(record, "installing")
   const installedGate = canTransitionTo(record, "installed")
 
+  // Phase 12 — Founder Business-Building Guidance™. A pure explanation layer
+  // over this SAME `record.blueprint` — no new build engine, no navigation
+  // away from the record. `getReadinessCapability` and the founder's
+  // Understanding Level™ are the only additional inputs, both read-only.
+  const [understandingLevel, setUnderstandingLevelState] = useState<UnderstandingLevelId>("founder")
+  useEffect(() => {
+    setUnderstandingLevelState(getUnderstandingLevel())
+    function onChange() {
+      setUnderstandingLevelState(getUnderstandingLevel())
+    }
+    window.addEventListener(UNDERSTANDING_LEVEL_EVENT, onChange)
+    return () => window.removeEventListener(UNDERSTANDING_LEVEL_EVENT, onChange)
+  }, [])
+
+  const readinessCapability = getReadinessCapability(record.readinessCapabilityId)
+  const teachMeThisConcepts = teachMeThis(readinessCapability, understandingLevel)
+  const pathInstructions = derivePathInstructions(record.blueprint)
+  const example = showMeAnExample(record.blueprint)
+  const deeper = goDeeper(undefined, record.blueprint)
+  const handoffEducation = deriveHandoffEducation(record.blueprint)
+
+  const [activeGuidancePanel, setActiveGuidancePanel] = useState<"teach" | "how" | "example" | "deeper" | null>(null)
+
   return (
     <main className="mx-auto max-w-3xl px-6 py-12">
       <Link
@@ -250,6 +288,91 @@ function BuildRecordDetail({
           </p>
         ) : null}
       </header>
+
+      {/* Phase 12 — Founder Business-Building Guidance™ quick actions: explain
+          this SAME build, in place, without leaving the record. */}
+      <section className="mb-6 rounded-2xl border border-brand-blush/70 bg-white p-5 shadow-sm">
+        <div className="mb-3 flex flex-wrap gap-2">
+          {([
+            { id: "teach" as const, label: "Teach Me This", icon: BookOpen, enabled: teachMeThisConcepts.length > 0 },
+            { id: "how" as const, label: "Show Me How", icon: Signpost, enabled: pathInstructions.length > 0 },
+            { id: "example" as const, label: "Show Example", icon: Lightbulb, enabled: example.text.length > 0 },
+            { id: "deeper" as const, label: "Why This Matters", icon: Compass, enabled: true },
+          ]).map(({ id, label, icon: ActionIcon, enabled }) => (
+            <button
+              key={id}
+              type="button"
+              disabled={!enabled}
+              onClick={() => setActiveGuidancePanel((prev) => (prev === id ? null : id))}
+              aria-pressed={activeGuidancePanel === id}
+              className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-sans text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
+                activeGuidancePanel === id
+                  ? "border-[#C13B6B] bg-[#C13B6B]/[0.08] text-[#C13B6B]"
+                  : "border-brand-blush/70 text-brand-ink-soft hover:border-[#C13B6B]/40 hover:text-[#C13B6B]"
+              }`}
+            >
+              <ActionIcon className="h-3.5 w-3.5" aria-hidden />
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {activeGuidancePanel === "teach" && <TeachMeThisPanel concepts={teachMeThisConcepts} defaultOpen />}
+
+        {activeGuidancePanel === "how" && (
+          <ol className="space-y-3">
+            {pathInstructions.map((step, i) => (
+              <li key={i} className="rounded-xl border border-brand-blush/60 bg-brand-cream/40 px-4 py-3">
+                <p className="font-sans text-xs font-bold text-brand-ink">
+                  {i + 1}. {step.what}
+                </p>
+                <p className="mt-1 font-sans text-xs leading-relaxed text-brand-ink-soft text-pretty">
+                  <span className="font-semibold text-brand-ink">Why: </span>
+                  {step.why}
+                </p>
+                <p className="mt-1 font-sans text-xs leading-relaxed text-brand-ink-soft text-pretty">
+                  <span className="font-semibold text-brand-ink">How: </span>
+                  {step.how}
+                </p>
+                <p className="mt-1 font-sans text-xs leading-relaxed text-brand-ink-soft text-pretty">
+                  <span className="font-semibold text-brand-ink">Result: </span>
+                  {step.result}
+                </p>
+              </li>
+            ))}
+          </ol>
+        )}
+
+        {activeGuidancePanel === "example" && (
+          <div className="rounded-xl border border-brand-blush/60 bg-brand-cream/40 px-4 py-3">
+            {example.text ? (
+              <p className="font-sans text-sm italic leading-relaxed text-brand-ink text-pretty">{example.text}</p>
+            ) : (
+              <p className="font-sans text-sm italic leading-relaxed text-brand-ink-soft/70">
+                No example available yet for this move.
+              </p>
+            )}
+          </div>
+        )}
+
+        {activeGuidancePanel === "deeper" && (
+          <div className="rounded-xl border border-brand-blush/60 bg-brand-cream/40 px-4 py-3">
+            {deeper.items.length > 0 ? (
+              <ul className="space-y-1">
+                {deeper.items.map((item, i) => (
+                  <li key={i} className="font-sans text-sm leading-relaxed text-brand-ink text-pretty">
+                    • {item}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="font-sans text-sm italic leading-relaxed text-brand-ink-soft/70">
+                Nothing further to add yet for this move.
+              </p>
+            )}
+          </div>
+        )}
+      </section>
 
       {/* Owner / executor — team/external ownership block */}
       <section className="mb-6 rounded-2xl border border-brand-blush/70 bg-white p-5 shadow-sm">
@@ -415,6 +538,10 @@ function BuildRecordDetail({
           ))}
         </ul>
       </section>
+
+      {/* Phase 12 — Handoff Education™: only for the same 5 external/capacity
+          Build Paths™ as the communication-packages workflow below. */}
+      {handoffEducation && <HandoffEducationPanel education={handoffEducation} />}
 
       {/* Communication packages — only for the 5 external/capacity Build Paths™ (delegate, hire, outsource, buy,
           partner). The 3 in-house paths (founder-build, co-build, ai-build) have no external recipient, so this

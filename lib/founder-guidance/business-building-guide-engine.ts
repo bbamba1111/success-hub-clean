@@ -569,12 +569,12 @@ export function showMeAnExample(blueprint: BuildBlueprint): { text: string; stat
  * ======================================================================== */
 
 export function goDeeper(
-  recommendation: GpsRecommendation,
+  recommendation: GpsRecommendation | undefined,
   blueprint: BuildBlueprint,
   fingerprint?: BusinessOperatingFingerprint,
 ): { items: string[]; status: KnowledgeStatus } {
   const items: string[] = []
-  if (recommendation.explainability?.influencingSignals?.length) {
+  if (recommendation?.explainability?.influencingSignals?.length) {
     items.push(`Traced to ${recommendation.explainability.influencingSignals.length} influencing signal(s) in the Executive Decision Engine™.`)
   }
   if (blueprint.futureWorkplaceAlignment) items.push(blueprint.futureWorkplaceAlignment)
