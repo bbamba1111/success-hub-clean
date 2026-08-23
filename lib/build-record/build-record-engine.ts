@@ -393,6 +393,29 @@ export function setExecutor(record: BuildRecord, executor: string): BuildRecord 
   return { ...record, executor: trimmed.length > 0 ? trimmed : null, updatedAt: new Date().toISOString() }
 }
 
+/**
+ * isCommunicationPackageApplicable — a handoff/communication package only
+ * makes sense when another person or organization must receive the work.
+ * The 3 in-house paths (founder-build, co-build, ai-build) never produce
+ * one; the 5 external/capacity paths (delegate, hire, outsource, buy,
+ * partner) do. This is the single source of truth callers (UI, engine) use
+ * to decide — no separate registry, just the existing Build Path IDs.
+ */
+export function isCommunicationPackageApplicable(buildPath: BuildPathId): boolean {
+  switch (buildPath) {
+    case "founder-build":
+    case "co-build":
+    case "ai-build":
+      return false
+    case "delegate":
+    case "hire":
+    case "outsource":
+    case "buy":
+    case "partner":
+      return true
+  }
+}
+
 /** Per-path default audience for a generated communication package — plain data, matching `ownerSummaryFor`'s style. */
 function defaultAudienceFor(buildPath: BuildPathId): string {
   switch (buildPath) {
@@ -415,9 +438,14 @@ function defaultAudienceFor(buildPath: BuildPathId): string {
  * generateCommunicationPackage — drafts a handoff/communication package from
  * the record's own Build Blueprint™ detail. Generate-then-approve only:
  * `approvedAt` starts `null` and this function NEVER sends anything.
+ *
+ * A no-op for the 3 in-house Build Paths™ (founder-build, co-build,
+ * ai-build) — there is no external recipient, so no package is drafted and
+ * `communicationPackages` stays empty for those builds.
  */
 export function generateCommunicationPackage(record: BuildRecord): BuildRecord {
   const { blueprint } = record
+  if (!isCommunicationPackageApplicable(blueprint.buildPath)) return record
   const audience = defaultAudienceFor(blueprint.buildPath)
 
   const bodyLines: string[] = [
@@ -444,8 +472,13 @@ export function generateCommunicationPackage(record: BuildRecord): BuildRecord {
     case "buy":
       bodyLines.push("", "What we're evaluating:", ...blueprint.detail.evaluationCriteria.map((c) => `- ${c}`))
       break
-    default:
-      bodyLines.push("", "No handoff-specific detail applies to this Build Path™.")
+    case "build-steps":
+    case "ai-build":
+      // Unreachable: isCommunicationPackageApplicable() above already
+      // excludes the 3 in-house paths whose blueprint detail is one of
+      // these two kinds. Handled exhaustively so this switch needs no
+      // `default` fallback.
+      break
   }
 
   const pkg: CommunicationPackage = {

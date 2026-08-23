@@ -31,6 +31,7 @@ import {
   setExecutor,
   generateCommunicationPackage,
   approveCommunicationPackage,
+  isCommunicationPackageApplicable,
 } from "@/lib/build-record/build-record-engine"
 import { getBuildPathDefinition } from "@/lib/build-strategy/build-path-registry"
 
@@ -415,49 +416,53 @@ function BuildRecordDetail({
         </ul>
       </section>
 
-      {/* Communication packages */}
-      <section className="mb-8 rounded-2xl border border-brand-blush/70 bg-white p-5 shadow-sm">
-        <div className="flex items-center justify-between gap-3 mb-3">
-          <h2 className="font-sans text-xs font-bold uppercase tracking-[0.1em] text-brand-ink-soft">Communication packages</h2>
-          <button
-            onClick={() => onUpdate(generateCommunicationPackage(record))}
-            className="inline-flex items-center gap-1.5 rounded-full border border-brand-blush px-3 py-1.5 font-sans text-xs font-semibold text-brand-ink-soft hover:bg-brand-blush/30"
-          >
-            <Mail className="h-3.5 w-3.5" aria-hidden />
-            Draft one
-          </button>
-        </div>
-        {record.communicationPackages.length === 0 ? (
-          <p className="font-sans text-xs text-brand-ink-soft">
-            No drafts yet. Generating one never sends anything — it&apos;s a draft you review and approve.
-          </p>
-        ) : (
-          <ul className="space-y-3">
-            {record.communicationPackages.map((pkg) => (
-              <li key={pkg.id} className="rounded-xl border border-brand-blush/60 bg-brand-cream/50 p-4">
-                <div className="flex items-center justify-between gap-3">
-                  <p className="font-sans text-sm font-bold text-brand-ink">
-                    {pkg.subject} <span className="font-normal text-brand-ink-soft">· {pkg.audience}</span>
-                  </p>
-                  {pkg.approvedAt ? (
-                    <span className="shrink-0 rounded-full bg-brand-green/10 px-2.5 py-0.5 font-sans text-[10px] font-bold text-brand-green-dark">
-                      Approved
-                    </span>
-                  ) : (
-                    <button
-                      onClick={() => onUpdate(approveCommunicationPackage(record, pkg.id))}
-                      className="shrink-0 rounded-full bg-brand-green px-3 py-1 font-sans text-[10px] font-bold text-white hover:bg-brand-green-dark"
-                    >
-                      Approve
-                    </button>
-                  )}
-                </div>
-                <pre className="mt-2 whitespace-pre-wrap font-sans text-xs leading-relaxed text-brand-ink-soft">{pkg.body}</pre>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+      {/* Communication packages — only for the 5 external/capacity Build Paths™ (delegate, hire, outsource, buy,
+          partner). The 3 in-house paths (founder-build, co-build, ai-build) have no external recipient, so this
+          section — and the Generate/Approve handoff workflow — never appears for them. */}
+      {isCommunicationPackageApplicable(record.buildPath) ? (
+        <section className="mb-8 rounded-2xl border border-brand-blush/70 bg-white p-5 shadow-sm">
+          <div className="flex items-center justify-between gap-3 mb-3">
+            <h2 className="font-sans text-xs font-bold uppercase tracking-[0.1em] text-brand-ink-soft">Communication packages</h2>
+            <button
+              onClick={() => onUpdate(generateCommunicationPackage(record))}
+              className="inline-flex items-center gap-1.5 rounded-full border border-brand-blush px-3 py-1.5 font-sans text-xs font-semibold text-brand-ink-soft hover:bg-brand-blush/30"
+            >
+              <Mail className="h-3.5 w-3.5" aria-hidden />
+              Draft one
+            </button>
+          </div>
+          {record.communicationPackages.length === 0 ? (
+            <p className="font-sans text-xs text-brand-ink-soft">
+              No drafts yet. Generating one never sends anything — it&apos;s a draft you review and approve.
+            </p>
+          ) : (
+            <ul className="space-y-3">
+              {record.communicationPackages.map((pkg) => (
+                <li key={pkg.id} className="rounded-xl border border-brand-blush/60 bg-brand-cream/50 p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="font-sans text-sm font-bold text-brand-ink">
+                      {pkg.subject} <span className="font-normal text-brand-ink-soft">· {pkg.audience}</span>
+                    </p>
+                    {pkg.approvedAt ? (
+                      <span className="shrink-0 rounded-full bg-brand-green/10 px-2.5 py-0.5 font-sans text-[10px] font-bold text-brand-green-dark">
+                        Approved
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => onUpdate(approveCommunicationPackage(record, pkg.id))}
+                        className="shrink-0 rounded-full bg-brand-green px-3 py-1 font-sans text-[10px] font-bold text-white hover:bg-brand-green-dark"
+                      >
+                        Approve
+                      </button>
+                    )}
+                  </div>
+                  <pre className="mt-2 whitespace-pre-wrap font-sans text-xs leading-relaxed text-brand-ink-soft">{pkg.body}</pre>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      ) : null}
 
       <section className="mb-8 flex flex-wrap gap-2">
         {record.status !== "in-progress" && record.status !== "installed" ? (
