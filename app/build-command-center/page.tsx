@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { Suspense } from "react"
 import { BuildCommandCenterClient } from "@/components/build-command-center/build-command-center-client"
 
 export const metadata: Metadata = {
@@ -8,5 +9,9 @@ export const metadata: Metadata = {
 }
 
 export default function BuildCommandCenterPage() {
-  return <BuildCommandCenterClient />
+  return (
+    <Suspense>
+      <BuildCommandCenterClient />
+    </Suspense>
+  )
 }
