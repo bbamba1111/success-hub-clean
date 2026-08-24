@@ -135,7 +135,7 @@ export function DecideIdentitySpace() {
       )}
 
       {/* ── 1. This Week's Menu — Weekly Data Review ─────────────────────── */}
-      <div className="rounded-3xl border border-[#7FB069]/25 bg-[#F7FBF4] px-6 py-5 sm:px-7 sm:py-6">
+      <div className="rounded-3xl border border-[#E8DFE2] bg-white px-6 py-5 sm:px-7 sm:py-6">
         <div className="mb-2 flex items-center gap-2">
           <Compass className="h-4 w-4 text-[#5A7A45]" aria-hidden />
           <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5A7A45]">
@@ -178,8 +178,8 @@ export function DecideIdentitySpace() {
                 onClick={() => setIdentity(label)}
                 className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-2 font-sans text-sm transition-colors ${
                   selected
-                    ? "border-[#7FB069] bg-[#7FB069] text-white"
-                    : "border-[#7FB069]/30 bg-[#F7FBF4] text-[#3A2E33] hover:bg-[#7FB069]/10"
+                    ? "border-[#8DAE72] bg-[#8DAE72] text-white"
+                    : "border-[#E5E5E5] bg-white text-[#2E1F27] hover:bg-[#F4F7F0]"
                 }`}
               >
                 {label}
@@ -196,7 +196,7 @@ export function DecideIdentitySpace() {
             onChange={(e) => setCustomIdentity(e.target.value)}
             onBlur={() => customIdentity.trim() && setIdentity(customIdentity.trim())}
             placeholder="Or write your own identity statement…"
-            className="min-w-[10rem] flex-1 rounded-full border border-[#E8DFE2] bg-white px-4 py-2 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#7FB069]/30"
+            className="min-w-[10rem] flex-1 rounded-full border border-[#E8DFE2] bg-white px-4 py-2 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
           />
         </div>
       </div>
@@ -216,7 +216,7 @@ export function DecideIdentitySpace() {
           onChange={(e) => setBoundary(e.target.value)}
           placeholder="e.g. No client calls after 3pm. I leave my desk for lunch. I say no to new requests today."
           rows={3}
-          className="w-full rounded-2xl border border-[#E8DFE2] bg-white px-4 py-3 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#7FB069]/30"
+          className="w-full rounded-2xl border border-[#E8DFE2] bg-white px-4 py-3 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
         />
       </div>
 

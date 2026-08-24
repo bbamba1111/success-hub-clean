@@ -33,7 +33,7 @@ const STATUS_OPTIONS: { value: CeoActivityStatus; label: string }[] = [
 
 const STATUS_COLOR: Record<CeoActivityStatus, string> = {
   "not-started": "border-[#E8DFE2] bg-white text-[#6B5860]",
-  "in-progress": "border-[#7FB069] bg-[#7FB069] text-white",
+  "in-progress": "border-[#8DAE72] bg-[#8DAE72] text-white",
   complete: "border-[#5A7A45] bg-[#5A7A45] text-white",
   blocked: "border-[#C13B6B] bg-[#C13B6B] text-white",
   waiting: "border-[#E8A24C] bg-[#E8A24C] text-white",
@@ -95,7 +95,7 @@ export function TodaysCeoWorkdayCard() {
         </div>
       )}
 
-      <div className="rounded-3xl border border-[#7FB069]/25 bg-[#F7FBF4] px-6 py-5 sm:px-7 sm:py-6 space-y-4">
+      <div className="rounded-3xl border border-[#E8DFE2] bg-white px-6 py-5 sm:px-7 sm:py-6 space-y-4">
         <div className="flex items-center justify-between">
           <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5A7A45]">
             Today&apos;s CEO Workday™ Activities
@@ -116,7 +116,7 @@ export function TodaysCeoWorkdayCard() {
             </p>
             <a
               href="/?openSpace=daily-planning-gps"
-              className="mt-3 inline-flex items-center rounded-full border border-[#7FB069]/30 bg-white px-4 py-2 font-sans text-xs font-semibold text-[#3A2E33] transition-colors hover:bg-[#7FB069]/10"
+              className="mt-3 inline-flex items-center rounded-full border border-[#8DAE72]/40 bg-white px-4 py-2 font-sans text-xs font-semibold text-[#3A2E33] transition-colors hover:bg-[#F4F7F0]"
             >
               Decide it in Decide & Design™
             </a>
@@ -144,7 +144,7 @@ export function TodaysCeoWorkdayCard() {
                   </div>
 
                   {classification.buildsAsset ? (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-[#7FB069]/15 px-2.5 py-0.5 font-montserrat text-[9px] font-bold uppercase tracking-[0.12em] text-[#5A7A45]">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-[#8DAE72]/15 px-2.5 py-0.5 font-montserrat text-[9px] font-bold uppercase tracking-[0.12em] text-[#5A7A45]">
                       <Sparkles className="h-3 w-3" aria-hidden />
                       Builds an Asset™
                     </span>
@@ -198,7 +198,7 @@ export function TodaysCeoWorkdayCard() {
                           {derivatives.map((d) => (
                             <span
                               key={d}
-                              className="inline-flex items-center rounded-full border border-[#7FB069]/30 bg-[#F7FBF4] px-3 py-1 font-sans text-xs text-[#3A2E33]"
+                              className="inline-flex items-center rounded-full border border-[#E5E5E5] bg-white px-3 py-1 font-sans text-xs text-[#3A2E33]"
                             >
                               {d}
                             </span>
