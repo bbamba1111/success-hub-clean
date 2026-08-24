@@ -18,6 +18,7 @@ import { PowerDownReleaseCard } from "@/components/daily-plan/power-down-release
 import { SoundRitual } from "@/components/sound-ritual"
 import { useActiveSpace } from "@/components/active-space-provider"
 import { SPACE_LABEL } from "@/operating-engine/config/space-labels"
+import { SEGMENT_INNER_BG, SEGMENT_SAGE_OUTER, type SegmentInnerTone } from "@/lib/segment-theme"
 
 export type BlockStatus = "current" | "upcoming" | "completed"
 
@@ -57,12 +58,20 @@ export interface BusinessDayBlockProps {
    *  CTA are hidden entirely rather than opening onto an empty accordion. */
   isClosed?: boolean
   /**
-   * "green" gives the segment a solid Work-Life Balance green (#7FB069)
-   * background with white text — used for the four Decide → Populate →
-   * Execute segments (Decide & Design™, Movement Window™, Lunch Break™,
-   * CEO Workday™). Everything else keeps the original cream/blush gradient.
+   * "sage" gives the segment the two-layer Daily Operating Segment™ treatment
+   * — a soft sage-green OUTER frame with a lighter INNER content panel
+   * (color set by `innerTone`) — used for the six Decide → Populate →
+   * Execute segments (Decide & Design™, Movement Window™, Lunch Break™, CEO
+   * Workday™, Time Freedom™, Power Down™). Everything else ("default") keeps
+   * the original cream/blush gradient, single flat layer.
    */
-  theme?: "default" | "green"
+  theme?: "default" | "sage"
+  /**
+   * The INNER content panel's color when `theme="sage"`. "white" for the
+   * four daytime segments, "warm" for Time Freedom™, "evening" for Power
+   * Down™. Ignored when `theme="default"`.
+   */
+  innerTone?: SegmentInnerTone
 }
 
 const STATUS_LABEL: Record<BlockStatus, string> = {
@@ -77,16 +86,15 @@ const STATUS_BADGE: Record<BlockStatus, string> = {
   completed: "bg-black/10 text-[#6B5860]",
 }
 
-const STATUS_BADGE_GREEN: Record<BlockStatus, string> = {
-  current: "bg-white text-[#4C6B3B]",
-  upcoming: "bg-white/20 text-white",
-  completed: "bg-white/15 text-white/80",
+/** The Power Down™ evening panel is dark, so its status badges need a light variant — every other tone (white/warm/default) uses STATUS_BADGE above. */
+const STATUS_BADGE_EVENING: Record<BlockStatus, string> = {
+  current: "bg-white text-[#2C4442]",
+  upcoming: "bg-white/15 text-white/80",
+  completed: "bg-white/10 text-white/60",
 }
 
 const CREAM_GRADIENT = "linear-gradient(135deg, #FDF6F0 0%, #FBF0F4 40%, #F0F5EE 70%, #FDFAF6 100%)"
 const SOLID_GREEN = "#7FB069"
-/** Soft, legible tint for the expanded accordion body on green-themed segments — the existing dark-text content inside (identity pickers, music, etc.) still assumes a light surface. */
-const SOFT_GREEN_SURFACE = "#EAF3E4"
 
 /** These 5 segments now get a dedicated "Today's X" card (reading Today's Plan™) instead of the old generic Operating Planner™ chip-picker flow. `daily-planning-gps` was already excluded — it renders `DecideIdentitySpace` instead. */
 const LEGACY_PLANNER_EXCLUDED_IDS = new Set([
@@ -129,9 +137,17 @@ export function BusinessDayBlock({
   aboutContent,
   isClosed = false,
   theme = "default",
+  innerTone = "white",
 }: BusinessDayBlockProps) {
   const isCurrent = status === "current"
-  const isGreen = theme === "green"
+  const isSage = theme === "sage"
+  // For the "default" theme the inner panel is simply the same cream
+  // gradient as the outer frame, so no visible seam/frame appears — this
+  // keeps every non-sage segment (morning-given, the Monday-only blocks,
+  // digital-detox, etc.) pixel-identical to before.
+  const outerBg = isSage ? SEGMENT_SAGE_OUTER : CREAM_GRADIENT
+  const innerBg = isSage ? SEGMENT_INNER_BG[innerTone] : CREAM_GRADIENT
+  const isEvening = isSage && innerTone === "evening"
   const showProgress = isCurrent && typeof segmentProgress === "number"
   const [open, setOpen] = useState(false)
   const [showAbout, setShowAbout] = useState(false)
@@ -194,8 +210,20 @@ export function BusinessDayBlock({
               ? "ring-2 ring-[#7FB069] ring-offset-2 ring-offset-[#F5F1E8]"
               : ""
         }`}
-        style={{ background: isGreen ? SOLID_GREEN : CREAM_GRADIENT }}
+        style={{ background: outerBg }}
       >
+
+        {/*
+         * LAYER 2 — the inner content panel. For "sage" segments this floats
+         * inset from the outer edges (revealing the sage OUTER frame as a
+         * border on all sides); for "default" segments the margin is 0 and
+         * this background matches the outer exactly, so nothing visually
+         * changes from before.
+         */}
+        <div
+          className={`relative ${isSage ? "m-2 overflow-hidden rounded-[1.6rem] sm:m-2.5 sm:rounded-[1.75rem]" : ""}`}
+          style={{ background: innerBg }}
+        >
 
         {/* Segment progress — thin bar showing how much of the in-session block remains */}
         {showProgress && (
@@ -219,7 +247,7 @@ export function BusinessDayBlock({
           {/* Left content panel — 42% tablet, 34–38% desktop, capped at 600px */}
           <div
             className="flex items-center px-5 py-6 sm:px-8 md:w-[42%] md:max-w-[600px] md:px-10 lg:w-[36%]"
-            style={{ background: isGreen ? SOLID_GREEN : CREAM_GRADIENT }}
+            style={{ background: innerBg }}
           >
             <div className="w-full">
               <div className="mb-2.5 flex flex-wrap items-center gap-2.5">
@@ -249,19 +277,19 @@ export function BusinessDayBlock({
                 })() : (
                   <span
                     className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] ${
-                      isGreen ? STATUS_BADGE_GREEN[status] : STATUS_BADGE[status]
+                      isEvening ? STATUS_BADGE_EVENING[status] : STATUS_BADGE[status]
                     }`}
                   >
                     {STATUS_LABEL[status]}
                   </span>
                 )}
-                <span className={`text-xs font-semibold uppercase tracking-[0.18em] ${isGreen ? "text-white/85" : "text-[#6B5860]"}`}>
+                <span className={`text-xs font-semibold uppercase tracking-[0.18em] ${isEvening ? "text-white/75" : "text-[#6B5860]"}`}>
                   {time}
                 </span>
                 {isCurrent && segmentRemaining && (
                   <span
                     className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] ${
-                      isGreen ? "bg-white/20 text-white" : "bg-[#7FB069]/15 text-[#5A7A45]"
+                      isEvening ? "bg-white/15 text-white" : "bg-[#7FB069]/15 text-[#5A7A45]"
                     }`}
                   >
                     {segmentRemaining}
@@ -271,7 +299,7 @@ export function BusinessDayBlock({
 
               <h3
                 className={`font-playfair text-xl font-medium leading-tight text-balance sm:text-2xl ${
-                  isGreen ? "text-white" : "text-[#3A2E33]"
+                  isEvening ? "text-white" : "text-[#3A2E33]"
                 }`}
               >
                 {emoji ? <span className="mr-2">{emoji}</span> : null}
@@ -280,7 +308,7 @@ export function BusinessDayBlock({
 
               <div
                 className={`mt-2 line-clamp-2 text-pretty text-sm leading-relaxed ${
-                  isGreen ? "text-white/85" : "text-[#5C4F55]"
+                  isEvening ? "text-white/80" : "text-[#5C4F55]"
                 }`}
               >
                 {description}
@@ -305,11 +333,7 @@ export function BusinessDayBlock({
                         setOpen(true)
                       }
                     }}
-                    className={
-                      isGreen
-                        ? "animate-[pulse_2.4s_ease-in-out_infinite] bg-white text-[#4C6B3B] hover:bg-white/90"
-                        : "animate-[pulse_2.4s_ease-in-out_infinite] bg-[#7FB069] text-white hover:bg-[#6FA058]"
-                    }
+                    className="animate-[pulse_2.4s_ease-in-out_infinite] bg-[#7FB069] text-white hover:bg-[#6FA058]"
                   >
                     {buttonText}
                   </Button>
@@ -336,7 +360,7 @@ export function BusinessDayBlock({
             {/* Soft ~48px horizontal fade blending the panel into the photography (desktop only) */}
             <div
               className="pointer-events-none absolute inset-y-0 left-0 hidden w-12 md:block"
-              style={{ background: `linear-gradient(90deg, ${isGreen ? SOLID_GREEN : "#FDF6F0"} 0%, transparent 100%)` }}
+              style={{ background: `linear-gradient(90deg, ${isSage ? innerBg : "#FDF6F0"} 0%, transparent 100%)` }}
             />
           </div>
         </div>
@@ -350,7 +374,7 @@ export function BusinessDayBlock({
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
             className={`flex w-full items-center justify-center gap-1.5 border-t py-3 font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] transition-colors ${
-              isGreen
+              isEvening
                 ? "border-white/15 text-white/75 hover:bg-white/10"
                 : "border-black/[0.06] text-[#6B5860]/60 hover:bg-black/[0.02]"
             }`}
@@ -367,13 +391,13 @@ export function BusinessDayBlock({
           </button>
         )}
 
-        {/* 3-part expandable body — green-themed segments get a soft light
-            surface here (not the solid brand green) so the existing dark-text
-            content inside (identity pickers, music, etc.) stays legible. */}
+        {/* 3-part expandable body — stays on the same INNER panel color
+            (white/warm/evening) as the hero above it, so the whole segment
+            reads as one continuous content space inside the sage frame. */}
         {!isClosed && open && (
           <div
-            className="border-t border-black/[0.06]"
-            style={isGreen ? { background: SOFT_GREEN_SURFACE } : undefined}
+            className={`border-t ${isEvening ? "border-white/10" : "border-black/[0.06]"}`}
+            style={{ background: innerBg }}
           >
 
             {/* Reflection Space™ — guided Work-Life Balance Reality Check™ for Monday */}
@@ -445,19 +469,23 @@ export function BusinessDayBlock({
                   </a>
                 </div>
 
-                <div className="mx-7 border-t border-black/[0.05]" />
+                <div className={`mx-7 border-t ${isEvening ? "border-white/10" : "border-black/[0.05]"}`} />
               </>
             )}
 
             {/* Sound Ritual™ — curated ambient soundscapes per segment. Removed
-                from the 6 segments in SOUND_RITUAL_EXCLUDED_IDS; kept everywhere else. */}
-            {blockId && !SOUND_RITUAL_EXCLUDED_IDS.has(blockId) && <SoundRitual blockId={blockId} />}
+                from the 6 segments in SOUND_RITUAL_EXCLUDED_IDS; kept everywhere else.
+                Passes "evening" so its text/hover states stay legible on Power
+                Down™'s dusk-teal panel — every other tone is unaffected. */}
+            {blockId && !SOUND_RITUAL_EXCLUDED_IDS.has(blockId) && (
+              <SoundRitual blockId={blockId} surface={isEvening ? "evening" : "light"} />
+            )}
 
-            <div className="mx-7 border-t border-black/[0.05]" />
+            <div className={`mx-7 border-t ${isEvening ? "border-white/10" : "border-black/[0.05]"}`} />
 
             {/* Row 2 — Music */}
             <div className="px-7 py-5">
-              <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/50 mb-3">
+              <p className={`font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] mb-3 ${isEvening ? "text-white/60" : "text-[#6B5860]/50"}`}>
                 Music
               </p>
               <div className="flex flex-col gap-1" role="group" aria-label="Music options">
@@ -478,7 +506,9 @@ export function BusinessDayBlock({
                       className={`w-fit text-left rounded-lg px-4 py-2 font-sans text-sm font-medium transition-colors ${
                         selected
                           ? "bg-[#7FB069] text-white shadow-sm"
-                          : "text-[#5C4F55] hover:bg-black/[0.04]"
+                          : isEvening
+                            ? "text-white/75 hover:bg-white/10"
+                            : "text-[#5C4F55] hover:bg-black/[0.04]"
                       }`}
                     >
                       {label}
@@ -502,7 +532,7 @@ export function BusinessDayBlock({
               )}
             </div>
 
-            <div className="mx-7 border-t border-black/[0.05]" />
+            <div className={`mx-7 border-t ${isEvening ? "border-white/10" : "border-black/[0.05]"}`} />
 
             {/* Row 3 — About This Segment */}
             <div>
@@ -510,20 +540,20 @@ export function BusinessDayBlock({
                 type="button"
                 aria-expanded={showAbout}
                 onClick={() => setShowAbout((v) => !v)}
-                className="flex w-full items-center gap-2 px-7 py-4 text-left transition-colors hover:bg-black/[0.02]"
+                className={`flex w-full items-center gap-2 px-7 py-4 text-left transition-colors ${isEvening ? "hover:bg-white/5" : "hover:bg-black/[0.02]"}`}
               >
                 <ChevronDown
-                  className={`h-4 w-4 text-[#6B5860]/40 transition-transform duration-200 ${showAbout ? "rotate-180" : ""}`}
+                  className={`h-4 w-4 transition-transform duration-200 ${showAbout ? "rotate-180" : ""} ${isEvening ? "text-white/50" : "text-[#6B5860]/40"}`}
                   aria-hidden
                 />
-                <span className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/50">
+                <span className={`font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] ${isEvening ? "text-white/60" : "text-[#6B5860]/50"}`}>
                   About This Segment
                 </span>
               </button>
               {showAbout && (
-                <div className="px-7 pb-7 pt-4 border-t border-black/[0.05] space-y-4">
+                <div className={`px-7 pb-7 pt-4 border-t space-y-4 ${isEvening ? "border-white/10" : "border-black/[0.05]"}`}>
                   {aboutContent ?? (
-                    <div className="text-sm leading-relaxed text-[#5C4F55]">{description}</div>
+                    <div className={`text-sm leading-relaxed ${isEvening ? "text-white/80" : "text-[#5C4F55]"}`}>{description}</div>
                   )}
                 </div>
               )}
@@ -531,6 +561,9 @@ export function BusinessDayBlock({
 
           </div>
         )}
+
+        </div>
+        {/* end LAYER 2 — inner content panel */}
 
       </motion.div>
     </section>

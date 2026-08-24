@@ -295,11 +295,15 @@ function storageKey(blockId: string) {
 
 interface SoundRitualProps {
   blockId: string
+  /** "evening" lightens all text/hover states for Power Down™'s dusk-teal
+   *  content panel — the default "light" surface is unchanged everywhere else. */
+  surface?: "light" | "evening"
 }
 
 type PlayState = "idle" | "playing"
 
-export function SoundRitual({ blockId }: SoundRitualProps) {
+export function SoundRitual({ blockId, surface = "light" }: SoundRitualProps) {
+  const isEvening = surface === "evening"
   const options = getSoundscapes(blockId)
   const nonSilent = options.filter((s) => s.id !== "silent")
 
@@ -396,10 +400,10 @@ export function SoundRitual({ blockId }: SoundRitualProps) {
       {/* Header */}
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/50">
+          <p className={`font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] ${isEvening ? "text-white/60" : "text-[#6B5860]/50"}`}>
             Sound Ritual™
           </p>
-          <p className="mt-0.5 text-[12px] leading-relaxed text-[#6B5860]/60">
+          <p className={`mt-0.5 text-[12px] leading-relaxed ${isEvening ? "text-white/50" : "text-[#6B5860]/60"}`}>
             Choose the environment that will support you during this Operating Segment™.
           </p>
         </div>
@@ -433,9 +437,15 @@ export function SoundRitual({ blockId }: SoundRitualProps) {
               className={`flex items-center gap-2 rounded-xl px-3 py-2.5 text-left text-[12px] font-medium transition-all duration-150 ${
                 isSelected
                   ? isSilent
-                    ? "bg-[#F0ECE8] text-[#6B5860] ring-1 ring-[#C8B89A]/60"
-                    : "bg-[#7FB069]/12 text-[#3A6B47] ring-1 ring-[#7FB069]/40 shadow-sm"
-                  : "text-[#5C4F55] hover:bg-black/[0.03] hover:text-[#3A2E33]"
+                    ? isEvening
+                      ? "bg-white/15 text-white ring-1 ring-white/25"
+                      : "bg-[#F0ECE8] text-[#6B5860] ring-1 ring-[#C8B89A]/60"
+                    : isEvening
+                      ? "bg-[#7FB069]/25 text-[#C8ECBB] ring-1 ring-[#7FB069]/50 shadow-sm"
+                      : "bg-[#7FB069]/12 text-[#3A6B47] ring-1 ring-[#7FB069]/40 shadow-sm"
+                  : isEvening
+                    ? "text-white/75 hover:bg-white/10 hover:text-white"
+                    : "text-[#5C4F55] hover:bg-black/[0.03] hover:text-[#3A2E33]"
               }`}
             >
               <span className="text-[14px] leading-none shrink-0" aria-hidden>{s.emoji}</span>
@@ -477,7 +487,7 @@ export function SoundRitual({ blockId }: SoundRitualProps) {
             className="h-1 flex-1 cursor-pointer appearance-none rounded-full bg-[#D9E8D2] accent-[#7FB069]"
           />
 
-          <span className="font-montserrat text-[10px] text-[#6B5860]/50 tabular-nums">
+          <span className={`font-montserrat text-[10px] tabular-nums ${isEvening ? "text-white/50" : "text-[#6B5860]/50"}`}>
             {Math.round(volume * 100)}%
           </span>
         </div>
@@ -499,7 +509,7 @@ export function SoundRitual({ blockId }: SoundRitualProps) {
               onChange={toggleRemember}
               className="h-3.5 w-3.5 rounded accent-[#7FB069] cursor-pointer"
             />
-            <span className="font-montserrat text-[10px] uppercase tracking-[0.14em] text-[#6B5860]/60">
+            <span className={`font-montserrat text-[10px] uppercase tracking-[0.14em] ${isEvening ? "text-white/60" : "text-[#6B5860]/60"}`}>
               Remember for this segment
             </span>
           </label>
