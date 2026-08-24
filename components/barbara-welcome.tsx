@@ -3,6 +3,7 @@
 import { motion } from "framer-motion"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
 import { EnterSpaceButton } from "@/components/enter-space-button"
+import { FounderMediaSurface } from "@/components/founder-media-surface"
 
 
 /** Per-block live coaching messages from Barbara. */
@@ -90,29 +91,22 @@ const DEFAULT_COACHING = {
   },
 }
 
-/** Returns the proper time-of-day salutation based on minutes-since-midnight. */
-function getSalutation(minutes: number): string {
-  if (minutes >= 22 * 60 || minutes < 5 * 60) return "Good Night"
-  if (minutes < 12 * 60) return "Good Morning"
-  if (minutes < 17 * 60) return "Good Afternoon"
-  return "Good Evening"
-}
-
 export function BarbaraWelcome() {
   const experience = useOperatingEngine()
   const blockId = experience?.businessDay.current.id ?? ""
   const coaching = BLOCK_COACHING[blockId] ?? DEFAULT_COACHING
-  const firstName = experience?.member.firstName ?? "Friend"
-  const minutes = experience?.time.minutesSinceMidnight ?? new Date().getHours() * 60 + new Date().getMinutes()
-  const salutation = getSalutation(minutes)
-  const greeting = `${salutation}, ${firstName}`
+  // The Member Engine's Cherry Blossom™ greeting is the single source of truth
+  // for "Good Morning/Afternoon/Evening/Night, [preferred name]" — it already
+  // resolves the founder's preferred name → first name → safe "Friend" fallback,
+  // and it's the same string every other greeting site in the app reads.
+  const greeting = experience?.member.greeting ?? "Good Morning, Friend"
 
   return (
     <section className="w-full bg-[#FDFAF5]">
 
       {/* ── Two-column intro ── */}
-      <div className="mx-auto max-w-[1320px] px-6 pb-12 pt-20 sm:px-10 sm:pb-14 sm:pt-24 lg:px-16 lg:pb-16 lg:pt-28">
-        <div className="flex flex-col items-start gap-14 lg:flex-row lg:items-start lg:gap-20">
+      <div className="mx-auto max-w-[1320px] px-6 pb-12 pt-16 sm:px-10 sm:pb-14 sm:pt-20 lg:px-16 lg:pb-16 lg:pt-24">
+        <div className="flex flex-col items-start gap-12 lg:flex-row lg:items-center lg:gap-16">
 
           {/* Left column — 60% — coaching front and center */}
           <motion.div
@@ -122,13 +116,13 @@ export function BarbaraWelcome() {
             transition={{ duration: 0.65, ease: "easeOut" }}
             className="flex min-w-0 flex-1 flex-col"
           >
-            {/* Personalized greeting */}
-            <p className="font-playfair text-[20px] italic text-[#78AD7D] sm:text-[22px]">
+            {/* Personalized greeting — the strongest typographic element in the hero */}
+            <p className="font-playfair text-[30px] font-semibold italic leading-tight tracking-tight text-[#78AD7D] sm:text-[36px] lg:text-[40px]">
               {greeting}
             </p>
 
             {/* Coaching message — front and center */}
-            <p className="mt-4 max-w-[580px] font-montserrat text-[15px] leading-[1.7] text-[#4A3A42]">
+            <p className="mt-3 max-w-[580px] font-montserrat text-[15px] leading-[1.7] text-[#4A3A42]">
               {coaching.message}
             </p>
 
@@ -152,27 +146,19 @@ export function BarbaraWelcome() {
             </div>
           </motion.div>
 
-          {/* Right column — 40% portrait */}
+          {/* Right column — Founder Live Media Surface (portrait when offline, live video when broadcasting) */}
           <motion.div
             initial={{ opacity: 0, x: 24 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, ease: "easeOut", delay: 0.15 }}
-            className="flex w-full shrink-0 justify-center lg:w-[40%] lg:justify-end"
+            className="flex w-full shrink-0 justify-center lg:w-[36%] lg:justify-end"
           >
-            <div
-              className="w-full max-w-[300px] overflow-hidden rounded-[2rem] sm:max-w-[340px] lg:max-w-[380px]"
-              style={{
-                boxShadow: "0 20px 60px rgba(193,59,107,0.13), 0 4px 18px rgba(0,0,0,0.07)",
-                aspectRatio: "3/4",
-              }}
-            >
-              <img
-                src="/images/barbara-live-portrait.png"
-                alt="Thought Leader Barbara \u2014 Founder of Harmony Lane\u2122"
-                className="h-full w-full object-cover object-top"
-              />
-            </div>
+            <FounderMediaSurface
+              portraitSrc="/images/barbara-live-portrait.png"
+              portraitAlt="Thought Leader Barbara \u2014 Founder of Harmony Lane\u2122"
+              className="w-full max-w-[260px] sm:max-w-[290px] lg:max-w-[330px]"
+            />
           </motion.div>
 
         </div>
