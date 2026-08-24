@@ -27,9 +27,6 @@ function scrollToOperatingPlanner() {
   document.getElementById("operating-planner")?.scrollIntoView({ behavior: "smooth", block: "start" })
 }
 
-/** The 4 segments that get the solid green/white Work-Life Balance theme. `time-freedom` and `power-down` keep their original cream/blush styling. */
-const GREEN_THEME_BLOCK_IDS = new Set(["daily-planning-gps", "movement-window", "lunch-break", "ceo-workday"])
-
 /**
  * Elapsed progress (0–100) and a human "time left" label for a segment,
  * given the current minutes-since-midnight. Handles the block that wraps
@@ -160,7 +157,6 @@ export function BusinessDaySchedule() {
                 buttonText={block.mondayOnly ? block.cta : "Continue Segment™"}
                 status={state}
                 blockId={block.id}
-                theme={GREEN_THEME_BLOCK_IDS.has(block.id) ? "green" : "default"}
                 isClosed={block.engagement === "closed"}
                 description={block.description}
                 onTransition={
