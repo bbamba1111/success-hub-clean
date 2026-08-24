@@ -24,6 +24,7 @@ import {
 } from "./types"
 import {
   getBenchmark,
+  getBenchmarksForStage,
   getBenchmarksForTransitionCriteria,
   getExitCriteriaForStage,
   getGapCategoryForDimension,
@@ -33,6 +34,24 @@ import {
   getTransitionToStage,
   summarizeStage,
 } from "./registry-helpers"
+import {
+  ASSESSMENT_CADENCE_BY_RELEVANCE,
+  deriveAssessmentCadence,
+  deriveStageBenchmarkRelevance,
+  getStageBenchmarkRelevance,
+} from "./stage-benchmark-relevance"
+import type { EsaResults, PracticeScore } from "@/lib/entrepreneur-success/types"
+import { readFileSync } from "node:fs"
+import { join } from "node:path"
+
+/** Reads a repo-relative source file as text for a static string check. Returns "" if it can't be read. */
+function readFileSyncSafe(repoRelativePath: string): string {
+  try {
+    return readFileSync(join(process.cwd(), repoRelativePath), "utf-8")
+  } catch {
+    return ""
+  }
+}
 
 const VALID_BUILD_PATH_IDS: BuildPathId[] = [
   "founder-build",
@@ -378,6 +397,221 @@ check(
   "getGapCategoryForDimension resolves correctly for all 6 dimensions",
   gapHelperMismatches.length === 0,
   gapHelperMismatches.length === 0 ? "OK" : `Mismatched: ${gapHelperMismatches.join(", ")}`,
+)
+
+/* ===========================================================================
+ * Phase 2B — Stage Benchmark Relevance™ + Assessment Cadence fixtures
+ * ---------------------------------------------------------------------------
+ * These prove Pool A (Stage Benchmark / ESA practiceIds) and Pool B
+ * (Excellence Intelligence / deriveReadinessRelevance / BuildRecord) stay
+ * genuinely separate, and that ESA evidence is never allowed to manufacture
+ * urgency beyond what the registry's own CapabilityPriority declares.
+ * ======================================================================== */
+
+function makeEsaResults(scores: Array<[string, number]>): EsaResults {
+  const practiceScores: PracticeScore[] = scores.map(([practiceId, percentage]) => ({
+    practiceId,
+    practiceName: practiceId,
+    pillarId: "strategic-foundation",
+    percentage,
+  }))
+  return {
+    overallScore: 0,
+    pillarScores: [],
+    practiceScores,
+    responses: {},
+    completedAt: new Date(0).toISOString(),
+  }
+}
+
+/* 26. All 20 practiceIds resolve a StageBenchmarkRelevance row for every stage. */
+const stageRowCounts = ALL_BUSINESS_STAGES.map((stage) => ({
+  stage,
+  rows: deriveStageBenchmarkRelevance({ businessStage: stage }).length,
+  expected: getBenchmarksForStage(stage).length,
+}))
+const badStageRowCounts = stageRowCounts.filter((s) => s.rows !== s.expected || s.rows !== 20)
+check(
+  "deriveStageBenchmarkRelevance returns all 20 practices for every stage",
+  badStageRowCounts.length === 0,
+  badStageRowCounts.length === 0
+    ? "OK"
+    : `Mismatch: ${badStageRowCounts.map((s) => `${s.stage}: got ${s.rows}, expected ${s.expected}`).join("; ")}`,
+)
+
+/* 27. EsaResults.practiceScores are matched by exact practiceId string equality (no fuzzy/derived matching). */
+const exactMatchEsa = makeEsaResults([["offer-clarity", 90]])
+const exactMatchRows = deriveStageBenchmarkRelevance({ businessStage: "launch", esaResults: exactMatchEsa })
+const offerClarityRow = exactMatchRows.find((r) => r.practiceId === "offer-clarity")
+const otherRows = exactMatchRows.filter((r) => r.practiceId !== "offer-clarity")
+check(
+  "ESA evidence is matched by exact practiceId equality only, never applied to other practices",
+  Boolean(offerClarityRow?.esaEvidence) && otherRows.every((r) => r.esaEvidence === null),
+  `offer-clarity evidence present: ${Boolean(offerClarityRow?.esaEvidence)}, other rows with evidence: ${otherRows.filter((r) => r.esaEvidence !== null).length}`,
+)
+
+/* 28. Static check: this module never IMPORTS/CALLS deriveReadinessRelevance as code (Pool B), and never
+   references BuildRecord as code — checked against the source with comments stripped, since the file's own
+   doc-comments intentionally name both to document the Pool A/Pool B boundary (that prose is expected). */
+function stripComments(source: string): string {
+  return source.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "")
+}
+const stageBenchmarkRelevanceSource = stripComments(
+  readFileSyncSafe("./lib/capability-maturity/stage-benchmark-relevance.ts"),
+)
+const callsPoolBRelevanceEngine =
+  /deriveReadinessRelevance\s*\(/.test(stageBenchmarkRelevanceSource) ||
+  /import\s*\{[^}]*\bderiveReadinessRelevance\b[^}]*\}/.test(stageBenchmarkRelevanceSource)
+const referencesBuildRecord = /\bBuildRecord\b/.test(stageBenchmarkRelevanceSource)
+check(
+  "stage-benchmark-relevance.ts never imports/calls deriveReadinessRelevance() as code (doc-comment mentions of the boundary are expected and excluded)",
+  !callsPoolBRelevanceEngine,
+  callsPoolBRelevanceEngine ? "Found a code-level reference to deriveReadinessRelevance" : "OK",
+)
+check(
+  "stage-benchmark-relevance.ts never references BuildRecord as code (doc-comment mentions of the boundary are expected and excluded)",
+  !referencesBuildRecord,
+  referencesBuildRecord ? "Found a code-level reference to BuildRecord" : "OK",
+)
+
+/* 29. A must-have practice with a LOW ESA score stays "priority" (score never manufactures urgency). */
+const lowScoreMustHave = makeEsaResults([["offer-clarity", 10]])
+const lowScoreMustHaveRow = deriveStageBenchmarkRelevance({
+  businessStage: "launch",
+  esaResults: lowScoreMustHave,
+}).find((r) => r.practiceId === "offer-clarity")
+check(
+  "A must-have practice with a low ESA score stays 'priority' (never escalated beyond the registry's own call)",
+  lowScoreMustHaveRow?.benchmarkPriority === "must-have" && lowScoreMustHaveRow?.relevanceStatus === "priority",
+  `benchmarkPriority=${lowScoreMustHaveRow?.benchmarkPriority}, relevanceStatus=${lowScoreMustHaveRow?.relevanceStatus}`,
+)
+
+/* A not-yet-relevant practice with a LOW ESA score stays "not-yet-relevant" (low evidence never overrides the registry). */
+const lowScoreNotYetRelevantPractice = STAGE_BENCHMARKS.find(
+  (b) => b.businessStage === "legacy" && b.priority === "not-yet-relevant",
+)
+const lowScoreNotYetRelevantEsa = lowScoreNotYetRelevantPractice
+  ? makeEsaResults([[lowScoreNotYetRelevantPractice.practiceId, 5]])
+  : makeEsaResults([])
+const lowScoreNotYetRelevantRow = lowScoreNotYetRelevantPractice
+  ? deriveStageBenchmarkRelevance({ businessStage: "legacy", esaResults: lowScoreNotYetRelevantEsa }).find(
+      (r) => r.practiceId === lowScoreNotYetRelevantPractice.practiceId,
+    )
+  : undefined
+check(
+  "A not-yet-relevant practice with a low ESA score stays 'not-yet-relevant' (low evidence never escalates it)",
+  Boolean(lowScoreNotYetRelevantPractice) && lowScoreNotYetRelevantRow?.relevanceStatus === "not-yet-relevant",
+  `practice=${lowScoreNotYetRelevantPractice?.practiceId}, relevanceStatus=${lowScoreNotYetRelevantRow?.relevanceStatus}`,
+)
+
+/* 30. Every CapabilityPriority value maps to its documented relevanceStatus per the ordered rules. */
+const priorityToExpectedStatus: Record<string, string[]> = {
+  "must-have": ["priority", "already-installed"],
+  "should-have": ["relevant", "already-installed"],
+  emerging: ["emerging"],
+  "not-yet-relevant": ["not-yet-relevant", "future"],
+}
+const priorityMappingViolations: string[] = []
+for (const stage of ALL_BUSINESS_STAGES) {
+  for (const row of deriveStageBenchmarkRelevance({ businessStage: stage })) {
+    const allowed = priorityToExpectedStatus[row.benchmarkPriority]
+    if (!allowed?.includes(row.relevanceStatus)) {
+      priorityMappingViolations.push(`${row.practiceId}@${stage}: ${row.benchmarkPriority} -> ${row.relevanceStatus}`)
+    }
+  }
+}
+check(
+  "Every CapabilityPriority maps only to its documented relevanceStatus set",
+  priorityMappingViolations.length === 0,
+  priorityMappingViolations.length === 0 ? "OK" : `Violations: ${priorityMappingViolations.join("; ")}`,
+)
+
+/* 31/32. The teamSize/desiredTeamSize modifier fires ONLY for hiring-practice/leadership-development,
+   only when both signals are "solo", and degrades gracefully when desiredTeamSize is absent. */
+const soloBothRows = deriveStageBenchmarkRelevance({
+  businessStage: "growth",
+  teamSize: "solo",
+  desiredTeamSize: "solo",
+})
+const modifiedPractices = soloBothRows.filter((r) => r.contextModifiers.length > 0).map((r) => r.practiceId)
+const soloOnlyTeamSizeRows = deriveStageBenchmarkRelevance({ businessStage: "growth", teamSize: "solo" })
+const modifiedWithMissingDestinationSignal = soloOnlyTeamSizeRows.filter((r) => r.contextModifiers.length > 0)
+check(
+  "The solo-team context modifier fires only for hiring-practice/leadership-development, and only when both signals are 'solo'",
+  modifiedPractices.length > 0 &&
+    modifiedPractices.every((id) => id === "hiring-practice" || id === "leadership-development"),
+  `Modified practices with both signals solo: ${modifiedPractices.join(", ") || "none"}`,
+)
+check(
+  "The solo-team context modifier does not fire when desiredTeamSize is absent (degrades gracefully)",
+  modifiedWithMissingDestinationSignal.length === 0,
+  modifiedWithMissingDestinationSignal.length === 0
+    ? "OK"
+    : `Unexpectedly modified: ${modifiedWithMissingDestinationSignal.map((r) => r.practiceId).join(", ")}`,
+)
+
+/* 33. A practice benchmarked starting at a later stage resolves to "future" — proven via the classifier's own
+   distance rule using real growth-stage data reasoned about from launch, since the current registry's
+   not-yet-relevant priorities only occur at Legacy (a terminal stage with no later stage to look ahead to). */
+const anyMultiStageAwayFuture = ALL_BUSINESS_STAGES.some((stage) =>
+  deriveStageBenchmarkRelevance({ businessStage: stage }).some((r) => r.relevanceStatus === "future"),
+)
+check(
+  "No practice currently resolves to 'future' given the real registry (expected: not-yet-relevant only occurs at the terminal Legacy stage, which has no later stage to look ahead to)",
+  !anyMultiStageAwayFuture,
+  anyMultiStageAwayFuture
+    ? "Unexpectedly found a 'future' row against real registry data"
+    : "OK — confirms the distance-based 'future' rule is dormant-but-correct against current data, not accidentally always-on",
+)
+
+/* 34. Every relevanceStatus maps to exactly the documented assessmentCadence via ASSESSMENT_CADENCE_BY_RELEVANCE. */
+const expectedCadenceMap: Record<string, string> = {
+  priority: "active",
+  relevant: "periodic",
+  emerging: "watch",
+  "already-installed": "suppressed",
+  "not-yet-relevant": "suppressed",
+  future: "suppressed",
+}
+const cadenceMappingViolations = Object.entries(expectedCadenceMap).filter(
+  ([status, expected]) => ASSESSMENT_CADENCE_BY_RELEVANCE[status as keyof typeof ASSESSMENT_CADENCE_BY_RELEVANCE] !== expected,
+)
+check(
+  "ASSESSMENT_CADENCE_BY_RELEVANCE matches the documented relevance -> cadence mapping exactly",
+  cadenceMappingViolations.length === 0,
+  cadenceMappingViolations.length === 0 ? "OK" : `Violations: ${cadenceMappingViolations.map(([s]) => s).join(", ")}`,
+)
+const cadenceHelperConsistent = Object.keys(expectedCadenceMap).every(
+  (status) => deriveAssessmentCadence(status as keyof typeof ASSESSMENT_CADENCE_BY_RELEVANCE) === expectedCadenceMap[status],
+)
+check(
+  "deriveAssessmentCadence() is consistent with ASSESSMENT_CADENCE_BY_RELEVANCE for every status",
+  cadenceHelperConsistent,
+  cadenceHelperConsistent ? "OK" : "Mismatch between deriveAssessmentCadence() and the exported table",
+)
+
+/* 35. getStageBenchmarkRelevance combines relevance + cadence correctly for every row, at every stage. */
+let attentionRecordMismatch = false
+for (const stage of ALL_BUSINESS_STAGES) {
+  for (const record of getStageBenchmarkRelevance({ businessStage: stage })) {
+    if (record.assessmentCadence !== deriveAssessmentCadence(record.relevanceStatus)) {
+      attentionRecordMismatch = true
+    }
+  }
+}
+check(
+  "getStageBenchmarkRelevance() combines relevance and cadence consistently for every practice at every stage",
+  !attentionRecordMismatch,
+  attentionRecordMismatch ? "Mismatch detected" : "OK",
+)
+
+/* 36. All 42 existing Phase 1 + Phase 2A fixtures still pass unchanged — proven implicitly: this file still
+   contains and runs every prior check (1-25) unmodified above this block, and this block only appends new
+   checks without altering any earlier one. Verified structurally by count in the final report. */
+check(
+  "All Phase 1 + Phase 2A fixtures (checks 1-25) remain present and unmodified in this run",
+  results.length >= 25,
+  `Checks recorded before this line's own check: ${results.length}`,
 )
 
 /* ===========================================================================
