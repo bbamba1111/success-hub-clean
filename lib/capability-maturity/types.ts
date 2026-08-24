@@ -228,3 +228,158 @@ export interface StageBenchmark {
   /** Plain-language note on how this benchmark relates to moving into or beyond this stage. */
   stageTransitionRelevance: string
 }
+
+/* ===========================================================================
+ * Stage Exit Criteria™ (Phase 2A)
+ * ---------------------------------------------------------------------------
+ * Defines what must be SUFFICIENTLY true — a capability threshold, not a
+ * revenue number or a fixed checklist — before a stage transition is a
+ * reasonable claim. These describe the transition itself; they do not
+ * assess any individual founder. Deliberately capability-based per Part 14
+ * of the benchmark standard: "These are capability thresholds, not
+ * arbitrary universal revenue requirements."
+ * ======================================================================== */
+
+/** The three transitions that exist between the four canonical Business Stages™. */
+export type StageTransitionId = "launch-to-growth" | "growth-to-scale" | "scale-to-legacy"
+
+export const ALL_STAGE_TRANSITION_IDS: StageTransitionId[] = [
+  "launch-to-growth",
+  "growth-to-scale",
+  "scale-to-legacy",
+]
+
+/**
+ * One capability-based condition contributing to a stage transition. Always
+ * references a real `practiceId` already present in `STAGE_BENCHMARKS` — an
+ * exit criterion is never invented independently of the benchmark it reads.
+ */
+export interface StageExitCriterion {
+  /** Stable id — `${transitionId}--${practiceId}`. */
+  id: string
+  /** The Operating Practice™ id this criterion is based on (must resolve in `STAGE_BENCHMARKS`). */
+  practiceId: string
+  /** Plain-language statement of what must be sufficiently true. */
+  criterion: string
+  /** Which dimension(s) of that practice this criterion is really testing. */
+  dimensions: CapabilityDimension[]
+  /** Why this specific condition — and not a revenue/time threshold — is the real gate. */
+  rationale: string
+}
+
+/**
+ * One stage transition: the capability thresholds between an "exiting" stage
+ * and the "entering" stage that follows it. This describes the transition,
+ * not an individual founder's readiness for it — that comparison happens in
+ * a later phase (Adaptive ESA / Founder GPS™), using these criteria as the
+ * yardstick.
+ */
+export interface StageTransition {
+  id: StageTransitionId
+  /** The Business Stage™ a founder is leaving. */
+  fromStage: BusinessStage
+  /** The Business Stage™ a founder is moving toward. */
+  toStage: BusinessStage
+  /** Plain-language summary of what actually changes at this transition. */
+  transitionSummary: string
+  /** The capability-based conditions that make this transition a reasonable claim. */
+  exitCriteria: StageExitCriterion[]
+  /**
+   * Explicit guardrail against over-gating: capabilities that are
+   * legitimately NOT required to make this transition, even though they may
+   * feel adjacent. Prevents a later phase from silently treating every
+   * `should-have`/`emerging` benchmark as a blocking requirement.
+   */
+  notRequiredForTransition: string[]
+  /** Plain-language caution against reducing this transition to a single number. */
+  transitionCaution: string
+}
+
+/* ===========================================================================
+ * Gap Categories™ (Phase 2A)
+ * ---------------------------------------------------------------------------
+ * A gap in ANY of the six dimensions is not the same kind of problem. Naming
+ * the category is what lets a later phase (Adaptive ESA / Founder GPS™) map
+ * a diagnosis to a genuinely different next action instead of one generic
+ * "improve this" recommendation. One category per `CapabilityDimension` —
+ * intentionally 1:1, not a separate taxonomy.
+ * ======================================================================== */
+
+export type GapCategoryId = "knowledge-gap" | "capability-gap" | "build-gap" | "ownership-gap" | "proof-gap" | "measurement-gap"
+
+export const ALL_GAP_CATEGORY_IDS: GapCategoryId[] = [
+  "knowledge-gap",
+  "capability-gap",
+  "build-gap",
+  "ownership-gap",
+  "proof-gap",
+  "measurement-gap",
+]
+
+export interface GapCategoryDefinition {
+  id: GapCategoryId
+  /** The `CapabilityDimension` this gap category corresponds to (1:1). */
+  dimension: CapabilityDimension
+  /** Brand-safe display name (e.g. "Knowledge Gap"). */
+  name: string
+  /** A first-person example statement a founder in this gap might make. */
+  founderVoiceExample: string
+  /** Plain-language description of what this gap category actually means. */
+  description: string
+  /** The general shape of what closes this kind of gap (not a specific Build Path™ assignment). */
+  typicalResolutionShape: string
+}
+
+export const GAP_CATEGORIES: GapCategoryDefinition[] = [
+  {
+    id: "knowledge-gap",
+    dimension: "know",
+    name: "Knowledge Gap",
+    founderVoiceExample: "I don't know what I don't know.",
+    description:
+      "The founder lacks the understanding required to make good decisions about this capability — not a missing system, a missing concept.",
+    typicalResolutionShape: "Targeted learning or an applied explanation — closed by understanding, not by building or hiring.",
+  },
+  {
+    id: "capability-gap",
+    dimension: "show",
+    name: "Capability Gap",
+    founderVoiceExample: "I understand it but cannot confidently apply it.",
+    description:
+      "The founder understands the concept but has not yet demonstrated being able to apply it in their own business.",
+    typicalResolutionShape: "Guided application or practice — closed by doing it once with support, not by more study.",
+  },
+  {
+    id: "build-gap",
+    dimension: "build",
+    name: "Build Gap",
+    founderVoiceExample: "I know what to do but the capability is not installed.",
+    description: "The founder knows what's required, but the actual asset, system, or process does not yet exist in the business.",
+    typicalResolutionShape: "An actual build — closed by creating the artifact, not by more understanding.",
+  },
+  {
+    id: "ownership-gap",
+    dimension: "own",
+    name: "Ownership Gap",
+    founderVoiceExample: "Everything still requires my personal approval.",
+    description:
+      "The capability may exist, but accountability for building and maintaining it is unclear, or it still depends entirely on the founder.",
+    typicalResolutionShape: "An intentional ownership decision using the existing Build Path™ options — closed by assigning accountability, not by building more.",
+  },
+  {
+    id: "proof-gap",
+    dimension: "prove",
+    name: "Proof Gap",
+    founderVoiceExample: "We believe it works but lack evidence.",
+    description: "The capability exists and may even work, but there is no real-world evidence confirming that it actually does.",
+    typicalResolutionShape: "Deliberately gathering evidence from real use — closed by proof, not by additional building.",
+  },
+  {
+    id: "measurement-gap",
+    dimension: "measure",
+    name: "Measurement Gap",
+    founderVoiceExample: "It exists and may work but we aren't tracking it.",
+    description: "The capability works today, but nothing tells the founder if it's still working next month — no ongoing signal exists.",
+    typicalResolutionShape: "Installing an ongoing metric or review cadence — closed by monitoring, not by rebuilding.",
+  },
+]

@@ -19,7 +19,18 @@ import type { BusinessStage } from "@/lib/business-stage/business-stage"
 import type { OperatingPillarId } from "@/lib/entrepreneur-success/types"
 import type { BuildPathId } from "@/lib/build-strategy/types"
 import { STAGE_BENCHMARKS } from "./stage-benchmark-registry"
-import type { CapabilityDimension, CapabilityPriority, StageBenchmark } from "./types"
+import { STAGE_TRANSITIONS } from "./stage-transitions"
+import {
+  GAP_CATEGORIES,
+  type CapabilityDimension,
+  type CapabilityPriority,
+  type GapCategoryDefinition,
+  type GapCategoryId,
+  type StageBenchmark,
+  type StageExitCriterion,
+  type StageTransition,
+  type StageTransitionId,
+} from "./types"
 
 /* ===========================================================================
  * Basic lookups
@@ -188,4 +199,77 @@ export function summarizeStage(businessStage: BusinessStage): StageBenchmarkSumm
     notYetRelevantCount: benchmarks.filter((b) => b.priority === "not-yet-relevant").length,
     pillars,
   }
+}
+
+/* ===========================================================================
+ * Stage Transition™ queries (Phase 2A)
+ * ---------------------------------------------------------------------------
+ * These describe the transition itself — its exit criteria and guardrails —
+ * not any individual founder's progress against it. Comparing a specific
+ * founder's actual state to these criteria is explicit future scope
+ * (Adaptive ESA / Founder GPS™).
+ * ======================================================================== */
+
+/** Look up a stage transition by its id. */
+export function getStageTransition(id: StageTransitionId): StageTransition | undefined {
+  return STAGE_TRANSITIONS.find((t) => t.id === id)
+}
+
+/** The transition, if any, that begins at a given Business Stage™ (i.e. the "next" transition from here). */
+export function getTransitionFromStage(businessStage: BusinessStage): StageTransition | undefined {
+  return STAGE_TRANSITIONS.find((t) => t.fromStage === businessStage)
+}
+
+/** The transition, if any, that ends at a given Business Stage™ (i.e. the "previous" transition into here). */
+export function getTransitionToStage(businessStage: BusinessStage): StageTransition | undefined {
+  return STAGE_TRANSITIONS.find((t) => t.toStage === businessStage)
+}
+
+/** All exit criteria for the transition leaving a given Business Stage™, or an empty array if there is none (e.g. Legacy™). */
+export function getExitCriteriaForStage(businessStage: BusinessStage): StageExitCriterion[] {
+  return getTransitionFromStage(businessStage)?.exitCriteria ?? []
+}
+
+/** Every `StageBenchmark` row referenced by a transition's exit criteria, resolved at the "from" stage. */
+export function getBenchmarksForTransitionCriteria(transitionId: StageTransitionId): StageBenchmark[] {
+  const transition = getStageTransition(transitionId)
+  if (!transition) return []
+  return transition.exitCriteria
+    .map((criterion) => getBenchmark(criterion.practiceId, transition.fromStage))
+    .filter((b): b is StageBenchmark => Boolean(b))
+}
+
+/* ===========================================================================
+ * Gap Category™ queries (Phase 2A)
+ * ======================================================================== */
+
+/** Look up a Gap Category™ definition by id. */
+export function getGapCategory(id: GapCategoryId): GapCategoryDefinition | undefined {
+  return GAP_CATEGORIES.find((c) => c.id === id)
+}
+
+/** The Gap Category™ that corresponds to a given Capability Maturity™ dimension (always 1:1). */
+export function getGapCategoryForDimension(dimension: CapabilityDimension): GapCategoryDefinition | undefined {
+  return GAP_CATEGORIES.find((c) => c.dimension === dimension)
+}
+
+/**
+ * Plain-language description of what kind of gap a dimension shortfall
+ * represents for a specific benchmark — combines the benchmark's own
+ * dimension expectation with the general Gap Category™ shape. Still
+ * describes the BENCHMARK's expectation, not a founder's actual state.
+ */
+export interface CategorizedCapabilityGap extends CapabilityGapDescription {
+  gapCategory: GapCategoryDefinition
+}
+
+export function describeGapCategory(
+  practiceId: string,
+  businessStage: BusinessStage,
+  dimension: CapabilityDimension,
+): CategorizedCapabilityGap | undefined {
+  const gapDescription = describeCapabilityGap(practiceId, businessStage, dimension)
+  const gapCategory = getGapCategoryForDimension(dimension)
+  if (!gapDescription || !gapCategory) return undefined
+  return { ...gapDescription, gapCategory }
 }
