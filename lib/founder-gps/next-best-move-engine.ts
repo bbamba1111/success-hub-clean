@@ -448,6 +448,27 @@ export function deriveNextBestMove(ctx: GpsContext, extra?: NextBestMoveExtra): 
     capabilityBuildStatusById: extra?.capabilityBuildStatusById ?? null,
   })
 
+  // Active Build Lock — an active (non-terminal, non-"installed") Build
+  // Record means the founder already answered "what should I build next?"
+  // for that capability and is now executing it. Without this, the instant
+  // a Build Record is created it becomes "already spoken for" below and GPS
+  // immediately recommends a DIFFERENT capability on the very next render —
+  // making the founder's own Build Path™ selection appear to do nothing.
+  // GPS's job here switches from "pick the next capability" to "keep
+  // pointing at the one already in flight" until it reaches `"installed"`
+  // (or is cancelled/superseded, which `getActiveBuildStatusByCapabilityId()`
+  // already excludes from this map) — reusing the SAME ranking pipeline
+  // below for exactly one candidate, never a second recommendation engine.
+  const activeBuildEntry = Object.entries(extra?.capabilityBuildStatusById ?? {}).find(
+    ([, status]) => status !== "installed",
+  )
+  const activeCapability = activeBuildEntry ? relevance.find((r) => r.id === activeBuildEntry[0]) : undefined
+
+  if (activeCapability) {
+    const [rankedActive] = rankCandidates([toEdeCandidate(activeCapability, ctx)], activeSignals)
+    if (rankedActive) return toRecommendation(rankedActive, activeCapability, activeSignals)
+  }
+
   // Case G: never recommend rebuilding something already installed.
   let pool = relevance.filter((r) => r.relevanceStatus !== "already-installed")
 
