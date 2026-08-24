@@ -869,6 +869,16 @@ function InvitationIntentionStepCard({
 
     setGenerating(false)
     onAdvance({ invitation: invitationValue.trim(), intention: value, intentionDeclaration: declaration })
+
+    // The Intention is saved server-side the moment this step is confirmed —
+    // not gated behind finishing the whole Morning GIV•EN™ flow or clicking
+    // "Begin My Day." DailyDeclaration ("My Intention Today," the persistent
+    // anchor above the day's segment cards) listens for this so a first-time
+    // intention OR a later edit (reopening this completed step) shows up
+    // immediately, without ever leaving that anchor's position empty.
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("morning-given:completed"))
+    }
   }
 
   return (
