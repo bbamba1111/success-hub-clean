@@ -15,6 +15,22 @@ import { AnimatePresence } from "framer-motion"
 import useSWR from "swr"
 import { DailyTransition } from "@/components/cherry-blossom/daily-transition"
 import { BusinessDayBlock } from "@/components/business-day-block"
+import type { SegmentInnerTone } from "@/lib/segment-theme"
+
+/**
+ * Which of the six Decide → Populate → Execute segments get the sage
+ * two-layer treatment, and which INNER tone each one uses. Everything not
+ * listed here (morning-given, the Monday-only blocks, digital-detox) stays
+ * on BusinessDayBlock's default cream/blush theme.
+ */
+const SAGE_SEGMENT_INNER_TONE: Record<string, SegmentInnerTone> = {
+  "daily-planning-gps": "white",
+  "movement-window": "white",
+  "lunch-break": "white",
+  "ceo-workday": "white",
+  "time-freedom": "warm",
+  "power-down": "evening",
+}
 import { useActiveSpace } from "@/components/active-space-provider"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
 import { useHarmonyWeek } from "@/components/harmony-week/harmony-week-provider"
@@ -145,6 +161,7 @@ export function BusinessDaySchedule() {
                 ? segmentTiming(block, experience.time.minutesSinceMidnight)
                 : null
             const nextBlock = nextBlockById[block.id]
+            const sageInnerTone = SAGE_SEGMENT_INNER_TONE[block.id]
             return (
               <BusinessDayBlock
                 key={block.id}
@@ -159,6 +176,8 @@ export function BusinessDaySchedule() {
                 blockId={block.id}
                 isClosed={block.engagement === "closed"}
                 description={block.description}
+                theme={sageInnerTone ? "sage" : "default"}
+                innerTone={sageInnerTone}
                 onTransition={
                   // Self-guided Monday-only blocks (Reality Check™, Debrief™) use their
                   // own "Begin the ___™" CTA to open their in-card accordion — they must
