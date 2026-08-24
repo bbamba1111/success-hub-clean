@@ -6,22 +6,23 @@
  * activities decided in Decide & Design™, with per-activity status
  * controls, an "Builds an Asset™" badge (static keyword classification —
  * NOT a new engine), a running 4-hour total, and "What Else Can This
- * Become?" derivative suggestions once an activity is complete. Read-only
- * Founder GPS™ Next Best Move™ context is shown at the top — computed by
- * the SAME canonical engine `DecideIdentitySpace` uses, never a second
- * recommendation engine. If an activity is tied to a Readiness
- * Capability™, a read-only Build Record™ status link is shown.
+ * Become?" derivative suggestions once an activity is complete. The full
+ * Founder GPS™ Next Best Move™ → Build Path™ → Build Blueprint™ experience
+ * (`FounderGpsWorkspace`) is shown at the top — the SAME canonical engine
+ * `DecideIdentitySpace` and My Blueprint use, never a second recommendation
+ * engine; this is simply where the founder now acts on it. If an activity
+ * is tied to a Readiness Capability™, a read-only Build Record™ status link
+ * is shown.
  */
 
 import { useEffect, useState } from "react"
-import { Navigation, ChevronDown, Sparkles } from "lucide-react"
+import { ChevronDown, Sparkles } from "lucide-react"
 import { getDateKey, loadTodaysPlan, updateTodaysPlan } from "@/lib/daily-plan/storage"
 import type { CeoActivity, CeoActivityStatus, TodaysPlanRecord } from "@/lib/daily-plan/types"
 import { CEO_WORKDAY_CAP_MINUTES } from "@/lib/daily-plan/types"
 import { classifyAssetBuilding, suggestDerivatives } from "@/lib/daily-plan/asset-classification"
-import { useHarmonyContextOptional } from "@/components/harmony-context/harmony-context-provider"
-import { buildGpsContextFromSnapshot, deriveNextBestMove } from "@/lib/founder-gps/next-best-move-engine"
-import { getActiveBuildStatusByCapabilityId, getBuildRecord } from "@/lib/build-record/build-record-store"
+import { getBuildRecord } from "@/lib/build-record/build-record-store"
+import { FounderGpsWorkspace } from "@/components/build-strategy/founder-gps-workspace"
 
 const STATUS_OPTIONS: { value: CeoActivityStatus; label: string }[] = [
   { value: "not-started", label: "Not Started" },
@@ -42,17 +43,6 @@ const STATUS_COLOR: Record<CeoActivityStatus, string> = {
 export function TodaysCeoWorkdayCard() {
   const [plan, setPlan] = useState<TodaysPlanRecord | null>(null)
   const [expandedDerivatives, setExpandedDerivatives] = useState<Set<string>>(new Set())
-
-  const harmony = useHarmonyContextOptional()
-  const nextBestMove =
-    harmony?.snapshot.ready
-      ? deriveNextBestMove(buildGpsContextFromSnapshot(harmony.snapshot), {
-          founderDestination: harmony.founderDestination,
-          esaResults: harmony.snapshot.business.esaResults,
-          operatingHistory: harmony.snapshot.intelligence.operatingHistory,
-          capabilityBuildStatusById: getActiveBuildStatusByCapabilityId(),
-        })
-      : null
 
   useEffect(() => {
     setPlan(loadTodaysPlan(getDateKey()))
@@ -76,24 +66,10 @@ export function TodaysCeoWorkdayCard() {
 
   return (
     <div className="px-7 py-6 space-y-4">
-      {/* Read-only Founder GPS™ context */}
-      {nextBestMove && (
-        <div className="rounded-3xl border border-[#C13B6B]/25 bg-[#FBF1F5] px-6 py-5 sm:px-7 sm:py-6">
-          <div className="mb-2 flex items-center gap-2">
-            <Navigation className="h-4 w-4 text-[#C13B6B]" aria-hidden />
-            <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#C13B6B]">
-              Today&apos;s Next Best Move™
-            </p>
-          </div>
-          <p className="font-sans text-sm leading-relaxed text-[#3A2E33] font-semibold">{nextBestMove.nextTurn}</p>
-          {nextBestMove.whyNow && (
-            <p className="mt-1.5 font-sans text-xs leading-relaxed text-[#6B5860]">
-              <span className="font-semibold">Why now: </span>
-              {nextBestMove.whyNow}
-            </p>
-          )}
-        </div>
-      )}
+      {/* Founder GPS™ — the full Next Best Move™ → Build Path™ → Build
+          Blueprint™ workspace, moved here from My Blueprint so the founder
+          acts on it inside the live CEO Workday™ segment. */}
+      <FounderGpsWorkspace />
 
       <div className="rounded-3xl border border-[#E8DFE2] bg-white px-6 py-5 sm:px-7 sm:py-6 space-y-4">
         <div className="flex items-center justify-between">

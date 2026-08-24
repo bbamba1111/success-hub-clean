@@ -52,43 +52,8 @@ import type { BusinessContextProfile } from "@/lib/business-context/types"
 import type { FounderDestinationProfile } from "@/lib/founder-destination/types"
 import { useHarmonyContext } from "@/components/harmony-context/harmony-context-provider"
 import { buildGpsContextFromSnapshot, deriveNextBestMove } from "@/lib/founder-gps/next-best-move-engine"
-import { BuildPathPicker } from "@/components/build-strategy/build-path-picker"
-import { BuildBlueprintCard } from "@/components/build-strategy/build-blueprint-card"
-import { SecondOpinionPanel } from "@/components/build-strategy/second-opinion-panel"
-import { deriveBuildBlueprint } from "@/lib/build-strategy/blueprint-engine"
-import { deriveRecommendedBuildPath, deriveSecondOpinion } from "@/lib/build-strategy/build-path-recommendation"
-import { getBuildStrategy, saveBuildStrategy, clearBuildStrategy } from "@/lib/build-strategy/storage"
-import type { BuildPathId } from "@/lib/build-strategy/types"
-import {
-  getActiveBuildStatusByCapabilityId,
-  getBuildRecord,
-  saveBuildRecord,
-} from "@/lib/build-record/build-record-store"
-import { deriveBuildRecord, appendActivityLogEntry } from "@/lib/build-record/build-record-engine"
-import type { BuildRecord } from "@/lib/build-record/types"
-import { upsertBuildRecordToDb } from "@/utils/build-record-storage"
-import { getReadinessCapability } from "@/lib/excellence-intelligence/excellence-intelligence-registry"
-import { getUnderstandingLevel, UNDERSTANDING_LEVEL_EVENT } from "@/lib/founder-guidance/understanding-level"
-import {
-  deriveBusinessBuildingGuide,
-  filterSectionsForLevel,
-  deriveDecisionSnapshot,
-  deriveBuildPathEducation,
-  deriveCoBuildDivision,
-  deriveAiBuildBoundaries,
-  deriveFounderOwnershipGuidance,
-  deriveHandoffEducation,
-  showMeAnExample,
-  goDeeper,
-  teachMeThis,
-} from "@/lib/founder-guidance/business-building-guide-engine"
-import { UnderstandingLevelPicker } from "@/components/founder-guidance/understanding-level-picker"
+import { getActiveBuildStatusByCapabilityId } from "@/lib/build-record/build-record-store"
 import { InPlaceResultsReview } from "@/components/my-blueprint/in-place-results-review"
-import { DecisionSnapshotCard } from "@/components/founder-guidance/decision-snapshot-card"
-import { BusinessBuildingGuidePanel } from "@/components/founder-guidance/business-building-guide-panel"
-import { BuildPathEducationPanel } from "@/components/founder-guidance/build-path-education-panel"
-import { HandoffEducationPanel } from "@/components/founder-guidance/handoff-education-panel"
-import { TeachMeThisPanel } from "@/components/founder-guidance/teach-me-this-panel"
 
 // ── Small formatting helpers ─────────────────────────────────────────────────
 
@@ -117,21 +82,6 @@ function scoreBand(score: number): string {
   if (score >= 40) return "Establishing"
   if (score >= 20) return "Foundation"
   return "Starting Point"
-}
-
-// ── Next Best Move™ label helpers (Section 07) ─────────────────────────────
-
-const LEVERAGE_LABEL: Record<string, string> = {
-  keep: "Keep — do it yourself",
-  delegate: "Delegate — hand it to your team",
-  automate: "Automate — build the system",
-  eliminate: "Eliminate — stop doing this",
-}
-
-const CONFIDENCE_LABEL: Record<string, string> = {
-  high: "Strong",
-  medium: "Good",
-  low: "Building context…",
 }
 
 // ── Score ring ────────────────────────────────────────────────────────────
@@ -327,136 +277,6 @@ export function MyBlueprintClient() {
   const [bizContext, setBizContext] = useState<BusinessContextProfile | null>(null)
   const [destination, setDestination] = useState<FounderDestinationProfile | null>(null)
   const [ready, setReady] = useState(false)
-
-  // Build Strategy™ / Build Blueprint™ (Phase 9F) — the founder's chosen
-  // Build Path™ for the current Next Best Move™, and the resulting
-  // blueprint. Read/written via localStorage only this phase, keyed by the
-  // recommendation's id so it resets naturally as the recommendation changes.
-  const recommendationId = nextBestMove?.readinessCapabilityId ?? nextBestMove?.id ?? null
-  const [buildPath, setBuildPath] = useState<BuildPathId | null>(null)
-  // Phase 11 — the current Build Record™, kept in sync so the UI can show
-  // the founder's saved `pathSelectionReason` without re-deriving it.
-  const [buildRecord, setBuildRecordState] = useState<BuildRecord | null>(null)
-
-  // Phase 12 — Founder Understanding Level™. A thin alias of the existing
-  // Business Comprehension™ preference (same sessionStorage key/event) so it
-  // stays in sync everywhere else that preference is shown or changed.
-  const [understandingLevel, setUnderstandingLevelState] = useState<ReturnType<typeof getUnderstandingLevel>>("founder")
-
-  useEffect(() => {
-    if (!recommendationId) {
-      setBuildPath(null)
-      setBuildRecordState(null)
-      return
-    }
-    const saved = getBuildStrategy(recommendationId)
-    setBuildPath(saved?.buildPath ?? null)
-    setBuildRecordState(getBuildRecord(recommendationId))
-  }, [recommendationId])
-
-  useEffect(() => {
-    setUnderstandingLevelState(getUnderstandingLevel())
-    function onChange() {
-      setUnderstandingLevelState(getUnderstandingLevel())
-    }
-    window.addEventListener(UNDERSTANDING_LEVEL_EVENT, onChange)
-    return () => window.removeEventListener(UNDERSTANDING_LEVEL_EVENT, onChange)
-  }, [])
-
-  const buildBlueprint =
-    nextBestMove && recommendationId && buildPath
-      ? deriveBuildBlueprint(nextBestMove, buildPath, { businessModelProfile: snapshot.businessModelProfile, founderDestination })
-      : null
-
-  // Phase 11 — Build Path Selection™ + Second Opinion™. Both explain the
-  // existing Founder GPS™/EDE recommendation; neither is a new engine, and
-  // neither blocks the founder from choosing a different path.
-  const recommendedPath = nextBestMove ? deriveRecommendedBuildPath(nextBestMove) : null
-  const secondOpinion = nextBestMove && recommendedPath ? deriveSecondOpinion(nextBestMove, recommendedPath, buildPath, buildBlueprint) : null
-
-  // Phase 12 — Founder Business-Building Guidance™. A pure explanation layer
-  // over the Phase 5–11 recommendation/blueprint — no new scoring, no new
-  // recommendation logic. The founder's chosen Understanding Level™ controls
-  // how much of the (always-fully-derived) guide is shown.
-  const readinessCapability = nextBestMove?.readinessCapabilityId ? getReadinessCapability(nextBestMove.readinessCapabilityId) : undefined
-  const decisionSnapshot =
-    nextBestMove && recommendedPath ? deriveDecisionSnapshot(nextBestMove, recommendedPath, buildPath, buildBlueprint, secondOpinion) : null
-  const fullGuide =
-    nextBestMove && recommendedPath && buildBlueprint
-      ? deriveBusinessBuildingGuide({ recommendation: nextBestMove, blueprint: buildBlueprint, capability: readinessCapability })
-      : null
-  const guide = fullGuide ? filterSectionsForLevel(fullGuide, understandingLevel) : null
-  const buildPathEducation = buildBlueprint ? deriveBuildPathEducation(buildBlueprint) : null
-  const coBuildDivision = buildBlueprint ? deriveCoBuildDivision(buildBlueprint) : null
-  const aiBuildBoundaries = buildBlueprint ? deriveAiBuildBoundaries(buildBlueprint) : null
-  const ownershipGuidance = buildBlueprint ? deriveFounderOwnershipGuidance(buildBlueprint, readinessCapability) : null
-  const handoffEducation = buildBlueprint ? deriveHandoffEducation(buildBlueprint) : null
-  const example = buildBlueprint ? showMeAnExample(buildBlueprint) : null
-  const deeper =
-    nextBestMove && buildBlueprint ? goDeeper(nextBestMove, buildBlueprint, snapshot.businessOperatingFingerprint) : null
-  const teachMeThisConcepts = teachMeThis(readinessCapability, understandingLevel)
-  // Forces `TeachMeThisPanel` open (and scrolls to it) when the founder clicks
-  // "Teach Me This" from the Decision Snapshot™ — the panel manages its own
-  // open/close state afterward, so a key bump is the simplest re-mount trigger.
-  const [teachMeThisSignal, setTeachMeThisSignal] = useState(0)
-  const teachMeThisRef = useRef<HTMLDivElement | null>(null)
-  const secondOpinionRef = useRef<HTMLDivElement | null>(null)
-
-  useEffect(() => {
-    if (teachMeThisSignal > 0) teachMeThisRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
-  }, [teachMeThisSignal])
-
-  function handleSelectBuildPath(id: BuildPathId) {
-    if (!nextBestMove || !recommendationId) return
-    const blueprint = deriveBuildBlueprint(nextBestMove, id, {
-      businessModelProfile: snapshot.businessModelProfile,
-      founderDestination,
-    })
-    saveBuildStrategy(recommendationId, id, blueprint)
-    setBuildPath(id)
-
-    // Phase 10 — the moment a Build Path™ is chosen, a Build Record™ is
-    // created (or re-derived, preserving its existing id) so the founder can
-    // act once here and then track execution from Build Command Center™.
-    // Phase 11 — the recommended path/reason are carried through so the
-    // record can show recommended-vs-selected without re-deriving it later.
-    const existing = getBuildRecord(recommendationId)
-    const record = deriveBuildRecord(
-      blueprint,
-      {
-        prerequisiteCapabilityIds: nextBestMove.prerequisites?.map((p) => p.id),
-        recommendedBuildPath: recommendedPath?.buildPath ?? null,
-        recommendedBuildPathReason: recommendedPath?.reason ?? null,
-      },
-      existing?.id,
-    )
-    saveBuildRecord(record)
-    setBuildRecordState(record)
-    void upsertBuildRecordToDb(record)
-  }
-
-  function handleChooseDifferentPath() {
-    if (!recommendationId) return
-    clearBuildStrategy(recommendationId)
-    setBuildPath(null)
-    setBuildRecordState(null)
-  }
-
-  // Phase 11 — optional, founder-entered explanation when the chosen path
-  // differs from the recommendation. Never required, never invented.
-  function handleSavePathSelectionReason(reason: string) {
-    if (!recommendationId) return
-    const existing = getBuildRecord(recommendationId)
-    if (!existing) return
-    const updated = appendActivityLogEntry(
-      { ...existing, pathSelectionReason: reason },
-      "path-change",
-      `Reason for choosing "${existing.buildPath}" over the recommended "${existing.recommendedBuildPath}": ${reason}`,
-    )
-    saveBuildRecord(updated)
-    setBuildRecordState(updated)
-    void upsertBuildRecordToDb(updated)
-  }
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" })
@@ -886,29 +706,6 @@ export function MyBlueprintClient() {
         >
           {nextBestMove ? (
             <div className="space-y-5">
-              {/* Phase 12 — Founder Business-Building Guidance™: a pure
-                  explanation layer over this same recommendation. Nothing
-                  below changes what's recommended, only how it's explained. */}
-              <UnderstandingLevelPicker />
-
-              {decisionSnapshot && (
-                <DecisionSnapshotCard
-                  snapshot={decisionSnapshot}
-                  onTeachMeThis={teachMeThisConcepts.length > 0 ? () => setTeachMeThisSignal((n) => n + 1) : undefined}
-                  onSecondOpinion={
-                    secondOpinion
-                      ? () => secondOpinionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
-                      : undefined
-                  }
-                />
-              )}
-
-              {teachMeThisConcepts.length > 0 && (
-                <div ref={teachMeThisRef}>
-                  <TeachMeThisPanel key={teachMeThisSignal} concepts={teachMeThisConcepts} defaultOpen={teachMeThisSignal > 0} />
-                </div>
-              )}
-
               <div>
                 <p className="font-display text-lg font-semibold text-brand-ink text-pretty">
                   {nextBestMove.nextTurn}
@@ -918,111 +715,17 @@ export function MyBlueprintClient() {
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-                {nextBestMove.destinationAlignment && (
-                  <DataChip label="Advances Your Destination™" value={nextBestMove.destinationAlignment} />
-                )}
-                {nextBestMove.executiveDomain && (
-                  <DataChip label="Executive Domain™" value={nextBestMove.executiveDomain} />
-                )}
-                {nextBestMove.leverageMode && (
-                  <DataChip
-                    label="Leverage Class™"
-                    value={LEVERAGE_LABEL[nextBestMove.leverageMode] ?? fmt(nextBestMove.leverageMode)}
-                  />
-                )}
-                {nextBestMove.confidence && (
-                  <DataChip
-                    label="Confidence"
-                    value={CONFIDENCE_LABEL[nextBestMove.confidence] ?? fmt(nextBestMove.confidence)}
-                  />
-                )}
-              </div>
-
-              {Array.isArray(nextBestMove.sequencing) && nextBestMove.sequencing.length > 0 && (
-                <div className="rounded-2xl border border-brand-blush/60 bg-brand-cream/60 px-5 py-4">
-                  <p className="font-sans text-[10px] font-bold uppercase tracking-[0.18em] text-brand-ink-soft/80 mb-3">
-                    How To Install This
-                  </p>
-                  <ol className="space-y-1.5">
-                    {nextBestMove.sequencing.map((step, i) => (
-                      <li key={i} className="flex gap-2 font-sans text-sm text-brand-ink">
-                        <span className="font-semibold text-brand-ink-soft shrink-0">{i + 1}.</span>
-                        <span className="text-pretty">{step}</span>
-                      </li>
-                    ))}
-                  </ol>
-                </div>
-              )}
-
+              {/* The full interactive Next Best Move™ → Build Path™ → Build
+                  Blueprint™ → Business-Building Guide™ workspace now lives
+                  inside your live 4-Hour CEO Workday™, where you actually act
+                  on it — this is a read-only summary. */}
               <Link
-                href={nextBestMove.cta.href}
+                href="/?openSpace=ceo-workday"
                 className="inline-flex items-center gap-1.5 rounded-full bg-[#C13B6B] px-5 py-2.5 font-sans text-xs font-bold text-white hover:opacity-90 transition-opacity"
               >
-                {nextBestMove.cta.label}
+                Continue in Your CEO Workday™
                 <ArrowRight className="h-3.5 w-3.5" aria-hidden />
               </Link>
-
-              {/* Build Strategy™ / Build Blueprint™ (Phase 9F) — begins only
-                  when the founder explicitly chooses a Build Path™; the
-                  recommendation above is never modified by this. */}
-              {buildBlueprint ? (
-                <div className="space-y-3">
-                  <BuildBlueprintCard
-                    blueprint={buildBlueprint}
-                    onChooseDifferentPath={handleChooseDifferentPath}
-                    recommendedBuildPath={buildRecord?.recommendedBuildPath ?? recommendedPath?.buildPath ?? null}
-                    recommendedBuildPathReason={buildRecord?.recommendedBuildPathReason ?? recommendedPath?.reason ?? null}
-                    pathSelectionReason={buildRecord?.pathSelectionReason ?? null}
-                    onSavePathSelectionReason={handleSavePathSelectionReason}
-                  />
-                  {/* Phase 11 — Second Opinion™: explains the existing
-                      recommendation signals against the founder's actual
-                      choice; never a second recommendation engine. */}
-                  {secondOpinion ? (
-                    <div ref={secondOpinionRef}>
-                      <SecondOpinionPanel secondOpinion={secondOpinion} />
-                    </div>
-                  ) : null}
-
-                  {/* Phase 12 — Business-Building Guide™: explains the SAME
-                      blueprint above at the founder's chosen Understanding
-                      Level™, plus Build Path™ / Handoff education for the
-                      path actually chosen. */}
-                  {guide && (
-                    <BusinessBuildingGuidePanel
-                      guide={guide}
-                      coBuildDivision={coBuildDivision}
-                      aiBuildBoundaries={aiBuildBoundaries}
-                      ownershipGuidance={ownershipGuidance ?? undefined}
-                      exampleText={example?.text}
-                      exampleStatus={example?.status}
-                      goDeeperItems={deeper?.items}
-                    />
-                  )}
-                  {buildPathEducation && <BuildPathEducationPanel education={buildPathEducation} />}
-                  {handoffEducation && <HandoffEducationPanel education={handoffEducation} />}
-                  {/* Phase 10 — once a Build Path™ is chosen, the founder acts
-                      once here, then leaves to track execution in Build
-                      Command Center™ rather than only seeing a static card. */}
-                  {recommendationId ? (
-                    <Link
-                      href={`/build-command-center?id=${encodeURIComponent(recommendationId)}`}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-brand-blush/70 px-4 py-2 font-sans text-xs font-semibold text-brand-ink-soft hover:border-[#C13B6B]/40 hover:text-[#C13B6B] transition-colors"
-                    >
-                      View build in Build Command Center™
-                      <ArrowRight className="h-3.5 w-3.5" aria-hidden />
-                    </Link>
-                  ) : null}
-                </div>
-              ) : (
-                <BuildPathPicker
-                  selected={buildPath}
-                  onSelect={handleSelectBuildPath}
-                  recommendedPath={recommendedPath?.buildPath ?? null}
-                  recommendedReason={recommendedPath?.reason ?? null}
-                />
-              )}
             </div>
           ) : (
             <EmptyState

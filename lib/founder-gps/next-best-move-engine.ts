@@ -304,11 +304,12 @@ function toRecommendation(
     nextTurn: capability.capability.capability,
     reason: ranked.explainability.primaryReason,
     // Founder GPS™ is read-only intelligence — it never has its own detail
-    // page. The CTA hands the founder off to Decide & Design (the
-    // "daily-planning-gps" segment on the home Business Day timeline) using
-    // the same `?openSpace=<blockId>` deep-link business-day-schedule.tsx
-    // already reads to force-expand and scroll to that segment.
-    cta: { label: "View this move", href: "/?openSpace=daily-planning-gps" },
+    // page. The CTA hands the founder off to their live 4-Hour CEO Workday™
+    // (the "ceo-workday" segment on the home Business Day timeline), where
+    // the full Founder GPS™ workspace now lives, using the same
+    // `?openSpace=<blockId>` deep-link business-day-schedule.tsx already
+    // reads to force-expand and scroll to that segment.
+    cta: { label: "View this move", href: "/?openSpace=ceo-workday" },
     primaryOutcome: ranked.primaryOutcome,
     secondaryOutcomes: [],
     targetPillar: pillarForExecutive(capability.owningExecutiveId),
@@ -370,7 +371,7 @@ function fallbackRecommendation(activeSignals: GpsSignalId[]): GpsRecommendation
     id: candidate.id,
     nextTurn: item.label,
     reason: decision.explainability.primaryReason,
-    cta: { label: "Get started", href: "/?openSpace=daily-planning-gps" },
+    cta: { label: "Get started", href: "/?openSpace=ceo-workday" },
     primaryOutcome: decision.primaryOutcome,
     secondaryOutcomes: tier.primaryOutcomes.slice(1),
     targetPillar: null,
