@@ -150,8 +150,8 @@ export function DecideDesignAdditions() {
                 onClick={() => setMovement(label)}
                 className={`inline-flex items-center rounded-full border px-4 py-2 font-sans text-sm transition-colors ${
                   selected
-                    ? "border-[#7FB069] bg-[#7FB069] text-white"
-                    : "border-[#7FB069]/30 bg-[#F7FBF4] text-[#3A2E33] hover:bg-[#7FB069]/10"
+                    ? "border-[#8DAE72] bg-[#8DAE72] text-white"
+                    : "border-[#E5E5E5] bg-white text-[#2E1F27] hover:bg-[#F4F7F0]"
                 }`}
               >
                 {label}
@@ -166,7 +166,7 @@ export function DecideDesignAdditions() {
             onChange={(e) => setMovementOther(e.target.value)}
             onBlur={() => movementOther.trim() && setMovement(movementOther.trim())}
             placeholder="What movement will you do today?"
-            className="w-full rounded-full border border-[#E8DFE2] bg-white px-4 py-2 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#7FB069]/30"
+            className="w-full rounded-full border border-[#E8DFE2] bg-white px-4 py-2 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
           />
         )}
         <input
@@ -175,7 +175,7 @@ export function DecideDesignAdditions() {
           onChange={(e) => setMovementNote(e.target.value)}
           onBlur={() => plan.movement && patch({ movement: { ...plan.movement, note: movementNote.trim() || undefined } })}
           placeholder="Why this movement today? (optional)"
-          className="w-full rounded-full border border-[#E8DFE2] bg-white px-4 py-2 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#7FB069]/30"
+          className="w-full rounded-full border border-[#E8DFE2] bg-white px-4 py-2 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
         />
       </div>
 
@@ -195,8 +195,8 @@ export function DecideDesignAdditions() {
                 onClick={() => toggleLunch(option)}
                 className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-2 font-sans text-sm transition-colors ${
                   selected
-                    ? "border-[#7FB069] bg-[#7FB069] text-white"
-                    : "border-[#7FB069]/30 bg-[#F7FBF4] text-[#3A2E33] hover:bg-[#7FB069]/10"
+                    ? "border-[#8DAE72] bg-[#8DAE72] text-white"
+                    : "border-[#E5E5E5] bg-white text-[#2E1F27] hover:bg-[#F4F7F0]"
                 }`}
               >
                 {option.label}
@@ -232,14 +232,14 @@ export function DecideDesignAdditions() {
                   value={activity.title}
                   onChange={(e) => updateCeoActivity(activity.id, { title: e.target.value })}
                   placeholder="What are you building or doing today?"
-                  className="flex-1 rounded-lg border border-[#E8DFE2] bg-white px-3 py-2 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#7FB069]/30"
+                  className="flex-1 rounded-lg border border-[#E8DFE2] bg-white px-3 py-2 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
                 />
                 <input
                   type="number"
                   min={0}
                   value={activity.minutes}
                   onChange={(e) => updateCeoActivity(activity.id, { minutes: Math.max(0, Number(e.target.value) || 0) })}
-                  className="w-20 rounded-lg border border-[#E8DFE2] bg-white px-2 py-2 font-sans text-sm text-[#2E1F27] focus:outline-none focus:ring-2 focus:ring-[#7FB069]/30"
+                  className="w-20 rounded-lg border border-[#E8DFE2] bg-white px-2 py-2 font-sans text-sm text-[#2E1F27] focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
                   aria-label="Minutes"
                 />
                 <button
@@ -256,7 +256,7 @@ export function DecideDesignAdditions() {
                 value={activity.definitionOfDone}
                 onChange={(e) => updateCeoActivity(activity.id, { definitionOfDone: e.target.value })}
                 placeholder="What does 'done' look like for this?"
-                className="w-full rounded-lg border border-[#E8DFE2] bg-white px-3 py-2 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#7FB069]/30"
+                className="w-full rounded-lg border border-[#E8DFE2] bg-white px-3 py-2 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
               />
               <div className="flex flex-wrap gap-1.5">
                 {BUILD_PATH_DEFINITIONS.map((path) => {
@@ -288,7 +288,7 @@ export function DecideDesignAdditions() {
         <button
           type="button"
           onClick={addCeoActivity}
-          className="inline-flex items-center gap-1.5 rounded-full border border-[#7FB069]/40 bg-[#F7FBF4] px-4 py-2 font-sans text-sm text-[#5A7A45] hover:bg-[#7FB069]/10"
+          className="inline-flex items-center gap-1.5 rounded-full border border-[#8DAE72]/50 bg-white px-4 py-2 font-sans text-sm text-[#5F7F49] hover:bg-[#F4F7F0]"
         >
           <Plus className="h-3.5 w-3.5" aria-hidden />
           Add an activity
@@ -311,7 +311,7 @@ export function DecideDesignAdditions() {
               <select
                 value={allocation.category}
                 onChange={(e) => updateTimeFreedomAllocation(allocation.id, { category: e.target.value })}
-                className="rounded-lg border border-[#E8DFE2] bg-white px-2 py-2 font-sans text-sm text-[#2E1F27] focus:outline-none focus:ring-2 focus:ring-[#7FB069]/30"
+                className="rounded-lg border border-[#E8DFE2] bg-white px-2 py-2 font-sans text-sm text-[#2E1F27] focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
               >
                 {TIME_FREEDOM_QUICK_CATEGORIES.map((c) => (
                   <option key={c} value={c}>
@@ -324,7 +324,7 @@ export function DecideDesignAdditions() {
                 value={allocation.label}
                 onChange={(e) => updateTimeFreedomAllocation(allocation.id, { label: e.target.value })}
                 placeholder="What will you make time for?"
-                className="flex-1 rounded-lg border border-[#E8DFE2] bg-white px-3 py-2 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#7FB069]/30"
+                className="flex-1 rounded-lg border border-[#E8DFE2] bg-white px-3 py-2 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
               />
               <input
                 type="number"
@@ -333,7 +333,7 @@ export function DecideDesignAdditions() {
                 onChange={(e) =>
                   updateTimeFreedomAllocation(allocation.id, { minutes: Math.max(0, Number(e.target.value) || 0) })
                 }
-                className="w-20 rounded-lg border border-[#E8DFE2] bg-white px-2 py-2 font-sans text-sm text-[#2E1F27] focus:outline-none focus:ring-2 focus:ring-[#7FB069]/30"
+                className="w-20 rounded-lg border border-[#E8DFE2] bg-white px-2 py-2 font-sans text-sm text-[#2E1F27] focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
                 aria-label="Minutes"
               />
               <button
@@ -350,7 +350,7 @@ export function DecideDesignAdditions() {
         <button
           type="button"
           onClick={addTimeFreedomAllocation}
-          className="inline-flex items-center gap-1.5 rounded-full border border-[#7FB069]/40 bg-[#F7FBF4] px-4 py-2 font-sans text-sm text-[#5A7A45] hover:bg-[#7FB069]/10"
+          className="inline-flex items-center gap-1.5 rounded-full border border-[#8DAE72]/50 bg-white px-4 py-2 font-sans text-sm text-[#5F7F49] hover:bg-[#F4F7F0]"
         >
           <Plus className="h-3.5 w-3.5" aria-hidden />
           Add what you&apos;ll make time for
@@ -367,21 +367,21 @@ export function DecideDesignAdditions() {
           onChange={(e) => setPowerDown({ release: e.target.value })}
           placeholder="What will you release from today?"
           rows={2}
-          className="w-full rounded-2xl border border-[#E8DFE2] bg-white px-4 py-3 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#7FB069]/30"
+          className="w-full rounded-2xl border border-[#E8DFE2] bg-white px-4 py-3 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
         />
         <textarea
           value={plan.powerDown.tomorrowNote}
           onChange={(e) => setPowerDown({ tomorrowNote: e.target.value })}
           placeholder="What's tomorrow's single priority?"
           rows={2}
-          className="w-full rounded-2xl border border-[#E8DFE2] bg-white px-4 py-3 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#7FB069]/30"
+          className="w-full rounded-2xl border border-[#E8DFE2] bg-white px-4 py-3 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
         />
         <input
           type="text"
           value={plan.powerDown.windDownActivity}
           onChange={(e) => setPowerDown({ windDownActivity: e.target.value })}
           placeholder="What will help your mind begin to slow tonight?"
-          className="w-full rounded-full border border-[#E8DFE2] bg-white px-4 py-2 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#7FB069]/30"
+          className="w-full rounded-full border border-[#E8DFE2] bg-white px-4 py-2 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
         />
       </div>
     </div>
