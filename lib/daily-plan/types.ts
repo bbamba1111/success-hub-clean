@@ -48,6 +48,32 @@ export interface PowerDownNotes {
   windDownActivity: string
 }
 
+/**
+ * One CEO Workday™ hourly check-in — a lightweight prompt, never a new
+ * engine. Unlocks at its own fixed hour (see `ceo-workday-checkins.tsx`).
+ */
+export interface WorkdayCheckIn {
+  hour: "1:55" | "2:55" | "3:55" | "4:55"
+  answeredAt: string
+  response: string
+}
+
+/**
+ * The founder's end-of-day proof of work for the 4-Hour CEO Workday™.
+ * `outcomeType` mirrors `WorkdayOutcomeType` from `workday-outcome.ts`
+ * (kept as a plain string here to avoid a circular import).
+ */
+export interface WorkdayProof {
+  outcomeType: string
+  whatChanged: string
+  assetCreated?: string
+  capabilityBuilt?: string
+  delegated?: string
+  operatingRuleCreated?: string
+  nextStep?: string
+  recordedAt: string
+}
+
 /** The single source of truth for today's decisions, read by every downstream segment. */
 export interface TodaysPlanRecord {
   dateKey: string
@@ -56,6 +82,10 @@ export interface TodaysPlanRecord {
   ceoActivities: CeoActivity[]
   timeFreedom: TimeFreedomAllocation[]
   powerDown: PowerDownNotes
+  /** Additive — hourly CEO Workday™ check-ins recorded today. */
+  ceoWorkdayCheckIns: WorkdayCheckIn[]
+  /** Additive — the founder's end-of-day proof of work, once recorded. */
+  ceoWorkdayProof: WorkdayProof | null
   updatedAt: string
 }
 

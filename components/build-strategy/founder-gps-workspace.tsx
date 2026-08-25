@@ -16,11 +16,18 @@
  * Mounted by `TodaysCeoWorkdayCard`. My Blueprint now shows a lightweight
  * read-only summary linking back into this workspace instead of hosting the
  * full interactive flow itself.
+ *
+ * Progressive disclosure pass — same engines, same data, presentation only.
+ * Reordered into five sections so the founder sees ONE move at a time
+ * instead of a flat wall of cards: Next Best Move → Today's Outcome →
+ * Decide/Delegate/Design → Today's 1–5 PM Build → (collapsed) full Build
+ * Blueprint™ & Guide. Nothing is deleted — everything that used to render
+ * unconditionally now lives one tap away.
  */
 
 import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
-import { ArrowRight, Navigation } from "lucide-react"
+import { ArrowRight, ChevronDown, Navigation } from "lucide-react"
 
 import { useHarmonyContextOptional } from "@/components/harmony-context/harmony-context-provider"
 import { buildGpsContextFromSnapshot, deriveNextBestMove } from "@/lib/founder-gps/next-best-move-engine"
@@ -60,6 +67,8 @@ import { BusinessBuildingGuidePanel } from "@/components/founder-guidance/busine
 import { BuildPathEducationPanel } from "@/components/founder-guidance/build-path-education-panel"
 import { HandoffEducationPanel } from "@/components/founder-guidance/handoff-education-panel"
 import { TeachMeThisPanel } from "@/components/founder-guidance/teach-me-this-panel"
+import { deriveWorkdayOutcomeType, deriveWorkdayBuildSteps } from "@/lib/daily-plan/workday-outcome"
+import { STARTER_BUSINESS_BUILDING_METHODS } from "@/lib/daily-plan/business-building-methods"
 
 function fmt(val: string) {
   return val.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
@@ -83,6 +92,33 @@ function DataChip({ label, value }: { label: string; value: string }) {
     <div className="rounded-xl border border-[#E8DFE2] bg-white px-3.5 py-2.5">
       <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.14em] text-[#6B5860]/80 mb-0.5">{label}</p>
       <p className="font-sans text-sm font-semibold text-[#2E1F27] leading-snug">{value}</p>
+    </div>
+  )
+}
+
+/** Small, reusable one-tap disclosure — collapsed by default, nothing inside changed by opening/closing it. */
+function Disclosure({
+  title,
+  defaultOpen = false,
+  children,
+}: {
+  title: string
+  defaultOpen?: boolean
+  children: React.ReactNode
+}) {
+  const [open, setOpen] = useState(defaultOpen)
+  return (
+    <div className="rounded-2xl border border-[#E8DFE2] bg-white">
+      <button
+        type="button"
+        aria-expanded={open}
+        onClick={() => setOpen((o) => !o)}
+        className="flex w-full items-center justify-between gap-2 px-5 py-3.5 text-left"
+      >
+        <span className="font-montserrat text-[10px] font-bold uppercase tracking-[0.16em] text-[#6B5860]">{title}</span>
+        <ChevronDown className={`h-3.5 w-3.5 shrink-0 text-[#6B5860] transition-transform duration-200 ${open ? "rotate-180" : ""}`} aria-hidden />
+      </button>
+      {open && <div className="border-t border-[#E8DFE2] px-5 py-4 space-y-4">{children}</div>}
     </div>
   )
 }
@@ -119,6 +155,11 @@ export function FounderGpsWorkspace() {
   // stays in sync everywhere else that preference is shown or changed.
   const [understandingLevel, setUnderstandingLevelState] = useState<ReturnType<typeof getUnderstandingLevel>>("founder")
 
+  // Progressive disclosure — one method tag the founder can optionally
+  // attach to today's Design step. Metadata only, never matched against
+  // anything; resets naturally when the recommendation changes.
+  const [designMethodId, setDesignMethodId] = useState<string | null>(null)
+
   useEffect(() => {
     if (!recommendationId) {
       setBuildPath(null)
@@ -128,6 +169,7 @@ export function FounderGpsWorkspace() {
     const saved = getBuildStrategy(recommendationId)
     setBuildPath(saved?.buildPath ?? null)
     setBuildRecordState(getBuildRecord(recommendationId))
+    setDesignMethodId(null)
   }, [recommendationId])
 
   useEffect(() => {
@@ -181,6 +223,11 @@ export function FounderGpsWorkspace() {
   useEffect(() => {
     if (teachMeThisSignal > 0) teachMeThisRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
   }, [teachMeThisSignal])
+
+  // Today's Outcome™ + Today's 1–5 PM Build — a classifier + extraction over
+  // the SAME move/blueprint fields already computed above. No new engine.
+  const workdayOutcome = nextBestMove ? deriveWorkdayOutcomeType(nextBestMove) : null
+  const workdayBuildSteps = buildBlueprint && nextBestMove ? deriveWorkdayBuildSteps(buildBlueprint, nextBestMove) : null
 
   function handleSelectBuildPath(id: BuildPathId) {
     if (!nextBestMove || !recommendationId || !snapshot) return
@@ -261,60 +308,11 @@ export function FounderGpsWorkspace() {
         </p>
       </div>
 
-      {/* Phase 12 — Founder Business-Building Guidance™: a pure explanation
-          layer over this same recommendation. Nothing below changes what's
-          recommended, only how it's explained. */}
-      <UnderstandingLevelPicker />
-
-      {decisionSnapshot && (
-        <DecisionSnapshotCard
-          snapshot={decisionSnapshot}
-          onTeachMeThis={teachMeThisConcepts.length > 0 ? () => setTeachMeThisSignal((n) => n + 1) : undefined}
-          onSecondOpinion={
-            secondOpinion ? () => secondOpinionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }) : undefined
-          }
-        />
-      )}
-
-      {teachMeThisConcepts.length > 0 && (
-        <div ref={teachMeThisRef}>
-          <TeachMeThisPanel key={teachMeThisSignal} concepts={teachMeThisConcepts} defaultOpen={teachMeThisSignal > 0} />
-        </div>
-      )}
-
+      {/* 1. Next Best Move — always visible, unchanged data. */}
       <div>
         <p className="font-display text-lg font-semibold text-[#2E1F27] text-pretty">{nextBestMove.nextTurn}</p>
         <p className="mt-2 font-sans text-sm leading-relaxed text-[#6B5860] text-pretty">{nextBestMove.reason}</p>
       </div>
-
-      <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-        {nextBestMove.destinationAlignment && (
-          <DataChip label="Advances Your Destination™" value={nextBestMove.destinationAlignment} />
-        )}
-        {nextBestMove.executiveDomain && <DataChip label="Executive Domain™" value={nextBestMove.executiveDomain} />}
-        {nextBestMove.leverageMode && (
-          <DataChip label="Leverage Class™" value={LEVERAGE_LABEL[nextBestMove.leverageMode] ?? fmt(nextBestMove.leverageMode)} />
-        )}
-        {nextBestMove.confidence && (
-          <DataChip label="Confidence" value={CONFIDENCE_LABEL[nextBestMove.confidence] ?? fmt(nextBestMove.confidence)} />
-        )}
-      </div>
-
-      {Array.isArray(nextBestMove.sequencing) && nextBestMove.sequencing.length > 0 && (
-        <div className="rounded-2xl border border-[#E8DFE2] bg-white px-5 py-4">
-          <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/80 mb-3">
-            How To Install This
-          </p>
-          <ol className="space-y-1.5">
-            {nextBestMove.sequencing.map((step, i) => (
-              <li key={i} className="flex gap-2 font-sans text-sm text-[#2E1F27]">
-                <span className="font-semibold text-[#6B5860] shrink-0">{i + 1}.</span>
-                <span className="text-pretty">{step}</span>
-              </li>
-            ))}
-          </ol>
-        </div>
-      )}
 
       <Link
         href={nextBestMove.cta.href}
@@ -324,65 +322,196 @@ export function FounderGpsWorkspace() {
         <ArrowRight className="h-3.5 w-3.5" aria-hidden />
       </Link>
 
-      {/* Build Strategy™ / Build Blueprint™ (Phase 9F) — begins only when
-          the founder explicitly chooses a Build Path™; the recommendation
-          above is never modified by this. */}
-      {buildBlueprint ? (
-        <div className="space-y-3">
-          <BuildBlueprintCard
-            blueprint={buildBlueprint}
-            onChooseDifferentPath={handleChooseDifferentPath}
-            recommendedBuildPath={buildRecord?.recommendedBuildPath ?? recommendedPath?.buildPath ?? null}
-            recommendedBuildPathReason={buildRecord?.recommendedBuildPathReason ?? recommendedPath?.reason ?? null}
-            pathSelectionReason={buildRecord?.pathSelectionReason ?? null}
-            onSavePathSelectionReason={handleSavePathSelectionReason}
-          />
-          {/* Phase 11 — Second Opinion™: explains the existing recommendation
-              signals against the founder's actual choice; never a second
-              recommendation engine. */}
-          {secondOpinion ? (
-            <div ref={secondOpinionRef}>
-              <SecondOpinionPanel secondOpinion={secondOpinion} />
-            </div>
-          ) : null}
+      {/* "Why this?" — the Understanding Level picker, Decision Snapshot™,
+          Teach Me This™, and the raw signal chips all move here instead of
+          being always-on. */}
+      <Disclosure title="Why this?">
+        <UnderstandingLevelPicker />
 
-          {/* Phase 12 — Business-Building Guide™: explains the SAME blueprint
-              above at the founder's chosen Understanding Level™, plus Build
-              Path™ / Handoff education for the path actually chosen. */}
-          {guide && (
-            <BusinessBuildingGuidePanel
-              guide={guide}
-              coBuildDivision={coBuildDivision}
-              aiBuildBoundaries={aiBuildBoundaries}
-              ownershipGuidance={ownershipGuidance ?? undefined}
-              exampleText={example?.text}
-              exampleStatus={example?.status}
-              goDeeperItems={deeper?.items}
+        {decisionSnapshot && (
+          <DecisionSnapshotCard
+            snapshot={decisionSnapshot}
+            onTeachMeThis={teachMeThisConcepts.length > 0 ? () => setTeachMeThisSignal((n) => n + 1) : undefined}
+            onSecondOpinion={
+              secondOpinion ? () => secondOpinionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }) : undefined
+            }
+          />
+        )}
+
+        {teachMeThisConcepts.length > 0 && (
+          <div ref={teachMeThisRef}>
+            <TeachMeThisPanel key={teachMeThisSignal} concepts={teachMeThisConcepts} defaultOpen={teachMeThisSignal > 0} />
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+          {nextBestMove.destinationAlignment && (
+            <DataChip label="Advances Your Destination™" value={nextBestMove.destinationAlignment} />
+          )}
+          {nextBestMove.executiveDomain && <DataChip label="Executive Domain™" value={nextBestMove.executiveDomain} />}
+          {nextBestMove.leverageMode && (
+            <DataChip label="Leverage Class™" value={LEVERAGE_LABEL[nextBestMove.leverageMode] ?? fmt(nextBestMove.leverageMode)} />
+          )}
+          {nextBestMove.confidence && (
+            <DataChip label="Confidence" value={CONFIDENCE_LABEL[nextBestMove.confidence] ?? fmt(nextBestMove.confidence)} />
+          )}
+        </div>
+      </Disclosure>
+
+      {/* 2. Today's Outcome — a tiny classifier over the same move fields. */}
+      {workdayOutcome && (
+        <div className="rounded-2xl border border-[#C13B6B]/20 bg-white px-5 py-4 space-y-1.5">
+          <span className="inline-flex items-center rounded-full bg-[#C13B6B]/10 px-3 py-1 font-montserrat text-[10px] font-bold uppercase tracking-[0.14em] text-[#C13B6B]">
+            {workdayOutcome.label}
+          </span>
+          <p className="font-sans text-sm leading-relaxed text-[#2E1F27] text-pretty">
+            <span className="font-semibold">By 5 PM: </span>
+            {buildBlueprint?.desiredOutcome ?? nextBestMove.expectedOutcome ?? nextBestMove.reason}
+          </p>
+        </div>
+      )}
+
+      {/* 3. Decide → Delegate → Design — a thin wrapper, not a new decision. */}
+      <div className="rounded-2xl border border-[#E8DFE2] bg-white px-5 py-4 space-y-4">
+        <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.16em] text-[#6B5860]">
+          Decide · Delegate · Design
+        </p>
+
+        <div>
+          <p className="font-montserrat text-[9px] font-bold uppercase tracking-[0.14em] text-[#6B5860]/70 mb-1">Decide</p>
+          <p className="font-sans text-sm text-[#2E1F27] text-pretty">{nextBestMove.nextTurn}</p>
+        </div>
+
+        <div>
+          <p className="font-montserrat text-[9px] font-bold uppercase tracking-[0.14em] text-[#6B5860]/70 mb-2">
+            Delegate — who or what does this?
+          </p>
+          {buildBlueprint ? (
+            <div className="flex items-center justify-between gap-3 rounded-xl border border-[#E8DFE2] bg-[#FBF1F5] px-4 py-3">
+              <p className="font-sans text-sm font-semibold text-[#2E1F27]">{buildBlueprint.ownerSummary}</p>
+              <button
+                type="button"
+                onClick={handleChooseDifferentPath}
+                className="shrink-0 font-sans text-xs font-semibold text-[#C13B6B] hover:opacity-80"
+              >
+                Change
+              </button>
+            </div>
+          ) : (
+            <BuildPathPicker
+              selected={buildPath}
+              onSelect={handleSelectBuildPath}
+              recommendedPath={recommendedPath?.buildPath ?? null}
+              recommendedReason={recommendedPath?.reason ?? null}
             />
           )}
-          {buildPathEducation && <BuildPathEducationPanel education={buildPathEducation} />}
-          {handoffEducation && <HandoffEducationPanel education={handoffEducation} />}
-          {/* Phase 10 — once a Build Path™ is chosen, the founder acts once
-              here, then leaves to track execution in Build Command Center™
-              rather than only seeing a static card. */}
-          {recommendationId ? (
-            <Link
-              href={`/build-command-center?id=${encodeURIComponent(recommendationId)}`}
-              className="inline-flex items-center gap-1.5 rounded-full border border-[#E8DFE2] px-4 py-2 font-sans text-xs font-semibold text-[#6B5860] hover:border-[#C13B6B]/40 hover:text-[#C13B6B] transition-colors"
-            >
-              View build in Build Command Center™
-              <ArrowRight className="h-3.5 w-3.5" aria-hidden />
-            </Link>
-          ) : null}
         </div>
-      ) : (
-        <BuildPathPicker
-          selected={buildPath}
-          onSelect={handleSelectBuildPath}
-          recommendedPath={recommendedPath?.buildPath ?? null}
-          recommendedReason={recommendedPath?.reason ?? null}
-        />
-      )}
+
+        {buildBlueprint && (
+          <div>
+            <p className="font-montserrat text-[9px] font-bold uppercase tracking-[0.14em] text-[#6B5860]/70 mb-2">
+              Design — what does &quot;done&quot; look like?
+            </p>
+            <p className="font-sans text-sm text-[#2E1F27] text-pretty">{buildBlueprint.targetState}</p>
+            <div className="mt-2.5 flex flex-wrap gap-1.5">
+              {STARTER_BUSINESS_BUILDING_METHODS.map((method) => {
+                const selected = designMethodId === method.id
+                return (
+                  <button
+                    key={method.id}
+                    type="button"
+                    aria-pressed={selected}
+                    onClick={() => setDesignMethodId(selected ? null : method.id)}
+                    className={`rounded-full border px-3 py-1 font-sans text-xs transition-colors ${
+                      selected
+                        ? "border-[#C13B6B] bg-[#C13B6B]/10 text-[#C13B6B]"
+                        : "border-[#E8DFE2] bg-white text-[#6B5860] hover:border-[#C13B6B]/40"
+                    }`}
+                  >
+                    {method.label}
+                  </button>
+                )
+              })}
+            </div>
+            <p className="mt-1.5 font-sans text-[11px] text-[#6B5860]/70">
+              Optional — Starter Business-Building Methods™, a small starter set for tagging today&apos;s Design step.
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* 4. Today's 1–5 PM Build — extraction over the same blueprint fields,
+          plus the full Build Blueprint™/Guide/Education stack collapsed at
+          the bottom instead of always rendered. */}
+      {buildBlueprint && workdayBuildSteps ? (
+        <div className="space-y-3">
+          <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]">
+            Today&apos;s 1–5 PM Build
+          </p>
+          {workdayBuildSteps.map((step) => (
+            <Disclosure key={step.kind} title={step.title}>
+              <ul className="space-y-1.5">
+                {step.items.map((item, i) => (
+                  <li key={i} className="flex gap-2 font-sans text-sm text-[#2E1F27]">
+                    <span className="font-semibold text-[#6B5860] shrink-0">{i + 1}.</span>
+                    <span className="text-pretty">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </Disclosure>
+          ))}
+
+          <Disclosure title="Show full Build Blueprint™ & Guide">
+            <div className="space-y-3">
+              <BuildBlueprintCard
+                blueprint={buildBlueprint}
+                onChooseDifferentPath={handleChooseDifferentPath}
+                recommendedBuildPath={buildRecord?.recommendedBuildPath ?? recommendedPath?.buildPath ?? null}
+                recommendedBuildPathReason={buildRecord?.recommendedBuildPathReason ?? recommendedPath?.reason ?? null}
+                pathSelectionReason={buildRecord?.pathSelectionReason ?? null}
+                onSavePathSelectionReason={handleSavePathSelectionReason}
+              />
+              {/* Phase 11 — Second Opinion™: explains the existing recommendation
+                  signals against the founder's actual choice; never a second
+                  recommendation engine. */}
+              {secondOpinion ? (
+                <div ref={secondOpinionRef}>
+                  <SecondOpinionPanel secondOpinion={secondOpinion} />
+                </div>
+              ) : null}
+
+              {/* Phase 12 — Business-Building Guide™: explains the SAME blueprint
+                  above at the founder's chosen Understanding Level™, plus Build
+                  Path™ / Handoff education for the path actually chosen. */}
+              {guide && (
+                <BusinessBuildingGuidePanel
+                  guide={guide}
+                  coBuildDivision={coBuildDivision}
+                  aiBuildBoundaries={aiBuildBoundaries}
+                  ownershipGuidance={ownershipGuidance ?? undefined}
+                  exampleText={example?.text}
+                  exampleStatus={example?.status}
+                  goDeeperItems={deeper?.items}
+                />
+              )}
+              {buildPathEducation && <BuildPathEducationPanel education={buildPathEducation} />}
+              {handoffEducation && <HandoffEducationPanel education={handoffEducation} />}
+              {/* Phase 10 — once a Build Path™ is chosen, the founder acts once
+                  here, then leaves to track execution in Build Command Center™
+                  rather than only seeing a static card. */}
+              {recommendationId ? (
+                <Link
+                  href={`/build-command-center?id=${encodeURIComponent(recommendationId)}`}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-[#E8DFE2] px-4 py-2 font-sans text-xs font-semibold text-[#6B5860] hover:border-[#C13B6B]/40 hover:text-[#C13B6B] transition-colors"
+                >
+                  View build in Build Command Center™
+                  <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+                </Link>
+              ) : null}
+            </div>
+          </Disclosure>
+        </div>
+      ) : null}
     </div>
   )
 }

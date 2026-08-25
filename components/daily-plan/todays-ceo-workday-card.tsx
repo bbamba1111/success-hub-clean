@@ -23,6 +23,8 @@ import { CEO_WORKDAY_CAP_MINUTES } from "@/lib/daily-plan/types"
 import { classifyAssetBuilding, suggestDerivatives } from "@/lib/daily-plan/asset-classification"
 import { getBuildRecord } from "@/lib/build-record/build-record-store"
 import { FounderGpsWorkspace } from "@/components/build-strategy/founder-gps-workspace"
+import { CeoWorkdayCheckins } from "@/components/daily-plan/ceo-workday-checkins"
+import { CeoWorkdayProof } from "@/components/daily-plan/ceo-workday-proof"
 
 const STATUS_OPTIONS: { value: CeoActivityStatus; label: string }[] = [
   { value: "not-started", label: "Not Started" },
@@ -189,6 +191,9 @@ export function TodaysCeoWorkdayCard() {
           </div>
         )}
       </div>
+
+      <CeoWorkdayCheckins />
+      <CeoWorkdayProof />
     </div>
   )
 }

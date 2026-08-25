@@ -24,6 +24,8 @@ function emptyRecord(dateKey: string): TodaysPlanRecord {
     ceoActivities: [],
     timeFreedom: [],
     powerDown: { release: "", tomorrowNote: "", windDownActivity: "" },
+    ceoWorkdayCheckIns: [],
+    ceoWorkdayProof: null,
     updatedAt: new Date().toISOString(),
   }
 }
