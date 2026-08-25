@@ -88,6 +88,15 @@ export async function updateSession(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname
 
+  // DEVELOPMENT-ONLY: lets the "/dev-preview" fixture routes render without a
+  // real paid account so the live 4-Hour CEO Workday™ UI can be visually
+  // verified with realistic seeded data. The route itself also 404s outside
+  // development (see app/dev-preview/workday/page.tsx) — this is a second,
+  // independent guard so production auth/paywall behavior never changes.
+  if (process.env.NODE_ENV !== "production" && pathname.startsWith("/dev-preview")) {
+    return supabaseResponse
+  }
+
   // Allow public routes without any checks
   if (isPublicRoute(pathname)) {
     return supabaseResponse
