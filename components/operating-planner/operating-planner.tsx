@@ -779,8 +779,8 @@ function RepeatAfterMe({ blockId, data }: RepeatAfterMeProps) {
         </div>
       ) : (
         <div className="space-y-4">
-          <div className="rounded-2xl border border-brand-green/20 bg-brand-green/5 px-5 py-4">
-            <p className={`font-sans text-xs font-bold uppercase tracking-[0.2em] mb-2 ${TYPE_COLOR[data.type]}`}>
+          <div className={`rounded-2xl border ${ax.border20} ${ax.bg5} px-5 py-4`}>
+            <p className={`font-sans text-xs font-bold uppercase tracking-[0.2em] mb-2 ${typeColorClass}`}>
               {TYPE_DECLARATION_LABEL[data.type]}
             </p>
             <p className="font-sans text-[15px] font-semibold leading-relaxed text-brand-ink text-balance">
@@ -791,7 +791,7 @@ function RepeatAfterMe({ blockId, data }: RepeatAfterMeProps) {
             <button
               type="button"
               onClick={() => setConfirmed(true)}
-              className="inline-flex items-center gap-2 rounded-full bg-brand-green px-6 py-3 font-sans text-sm font-bold text-white shadow-sm transition-all hover:bg-brand-green-dark"
+              className={`inline-flex items-center gap-2 rounded-full ${ax.bgSolid} px-6 py-3 font-sans text-sm font-bold text-white shadow-sm transition-all ${ax.hoverBgDark}`}
             >
               <CheckCircle2 className="h-4 w-4" aria-hidden />
               Install This™
@@ -799,7 +799,7 @@ function RepeatAfterMe({ blockId, data }: RepeatAfterMeProps) {
             <button
               type="button"
               onClick={() => setDeclaration(null)}
-              className="inline-flex items-center gap-2 rounded-full border border-brand-green/30 bg-transparent px-5 py-3 font-sans text-sm font-semibold text-brand-green transition-all hover:bg-brand-green/5"
+              className={`inline-flex items-center gap-2 rounded-full border ${ax.border30} bg-transparent px-5 py-3 font-sans text-sm font-semibold ${ax.text} transition-all ${ax.hoverBg5}`}
             >
               Edit
             </button>
@@ -830,6 +830,21 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
 
   const isWorkout = blockId === "movement-window"
   const isPowerDown = blockId === "power-down"
+  // Soft sage green for every segment's dropdown boxes (Learn More,
+  // Business Context Assessment) except Time Freedom™ and Power Down™,
+  // which keep the original brand-green treatment.
+  const useSage = blockId !== "time-freedom" && blockId !== "power-down"
+  const sx = {
+    border20: useSage ? "border-brand-sage/20" : "border-brand-green/20",
+    border10: useSage ? "border-brand-sage/10" : "border-brand-green/10",
+    bg04: useSage ? "bg-brand-sage/[0.04]" : "bg-brand-green/[0.04]",
+    bg05: useSage ? "bg-brand-sage/[0.05]" : "bg-brand-green/[0.05]",
+    bg06: useSage ? "bg-brand-sage/[0.06]" : "bg-brand-green/[0.06]",
+    hoverBg04: useSage ? "hover:bg-brand-sage/[0.04]" : "hover:bg-brand-green/[0.04]",
+    text: useSage ? "text-brand-sage" : "text-brand-green",
+    textDark: useSage ? "text-brand-sage-dark" : "text-brand-green-dark",
+    text60: useSage ? "text-brand-sage/60" : "text-brand-green/60",
+  }
 
   return (
     <div className="px-6 py-10 sm:px-12 lg:px-20 xl:px-28">
@@ -878,24 +893,24 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
 
         {/* Learn More About This Segment™ accordion — right under title */}
         {data.learnMore && (
-          <div className="mb-6 mt-3 rounded-2xl border border-brand-green/20 bg-brand-green/[0.05] overflow-hidden">
+          <div className={`mb-6 mt-3 rounded-2xl border ${sx.border20} ${sx.bg05} overflow-hidden`}>
             <button
               type="button"
               onClick={() => setShowLearnMore((v) => !v)}
-              className="flex w-full items-center justify-between px-5 py-4 text-left hover:bg-brand-green/[0.04] transition-colors"
+              className={`flex w-full items-center justify-between px-5 py-4 text-left ${sx.hoverBg04} transition-colors`}
               aria-expanded={showLearnMore}
             >
-              <span className="flex items-center gap-2 font-sans text-sm font-bold text-brand-green-dark">
-                <Info className="h-4 w-4 text-brand-green" aria-hidden />
+              <span className={`flex items-center gap-2 font-sans text-sm font-bold ${sx.textDark}`}>
+                <Info className={`h-4 w-4 ${sx.text}`} aria-hidden />
                 Learn More About This Segment™
               </span>
               <ChevronDown
-                className={`h-4 w-4 text-brand-green/60 transition-transform duration-200 ${showLearnMore ? "rotate-180" : ""}`}
+                className={`h-4 w-4 ${sx.text60} transition-transform duration-200 ${showLearnMore ? "rotate-180" : ""}`}
                 aria-hidden
               />
             </button>
             {showLearnMore && (
-              <div className="px-5 pb-6 pt-1 space-y-5 font-sans text-[15px] leading-relaxed text-brand-ink border-t border-brand-green/10">
+              <div className={`px-5 pb-6 pt-1 space-y-5 font-sans text-[15px] leading-relaxed text-brand-ink border-t ${sx.border10}`}>
                 <LearnMoreSection heading="Purpose" body={data.learnMore.purpose} />
                 <LearnMoreSection heading="Why It Matters" body={data.learnMore.whyItMatters} />
                 <LearnMoreSection heading="Scientific Foundation" body={data.learnMore.science} />
@@ -912,8 +927,8 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
                     {data.learnMore.bestPractices.map((p, i) => <li key={i}>{p}</li>)}
                   </ul>
                 </div>
-                <div className="rounded-xl border border-brand-green/20 bg-brand-green/[0.06] px-4 py-3">
-                  <p className="font-bold text-brand-green-dark mb-1">Cherry Blossom™ Tip</p>
+                <div className={`rounded-xl border ${sx.border20} ${sx.bg06} px-4 py-3`}>
+                  <p className={`font-bold ${sx.textDark} mb-1`}>Cherry Blossom™ Tip</p>
                   <p>{data.learnMore.cbTip}</p>
                 </div>
               </div>
@@ -998,15 +1013,15 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
 
         {/* Business Context Assessment™ accordion — ceo-workday only */}
         {blockId === "ceo-workday" && (
-          <div className="mt-8 rounded-2xl border border-brand-green/20 bg-brand-green/[0.04] overflow-hidden">
+          <div className={`mt-8 rounded-2xl border ${sx.border20} ${sx.bg04} overflow-hidden`}>
             <button
               type="button"
               onClick={() => setShowBca((v) => !v)}
               aria-expanded={showBca}
-              className="flex w-full items-center justify-between px-5 py-5 text-left hover:bg-brand-green/[0.04] transition-colors"
+              className={`flex w-full items-center justify-between px-5 py-5 text-left ${sx.hoverBg04} transition-colors`}
             >
               <div className="flex items-start gap-3">
-                <Info className="h-5 w-5 text-brand-green mt-0.5 shrink-0" aria-hidden />
+                <Info className={`h-5 w-5 ${sx.text} mt-0.5 shrink-0`} aria-hidden />
                 <div>
                   <p className="font-sans text-base font-bold text-brand-ink">
                     Business Context Assessment™
@@ -1017,12 +1032,12 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
                 </div>
               </div>
               <ChevronDown
-                className={`ml-4 h-5 w-5 shrink-0 text-brand-green/60 transition-transform duration-200 ${showBca ? "rotate-180" : ""}`}
+                className={`ml-4 h-5 w-5 shrink-0 ${sx.text60} transition-transform duration-200 ${showBca ? "rotate-180" : ""}`}
                 aria-hidden
               />
             </button>
             {showBca && (
-              <div className="border-t border-brand-green/10">
+              <div className={`border-t ${sx.border10}`}>
                 <BusinessContextProfile onDone={() => setShowBca(false)} />
               </div>
             )}
