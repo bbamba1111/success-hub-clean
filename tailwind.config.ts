@@ -37,6 +37,12 @@ const config: Config = {
           green: "#5D9D61",
           "green-dark": "#4A7D4E",
           "green-soft": "#8AC28E",
+          // Soft sage green — used for the Daily Operating Segment™ dropdown
+          // boxes (Learn More, Business Context Assessment, chip pickers,
+          // commitment CTAs) on every segment except Time Freedom™ and
+          // Power Down™, which keep the original brand-green treatment.
+          sage: "#7FB069",
+          "sage-dark": "#5A7A45",
           coral: "#E26C73",
           "coral-dark": "#C9545B",
           blush: "#F6E4E7",

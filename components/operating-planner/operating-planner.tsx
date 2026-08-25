@@ -564,9 +564,9 @@ function MovementPlanner({ activities, onChange }: { activities: PlannedActivity
   function remove(id: string) { onChange(activities.filter((a) => a.id !== id)) }
   function update(id: string, patch: Partial<PlannedActivity>) { onChange(activities.map((a) => a.id === id ? { ...a, ...patch } : a)) }
   return (
-    <div className="mb-6 rounded-2xl border border-brand-green/20 bg-brand-green/[0.04] overflow-hidden">
-      <div className="px-5 py-4 border-b border-brand-green/10">
-        <p className="font-sans text-sm font-bold text-brand-green">Planned Movement™ <span className="font-normal text-brand-ink-soft">(optional)</span></p>
+    <div className="mb-6 rounded-2xl border border-brand-sage/20 bg-brand-sage/[0.04] overflow-hidden">
+      <div className="px-5 py-4 border-b border-brand-sage/10">
+        <p className="font-sans text-sm font-bold text-brand-sage">Planned Movement™ <span className="font-normal text-brand-ink-soft">(optional)</span></p>
         <p className="mt-0.5 font-sans text-xs text-brand-ink-soft">Build your 30-minute movement plan. Cherry Blossom™ will track your consistency over time.</p>
       </div>
       <div className="px-5 py-4 space-y-3">
@@ -575,20 +575,20 @@ function MovementPlanner({ activities, onChange }: { activities: PlannedActivity
           <div key={act.id} className="flex items-start gap-3 flex-wrap">
             <div className="flex-1 min-w-[180px]">
               <label className="sr-only">Activity {idx + 1}</label>
-              <select value={act.isCustom ? "Other" : act.activity} onChange={(e) => { const val = e.target.value; update(act.id, { activity: val, isCustom: val === "Other" }) }} className="w-full rounded-xl border border-brand-blush bg-white px-3 py-2.5 font-sans text-sm text-brand-ink focus:border-brand-green focus:outline-none focus:ring-2 focus:ring-brand-green/20">
+              <select value={act.isCustom ? "Other" : act.activity} onChange={(e) => { const val = e.target.value; update(act.id, { activity: val, isCustom: val === "Other" }) }} className="w-full rounded-xl border border-brand-blush bg-white px-3 py-2.5 font-sans text-sm text-brand-ink focus:border-brand-sage focus:outline-none focus:ring-2 focus:ring-brand-sage/20">
                 {MOVEMENT_ACTIVITIES.map((a) => <option key={a} value={a}>{a}</option>)}
               </select>
-              {act.isCustom && <input type="text" placeholder="Describe your activity..." value={act.customActivity} onChange={(e) => update(act.id, { customActivity: e.target.value })} className="mt-2 w-full rounded-xl border border-brand-blush bg-white px-3 py-2.5 font-sans text-sm text-brand-ink placeholder:text-brand-ink-soft/50 focus:border-brand-green focus:outline-none focus:ring-2 focus:ring-brand-green/20" />}
+              {act.isCustom && <input type="text" placeholder="Describe your activity..." value={act.customActivity} onChange={(e) => update(act.id, { customActivity: e.target.value })} className="mt-2 w-full rounded-xl border border-brand-blush bg-white px-3 py-2.5 font-sans text-sm text-brand-ink placeholder:text-brand-ink-soft/50 focus:border-brand-sage focus:outline-none focus:ring-2 focus:ring-brand-sage/20" />}
             </div>
             <div className="flex items-center gap-2 shrink-0">
-              <select value={act.minutes} onChange={(e) => update(act.id, { minutes: Number(e.target.value) })} className="rounded-xl border border-brand-blush bg-white px-3 py-2.5 font-sans text-sm text-brand-ink focus:border-brand-green focus:outline-none focus:ring-2 focus:ring-brand-green/20">
+              <select value={act.minutes} onChange={(e) => update(act.id, { minutes: Number(e.target.value) })} className="rounded-xl border border-brand-blush bg-white px-3 py-2.5 font-sans text-sm text-brand-ink focus:border-brand-sage focus:outline-none focus:ring-2 focus:ring-brand-sage/20">
                 {[3, 5, 10, 15, 20, 25, 30].map((m) => <option key={m} value={m}>{m} min</option>)}
               </select>
               <button type="button" onClick={() => remove(act.id)} className="rounded-lg p-2 text-brand-ink-soft hover:text-brand-coral transition-colors" aria-label={`Remove activity ${idx + 1}`}><Trash2 className="h-4 w-4" aria-hidden /></button>
             </div>
           </div>
         ))}
-        <button type="button" onClick={add} disabled={total >= 30} className="inline-flex items-center gap-2 rounded-full border border-brand-green/30 bg-white px-4 py-2 font-sans text-sm font-semibold text-brand-green transition-colors hover:bg-brand-green/5 disabled:opacity-40 disabled:cursor-not-allowed">
+        <button type="button" onClick={add} disabled={total >= 30} className="inline-flex items-center gap-2 rounded-full border border-brand-sage/30 bg-white px-4 py-2 font-sans text-sm font-semibold text-brand-sage transition-colors hover:bg-brand-sage/5 disabled:opacity-40 disabled:cursor-not-allowed">
           <Plus className="h-4 w-4" aria-hidden /> Add Activity
         </button>
         {total > 0 && <p className="font-sans text-xs font-medium text-brand-ink-soft">{total} / 30 minutes planned</p>}
@@ -654,6 +654,25 @@ function RepeatAfterMe({ blockId, data }: RepeatAfterMeProps) {
   const [declaration, setDeclaration] = useState<string | null>(null)
   const [confirmed, setConfirmed] = useState(false)
 
+  // Soft sage green everywhere except Time Freedom™ and Power Down™, which
+  // keep the original brand-green treatment.
+  const useSage = blockId !== "time-freedom" && blockId !== "power-down"
+  const ax = {
+    border20: useSage ? "border-brand-sage/20" : "border-brand-green/20",
+    border30: useSage ? "border-brand-sage/30" : "border-brand-green/30",
+    borderSolid: useSage ? "border-brand-sage" : "border-brand-green",
+    bg5: useSage ? "bg-brand-sage/5" : "bg-brand-green/5",
+    bg10: useSage ? "bg-brand-sage/10" : "bg-brand-green/10",
+    bgSolid: useSage ? "bg-brand-sage" : "bg-brand-green",
+    hoverBg5: useSage ? "hover:bg-brand-sage/5" : "hover:bg-brand-green/5",
+    hoverBgDark: useSage ? "hover:bg-brand-sage-dark" : "hover:bg-brand-green-dark",
+    text: useSage ? "text-brand-sage" : "text-brand-green",
+    hoverText: useSage ? "hover:text-brand-sage" : "hover:text-brand-green",
+    focusWithinBorder: useSage ? "focus-within:border-brand-sage" : "focus-within:border-brand-green",
+    focusWithinRing20: useSage ? "focus-within:ring-brand-sage/20" : "focus-within:ring-brand-green/20",
+  }
+  const typeColorClass = useSage && data.type === "life" ? "text-brand-sage" : TYPE_COLOR[data.type]
+
   function handleGenerate() {
     if (!input.trim()) return
     setDeclaration(elevateDeclaration(data.dmwId, input))
@@ -662,8 +681,8 @@ function RepeatAfterMe({ blockId, data }: RepeatAfterMeProps) {
   if (confirmed && declaration) {
     return (
       <div className="mt-6 w-full space-y-4 text-left">
-        <div className="rounded-2xl border border-brand-green/20 bg-brand-green/5 px-5 py-4">
-          <p className={`font-sans text-xs font-bold uppercase tracking-[0.2em] mb-2 ${TYPE_COLOR[data.type]}`}>
+        <div className={`rounded-2xl border ${ax.border20} ${ax.bg5} px-5 py-4`}>
+          <p className={`font-sans text-xs font-bold uppercase tracking-[0.2em] mb-2 ${typeColorClass}`}>
             {TYPE_DECLARATION_LABEL[data.type]}
           </p>
           <p className="font-sans text-[15px] font-semibold leading-relaxed text-brand-ink text-balance">
@@ -671,14 +690,14 @@ function RepeatAfterMe({ blockId, data }: RepeatAfterMeProps) {
           </p>
         </div>
         <div className="flex flex-wrap gap-3">
-          <div className="inline-flex items-center gap-2 rounded-full bg-brand-green px-6 py-3 font-sans text-sm font-bold text-white shadow-sm">
+          <div className={`inline-flex items-center gap-2 rounded-full ${ax.bgSolid} px-6 py-3 font-sans text-sm font-bold text-white shadow-sm`}>
             <CheckCircle2 className="h-4 w-4" aria-hidden />
             Installed™
           </div>
           <button
             type="button"
             onClick={() => { setConfirmed(false); setDeclaration(null) }}
-            className="inline-flex items-center gap-2 rounded-full border border-brand-green/30 bg-transparent px-5 py-3 font-sans text-sm font-semibold text-brand-green transition-all hover:bg-brand-green/5"
+            className={`inline-flex items-center gap-2 rounded-full border ${ax.border30} bg-transparent px-5 py-3 font-sans text-sm font-semibold ${ax.text} transition-all ${ax.hoverBg5}`}
           >
             Edit
           </button>
@@ -711,8 +730,8 @@ function RepeatAfterMe({ blockId, data }: RepeatAfterMeProps) {
               onClick={() => { setInput(ex); setDeclaration(null) }}
               className={`rounded-full border px-3 py-1.5 font-sans text-xs font-medium transition-colors ${
                 input === ex
-                  ? "border-brand-green bg-brand-green/10 text-brand-green"
-                  : "border-brand-blush bg-white/70 text-brand-ink-soft hover:border-brand-green/40 hover:text-brand-green"
+                  ? `${ax.borderSolid} ${ax.bg10} ${ax.text}`
+                  : `border-brand-blush bg-white/70 text-brand-ink-soft ${useSage ? "hover:border-brand-sage/40" : "hover:border-brand-green/40"} ${ax.hoverText}`
               }`}
             >
               {ex}
@@ -728,8 +747,8 @@ function RepeatAfterMe({ blockId, data }: RepeatAfterMeProps) {
             <label htmlFor={`ram-${blockId}`} className="block font-sans text-sm font-bold text-brand-ink mb-2">
               {TYPE_INPUT_LABEL[data.type]}
             </label>
-            <div className="flex items-start rounded-xl border border-brand-blush bg-white/60 focus-within:border-brand-green focus-within:ring-2 focus-within:ring-brand-green/20 transition-all overflow-hidden">
-              <span className="shrink-0 px-4 pt-3.5 font-sans text-[15px] font-semibold text-brand-green select-none">
+            <div className={`flex items-start rounded-xl border border-brand-blush bg-white/60 ${ax.focusWithinBorder} focus-within:ring-2 ${ax.focusWithinRing20} transition-all overflow-hidden`}>
+              <span className={`shrink-0 px-4 pt-3.5 font-sans text-[15px] font-semibold ${ax.text} select-none`}>
                 I am committed to
               </span>
               <textarea
@@ -752,7 +771,7 @@ function RepeatAfterMe({ blockId, data }: RepeatAfterMeProps) {
             type="button"
             onClick={handleGenerate}
             disabled={!input.trim()}
-            className="inline-flex items-center gap-2 rounded-full bg-brand-green px-6 py-3 font-sans text-sm font-bold text-white shadow-sm transition-all hover:bg-brand-green-dark disabled:opacity-40 disabled:cursor-not-allowed"
+            className={`inline-flex items-center gap-2 rounded-full ${ax.bgSolid} px-6 py-3 font-sans text-sm font-bold text-white shadow-sm transition-all ${ax.hoverBgDark} disabled:opacity-40 disabled:cursor-not-allowed`}
           >
             Create My Intention Declaration™
             <ArrowRight className="h-4 w-4" aria-hidden />
