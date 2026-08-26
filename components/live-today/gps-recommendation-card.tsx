@@ -19,6 +19,12 @@
  *
  * Used from: TodaysOperatingSystem™, CeoWorkdayWorkspace™
  * Data source: lib/founder-gps/engine.ts (pure, deterministic)
+ *
+ * ⚠️ ORPHANED — its only two callers above are themselves unmounted by any
+ * live page. Do not build new work against this component or against
+ * `deriveGpsRecommendation()`/`GpsRecommendationCard` in `engine.ts`. The
+ * live, canonical recommendation surface is `FounderGpsWorkspace`, reading
+ * `GpsRecommendation` from `lib/founder-gps/next-best-move-engine.ts`.
  */
 
 import { useState } from "react"

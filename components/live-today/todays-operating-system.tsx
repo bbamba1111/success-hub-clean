@@ -3,6 +3,21 @@
 /**
  * TodaysOperatingSystem™ — Live & Lead Today™ (Phase 8.1)
  *
+ * ⚠️ ORPHANED — NOT MOUNTED BY ANY LIVE PAGE OR COMPONENT (confirmed by
+ * repo-wide import search, architecture audit). Only reference anywhere is
+ * `docs/harmony-lane-operating-manual.md`. The live CEO Workday™ segment
+ * runs through `business-day-block.tsx` → `TodaysCeoWorkdayCard` →
+ * `FounderGpsWorkspace`, which calls the canonical `deriveNextBestMove()`
+ * in `lib/founder-gps/next-best-move-engine.ts` — NOT `deriveGpsRecommendation()`
+ * from `lib/founder-gps/engine.ts` used here.
+ *
+ * DO NOT mount this component and DO NOT build new features on top of
+ * `deriveGpsRecommendation()`/`CeoWorkdayWorkspace`/`GpsRecommendationCard`
+ * — they are a superseded, pre-Next-Best-Move segment-recommendation system
+ * left in place only for historical reference. Any new CEO Workday work
+ * belongs in `FounderGpsWorkspace` against the canonical `GpsRecommendation`
+ * pipeline.
+ *
  * Single Voice Principle™: Cherry Blossom™ is the only voice.
  * Founder Intelligence™, Founder GPS™, Harmony Context Engine™ and all other
  * intelligence engines work behind the scenes. Cherry Blossom presents.

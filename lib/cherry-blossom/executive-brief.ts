@@ -18,11 +18,25 @@
  *   - Dynamic assignments (Phase 7.3)
  *   - CEO Workday™ scheduling (Phase 7.4)
  *   - Notification or push logic
+ *
+ * Integration boundary (architecture reconciliation pass): for the
+ * `ceo-workday` segment specifically, the assigned executive and highest-
+ * leverage outcome are read from the canonical `GpsRecommendation`
+ * (`lib/founder-gps/next-best-move-engine.ts` → `deriveNextBestMove()`) via
+ * `ctx.snapshot` — the SAME engine call `FounderGpsWorkspace` uses. This is
+ * a read of an already-computed recommendation, not a second recommendation
+ * engine: Cherry Blossom never re-derives or overrides it, only narrates it
+ * in her voice. All other segments (`morning-given`, `time-freedom`,
+ * `power-down`, no-week-designed) keep their existing HarmonyContextValue-only
+ * logic untouched — GPS has no recommendation for those moments.
  */
 
 import type { HarmonyContextValue } from "@/lib/harmony-context/types"
 import { EXECUTIVE_TEAM } from "@/lib/executive-team/executive-registry"
 import { deriveProgressSummary, type ProgressSummary } from "@/lib/founder-gps/progress-intelligence"
+import { buildGpsContextFromSnapshot, deriveNextBestMove } from "@/lib/founder-gps/next-best-move-engine"
+import type { GpsRecommendation } from "@/lib/founder-gps/types"
+import { OPERATING_PILLARS } from "@/lib/entrepreneur-success/esa-registry"
 
 /* ===========================================================================
  * Output types
@@ -150,11 +164,28 @@ export function assembleMorningExecutiveBrief(ctx: HarmonyContextValue): Morning
   const progress = deriveProgressSummary()
 
   // -------------------------------------------------------------------------
+  // Founder GPS™ Next Best Move™ — the SAME canonical engine call
+  // `FounderGpsWorkspace` makes, read here (never re-derived) so Cherry
+  // Blossom's CEO Workday briefing narrates the real recommendation instead
+  // of independently guessing an executive/outcome from business stage.
+  // `ctx.snapshot.ready` is false during SSR/first paint, so this safely
+  // no-ops on the server exactly like `FounderGpsWorkspace` does.
+  // -------------------------------------------------------------------------
+  const gpsRecommendation: GpsRecommendation | null =
+    ctx.currentSegment?.id === "ceo-workday" && ctx.snapshot.ready
+      ? deriveNextBestMove(buildGpsContextFromSnapshot(ctx.snapshot), {
+          founderDestination: ctx.founderDestination,
+          esaResults: ctx.snapshot.business.esaResults,
+          operatingHistory: ctx.snapshot.intelligence.operatingHistory,
+        })
+      : null
+
+  // -------------------------------------------------------------------------
   // Select the executive and focus based on business stage + context signals
   // -------------------------------------------------------------------------
-  const executive = selectAssignedExecutive(ctx)
+  const executive = selectAssignedExecutive(ctx, gpsRecommendation)
   const focus = selectExecutiveFocus(ctx)
-  const outcome = selectHighestLeverageOutcome(ctx)
+  const outcome = selectHighestLeverageOutcome(ctx, gpsRecommendation)
 
   // -------------------------------------------------------------------------
   // Opening statement — Cherry Blossom's voice. Proactive, contextual, calm.
@@ -179,7 +210,7 @@ export function assembleMorningExecutiveBrief(ctx: HarmonyContextValue): Morning
   // -------------------------------------------------------------------------
   // Explainability™ — why this brief was assembled this way
   // -------------------------------------------------------------------------
-  const explainability = buildExplainability(ctx, focus, executive, progress)
+  const explainability = buildExplainability(ctx, focus, executive, progress, gpsRecommendation)
 
   return {
     greeting,
@@ -309,7 +340,10 @@ function selectExecutiveFocus(ctx: HarmonyContextValue): ExecutiveFocus {
   }
 }
 
-function selectHighestLeverageOutcome(ctx: HarmonyContextValue): HighestLeverageOutcome {
+function selectHighestLeverageOutcome(
+  ctx: HarmonyContextValue,
+  gpsRecommendation: GpsRecommendation | null,
+): HighestLeverageOutcome {
   const stage = ctx.businessStage
   const focusAreas = ctx.focusAreas
   const seg = ctx.currentSegment
@@ -331,6 +365,21 @@ function selectHighestLeverageOutcome(ctx: HarmonyContextValue): HighestLeverage
   }
 
   if (seg?.id === "ceo-workday") {
+    // Canonical Founder GPS™ Next Best Move™ — the same recommendation
+    // `FounderGpsWorkspace` shows. Preferred over the heuristics below,
+    // which only apply once GPS has no computed move yet (e.g. context
+    // still loading).
+    if (gpsRecommendation) {
+      const pillarName =
+        OPERATING_PILLARS.find((p) => p.id === gpsRecommendation.targetPillar)?.name ??
+        "Execution Architecture™"
+      return {
+        title: gpsRecommendation.nextTurn,
+        rationale: gpsRecommendation.reason,
+        pillar: pillarName,
+      }
+    }
+
     if (focusAreas.length > 0) {
       return {
         title: `Advance Your ${focusAreas[0]} Priority`,

@@ -3,6 +3,12 @@
 /**
  * CeoWorkdayWorkspace™ — Phase 8.1
  * ---------------------------------------------------------------------------
+ * ⚠️ ORPHANED — only imported by the also-orphaned `TodaysOperatingSystem`
+ * (see that file's header). Not mounted by any live page. The live CEO
+ * Workday™ segment is `TodaysCeoWorkdayCard` → `FounderGpsWorkspace`, which
+ * uses the canonical `deriveNextBestMove()` engine, not `deriveGpsRecommendation()`
+ * from `lib/founder-gps/engine.ts`. Do not build new work on this component.
+ *
  * The Executive Operating Environment™ for the 4-Hour CEO Workday™.
  *
  * Phase 8.1 upgrades:

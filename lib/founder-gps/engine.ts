@@ -12,6 +12,19 @@
  *   Executive Assignment™ → Business Asset™
  *
  * PURE module: no React, no I/O, no Supabase. Safe to call from any context.
+ *
+ * ⚠️ ORPHANED (Phase 8.1 predecessor system) — this file's segment-recommendation
+ * surface (`deriveGpsRecommendation`, `gpsForCeoWorkday`, `gpsForExecutiveIntelligence`,
+ * `gpsForHumanZoneOfGenius`, `gpsForBusinessOptimization`, `getExecutiveTeamCards`,
+ * `GpsRecommendationCard`) has NO live callers — its only importers
+ * (`todays-operating-system.tsx`, `ceo-workday-workspace.tsx`,
+ * `gps-recommendation-card.tsx`) are themselves unmounted by any live page.
+ * A few unrelated files import only the `GpsOutcomeId`/`GpsRecommendationCard`
+ * *types* from here for shared type shapes — that is fine and does not make
+ * this file live. The canonical, live CEO Workday recommendation engine is
+ * `lib/founder-gps/next-best-move-engine.ts` (`deriveNextBestMove()` →
+ * `GpsRecommendation`), used by `FounderGpsWorkspace`. Do not build new
+ * recommendation logic in this file.
  */
 
 import type { HarmonyContextValue } from "@/lib/harmony-context/types"
