@@ -262,6 +262,7 @@ export const BUSINESS_ASSET_REGISTRY: readonly BusinessAsset[] = [
     primaryOutcome: "build-compounding-assets",
     primaryStages: ["growth", "scale", "legacy"],
     status: "architecture",
+    relatedDeliverableIds: ["strategic-plan"],
   },
   {
     id: "brand-positioning-statement",

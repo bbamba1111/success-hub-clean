@@ -442,3 +442,23 @@ correctly scoped per this audit and the prior pass.
 | Founder-level business requirements | **New**: proposed Business Requirements Blueprint™ (§9) — not yet built |
 | Life/WLB state | Work-Life Balance Audit™ → Reality Check → Decide & Design → WLBB Day |
 | Identity/personalization | Founder Profile™ |
+
+---
+
+## 11. Follow-up: Capability ↔ Asset ↔ Deliverable relationship audit
+
+A dedicated follow-up pass traced the Capability → Asset → Deliverable
+relationships referenced in §5's canonical architecture diagram in detail —
+see `docs/capability-asset-deliverable-relationship-audit.md`. Headline
+findings: the three registries (`READINESS_CAPABILITIES`,
+`BUSINESS_ASSET_REGISTRY`, `DELIVERABLES`) are confirmed distinct and
+non-duplicative; a typed `relatedBusinessAssetIds` link (Capability → Asset)
+and `relatedDeliverableIds` link (Asset → Deliverable) were added as optional,
+additive fields and populated only where a confirmed match exists; the
+`"strategic-plan"` id, which exists independently in both the Asset and
+Deliverable registries, was confirmed to be a benign naming coincidence (no
+consumer conflated them) and resolved via the new link rather than a rename
+or merge. That document also lists orphaned assets/deliverables and
+capability→asset matches that still need a human business-design decision —
+those remain open work for whenever the Business Requirements Blueprint™
+(§9 above) is actually built.

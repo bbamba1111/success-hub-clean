@@ -389,6 +389,13 @@ export interface BusinessAsset {
    */
   primaryStages: BusinessStage[]
   status: EdeStatus
+  /**
+   * Deliverable Output Architecture™ ids (from deliverable-registry.ts) that
+   * document or produce this asset. Optional and additive — populated only
+   * where a confirmed match exists; left unset when unresolved rather than
+   * guessed.
+   */
+  relatedDeliverableIds?: string[]
 }
 
 /** The connection between an Operating Practice™ → Assignment → Asset. */

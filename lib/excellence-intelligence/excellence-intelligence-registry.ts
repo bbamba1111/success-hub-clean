@@ -710,6 +710,13 @@ export interface ReadinessCapability {
   requiredDecisions?: string[]
   /** The concrete artifacts/assets that must exist once installed (documents, SOPs, dashboards, etc.). */
   requiredAssets?: string[]
+  /**
+   * Business Asset Outcome Registry™ ids (from asset-registry.ts) that
+   * `requiredAssets` corresponds to, where a confident match exists.
+   * `requiredAssets` stays free-text prose for display — this is the typed
+   * cross-reference, populated only when unambiguous, left unset otherwise.
+   */
+  relatedBusinessAssetIds?: string[]
   /** The roles (founder, team, or otherwise) that must exist or act for this to be installed. */
   requiredRoles?: string[]
   /**
@@ -948,8 +955,9 @@ export const READINESS_CAPABILITIES: ReadinessCapability[] = [
     status: "architecture",
     installationObjective: "A written SOP for each of the top five repeatable tasks, tested by someone unfamiliar with the task.",
     requiredDecisions: ["Which five repeatable tasks to document first"],
-    requiredAssets: ["Five written SOPs"],
-    requiredRoles: ["founder", "a test reader unfamiliar with the task"],
+  requiredAssets: ["Five written SOPs"],
+  relatedBusinessAssetIds: ["standard-operating-procedure"],
+  requiredRoles: ["founder", "a test reader unfamiliar with the task"],
     ownership: { founder: "Writes and validates each SOP before a hire is made.", team: "Follows the SOP once hired.", leverageClass: "delegate" },
     successMetrics: ["A new hire can follow the SOP without the founder present"],
     failureModes: ["SOPs are written but never tested with someone outside the task, so gaps surface only after hiring"],
@@ -1182,8 +1190,9 @@ export const READINESS_CAPABILITIES: ReadinessCapability[] = [
     status: "architecture",
     installationObjective: "A recurring leadership KPI review shared across the leadership team, tracking leading and lagging indicators together.",
     requiredDecisions: ["Which small set of leading and lagging indicators the leadership team will steer by"],
-    requiredAssets: ["A recurring leadership review with a shared KPI set"],
-    requiredRoles: ["founder", "leadership team"],
+  requiredAssets: ["A recurring leadership review with a shared KPI set"],
+  relatedBusinessAssetIds: ["financial-dashboard"],
+  requiredRoles: ["founder", "leadership team"],
     ownership: { founder: "Installs the rhythm.", team: "Shares accountability for the reviewed KPIs.", leverageClass: "delegate" },
     successMetrics: ["The leadership team reviews the same KPIs on a set cadence, not only after the fact"],
     failureModes: ["Only lagging indicators are tracked, so problems surface after they're already unrecoverable"],
