@@ -181,6 +181,11 @@ export function FounderGpsWorkspace() {
   // anything; resets naturally when the recommendation changes.
   const [designMethodId, setDesignMethodId] = useState<string | null>(null)
 
+  // Phase 11 — Build Path Selection™. Explains the existing Founder
+  // GPS™/EDE recommendation; not a new engine. Derived before the effect
+  // below so its auto-apply can read it on the very first render.
+  const recommendedPath = nextBestMove ? deriveRecommendedBuildPath(nextBestMove) : null
+
   useEffect(() => {
     if (!recommendationId) {
       setBuildPath(null)
@@ -203,6 +208,7 @@ export function FounderGpsWorkspace() {
     }
     setBuildRecordState(getBuildRecord(recommendationId))
     setDesignMethodId(null)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recommendationId])
 
   useEffect(() => {
@@ -219,10 +225,10 @@ export function FounderGpsWorkspace() {
       ? deriveBuildBlueprint(nextBestMove, buildPath, { businessModelProfile: snapshot.businessModelProfile, founderDestination })
       : null
 
-  // Phase 11 — Build Path Selection™ + Second Opinion™. Both explain the
-  // existing Founder GPS™/EDE recommendation; neither is a new engine, and
-  // neither blocks the founder from choosing a different path.
-  const recommendedPath = nextBestMove ? deriveRecommendedBuildPath(nextBestMove) : null
+  // Phase 11 — Second Opinion™. Explains the existing Founder GPS™/EDE
+  // recommendation vs. the founder's chosen path; not a new engine, and
+  // doesn't block the founder from choosing a different path.
+  // (`recommendedPath` itself is derived earlier, above the build-path effect.)
   const secondOpinion = nextBestMove && recommendedPath ? deriveSecondOpinion(nextBestMove, recommendedPath, buildPath, buildBlueprint) : null
 
   // Phase 12 — Founder Business-Building Guidance™. A pure explanation layer
