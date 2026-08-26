@@ -18,19 +18,31 @@
  * full interactive flow itself.
  *
  * Progressive disclosure pass — same engines, same data, presentation only.
- * Reordered into five sections so the founder sees ONE move at a time
- * instead of a flat wall of cards: Next Best Move → Today's Outcome →
- * Decide/Delegate/Design → Today's 1–5 PM Build → (collapsed) full Build
- * Blueprint™ & Guide. Nothing is deleted — everything that used to render
- * unconditionally now lives one tap away.
+ * Reordered so the founder sees ONE move at a time instead of a flat wall of
+ * cards: Business Destination™/Reality™/Gap Map (a read of the existing
+ * Business Operating Fingerprint™ + the active Next Best Move™'s own
+ * currentState/targetState — see `lib/founder-gps/build-my-business.ts`) →
+ * Next Best Move → Today's Outcome → Decide/Delegate/Design → "1:00 PM —
+ * Build Begins" → Today's 1–5 PM Build → (collapsed) full Build Blueprint™
+ * & Guide → Ask Your AI Executive Team™ (a read-only lookup into the
+ * existing `EXECUTIVE_TEAM` roster) → Ask Cherry Blossom™ (the existing
+ * shared `SimpleChatModal`, `ceo-workday` context). Nothing is deleted —
+ * everything that used to render unconditionally now lives one tap away.
  */
 
 import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
-import { ArrowRight, ChevronDown, Navigation } from "lucide-react"
+import { ArrowRight, ChevronDown, MessageCircle, Navigation } from "lucide-react"
 
 import { useHarmonyContextOptional } from "@/components/harmony-context/harmony-context-provider"
 import { buildGpsContextFromSnapshot, deriveNextBestMove } from "@/lib/founder-gps/next-best-move-engine"
+import {
+  deriveBusinessDestinationSummary,
+  deriveBusinessRealitySummary,
+  deriveBusinessGapMap,
+  deriveRelevantExecutives,
+} from "@/lib/founder-gps/build-my-business"
+import { SimpleChatModal } from "@/components/simple-chat-modal"
 import { BuildPathPicker } from "@/components/build-strategy/build-path-picker"
 import { BuildBlueprintCard } from "@/components/build-strategy/build-blueprint-card"
 import { SecondOpinionPanel } from "@/components/build-strategy/second-opinion-panel"
@@ -140,6 +152,15 @@ export function FounderGpsWorkspace() {
         })
       : null
 
+  // Build My Business™ — Destination/Reality/Gap Map + AI Executive Team,
+  // all pure reads of the existing Fingerprint/recommendation/roster data.
+  // See `lib/founder-gps/build-my-business.ts` for the full derivation.
+  const destinationSummary = snapshot ? deriveBusinessDestinationSummary(snapshot.businessOperatingFingerprint) : []
+  const realitySummary = snapshot ? deriveBusinessRealitySummary(snapshot.businessOperatingFingerprint) : []
+  const gapMap = deriveBusinessGapMap(nextBestMove)
+  const { primary: primaryExecutive, others: otherExecutives } = deriveRelevantExecutives(nextBestMove)
+  const [chatOpen, setChatOpen] = useState(false)
+
   // Build Strategy™ / Build Blueprint™ (Phase 9F) — the founder's chosen
   // Build Path™ for the current Next Best Move™, and the resulting
   // blueprint. Read/written via localStorage only, keyed by the
@@ -167,7 +188,19 @@ export function FounderGpsWorkspace() {
       return
     }
     const saved = getBuildStrategy(recommendationId)
-    setBuildPath(saved?.buildPath ?? null)
+    if (saved?.buildPath) {
+      setBuildPath(saved.buildPath)
+    } else if (recommendedPath?.buildPath) {
+      // Build My Business™ — auto-apply the system's already-computed
+      // recommended Build Path™ so a Build Assignment appears immediately
+      // from the one Next Best Move™, instead of requiring the founder to
+      // manually pick a path first. `handleSelectBuildPath` is the SAME
+      // handler the manual `BuildPathPicker` calls — this is not a second
+      // decision path. Manual override remains available via "Change".
+      handleSelectBuildPath(recommendedPath.buildPath)
+    } else {
+      setBuildPath(null)
+    }
     setBuildRecordState(getBuildRecord(recommendationId))
     setDesignMethodId(null)
   }, [recommendationId])
@@ -304,9 +337,60 @@ export function FounderGpsWorkspace() {
       <div className="flex items-center gap-2">
         <Navigation className="h-4 w-4 text-[#C13B6B]" aria-hidden />
         <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#C13B6B]">
-          Founder GPS™ — Your Next Best Move™
+          Build My Business™ — Founder GPS™
         </p>
       </div>
+
+      {/* 0. Business Destination™ / Business Reality™ / Business Gap Map —
+          a read of the existing Fingerprint + the active move's own
+          currentState/targetState. No new engine. */}
+      {(destinationSummary.length > 0 || realitySummary.length > 0 || gapMap) && (
+        <div className="rounded-2xl border border-[#E8DFE2] bg-white px-5 py-4 space-y-3">
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+            {destinationSummary.length > 0 && (
+              <div className="rounded-xl border border-[#C13B6B]/20 bg-[#FBF1F5] px-3.5 py-3 space-y-1.5">
+                <p className="font-montserrat text-[9px] font-bold uppercase tracking-[0.14em] text-[#C13B6B]">
+                  Business Destination™
+                </p>
+                {destinationSummary.map((item) => (
+                  <div key={item.label} className="flex items-baseline justify-between gap-2">
+                    <span className="font-sans text-[11px] text-[#6B5860]">{item.label}</span>
+                    <span className="font-sans text-[11px] font-semibold text-[#2E1F27] text-right">{item.value}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+            {realitySummary.length > 0 && (
+              <div className="rounded-xl border border-[#E8DFE2] bg-[#FAFAFA] px-3.5 py-3 space-y-1.5">
+                <p className="font-montserrat text-[9px] font-bold uppercase tracking-[0.14em] text-[#6B5860]">
+                  Business Reality™
+                </p>
+                {realitySummary.map((item) => (
+                  <div key={item.label} className="flex items-baseline justify-between gap-2">
+                    <span className="font-sans text-[11px] text-[#6B5860]">{item.label}</span>
+                    <span className="font-sans text-[11px] font-semibold text-[#2E1F27] text-right">{item.value}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {gapMap && (
+            <div className="rounded-xl border border-[#C13B6B]/20 bg-[#FBF1F5] px-3.5 py-3">
+              <p className="font-montserrat text-[9px] font-bold uppercase tracking-[0.14em] text-[#C13B6B] mb-2">
+                Business Gap Map™ — Today&apos;s Gap
+              </p>
+              <div className="flex items-center gap-2.5">
+                <p className="flex-1 font-sans text-[11px] leading-relaxed text-[#6B5860] text-pretty">{gapMap.current}</p>
+                <ArrowRight className="h-3.5 w-3.5 shrink-0 text-[#C13B6B]" aria-hidden />
+                <p className="flex-1 font-sans text-[11px] font-semibold leading-relaxed text-[#2E1F27] text-pretty">
+                  {gapMap.target}
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* 1. Next Best Move — always visible, unchanged data. */}
       <div>
@@ -440,6 +524,19 @@ export function FounderGpsWorkspace() {
         )}
       </div>
 
+      {/* Static bookend marker — the "5:00 PM — WORK COMPLETE" closeout
+          banner already lives in CeoWorkdayProof; this is its opening
+          counterpart, presentation only. */}
+      {buildBlueprint && (
+        <div className="flex items-center gap-2 py-0.5">
+          <div className="h-px flex-1 bg-[#E8DFE2]" />
+          <span className="font-montserrat text-[9px] font-bold uppercase tracking-[0.2em] text-[#6B5860]/70 whitespace-nowrap">
+            1:00 PM — Build Begins
+          </span>
+          <div className="h-px flex-1 bg-[#E8DFE2]" />
+        </div>
+      )}
+
       {/* 4. Today's 1–5 PM Build — extraction over the same blueprint fields,
           plus the full Build Blueprint™/Guide/Education stack collapsed at
           the bottom instead of always rendered. */}
@@ -512,6 +609,53 @@ export function FounderGpsWorkspace() {
           </Disclosure>
         </div>
       ) : null}
+
+      {/* 5. Ask Your AI Executive Team™ — a read-only lookup into the
+          existing EXECUTIVE_TEAM roster using the executiveDomain the EDE
+          already assigned to this move, plus Ask Cherry Blossom™, the same
+          shared chat surface used everywhere else. No new engine. */}
+      <div className="rounded-2xl border border-[#E8DFE2] bg-white px-5 py-4 space-y-3">
+        <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.16em] text-[#6B5860]">
+          Ask Your AI Executive Team™
+        </p>
+
+        {primaryExecutive && (
+          <div className="rounded-xl border border-[#C13B6B]/25 bg-[#FBF1F5] px-4 py-3">
+            <p className="font-montserrat text-[9px] font-bold uppercase tracking-[0.14em] text-[#C13B6B] mb-1">
+              Most relevant to today&apos;s move
+            </p>
+            <p className="font-sans text-sm font-semibold text-[#2E1F27]">{primaryExecutive.name}</p>
+            <p className="mt-0.5 font-sans text-xs text-[#6B5860] text-pretty">{primaryExecutive.description}</p>
+          </div>
+        )}
+
+        <Disclosure title="Ask a different executive">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            {otherExecutives.map((exec) => (
+              <div key={exec.id} className="rounded-xl border border-[#E8DFE2] px-3.5 py-2.5">
+                <p className="font-sans text-xs font-semibold text-[#2E1F27]">{exec.name}</p>
+                <p className="mt-0.5 font-sans text-[11px] text-[#6B5860]">{exec.department}</p>
+              </div>
+            ))}
+          </div>
+        </Disclosure>
+
+        <button
+          type="button"
+          onClick={() => setChatOpen(true)}
+          className="inline-flex items-center gap-1.5 rounded-full border border-[#C13B6B]/30 px-4 py-2 font-sans text-xs font-semibold text-[#C13B6B] hover:bg-[#C13B6B]/5 transition-colors"
+        >
+          <MessageCircle className="h-3.5 w-3.5" aria-hidden />
+          Ask Cherry Blossom™
+        </button>
+      </div>
+
+      <SimpleChatModal
+        isOpen={chatOpen}
+        onClose={() => setChatOpen(false)}
+        context="ceo-workday"
+        title="Ask Cherry Blossom™"
+      />
     </div>
   )
 }

@@ -16,10 +16,10 @@ import { getDateKey, loadTodaysPlan, updateTodaysPlan } from "@/lib/daily-plan/s
 import type { TodaysPlanRecord, WorkdayCheckIn } from "@/lib/daily-plan/types"
 
 const CHECKIN_DEFINITIONS: { hour: WorkdayCheckIn["hour"]; label: string; question: string }[] = [
-  { hour: "1:55", label: "1:55 PM", question: "How's the build going so far?" },
-  { hour: "2:55", label: "2:55 PM", question: "Anything blocking you right now?" },
-  { hour: "3:55", label: "3:55 PM", question: "Still on track to finish by 5 PM?" },
-  { hour: "4:55", label: "4:55 PM", question: "One line before you close out — where does this stand?" },
+  { hour: "1:55", label: "1:55 PM", question: "How's building your business going so far?" },
+  { hour: "2:55", label: "2:55 PM", question: "Anything blocking your build right now?" },
+  { hour: "3:55", label: "3:55 PM", question: "Still on track to close today's gap by 5 PM?" },
+  { hour: "4:55", label: "4:55 PM", question: "One line before you close out — what did you build in your business today?" },
 ]
 
 /** True once the local clock has passed the given hour:minute today. */
