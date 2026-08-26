@@ -431,12 +431,32 @@ function selectHighestLeverageOutcome(
   }
 }
 
-function selectAssignedExecutive(ctx: HarmonyContextValue): AssignedExecutive | null {
+function selectAssignedExecutive(
+  ctx: HarmonyContextValue,
+  gpsRecommendation: GpsRecommendation | null,
+): AssignedExecutive | null {
   if (!ctx.hasDesignedWeek) return null
   if (ctx.currentSegment?.id !== "ceo-workday") return null
 
   const stage = ctx.businessStage
   const focusAreas = ctx.focusAreas
+
+  // Canonical Founder GPS™ Next Best Move™ already names the owning
+  // executive (`readiness-relevance.ts`'s owningExecutiveId crosswalk) —
+  // prefer it over the heuristics below, which only apply once GPS has no
+  // computed move yet.
+  if (gpsRecommendation?.executiveDomain) {
+    const gpsExec = EXECUTIVE_TEAM.find((e) => e.id === gpsRecommendation.executiveDomain)
+    if (gpsExec) {
+      return {
+        id: gpsExec.id,
+        name: gpsExec.name,
+        title: gpsExec.executiveTitle,
+        assignmentReason: gpsRecommendation.reason,
+        todaysMission: gpsRecommendation.nextTurn,
+      }
+    }
+  }
 
   // Determine which executive to assign based on context
   let executiveId = "strategy" // default
@@ -632,8 +652,13 @@ function buildExplainability(
   focus: ExecutiveFocus,
   executive: AssignedExecutive | null,
   progress: ProgressSummary,
-): BriefExplainability {
+  gpsRecommendation: GpsRecommendation | null,
+  ): BriefExplainability {
   const signals: string[] = []
+
+  if (gpsRecommendation) {
+  signals.push(`Founder GPS™ Next Best Move™: ${gpsRecommendation.nextTurn}`)
+  }
 
   if (ctx.businessStage) {
     signals.push(`Business Stage™: ${ctx.businessStage}`)
