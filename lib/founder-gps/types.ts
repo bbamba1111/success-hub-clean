@@ -29,6 +29,20 @@
  *   - Dynamic adaptation by Business Model™
  *   - Weekly implementation integration
  *   - AI inference
+ *
+ * ARCHITECTURAL SEPARATION — Business Builder™ vs. Work-Life Balance
+ * Operating System™:
+ *   Harmony Lane has two connected but distinct systems. The Business
+ *   Builder™ (Business Destination™ → Business Reality™ → Business
+ *   Blueprint™ → Gap & Readiness™ → Dependencies → Founder GPS™ → Build My
+ *   Business™ → 4-Hour CEO Workday™) answers "what should I build next?".
+ *   The Work-Life Balance Operating System™ (Work-Life Balance Audit™ →
+ *   Weekly Reality Check → Decide & Design the WLBB Day → Morning GIV•EN™,
+ *   Movement, Lunch, Time Freedom, Power Down, Unplug) answers "how should
+ *   today's non-business time be designed?". They meet ONLY at the 4-Hour
+ *   CEO Workday™ — the Work-Life Balance Audit™'s score, completion state,
+ *   and life-segment preferences must NEVER be fed into `GpsContext` or any
+ *   Founder GPS™ / Business Builder™ reasoning declared in this file.
  */
 
 import type { BusinessStage } from "@/lib/business-stage/business-stage"
@@ -71,9 +85,12 @@ export interface GpsContext {
   /**
    * ASSESSMENT SIGNALS
    * What assessments tell us about the founder's operating health.
+   *
+   * Deliberately excludes the Work-Life Balance Audit™ — it belongs to the
+   * separate Work-Life Balance Operating System™ and must never be an input
+   * to Founder GPS™ / Business Builder™ reasoning. See the architectural
+   * separation documented at the top of this file.
    */
-  /** Work-Life Balance Audit™ — overall score (0–100). */
-  workLifeBalanceScore: number | null
   /** Entrepreneur Success Score™ — overall score (0–100). */
   entrepreneurSuccessScore: number | null
   /** Weakest pillar from the ESA, by id. */
@@ -240,7 +257,11 @@ export interface GpsRecommendation {
   evidence?: string[]
   /** Which system produced this recommendation. */
   source?: "excellence-intelligence" | "founder-intelligence" | "executive-decision-engine"
-  /** Whether this move is compatible with the founder's current capacity. */
+  /**
+   * Whether this move is compatible with the founder's current business
+   * capacity — derived from the ESA's Human Sustainability™ pillar, never
+   * the Work-Life Balance Audit™. Name kept for backward compatibility.
+   */
   workLifeBalanceCompatibility?: string
   /** The full EDE explainability record behind this recommendation. */
   explainability?: DecisionExplainability
@@ -278,11 +299,9 @@ export interface GpsRecommendation {
 
 export type GpsSignalId =
   | "no-esa-completed"
-  | "no-wlb-audit-completed"
   | "week-not-designed"
   | "esa-score-critical" // < 40
   | "esa-score-low" // 40–54
-  | "wlb-score-critical" // < 40
   | "non-negotiables-at-risk"
   | "weakest-pillar-human-sustainability"
   | "weakest-pillar-strategic-foundation"
@@ -350,13 +369,6 @@ export const GPS_SIGNAL_WEIGHTS: GpsSignalWeight[] = [
     priority: 2,
     urgentOutcome: "build-compounding-assets",
     description: "No ESA completed — GPS cannot route without a baseline.",
-    status: "architecture",
-  },
-  {
-    signalId: "no-wlb-audit-completed",
-    priority: 3,
-    urgentOutcome: "honor-non-negotiables",
-    description: "No Work-Life Balance Audit — human operating baseline unknown.",
     status: "architecture",
   },
   {
@@ -488,10 +500,11 @@ export const GPS_SIGNAL_WEIGHTS: GpsSignalWeight[] = [
  *     ↓  (service, product, coaching, agency, etc.)
  *   Business Performance™
  *     ↓  (revenue, cash flow, capacity, retention)
- *   Work-Life Balance™
- *     ↓  (human sustainability baseline)
  *   Entrepreneur Success™
- *     ↓  (8-pillar operating health)
+ *     ↓  (8-pillar operating health, incl. Human Sustainability™ — the
+ *         business-diagnostic capacity signal; NOT the Work-Life Balance
+ *         Audit™, which is a separate operating system this pipeline never
+ *         reads)
  *   Excellence Intelligence™
  *     ↓  (domain competency signals)
  *   Founder GPS™ Signal Weights

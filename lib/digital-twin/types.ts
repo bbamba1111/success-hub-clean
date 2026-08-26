@@ -38,9 +38,10 @@ export interface FounderTwinProfile {
   strongestOperatingDay: string | null
   dominantSegment: string | null
 
-  // Operating health snapshot
+  // Operating health snapshot. Deliberately excludes the Work-Life Balance
+  // Audit™ score — it belongs to the separate Work-Life Balance Operating
+  // System™, not the Business Builder™/Founder GPS™ digital twin.
   entrepreneurSuccessScore: number | null
-  workLifeBalanceScore: number | null
   hasMomentum: boolean
   consecutiveCompletions: number
   recentWin: string | null

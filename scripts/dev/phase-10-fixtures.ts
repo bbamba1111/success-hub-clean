@@ -127,7 +127,6 @@ console.log("\n[W-Z] Founder GPS™ feedback loop — capabilityBuildStatusById 
     founderDestination: null,
     businessContext: null,
     esaResults: null,
-    workLifeBalanceScore: null,
     businessModelProfile: null,
   }
 

@@ -18,12 +18,17 @@
  * Every signal used is data the architecture already declares elsewhere:
  *   - Business Stage™ + Founder Destination™          (Phase 3, unchanged)
  *   - Business Context Profile™ biggestChallenges/biggestOpportunities
- *   - Entrepreneur Success Assessment™ pillar scores   (evidence corroboration)
- *   - Work-Life Balance Audit™ overall score           (capacity awareness)
+ *   - Entrepreneur Success Assessment™ pillar scores   (evidence corroboration
+ *     and, via the Human Sustainability™ pillar, business-capacity awareness)
  *
- * All four inputs are OPTIONAL. With none supplied, this degrades gracefully
- * to Phase 3's stage/destination-only behavior — same candidate pool, just
- * every capability labeled "relevant" or "emerging" instead of "priority".
+ * All inputs are OPTIONAL. With none supplied, this degrades gracefully to
+ * Phase 3's stage/destination-only behavior — same candidate pool, just every
+ * capability labeled "relevant" or "emerging" instead of "priority".
+ *
+ * Deliberately excluded: the Work-Life Balance Audit™. It belongs to the
+ * separate Work-Life Balance Operating System™, not the Business Builder™ —
+ * `capacityConstrained` below reads only the ESA's Human Sustainability™
+ * pillar, a business-diagnostic signal, never the WLB Audit's own score.
  */
 
 import type { BusinessStage } from "@/lib/business-stage/business-stage"
@@ -78,7 +83,7 @@ export interface RelevantReadinessCapability {
   /** Executive Leadership Team™ id best positioned to own this — identifies, does not route. */
   owningExecutiveId: string | null
   suggestedOwner: SuggestedReadinessOwner
-  /** True when a capacity signal (Work-Life Balance Audit™ or Human Sustainability™ pillar) suggests caution before adding more. */
+  /** True when the ESA's Human Sustainability™ pillar suggests caution before adding more (never the Work-Life Balance Audit™). */
   capacityConstrained: boolean
   /** A short, explainable "why this, why now" line — always derivable from the fields above. */
   whyNow: string
@@ -121,7 +126,6 @@ export interface FounderReadinessContextInput {
     biggestOpportunities?: OpportunityOption[]
   } | null
   esaResults?: EsaResults | null
-  workLifeBalanceScore?: number | null
   /**
    * Business Model Profile™ (Phase 9B), already assembled by
    * `assembleHarmonySnapshot()` (Phase 9D). Optional — when absent,
@@ -321,8 +325,9 @@ function whyNowFor(status: ReadinessRelevanceStatus, capability: ReadinessCapabi
  * deriveReadinessRelevance — the core function this module exposes.
  *
  * Pure: (Business Stage™, Founder Destination™, Business Context Profile™,
- * Entrepreneur Success Assessment™, Work-Life Balance Audit™) →
- * RelevantReadinessCapability[]. Deterministic and side-effect-free.
+ * Entrepreneur Success Assessment™) → RelevantReadinessCapability[].
+ * Deterministic and side-effect-free. Deliberately does NOT take the
+ * Work-Life Balance Audit™ — see the module doc comment above.
  *
  * The candidate pool is unchanged from Phase 3 (`deriveRequiredCapabilities`)
  * — this function only REASONS about that pool; it never removes from or
@@ -334,7 +339,6 @@ export function deriveReadinessRelevance(input: FounderReadinessContextInput): R
     founderDestination,
     businessContext,
     esaResults,
-    workLifeBalanceScore,
     businessModelProfile,
     capabilityBuildStatusById,
   } = input
@@ -343,11 +347,12 @@ export function deriveReadinessRelevance(input: FounderReadinessContextInput): R
   const ambitious = founderDestination ? hasBusinessAmbitionSignal(founderDestination) : false
   const futureWorkplaceMinded = founderDestination ? hasFutureWorkplaceSignal(founderDestination) : false
 
+  // Capacity awareness comes exclusively from the ESA's Human Sustainability™
+  // pillar — a business-diagnostic signal — never from the Work-Life Balance
+  // Audit™, which belongs to the separate Work-Life Balance Operating System™.
   const humanSustainabilityScore =
     esaResults?.pillarScores.find((p) => p.pillarId === "human-sustainability")?.percentage ?? null
-  const capacityConstrained =
-    (workLifeBalanceScore != null && workLifeBalanceScore < CAPACITY_CONSTRAINED_THRESHOLD) ||
-    (humanSustainabilityScore != null && humanSustainabilityScore < CAPACITY_CONSTRAINED_THRESHOLD)
+  const capacityConstrained = humanSustainabilityScore != null && humanSustainabilityScore < CAPACITY_CONSTRAINED_THRESHOLD
 
   const results: RelevantReadinessCapability[] = candidates.map((capability) => {
     const isCurrentStage = capability.businessStages.includes(businessStage)

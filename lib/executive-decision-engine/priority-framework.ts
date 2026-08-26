@@ -69,11 +69,10 @@ export const PRIORITY_FRAMEWORK: readonly PriorityTier[] = [
     ],
     items: [
       {
-        label: "Work-Life Balance™ score critically low (< 40)",
-        triggerSignals: ["wlb-score-critical"],
-        status: "architecture",
-      },
-      {
+        // Deliberately keyed on the ESA's Human Sustainability™ pillar only
+        // — never the Work-Life Balance Audit™, which belongs to the
+        // separate Work-Life Balance Operating System™ and is not an
+        // Executive Decision Engine™ input.
         label: "Human Sustainability™ pillar score critical",
         triggerSignals: ["weakest-pillar-human-sustainability"],
         status: "architecture",

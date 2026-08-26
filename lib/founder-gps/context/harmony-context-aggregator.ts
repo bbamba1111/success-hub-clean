@@ -79,8 +79,10 @@ export interface HarmonyContextAggregate {
   exitVision: string | null
 
   // ── Founder Operating (assessment signals) ────────────────────────────────
+  // Deliberately excludes the Work-Life Balance Audit™ — it belongs to the
+  // separate Work-Life Balance Operating System™ and must never feed
+  // Founder GPS™ / Business Builder™ reasoning.
   entrepreneurSuccessScore: number | null
-  workLifeBalanceScore: number | null
   weakestEsaPillar: OperatingPillarId | null
   strongestEsaPillar: OperatingPillarId | null
 
@@ -237,13 +239,12 @@ export function assembleHarmonyContext(
     // History unavailable — degrade gracefully
   }
 
-  // ── ESA / WLB ──────────────────────────────────────────────────────────
-  // These are stored in separate audits — we need to read the context
-  // For now derive from the GpsContext signals the ctx exposes indirectly
-  // through businessComprehension. The actual ESA/WLB storage is in
-  // entrepreneur-success stores — we read what's available from ctx.
+  // ── ESA ──────────────────────────────────────────────────────────────────
+  // Stored in a separate ESA audit — the actual storage is in
+  // entrepreneur-success stores; we read what's available from ctx.
+  // Deliberately does NOT read Work-Life Balance Audit™ data — that belongs
+  // to the separate Work-Life Balance Operating System™.
   const entrepreneurSuccessScore: number | null = null // populated by callers with ESA data
-  const workLifeBalanceScore: number | null = null     // populated by callers with WLB data
   const weakestEsaPillar: OperatingPillarId | null = null
   const strongestEsaPillar: OperatingPillarId | null = null
 
@@ -271,7 +272,6 @@ export function assembleHarmonyContext(
 
     // Assessments
     entrepreneurSuccessScore,
-    workLifeBalanceScore,
     weakestEsaPillar,
     strongestEsaPillar,
 

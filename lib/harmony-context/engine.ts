@@ -423,7 +423,6 @@ export const EMPTY_HARMONY_SNAPSHOT: HarmonyContextSnapshot = {
       businessModel: null,
       preferredLanguage: null,
       businessPerformance: null,
-      workLifeBalanceScore: null,
       entrepreneurSuccessScore: null,
       weakestEsaPillar: null,
       strongestEsaPillar: null,
@@ -618,13 +617,13 @@ export function assembleHarmonySnapshot(input: AssemblyInput): HarmonyContextSna
         : null,
     }))
 
-  // Determine urgent outcomes deterministically from signals
+  // Determine urgent outcomes deterministically from signals. Deliberately
+  // does NOT pass Work-Life Balance Audit™ data — see `deriveUrgentOutcomes`'s
+  // own doc comment for why.
   const urgentOutcomes = deriveUrgentOutcomes({
     hasCompletedEsa: business.hasCompletedEsa,
-    hasCompletedAudit: business.hasCompletedAudit,
     weekDesigned: operating.weekDesigned,
     esaScore: business.entrepreneurSuccessScore,
-    wlbScore: business.workLifeBalanceScore,
     nonNegotiablesCount: activeNonNegotiables.length,
     cashFlow: performance?.cashFlow ?? null,
   })
@@ -632,10 +631,8 @@ export function assembleHarmonySnapshot(input: AssemblyInput): HarmonyContextSna
   // Top priority signal — the single GPS signal that would fire first
   const topPrioritySignal = deriveTopPrioritySignal({
     hasCompletedEsa: business.hasCompletedEsa,
-    hasCompletedAudit: business.hasCompletedAudit,
     weekDesigned: operating.weekDesigned,
     esaScore: business.entrepreneurSuccessScore,
-    wlbScore: business.workLifeBalanceScore,
   })
 
   // Whole-Life GPS signal pre-computation
@@ -655,7 +652,9 @@ export function assembleHarmonySnapshot(input: AssemblyInput): HarmonyContextSna
     businessModel: businessModelProfile.primaryArchetype === "unknown" ? null : businessModelProfile.primaryArchetype,
     preferredLanguage: identity.preferredLanguage,
     businessPerformance: performance ?? null,
-    workLifeBalanceScore: business.workLifeBalanceScore,
+    // Deliberately does NOT include `business.workLifeBalanceScore` — the
+    // Work-Life Balance Audit™ belongs to the separate Work-Life Balance
+    // Operating System™ and must never be a Founder GPS™ input.
     entrepreneurSuccessScore: business.entrepreneurSuccessScore,
     weakestEsaPillar: weakestPillar as OperatingPillarId | null,
     strongestEsaPillar: strongestPillar as OperatingPillarId | null,
@@ -763,31 +762,22 @@ export interface AssemblyInput {
  * Architecture only — deterministic, no side effects, no AI.
  * ======================================================================== */
 
+// Deliberately does NOT take Work-Life Balance Audit™ signals (score or
+// completion state) — that data belongs to the separate Work-Life Balance
+// Operating System™ and must never drive a Founder GPS™ urgent outcome.
+// "Honor Non-Negotiables™" urgency here is driven only by the founder's own
+// declared Life Non-Negotiables™ count.
 function deriveUrgentOutcomes(signals: {
   hasCompletedEsa: boolean
-  hasCompletedAudit: boolean
   weekDesigned: boolean
   esaScore: number | null
-  wlbScore: number | null
   nonNegotiablesCount: number
   cashFlow: "healthy" | "tight" | "critical" | null
 }): UrgentOutcome[] {
   const outcomes: UrgentOutcome[] = []
 
   // Honor Non-Negotiables™ urgency
-  if (signals.wlbScore != null && signals.wlbScore < 40) {
-    outcomes.push({
-      outcome: "honor-non-negotiables",
-      urgency: "critical",
-      reason: "Work-Life Balance Audit™ score is critically low.",
-    })
-  } else if (!signals.hasCompletedAudit) {
-    outcomes.push({
-      outcome: "honor-non-negotiables",
-      urgency: "high",
-      reason: "Work-Life Balance Audit™ not completed — human operating baseline unknown.",
-    })
-  } else if (signals.nonNegotiablesCount === 0) {
+  if (signals.nonNegotiablesCount === 0) {
     outcomes.push({
       outcome: "honor-non-negotiables",
       urgency: "medium",
@@ -831,15 +821,13 @@ function deriveUrgentOutcomes(signals: {
   })
 }
 
+// Deliberately does NOT take Work-Life Balance Audit™ signals — see
+// `deriveUrgentOutcomes` above for why.
 function deriveTopPrioritySignal(signals: {
   hasCompletedEsa: boolean
-  hasCompletedAudit: boolean
   weekDesigned: boolean
   esaScore: number | null
-  wlbScore: number | null
 }): string | null {
-  if (signals.wlbScore != null && signals.wlbScore < 40) return "wlb-score-critical"
-  if (!signals.hasCompletedAudit) return "no-wlb-audit-completed"
   if (!signals.hasCompletedEsa) return "no-esa-completed"
   if (signals.esaScore != null && signals.esaScore < 40) return "esa-score-critical"
   if (!signals.weekDesigned) return "week-not-designed"

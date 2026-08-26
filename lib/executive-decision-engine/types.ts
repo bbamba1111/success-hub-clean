@@ -185,7 +185,6 @@ export type ReasoningRuleId =
   | "recurring-activity--prefer-systemization"
   | "life-protection-mode--suspend-growth-recommendations"
   | "no-weekly-design--recommend-sunday-ritual"
-  | "wlb-score-critical--flag-sustainability"
   | "cash-runway-critical--elevate-revenue-tasks"
   | "no-esa-completed--recommend-assessment"
   | "event-requires-preparation--surface-reminder"

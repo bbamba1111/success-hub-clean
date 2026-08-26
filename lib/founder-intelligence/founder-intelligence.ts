@@ -122,11 +122,14 @@ export interface BriefReadinessCapability {
  * relevance beyond stage + destination alone. Every field is optional and
  * defaults to absent — callers that don't pass `extra` at all keep getting
  * exactly Phase 3's stage/destination-only behavior.
+ *
+ * Deliberately excludes the Work-Life Balance Audit™ (score or completion
+ * state) — it belongs to the separate Work-Life Balance Operating System™
+ * and must never feed the Business Builder™'s Readiness Capability™
+ * reasoning. See `lib/founder-intelligence/readiness-relevance.ts`.
  */
 export interface OperatingBriefExtra {
   esaResults?: EsaResults | null
-  workLifeBalanceScore?: number | null
-  hasCompletedAudit?: boolean
   /**
    * Business Model Profile™ (Phase 9B) / Business Operating Fingerprint™
    * (Phase 9A) passthrough — additive, Phase 9D. Optional and currently
@@ -299,10 +302,12 @@ function chooseDeliverables(
 /**
  * Choose up to two Readiness Capabilities™ (Excellence Intelligence Engine™,
  * Phase 3) — now reasoned through Readiness Relevance™ (Phase 4), which adds
- * Business Context Profile™, Entrepreneur Success Assessment™, and Work-Life
- * Balance Audit™ evidence on top of Phase 3's Business Stage™ + Founder
- * Destination™ candidate pool. Ordering preference is unchanged in spirit —
- * corroborated (`priority`) capabilities surface first, same as
+ * Business Context Profile™ and Entrepreneur Success Assessment™ evidence on
+ * top of Phase 3's Business Stage™ + Founder Destination™ candidate pool.
+ * Deliberately excludes the Work-Life Balance Audit™ — it belongs to the
+ * separate Work-Life Balance Operating System™, never the Business
+ * Builder™'s capability selection. Ordering preference is unchanged in
+ * spirit — corroborated (`priority`) capabilities surface first, same as
  * "owned-by-today's-team" did before — but is now driven by real signals
  * instead of only executive overlap.
  *
@@ -323,7 +328,6 @@ function chooseReadinessCapabilities(
         }
       : null,
     esaResults: extra.esaResults ?? null,
-    workLifeBalanceScore: extra.workLifeBalanceScore ?? null,
   })
   if (reasoned.length === 0) return []
 

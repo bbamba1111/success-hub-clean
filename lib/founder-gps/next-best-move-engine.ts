@@ -62,7 +62,6 @@ export interface NextBestMoveInput {
   businessModel?: BusinessModelId | null
   founderDestination?: FounderDestinationProfile | null
   esaResults?: EsaResults | null
-  workLifeBalanceScore?: number | null
   weekDesigned?: boolean
   nonNegotiablesCount?: number
   upcomingLifeEventsCount?: number
@@ -99,7 +98,6 @@ export function buildGpsContext(input: NextBestMoveInput): GpsContext {
     businessModel: input.businessModel ?? null,
     preferredLanguage: null,
     businessPerformance: input.businessPerformance ?? null,
-    workLifeBalanceScore: input.workLifeBalanceScore ?? null,
     entrepreneurSuccessScore: input.esaResults?.overallScore ?? null,
     weakestEsaPillar: weakestPillar(input.esaResults),
     strongestEsaPillar: strongestPillar(input.esaResults),
@@ -149,17 +147,15 @@ export function buildGpsContextFromSnapshot(snapshot: HarmonyContextSnapshot): G
 export function deriveActiveGpsSignals(ctx: GpsContext): GpsSignalId[] {
   const signals: GpsSignalId[] = []
 
+  // Deliberately does NOT read `ctx.workLifeBalanceScore` — the Work-Life
+  // Balance Audit™ belongs to the separate Work-Life Balance Operating
+  // System™ and must never drive a Founder GPS™ / Business Builder™ signal.
   if (ctx.entrepreneurSuccessScore == null) signals.push("no-esa-completed")
-  if (ctx.workLifeBalanceScore == null) signals.push("no-wlb-audit-completed")
   if (!ctx.weekDesigned) signals.push("week-not-designed")
 
   if (ctx.entrepreneurSuccessScore != null) {
     if (ctx.entrepreneurSuccessScore < 40) signals.push("esa-score-critical")
     else if (ctx.entrepreneurSuccessScore <= 54) signals.push("esa-score-low")
-  }
-
-  if (ctx.workLifeBalanceScore != null && ctx.workLifeBalanceScore < 40) {
-    signals.push("wlb-score-critical")
   }
 
   if (ctx.nonNegotiablesCount === 0) signals.push("no-non-negotiables-defined")
@@ -439,11 +435,12 @@ export function deriveNextBestMove(ctx: GpsContext, extra?: NextBestMoveExtra): 
 
   const businessStage = ctx.businessStage ?? "launch"
 
+  // Deliberately does NOT pass Work-Life Balance Audit™ data — see
+  // `deriveReadinessRelevance`'s own doc comment for why.
   const relevance = deriveReadinessRelevance({
     businessStage,
     founderDestination: extra?.founderDestination ?? null,
     esaResults: extra?.esaResults ?? null,
-    workLifeBalanceScore: ctx.workLifeBalanceScore,
     businessModelProfile: ctx.businessModelProfile ?? null,
     capabilityBuildStatusById: extra?.capabilityBuildStatusById ?? null,
   })

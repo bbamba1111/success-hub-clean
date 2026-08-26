@@ -36,16 +36,15 @@ export const REASONING_RULES: readonly ReasoningRule[] = [
     label: "Burnout Critical → Reduce Workload",
     condition: {
       description:
-        "The founder's Work-Life Balance™ score or Human Sustainability™ pillar score indicates critical burnout risk.",
-      requiredSignals: ["wlb-score-critical"],
+        "The founder's Human Sustainability™ pillar score (Entrepreneur Success Assessment™) indicates critical burnout risk. Deliberately keyed on the ESA only — never the Work-Life Balance Audit™, which belongs to the separate Work-Life Balance Operating System™ and is not an Executive Decision Engine™ input.",
+      requiredSignals: ["weakest-pillar-human-sustainability"],
       relatedPrinciples: [
         "honor-non-negotiables-first",
         "long-term-sustainability-over-short-term-busyness",
       ],
       additionalContext: [
-        "WLB overall score < 40",
         "Human Sustainability™ pillar score < 40",
-        "Multiple low-scoring life balance categories",
+        "Human Sustainability™ is the weakest ESA pillar",
       ],
     },
     action: {
@@ -287,32 +286,13 @@ export const REASONING_RULES: readonly ReasoningRule[] = [
     evaluationPriority: 9,
     status: "architecture",
   },
-  {
-    id: "wlb-score-critical--flag-sustainability",
-    label: "WLB Score Critical → Flag Sustainability Risk",
-    condition: {
-      description:
-        "The Work-Life Balance Audit™ overall score is below 40, indicating a systemic sustainability risk.",
-      requiredSignals: ["wlb-score-critical"],
-      relatedPrinciples: [
-        "time-freedom-is-a-performance-indicator",
-        "long-term-sustainability-over-short-term-busyness",
-      ],
-    },
-    action: {
-      description:
-        "Flag the sustainability risk in the Operating Brief™ before presenting business growth assignments. Do not suppress — surface it as a first-class signal.",
-      primaryOutcome: "honor-non-negotiables",
-      targetPriorityTier: "priority-2-non-negotiables-at-risk",
-    },
-    upholdsConstitution: [
-      "time-freedom-is-a-performance-indicator",
-      "honor-non-negotiables-first",
-      "long-term-sustainability-over-short-term-busyness",
-    ],
-    evaluationPriority: 10,
-    status: "architecture",
-  },
+  // Note: the former "wlb-score-critical--flag-sustainability" rule has been
+  // removed. It was keyed on the Work-Life Balance Audit™ overall score,
+  // which is a Work-Life Balance Operating System™ signal and must never be
+  // an Executive Decision Engine™ / Founder GPS™ input. The equivalent
+  // business-sustainability concern is already covered by
+  // "burnout-critical--reduce-workload" above, keyed on the ESA's Human
+  // Sustainability™ pillar.
   {
     id: "no-esa-completed--recommend-assessment",
     label: "No ESA Completed → Recommend Assessment",

@@ -171,7 +171,6 @@ export function buildFounderTwinProfile(
     dominantSegment: deriveDominantSegment(patterns),
 
     entrepreneurSuccessScore: agg.entrepreneurSuccessScore ?? null,
-    workLifeBalanceScore: agg.workLifeBalanceScore ?? null,
     hasMomentum: agg.hasMomentum ?? false,
     consecutiveCompletions: deriveConsecutiveCompletions(history),
     recentWin: deriveRecentWin(history),

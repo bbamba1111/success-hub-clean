@@ -73,8 +73,9 @@ export function computeConfidence(
     agg.upcomingLifeEvents.length > 0 ||
     agg.nonNegotiableCommitmentsCount > 0 ||
     agg.activePersonalGoalsCount > 0
-  const hasAssessments =
-    agg.entrepreneurSuccessScore !== null || agg.workLifeBalanceScore !== null
+  // Deliberately reads only the ESA — never the Work-Life Balance Audit™,
+  // which belongs to the separate Work-Life Balance Operating System™.
+  const hasAssessments = agg.entrepreneurSuccessScore !== null
   const hasCeoWorkday =
     !!(agg.weeklyIntention || agg.humanZoneOfGenius || agg.ceoWorkdayPriorities)
   const hasHistory = agg.recentRecommendationIds.length > 0
