@@ -7,11 +7,14 @@
  * GPS™ (`deriveNextBestMove`) still does 100% of the reasoning — Business
  * Destination™ + Business Stage™ + ESA + Work-Life Balance™ → Next Best
  * Move™ — this file just no longer renders every intermediate artifact of
- * that reasoning. It shows the move, which Business Asset™ that move maps
- * to (`getRecommendedBusinessAsset`, existing/unchanged), and one "Start
- * Building" action into the real build experience at
- * `/business-asset-library/{id}` — where Comprehension Level™/Communication
- * Style™, the owning Executive™, and Cherry Blossom™ already take over.
+ * that reasoning. When the move maps to a real Business Asset™
+ * (`getRecommendedBusinessAsset`, existing/unchanged), it shows why THAT
+ * specific asset matters — hand-written, asset-specific benefits from
+ * `audience-benefits.ts`, never a generic paragraph — plus one "Start
+ * Building" action that routes directly to `/business-asset-library/{id}`,
+ * where Comprehension Level™/Communication Style™, the owning Executive™,
+ * and Cherry Blossom™ already take over. When there's no asset match, it
+ * shows a plain review prompt instead of a misleading Start Building button.
  *
  * Everything this used to render inline — Business Destination™/Reality™/Gap
  * Map, the Decide·Delegate·Design/Build Path picker, the full Build
@@ -30,6 +33,7 @@ import { useHarmonyContextOptional } from "@/components/harmony-context/harmony-
 import { buildGpsContextFromSnapshot, deriveNextBestMove } from "@/lib/founder-gps/next-best-move-engine"
 import { getActiveBuildStatusByCapabilityId, getBuildRecord } from "@/lib/build-record/build-record-store"
 import { getRecommendedBusinessAsset } from "@/lib/business-asset-library/gps-recommendation-link"
+import { getAudienceBenefits } from "@/lib/business-asset-library/audience-benefits"
 
 /** Plain-language status pill label for every real `BuildLifecycleStatus`. Falls back to "In Progress" for any other active, non-terminal state. */
 const STATUS_LABEL: Record<string, string> = {
@@ -92,10 +96,10 @@ export function FounderGpsWorkspace() {
   const buildRecord = recommendationId ? getBuildRecord(recommendationId) : null
   const statusLabel = STATUS_LABEL[buildRecord?.status ?? "not-started"] ?? "Not Started"
 
-  // Prefer a direct link into the real Business Asset™ build experience;
-  // fall back to the move's own CTA only when no asset match exists.
-  const startBuildingHref = asset ? `/business-asset-library/${asset.id}` : nextBestMove.cta.href
-  const startBuildingLabel = asset ? "Start Building" : nextBestMove.cta.label
+  // Hand-written, asset-specific "Why build this?" copy — never a generic
+  // paragraph. Only present when we have a real asset match, so it's never
+  // fabricated for a move that isn't actually tied to one.
+  const benefits = asset ? getAudienceBenefits(asset.id) : undefined
 
   return (
     <div className="rounded-3xl border border-[#8DAE72]/30 bg-[#F4F7F0] px-6 py-7 sm:px-8 sm:py-8 space-y-6">
@@ -106,42 +110,71 @@ export function FounderGpsWorkspace() {
         </p>
       </div>
 
-      <p className="font-sans text-base leading-relaxed text-[#3A2E33] text-pretty">{nextBestMove.reason}</p>
-
-      <div className="rounded-2xl border border-[#E8DFE2] bg-white px-6 py-6 space-y-5">
-        <p className="font-montserrat text-xs font-bold uppercase tracking-[0.16em] text-[#6B5860]">Build This Today</p>
-
-        <div className="space-y-3">
-          <div className="flex items-start justify-between gap-3">
-            <p className="font-display text-2xl font-semibold text-[#2E1F27] text-pretty leading-tight">
-              {/* `nextBestMove.nextTurn` can be raw internal capability text when no
-                  Business Asset™ matches — never show that to the founder. Fall back
-                  to a plain, honest label instead of fabricating an asset name. */}
-              {asset?.name ?? "Your Next Move"}
-            </p>
+      <div className="rounded-2xl border border-[#E8DFE2] bg-white px-6 py-6 space-y-6">
+        <div className="flex items-start justify-between gap-3">
+          <p className="font-display text-2xl font-semibold text-[#2E1F27] text-pretty leading-tight">
+            {asset ? <>Build Your {asset.name}</> : "Review Your Next Move"}
+          </p>
+          {asset && (
             <span className="shrink-0 inline-flex items-center rounded-full bg-[#8DAE72]/15 px-3.5 py-1.5 font-montserrat text-[10px] font-bold uppercase tracking-[0.12em] text-[#5A7A45] whitespace-nowrap">
               {statusLabel}
             </span>
-          </div>
-
-          <p className="font-sans text-base leading-relaxed text-[#6B5860] text-pretty">
-            This is the most important thing for you to work on today.
-          </p>
-
-          <p className="font-sans text-sm leading-relaxed text-[#6B5860] text-pretty">
-            You&apos;ll work on this with your AI Executive Team™ and finish with a business asset you can save,
-            print, or export.
-          </p>
+          )}
         </div>
 
-        <Link
-          href={startBuildingHref}
-          className="inline-flex items-center gap-2 rounded-full bg-[#5A7A45] px-7 py-3.5 font-sans text-base font-bold text-white hover:opacity-90 transition-opacity"
-        >
-          {startBuildingLabel}
-          <ArrowRight className="h-4 w-4" aria-hidden />
-        </Link>
+        {asset && benefits ? (
+          <>
+            <div className="space-y-4">
+              <p className="font-montserrat text-xs font-bold uppercase tracking-[0.16em] text-[#6B5860]">
+                Why build this?
+              </p>
+
+              <div className="space-y-3">
+                <BenefitRow label="For You" text={benefits.founder} />
+                <BenefitRow label="For Your Business" text={benefits.business} />
+                <BenefitRow label="For Your Client" text={benefits.customer} />
+                {benefits.team && <BenefitRow label="For Your Team" text={benefits.team} />}
+              </div>
+            </div>
+
+            <p className="font-sans text-sm leading-relaxed text-[#6B5860] text-pretty">
+              Your AI Executive will help you build it, step by step.
+            </p>
+
+            <Link
+              href={`/business-asset-library/${asset.id}`}
+              className="inline-flex items-center gap-2 rounded-full bg-[#5A7A45] px-7 py-3.5 font-sans text-base font-bold text-white hover:opacity-90 transition-opacity"
+            >
+              Start Building
+              <ArrowRight className="h-4 w-4" aria-hidden />
+            </Link>
+          </>
+        ) : (
+          <>
+            <p className="font-sans text-base leading-relaxed text-[#6B5860] text-pretty">
+              Founder GPS™ has a recommendation for you, but it isn&apos;t linked to a specific Business Asset™ yet.
+              Review it before deciding what to build next.
+            </p>
+            <Link
+              href={nextBestMove.cta.href}
+              className="inline-flex items-center gap-2 rounded-full border border-[#5A7A45] px-7 py-3.5 font-sans text-base font-bold text-[#5A7A45] hover:bg-[#5A7A45]/5 transition-colors"
+            >
+              {nextBestMove.cta.label}
+              <ArrowRight className="h-4 w-4" aria-hidden />
+            </Link>
+          </>
+        )}
       </div>
     </div>
+  )
+}
+
+/** One "For ___" benefit line — bold label, then the plain-language sentence(s). */
+function BenefitRow({ label, text }: { label: string; text: string }) {
+  return (
+    <p className="font-sans text-sm leading-relaxed text-[#3A2E33] text-pretty">
+      <span className="font-bold text-[#2E1F27]">{label}: </span>
+      {text}
+    </p>
   )
 }
