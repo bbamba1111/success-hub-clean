@@ -17,6 +17,9 @@ export interface BusinessAssetBuildMessage {
   content: string
 }
 
+/** Founder-approval lifecycle for a completed Business Asset™ — distinct from `status`, which tracks the build session itself. */
+export type BusinessAssetReviewStatus = "draft" | "in-review" | "approved"
+
 export interface BusinessAssetBuildRecord {
   id: string
   businessAssetId: string
@@ -25,6 +28,11 @@ export interface BusinessAssetBuildRecord {
   messages: BusinessAssetBuildMessage[]
   generatedContent: string | null
   updatedAt: string
+  createdAt: string
+  reviewStatus: BusinessAssetReviewStatus
+  version: number
+  businessStage: string | null
+  approvedAt: string | null
 }
 
 async function getUserId(): Promise<string | null> {
