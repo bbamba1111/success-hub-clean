@@ -1,16 +1,18 @@
 "use client"
 
-import { GraduationCap, Printer, Sparkles, type LucideIcon } from "lucide-react"
+import { Briefcase, GraduationCap, Printer, ShoppingBag, Sparkles, Users, Zap, type LucideIcon } from "lucide-react"
 import { BUILD_MODES, type BuildModeId } from "@/lib/business-asset-library/build-modes"
 
-const ICONS: Record<string, LucideIcon> = { Sparkles, GraduationCap, Printer }
+const ICONS: Record<string, LucideIcon> = { Sparkles, Zap, GraduationCap, Users, Briefcase, ShoppingBag, Printer }
 
 /**
- * BuildModePicker — the three ways a founder can engage a Business Asset™.
- * "Print / Work Offline" is rendered disabled — architecture only, no PDF
- * generation this phase (see build-modes.ts). The two digital modes are both
- * AI-guided: "Do It Myself" is NOT a blank worksheet, it is the AI Executive
- * coaching the founder step by step.
+ * BuildModePicker — "Decision 2": how the founder wants to get this asset
+ * done. "Print / Work Offline" is rendered disabled — architecture only, no
+ * PDF generation this phase (see build-modes.ts). "Build With AI", "Let AI
+ * Do It", and "Do It Myself" are all AI-guided — "Do It Myself" is NOT a
+ * blank worksheet, it is the AI Executive coaching the founder step by step.
+ * "Give It to My Team", "Hire an Expert", and "Buy It" generate a static,
+ * deterministic brief or guidance panel from the asset's own content.
  */
 export function BuildModePicker({
   activeMode,
