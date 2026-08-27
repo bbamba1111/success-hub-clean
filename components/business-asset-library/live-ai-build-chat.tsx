@@ -48,7 +48,9 @@ export function LiveAiBuildChat({
   const [error, setError] = useState<string | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
 
-  const isAi = mode.stepFraming === "ai-drafts"
+  const isAutonomous = mode.id === "let-ai-do-it"
+  const isAi = mode.stepFraming === "ai-drafts" || isAutonomous
+  const modeLabel = isAutonomous ? "Let AI Do It" : isAi ? "Build With AI" : "Do It Myself, guided"
 
   // Resume an in-progress session for this asset + mode, or start fresh.
   useEffect(() => {
@@ -65,9 +67,11 @@ export function LiveAiBuildChat({
         setBuildId(newId)
         const opener: BusinessAssetBuildMessage = {
           role: "assistant",
-          content: isAi
-            ? `Hi, I'm ${executiveName}. Let's build your ${asset.name} together — I'll ask a few questions and draft the language as we go. Ready to start?`
-            : `Hi, I'm ${executiveName}. I'll coach you through building your ${asset.name} step by step — you do the writing, I'll guide you. Ready to start?`,
+          content: isAutonomous
+            ? `Hi, I'm ${executiveName}. Tell me anything important about your business, and I'll go ahead and draft a complete ${asset.name} for you — making reasonable assumptions where I need to. You'll be able to edit anything that's off. Ready?`
+            : isAi
+              ? `Hi, I'm ${executiveName}. Let's build your ${asset.name} together — I'll ask a few questions and draft the language as we go. Ready to start?`
+              : `Hi, I'm ${executiveName}. I'll coach you through building your ${asset.name} step by step — you do the writing, I'll guide you. Ready to start?`,
         }
         setMessages([opener])
       }
@@ -184,7 +188,7 @@ export function LiveAiBuildChat({
           <div>
             <p className="ds-eyebrow">{executiveName} — Live</p>
             <p className="text-xs text-brand-ink-soft">
-              {isAi ? "Build With AI" : "Do It Myself, guided"} · {asset.name}
+              {modeLabel} · {asset.name}
             </p>
           </div>
         </div>

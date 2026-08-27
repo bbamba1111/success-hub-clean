@@ -75,11 +75,13 @@ export async function POST(req: NextRequest) {
     const executiveName = ownerExecutive?.name ?? "Your Executive Team™"
     const style = getCommunicationStyle(communicationStyle)
 
+    const isAutonomous = buildMode === "let-ai-do-it"
+
     const modeInstruction =
       buildMode === "build-with-ai"
         ? "The founder chose Build With AI: be directive. Ask one focused question at a time, then draft language FOR them based on their answer, and let them refine it. Do most of the writing yourself."
-        : buildMode === "let-ai-do-it"
-          ? "The founder chose Let AI Do It: be autonomous. Ask AT MOST one essential clarifying question if you truly cannot proceed without it — otherwise, make sound, reasonable assumptions from what they've already told you (their business, their Founder Destination™, their Communication Style™) and go straight to writing a complete first draft covering all the guided steps below. Tell them plainly you're making assumptions and that they should edit anything that's off. Prioritize giving them a finished draft to react to over asking questions."
+        : isAutonomous
+          ? `The founder chose Let AI Do It: be maximally autonomous. Do NOT walk through the guided steps one at a time — that pacing is for the other modes only. As soon as the founder has given you ANY real information about their business (even a single sentence), immediately write a complete first draft covering all the guided steps below in one shot, filling every gap with sound, reasonable, clearly-labeled assumptions instead of asking a question. Only ask a clarifying question first if the founder's very first message is empty, off-topic, or contains literally nothing usable — and even then, ask at most ONE question before drafting. The moment you produce that complete draft, wrap it in [FINAL_DRAFT_START]/[FINAL_DRAFT_END] in the SAME response — do not wait for a confirmation round-trip. After delivering it, invite them to tell you what to change.`
           : "The founder chose Do It Myself, guided: be Socratic. Ask one focused question at a time and coach them to write their OWN answer in their own words. Only offer a draft if they explicitly get stuck and ask for one."
 
     const guidedSteps = asset.instructions[style.id] ?? asset.instructions.business_owner
@@ -94,12 +96,16 @@ ${modeInstruction}
 
 Communication Style™: respond in the "${style.name}" register — ${style.description} Preferred vocabulary: ${style.preferredVocabulary} Preferred examples: ${style.preferredExamples}
 
-Ground the conversation in these guided steps (cover them in order, one at a time, in your own words — do not just recite this list):
+Ground the conversation in these guided steps${isAutonomous ? " (make sure your draft covers all of them, but write them into flowing prose — do not present this as a checklist to the founder)" : " (cover them in order, one at a time, in your own words — do not just recite this list)"}:
 ${guidedSteps.map((step, i) => `${i + 1}. ${step}`).join("\n")}
 
 Formatting: do NOT use markdown headers (***, **, *, ###, ##, #). Use bold text (**text**) for emphasis instead. Keep responses warm, concise, and conversational — this is a chat, not a document.
 
-When the founder has answered enough of the steps that a complete "${asset.name}" could be written, tell them so, and offer to write the final version. When you write the final version, wrap ONLY that final text between the exact markers [FINAL_DRAFT_START] and [FINAL_DRAFT_END] so the app can save it — do this only once, when the founder confirms they're ready.`
+${
+  isAutonomous
+    ? `When you write the complete draft (per the instructions above — as early as possible, ideally in your very next response), wrap ONLY that final text between the exact markers [FINAL_DRAFT_START] and [FINAL_DRAFT_END] so the app can save it.`
+    : `When the founder has answered enough of the steps that a complete "${asset.name}" could be written, tell them so, and offer to write the final version. When you write the final version, wrap ONLY that final text between the exact markers [FINAL_DRAFT_START] and [FINAL_DRAFT_END] so the app can save it — do this only once, when the founder confirms they're ready.`
+}`
 
     const conversationMessages = [
       { role: "system", content: systemPrompt },

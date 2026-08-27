@@ -30,9 +30,9 @@ export function BuyVsBuildGuidance({ asset, onExit }: { asset: BusinessAsset; on
             What &quot;buying&quot; usually means here
           </p>
           <p className="mt-1.5 text-pretty text-sm leading-relaxed text-brand-ink">
-            A template, consultant, or off-the-shelf tool that produces something similar to a {asset.name}. That can
-            save time, but it rarely reflects your specific Founder Destination™, Communication Style™, or business
-            stage the way a built-for-you version does.
+            A template, consultant, or off-the-shelf tool that produces something similar to your {asset.name}. That
+            can save time, but it rarely reflects your specific Founder Destination™, Communication Style™, or
+            business stage the way a built-for-you version does.
           </p>
         </div>
         <div>
