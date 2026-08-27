@@ -162,8 +162,7 @@ export function AssetDetailView({ asset }: { asset: BusinessAsset }) {
               />
             ) : mode.id === "buy-it" ? (
               <BuyVsBuildGuidance asset={asset} onExit={() => setActiveMode(null)} />
-            ) : isLiveAiBuildAvailable(asset.id) &&
-              (mode.id === "build-with-ai" || mode.id === "let-ai-do-it") ? (
+            ) : isLiveAiBuildAvailable(asset.id) ? (
               <LiveAiBuildChat
                 asset={asset}
                 mode={mode}
