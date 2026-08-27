@@ -24,6 +24,8 @@ import { Progress } from "@/components/ui/progress"
 import type { BusinessAsset } from "@/lib/business-asset-library/business-asset-registry"
 import type { BuildModeDefinition } from "@/lib/business-asset-library/build-modes"
 import type { CommunicationStyle } from "@/lib/business-comprehension/business-comprehension"
+import { getBusinessStage } from "@/lib/business-stage/business-stage-store"
+import { saveGuidedDiyCompletionToDb } from "@/utils/business-asset-build-storage"
 
 export function GuidedBuildFlow({
   asset,
@@ -31,12 +33,15 @@ export function GuidedBuildFlow({
   style,
   executiveName,
   onExit,
+  onAssetSaved,
 }: {
   asset: BusinessAsset
   mode: BuildModeDefinition
   style: CommunicationStyle
   executiveName: string
   onExit: () => void
+  /** Fired once the founder's step notes have been saved, so the parent can refresh the ownership card. */
+  onAssetSaved?: () => void
 }) {
   const steps = asset.instructions[style]
   const example = asset.examples[style]
@@ -53,6 +58,17 @@ export function GuidedBuildFlow({
     setShowStuck(false)
     if (stepIndex >= total - 1) {
       setComplete(true)
+      // Do It Myself never calls the live-AI route, so this is the only place its
+      // work gets saved. Only worth persisting if the founder actually wrote something.
+      if (mode.id === "guided-diy") {
+        const combined = steps
+          .map((s, i) => (notes[i]?.trim() ? `${s}\n${notes[i]!.trim()}` : null))
+          .filter(Boolean)
+          .join("\n\n")
+        if (combined.trim()) {
+          void saveGuidedDiyCompletionToDb(asset.id, combined, getBusinessStage()).then(() => onAssetSaved?.())
+        }
+      }
       return
     }
     setStepIndex((i) => i + 1)

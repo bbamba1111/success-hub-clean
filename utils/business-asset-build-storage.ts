@@ -57,6 +57,11 @@ function mapRow(row: Record<string, unknown> | null): BusinessAssetBuildRecord |
     messages: (row.messages as BusinessAssetBuildMessage[]) ?? [],
     generatedContent: (row.generated_content as string | null) ?? null,
     updatedAt: row.updated_at as string,
+    createdAt: (row.created_at as string) ?? (row.updated_at as string),
+    reviewStatus: (row.review_status as BusinessAssetReviewStatus) ?? "draft",
+    version: (row.version as number) ?? 1,
+    businessStage: (row.business_stage as string | null) ?? null,
+    approvedAt: (row.approved_at as string | null) ?? null,
   }
 }
 
@@ -96,6 +101,7 @@ export async function getBusinessAssetBuildFromDb(
 export async function createBusinessAssetBuildInDb(
   businessAssetId: string,
   buildMode: BuildModeId,
+  businessStage?: string | null,
 ): Promise<string | null> {
   const userId = await getUserId()
   if (!userId) return null
@@ -110,6 +116,7 @@ export async function createBusinessAssetBuildInDb(
         build_mode: buildMode,
         status: "in-progress",
         messages: [],
+        business_stage: businessStage ?? null,
       })
       .select("id")
       .single()
@@ -141,5 +148,99 @@ export async function updateBusinessAssetBuildInDb(
     await supabase.from("business_asset_builds").update(patch).eq("id", buildId)
   } catch (error) {
     console.log("[v0] updateBusinessAssetBuildInDb skipped:", (error as Error)?.message)
+  }
+}
+
+/**
+ * Loads the founder's most recently completed build for this asset, across
+ * every build mode — used by the ownership card to show "what you actually
+ * finished" regardless of whether it came from Build With AI, Let AI Do It,
+ * or Do It Myself. Returns `null` if signed out or nothing completed yet.
+ */
+export async function getLatestCompletedBuildForAsset(
+  businessAssetId: string,
+): Promise<BusinessAssetBuildRecord | null> {
+  const userId = await getUserId()
+  if (!userId) return null
+
+  try {
+    const supabase = createClient()
+    const { data } = await supabase
+      .from("business_asset_builds")
+      .select("*")
+      .eq("user_id", userId)
+      .eq("business_asset_id", businessAssetId)
+      .eq("status", "completed")
+      .order("updated_at", { ascending: false })
+      .limit(1)
+      .maybeSingle()
+    return mapRow(data as Record<string, unknown> | null)
+  } catch (error) {
+    console.log("[v0] getLatestCompletedBuildForAsset skipped:", (error as Error)?.message)
+    return null
+  }
+}
+
+/**
+ * Moves a completed build through the founder-approval lifecycle
+ * (draft → in-review → approved). Setting "approved" also stamps
+ * `approved_at`; moving off "approved" clears it. Best-effort, silent no-op
+ * when signed out or the update fails.
+ */
+export async function setBusinessAssetBuildReviewStatus(
+  buildId: string,
+  reviewStatus: BusinessAssetReviewStatus,
+): Promise<void> {
+  try {
+    const supabase = createClient()
+    await supabase
+      .from("business_asset_builds")
+      .update({
+        review_status: reviewStatus,
+        approved_at: reviewStatus === "approved" ? new Date().toISOString() : null,
+      })
+      .eq("id", buildId)
+  } catch (error) {
+    console.log("[v0] setBusinessAssetBuildReviewStatus skipped:", (error as Error)?.message)
+  }
+}
+
+/**
+ * Saves a Do It Myself (guided-diy) completion. That flow never talks to
+ * the live-AI API route, so unlike the other two modes it has no build row
+ * yet by the time the founder finishes — this creates one directly,
+ * already marked "completed", so guided-diy assets show up in the
+ * ownership card exactly like the AI-built ones. Best-effort, silent no-op
+ * when signed out.
+ */
+export async function saveGuidedDiyCompletionToDb(
+  businessAssetId: string,
+  generatedContent: string,
+  businessStage?: string | null,
+): Promise<string | null> {
+  const userId = await getUserId()
+  if (!userId) return null
+
+  try {
+    const supabase = createClient()
+    const { data, error } = await supabase
+      .from("business_asset_builds")
+      .insert({
+        user_id: userId,
+        business_asset_id: businessAssetId,
+        build_mode: "guided-diy",
+        status: "completed",
+        messages: [],
+        generated_content: generatedContent,
+        business_stage: businessStage ?? null,
+      })
+      .select("id")
+      .single()
+
+    if (error) throw error
+    return (data?.id as string) ?? null
+  } catch (error) {
+    console.log("[v0] saveGuidedDiyCompletionToDb skipped:", (error as Error)?.message)
+    return null
   }
 }

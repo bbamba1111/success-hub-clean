@@ -19,6 +19,7 @@ import { ArrowLeft, CheckCircle2, Loader2, Send, Sparkles } from "lucide-react"
 import type { BusinessAsset } from "@/lib/business-asset-library/business-asset-registry"
 import type { BuildModeDefinition } from "@/lib/business-asset-library/build-modes"
 import type { CommunicationStyle } from "@/lib/business-comprehension/business-comprehension"
+import { getBusinessStage } from "@/lib/business-stage/business-stage-store"
 import {
   createBusinessAssetBuildInDb,
   getBusinessAssetBuildFromDb,
@@ -32,12 +33,15 @@ export function LiveAiBuildChat({
   style,
   executiveName,
   onExit,
+  onAssetSaved,
 }: {
   asset: BusinessAsset
   mode: BuildModeDefinition
   style: CommunicationStyle
   executiveName: string
   onExit: () => void
+  /** Fired once a final draft has been saved, so the parent can refresh the ownership card. */
+  onAssetSaved?: () => void
 }) {
   const [messages, setMessages] = useState<BusinessAssetBuildMessage[]>([])
   const [input, setInput] = useState("")
@@ -62,7 +66,7 @@ export function LiveAiBuildChat({
         setBuildId(existing.id)
         setMessages(existing.messages)
       } else {
-        const newId = await createBusinessAssetBuildInDb(asset.id, mode.id)
+        const newId = await createBusinessAssetBuildInDb(asset.id, mode.id, getBusinessStage())
         if (!active) return
         setBuildId(newId)
         const opener: BusinessAssetBuildMessage = {
@@ -131,6 +135,9 @@ export function LiveAiBuildChat({
 
       if (buildId) {
         await updateBusinessAssetBuildInDb(buildId, updated, data.finalDraft ?? undefined)
+        if (data.finalDraft) {
+          onAssetSaved?.()
+        }
       }
     } catch {
       setError("Something went wrong. Please try again.")

@@ -9,7 +9,7 @@
  * build it. Same canonical asset — only the explanation adapts.
  */
 
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import Link from "next/link"
 import { CheckCircle2, MessageCircle } from "lucide-react"
 import {
@@ -27,17 +27,24 @@ import { getExecutive } from "@/lib/executive-team/executive-registry"
 import { getBusinessStage as getStageDef } from "@/lib/business-stage/business-stage"
 import { getBuildMode, type BuildModeId } from "@/lib/business-asset-library/build-modes"
 import { isLiveAiBuildAvailable } from "@/lib/business-asset-library/live-build"
+import {
+  getLatestCompletedBuildForAsset,
+  type BusinessAssetBuildRecord,
+  type BusinessAssetReviewStatus,
+} from "@/utils/business-asset-build-storage"
 import { BuildModePicker } from "./build-mode-picker"
 import { GuidedBuildFlow } from "./guided-build-flow"
 import { LiveAiBuildChat } from "./live-ai-build-chat"
 import { DelegationBrief } from "./delegation-brief"
 import { ExpertScopeBrief } from "./expert-scope-brief"
 import { BuyVsBuildGuidance } from "./buy-vs-build-guidance"
+import { FounderAssetOwnershipCard } from "./founder-asset-ownership-card"
 
 export function AssetDetailView({ asset }: { asset: BusinessAsset }) {
   const [style, setStyle] = useState<CommunicationStyle>(DEFAULT_COMMUNICATION_STYLE)
   const [mounted, setMounted] = useState(false)
   const [activeMode, setActiveMode] = useState<BuildModeId | null>(null)
+  const [ownedBuild, setOwnedBuild] = useState<BusinessAssetBuildRecord | null>(null)
 
   useEffect(() => {
     setStyle(getCommunicationStyle())
@@ -46,6 +53,14 @@ export function AssetDetailView({ asset }: { asset: BusinessAsset }) {
     window.addEventListener(BUSINESS_COMPREHENSION_EVENT, onChange)
     return () => window.removeEventListener(BUSINESS_COMPREHENSION_EVENT, onChange)
   }, [])
+
+  const refreshOwnedBuild = useCallback(() => {
+    getLatestCompletedBuildForAsset(asset.id).then(setOwnedBuild)
+  }, [asset.id])
+
+  useEffect(() => {
+    refreshOwnedBuild()
+  }, [refreshOwnedBuild])
 
   const explanation = asset.explanations[style]
   const styleDef = getStyleDef(style)
@@ -169,6 +184,7 @@ export function AssetDetailView({ asset }: { asset: BusinessAsset }) {
                 style={style}
                 executiveName={primaryOwnerName}
                 onExit={() => setActiveMode(null)}
+                onAssetSaved={refreshOwnedBuild}
               />
             ) : (
               <GuidedBuildFlow
@@ -177,11 +193,26 @@ export function AssetDetailView({ asset }: { asset: BusinessAsset }) {
                 style={style}
                 executiveName={primaryOwnerName}
                 onExit={() => setActiveMode(null)}
+                onAssetSaved={refreshOwnedBuild}
               />
             )}
           </div>
         )}
       </div>
+
+      {/* Founder Asset Ownership Card™ — what you've actually finished for this asset, regardless of which mode built it */}
+      {ownedBuild && (
+        <div className="mt-10">
+          <FounderAssetOwnershipCard
+            assetName={asset.name}
+            executiveName={primaryOwnerName}
+            build={ownedBuild}
+            onStatusChange={(next: BusinessAssetReviewStatus) =>
+              setOwnedBuild((prev) => (prev ? { ...prev, reviewStatus: next } : prev))
+            }
+          />
+        </div>
+      )}
 
       {/* Reassurance footer */}
       <div className="mt-10 flex items-start gap-3 rounded-xl border border-black/[0.06] bg-brand-cream/50 px-5 py-4">
