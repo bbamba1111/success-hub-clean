@@ -30,6 +30,9 @@ import { isLiveAiBuildAvailable } from "@/lib/business-asset-library/live-build"
 import { BuildModePicker } from "./build-mode-picker"
 import { GuidedBuildFlow } from "./guided-build-flow"
 import { LiveAiBuildChat } from "./live-ai-build-chat"
+import { DelegationBrief } from "./delegation-brief"
+import { ExpertScopeBrief } from "./expert-scope-brief"
+import { BuyVsBuildGuidance } from "./buy-vs-build-guidance"
 
 export function AssetDetailView({ asset }: { asset: BusinessAsset }) {
   const [style, setStyle] = useState<CommunicationStyle>(DEFAULT_COMMUNICATION_STYLE)
@@ -144,7 +147,23 @@ export function AssetDetailView({ asset }: { asset: BusinessAsset }) {
 
         {mode && (
           <div className="mt-6">
-            {isLiveAiBuildAvailable(asset.id) ? (
+            {mode.id === "give-to-team" ? (
+              <DelegationBrief
+                asset={asset}
+                communicationStyle={style}
+                executiveName={primaryOwnerName}
+                onExit={() => setActiveMode(null)}
+              />
+            ) : mode.id === "hire-expert" ? (
+              <ExpertScopeBrief
+                asset={asset}
+                communicationStyle={style}
+                onExit={() => setActiveMode(null)}
+              />
+            ) : mode.id === "buy-it" ? (
+              <BuyVsBuildGuidance asset={asset} onExit={() => setActiveMode(null)} />
+            ) : isLiveAiBuildAvailable(asset.id) &&
+              (mode.id === "build-with-ai" || mode.id === "let-ai-do-it") ? (
               <LiveAiBuildChat
                 asset={asset}
                 mode={mode}

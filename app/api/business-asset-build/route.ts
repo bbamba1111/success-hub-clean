@@ -2,8 +2,9 @@
  * Live AI Build™ — API Route (Phase 12.2 proof of concept)
  * ---------------------------------------------------------------------------
  * Powers a REAL, live AI conversation for building a Business Asset™ — used
- * by both "Build With AI" and "Do It Myself" modes (the only difference is
- * how directive vs. Socratic the system prompt asks the model to be).
+ * by "Build With AI", "Let AI Do It", and "Do It Myself" modes (the only
+ * difference is how directive, autonomous, or Socratic the system prompt
+ * asks the model to be).
  *
  * Follows the exact proven pattern from app/api/cherry-blossom-chat/route.ts:
  * a server route calling OpenAI directly via fetch with the existing
@@ -77,7 +78,9 @@ export async function POST(req: NextRequest) {
     const modeInstruction =
       buildMode === "build-with-ai"
         ? "The founder chose Build With AI: be directive. Ask one focused question at a time, then draft language FOR them based on their answer, and let them refine it. Do most of the writing yourself."
-        : "The founder chose Do It Myself, guided: be Socratic. Ask one focused question at a time and coach them to write their OWN answer in their own words. Only offer a draft if they explicitly get stuck and ask for one."
+        : buildMode === "let-ai-do-it"
+          ? "The founder chose Let AI Do It: be autonomous. Ask AT MOST one essential clarifying question if you truly cannot proceed without it — otherwise, make sound, reasonable assumptions from what they've already told you (their business, their Founder Destination™, their Communication Style™) and go straight to writing a complete first draft covering all the guided steps below. Tell them plainly you're making assumptions and that they should edit anything that's off. Prioritize giving them a finished draft to react to over asking questions."
+          : "The founder chose Do It Myself, guided: be Socratic. Ask one focused question at a time and coach them to write their OWN answer in their own words. Only offer a draft if they explicitly get stuck and ask for one."
 
     const guidedSteps = asset.instructions[style.id] ?? asset.instructions.business_owner
 

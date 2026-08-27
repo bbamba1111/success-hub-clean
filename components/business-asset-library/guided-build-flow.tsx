@@ -45,7 +45,7 @@ export function GuidedBuildFlow({
   const [showStuck, setShowStuck] = useState(false)
   const [complete, setComplete] = useState(false)
 
-  const isAi = mode.stepFraming === "ai-drafts"
+  const isAi = mode.stepFraming === "ai-drafts" || mode.stepFraming === "ai-autonomous"
   const total = steps.length
   const progressPct = complete ? 100 : Math.round((stepIndex / total) * 100)
 
