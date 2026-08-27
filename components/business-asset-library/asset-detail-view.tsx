@@ -26,8 +26,10 @@ import { getBusinessAsset } from "@/lib/business-asset-library/business-asset-re
 import { getExecutive } from "@/lib/executive-team/executive-registry"
 import { getBusinessStage as getStageDef } from "@/lib/business-stage/business-stage"
 import { getBuildMode, type BuildModeId } from "@/lib/business-asset-library/build-modes"
+import { isLiveAiBuildAvailable } from "@/lib/business-asset-library/live-build"
 import { BuildModePicker } from "./build-mode-picker"
 import { GuidedBuildFlow } from "./guided-build-flow"
+import { LiveAiBuildChat } from "./live-ai-build-chat"
 
 export function AssetDetailView({ asset }: { asset: BusinessAsset }) {
   const [style, setStyle] = useState<CommunicationStyle>(DEFAULT_COMMUNICATION_STYLE)
@@ -142,13 +144,23 @@ export function AssetDetailView({ asset }: { asset: BusinessAsset }) {
 
         {mode && (
           <div className="mt-6">
-            <GuidedBuildFlow
-              asset={asset}
-              mode={mode}
-              style={style}
-              executiveName={primaryOwnerName}
-              onExit={() => setActiveMode(null)}
-            />
+            {isLiveAiBuildAvailable(asset.id) ? (
+              <LiveAiBuildChat
+                asset={asset}
+                mode={mode}
+                style={style}
+                executiveName={primaryOwnerName}
+                onExit={() => setActiveMode(null)}
+              />
+            ) : (
+              <GuidedBuildFlow
+                asset={asset}
+                mode={mode}
+                style={style}
+                executiveName={primaryOwnerName}
+                onExit={() => setActiveMode(null)}
+              />
+            )}
           </div>
         )}
       </div>
