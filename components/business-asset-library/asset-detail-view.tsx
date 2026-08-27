@@ -157,7 +157,11 @@ export function AssetDetailView({ asset }: { asset: BusinessAsset }) {
         </p>
 
         <div className="mt-5">
-          <BuildModePicker activeMode={activeMode} onSelect={setActiveMode} />
+          <BuildModePicker
+            activeMode={activeMode}
+            onSelect={setActiveMode}
+            availableModeIds={asset.availableBuildModeIds}
+          />
         </div>
 
         {mode && (

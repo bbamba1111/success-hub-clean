@@ -17,13 +17,17 @@ const ICONS: Record<string, LucideIcon> = { Sparkles, Zap, GraduationCap, Users,
 export function BuildModePicker({
   activeMode,
   onSelect,
+  availableModeIds,
 }: {
   activeMode: BuildModeId | null
   onSelect: (mode: BuildModeId) => void
+  /** Restricts which modes render, for assets whose nature doesn't fit all 6. Omit to show every mode (default). */
+  availableModeIds?: BuildModeId[]
 }) {
+  const modes = availableModeIds ? BUILD_MODES.filter((mode) => availableModeIds.includes(mode.id)) : BUILD_MODES
   return (
     <div className="grid gap-3 sm:grid-cols-3" role="group" aria-label="How would you like to work on this?">
-      {BUILD_MODES.map((mode) => {
+      {modes.map((mode) => {
         const Icon = ICONS[mode.icon] ?? Sparkles
         const active = activeMode === mode.id
         return (

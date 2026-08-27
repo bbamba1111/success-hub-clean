@@ -25,6 +25,7 @@
 import { ALL_BUSINESS_STAGES, type BusinessStage } from "@/lib/business-stage/business-stage"
 import { ALL_COMMUNICATION_STYLES, type CommunicationStyle } from "@/lib/business-comprehension/business-comprehension"
 import type { RendererType } from "@/lib/output-architecture/render-engine"
+import type { BuildModeId } from "@/lib/business-asset-library/build-modes"
 
 /** The seven browsing categories of the Business Asset Library™, in build order. */
 export type BusinessAssetCategory =
@@ -90,6 +91,14 @@ export interface BusinessAsset {
   /** Reserved generator endpoint for a future phase. Not wired now. */
   futureGenerator: string
   status: BusinessAssetStatus
+  /**
+   * Restricts which of the 6 build-mode ids `BuildModePicker` offers for this
+   * asset. Omit to offer all modes (the default, and current behavior for
+   * every existing asset). Only set this when an asset's nature genuinely
+   * doesn't fit a mode — e.g. a meta/template asset with no "Delegation
+   * Brief" or "Buy vs. Build" framing.
+   */
+  availableBuildModeIds?: BuildModeId[]
 }
 
 /** Shorthand so every seed asset declares the full style set without repeating the literal array. */
@@ -176,6 +185,131 @@ export const BUSINESS_ASSETS: BusinessAsset[] = [
     printAvailable: true,
     recommendedRenderer: "pdf",
     futureGenerator: "generate/founder-destination",
+    status: "architecture",
+  },
+  {
+    id: "founder-onboarding-template",
+    name: "Founder Onboarding Template™",
+    category: "Start Here",
+    shortDescription: "A template for designing your own Founder Onboarding Asset™ — not the onboarding itself.",
+    whatIsThis:
+      "A guided template for DESIGNING a Founder Onboarding Asset™ for your business — the sequence of questions and moments that would properly welcome a new founder or client into what you've built. This produces a template you can reuse, not a one-time onboarding record.",
+    whyItMatters:
+      "Most onboarding is assembled ad hoc and forgets half of what actually matters. Designing it deliberately — once, as a reusable template — means every future founder or client gets the same thoughtful welcome, and nothing critical gets left to memory.",
+    ownerExecutiveIds: ["cherry-blossom", "strategy"],
+    recommendedBusinessStages: ALL_BUSINESS_STAGES,
+    supportedCommunicationStyles: ALL_STYLES,
+    availableBuildModeIds: ["build-with-ai", "let-ai-do-it", "guided-diy"],
+    explanations: {
+      foundation: {
+        headline: "Design how you'll welcome someone in",
+        body: "This walks you through building a simple template for welcoming a new founder or client into your world — what to ask them, what to tell them, and what should happen in what order. You're building the checklist, not filling it out for one person.",
+      },
+      small_business: {
+        headline: "Build your onboarding template",
+        body: "A reusable template for how you bring a new client or team member into your business — the questions you'll ask, the info you'll share, and the order it happens in, so it's consistent every time.",
+      },
+      business_owner: {
+        headline: "Design your Founder Onboarding Template™",
+        body: "A structured, reusable onboarding template covering what you need to know about each new founder or client, what they need to know about you, and the sequence that turns both into a smooth first experience.",
+      },
+      executive: {
+        headline: "Architect the onboarding system template",
+        body: "A structured onboarding template that formalizes intake requirements, information transfer, and sequencing — designed once as a system, not re-improvised per new relationship.",
+      },
+      boardroom: {
+        headline: "Codify the enterprise onboarding template",
+        body: "A governance-grade onboarding template defining intake standards, disclosure sequencing, and systemic touchpoints — built for consistent execution across every future onboarding, not a single instance.",
+      },
+    },
+    instructions: {
+      foundation: [
+        "Reminder: you're designing a reusable template here, not onboarding one specific person. Keep everything general enough to reuse.",
+        "List what you need to learn about a new founder or client right away — their name, situation, and what they're hoping for.",
+        "Describe the destination or goal you'd want to understand about them early on.",
+        "List the basics of their business or situation you'd need to know to help them well.",
+        "Note anything about their life outside work — schedule, energy, other commitments — that would shape how you support them.",
+        "Describe where they actually stand right now, in plain terms, versus where they want to be.",
+        "Write down how you'd check whether they're ready for what comes next.",
+        "Describe how you'd explain things differently to different people — some want detail, some want the short version.",
+        "Note what your guide, helper, or team would need to know about this person to help them well.",
+        "Note anything a specialist helper would need flagged early, if one gets involved later.",
+        "Note what would need to be true before recommending your other tools or next steps to them.",
+        "Put it all in order: what happens first, second, third — and that's your onboarding flow template.",
+      ],
+      small_business: [
+        "Note: this builds a template you'll reuse for every new client, not a record of one specific onboarding.",
+        "Define the essential intake info you need from any new client on day one.",
+        "Define what you need to understand about their goal or desired outcome.",
+        "Define the business/situation basics you need on file to serve them.",
+        "Define the lifestyle or scheduling factors that affect how you'll work together.",
+        "Define how you'll assess where they currently stand.",
+        "Define your readiness check before moving them to the next stage.",
+        "Define how your communication approach should adjust person to person.",
+        "Define what any team member helping them needs to know upfront.",
+        "Define what a specialist or contractor would need flagged if brought in later.",
+        "Define the criteria for when it's appropriate to recommend your other services.",
+        "Sequence all of the above into a single, repeatable onboarding flow.",
+      ],
+      business_owner: [
+        "Frame this as a reusable Founder Onboarding Template™ — a system, not a one-off intake form.",
+        "Define the required intake fields for any new founder or client relationship.",
+        "Define the destination/outcome-clarification questions to ask early.",
+        "Define the business-context data points required for effective support.",
+        "Define the work-life design factors that inform delivery cadence and boundaries.",
+        "Define the current-state assessment method used to establish baseline.",
+        "Define the readiness gates that determine progression to deeper engagement.",
+        "Define the personalization logic — how tone/detail adapts by profile.",
+        "Define the handoff brief your team or delegates need to operate independently.",
+        "Define the escalation criteria for bringing in a specialist resource.",
+        "Define the qualification criteria for cross-selling or recommending other offers.",
+        "Sequence every step above into one ordered, repeatable onboarding flow.",
+      ],
+      executive: [
+        "This is a systems-design exercise: you are architecting a reusable onboarding template, not documenting a single case.",
+        "Specify the mandatory intake schema for every new principal relationship.",
+        "Specify the destination-clarification protocol used during intake.",
+        "Specify the business-context data required to calibrate strategic support.",
+        "Specify the capacity/lifestyle constraints that inform engagement design.",
+        "Specify the current-state diagnostic used to establish the baseline.",
+        "Specify the readiness criteria gating progression through the engagement.",
+        "Specify the adaptive-communication logic governing tone and depth by profile.",
+        "Specify the delegation brief required for a team member to operate the relationship independently.",
+        "Specify the escalation protocol for specialist engagement.",
+        "Specify the qualification logic for expanding scope or cross-selling.",
+        "Sequence the full protocol into one governed, repeatable onboarding flow.",
+      ],
+      boardroom: [
+        "This produces a governance artifact: a reusable onboarding template applied to every future relationship, not a single record.",
+        "Codify the mandatory intake standard for every new principal or portfolio relationship.",
+        "Codify the destination/outcome disclosure required during intake.",
+        "Codify the business-context disclosure standard required for oversight.",
+        "Codify the capacity and lifestyle disclosures relevant to engagement structuring.",
+        "Codify the current-state baseline methodology.",
+        "Codify the readiness gates required before progression to material engagement.",
+        "Codify the adaptive-communication standard governing disclosure by stakeholder profile.",
+        "Codify the delegation/handoff standard for team continuity.",
+        "Codify the escalation standard for specialist or advisory involvement.",
+        "Codify the qualification standard for scope expansion.",
+        "Sequence the full standard into one governed, repeatable onboarding flow suitable for institutional consistency.",
+      ],
+    },
+    examples: {
+      foundation:
+        "\"Step 1: get their name and biggest goal. Step 2: ask about their day-to-day life. Step 3: figure out where they're stuck. Step 4: explain things at their pace. Step 5: hand off to my helper with a short note.\"",
+      small_business:
+        "\"Intake form → goal-clarification call → current-state checklist → readiness check → tailored welcome packet by client type → handoff brief for my assistant.\"",
+      business_owner:
+        "\"Structured intake → destination interview → business-context questionnaire → readiness scoring → profile-based communication track → team handoff brief → cross-sell qualification gate.\"",
+      executive:
+        "\"Standardized intake schema → destination protocol → context calibration → capacity assessment → readiness gate → adaptive-communication routing → delegation brief → escalation protocol → expansion qualification.\"",
+      boardroom:
+        "\"Governed intake standard → outcome disclosure protocol → context disclosure → capacity disclosure → readiness gate → stakeholder-adaptive disclosure → continuity handoff standard → advisory escalation standard → scope-expansion standard.\"",
+    },
+    digitalBuildAvailable: true,
+    printAvailable: true,
+    recommendedRenderer: "editable-document",
+    futureGenerator: "generate/founder-onboarding-template",
     status: "architecture",
   },
   {
