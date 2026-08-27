@@ -259,6 +259,21 @@ const FOUNDER_DEPENDENT_LEVELS = new Set(["fully-dependent", "mostly-dependent"]
  * `leverageClass` is not `"keep"` — moving the founder toward delegation
  * rather than adding more to what only they can do. Only applied when the
  * capacity tie-break above didn't already pick a candidate.
+ *
+ * Bug fix: the Executive Decision Engine™'s Priority Tier™ is derived from
+ * `activeSignals` alone (see `evaluateFounderPriority`) — it never varies by
+ * candidate. That means "the top-ranked Priority Tier™" is, in practice,
+ * every candidate in the pool, not a genuine tie at the top. Without a
+ * second filter, both tie-breaks below were searching the ENTIRE candidate
+ * pool for any leverage-qualifying capability — including lower-relevance,
+ * next-stage capabilities pulled in only for "build ahead of need" — and
+ * could hijack the recommendation away from the pool's actual top,
+ * highest-relevance candidate (`ranked[0]`, since `deriveReadinessRelevance`
+ * already sorts the pool by relevance). Restricting `topTierGroup` to
+ * candidates that ALSO share `ranked[0]`'s Founder Intelligence™
+ * `relevanceStatus` restores the intended behavior: the leverage tie-break
+ * only ever chooses among candidates genuinely tied with the top
+ * recommendation, never overriding a clearly more relevant one.
  */
 function pickBestCandidate(
   ranked: RankedEdeCandidate[],
@@ -268,7 +283,11 @@ function pickBestCandidate(
   if (ranked.length === 0) return null
   const byId = new Map(pool.map((r) => [r.id, r]))
   const topTierRank = tierRankOf(ranked[0].activeTier)
-  const topTierGroup = ranked.filter((r) => tierRankOf(r.activeTier) === topTierRank)
+  const topRelevanceStatus = byId.get(ranked[0].candidateId)?.relevanceStatus
+  const topTierGroup = ranked.filter((r) => {
+    if (tierRankOf(r.activeTier) !== topTierRank) return false
+    return byId.get(r.candidateId)?.relevanceStatus === topRelevanceStatus
+  })
 
   const capacityPick = topTierGroup.find((r) => {
     const capability = byId.get(r.candidateId)
