@@ -71,17 +71,6 @@ export function FounderGpsWorkspace() {
         })
       : null
 
-  if (typeof window !== "undefined" && snapshot?.ready) {
-    console.log("[v0] snapshot.ready:", snapshot.ready)
-    console.log("[v0] gpsContext.businessStage:", buildGpsContextFromSnapshot(snapshot).businessStage)
-    console.log("[v0] gpsContext.weakestEsaPillar:", buildGpsContextFromSnapshot(snapshot).weakestEsaPillar)
-    console.log("[v0] snapshot.business.esaResults:", JSON.stringify(snapshot.business.esaResults))
-    console.log("[v0] founderDestination present:", !!founderDestination)
-    console.log("[v0] capabilityBuildStatusById:", JSON.stringify(getActiveBuildStatusByCapabilityId()))
-    console.log("[v0] nextBestMove.readinessCapabilityId:", nextBestMove?.readinessCapabilityId)
-    console.log("[v0] nextBestMove.id:", nextBestMove?.id)
-  }
-
   if (!nextBestMove) {
     return (
       <div className="rounded-3xl border border-dashed border-[#E8DFE2] px-6 py-10 text-center space-y-5">
