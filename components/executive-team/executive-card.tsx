@@ -1,4 +1,7 @@
+import Link from "next/link"
+import { ArrowRight } from "lucide-react"
 import type { Executive } from "@/lib/executive-team/executive-registry"
+import { getAssetsByExecutive } from "@/lib/business-asset-library/business-asset-registry"
 
 /**
  * ExecutiveCard — an elegant executive profile for the boardroom.
@@ -8,6 +11,7 @@ import type { Executive } from "@/lib/executive-team/executive-registry"
  */
 export function ExecutiveCard({ executive }: { executive: Executive }) {
   const { name, executiveTitle, department, mission, primaryResponsibilities, availableDeliverables } = executive
+  const buildableAssets = getAssetsByExecutive(executive.id)
 
   return (
     <article className="harmony-panel flex h-full flex-col p-6 ds-transition hover:-translate-y-0.5 hover:shadow-ds-md sm:p-7">
@@ -62,6 +66,28 @@ export function ExecutiveCard({ executive }: { executive: Executive }) {
           ))}
         </div>
       </div>
+
+      {/* Business Assets You Can Build — contextual entry point into the library */}
+      {buildableAssets.length > 0 && (
+        <div className="mt-6 border-t border-black/[0.06] pt-5">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-brand-ink-soft">
+            Business Assets You Can Build
+          </p>
+          <ul className="mt-3 space-y-1.5">
+            {buildableAssets.slice(0, 3).map((asset) => (
+              <li key={asset.id}>
+                <Link
+                  href={`/business-asset-library/${asset.id}`}
+                  className="group inline-flex items-center gap-1.5 text-sm font-medium text-brand-ink-soft ds-transition hover:text-brand-green"
+                >
+                  {asset.name}
+                  <ArrowRight className="h-3 w-3 opacity-0 ds-transition group-hover:opacity-100" aria-hidden />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </article>
   )
 }

@@ -112,6 +112,11 @@ export const PRIMARY_NAV: PrimarySection[] = [
         description: "Your daily operating workspace — Daily Non-Negotiables™ and the 4-Hour CEO Workday™.",
       },
       {
+        label: "Business Assets™",
+        href: "/business-asset-library",
+        description: "The toolbox of buildable business tools — canvases, blueprints, and playbooks, guided by your AI Executive Team™.",
+      },
+      {
         label: "Design My Week™",
         href: "/design-my-week",
         description: "Install your Daily Non-Negotiables™, Intention Declarations™, and weekly operating rhythm.",
