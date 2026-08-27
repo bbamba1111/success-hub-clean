@@ -8,8 +8,8 @@
  * Destination™ + Business Stage™ + ESA + Work-Life Balance™ → Next Best
  * Move™ — this file just no longer renders every intermediate artifact of
  * that reasoning. It shows the move, which Business Asset™ that move maps
- * to (`getRecommendedBusinessAsset`, existing/unchanged), who owns it, and
- * one "Start Building" action into the real build experience at
+ * to (`getRecommendedBusinessAsset`, existing/unchanged), and one "Start
+ * Building" action into the real build experience at
  * `/business-asset-library/{id}` — where Comprehension Level™/Communication
  * Style™, the owning Executive™, and Cherry Blossom™ already take over.
  *
@@ -30,7 +30,6 @@ import { useHarmonyContextOptional } from "@/components/harmony-context/harmony-
 import { buildGpsContextFromSnapshot, deriveNextBestMove } from "@/lib/founder-gps/next-best-move-engine"
 import { getActiveBuildStatusByCapabilityId, getBuildRecord } from "@/lib/build-record/build-record-store"
 import { getRecommendedBusinessAsset } from "@/lib/business-asset-library/gps-recommendation-link"
-import { getExecutive } from "@/lib/executive-team/executive-registry"
 
 /** Plain-language status pill label for every real `BuildLifecycleStatus`. Falls back to "In Progress" for any other active, non-terminal state. */
 const STATUS_LABEL: Record<string, string> = {
@@ -70,17 +69,17 @@ export function FounderGpsWorkspace() {
 
   if (!nextBestMove) {
     return (
-      <div className="rounded-3xl border border-dashed border-[#E8DFE2] px-6 py-9 text-center space-y-4">
-        <p className="font-sans text-sm leading-relaxed text-[#6B5860] max-w-sm mx-auto text-pretty">
-          Your Founder GPS™ Next Best Move™ will appear here once your Blueprint has enough signal to reason over —
-          complete a few sections there to activate it.
+      <div className="rounded-3xl border border-dashed border-[#E8DFE2] px-6 py-10 text-center space-y-5">
+        <p className="font-sans text-base leading-relaxed text-[#6B5860] max-w-sm mx-auto text-pretty">
+          We&apos;ll show you what to work on today as soon as we know a little more about your business — complete a
+          few sections of your Blueprint to get started.
         </p>
         <Link
           href="/founder-destination"
-          className="inline-flex items-center gap-1.5 rounded-full bg-[#C13B6B] px-5 py-2.5 font-sans text-xs font-bold text-white hover:opacity-90 transition-opacity"
+          className="inline-flex items-center gap-1.5 rounded-full bg-[#5A7A45] px-6 py-3 font-sans text-sm font-bold text-white hover:opacity-90 transition-opacity"
         >
           Set Your Founder Destination™
-          <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+          <ArrowRight className="h-4 w-4" aria-hidden />
         </Link>
       </div>
     )
@@ -89,7 +88,6 @@ export function FounderGpsWorkspace() {
   // The Business Asset™ this move maps to, if any — the existing, already
   // honest `getRecommendedBusinessAsset` link. No new matching logic.
   const asset = getRecommendedBusinessAsset(nextBestMove)
-  const owningExecutive = asset?.ownerExecutiveIds?.[0] ? getExecutive(asset.ownerExecutiveIds[0]) : undefined
   const recommendationId = nextBestMove.readinessCapabilityId ?? nextBestMove.id
   const buildRecord = recommendationId ? getBuildRecord(recommendationId) : null
   const statusLabel = STATUS_LABEL[buildRecord?.status ?? "not-started"] ?? "Not Started"
@@ -97,48 +95,51 @@ export function FounderGpsWorkspace() {
   // Prefer a direct link into the real Business Asset™ build experience;
   // fall back to the move's own CTA only when no asset match exists.
   const startBuildingHref = asset ? `/business-asset-library/${asset.id}` : nextBestMove.cta.href
-  const startBuildingLabel = asset ? "Start Building →" : nextBestMove.cta.label
+  const startBuildingLabel = asset ? "Start Building" : nextBestMove.cta.label
 
   return (
-    <div className="rounded-3xl border border-[#C13B6B]/25 bg-[#FBF1F5] px-6 py-6 sm:px-7 sm:py-7 space-y-5">
-      <div className="flex items-center gap-2">
-        <Navigation className="h-4 w-4 text-[#C13B6B]" aria-hidden />
-        <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#C13B6B]">
+    <div className="rounded-3xl border border-[#8DAE72]/30 bg-[#F4F7F0] px-6 py-7 sm:px-8 sm:py-8 space-y-6">
+      <div className="flex items-center gap-2.5">
+        <Navigation className="h-5 w-5 text-[#5A7A45]" aria-hidden />
+        <p className="font-montserrat text-xs font-bold uppercase tracking-[0.18em] text-[#5A7A45]">
           Today&apos;s Next Best Move™
         </p>
       </div>
 
-      <div>
-        <p className="font-display text-lg font-semibold text-[#2E1F27] text-pretty">{nextBestMove.nextTurn}</p>
-        <p className="mt-2 font-sans text-sm leading-relaxed text-[#6B5860] text-pretty">{nextBestMove.reason}</p>
-      </div>
+      <p className="font-sans text-base leading-relaxed text-[#3A2E33] text-pretty">{nextBestMove.reason}</p>
 
-      <div className="rounded-2xl border border-[#E8DFE2] bg-white px-5 py-4 space-y-3">
-        <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.16em] text-[#6B5860]">Build This Today</p>
+      <div className="rounded-2xl border border-[#E8DFE2] bg-white px-6 py-6 space-y-5">
+        <p className="font-montserrat text-xs font-bold uppercase tracking-[0.16em] text-[#6B5860]">Build This Today</p>
 
-        <div className="flex items-start justify-between gap-3">
-          <div className="space-y-1">
-            <p className="font-sans text-base font-semibold text-[#2E1F27] text-pretty">
-              {asset?.name ?? nextBestMove.nextTurn}
+        <div className="space-y-3">
+          <div className="flex items-start justify-between gap-3">
+            <p className="font-display text-2xl font-semibold text-[#2E1F27] text-pretty leading-tight">
+              {/* `nextBestMove.nextTurn` can be raw internal capability text when no
+                  Business Asset™ matches — never show that to the founder. Fall back
+                  to a plain, honest label instead of fabricating an asset name. */}
+              {asset?.name ?? "Your Next Move"}
             </p>
-            {owningExecutive && (
-              <p className="font-sans text-xs text-[#6B5860]">Owned by {owningExecutive.name}</p>
-            )}
-            {nextBestMove.estimatedTime && (
-              <p className="font-sans text-xs text-[#6B5860]">Estimated focus: {nextBestMove.estimatedTime}</p>
-            )}
+            <span className="shrink-0 inline-flex items-center rounded-full bg-[#8DAE72]/15 px-3.5 py-1.5 font-montserrat text-[10px] font-bold uppercase tracking-[0.12em] text-[#5A7A45] whitespace-nowrap">
+              {statusLabel}
+            </span>
           </div>
-          <span className="shrink-0 inline-flex items-center rounded-full bg-[#C13B6B]/10 px-3 py-1 font-montserrat text-[9px] font-bold uppercase tracking-[0.12em] text-[#C13B6B] whitespace-nowrap">
-            {statusLabel}
-          </span>
+
+          <p className="font-sans text-base leading-relaxed text-[#6B5860] text-pretty">
+            This is the most important thing for you to work on today.
+          </p>
+
+          <p className="font-sans text-sm leading-relaxed text-[#6B5860] text-pretty">
+            You&apos;ll work on this with your AI Executive Team™ and finish with a business asset you can save,
+            print, or export.
+          </p>
         </div>
 
         <Link
           href={startBuildingHref}
-          className="inline-flex items-center gap-1.5 rounded-full bg-[#C13B6B] px-5 py-2.5 font-sans text-xs font-bold text-white hover:opacity-90 transition-opacity"
+          className="inline-flex items-center gap-2 rounded-full bg-[#5A7A45] px-7 py-3.5 font-sans text-base font-bold text-white hover:opacity-90 transition-opacity"
         >
           {startBuildingLabel}
-          {asset && <ArrowRight className="h-3.5 w-3.5" aria-hidden />}
+          <ArrowRight className="h-4 w-4" aria-hidden />
         </Link>
       </div>
     </div>
