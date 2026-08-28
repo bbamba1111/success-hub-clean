@@ -12,8 +12,8 @@
  * specific asset matters — hand-written, asset-specific benefits from
  * `audience-benefits.ts`, never a generic paragraph — plus one "Start
  * Building" action that routes directly to `/business-asset-library/{id}`,
- * where Comprehension Level™/Communication Style™, the owning Executive™,
- * and Cherry Blossom™ already take over. When there's no asset match, it
+ * where Communication Style™ (Business Comprehension™), the owning
+ * Executive™, and Cherry Blossom™ already take over. When there's no asset match, it
  * shows a plain review prompt instead of a misleading Start Building button.
  *
  * Everything this used to render inline — Business Destination™/Reality™/Gap
