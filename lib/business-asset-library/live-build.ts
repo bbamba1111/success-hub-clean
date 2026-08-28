@@ -1,12 +1,13 @@
 /**
- * Live AI Build™ — Allowlist (Phase 12.2 proof of concept)
+ * Live AI Build™ — Allowlist (Phase 12.2 → Phase 12.3)
  * ---------------------------------------------------------------------------
- * Two Business Asset™ ids are wired to a real, live AI conversation, for
+ * Business Asset™ ids wired to a real, live AI conversation, for
  * "Build With AI", "Let AI Do It", and "Do It Myself" modes: Founder
- * Destination™ and Founder Onboarding Template™. Every other asset in the
- * library keeps the fully static GuidedBuildFlow (and the three new
- * static-brief modes below never touch this allowlist at all — they render
- * from registry content only).
+ * Destination™, Founder Onboarding Template™, and — as of Phase 12.3, the
+ * first Business Asset Library™ proof of concept — Ideal Client Compass™.
+ * Every other asset in the library keeps the fully static GuidedBuildFlow
+ * (and the three static-brief modes never touch this allowlist at all —
+ * they render from registry content only).
  *
  * This module is the single switch that decides whether an asset gets the
  * live chat experience. Expanding live AI to more assets later means adding
@@ -14,7 +15,11 @@
  */
 
 /** Business Asset™ ids wired to a real, live AI conversation. */
-export const LIVE_AI_BUILD_ASSET_IDS: string[] = ["founder-destination", "founder-onboarding-template"]
+export const LIVE_AI_BUILD_ASSET_IDS: string[] = [
+  "founder-destination",
+  "founder-onboarding-template",
+  "ideal-client-compass",
+]
 
 export function isLiveAiBuildAvailable(assetId: string): boolean {
   return LIVE_AI_BUILD_ASSET_IDS.includes(assetId)
