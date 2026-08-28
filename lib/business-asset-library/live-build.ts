@@ -4,7 +4,8 @@
  * Business Asset™ ids wired to a real, live AI conversation, for
  * "Build With AI", "Let AI Do It", and "Do It Myself" modes: Founder
  * Destination™, Founder Onboarding Template™, and — as of Phase 12.3, the
- * first Business Asset Library™ proof of concept — Ideal Client Compass™.
+ * first Business Asset Library™ proof of concept — Ideal Client Asset
+ * (internal id: `ideal-client-compass`, unchanged).
  * Every other asset in the library keeps the fully static GuidedBuildFlow
  * (and the three static-brief modes never touch this allowlist at all —
  * they render from registry content only).

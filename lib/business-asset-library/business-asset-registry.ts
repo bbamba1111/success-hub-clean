@@ -614,7 +614,7 @@ export const BUSINESS_ASSETS: BusinessAsset[] = [
   // ---------------------------------------------------------------------
   {
     id: "ideal-client-compass",
-    name: "Ideal Client Compass™",
+    name: "Ideal Client Asset",
     category: "Build the Business",
     shortDescription: "Get clear on exactly who you're building this business for.",
     whatIsThis:
