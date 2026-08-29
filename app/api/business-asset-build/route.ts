@@ -86,15 +86,17 @@ export async function POST(req: NextRequest) {
         ? "The founder chose Build With AI: be directive. Ask one focused question at a time, then draft language FOR them based on their answer, and let them refine it. Do most of the writing yourself."
         : isAutonomous
           ? `The founder chose Let AI Do It: be maximally autonomous. Do NOT walk through the guided steps one at a time — that pacing is for the other modes only. As soon as the founder has given you ANY real information about their business (even a single sentence), immediately write a complete first draft covering all the guided steps below in one shot, filling every gap with sound, reasonable, clearly-labeled assumptions instead of asking a question. Only ask a clarifying question first if the founder's very first message is empty, off-topic, or contains literally nothing usable — and even then, ask at most ONE question before drafting. The moment you produce that complete draft, wrap it in [FINAL_DRAFT_START]/[FINAL_DRAFT_END] in the SAME response — do not wait for a confirmation round-trip. After delivering it, invite them to tell you what to change.`
-          : "The founder chose Do It Myself, guided: be Socratic. Ask one focused question at a time and coach them to write their OWN answer, in their own words, directly into the matching template field. Do not draft field content for them unprompted — only offer a suggested version of a specific field if they explicitly say they're stuck and ask for help with that field."
+          : "The founder chose Do It Myself, guided: be Socratic. Ask one focused question at a time and coach them to write their OWN answer, in their own words, directly into the matching Builder Step. Do not draft Builder Step content for them unprompted — only offer a suggested version of a specific Builder Step if they explicitly say they're stuck and ask for help with that step."
 
     const guidedSteps = asset.instructions[style.id] ?? asset.instructions.business_owner
 
-    // The founder sees these guided steps as real, editable fields in a
-    // structured template alongside this chat — never as a plain checklist
-    // buried in the conversation. `n` below is the 0-based field index the
-    // [FIELD:n] tag must use to target that exact field.
-    const fieldList = guidedSteps.map((step, i) => `Field ${i}: ${step}`).join("\n")
+    // The founder sees these guided steps as real, editable "Builder Steps"
+    // in a structured template alongside this chat — never as a plain
+    // checklist buried in the conversation, and NEVER as "Field N" (that's
+    // internal machine syntax only — see the [FIELD:n] tag below, which the
+    // app strips before the founder ever sees it). `n` is the 0-based index
+    // the [FIELD:n] tag must use to target the matching Builder Step.
+    const fieldList = guidedSteps.map((step, i) => `Builder Step ${i + 1} [FIELD:${i}]: ${step}`).join("\n")
 
     const normalizedFieldValues = guidedSteps.map((_, i) => {
       const v = fieldValues[i]
@@ -102,14 +104,14 @@ export async function POST(req: NextRequest) {
     })
     const hasAnyFieldValue = normalizedFieldValues.some(Boolean)
     const fieldStateBlock = hasAnyFieldValue
-      ? `\n\nCurrent contents of the founder's template fields right now (the founder can also edit these directly, independent of this chat):\n${normalizedFieldValues
-          .map((v, i) => `Field ${i}: ${v ?? "(empty)"}`)
+      ? `\n\nCurrent contents of the founder's Builder Steps right now (the founder can also edit these directly, independent of this chat):\n${normalizedFieldValues
+          .map((v, i) => `Builder Step ${i + 1}: ${v ?? "(empty)"}`)
           .join("\n")}`
       : ""
 
     const fieldTagInstruction = isGuidedDiy
-      ? `You do NOT write field content unprompted in this mode — the founder types their own answers directly into the template fields. Only emit a [FIELD:n]...[/FIELD] tag (n = the field's number above) if the founder explicitly asks you to suggest or improve the wording for that specific field; they will still choose whether to accept it.`
-      : `As soon as you have drafted or refined the content for a specific field — even one field at a time, well before the whole asset is done — wrap ONLY that field's text in [FIELD:n]...[/FIELD] (n = the field's number above) so it appears live in the founder's template. Do this every time you draft or improve a field's content, not just once at the end.`
+      ? `You do NOT write Builder Step content unprompted in this mode — the founder types their own answers directly into their Builder Steps. Only emit a [FIELD:n]...[/FIELD] tag (n = the field index shown above in brackets, e.g. "[FIELD:2]") if the founder explicitly asks you to suggest or improve the wording for that specific Builder Step; they will still choose whether to accept it.`
+      : `As soon as you have drafted or refined the content for a specific Builder Step — even one at a time, well before the whole asset is done — wrap ONLY that step's text in [FIELD:n]...[/FIELD] (n = the field index shown above in brackets, e.g. "[FIELD:2]") so it appears live in the founder's Builder Step. Do this every time you draft or improve a Builder Step's content, not just once at the end. Never mention "[FIELD:n]" or the word "field" to the founder — always call these "Builder Steps" in your own words.`
 
     const systemPrompt = `You are the ${executiveName}, one of the founder's AI Executive Team™ inside the Harmony Lane™ Operating System.
 
@@ -121,7 +123,7 @@ ${modeInstruction}
 
 Communication Style™: respond in the "${style.name}" register — ${style.description} Preferred vocabulary: ${style.preferredVocabulary} Preferred examples: ${style.preferredExamples}
 
-The founder is looking at a structured template with one editable field per guided step below, sitting right next to this chat — it is the actual workspace, not just a talking point. Ground the conversation in these fields${isAutonomous ? " (make sure your draft covers all of them, but write them into flowing prose — do not present this as a checklist to the founder)" : " (cover them in order, one at a time, in your own words — do not just recite this list)"}:
+The founder is looking at a structured template with one editable "Builder Step" per guided step below, sitting right next to this chat — it is the actual workspace, not just a talking point. Ground the conversation in these Builder Steps${isAutonomous ? " (make sure your draft covers all of them, but write them into flowing prose — do not present this as a checklist to the founder)" : " (cover them in order, one at a time, in your own words — do not just recite this list)"}. Always call these "Builder Steps" when speaking with the founder — never say the word "field" or "Field N":
 ${fieldList}${fieldStateBlock}
 
 ${fieldTagInstruction}

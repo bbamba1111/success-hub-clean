@@ -18,14 +18,14 @@
  * component state only — nothing is persisted or sent anywhere.
  */
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ArrowLeft, ArrowRight, CheckCircle2, HelpCircle, PartyPopper, Sparkles } from "lucide-react"
 import { Progress } from "@/components/ui/progress"
 import type { BusinessAsset } from "@/lib/business-asset-library/business-asset-registry"
 import type { BuildModeDefinition } from "@/lib/business-asset-library/build-modes"
 import type { CommunicationStyle } from "@/lib/business-comprehension/business-comprehension"
 import { getBusinessStage } from "@/lib/business-stage/business-stage-store"
-import { saveGuidedDiyCompletionToDb } from "@/utils/business-asset-build-storage"
+import { getBusinessAssetBuildFromDb, saveGuidedDiyCompletionToDb } from "@/utils/business-asset-build-storage"
 
 export function GuidedBuildFlow({
   asset,
@@ -49,10 +49,41 @@ export function GuidedBuildFlow({
   const [notes, setNotes] = useState<Record<number, string>>({})
   const [showStuck, setShowStuck] = useState(false)
   const [complete, setComplete] = useState(false)
+  // Do It Myself owns the only build row this component ever writes — these
+  // track that row across a re-open via "Edit / Revise" so finishing again
+  // updates the SAME row (and bumps `version`) instead of creating a second.
+  const [buildId, setBuildId] = useState<string | null>(null)
+  const [wasAlreadyCompleted, setWasAlreadyCompleted] = useState(false)
 
   const isAi = mode.stepFraming === "ai-drafts" || mode.stepFraming === "ai-autonomous"
   const total = steps.length
   const progressPct = complete ? 100 : Math.round((stepIndex / total) * 100)
+
+  // Restore a previously saved Do It Myself build for this asset, if any,
+  // so reopening it (e.g. via "Edit / Revise") pre-fills the founder's own
+  // answers instead of starting from a blank worksheet.
+  useEffect(() => {
+    if (mode.id !== "guided-diy") return
+    let active = true
+    getBusinessAssetBuildFromDb(asset.id, "guided-diy").then((existing) => {
+      if (!active || !existing) return
+      setBuildId(existing.id)
+      setWasAlreadyCompleted(existing.status === "completed")
+      if (existing.fieldValues.length > 0) {
+        setNotes((prev) => {
+          const next = { ...prev }
+          existing.fieldValues.forEach((value, i) => {
+            if (value) next[i] = value
+          })
+          return next
+        })
+      }
+    })
+    return () => {
+      active = false
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [asset.id, mode.id])
 
   function goNext() {
     setShowStuck(false)
@@ -66,7 +97,12 @@ export function GuidedBuildFlow({
           .filter(Boolean)
           .join("\n\n")
         if (combined.trim()) {
-          void saveGuidedDiyCompletionToDb(asset.id, combined, getBusinessStage()).then(() => onAssetSaved?.())
+          const fieldValues = steps.map((_, i) => notes[i]?.trim() ?? "")
+          void saveGuidedDiyCompletionToDb(asset.id, fieldValues, combined, getBusinessStage(), buildId).then((id) => {
+            if (id) setBuildId(id)
+            setWasAlreadyCompleted(true)
+            onAssetSaved?.()
+          })
         }
       }
       return
@@ -90,7 +126,7 @@ export function GuidedBuildFlow({
         </h3>
         <p className="mx-auto mt-2 max-w-md text-pretty text-sm leading-relaxed text-brand-ink-soft">
           {isAi
-            ? `${executiveName} helped you draft every step. Revisit any step anytime to refine your answers.`
+            ? `${executiveName} helped you draft every Builder Step™. Revisit any Builder Step anytime to refine your answers.`
             : `${executiveName} guided you through this from start to finish — the work is yours.`}
         </p>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
@@ -102,7 +138,7 @@ export function GuidedBuildFlow({
             }}
             className="ds-btn-secondary"
           >
-            Revisit Steps
+            Revisit Builder Steps
           </button>
           <button type="button" onClick={onExit} className="ds-btn-primary">
             Back to {asset.name}
@@ -122,9 +158,11 @@ export function GuidedBuildFlow({
         <div>
           <p className="ds-eyebrow">{executiveName}</p>
           <p className="mt-1 text-pretty text-sm leading-relaxed text-brand-ink">
-            {isAi
-              ? "I'll help you build this. Let's work through it together, one step at a time."
-              : "You'll do the work yourself — I'll explain each step and check in as you go."}
+            {wasAlreadyCompleted
+              ? "You've already finished this once — pick up wherever you'd like to revise."
+              : isAi
+                ? "I'll help you build this. Let's work through it together, one Builder Step at a time."
+                : "You'll do the work yourself — I'll explain each Builder Step and check in as you go."}
           </p>
         </div>
       </div>
@@ -133,7 +171,7 @@ export function GuidedBuildFlow({
       <div className="mt-6">
         <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.1em] text-brand-ink-soft">
           <span>
-            Step {stepIndex + 1} of {total}
+            Builder Step {stepIndex + 1} of {total}
           </span>
           <span>{progressPct}%</span>
         </div>

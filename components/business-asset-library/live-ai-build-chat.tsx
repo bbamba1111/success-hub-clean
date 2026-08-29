@@ -75,6 +75,10 @@ export function LiveAiBuildChat({
   const guidedSteps = asset.instructions[style] ?? asset.instructions.business_owner
   const [fieldValues, setFieldValues] = useState<string[]>(() => guidedSteps.map(() => ""))
   const [isSaving, setIsSaving] = useState(false)
+  // True once this build has been completed at least once — reopening a
+  // finished build via "Edit / Revise" starts this as `true` so the next
+  // save bumps `version` instead of quietly overwriting the original.
+  const [wasAlreadyCompleted, setWasAlreadyCompleted] = useState(false)
   const hasAnyFieldValue = fieldValues.some((v) => v.trim())
 
   const isAutonomous = mode.id === "let-ai-do-it"
@@ -88,43 +92,53 @@ export function LiveAiBuildChat({
     setIsSaving(true)
     try {
       if (buildId) {
-        await updateBusinessAssetBuildInDb(buildId, messages, compiled)
+        await updateBusinessAssetBuildInDb(buildId, messages, compiled, nextFieldValues, wasAlreadyCompleted)
       } else {
         const newId = await createBusinessAssetBuildInDb(asset.id, mode.id, getBusinessStage())
         if (newId) {
           setBuildId(newId)
-          await updateBusinessAssetBuildInDb(newId, messages, compiled)
+          await updateBusinessAssetBuildInDb(newId, messages, compiled, nextFieldValues, false)
         }
       }
       setFinalDraft(compiled)
+      setWasAlreadyCompleted(true)
       onAssetSaved?.()
     } finally {
       setIsSaving(false)
     }
   }
 
-  // Resume an in-progress session for this asset + mode, or start fresh.
+  // Resume ANY existing session for this asset + mode — in-progress OR
+  // already completed (reopened via "Edit / Revise") — so revisiting a
+  // finished build edits that same row instead of quietly starting a
+  // parallel one. Falls back to a fresh row only when nothing exists yet.
   useEffect(() => {
     let active = true
+    function opener(): BusinessAssetBuildMessage {
+      return {
+        role: "assistant",
+        content: isAutonomous
+          ? `Hi, I'm ${executiveName}. Tell me anything important about your business, and I'll go ahead and draft a complete ${asset.name} for you — making reasonable assumptions where I need to. You'll be able to edit anything that's off. Ready?`
+          : isAi
+            ? `Hi, I'm ${executiveName}. Let's build your ${asset.name} together — I'll ask a few questions and draft the language as we go. Ready to start?`
+            : `Hi, I'm ${executiveName}. I'll coach you through building your ${asset.name} step by step — you do the writing, I'll guide you. Ready to start?`,
+      }
+    }
     async function boot() {
       const existing = await getBusinessAssetBuildFromDb(asset.id, mode.id)
       if (!active) return
-      if (existing && existing.status === "in-progress" && existing.messages.length > 0) {
+      if (existing) {
         setBuildId(existing.id)
-        setMessages(existing.messages)
+        setWasAlreadyCompleted(existing.status === "completed")
+        if (existing.fieldValues.length > 0) {
+          setFieldValues(guidedSteps.map((_, i) => existing.fieldValues[i] ?? ""))
+        }
+        setMessages(existing.messages.length > 0 ? existing.messages : [opener()])
       } else {
         const newId = await createBusinessAssetBuildInDb(asset.id, mode.id, getBusinessStage())
         if (!active) return
         setBuildId(newId)
-        const opener: BusinessAssetBuildMessage = {
-          role: "assistant",
-          content: isAutonomous
-            ? `Hi, I'm ${executiveName}. Tell me anything important about your business, and I'll go ahead and draft a complete ${asset.name} for you — making reasonable assumptions where I need to. You'll be able to edit anything that's off. Ready?`
-            : isAi
-              ? `Hi, I'm ${executiveName}. Let's build your ${asset.name} together — I'll ask a few questions and draft the language as we go. Ready to start?`
-              : `Hi, I'm ${executiveName}. I'll coach you through building your ${asset.name} step by step — you do the writing, I'll guide you. Ready to start?`,
-        }
-        setMessages([opener])
+        setMessages([opener()])
       }
       setIsBooting(false)
     }
@@ -196,8 +210,9 @@ export function LiveAiBuildChat({
       }
 
       if (buildId) {
-        await updateBusinessAssetBuildInDb(buildId, updated, data.finalDraft ?? undefined)
+        await updateBusinessAssetBuildInDb(buildId, updated, data.finalDraft ?? undefined, mergedFieldValues, wasAlreadyCompleted)
         if (data.finalDraft) {
+          setWasAlreadyCompleted(true)
           onAssetSaved?.()
         }
       }
@@ -275,7 +290,10 @@ export function LiveAiBuildChat({
         <div className="mt-4 space-y-4">
           {guidedSteps.map((step, i) => (
             <div key={i}>
-              <label htmlFor={`field-${i}`} className="block text-xs font-semibold leading-snug text-brand-ink">
+              <p className="text-[0.65rem] font-bold uppercase tracking-wide text-brand-green">
+                Builder Step {i + 1}
+              </p>
+              <label htmlFor={`field-${i}`} className="mt-0.5 block text-xs font-semibold leading-snug text-brand-ink">
                 {step}
               </label>
               <textarea

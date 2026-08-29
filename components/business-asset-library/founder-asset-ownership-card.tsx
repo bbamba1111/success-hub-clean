@@ -16,7 +16,7 @@
  */
 
 import { useState } from "react"
-import { Check, Copy, FileText, ShieldCheck, Sparkles } from "lucide-react"
+import { Check, Copy, FileText, Pencil, ShieldCheck, Sparkles } from "lucide-react"
 import type { BusinessAssetBuildRecord, BusinessAssetReviewStatus } from "@/utils/business-asset-build-storage"
 import { setBusinessAssetBuildReviewStatus } from "@/utils/business-asset-build-storage"
 import { RENDERERS } from "@/lib/output-architecture/render-engine"
@@ -54,11 +54,14 @@ export function FounderAssetOwnershipCard({
   executiveName,
   build,
   onStatusChange,
+  onEdit,
 }: {
   assetName: string
   executiveName: string
   build: BusinessAssetBuildRecord
   onStatusChange: (next: BusinessAssetReviewStatus) => void
+  /** Reopens the build flow that produced this asset, resuming the SAME saved build so changes are revised in place instead of starting a new one. */
+  onEdit: () => void
 }) {
   const [copied, setCopied] = useState(false)
   const [updating, setUpdating] = useState(false)
@@ -151,7 +154,11 @@ export function FounderAssetOwnershipCard({
       </div>
 
       <div className="mt-5 flex flex-wrap items-center gap-3">
-        <button type="button" onClick={handleCopy} className="ds-btn-primary">
+        <button type="button" onClick={onEdit} className="ds-btn-primary">
+          <Pencil className="h-4 w-4" aria-hidden />
+          Edit / Revise
+        </button>
+        <button type="button" onClick={handleCopy} className="ds-btn-secondary">
           {copied ? <Check className="h-4 w-4" aria-hidden /> : <Copy className="h-4 w-4" aria-hidden />}
           {copied ? "Copied" : "Copy full text"}
         </button>

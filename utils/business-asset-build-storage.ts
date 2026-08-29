@@ -27,6 +27,8 @@ export interface BusinessAssetBuildRecord {
   status: "in-progress" | "completed"
   messages: BusinessAssetBuildMessage[]
   generatedContent: string | null
+  /** The founder's per-Builder-Step™ answers, in guided-step order — lets a reopened build restore exactly what was there before. */
+  fieldValues: string[]
   updatedAt: string
   createdAt: string
   reviewStatus: BusinessAssetReviewStatus
@@ -56,6 +58,7 @@ function mapRow(row: Record<string, unknown> | null): BusinessAssetBuildRecord |
     status: row.status as BusinessAssetBuildRecord["status"],
     messages: (row.messages as BusinessAssetBuildMessage[]) ?? [],
     generatedContent: (row.generated_content as string | null) ?? null,
+    fieldValues: Array.isArray(row.field_values) ? (row.field_values as string[]) : [],
     updatedAt: row.updated_at as string,
     createdAt: (row.created_at as string) ?? (row.updated_at as string),
     reviewStatus: (row.review_status as BusinessAssetReviewStatus) ?? "draft",
@@ -129,11 +132,21 @@ export async function createBusinessAssetBuildInDb(
   }
 }
 
-/** Appends the latest exchange and, when provided, saves the final generated content. Best-effort. */
+/**
+ * Appends the latest exchange and, when provided, saves the final generated
+ * content and the founder's current Builder Step™ field values. Best-effort.
+ *
+ * `isRevision` should be `true` when this save is completing a build that
+ * was ALREADY completed once before (i.e. the founder reopened a finished
+ * asset via "Edit / Revise") — it bumps `version` so the row's history is
+ * distinguishable from the original finish.
+ */
 export async function updateBusinessAssetBuildInDb(
   buildId: string,
   messages: BusinessAssetBuildMessage[],
   generatedContent?: string | null,
+  fieldValues?: string[],
+  isRevision?: boolean,
 ): Promise<void> {
   try {
     const supabase = createClient()
@@ -141,9 +154,20 @@ export async function updateBusinessAssetBuildInDb(
       messages,
       updated_at: new Date().toISOString(),
     }
+    if (fieldValues) {
+      patch.field_values = fieldValues
+    }
     if (generatedContent !== undefined) {
       patch.generated_content = generatedContent
       patch.status = generatedContent ? "completed" : "in-progress"
+      if (generatedContent && isRevision) {
+        const { data: current } = await supabase
+          .from("business_asset_builds")
+          .select("version")
+          .eq("id", buildId)
+          .maybeSingle()
+        patch.version = ((current?.version as number) ?? 1) + 1
+      }
     }
     await supabase.from("business_asset_builds").update(patch).eq("id", buildId)
   } catch (error) {
@@ -207,22 +231,74 @@ export async function setBusinessAssetBuildReviewStatus(
 
 /**
  * Saves a Do It Myself (guided-diy) completion. That flow never talks to
- * the live-AI API route, so unlike the other two modes it has no build row
- * yet by the time the founder finishes — this creates one directly,
- * already marked "completed", so guided-diy assets show up in the
- * ownership card exactly like the AI-built ones. Best-effort, silent no-op
- * when signed out.
+ * the live-AI API route, so it manages its own row here — this UPSERTS
+ * rather than always inserting: pass `existingBuildId` when the founder is
+ * revising a build reopened via "Edit / Revise" so this updates that SAME
+ * row instead of creating a duplicate. Even without `existingBuildId`, this
+ * re-checks the database for an existing guided-diy build on this asset
+ * before inserting, so a stale/missing id in the caller's state can never
+ * produce a second row. Revising an already-completed build bumps
+ * `version`. Best-effort, silent no-op when signed out.
  */
 export async function saveGuidedDiyCompletionToDb(
   businessAssetId: string,
+  fieldValues: string[],
   generatedContent: string,
   businessStage?: string | null,
+  existingBuildId?: string | null,
 ): Promise<string | null> {
   const userId = await getUserId()
   if (!userId) return null
 
   try {
     const supabase = createClient()
+
+    let buildId = existingBuildId ?? null
+    let priorVersion = 1
+    let priorStatus: string | null = null
+
+    if (buildId) {
+      const { data: current } = await supabase
+        .from("business_asset_builds")
+        .select("version, status")
+        .eq("id", buildId)
+        .maybeSingle()
+      priorVersion = (current?.version as number) ?? 1
+      priorStatus = (current?.status as string) ?? null
+    } else {
+      // Defensive re-check: never insert a second row for a build that
+      // already exists, even if the caller's local state lost track of it.
+      const { data: existing } = await supabase
+        .from("business_asset_builds")
+        .select("id, version, status")
+        .eq("user_id", userId)
+        .eq("business_asset_id", businessAssetId)
+        .eq("build_mode", "guided-diy")
+        .order("updated_at", { ascending: false })
+        .limit(1)
+        .maybeSingle()
+      if (existing) {
+        buildId = existing.id as string
+        priorVersion = (existing.version as number) ?? 1
+        priorStatus = (existing.status as string) ?? null
+      }
+    }
+
+    if (buildId) {
+      const patch: Record<string, unknown> = {
+        field_values: fieldValues,
+        generated_content: generatedContent,
+        status: "completed",
+        updated_at: new Date().toISOString(),
+      }
+      if (priorStatus === "completed") {
+        patch.version = priorVersion + 1
+      }
+      const { error } = await supabase.from("business_asset_builds").update(patch).eq("id", buildId)
+      if (error) throw error
+      return buildId
+    }
+
     const { data, error } = await supabase
       .from("business_asset_builds")
       .insert({
@@ -231,6 +307,7 @@ export async function saveGuidedDiyCompletionToDb(
         build_mode: "guided-diy",
         status: "completed",
         messages: [],
+        field_values: fieldValues,
         generated_content: generatedContent,
         business_stage: businessStage ?? null,
       })

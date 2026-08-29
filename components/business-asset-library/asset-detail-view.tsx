@@ -9,7 +9,7 @@
  * build it. Same canonical asset — only the explanation adapts.
  */
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { CheckCircle2, MessageCircle } from "lucide-react"
 import {
@@ -45,6 +45,14 @@ export function AssetDetailView({ asset }: { asset: BusinessAsset }) {
   const [mounted, setMounted] = useState(false)
   const [activeMode, setActiveMode] = useState<BuildModeId | null>(null)
   const [ownedBuild, setOwnedBuild] = useState<BusinessAssetBuildRecord | null>(null)
+  const buildSectionRef = useRef<HTMLDivElement>(null)
+
+  /** Reopens the exact build mode that produced the founder's saved asset — the flow components resume that SAME build row rather than starting a new one. */
+  const handleEditBuild = useCallback(() => {
+    if (!ownedBuild) return
+    setActiveMode(ownedBuild.buildMode)
+    buildSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+  }, [ownedBuild])
 
   useEffect(() => {
     setStyle(getCommunicationStyle())
@@ -147,7 +155,7 @@ export function AssetDetailView({ asset }: { asset: BusinessAsset }) {
       </div>
 
       {/* How do I build it? */}
-      <div className="mt-10">
+      <div ref={buildSectionRef} className="mt-10">
         <p className="ds-eyebrow">How do I build it?</p>
         <h2 className="mt-1 font-display text-xl font-semibold tracking-tight text-brand-ink">
           Choose how you&apos;d like to work
@@ -214,6 +222,7 @@ export function AssetDetailView({ asset }: { asset: BusinessAsset }) {
             onStatusChange={(next: BusinessAssetReviewStatus) =>
               setOwnedBuild((prev) => (prev ? { ...prev, reviewStatus: next } : prev))
             }
+            onEdit={handleEditBuild}
           />
         </div>
       )}
