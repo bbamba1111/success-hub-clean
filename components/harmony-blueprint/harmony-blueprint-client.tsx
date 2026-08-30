@@ -497,33 +497,40 @@ export function HarmonyBlueprintClient() {
           </div>
         </BlueprintCard>
 
-        {/* ── Blueprint Card 6: Entrepreneur Gap Assessment™ ──────────────────
-             Sits directly after Business Context™, matching the approved EGA
-             architecture: Founder Profile™ → Business Context™ → EGA™ →
-             Solution Resolution → CEO Workday™. */}
-        <BlueprintCard
-          icon={Search}
-          cardNumber="Blueprint Card 6"
-          title="Entrepreneur Gap Assessment™"
-          subtitle="What is getting in your way — recognize the problem, then diagnose the obstacle."
-          accentColor="#5B835F"
-        >
-          <div className="rounded-2xl border border-[#5B835F]/25 bg-[#F4F8F4] px-5 py-5">
-            <div className="flex items-center justify-between mb-3">
-              <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
-                Entrepreneur Gap Assessment™
-              </p>
-              <Link href="/entrepreneur-gap-assessment" className="font-sans text-xs font-semibold text-[#5B835F] hover:underline">
-                Begin
-              </Link>
-            </div>
-            <EmptyState
-              label="Recognize what's getting in your way so Harmony Lane™ can map it to the right solution."
-              href="/entrepreneur-gap-assessment"
-              hrefLabel="What Is Getting In My Way?™"
-            />
-          </div>
-        </BlueprintCard>
+              {/* ── Blueprint Card 6: Entrepreneur Gap Assessment™ ──────────────────
+                  EGA is NOT a third recurring weekly assessment. Founders already
+                  capture their initial "What is getting in your way?" signal during
+                  onboarding (Founder Profile™ → Business Context™ → EGA Screen 1 →
+                  Cherry Blossom Thank-You™ — see business-context-onboarding-flow.tsx
+                  and utils/reality-check-storage.ts). This card is the diagnostic
+                  revisit surface: it lets the founder diagnose the obstacle behind
+                  a signal they already recognized, or flag a new one as things
+                  change. EGA otherwise operates quietly, reacting to ESA/Business
+                  Context signals and surfacing targeted follow-ups only when
+                  relevant. */}
+              <BlueprintCard
+                icon={Search}
+                cardNumber="Blueprint Card 6"
+                title="Entrepreneur Gap Assessment™"
+                subtitle="What is getting in your way — Harmony Lane™ diagnoses only what needs attention."
+                accentColor="#5B835F"
+              >
+                <div className="rounded-2xl border border-[#5B835F]/25 bg-[#F4F8F4] px-5 py-5">
+                  <div className="flex items-center justify-between mb-3">
+                    <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
+                      Entrepreneur Gap Assessment™
+                    </p>
+                    <Link href="/entrepreneur-gap-assessment" className="font-sans text-xs font-semibold text-[#5B835F] hover:underline">
+                      Review
+                    </Link>
+                  </div>
+                  <EmptyState
+                    label="Diagnose what's already been recognized, or flag something new getting in your way."
+                    href="/entrepreneur-gap-assessment"
+                    hrefLabel="What Is Getting In My Way?™"
+                  />
+                </div>
+              </BlueprintCard>
 
         {/* ── Cherry Blossom forward guidance ──────────────────────────────── */}
         <div className="rounded-2xl border border-brand-blush bg-white/70 backdrop-blur-sm shadow-sm overflow-hidden relative">

@@ -2,7 +2,11 @@ import Link from "next/link"
 import { createClient } from "@/lib/supabase/server"
 import { EgaPageClient } from "@/components/ega/ega-page-client"
 
-export default async function EntrepreneurGapAssessmentPage() {
+export default async function EntrepreneurGapAssessmentPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
   const supabase = await createClient()
   const {
     data: { user },
@@ -25,5 +29,16 @@ export default async function EntrepreneurGapAssessmentPage() {
     )
   }
 
-  return <EgaPageClient />
+  // ?onboarding=1 — reached from the required Founder Profile™ → Business
+  // Context™ → EGA Screen 1 on-ramp (see business-context-onboarding-flow.tsx
+  // and utils/reality-check-storage.ts). In this mode EGA shows ONLY Screen 1
+  // (the founder recognizes what's happening, no obstacle diagnosis) and then
+  // continues straight to the Cherry Blossom Thank-You™ transition. EGA is
+  // not a recurring weekly assessment — outside onboarding this same page
+  // runs the full Screen 1 → Screen 2 → Results flow as a self-directed
+  // Harmony Blueprint™ destination.
+  const params = await searchParams
+  const isOnboarding = params.onboarding === "1"
+
+  return <EgaPageClient onboarding={isOnboarding} />
 }

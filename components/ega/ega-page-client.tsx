@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { Check, ChevronLeft, ChevronRight, Loader2 } from "lucide-react"
 import {
   DIRECT_EGA_PROBLEM_STATEMENTS,
@@ -11,6 +12,7 @@ import {
   type DirectEgaProblemStatement,
 } from "@/lib/ega/direct-ega-catalog"
 import { createEgaEntry } from "@/lib/ega/ega-storage"
+import { markEgaOnboardingSignalComplete } from "@/lib/ega/ega-signal-store"
 import type { EgaObstacleType } from "@/lib/ega/types"
 
 type Screen = "recognize" | "diagnose" | "results"
@@ -92,16 +94,24 @@ function RecognizeScreen({
   selected,
   onToggle,
   onContinue,
+  onboarding,
+  loading,
 }: {
   selected: string[]
   onToggle: (id: string) => void
   onContinue: () => void
+  onboarding: boolean
+  loading?: boolean
 }) {
   return (
     <StepCard>
-      <StepLabel label="Entrepreneur Gap Assessment™" step={1} total={2} />
+      <StepLabel label="Entrepreneur Gap Assessment™" step={1} total={onboarding ? 1 : 2} />
       <StepQuestion>What is getting in your way?</StepQuestion>
-      <StepHint>Select all that apply. There are no right or wrong answers — just what&apos;s true right now.</StepHint>
+      <StepHint>
+        {onboarding
+          ? "Select all that apply. There are no right or wrong answers — this just helps Harmony Lane™ know what to watch for as you get started."
+          : "Select all that apply. There are no right or wrong answers — just what's true right now."}
+      </StepHint>
       <div className="flex flex-col gap-2">
         {DIRECT_EGA_PROBLEM_STATEMENTS.map((problem) => {
           const isSelected = selected.includes(problem.id)
@@ -130,7 +140,7 @@ function RecognizeScreen({
           )
         })}
       </div>
-      <ContinueButton onClick={onContinue} disabled={selected.length === 0} />
+      <ContinueButton onClick={onContinue} disabled={selected.length === 0} loading={loading} />
     </StepCard>
   )
 }
@@ -243,7 +253,8 @@ function ResultsScreen({ gaps }: { gaps: CapturedGap[] }) {
  * Orchestration
  * ======================================================================== */
 
-export function EgaPageClient() {
+export function EgaPageClient({ onboarding = false }: { onboarding?: boolean }) {
+  const router = useRouter()
   const [screen, setScreen] = useState<Screen>("recognize")
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [diagnoseIndex, setDiagnoseIndex] = useState(0)
@@ -258,6 +269,33 @@ export function EgaPageClient() {
 
   const toggleSelection = (id: string) => {
     setSelectedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]))
+  }
+
+  /**
+   * Onboarding path: Screen 1 IS the whole EGA step here. The founder
+   * recognizes what's happening — they are not expected to diagnose the
+   * underlying obstacle yet. Each selected statement is saved as an EgaEntry
+   * with a signal only (no gap/obstacleType); that diagnosis happens later,
+   * as a targeted follow-up once EGA's signal layer determines it's relevant
+   * (or if the founder chooses to revisit it from their Blueprint). Then we
+   * mark the one-time onboarding gate complete and continue straight into
+   * the existing Cherry Blossom Thank-You™ transition — never a second
+   * onboarding process.
+   */
+  const handleOnboardingContinue = async () => {
+    setSaving(true)
+    await Promise.all(
+      selectedProblems.map((problem) =>
+        createEgaEntry({
+          source: "direct_ega",
+          sourceRef: problem.id,
+          signal: problem.statement,
+          status: "open",
+        }),
+      ),
+    )
+    markEgaOnboardingSignalComplete()
+    router.push("/welcome/cherry-blossom/complete")
   }
 
   const handleStartDiagnosis = () => {
@@ -316,9 +354,15 @@ export function EgaPageClient() {
     <main className="min-h-screen bg-background px-4 py-16">
       <div className="mx-auto w-full max-w-xl">
         {screen === "recognize" && (
-          <RecognizeScreen selected={selectedIds} onToggle={toggleSelection} onContinue={handleStartDiagnosis} />
+          <RecognizeScreen
+            selected={selectedIds}
+            onToggle={toggleSelection}
+            onContinue={onboarding ? handleOnboardingContinue : handleStartDiagnosis}
+            onboarding={onboarding}
+            loading={onboarding ? saving : undefined}
+          />
         )}
-        {screen === "diagnose" && currentProblem && (
+        {!onboarding && screen === "diagnose" && currentProblem && (
           <DiagnoseScreen
             problem={currentProblem}
             index={diagnoseIndex}

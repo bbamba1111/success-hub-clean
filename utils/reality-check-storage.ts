@@ -287,15 +287,18 @@ export async function getOperatingCenterData(): Promise<OperatingCenterData> {
  * Decides where a member lands right after login. Checks required onboarding
  * gates in order before falling back to the recurring measurement/daily logic.
  *
- * Production on-ramp (every real member must complete BOTH steps — there is
+ * Production on-ramp (every real member must complete ALL steps — there is
  * no skip path):
  *   1. Founder Profile™ NOT completed → Cherry Blossom Welcome™ (first time)
  *      or straight to /founder-profile (if Welcome was already seen but the
  *      member left before finishing).
  *   2. Business Context™ NOT completed → /business-context.
- *   3. Both complete but the Cherry Blossom Thank-You™ transition hasn't been
- *      shown yet → /welcome/cherry-blossom/complete.
- *   4. On-ramp fully complete → fall back to the recurring measurement/daily
+ *   3. EGA Screen 1 ("What is getting in your way?") NOT completed →
+ *      /entrepreneur-gap-assessment?onboarding=1. This is a ONE-TIME signal
+ *      capture, not a recurring assessment — see lib/ega/ega-signal-store.ts.
+ *   4. All three complete but the Cherry Blossom Thank-You™ transition hasn't
+ *      been shown yet → /welcome/cherry-blossom/complete.
+ *   5. On-ramp fully complete → fall back to the recurring measurement/daily
  *      logic: this week's Weekly Reality Check™ NOT done → /begin; otherwise
  *      → "/", the daily Work-Life Balance Business Day™ front door.
  *
@@ -314,6 +317,7 @@ export async function getPostLoginDestination(): Promise<string> {
     try {
       const { hasCompletedFounderProfile } = await import("@/lib/founder-profile/founder-profile-store")
       const { hasCompletedBusinessContext } = await import("@/lib/business-context/business-context-store")
+      const { hasCompletedEgaOnboardingSignal } = await import("@/lib/ega/ega-signal-store")
       const {
         hasSeenCherryBlossomWelcome,
         hasSeenCherryBlossomThankYou,
@@ -325,6 +329,10 @@ export async function getPostLoginDestination(): Promise<string> {
 
       if (!hasCompletedBusinessContext()) {
         return "/business-context"
+      }
+
+      if (!hasCompletedEgaOnboardingSignal()) {
+        return "/entrepreneur-gap-assessment?onboarding=1"
       }
 
       if (!hasSeenCherryBlossomThankYou()) {
