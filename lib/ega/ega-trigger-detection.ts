@@ -36,6 +36,7 @@ import type { InstalledBusinessAsset } from "@/lib/business-asset-inventory/type
 import { getAssetById } from "@/lib/executive-decision-engine/asset-registry"
 import type { OperatingRule } from "@/lib/operating-rules/storage"
 import { createEgaEntry, findEgaEntryBySourceRef } from "./ega-storage"
+import { resolveKnownGapAndSolution } from "./gap-solution-resolution"
 import type { CreateEgaEntryInput, EgaEntry } from "./types"
 
 /** A candidate signal, not yet checked for duplicates or written anywhere. */
@@ -113,6 +114,20 @@ export function detectBusinessContextSignals(profile: BusinessContextProfile): D
       source: "business_context",
       sourceRef: "referralMechanism",
       signal: "No referral or repeat-business mechanism exists yet.",
+    })
+  }
+
+  // Client Connection Experience™ status is an enum, not a boolean — "none"
+  // is its own explicit answer (not the absence of one), and per the
+  // approved Phase 2B decision it stays a Business Context™ fact that only
+  // *triggers* an EGA follow-up rather than asserting a gap/solution
+  // outright. See gap-solution-resolution.ts for what happens next.
+  if (profile.clientConnectionExperienceStatus === "none") {
+    signals.push({
+      source: "business_context",
+      sourceRef: "clientConnectionExperienceStatus",
+      signal:
+        "No recurring Client Connection Experience™ (challenge, webinar, workshop, immersion, or mastermind) exists yet.",
     })
   }
 
@@ -232,6 +247,14 @@ export function detectAllEgaSignals(inputs: EgaTriggerDetectionInputs): Detected
  * the same source + sourceRef. Safe to call repeatedly (e.g. after every
  * ESA re-score, every Business Context save, every asset status change) —
  * re-detecting the same unresolved gap never creates a duplicate row.
+ *
+ * If a signal's source + sourceRef matches one of the small set of
+ * approved, known gap/solution resolutions (see gap-solution-resolution.ts),
+ * the created entry is pre-enriched with that gap/solution/classification
+ * immediately — there is no reason to leave an already-decided outcome
+ * nullable. Every other signal is created exactly as before, with
+ * gap/solution left null for later progressive enrichment.
+ *
  * Returns only the entries actually created this call.
  */
 export async function persistDetectedEgaSignals(signals: DetectedEgaSignal[]): Promise<EgaEntry[]> {
@@ -243,10 +266,18 @@ export async function persistDetectedEgaSignals(signals: DetectedEgaSignal[]): P
       if (existing) continue
     }
 
+    const known = resolveKnownGapAndSolution(signal.source, signal.sourceRef)
+
     const entry = await createEgaEntry({
       source: signal.source,
       sourceRef: signal.sourceRef,
       signal: signal.signal,
+      gap: known?.gap,
+      obstacleType: known?.obstacleType,
+      solution: known?.solution,
+      solutionRef: known?.solutionRef,
+      actionType: known?.actionType,
+      successIndicator: known?.successIndicator,
     })
     if (entry) created.push(entry)
   }
