@@ -10,6 +10,7 @@ import {
   uploadFounderProfilePhoto,
   type FounderProfileData,
 } from "@/utils/founder-profile-storage"
+import { FounderProfileSummary } from "@/components/founder-profile/founder-profile-summary"
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -150,6 +151,15 @@ export function FounderProfileForm() {
   // on mount, before this session's save can change completion state.
   const wasAlreadyComplete = useRef(hasCompletedFounderProfile())
 
+  // A completed Founder Profile™ opens straight to a read-only summary
+  // instead of the raw form; "Edit Founder Profile™" drops back into the
+  // full form. `userRequestedEdit` prevents the DB-hydration effect below
+  // from bouncing the member back to the summary while they're mid-edit.
+  const userRequestedEdit = useRef(false)
+  const [mode, setMode] = useState<"summary" | "form">(() =>
+    wasAlreadyComplete.current ? "summary" : "form",
+  )
+
   // Demo/test-only bypass for the demo account to exercise the incomplete
   // Founder Profile state end-to-end. Never rendered for real members — no
   // production UI links to this query param, and it never marks the
@@ -203,10 +213,13 @@ export function FounderProfileForm() {
       // local cache alone, which is empty on a first visit from a new
       // device/browser/session even though the database already has a
       // completed record. Reconcile it here so a returning member editing
-      // from a fresh session is routed home on save, not back through
-      // onboarding as if this were their first time.
+      // from a fresh session is treated the same as one whose local cache
+      // already reflected completion — see handleSaveAndContinue below.
       if (completedAt) {
         wasAlreadyComplete.current = true
+        if (!userRequestedEdit.current) {
+          setMode("summary")
+        }
       }
     })
   }, [])
@@ -275,10 +288,13 @@ export function FounderProfileForm() {
     saveFounderProfile(finalForm as unknown as Record<string, unknown>)
     await saveFounderProfileToDb(finalForm as FounderProfileData)
 
+    setSaving(false)
+
     if (wasAlreadyComplete.current) {
-      // Returning member editing an already-complete profile — return home,
-      // don't replay the onboarding on-ramp.
-      router.push("/")
+      // Editing an already-complete profile — stay on this page and show
+      // the freshly-updated summary instead of redirecting away.
+      setMode("summary")
+      userRequestedEdit.current = false
       return
     }
 

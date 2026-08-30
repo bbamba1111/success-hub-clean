@@ -16,14 +16,38 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
-import { ArrowRight, Check, ChevronRight, Plus, X } from "lucide-react"
-import { saveBusinessContext, getBusinessContext } from "@/lib/business-context/business-context-store"
+import { ArrowRight, Check, ChevronLeft, ChevronRight, Plus, X } from "lucide-react"
+import { saveBusinessContext, getBusinessContext, hasCompletedBusinessContext } from "@/lib/business-context/business-context-store"
 import { saveFounderLearning } from "@/lib/founder-learning/founder-learning-store"
 import { saveBusinessContextToDb, getBusinessContextFromDb } from "@/utils/business-context-storage"
 import {
   COMMUNICATION_LEVELS,
   LEARNING_TOPIC_OPTIONS,
 } from "@/lib/founder-learning/types"
+import {
+  STAGE_OPTIONS,
+  MODEL_OPTIONS,
+  INDUSTRY_OPTIONS,
+  ROLE_OPTIONS,
+  TEAM_OPTIONS,
+  REVENUE_OPTIONS,
+  GOAL_OPTIONS,
+  CHALLENGE_OPTIONS,
+  OPERATING_ENV_OPTIONS,
+  SUPPORT_NETWORK_OPTIONS,
+  OPPORTUNITY_OPTIONS,
+  CAPITAL_OPTIONS,
+  GROWTH_OPTIONS,
+  EXIT_OPTIONS,
+  CREDIT_OPTIONS,
+  BANKING_OPTIONS,
+  FIN_FOUNDATION_OPTIONS,
+  WEALTH_OPTIONS,
+  DELIVERY_MODEL_OPTIONS,
+  CLIENT_CONNECTION_EXPERIENCE_OPTIONS,
+  YES_NO_OPTIONS,
+} from "@/lib/business-context/options"
+import { BusinessContextSummary } from "@/components/business-context/business-context-summary"
 import type {
   BusinessBankingOption,
   BusinessCreditOption,
@@ -47,258 +71,6 @@ import type {
   TeamSizeOption,
   WealthBuildingOption,
 } from "@/lib/business-context/types"
-
-// ─── Option data ─────────────────────────────────────────────────────────────
-
-const STAGE_OPTIONS: { value: BusinessStageOption; label: string; description: string }[] = [
-  { value: "idea", label: "Idea Stage™", description: "I have an idea but have not launched yet." },
-  { value: "pre-revenue", label: "Pre-Revenue™", description: "I have launched but have not yet made a sale." },
-  { value: "early-revenue", label: "Early Revenue™", description: "I am making sales but still building consistency." },
-  { value: "growth", label: "Growth Stage™", description: "I have consistent revenue and am actively growing." },
-  { value: "scaling", label: "Scaling™", description: "I am systematizing and scaling beyond my own capacity." },
-  { value: "established", label: "Established™", description: "I have a mature, profitable business." },
-  { value: "pivoting", label: "Pivoting™", description: "I am transitioning to a new model, market, or offer." },
-  { value: "multi-business", label: "Multi-Business™", description: "I own or operate more than one business." },
-  { value: "acquisition", label: "Acquisition Stage™", description: "I am pursuing or preparing for acquisition." },
-]
-
-const MODEL_OPTIONS: { value: BusinessModelOption; label: string }[] = [
-  { value: "service", label: "Service Business" },
-  { value: "digital-products", label: "Digital Products" },
-  { value: "physical-products", label: "Physical Products" },
-  { value: "saas", label: "SaaS / Software" },
-  { value: "agency", label: "Agency" },
-  { value: "consulting", label: "Consulting" },
-  { value: "coaching", label: "Coaching / Training" },
-  { value: "membership", label: "Membership / Community" },
-  { value: "marketplace", label: "Marketplace" },
-  { value: "franchise", label: "Franchise" },
-  { value: "real-estate", label: "Real Estate" },
-  { value: "other", label: "Other" },
-]
-
-const INDUSTRY_OPTIONS: string[] = [
-  "Health & Wellness",
-  "Beauty & Personal Care",
-  "Fashion & Apparel",
-  "Food & Beverage",
-  "Education & Training",
-  "Finance & Wealth",
-  "Real Estate",
-  "Technology",
-  "Marketing & Creative",
-  "Legal & Compliance",
-  "Media & Entertainment",
-  "Retail & E-Commerce",
-  "Nonprofit & Social Impact",
-  "Travel & Hospitality",
-  "Professional Services",
-  "Home & Lifestyle",
-  "Other",
-]
-
-const ROLE_OPTIONS: { value: FounderRoleOption; label: string; description: string }[] = [
-  { value: "solopreneur", label: "Solopreneur™", description: "I do everything myself — no team yet." },
-  { value: "ceo-small-team", label: "CEO — Small Team™", description: "I lead a team of 1–5 people." },
-  { value: "ceo-growing-team", label: "CEO — Growing Team™", description: "I lead a team of 6 or more people." },
-  { value: "co-founder", label: "Co-Founder™", description: "I share leadership with one or more co-founders." },
-  { value: "fractional", label: "Fractional Executive™", description: "I serve multiple businesses in a fractional capacity." },
-  { value: "operator", label: "Operator™", description: "I run the business day-to-day but am not the owner." },
-]
-
-const TEAM_OPTIONS: { value: TeamSizeOption; label: string }[] = [
-  { value: "solo", label: "Just me" },
-  { value: "1-3", label: "1–3 people" },
-  { value: "4-10", label: "4–10 people" },
-  { value: "11-25", label: "11–25 people" },
-  { value: "26-50", label: "26–50 people" },
-  { value: "50-plus", label: "50+ people" },
-]
-
-const REVENUE_OPTIONS: { value: RevenueStagOption; label: string }[] = [
-  { value: "pre-revenue", label: "Pre-Revenue (no sales yet)" },
-  { value: "under-50k", label: "Under $50K / year" },
-  { value: "50k-100k", label: "$50K – $100K / year" },
-  { value: "100k-250k", label: "$100K – $250K / year" },
-  { value: "250k-500k", label: "$250K – $500K / year" },
-  { value: "500k-1m", label: "$500K – $1M / year" },
-  { value: "1m-5m", label: "$1M – $5M / year" },
-  { value: "5m-plus", label: "$5M+ / year" },
-]
-
-const GOAL_OPTIONS: { value: GoalOption; label: string }[] = [
-  { value: "replace-income", label: "Replace my full-time income" },
-  { value: "scale-revenue", label: "Scale to my next revenue milestone" },
-  { value: "build-team", label: "Build and lead a high-performing team" },
-  { value: "launch-product", label: "Launch a new product or offer" },
-  { value: "exit", label: "Build toward an exit" },
-  { value: "raise-capital", label: "Raise capital or funding" },
-  { value: "build-brand", label: "Build a recognized brand" },
-  { value: "achieve-time-freedom", label: "Achieve Time Freedom™" },
-  { value: "build-passive-income", label: "Build passive or recurring income" },
-  { value: "impact", label: "Create meaningful impact" },
-]
-
-const CHALLENGE_OPTIONS: { value: ChallengeOption; label: string }[] = [
-  { value: "cash-flow", label: "Cash flow and financial consistency" },
-  { value: "lead-generation", label: "Generating consistent leads and clients" },
-  { value: "operations", label: "Systemizing and streamlining operations" },
-  { value: "team", label: "Building and managing a team" },
-  { value: "time", label: "Time — too much to do, not enough hours" },
-  { value: "mindset", label: "Mindset and staying motivated" },
-  { value: "pricing", label: "Pricing my products or services" },
-  { value: "marketing", label: "Marketing and visibility" },
-  { value: "tech-systems", label: "Technology and software systems" },
-  { value: "capital", label: "Access to capital or funding" },
-  { value: "clarity", label: "Clarity on direction and strategy" },
-]
-
-const OPERATING_ENV_OPTIONS: { value: OperatingEnvironmentOption; label: string }[] = [
-  { value: "home-office", label: "Home Office" },
-  { value: "dedicated-office", label: "Dedicated Office" },
-  { value: "coworking", label: "Coworking Space" },
-  { value: "retail-storefront", label: "Retail / Storefront" },
-  { value: "studio", label: "Studio" },
-  { value: "client-locations", label: "Client Locations" },
-  { value: "multiple-locations", label: "Multiple Locations" },
-  { value: "fully-remote-team", label: "Fully Remote Team" },
-  { value: "traveling-nomad", label: "Traveling / Digital Nomad" },
-  { value: "other", label: "Other" },
-]
-
-const SUPPORT_NETWORK_OPTIONS: { value: SupportNetworkOption; label: string }[] = [
-  { value: "just-me", label: "Just Me" },
-  { value: "spouse-partner", label: "Spouse / Partner" },
-  { value: "family-members", label: "Family Members" },
-  { value: "virtual-assistant", label: "Virtual Assistant" },
-  { value: "contractors-freelancers", label: "Contractors / Freelancers" },
-  { value: "employees", label: "Employees" },
-  { value: "fractional-executives", label: "Fractional Executives" },
-  { value: "coach", label: "Coach" },
-  { value: "mentor", label: "Mentor" },
-  { value: "mastermind-community", label: "Mastermind Community" },
-  { value: "board-of-advisors", label: "Board of Advisors" },
-  { value: "investors", label: "Investors" },
-  { value: "other", label: "Other" },
-]
-
-const OPPORTUNITY_OPTIONS: { value: OpportunityOption; label: string }[] = [
-  { value: "clarifying-idea", label: "Clarifying My Business Idea" },
-  { value: "finding-ideal-customer", label: "Finding My Ideal Customer" },
-  { value: "creating-offer", label: "Creating My Offer" },
-  { value: "increasing-sales", label: "Increasing Sales" },
-  { value: "marketing", label: "Marketing" },
-  { value: "pricing", label: "Pricing" },
-  { value: "recurring-revenue", label: "Building Recurring Revenue" },
-  { value: "hiring", label: "Hiring" },
-  { value: "delegation", label: "Delegation" },
-  { value: "ai-implementation", label: "AI Implementation" },
-  { value: "systems-sops", label: "Systems & SOPs" },
-  { value: "leadership", label: "Leadership" },
-  { value: "business-credit", label: "Business Credit" },
-  { value: "raising-capital", label: "Raising Capital" },
-  { value: "strategic-partnerships", label: "Strategic Partnerships" },
-  { value: "scaling", label: "Scaling" },
-  { value: "wealth-building", label: "Wealth Building" },
-  { value: "work-life-harmony", label: "Work-Life Harmony™" },
-  { value: "time-freedom", label: "Time Freedom™" },
-  { value: "other", label: "Other" },
-]
-
-const CAPITAL_OPTIONS: { value: CapitalStrategyOption; label: string; isLearn?: boolean }[] = [
-  { value: "bootstrapped", label: "Bootstrapped — self-funded" },
-  { value: "friends-family", label: "Friends & family" },
-  { value: "angel", label: "Angel investors" },
-  { value: "venture", label: "Venture capital" },
-  { value: "sba-loan", label: "SBA loan or bank financing" },
-  { value: "grants", label: "Grants" },
-  { value: "revenue-based", label: "Revenue-based financing" },
-  { value: "crowdfunding", label: "Crowdfunding" },
-  { value: "learn", label: "Learn Before I Launch™ — Capital Strategy", isLearn: true },
-]
-
-const GROWTH_OPTIONS: { value: GrowthVisionOption; label: string; description: string }[] = [
-  { value: "lifestyle-business", label: "Lifestyle Business™", description: "I want a profitable business that funds my ideal life." },
-  { value: "scale-then-exit", label: "Scale, Then Exit™", description: "I want to build, scale, and sell." },
-  { value: "build-to-keep", label: "Build to Keep™", description: "I want to build a lasting company I own long-term." },
-  { value: "franchise", label: "Franchise™", description: "I want to franchise or license my model." },
-  { value: "ipo", label: "IPO™", description: "I want to take my company public." },
-  { value: "social-enterprise", label: "Social Enterprise™", description: "I want to build a business that creates social impact." },
-  { value: "undecided", label: "Still Deciding™", description: "I have not decided yet." },
-]
-
-const EXIT_OPTIONS: { value: ExitVisionOption; label: string }[] = [
-  { value: "no-exit", label: "I plan to run this business indefinitely" },
-  { value: "acquisition", label: "Acquisition by a larger company" },
-  { value: "ipo", label: "Initial Public Offering (IPO)" },
-  { value: "management-buyout", label: "Management or employee buyout" },
-  { value: "family-succession", label: "Family succession" },
-  { value: "wind-down", label: "Wind down when I retire" },
-  { value: "undecided", label: "I have not decided yet" },
-]
-
-const CREDIT_OPTIONS: { value: BusinessCreditOption; label: string; isLearn?: boolean }[] = [
-  { value: "established", label: "Yes — I have established business credit" },
-  { value: "building", label: "I am actively building my business credit" },
-  { value: "no-credit", label: "No — I have not built business credit yet" },
-  { value: "not-sure", label: "I am not sure what business credit is" },
-  { value: "learn", label: "Learn Before I Launch™ — Business Credit", isLearn: true },
-]
-
-const BANKING_OPTIONS: { value: BusinessBankingOption; label: string; isLearn?: boolean }[] = [
-  { value: "dedicated-business-account", label: "Yes — I have a dedicated business bank account" },
-  { value: "personal-account", label: "I use a personal account for business" },
-  { value: "multiple-accounts", label: "I have multiple business accounts" },
-  { value: "not-sure", label: "I am not sure I need a separate account" },
-  { value: "learn", label: "Learn Before I Launch™ — Business Banking", isLearn: true },
-]
-
-const FIN_FOUNDATION_OPTIONS: { value: FinancialFoundationOption; label: string }[] = [
-  { value: "business-entity", label: "Registered business entity (LLC, Corp, etc.)" },
-  { value: "ein", label: "EIN (Employer Identification Number)" },
-  { value: "business-bank-account", label: "Dedicated business bank account" },
-  { value: "bookkeeping", label: "Bookkeeping system in place" },
-  { value: "business-credit-card", label: "Business credit card" },
-  { value: "payroll", label: "Payroll system" },
-  { value: "retirement-plan", label: "Business retirement plan (SEP, SIMPLE, etc.)" },
-  { value: "insurance", label: "Business insurance" },
-  { value: "none", label: "None of the above — I am building this" },
-]
-
-const WEALTH_OPTIONS: { value: WealthBuildingOption; label: string; isLearn?: boolean }[] = [
-  { value: "real-estate", label: "Real estate" },
-  { value: "stocks-etfs", label: "Stocks & ETFs" },
-  { value: "business-equity", label: "Business equity & ownership" },
-  { value: "retirement-accounts", label: "Retirement accounts (401k, IRA, etc.)" },
-  { value: "angel-investing", label: "Angel investing" },
-  { value: "royalties", label: "Royalties & licensing" },
-  { value: "crypto", label: "Cryptocurrency & digital assets" },
-  { value: "learn", label: "Learn Before I Launch™ — Wealth Building", isLearn: true },
-]
-
-const DELIVERY_MODEL_OPTIONS: { value: DeliveryModelOption; label: string }[] = [
-  { value: "one-to-one", label: "One-to-one (individual clients)" },
-  { value: "one-to-many-group", label: "One-to-many / group" },
-  { value: "self-serve-digital", label: "Self-serve digital (course, download, software)" },
-  { value: "productized-service", label: "Productized service (fixed-scope deliverable)" },
-  { value: "physical-fulfillment", label: "Physical product fulfillment" },
-  { value: "hybrid", label: "Hybrid of multiple models" },
-  { value: "other", label: "Other" },
-]
-
-const CLIENT_CONNECTION_EXPERIENCE_OPTIONS: { value: ClientConnectionExperienceStatus; label: string }[] = [
-  { value: "challenge", label: "Yes — I run a Challenge" },
-  { value: "webinar", label: "Yes — I run a Webinar" },
-  { value: "workshop", label: "Yes — I run a Workshop" },
-  { value: "immersion", label: "Yes — I run an Immersion" },
-  { value: "mastermind", label: "Yes — I run a Mastermind" },
-  { value: "none", label: "No — I don't currently run one" },
-]
-
-const YES_NO_OPTIONS: { value: "yes" | "no"; label: string }[] = [
-  { value: "yes", label: "Yes" },
-  { value: "no", label: "Not yet" },
-]
 
 // ─── Shared UI sub-components ─────────────────────────────────────────────────
 
@@ -505,7 +277,26 @@ export function BusinessContextProfile({
   const cardRef = useRef<HTMLDivElement | null>(null)
   const hasAdvancedRef = useRef(false)
 
+  // /business-context is reached both for first-time completion and by a
+  // returning member revisiting an already-complete profile (via My
+  // Harmony™, My Blueprint™, or the Onboarding Progress™ banner). A
+  // completed profile opens straight to a read-only summary instead of the
+  // raw 35-question form; "Edit" (or jumping into a specific section) drops
+  // back into the wizard. `wasAlreadyComplete` mirrors the pattern in
+  // founder-profile-form.tsx / business-context-onboarding-flow.tsx.
+  const wasAlreadyComplete = useRef(hasCompletedBusinessContext())
+  const userRequestedEdit = useRef(false)
+  const [mode, setMode] = useState<"summary" | "wizard">(() =>
+    wasAlreadyComplete.current ? "summary" : "wizard",
+  )
+
   const [step, setStep] = useState(0)
+  // Highest step the member has actually reached with a saved answer — lets
+  // Forward re-advance after using Back without ever skipping ahead of a
+  // question that hasn't been answered yet on a first-time pass through the
+  // wizard. Once the whole profile is complete this is raised to the last
+  // step so summary → Edit can freely page anywhere.
+  const [maxStepReached, setMaxStepReached] = useState(0)
 
   // Business Identity™
   const [businessName, setBusinessName] = useState("")
@@ -574,6 +365,13 @@ export function BusinessContextProfile({
     }, 60)
   }, [step])
 
+  // Track the furthest step reached so Back/Forward can freely re-traverse
+  // ground already covered without ever exposing a step ahead of what's
+  // actually been answered on a first-time pass.
+  useEffect(() => {
+    setMaxStepReached((m) => Math.max(m, step))
+  }, [step])
+
   // Reconcile the local cache with the database — the account's canonical
   // Business Context Profile™ — so a founder editing this on a new device or
   // after clearing local storage picks up right where they left off.
@@ -587,6 +385,17 @@ export function BusinessContextProfile({
       // captured synchronously on mount from the (possibly empty) local
       // cache alone — e.g. a returning member on a new device/session.
       onHydrated?.(Boolean(record.completedAt))
+
+      // Same reconciliation for this component's own "show summary instead
+      // of the form" decision — a fresh session's local cache may be empty
+      // even though the database already has a completed profile.
+      if (record.completedAt) {
+        wasAlreadyComplete.current = true
+        if (!userRequestedEdit.current) {
+          setMode("summary")
+          setMaxStepReached(TOTAL_STEPS - 1)
+        }
+      }
 
       const cached = getBusinessContext()
       // Local cache already reflects the DB (or is newer); don't clobber
@@ -715,6 +524,16 @@ export function BusinessContextProfile({
       completedLessons: [],
     })
 
+    if (wasAlreadyComplete.current) {
+      // Editing an already-complete profile — including via a section jump
+      // from the summary below — stays on this page and shows the
+      // freshly-updated summary instead of redirecting away.
+      setMode("summary")
+      userRequestedEdit.current = false
+      return
+    }
+
+    // First-time completion.
     if (onDone) {
       onDone()
     } else {
@@ -722,11 +541,103 @@ export function BusinessContextProfile({
     }
   }
 
+  const jumpToStep = useCallback((targetStep: number) => {
+    userRequestedEdit.current = true
+    setMode("wizard")
+    setMaxStepReached((m) => Math.max(m, targetStep))
+    hasAdvancedRef.current = true
+    setStep(targetStep)
+  }, [])
+
+  if (mode === "summary") {
+    return (
+      <div className="w-full max-w-3xl mx-auto px-4 py-10">
+        <BusinessContextSummary
+          data={{
+            businessName,
+            businessStage,
+            businessModel,
+            industry,
+            founderRole,
+            teamSize,
+            revenueStage,
+            biggestGoals,
+            biggestChallenges,
+            operatingEnvironment,
+            supportNetwork,
+            biggestOpportunities,
+            vision,
+            biggestGoalText,
+            biggestChallengeText,
+            successVision,
+            capitalStrategy,
+            growthVision,
+            exitVision,
+            businessCredit,
+            businessBanking,
+            financialFoundation,
+            wealthBuilding,
+            commLevel,
+            learningInterests,
+            offerStatement,
+            idealClientDefinition,
+            acquisitionChannel,
+            conversionMechanism,
+            hasOnboarding,
+            deliveryModel,
+            hasProofTestimonials,
+            referralMechanism,
+            currentAiToolUse,
+            clientConnectionExperienceStatus,
+          }}
+          onEditSection={jumpToStep}
+        />
+      </div>
+    )
+  }
+
   const completedSteps = step
 
   return (
     <div className="w-full max-w-3xl mx-auto px-4 py-10" ref={cardRef}>
       <ProgressBar step={completedSteps} total={TOTAL_STEPS} />
+
+      {/* ── Back / Forward — present on every step so a member can revisit
+           an earlier answer or return to where they left off. Forward only
+           ever reveals a step already reached, so a first-time pass through
+           the wizard can never be skipped ahead. ─────────────────────── */}
+      <div className="mb-4 flex items-center justify-between">
+        {step > 0 ? (
+          <button
+            type="button"
+            onClick={() => {
+              hasAdvancedRef.current = true
+              setStep((s) => Math.max(0, s - 1))
+            }}
+            className="inline-flex items-center gap-1.5 font-montserrat text-sm font-medium text-[#6B5860] transition-colors hover:text-[#3A2E33]"
+          >
+            <ChevronLeft className="h-4 w-4" aria-hidden />
+            Back
+          </button>
+        ) : (
+          <span />
+        )}
+        {step < maxStepReached ? (
+          <button
+            type="button"
+            onClick={() => {
+              hasAdvancedRef.current = true
+              setStep((s) => Math.min(maxStepReached, s + 1))
+            }}
+            className="inline-flex items-center gap-1.5 font-montserrat text-sm font-medium text-[#5B835F] transition-colors hover:text-[#4c6f50]"
+          >
+            Forward
+            <ChevronRight className="h-4 w-4" aria-hidden />
+          </button>
+        ) : (
+          <span />
+        )}
+      </div>
 
       {/* ── Step 0: Business Name ─────────────────────────────────────────── */}
       {step === 0 && (
@@ -1111,7 +1022,7 @@ export function BusinessContextProfile({
       {/* ── Step 22: Wealth Building™ ─────────────────────────────────────── */}
       {step === 22 && (
         <StepCard>
-          <StepLabel label="Financial Architecture™" step={230} total={TOTAL_STEPS} />
+          <StepLabel label="Financial Architecture™" step={23} total={TOTAL_STEPS} />
           <StepQuestion>Where are you currently building or interested in building wealth?</StepQuestion>
           <StepHint>Select all that apply.</StepHint>
           <MultiChoice
