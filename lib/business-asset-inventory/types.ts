@@ -39,7 +39,15 @@ export type BusinessAssetInstallationStatus =
   /** Existed once, but is insufficient for the founder's current Business
    *  Destination™ — e.g. an offer document that predates a repositioning. */
   | "needs-update"
+  /** Founder intends to continue, but a dependency, decision, or other
+   *  condition is preventing completion. */
   | "blocked"
+  /** Founder has stopped pursuing this asset, whether intentionally or
+   *  unintentionally — distinct from "blocked" (still intended) and from
+   *  simple inactivity (which is not, on its own, evidence of abandonment).
+   *  This is an explicit, recorded state — never inferred solely from the
+   *  passage of time. */
+  | "abandoned"
 
 /**
  * Where an installation-status claim comes from. Multiple evidence entries
