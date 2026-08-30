@@ -9,7 +9,7 @@
  * empty sections) are simply omitted.
  */
 
-import { Pencil, User } from "lucide-react"
+import { ChevronRight, Pencil, User } from "lucide-react"
 
 interface Child {
   name: string
@@ -90,9 +90,19 @@ function SummarySection({
 export function FounderProfileSummary({
   data,
   onEdit,
+  onContinue,
 }: {
   data: FounderProfileSummaryData
   onEdit: () => void
+  /**
+   * Advances to the next required onboarding step (Business Context™).
+   * Landing back on this page already-complete — via Back navigation, the
+   * Onboarding Progress™ banner, or a direct visit — only ever offered
+   * "Edit" before this; there was no way to move forward again without
+   * re-editing and re-saving the whole form. Omit this prop for any
+   * non-onboarding usage of this summary where "next step" doesn't apply.
+   */
+  onContinue?: () => void
 }) {
   const title = data.professionalTitle === "Other" ? data.customTitle : data.professionalTitle
   const location = [data.city, data.stateProvince, data.country].filter(Boolean).join(", ")
@@ -154,14 +164,26 @@ export function FounderProfileSummary({
                 </p>
               </div>
             </div>
-            <button
-              type="button"
-              onClick={onEdit}
-              className="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-brand-green px-5 py-2.5 font-sans text-sm font-bold text-white shadow-sm hover:bg-brand-green/90 transition-colors"
-            >
-              <Pencil className="h-3.5 w-3.5" aria-hidden />
-              Edit Founder Profile™
-            </button>
+            <div className="flex shrink-0 items-center gap-2.5">
+              <button
+                type="button"
+                onClick={onEdit}
+                className="inline-flex items-center gap-1.5 rounded-xl border border-brand-blush bg-white px-4 py-2.5 font-sans text-sm font-bold text-brand-ink shadow-sm hover:border-brand-green/40 transition-colors"
+              >
+                <Pencil className="h-3.5 w-3.5" aria-hidden />
+                Edit
+              </button>
+              {onContinue && (
+                <button
+                  type="button"
+                  onClick={onContinue}
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-brand-green px-5 py-2.5 font-sans text-sm font-bold text-white shadow-sm hover:bg-brand-green/90 transition-colors"
+                >
+                  Continue to Business Context™
+                  <ChevronRight className="h-3.5 w-3.5" aria-hidden />
+                </button>
+              )}
+            </div>
           </div>
 
           {!hasAnyContent && (

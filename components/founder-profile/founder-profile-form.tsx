@@ -314,6 +314,7 @@ export function FounderProfileForm() {
               userRequestedEdit.current = true
               setMode("form")
             }}
+            onContinue={() => router.push("/business-context")}
           />
         </div>
       </div>

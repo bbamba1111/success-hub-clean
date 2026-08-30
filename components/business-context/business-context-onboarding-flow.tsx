@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useRef } from "react"
 import { BusinessContextProfile } from "@/components/business-context/business-context-profile"
 import { hasCompletedBusinessContext } from "@/lib/business-context/business-context-store"
+import { hasCompletedEgaOnboardingSignal } from "@/lib/ega/ega-signal-store"
 
 /**
  * Wires the required onboarding routing on top of the reusable
@@ -37,7 +38,15 @@ export function BusinessContextOnboardingFlow() {
   const returnTo = searchParams.get("from") || "/my-harmony"
 
   function handleDone() {
-    router.push(wasAlreadyComplete.current ? returnTo : "/entrepreneur-gap-assessment?onboarding=1")
+    // A completed Business Context™ alone doesn't mean onboarding itself is
+    // done — a founder who goes Back to Founder Profile™ mid-onboarding and
+    // then forward again lands back here with `wasAlreadyComplete` true even
+    // though they've never reached EGA yet. Only treat this as a genuine
+    // post-onboarding revisit (→ returnTo) once EGA's own signal capture is
+    // ALSO on record; otherwise always keep moving forward through the
+    // required sequence.
+    const onboardingFullyComplete = wasAlreadyComplete.current && hasCompletedEgaOnboardingSignal()
+    router.push(onboardingFullyComplete ? returnTo : "/entrepreneur-gap-assessment?onboarding=1")
   }
 
   function handleHydrated(completedInDb: boolean) {

@@ -10,7 +10,7 @@
  * member can then page freely through every other step with Back/Forward.
  */
 
-import { Pencil } from "lucide-react"
+import { ChevronRight, Pencil } from "lucide-react"
 import {
   STAGE_OPTIONS,
   MODEL_OPTIONS,
@@ -140,9 +140,22 @@ function SummarySection({
 export function BusinessContextSummary({
   data,
   onEditSection,
+  onContinue,
+  continueLabel = "Continue",
 }: {
   data: BusinessContextSummaryData
   onEditSection: (step: number) => void
+  /**
+   * Advances to the next required onboarding step. Landing back on this
+   * page already-complete — via Back navigation, the Onboarding
+   * Progress™ banner, or a direct visit — only ever offered per-section
+   * "Edit" before this; there was no way to move forward again without
+   * re-editing and re-saving the whole wizard. Omit this prop for any
+   * non-onboarding usage of this summary (e.g. the Operating Planner™
+   * modal) where "next step" doesn't apply.
+   */
+  onContinue?: () => void
+  continueLabel?: string
 }) {
   const commLabel = data.commLevel
     ? COMMUNICATION_LEVELS.find((l) => l.id === data.commLevel)?.label ?? data.commLevel
@@ -157,14 +170,26 @@ export function BusinessContextSummary({
           </span>
           <p className="mt-1 font-playfair text-xl font-medium text-[#3A2E33]">Complete</p>
         </div>
-        <button
-          type="button"
-          onClick={() => onEditSection(0)}
-          className="inline-flex items-center gap-1.5 rounded-full bg-[#5B835F] px-5 py-2.5 font-montserrat text-sm font-bold text-white transition-colors hover:bg-[#4c6f50]"
-        >
-          <Pencil className="h-3.5 w-3.5" aria-hidden />
-          Edit Full Profile
-        </button>
+        <div className="flex items-center gap-2.5">
+          <button
+            type="button"
+            onClick={() => onEditSection(0)}
+            className="inline-flex items-center gap-1.5 rounded-full border border-[#E8E0D5] bg-white px-4 py-2.5 font-montserrat text-sm font-bold text-[#3A2E33] transition-colors hover:border-[#5B835F]/40"
+          >
+            <Pencil className="h-3.5 w-3.5" aria-hidden />
+            Edit Full Profile
+          </button>
+          {onContinue && (
+            <button
+              type="button"
+              onClick={onContinue}
+              className="inline-flex items-center gap-1.5 rounded-full bg-[#5B835F] px-5 py-2.5 font-montserrat text-sm font-bold text-white transition-colors hover:bg-[#4c6f50]"
+            >
+              {continueLabel}
+              <ChevronRight className="h-3.5 w-3.5" aria-hidden />
+            </button>
+          )}
+        </div>
       </div>
 
       <SummarySection title="Business Identity™" onEdit={() => onEditSection(0)}>

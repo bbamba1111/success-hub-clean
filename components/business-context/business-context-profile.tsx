@@ -20,6 +20,7 @@ import { ArrowRight, Check, ChevronLeft, ChevronRight, Plus, X } from "lucide-re
 import { saveBusinessContext, getBusinessContext, hasCompletedBusinessContext } from "@/lib/business-context/business-context-store"
 import { saveFounderLearning } from "@/lib/founder-learning/founder-learning-store"
 import { saveBusinessContextToDb, getBusinessContextFromDb } from "@/utils/business-context-storage"
+import { hasCompletedEgaOnboardingSignal } from "@/lib/ega/ega-signal-store"
 import {
   COMMUNICATION_LEVELS,
   LEARNING_TOPIC_OPTIONS,
@@ -549,10 +550,30 @@ export function BusinessContextProfile({
     setStep(targetStep)
   }, [])
 
+  // Landing on an already-complete profile only ever offered per-section
+  // "Edit" — there was no way to move forward again (e.g. to the required
+  // EGA Screen 1 onboarding step) without re-editing and re-saving the
+  // whole wizard. This mirrors handleFinish's "already complete" branch,
+  // except it routes to whatever the founder actually still needs rather
+  // than assuming nothing does: EGA's own signal capture is checked
+  // directly (not `onDone`'s caller-side "was already complete" flag,
+  // which only reflects THIS profile) so Back-navigating here mid-onboarding
+  // and then Continuing always keeps moving forward instead of stalling.
+  const handleContinue = onDone
+    ? () => {
+        if (!hasCompletedEgaOnboardingSignal()) {
+          router.push("/entrepreneur-gap-assessment?onboarding=1")
+          return
+        }
+        onDone()
+      }
+    : undefined
+
   if (mode === "summary") {
     return (
       <div className="w-full max-w-3xl mx-auto px-4 py-10">
         <BusinessContextSummary
+          onContinue={handleContinue}
           data={{
             businessName,
             businessStage,
