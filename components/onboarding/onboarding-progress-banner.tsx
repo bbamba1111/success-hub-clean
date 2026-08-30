@@ -1,4 +1,5 @@
-import { Check } from "lucide-react"
+import Link from "next/link"
+import { Check, ChevronLeft, ChevronRight } from "lucide-react"
 import type { OnboardingProgress } from "@/lib/onboarding/onboarding-progress"
 
 /**
@@ -11,17 +12,28 @@ import type { OnboardingProgress } from "@/lib/onboarding/onboarding-progress"
  * cleared cache, or simply moving to the next required step), gets an
  * explicit "here's what's done, here's what's outstanding" confirmation
  * instead of silently re-answering questions with no context.
+ *
+ * Every completed step is a link back to its own summary/edit view (see
+ * founder-profile-form.tsx, business-context-profile.tsx, and
+ * ega-page-client.tsx), and a Back/Next row below lets a member move
+ * between the three required steps directly, without detouring through the
+ * dashboard.
  */
 
 interface OnboardingStepDef {
   key: keyof OnboardingProgress
   label: string
+  href: string
 }
 
 const STEPS: OnboardingStepDef[] = [
-  { key: "founderProfileComplete", label: "Founder Profile™" },
-  { key: "businessContextComplete", label: "Business Context™" },
-  { key: "egaComplete", label: "What's Getting In Your Way™" },
+  { key: "founderProfileComplete", label: "Founder Profile™", href: "/founder-profile" },
+  { key: "businessContextComplete", label: "Business Context™", href: "/business-context" },
+  {
+    key: "egaComplete",
+    label: "What's Getting In Your Way™",
+    href: "/entrepreneur-gap-assessment?onboarding=1",
+  },
 ]
 
 export function OnboardingProgressBanner({
@@ -33,6 +45,15 @@ export function OnboardingProgressBanner({
   currentStep: keyof OnboardingProgress
 }) {
   const completedCount = STEPS.filter((s) => progress[s.key]).length
+  const currentIndex = STEPS.findIndex((s) => s.key === currentStep)
+  const prevStep = currentIndex > 0 ? STEPS[currentIndex - 1] : null
+  // "Next" only makes sense to offer directly when the step it points to is
+  // already complete — otherwise the member hasn't earned it yet and should
+  // finish the current step's own Continue button instead.
+  const nextStep =
+    currentIndex >= 0 && currentIndex < STEPS.length - 1 && progress[STEPS[currentIndex + 1].key]
+      ? STEPS[currentIndex + 1]
+      : null
 
   return (
     <div className="mx-auto w-full max-w-3xl px-4 pt-8">
@@ -44,8 +65,10 @@ export function OnboardingProgressBanner({
           {STEPS.map((step, index) => {
             const isDone = progress[step.key]
             const isCurrent = step.key === currentStep
-            return (
-              <li key={step.key} className="flex items-center gap-2.5 sm:flex-1">
+            const isClickable = isDone && !isCurrent
+
+            const stepBody = (
+              <>
                 <span
                   className={[
                     "flex h-6 w-6 shrink-0 items-center justify-center rounded-full font-sans text-xs font-semibold",
@@ -73,6 +96,21 @@ export function OnboardingProgressBanner({
                   {isDone && <span className="ml-1.5 text-xs text-brand-green">Complete</span>}
                   {!isDone && isCurrent && <span className="ml-1.5 text-xs text-brand-coral">Up next</span>}
                 </span>
+              </>
+            )
+
+            return (
+              <li key={step.key} className="flex items-center gap-2.5 sm:flex-1">
+                {isClickable ? (
+                  <Link
+                    href={step.href}
+                    className="flex items-center gap-2.5 rounded-md transition-opacity hover:opacity-70"
+                  >
+                    {stepBody}
+                  </Link>
+                ) : (
+                  <span className="flex items-center gap-2.5">{stepBody}</span>
+                )}
                 {index < STEPS.length - 1 && (
                   <span className="hidden h-px flex-1 bg-border sm:block" aria-hidden />
                 )}
@@ -80,6 +118,32 @@ export function OnboardingProgressBanner({
             )
           })}
         </ol>
+        {(prevStep || nextStep) && (
+          <div className="mt-4 flex items-center justify-between border-t border-border pt-3.5">
+            {prevStep ? (
+              <Link
+                href={prevStep.href}
+                className="inline-flex items-center gap-1.5 font-sans text-sm font-medium text-muted-foreground transition-colors hover:text-brand-ink"
+              >
+                <ChevronLeft className="h-4 w-4" aria-hidden />
+                {prevStep.label}
+              </Link>
+            ) : (
+              <span />
+            )}
+            {nextStep ? (
+              <Link
+                href={nextStep.href}
+                className="inline-flex items-center gap-1.5 font-sans text-sm font-medium text-brand-green transition-colors hover:text-brand-green-dark"
+              >
+                {nextStep.label}
+                <ChevronRight className="h-4 w-4" aria-hidden />
+              </Link>
+            ) : (
+              <span />
+            )}
+          </div>
+        )}
       </div>
     </div>
   )

@@ -304,6 +304,22 @@ export function FounderProfileForm() {
     router.push("/business-context")
   }
 
+  if (mode === "summary") {
+    return (
+      <div className="w-full bg-[#FAF6F0] px-4 py-12 sm:px-8">
+        <div className="mx-auto max-w-3xl">
+          <FounderProfileSummary
+            data={form}
+            onEdit={() => {
+              userRequestedEdit.current = true
+              setMode("form")
+            }}
+          />
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="w-full bg-[#FAF6F0] px-4 py-12 sm:px-8">
       <div className="mx-auto max-w-3xl">

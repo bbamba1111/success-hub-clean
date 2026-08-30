@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Check, ChevronLeft, ChevronRight, Loader2 } from "lucide-react"
@@ -11,11 +11,15 @@ import {
   getObstacleLabel,
   type DirectEgaProblemStatement,
 } from "@/lib/ega/direct-ega-catalog"
-import { createEgaEntry } from "@/lib/ega/ega-storage"
-import { markEgaOnboardingSignalComplete } from "@/lib/ega/ega-signal-store"
+import { createEgaEntry, deleteEgaEntry, getEgaEntries } from "@/lib/ega/ega-storage"
+import {
+  hasCompletedEgaOnboardingSignal,
+  markEgaOnboardingSignalComplete,
+} from "@/lib/ega/ega-signal-store"
 import type { EgaObstacleType } from "@/lib/ega/types"
 import { OnboardingProgressBanner } from "@/components/onboarding/onboarding-progress-banner"
 import type { OnboardingProgress } from "@/lib/onboarding/onboarding-progress"
+import { EgaOnboardingSummary } from "@/components/ega/ega-onboarding-summary"
 
 type Screen = "recognize" | "diagnose" | "results"
 
@@ -271,6 +275,52 @@ export function EgaPageClient({
   const [saving, setSaving] = useState(false)
   const [results, setResults] = useState<CapturedGap[]>([])
 
+  // ── Onboarding summary/edit ────────────────────────────────────────────
+  // The onboarding path (Screen 1 only) is reached both for a first-time
+  // pass and by a returning founder revisiting an already-recorded EGA
+  // signal capture (via the Onboarding Progress™ banner or its Back/Next
+  // row). A completed capture shows a read-only summary of the signals on
+  // file instead of the empty picker; "Edit Selections" re-opens the picker
+  // pre-checked. `wasAlreadyComplete` mirrors the pattern used in
+  // founder-profile-form.tsx / business-context-profile.tsx.
+  const wasAlreadyComplete = useRef(hasCompletedEgaOnboardingSignal())
+  const userRequestedEdit = useRef(false)
+  const [egaMode, setEgaMode] = useState<"summary" | "form">(
+    wasAlreadyComplete.current ? "summary" : "form",
+  )
+  const [hydrating, setHydrating] = useState(onboarding)
+  // Existing `direct_ega` entries keyed by their sourceRef (problem id), so
+  // saving after "Edit Selections" can reconcile additions/removals against
+  // the database instead of re-creating duplicate rows for signals that are
+  // already on file.
+  const existingEntriesRef = useRef<Map<string, string>>(new Map())
+
+  useEffect(() => {
+    if (!onboarding) return
+    let cancelled = false
+    getEgaEntries().then((entries) => {
+      if (cancelled) return
+      const directEntries = entries.filter((e) => e.source === "direct_ega" && e.sourceRef)
+      existingEntriesRef.current = new Map(directEntries.map((e) => [e.sourceRef as string, e.id]))
+      const refs = directEntries.map((e) => e.sourceRef as string)
+      // Reconcile against the localStorage-only check above — a fresh
+      // session's local cache may be empty even though the database
+      // already has recorded signals (new device, cleared cache).
+      if (refs.length > 0) {
+        wasAlreadyComplete.current = true
+        setSelectedIds(refs)
+        if (!userRequestedEdit.current) {
+          setEgaMode("summary")
+        }
+      }
+      setHydrating(false)
+    })
+    return () => {
+      cancelled = true
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onboarding])
+
   const selectedProblems = useMemo(
     () => DIRECT_EGA_PROBLEM_STATEMENTS.filter((p) => selectedIds.includes(p.id)),
     [selectedIds],
@@ -286,15 +336,27 @@ export function EgaPageClient({
    * underlying obstacle yet. Each selected statement is saved as an EgaEntry
    * with a signal only (no gap/obstacleType); that diagnosis happens later,
    * as a targeted follow-up once EGA's signal layer determines it's relevant
-   * (or if the founder chooses to revisit it from their Blueprint). Then we
-   * mark the one-time onboarding gate complete and continue straight into
-   * the existing Cherry Blossom Thank-You™ transition — never a second
-   * onboarding process.
+   * (or if the founder chooses to revisit it from their Blueprint).
+   *
+   * First-time completion marks the one-time onboarding gate complete and
+   * continues straight into the existing Cherry Blossom Thank-You™
+   * transition. Editing an already-complete capture (via "Edit Selections")
+   * instead reconciles the picker's current selection against what's on
+   * file — creating entries for newly-checked signals, deleting entries for
+   * ones just unchecked — and returns to the summary rather than
+   * re-launching onboarding.
    */
   const handleOnboardingContinue = async () => {
     setSaving(true)
-    await Promise.all(
-      selectedProblems.map((problem) =>
+
+    const existing = existingEntriesRef.current
+    const toCreate = selectedProblems.filter((p) => !existing.has(p.id))
+    const toDeleteIds = Array.from(existing.entries())
+      .filter(([sourceRef]) => !selectedIds.includes(sourceRef))
+      .map(([, id]) => id)
+
+    await Promise.all([
+      ...toCreate.map((problem) =>
         createEgaEntry({
           source: "direct_ega",
           sourceRef: problem.id,
@@ -302,8 +364,28 @@ export function EgaPageClient({
           status: "open",
         }),
       ),
-    )
+      ...toDeleteIds.map((id) => deleteEgaEntry(id)),
+    ])
+
+    // Keep the reconciliation map in sync in case the founder edits again
+    // without a full page reload.
+    for (const problem of toCreate) existing.set(problem.id, "")
+    for (const id of toDeleteIds) {
+      existing.forEach((entryId, ref) => {
+        if (entryId === id) existing.delete(ref)
+      })
+    }
+
     markEgaOnboardingSignalComplete()
+    setSaving(false)
+
+    if (wasAlreadyComplete.current) {
+      setEgaMode("summary")
+      userRequestedEdit.current = false
+      return
+    }
+
+    wasAlreadyComplete.current = true
     router.push("/welcome/cherry-blossom/complete")
   }
 
@@ -365,7 +447,21 @@ export function EgaPageClient({
         <OnboardingProgressBanner progress={progress} currentStep="egaComplete" />
       )}
       <div className="mx-auto w-full max-w-xl">
-        {screen === "recognize" && (
+        {onboarding && hydrating && screen === "recognize" && (
+          <div className="flex items-center justify-center rounded-lg border border-border bg-card px-6 py-16 shadow-sm">
+            <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" aria-hidden />
+          </div>
+        )}
+        {onboarding && !hydrating && egaMode === "summary" && screen === "recognize" && (
+          <EgaOnboardingSummary
+            selectedIds={selectedIds}
+            onEdit={() => {
+              userRequestedEdit.current = true
+              setEgaMode("form")
+            }}
+          />
+        )}
+        {(!onboarding || (!hydrating && egaMode === "form")) && screen === "recognize" && (
           <RecognizeScreen
             selected={selectedIds}
             onToggle={toggleSelection}
