@@ -1817,6 +1817,101 @@ export const BUSINESS_ASSETS: BusinessAsset[] = [
     futureGenerator: "generate/conversion-test-canvas",
     status: "architecture",
   },
+  {
+    id: "proof-capture-playbook",
+    name: "Proof Capture Playbook™",
+    category: "Market the Business",
+    shortDescription: "A repeatable habit for turning client results into reusable proof.",
+    whatIsThis:
+      "A guided protocol for capturing a client result — a testimonial, case study, results snapshot, or Proof Library™ entry — close to the moment it happens, instead of trying to remember the details months later when you actually need proof for a sales page or pitch.",
+    whyItMatters:
+      "Real results happen in this business all the time, but if nothing captures them, they disappear. Without a repeatable habit, every sales page and pitch starts from zero. With one, proof compounds — a growing library you can pull from instead of scrambling to find an old client to ask.",
+    ownerExecutiveIds: ["marketing-brand", "growth"],
+    recommendedBusinessStages: ["growth", "scale"],
+    supportedCommunicationStyles: ALL_STYLES,
+    availableBuildModeIds: ["build-with-ai", "let-ai-do-it", "guided-diy"],
+    explanations: {
+      foundation: {
+        headline: "Don't let your wins disappear",
+        body: "Every time you help someone get a real result, let's capture it right then — in their words if you can — so you have real stories ready when you need them, instead of trying to remember later.",
+      },
+      small_business: {
+        headline: "Build your proof-capture habit",
+        body: "A simple, repeatable habit for writing down client results as they happen — turning them into testimonials, case studies, or quick stats you can actually use later.",
+      },
+      business_owner: {
+        headline: "Install your Proof Capture Playbook™",
+        body: "A repeatable protocol for capturing client outcomes at the moment they happen and converting them into testimonials, case studies, results snapshots, and a running Proof Library™ you can draw from anytime.",
+      },
+      executive: {
+        headline: "Systematize outcome capture and evidence generation",
+        body: "A standardized protocol for capturing client outcomes as they occur and converting them into structured proof formats — feeding a compounding evidence library instead of ad hoc, memory-based collection.",
+      },
+      boardroom: {
+        headline: "Codify the enterprise client-outcome evidence protocol",
+        body: "A governed protocol for capturing, disclosing, and cataloging client-outcome evidence — producing a compounding, audit-ready proof library that supports sales, capital, and market-positioning claims.",
+      },
+    },
+    instructions: {
+      foundation: [
+        "Notice when a client gets a real result — a win, a change, a milestone.",
+        "Write down what happened while it's fresh: what changed, any numbers, and their own words if you have them.",
+        "Ask the client if you can share their story — keep the ask short and easy to say yes to.",
+        "Turn what you captured into one form: a short quote, a before/after story, or a single stat.",
+        "Save it somewhere you'll actually find it again — your own running list of proof.",
+        "Next time you need proof for a sales page or a talk, pull from that list instead of starting over.",
+      ],
+      small_business: [
+        "Watch for the moment a client hits a result worth capturing.",
+        "Write it down immediately: the before/after, any numbers, their own words.",
+        "Send a short, low-friction request asking permission to share it.",
+        "Convert the raw capture into a testimonial, case study, or results snapshot.",
+        "File it into one running Proof Library instead of a scattered folder.",
+        "Reuse entries from the library whenever you're building sales or marketing material.",
+      ],
+      business_owner: [
+        "Define the trigger moment: what counts as a 'result worth capturing' in your business.",
+        "Capture the raw outcome immediately — specifics, numbers, direct client language.",
+        "Send a standardized, low-friction testimonial/permission request.",
+        "Convert each capture into one of: testimonial, case study, results snapshot.",
+        "File every output into a single running Proof Library™, indexed and findable.",
+        "Build a habit of pulling from the Proof Library first, before ever asking a client for something new.",
+      ],
+      executive: [
+        "Define the outcome-capture trigger criteria across your delivery pipeline.",
+        "Standardize immediate-capture documentation: outcome, metrics, verbatim client language.",
+        "Deploy a standardized, low-friction consent/testimonial-request protocol.",
+        "Route each capture into a defined output format: testimonial, case study, or results snapshot.",
+        "Maintain a centralized, indexed Proof Library™ as the single source of evidence.",
+        "Require sales and marketing to source proof from the library before requesting new client input.",
+      ],
+      boardroom: [
+        "Establish enterprise-wide criteria for what constitutes a capturable client outcome.",
+        "Mandate immediate, standardized outcome documentation at the point of delivery.",
+        "Govern a standardized disclosure/consent protocol for testimonial and case-study use.",
+        "Codify the output taxonomy: testimonial, case study, results snapshot, library entry.",
+        "Maintain a centralized, audit-ready Proof Library™ as enterprise evidentiary infrastructure.",
+        "Require every sales, marketing, and investor-facing claim to be sourced from the governed library.",
+      ],
+    },
+    examples: {
+      foundation:
+        "\"My client hit her income goal — I wrote down her exact words that night and asked if I could share her story. Now it's saved in my proof folder.\"",
+      small_business:
+        "\"Client closed 3 new deals using our template. Captured the number and a quote same week, turned it into a one-line results snapshot for the website.\"",
+      business_owner:
+        "\"Standardized 48-hour capture window after every milestone delivery → testimonial request → filed into the Proof Library™ → pulled for the next sales page rewrite.\"",
+      executive:
+        "\"Capture protocol triggers at every delivery milestone, feeding a centralized Proof Library™ that sales now sources from instead of cold-requesting new testimonials per deal.\"",
+      boardroom:
+        "\"Enterprise-wide outcome-capture protocol feeding an audit-ready evidence library, used to substantiate marketing claims and support investor-facing proof of traction.\"",
+    },
+    digitalBuildAvailable: true,
+    printAvailable: true,
+    recommendedRenderer: "editable-document",
+    futureGenerator: "generate/proof-capture-playbook",
+    status: "architecture",
+  },
 
   // ---------------------------------------------------------------------
   // OPERATE THE BUSINESS

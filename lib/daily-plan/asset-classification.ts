@@ -19,7 +19,7 @@ export interface AssetClassification {
 
 const ASSET_KEYWORDS: { category: AssetCategory; keywords: string[] }[] = [
   { category: "ip", keywords: ["course", "template", "framework", "guide", "playbook", "system", "workshop", "signature talk", "recipe", "process doc", "sop"] },
-  { category: "marketing", keywords: ["content", "post", "video", "email", "newsletter", "landing page", "campaign", "podcast", "webinar", "lead magnet", "brand"] },
+  { category: "marketing", keywords: ["content", "post", "video", "email", "newsletter", "landing page", "campaign", "podcast", "webinar", "lead magnet", "brand", "testimonial", "case study", "results snapshot", "proof"] },
   { category: "sales", keywords: ["proposal", "pitch", "sales page", "offer", "pricing", "sales call script", "deck", "funnel"] },
   { category: "delivery", keywords: ["onboarding", "workflow", "checklist", "automation", "delivery process", "client portal", "fulfillment"] },
   { category: "infrastructure", keywords: ["hire", "tool", "software", "database", "dashboard", "integration", "reporting", "ops"] },
@@ -61,6 +61,8 @@ const DERIVATIVE_SUGGESTIONS: { keyword: string; derivatives: string[] }[] = [
   { keyword: "video", derivatives: ["Blog post transcript", "Social clips", "Podcast episode", "Email feature"] },
   { keyword: "podcast", derivatives: ["Blog post transcript", "Social clips", "Newsletter feature", "YouTube upload"] },
   { keyword: "proposal", derivatives: ["Case study", "Sales page section", "Template for future clients"] },
+  { keyword: "case study", derivatives: ["Sales page section", "Social carousel", "Email feature", "Pitch deck slide"] },
+  { keyword: "testimonial", derivatives: ["Sales page section", "Social post", "Results snapshot", "Proof Library™ entry"] },
 ]
 
 /** Returns plain-language "what else can this become" suggestions once an activity is marked complete. Empty when nothing honestly matches. */

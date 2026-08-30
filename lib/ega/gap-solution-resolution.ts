@@ -25,12 +25,15 @@
  *        execution flow. No standalone intervention.
  *
  *   2. business_context / "hasProofTestimonials"
- *        → NEW_INTERVENTION_REQUIRED
- *        A genuine gap. Proposed concept only — "Client Proof & Results
- *        System™" — not yet designed in detail and NOT built. `solutionRef`
- *        uses the `proposed-intervention:` sentinel prefix (see
- *        PROPOSED_INTERVENTION_PREFIX below) specifically so it can never be
- *        mistaken for a resolvable BAL/EDE asset id by any lookup function.
+ *        → COMBINE_EXISTING_NATIVE_ENHANCEMENT
+ *        Was a genuine gap through Phase 2A/2A.2 ("no adequate match").
+ *        Phase 3 designed and built the "Proof Capture Playbook™" BAL asset
+ *        (lib/business-asset-library/business-asset-registry.ts, id
+ *        "proof-capture-playbook") to close it: a repeatable protocol for
+ *        capturing a client result and converting it into a testimonial,
+ *        case study, results snapshot, or Proof Library™ entry.
+ *        `solutionRef` now points at the real, resolvable BAL asset id — no
+ *        longer a `proposed-intervention:` placeholder.
  *
  *   3. business_context / "clientConnectionExperienceStatus"
  *        → CONDITIONAL_NATIVE_MECHANISM_MATCH
@@ -105,21 +108,22 @@ const KNOWN_GAP_SOLUTIONS: Record<string, KnownGapSolutionResolution> = {
   },
 
   [key("business_context", "hasProofTestimonials")]: {
-    classification: "new_intervention_required",
+    classification: "combine_existing_native_enhancement",
     gap:
       "No repeatable system exists for turning successful client outcomes into usable business proof " +
       "(testimonials, case studies, results snapshots).",
     obstacleType: "system",
     solution:
-      "New intervention required — proposed concept: Client Proof & Results System™. Should walk the founder " +
-      "through capture result → document evidence → request testimonial → organize proof → convert into " +
-      "reusable marketing/sales/thought-leadership assets, with potential outputs of a Testimonial, Case Study, " +
-      "Results Snapshot, and Proof Library Entry. This is a naming/scoping decision only — the intervention has " +
-      "not been designed in detail or built. Before building, define its exact problem, trigger, desired " +
-      "outcome, founder workflow, tangible output, action type, CEO Workday placement, time horizon, business " +
-      "stage, success indicator, and BAL/EDE/native placement.",
-    solutionRef: `${PROPOSED_INTERVENTION_PREFIX}client-proof-results-system`,
-    actionType: "design",
+      "Resolved via the Proof Capture Playbook™ (Business Asset Library™, id \"proof-capture-playbook\", " +
+      "category \"Market the Business\"). It walks the founder through Notice → Capture → Request → Document " +
+      "→ File → Reuse, producing one of four outputs — Testimonial, Case Study, Results Snapshot, or Proof " +
+      "Library™ entry — as guided sub-steps within a single reusable asset, rather than as four separate " +
+      "library items.",
+    solutionRef: "proof-capture-playbook",
+    actionType: "build",
+    successIndicator:
+      "The founder can point to at least one specific testimonial, case study, results snapshot, or " +
+      "proof-library entry captured in the last 30 days, tied to an actual client result.",
   },
 
   [key("business_context", "clientConnectionExperienceStatus")]: {
