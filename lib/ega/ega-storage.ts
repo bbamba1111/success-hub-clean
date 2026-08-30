@@ -240,6 +240,36 @@ export async function getEgaEntriesByStatus(status: EgaStatus): Promise<EgaEntry
 }
 
 /**
+ * True once the signed-in member has recorded their one-time EGA Screen 1
+ * onboarding signal ("What is getting in your way?") in the database —
+ * i.e. any ega_entries row with source = "direct_ega". Mirrors
+ * lib/ega/ega-signal-store.ts's localStorage check so the sign-in routing
+ * gate (getPostLoginDestination) can trust the DB even when localStorage is
+ * empty (new device, cleared cache, different preview origin).
+ */
+export async function hasCompletedEgaOnboardingSignalInDb(): Promise<boolean> {
+  const userId = await getUserId()
+  if (!userId) return false
+
+  try {
+    const supabase = createClient()
+    const { data, error } = await supabase
+      .from("ega_entries")
+      .select("id")
+      .eq("user_id", userId)
+      .eq("source", "direct_ega")
+      .limit(1)
+      .maybeSingle()
+
+    if (error) return false
+    return Boolean(data)
+  } catch (error) {
+    console.log("[v0] hasCompletedEgaOnboardingSignalInDb skipped:", (error as Error)?.message)
+    return false
+  }
+}
+
+/**
  * Finds an existing EgaEntry for the given source + sourceRef, if one
  * already exists. Used by future trigger-detection logic to avoid creating
  * duplicate entries every time the same signal re-fires (e.g. re-scoring

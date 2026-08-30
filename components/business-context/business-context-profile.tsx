@@ -497,7 +497,10 @@ function ProgressBar({ step, total }: { step: number; total: number }) {
 
 const TOTAL_STEPS = 35
 
-export function BusinessContextProfile({ onDone }: { onDone?: () => void } = {}) {
+export function BusinessContextProfile({
+  onDone,
+  onHydrated,
+}: { onDone?: () => void; onHydrated?: (completedInDb: boolean) => void } = {}) {
   const router = useRouter()
   const cardRef = useRef<HTMLDivElement | null>(null)
   const hasAdvancedRef = useRef(false)
@@ -577,6 +580,14 @@ export function BusinessContextProfile({ onDone }: { onDone?: () => void } = {})
   useEffect(() => {
     getBusinessContextFromDb().then((record) => {
       if (!record) return
+
+      // Tell the caller whether the database already has a completed
+      // record, regardless of whether the local cache needs updating below.
+      // Callers use this to correct a "wasAlreadyComplete" check that was
+      // captured synchronously on mount from the (possibly empty) local
+      // cache alone — e.g. a returning member on a new device/session.
+      onHydrated?.(Boolean(record.completedAt))
+
       const cached = getBusinessContext()
       // Local cache already reflects the DB (or is newer); don't clobber
       // in-progress edits with a stale fetch.

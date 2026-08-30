@@ -21,6 +21,14 @@ import { hasCompletedBusinessContext } from "@/lib/business-context/business-con
  *      to wherever they came from (?from=) — NEVER back to "/business-context"
  *      itself, which just re-mounts this same wizard from step 0 and looks
  *      like the save silently did nothing.
+ *
+ *      The local-cache check alone is only correct on the SAME device/browser
+ *      session that originally completed it — a fresh sign-in, cleared
+ *      cache, or new device starts with empty localStorage even though the
+ *      database already has the completed record. BusinessContextProfile's
+ *      onHydrated callback reports the database's completedAt once its DB
+ *      fetch resolves, so we reconcile wasAlreadyComplete before the member
+ *      can finish the wizard and hit the wrong branch below.
  */
 export function BusinessContextOnboardingFlow() {
   const router = useRouter()
@@ -32,5 +40,11 @@ export function BusinessContextOnboardingFlow() {
     router.push(wasAlreadyComplete.current ? returnTo : "/entrepreneur-gap-assessment?onboarding=1")
   }
 
-  return <BusinessContextProfile onDone={handleDone} />
+  function handleHydrated(completedInDb: boolean) {
+    if (completedInDb) {
+      wasAlreadyComplete.current = true
+    }
+  }
+
+  return <BusinessContextProfile onDone={handleDone} onHydrated={handleHydrated} />
 }

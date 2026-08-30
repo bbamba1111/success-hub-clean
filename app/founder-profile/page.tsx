@@ -2,6 +2,8 @@ import type { Metadata } from "next"
 import { Suspense } from "react"
 import { CherryBlossomScene, CherryBlossomSceneCard } from "@/components/cherry-blossom/cherry-blossom-scene"
 import { FounderProfileForm } from "@/components/founder-profile/founder-profile-form"
+import { OnboardingProgressBanner } from "@/components/onboarding/onboarding-progress-banner"
+import { getOnboardingProgressServer } from "@/lib/onboarding/onboarding-progress"
 
 export const metadata: Metadata = {
   title: "Founder & Business Profile™ | Harmony Lane™",
@@ -21,7 +23,9 @@ export const metadata: Metadata = {
  *   Cherry Blossom Welcome™ → /founder-profile → /business-context
  *     → Cherry Blossom Thank-You™ → current Work-Life Balance Business Day™
  */
-export default function FounderProfilePage() {
+export default async function FounderProfilePage() {
+  const progress = await getOnboardingProgressServer()
+
   return (
     <div className="min-h-screen bg-[#FAF6F0]">
 
@@ -52,6 +56,8 @@ export default function FounderProfilePage() {
           </p>
         </CherryBlossomSceneCard>
       </CherryBlossomScene>
+
+      <OnboardingProgressBanner progress={progress} currentStep="founderProfileComplete" />
 
       {/* ── Founder & Business Profile™ Form ────────────────────────── */}
       <Suspense fallback={null}>

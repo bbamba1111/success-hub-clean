@@ -14,6 +14,8 @@ import {
 import { createEgaEntry } from "@/lib/ega/ega-storage"
 import { markEgaOnboardingSignalComplete } from "@/lib/ega/ega-signal-store"
 import type { EgaObstacleType } from "@/lib/ega/types"
+import { OnboardingProgressBanner } from "@/components/onboarding/onboarding-progress-banner"
+import type { OnboardingProgress } from "@/lib/onboarding/onboarding-progress"
 
 type Screen = "recognize" | "diagnose" | "results"
 
@@ -253,7 +255,14 @@ function ResultsScreen({ gaps }: { gaps: CapturedGap[] }) {
  * Orchestration
  * ======================================================================== */
 
-export function EgaPageClient({ onboarding = false }: { onboarding?: boolean }) {
+export function EgaPageClient({
+  onboarding = false,
+  progress,
+}: {
+  onboarding?: boolean
+  /** Onboarding Progress™ snapshot — only passed when onboarding=true. */
+  progress?: OnboardingProgress
+}) {
   const router = useRouter()
   const [screen, setScreen] = useState<Screen>("recognize")
   const [selectedIds, setSelectedIds] = useState<string[]>([])
@@ -352,6 +361,9 @@ export function EgaPageClient({ onboarding = false }: { onboarding?: boolean }) 
 
   return (
     <main className="min-h-screen bg-background px-4 py-16">
+      {onboarding && progress && screen === "recognize" && (
+        <OnboardingProgressBanner progress={progress} currentStep="egaComplete" />
+      )}
       <div className="mx-auto w-full max-w-xl">
         {screen === "recognize" && (
           <RecognizeScreen

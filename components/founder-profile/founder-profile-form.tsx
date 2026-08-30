@@ -195,9 +195,19 @@ export function FounderProfileForm() {
 
     getFounderProfileFromDb().then((record) => {
       if (!record) return
-      const { completedAt: _completedAt, updatedAt: _updatedAt, ...profileData } = record
+      const { completedAt, updatedAt: _updatedAt, ...profileData } = record
       setForm((prev) => ({ ...prev, ...profileData }))
       saveFounderProfile(profileData as unknown as Record<string, unknown>)
+
+      // `wasAlreadyComplete` was captured synchronously on mount from the
+      // local cache alone, which is empty on a first visit from a new
+      // device/browser/session even though the database already has a
+      // completed record. Reconcile it here so a returning member editing
+      // from a fresh session is routed home on save, not back through
+      // onboarding as if this were their first time.
+      if (completedAt) {
+        wasAlreadyComplete.current = true
+      }
     })
   }, [])
 

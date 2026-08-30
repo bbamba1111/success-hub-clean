@@ -1,6 +1,8 @@
 import { Suspense } from "react"
 import { BusinessContextOnboardingFlow } from "@/components/business-context/business-context-onboarding-flow"
 import { CherryBlossomScene, CherryBlossomSceneCard } from "@/components/cherry-blossom/cherry-blossom-scene"
+import { OnboardingProgressBanner } from "@/components/onboarding/onboarding-progress-banner"
+import { getOnboardingProgressServer } from "@/lib/onboarding/onboarding-progress"
 
 export const metadata = {
   title: "Business Context Profile™ | Harmony Lane™",
@@ -8,7 +10,9 @@ export const metadata = {
     "Tell me about the business you are building so every recommendation Harmony Lane™ makes is personalized to your actual context.",
 }
 
-export default function BusinessContextPage() {
+export default async function BusinessContextPage() {
+  const progress = await getOnboardingProgressServer()
+
   return (
     <div className="min-h-screen bg-brand-cream">
 
@@ -36,6 +40,7 @@ export default function BusinessContextPage() {
 
       {/* ── Business Context Profile™ wizard — flows below the scene ─── */}
       <div className="bg-white">
+        <OnboardingProgressBanner progress={progress} currentStep="businessContextComplete" />
         <Suspense fallback={null}>
           <BusinessContextOnboardingFlow />
         </Suspense>

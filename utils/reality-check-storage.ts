@@ -302,15 +302,27 @@ export async function getOperatingCenterData(): Promise<OperatingCenterData> {
  *      logic: this week's Weekly Reality Check™ NOT done → /begin; otherwise
  *      → "/", the daily Work-Life Balance Business Day™ front door.
  *
- * IMPORTANT — SSR: the on-ramp gates above live in localStorage, which does
- * not exist on the server. Rather than let that silently resolve to "every
- * gate incomplete" (which would send every /monday-style server component
- * visitor to Cherry Blossom Welcome™ regardless of their real state), this
- * function explicitly skips those gates when `window` is undefined and falls
- * straight to the Supabase-backed daily logic — exactly the prior behavior
- * for the Business Context™ gate. Server callers must layer the skipped
- * gates back in on the client (see components/monday/monday-cta-link.tsx for
- * the established pattern) before trusting this as a final destination.
+ * IMPORTANT — localStorage is a fast cache, NOT the source of truth. Founder
+ * Profile™, Business Context™, and the EGA onboarding signal all persist to
+ * Supabase (founder_profiles, business_context_profiles, ega_entries). A
+ * fresh sign-in session, a cleared cache, a different device/browser, or a
+ * new preview origin all start with an empty localStorage even though the
+ * database already has the completed record. So each gate below checks the
+ * local flag first (instant, no network) and — only if that says
+ * "incomplete" — confirms against the database before concluding the step
+ * really is outstanding. This prevents already-completed members from being
+ * routed back through onboarding from scratch.
+ *
+ * IMPORTANT — SSR: the on-ramp gates above live in localStorage/Supabase
+ * client calls, which do not exist on the server. Rather than let that
+ * silently resolve to "every gate incomplete" (which would send every
+ * /monday-style server component visitor to Cherry Blossom Welcome™
+ * regardless of their real state), this function explicitly skips those
+ * gates when `window` is undefined and falls straight to the
+ * Supabase-backed daily logic — exactly the prior behavior for the Business
+ * Context™ gate. Server callers must layer the skipped gates back in on the
+ * client (see components/monday/monday-cta-link.tsx for the established
+ * pattern) before trusting this as a final destination.
  */
 export async function getPostLoginDestination(): Promise<string> {
   if (typeof window !== "undefined") {
@@ -322,16 +334,22 @@ export async function getPostLoginDestination(): Promise<string> {
         hasSeenCherryBlossomWelcome,
         hasSeenCherryBlossomThankYou,
       } = await import("@/lib/onboarding/onboarding-welcome-store")
+      const { hasCompletedFounderProfileInDb } = await import("@/utils/founder-profile-storage")
+      const { hasCompletedBusinessContextInDb } = await import("@/utils/business-context-storage")
+      const { hasCompletedEgaOnboardingSignalInDb } = await import("@/lib/ega/ega-storage")
 
-      if (!hasCompletedFounderProfile()) {
+      const founderProfileDone = hasCompletedFounderProfile() || (await hasCompletedFounderProfileInDb())
+      if (!founderProfileDone) {
         return hasSeenCherryBlossomWelcome() ? "/founder-profile" : "/welcome/cherry-blossom"
       }
 
-      if (!hasCompletedBusinessContext()) {
+      const businessContextDone = hasCompletedBusinessContext() || (await hasCompletedBusinessContextInDb())
+      if (!businessContextDone) {
         return "/business-context"
       }
 
-      if (!hasCompletedEgaOnboardingSignal()) {
+      const egaDone = hasCompletedEgaOnboardingSignal() || (await hasCompletedEgaOnboardingSignalInDb())
+      if (!egaDone) {
         return "/entrepreneur-gap-assessment?onboarding=1"
       }
 
@@ -339,7 +357,7 @@ export async function getPostLoginDestination(): Promise<string> {
         return "/welcome/cherry-blossom/complete"
       }
     } catch {
-      // Unexpected localStorage failure on the client — fall through to
+      // Unexpected localStorage/DB failure on the client — fall through to
       // reality-check logic rather than hard-failing at the front door.
     }
   }

@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { createClient } from "@/lib/supabase/server"
 import { EgaPageClient } from "@/components/ega/ega-page-client"
+import { getOnboardingProgressServer } from "@/lib/onboarding/onboarding-progress"
 
 export default async function EntrepreneurGapAssessmentPage({
   searchParams,
@@ -39,6 +40,7 @@ export default async function EntrepreneurGapAssessmentPage({
   // Harmony Blueprint™ destination.
   const params = await searchParams
   const isOnboarding = params.onboarding === "1"
+  const progress = isOnboarding ? await getOnboardingProgressServer() : undefined
 
-  return <EgaPageClient onboarding={isOnboarding} />
+  return <EgaPageClient onboarding={isOnboarding} progress={progress} />
 }
