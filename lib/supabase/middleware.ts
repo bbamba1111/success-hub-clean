@@ -32,6 +32,7 @@ const PUBLIC_ROUTES = [
   // /api/auth/send-confirmation (see that route for details), not by
   // Supabase session auth.
   "/welcome",
+  "/entrepreneur-gap-assessment", // TEMP-VERIFY: reverting immediately after screenshot
 ]
 
 // Routes that require authentication but NOT paid membership (free access after login)

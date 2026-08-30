@@ -10,6 +10,7 @@ import {
   BarChart2,
   Briefcase,
   Compass,
+  Search,
 } from "lucide-react"
 import { getAuditResults } from "@/utils/audit-storage"
 import { getEsaResults } from "@/lib/entrepreneur-success/esa-storage"
@@ -493,6 +494,34 @@ export function HarmonyBlueprintClient() {
                 hrefLabel="Complete Business Context™"
               />
             )}
+          </div>
+        </BlueprintCard>
+
+        {/* ── Blueprint Card 6: Entrepreneur Gap Assessment™ ──────────────────
+             Sits directly after Business Context™, matching the approved EGA
+             architecture: Founder Profile™ → Business Context™ → EGA™ →
+             Solution Resolution → CEO Workday™. */}
+        <BlueprintCard
+          icon={Search}
+          cardNumber="Blueprint Card 6"
+          title="Entrepreneur Gap Assessment™"
+          subtitle="What is getting in your way — recognize the problem, then diagnose the obstacle."
+          accentColor="#5B835F"
+        >
+          <div className="rounded-2xl border border-[#5B835F]/25 bg-[#F4F8F4] px-5 py-5">
+            <div className="flex items-center justify-between mb-3">
+              <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
+                Entrepreneur Gap Assessment™
+              </p>
+              <Link href="/entrepreneur-gap-assessment" className="font-sans text-xs font-semibold text-[#5B835F] hover:underline">
+                Begin
+              </Link>
+            </div>
+            <EmptyState
+              label="Recognize what's getting in your way so Harmony Lane™ can map it to the right solution."
+              href="/entrepreneur-gap-assessment"
+              hrefLabel="What Is Getting In My Way?™"
+            />
           </div>
         </BlueprintCard>
 
