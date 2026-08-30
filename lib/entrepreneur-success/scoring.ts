@@ -116,3 +116,42 @@ export function lowestPractices(results: EsaResults, n = 3): PracticeScore[] {
 export function highestPractices(results: EsaResults, n = 3): PracticeScore[] {
   return [...results.practiceScores].sort((a, b) => b.percentage - a.percentage).slice(0, n)
 }
+
+/* ===========================================================================
+ * Per-practice threshold / band logic (EGA Foundation — Phase 1)
+ * ---------------------------------------------------------------------------
+ * Pure, read-only classification of a practice's score. Nothing here writes
+ * to ega_entries or any other table — this is only the scoring vocabulary
+ * that a future EGA trigger-detection layer (Phase 4) will read from. Kept
+ * in scoring.ts because it is a pure function of a PracticeScore, matching
+ * this file's "no side effects" rule.
+ * ======================================================================== */
+
+/** The EGA gap-signal threshold: a practice scoring below this is a candidate ESA-sourced EGA signal. */
+export const EGA_PRACTICE_THRESHOLD = 80
+
+export type PracticeBand = "exceptional" | "strong" | "developing" | "emerging" | "foundation"
+
+/** Same bands as scoreLabel/scoreColor, but as a stable machine-readable id (not a display string). */
+export function practiceBand(percentage: number): PracticeBand {
+  if (percentage >= 85) return "exceptional"
+  if (percentage >= 70) return "strong"
+  if (percentage >= 55) return "developing"
+  if (percentage >= 40) return "emerging"
+  return "foundation"
+}
+
+/** True if this practice's score is below the EGA gap-signal threshold. */
+export function isBelowEgaThreshold(practice: PracticeScore, threshold = EGA_PRACTICE_THRESHOLD): boolean {
+  return practice.percentage < threshold
+}
+
+/** Every practice in these results scoring below the EGA gap-signal threshold, lowest first. */
+export function practicesBelowEgaThreshold(
+  results: EsaResults,
+  threshold = EGA_PRACTICE_THRESHOLD,
+): PracticeScore[] {
+  return results.practiceScores
+    .filter((p) => isBelowEgaThreshold(p, threshold))
+    .sort((a, b) => a.percentage - b.percentage)
+}

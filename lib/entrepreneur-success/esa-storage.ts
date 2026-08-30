@@ -1,9 +1,13 @@
 /**
- * Entrepreneur Success Assessment™ — Storage Layer (Phase 6.0)
+ * Entrepreneur Success Assessment™ — Storage Layer (Phase 6.0 → EGA Foundation Phase 1)
  * ---------------------------------------------------------------------------
- * Client-side storage for ESA results, matching the audit-storage.ts pattern
- * used by the Work-Life Balance Audit™. Future phases replace this with a
- * Supabase server action for authenticated, persisted, historical comparison.
+ * localStorage remains the source of truth for instant UX, exactly like
+ * utils/reality-check-storage.ts's pattern for the Work-Life Balance Audit™.
+ * As of Phase 1, every save is also best-effort mirrored to the
+ * `esa_assessments` table in Supabase (one row per user per week_key) so
+ * results survive across devices and are queryable server-side. Mirroring
+ * is fire-and-forget: if the member is signed out or the write fails, the
+ * localStorage-backed UX is completely unaffected.
  *
  * Key: "entrepreneurSuccessAssessmentResults"
  */
@@ -12,6 +16,56 @@ import type { EsaResults } from "./types"
 
 const STORAGE_KEY = "entrepreneurSuccessAssessmentResults"
 const HISTORY_KEY = "entrepreneurSuccessAssessmentHistory"
+
+/**
+ * Resolves the current signed-in user id, or null if anonymous. Never
+ * throws — callers treat null as "skip persistence". Lazily imports the
+ * Supabase client so this module still works in contexts without it.
+ */
+async function getUserId(): Promise<string | null> {
+  try {
+    const { createClient } = await import("@/lib/supabase/client")
+    const supabase = createClient()
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+    return user?.id ?? null
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Best-effort mirror of this week's ESA snapshot into Supabase. Fire-and-
+ * forget: never awaited by callers of saveEsaResults, never throws upward.
+ */
+async function mirrorEsaResultsToDb(results: EsaResults, weekKey: string): Promise<void> {
+  const userId = await getUserId()
+  if (!userId) return
+
+  try {
+    const { createClient } = await import("@/lib/supabase/client")
+    const supabase = createClient()
+    const now = new Date().toISOString()
+
+    await supabase.from("esa_assessments").upsert(
+      {
+        user_id: userId,
+        week_key: weekKey,
+        overall_score: results.overallScore,
+        pillar_scores: results.pillarScores,
+        practice_scores: results.practiceScores,
+        responses: results.responses,
+        scored_at: results.completedAt,
+        completed_at: results.completedAt,
+        updated_at: now,
+      },
+      { onConflict: "user_id,week_key" },
+    )
+  } catch (error) {
+    console.log("[v0] mirrorEsaResultsToDb skipped:", (error as Error)?.message)
+  }
+}
 
 /** Returns the Monday (start) of the given week as YYYY-MM-DD — matches utils/reality-check-storage.ts's getWeekKey so records line up across Life + Business. */
 export function getWeekKey(date = new Date()): string {
@@ -63,6 +117,8 @@ export function saveEsaResults(results: EsaResults): void {
   // Also record this week's snapshot in the running history so past weeks'
   // Business Scores™ remain reviewable in the Harmony Blueprint™ calendar.
   saveEsaHistoryEntry(results)
+  // Best-effort Supabase mirror — fire-and-forget, never blocks or throws.
+  void mirrorEsaResultsToDb(results, getWeekKey())
 }
 
 export function getEsaResults(): EsaResults | null {
