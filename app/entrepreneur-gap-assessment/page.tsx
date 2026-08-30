@@ -8,7 +8,7 @@ export default async function EntrepreneurGapAssessmentPage() {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (!user && false) {
+  if (!user) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-background px-4">
         <div className="w-full max-w-md rounded-lg border border-border bg-card px-8 py-10 text-center shadow-sm">
