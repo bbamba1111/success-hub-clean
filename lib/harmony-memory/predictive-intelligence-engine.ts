@@ -166,7 +166,7 @@ function businessStageTransitionPrediction(
         "The combination of consistent CEO Workday™ completion, assets building, and operating rhythm suggests you're ready to move from Launch to Growth Stage.",
       confidence: 0.65,
       actionSuggestion: "Update your Business Stage™ in Business Context™ to unlock Growth-stage GPS recommendations.",
-      actionHref: "/business-context",
+      actionHref: "/business-context?from=/my-harmony",
     }
   }
 

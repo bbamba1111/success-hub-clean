@@ -621,7 +621,7 @@ export function MyBlueprintClient() {
                   </div>
                 )}
                 <Link
-                  href="/business-context"
+                  href="/business-context?from=/my-blueprint"
                   className="inline-flex items-center gap-1.5 font-sans text-xs font-semibold text-[#B9822F] hover:underline"
                 >
                   Update Business Context™
@@ -631,7 +631,7 @@ export function MyBlueprintClient() {
             ) : (
               <EmptyState
                 message="Tell us about the business you're building to complete your Blueprint."
-                href="/business-context"
+                href="/business-context?from=/my-blueprint"
                 cta="Build Business Context™"
               />
             )}

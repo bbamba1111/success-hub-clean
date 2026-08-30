@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import { BusinessContextOnboardingFlow } from "@/components/business-context/business-context-onboarding-flow"
 import { CherryBlossomScene, CherryBlossomSceneCard } from "@/components/cherry-blossom/cherry-blossom-scene"
 
@@ -35,7 +36,9 @@ export default function BusinessContextPage() {
 
       {/* ── Business Context Profile™ wizard — flows below the scene ─── */}
       <div className="bg-white">
-        <BusinessContextOnboardingFlow />
+        <Suspense fallback={null}>
+          <BusinessContextOnboardingFlow />
+        </Suspense>
       </div>
 
     </div>

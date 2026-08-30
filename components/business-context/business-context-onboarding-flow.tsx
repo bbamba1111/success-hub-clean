@@ -1,6 +1,6 @@
 "use client"
 
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { useRef } from "react"
 import { BusinessContextProfile } from "@/components/business-context/business-context-profile"
 import { hasCompletedBusinessContext } from "@/lib/business-context/business-context-store"
@@ -15,16 +15,21 @@ import { hasCompletedBusinessContext } from "@/lib/business-context/business-con
  *      Never straight into the daily Audit/ESA rhythm (those live inside
  *      Reality Check™, not onboarding).
  *   2. A returning member reviewing/updating their profile later from My
- *      Harmony™ → finishing here should NOT replay the onboarding
- *      transition. We capture completion state on mount (before this save
- *      can change it) to tell the two cases apart.
+ *      Harmony™ or My Blueprint™ → finishing here should NOT replay the
+ *      onboarding transition. We capture completion state on mount (before
+ *      this save can change it) to tell the two cases apart, and route back
+ *      to wherever they came from (?from=) — NEVER back to "/business-context"
+ *      itself, which just re-mounts this same wizard from step 0 and looks
+ *      like the save silently did nothing.
  */
 export function BusinessContextOnboardingFlow() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const wasAlreadyComplete = useRef(hasCompletedBusinessContext())
+  const returnTo = searchParams.get("from") || "/my-harmony"
 
   function handleDone() {
-    router.push(wasAlreadyComplete.current ? "/business-context" : "/entrepreneur-gap-assessment?onboarding=1")
+    router.push(wasAlreadyComplete.current ? returnTo : "/entrepreneur-gap-assessment?onboarding=1")
   }
 
   return <BusinessContextProfile onDone={handleDone} />

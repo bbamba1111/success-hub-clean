@@ -466,7 +466,7 @@ export function HarmonyBlueprintClient() {
               <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#C9A96E]">
                 Business Context™
               </p>
-              <Link href="/business-context" className="font-sans text-xs font-semibold text-[#C9A96E] hover:underline">
+              <Link href="/business-context?from=/harmony-blueprint" className="font-sans text-xs font-semibold text-[#C9A96E] hover:underline">
                 {bcData ? "Edit" : "Complete"}
               </Link>
             </div>
@@ -490,7 +490,7 @@ export function HarmonyBlueprintClient() {
             ) : (
               <EmptyState
                 label="Complete your Business Context™ to unlock personalized recommendations."
-                href="/business-context"
+                href="/business-context?from=/harmony-blueprint"
                 hrefLabel="Complete Business Context™"
               />
             )}

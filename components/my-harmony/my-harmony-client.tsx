@@ -122,7 +122,7 @@ function BusinessContextSection({ data }: { data: BusinessContextProfile }) {
         <div className="flex items-center justify-between">
           <p className="font-playfair text-xl font-bold text-[#3A2E33]">{data.businessName}</p>
           <Link
-            href="/business-context"
+            href="/business-context?from=/my-harmony"
             className="inline-flex items-center gap-1 font-montserrat text-xs font-semibold text-[#C9A96E] hover:underline"
           >
             Update <ChevronRight className="h-3 w-3" />
@@ -319,7 +319,7 @@ export function MyHarmonyContextSections() {
           title="Business Context™"
           description="Tell Harmony Lane™ about the business you are building for personalized recommendations."
           badge="Business Context Profile™"
-          href="/business-context"
+          href="/business-context?from=/my-harmony"
           label="Build My Business Context Profile™"
         />
       )}
@@ -333,7 +333,7 @@ export function MyHarmonyContextSections() {
           title="Executive Learning™"
           description="Set your communication level and choose the business topics you want to master."
           badge="Learn Before You Launch™"
-          href="/business-context"
+          href="/business-context?from=/my-harmony"
           label="Complete My Learning Profile™"
         />
       )}
