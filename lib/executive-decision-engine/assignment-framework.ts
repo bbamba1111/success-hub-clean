@@ -43,7 +43,7 @@ export const ASSIGNMENT_TEMPLATES: readonly ExecutiveAssignmentTemplate[] = [
     title: "Clarify Your Business Vision™",
     objective:
       "Write a one-paragraph Vision Statement™ that describes what your business will look like at its best in three to five years.",
-    operatingPracticeId: "vision-clarity",
+    operatingPracticeId: "vision-direction",
     operatingPillarId: "strategic-foundation",
     estimatedDuration: "1-hour",
     businessOutcome:
@@ -67,7 +67,7 @@ export const ASSIGNMENT_TEMPLATES: readonly ExecutiveAssignmentTemplate[] = [
     title: "Define Your Ideal Client Profile™",
     objective:
       "Write a one-page Ideal Client Profile™ that describes your highest-value client — their situation, desires, obstacles, and the transformation your business delivers for them.",
-    operatingPracticeId: "offer-positioning",
+    operatingPracticeId: "offer-clarity",
     operatingPillarId: "strategic-foundation",
     estimatedDuration: "1-hour",
     businessOutcome:
@@ -119,7 +119,7 @@ export const ASSIGNMENT_TEMPLATES: readonly ExecutiveAssignmentTemplate[] = [
     title: "Build Your Referral Activation Plan™",
     objective:
       "Identify your top five current or past clients, write a personal message to each asking for one specific type of referral, and create a simple follow-up system to track outcomes.",
-    operatingPracticeId: "referral-system",
+    operatingPracticeId: "retention-referral",
     operatingPillarId: "revenue-engine",
     estimatedDuration: "1-hour",
     businessOutcome:
@@ -147,7 +147,7 @@ export const ASSIGNMENT_TEMPLATES: readonly ExecutiveAssignmentTemplate[] = [
     title: "Document Your First Standard Operating Procedure™",
     objective:
       "Choose the one recurring task you perform most often that you wish someone else could handle, and document it step-by-step as a Standard Operating Procedure™.",
-    operatingPracticeId: "process-documentation",
+    operatingPracticeId: "sop-documentation",
     operatingPillarId: "operations-systems",
     estimatedDuration: "1-hour",
     businessOutcome:
@@ -171,7 +171,7 @@ export const ASSIGNMENT_TEMPLATES: readonly ExecutiveAssignmentTemplate[] = [
     title: "Design Your First AI Workflow™",
     objective:
       "Identify the one communication or content creation task that takes the most time each week, and design an AI Workflow™ that handles the first draft — reducing your active time by at least 50%.",
-    operatingPracticeId: "ai-leverage",
+    operatingPracticeId: "ai-integration",
     operatingPillarId: "operations-systems",
     estimatedDuration: "1-hour",
     businessOutcome:
@@ -199,7 +199,7 @@ export const ASSIGNMENT_TEMPLATES: readonly ExecutiveAssignmentTemplate[] = [
     title: "Create Your Financial Dashboard™",
     objective:
       "Set up a simple weekly financial tracking view — revenue, expenses, outstanding receivables, and cash on hand — that takes less than five minutes per week to update.",
-    operatingPracticeId: "financial-visibility",
+    operatingPracticeId: "financial-review-rhythm",
     operatingPillarId: "financial-intelligence",
     estimatedDuration: "2-hours",
     businessOutcome:
@@ -227,7 +227,7 @@ export const ASSIGNMENT_TEMPLATES: readonly ExecutiveAssignmentTemplate[] = [
     title: "Develop Your Signature Talk™ Outline",
     objective:
       "Create a one-page outline for a 20-minute presentation that delivers one transformational insight to your ideal client — and ends with a clear, natural invitation to work with you.",
-    operatingPracticeId: "content-authority",
+    operatingPracticeId: "thought-leadership",
     operatingPillarId: "growth-innovation",
     estimatedDuration: "2-hours",
     businessOutcome:
@@ -255,7 +255,7 @@ export const ASSIGNMENT_TEMPLATES: readonly ExecutiveAssignmentTemplate[] = [
     title: "Define Your Life Non-Negotiables™",
     objective:
       "Write down the three to five commitments to your own life — health, relationships, recovery, joy — that your business will never be allowed to compromise, and install them as Operating Rules™.",
-    operatingPracticeId: "life-non-negotiables",
+    operatingPracticeId: "daily-non-negotiables",
     operatingPillarId: "human-sustainability",
     estimatedDuration: "30-minutes",
     businessOutcome:

@@ -318,29 +318,33 @@ export const BUSINESS_ASSET_REGISTRY: readonly BusinessAsset[] = [
 
 export const PRACTICE_ASSET_MAPPINGS: readonly PracticeAssetMapping[] = [
   // Strategic Foundation™ pillar
-  { practiceId: "vision-clarity", producedAsset: "strategic-plan", connectionStrength: "direct", status: "architecture" },
-  { practiceId: "offer-positioning", producedAsset: "brand-positioning-statement", connectionStrength: "direct", status: "architecture" },
-  { practiceId: "offer-positioning", producedAsset: "offer-suite", connectionStrength: "contributing", status: "architecture" },
+  { practiceId: "vision-direction", producedAsset: "strategic-plan", connectionStrength: "direct", status: "architecture" },
+  { practiceId: "offer-clarity", producedAsset: "brand-positioning-statement", connectionStrength: "direct", status: "architecture" },
+  { practiceId: "offer-clarity", producedAsset: "offer-suite", connectionStrength: "contributing", status: "architecture" },
   // Revenue Engine™ pillar
   { practiceId: "sales-process", producedAsset: "sales-playbook", connectionStrength: "direct", status: "architecture" },
-  { practiceId: "referral-system", producedAsset: "referral-engine", connectionStrength: "direct", status: "architecture" },
-  { practiceId: "pipeline-management", producedAsset: "marketing-funnel", connectionStrength: "contributing", status: "architecture" },
-  { practiceId: "pricing-strategy", producedAsset: "pricing-framework", connectionStrength: "direct", status: "architecture" },
+  { practiceId: "retention-referral", producedAsset: "referral-engine", connectionStrength: "direct", status: "architecture" },
+  // NOTE: "marketing-funnel" was previously mapped from the stale "pipeline-management"
+  // practice id, which has no equivalent in the current Operating Practice™ registry
+  // (a dropped/renamed practice — see Phase 2A audit). Not remapped to avoid inventing
+  // a connection; "marketing-funnel" remains a well-specified, unlinked asset pending
+  // a future practice-linkage decision.
+  { practiceId: "pricing-confidence", producedAsset: "pricing-framework", connectionStrength: "direct", status: "architecture" },
   // Operations & Systems™ pillar
-  { practiceId: "process-documentation", producedAsset: "standard-operating-procedure", connectionStrength: "direct", status: "architecture" },
-  { practiceId: "ai-leverage", producedAsset: "ai-workflow", connectionStrength: "direct", status: "architecture" },
-  { practiceId: "client-delivery", producedAsset: "client-onboarding-system", connectionStrength: "direct", status: "architecture" },
+  { practiceId: "sop-documentation", producedAsset: "standard-operating-procedure", connectionStrength: "direct", status: "architecture" },
+  { practiceId: "ai-integration", producedAsset: "ai-workflow", connectionStrength: "direct", status: "architecture" },
+  { practiceId: "client-onboarding", producedAsset: "client-onboarding-system", connectionStrength: "direct", status: "architecture" },
   // People & Leadership™ pillar
-  { practiceId: "delegation-mastery", producedAsset: "standard-operating-procedure", connectionStrength: "foundational", status: "architecture" },
-  { practiceId: "team-development", producedAsset: "team-operating-handbook", connectionStrength: "direct", status: "architecture" },
-  { practiceId: "hiring-excellence", producedAsset: "hiring-process", connectionStrength: "direct", status: "architecture" },
+  { practiceId: "delegation-practice", producedAsset: "standard-operating-procedure", connectionStrength: "foundational", status: "architecture" },
+  { practiceId: "leadership-development", producedAsset: "team-operating-handbook", connectionStrength: "direct", status: "architecture" },
+  { practiceId: "hiring-practice", producedAsset: "hiring-process", connectionStrength: "direct", status: "architecture" },
   // Growth & Innovation™ pillar
-  { practiceId: "content-authority", producedAsset: "signature-talk", connectionStrength: "direct", status: "architecture" },
-  { practiceId: "content-authority", producedAsset: "authority-platform", connectionStrength: "contributing", status: "architecture" },
-  { practiceId: "digital-marketing", producedAsset: "evergreen-webinar", connectionStrength: "direct", status: "architecture" },
-  { practiceId: "digital-marketing", producedAsset: "email-nurture-sequence", connectionStrength: "direct", status: "architecture" },
+  { practiceId: "thought-leadership", producedAsset: "signature-talk", connectionStrength: "direct", status: "architecture" },
+  { practiceId: "thought-leadership", producedAsset: "authority-platform", connectionStrength: "contributing", status: "architecture" },
+  { practiceId: "marketing-consistency", producedAsset: "evergreen-webinar", connectionStrength: "direct", status: "architecture" },
+  { practiceId: "marketing-consistency", producedAsset: "email-nurture-sequence", connectionStrength: "direct", status: "architecture" },
   // Financial Intelligence™ pillar
-  { practiceId: "financial-visibility", producedAsset: "financial-dashboard", connectionStrength: "direct", status: "architecture" },
+  { practiceId: "financial-review-rhythm", producedAsset: "financial-dashboard", connectionStrength: "direct", status: "architecture" },
 ] as const
 
 /* ===========================================================================
