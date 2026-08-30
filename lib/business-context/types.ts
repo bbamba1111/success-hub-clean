@@ -231,6 +231,28 @@ export type CommunicationLevelOption =
   | "executive"
   | "executive-mba"
 
+// ─── Business Reality™ (Phase 1 — EGA Foundation) ────────────────────────────
+// Factual/segmentation facts about how the business actually operates today.
+// These are NOT diagnostics — the quality/adequacy of any of these is surfaced
+// as an EGA signal elsewhere, never here. Existence/description only.
+
+export type DeliveryModelOption =
+  | "one-to-one"
+  | "one-to-many-group"
+  | "self-serve-digital"
+  | "productized-service"
+  | "physical-fulfillment"
+  | "hybrid"
+  | "other"
+
+export type ClientConnectionExperienceStatus =
+  | "challenge"
+  | "webinar"
+  | "workshop"
+  | "immersion"
+  | "mastermind"
+  | "none"
+
 // ─── Master profile type ─────────────────────────────────────────────────────
 
 export interface BusinessContextProfile {
@@ -281,4 +303,24 @@ export interface BusinessContextProfile {
   // Executive Communication™ (ties to Founder Learning Profile™)
   communicationLevel: CommunicationLevelOption
   learningInterests: string[]
+
+  // Business Reality™ (Phase 1 — EGA Foundation; facts only, no diagnosis)
+  /** One-sentence description of what the business offers. */
+  offerStatement?: string
+  /** Who the ideal client is, in the founder's own words. */
+  idealClientDefinition?: string
+  /** Primary channel new clients currently come from. */
+  acquisitionChannel?: string
+  /** The step/mechanism that turns a prospect into a paying client. */
+  conversionMechanism?: string
+  /** Whether a client onboarding process exists at all (quality is an EGA signal, not here). */
+  hasOnboarding?: boolean
+  deliveryModel?: DeliveryModelOption
+  /** Whether proof/testimonials exist at all. */
+  hasProofTestimonials?: boolean
+  /** How repeat business or referrals currently happen, if at all. */
+  referralMechanism?: string
+  /** Free-text description of current AI tool usage in the business. */
+  currentAiToolUse?: string
+  clientConnectionExperienceStatus?: ClientConnectionExperienceStatus
 }

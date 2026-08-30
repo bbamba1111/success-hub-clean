@@ -65,6 +65,17 @@ function mapRow(row: Record<string, unknown> | null): BusinessContextRecord | nu
     wealthBuildingInterests: (row.wealth_building_interests as BusinessContextProfile["wealthBuildingInterests"]) ?? [],
     communicationLevel: (row.communication_level as BusinessContextProfile["communicationLevel"]) ?? ("foundation" as const),
     learningInterests: (row.learning_interests as string[]) ?? [],
+    offerStatement: (row.offer_statement as string) ?? undefined,
+    idealClientDefinition: (row.ideal_client_definition as string) ?? undefined,
+    acquisitionChannel: (row.acquisition_channel as string) ?? undefined,
+    conversionMechanism: (row.conversion_mechanism as string) ?? undefined,
+    hasOnboarding: (row.has_onboarding as boolean) ?? undefined,
+    deliveryModel: (row.delivery_model as BusinessContextProfile["deliveryModel"]) ?? undefined,
+    hasProofTestimonials: (row.has_proof_testimonials as boolean) ?? undefined,
+    referralMechanism: (row.referral_mechanism as string) ?? undefined,
+    currentAiToolUse: (row.current_ai_tool_use as string) ?? undefined,
+    clientConnectionExperienceStatus:
+      (row.client_connection_experience_status as BusinessContextProfile["clientConnectionExperienceStatus"]) ?? undefined,
     updatedAt: (row.updated_at as string) ?? null,
   }
 }
@@ -96,6 +107,16 @@ function toColumns(p: BusinessContextProfile): Record<string, unknown> {
     wealth_building_interests: p.wealthBuildingInterests,
     communication_level: p.communicationLevel,
     learning_interests: p.learningInterests,
+    offer_statement: p.offerStatement,
+    ideal_client_definition: p.idealClientDefinition,
+    acquisition_channel: p.acquisitionChannel,
+    conversion_mechanism: p.conversionMechanism,
+    has_onboarding: p.hasOnboarding,
+    delivery_model: p.deliveryModel,
+    has_proof_testimonials: p.hasProofTestimonials,
+    referral_mechanism: p.referralMechanism,
+    current_ai_tool_use: p.currentAiToolUse,
+    client_connection_experience_status: p.clientConnectionExperienceStatus,
   }
 }
 

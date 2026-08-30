@@ -31,7 +31,9 @@ import type {
   BusinessStageOption,
   CapitalStrategyOption,
   ChallengeOption,
+  ClientConnectionExperienceStatus,
   CommunicationLevelOption,
+  DeliveryModelOption,
   ExitVisionOption,
   FinancialFoundationOption,
   FounderRoleOption,
@@ -274,6 +276,30 @@ const WEALTH_OPTIONS: { value: WealthBuildingOption; label: string; isLearn?: bo
   { value: "learn", label: "Learn Before I Launch™ — Wealth Building", isLearn: true },
 ]
 
+const DELIVERY_MODEL_OPTIONS: { value: DeliveryModelOption; label: string }[] = [
+  { value: "one-to-one", label: "One-to-one (individual clients)" },
+  { value: "one-to-many-group", label: "One-to-many / group" },
+  { value: "self-serve-digital", label: "Self-serve digital (course, download, software)" },
+  { value: "productized-service", label: "Productized service (fixed-scope deliverable)" },
+  { value: "physical-fulfillment", label: "Physical product fulfillment" },
+  { value: "hybrid", label: "Hybrid of multiple models" },
+  { value: "other", label: "Other" },
+]
+
+const CLIENT_CONNECTION_EXPERIENCE_OPTIONS: { value: ClientConnectionExperienceStatus; label: string }[] = [
+  { value: "challenge", label: "Yes — I run a Challenge" },
+  { value: "webinar", label: "Yes — I run a Webinar" },
+  { value: "workshop", label: "Yes — I run a Workshop" },
+  { value: "immersion", label: "Yes — I run an Immersion" },
+  { value: "mastermind", label: "Yes — I run a Mastermind" },
+  { value: "none", label: "No — I don't currently run one" },
+]
+
+const YES_NO_OPTIONS: { value: "yes" | "no"; label: string }[] = [
+  { value: "yes", label: "Yes" },
+  { value: "no", label: "Not yet" },
+]
+
 // ─── Shared UI sub-components ─────────────────────────────────────────────────
 
 function StepCard({ children, innerRef }: { children: React.ReactNode; innerRef?: React.RefObject<HTMLDivElement | null> }) {
@@ -469,7 +495,7 @@ function ProgressBar({ step, total }: { step: number; total: number }) {
 
 // ─── Main wizard ─────────────────────────────────────────────────────────────
 
-const TOTAL_STEPS = 25
+const TOTAL_STEPS = 35
 
 export function BusinessContextProfile({ onDone }: { onDone?: () => void } = {}) {
   const router = useRouter()
@@ -524,6 +550,19 @@ export function BusinessContextProfile({ onDone }: { onDone?: () => void } = {})
   const [commLevel, setCommLevel] = useState<CommunicationLevelOption | null>(null)
   const [learningInterests, setLearningInterests] = useState<string[]>([])
 
+  // Business Reality™ (Phase 1 — EGA Foundation; facts only, no diagnosis)
+  const [offerStatement, setOfferStatement] = useState("")
+  const [idealClientDefinition, setIdealClientDefinition] = useState("")
+  const [acquisitionChannel, setAcquisitionChannel] = useState("")
+  const [conversionMechanism, setConversionMechanism] = useState("")
+  const [hasOnboarding, setHasOnboarding] = useState<"yes" | "no" | null>(null)
+  const [deliveryModel, setDeliveryModel] = useState<DeliveryModelOption | null>(null)
+  const [hasProofTestimonials, setHasProofTestimonials] = useState<"yes" | "no" | null>(null)
+  const [referralMechanism, setReferralMechanism] = useState("")
+  const [currentAiToolUse, setCurrentAiToolUse] = useState("")
+  const [clientConnectionExperienceStatus, setClientConnectionExperienceStatus] =
+    useState<ClientConnectionExperienceStatus | null>(null)
+
   // Auto-scroll on step changes (not on initial load)
   useEffect(() => {
     if (!hasAdvancedRef.current) return
@@ -568,6 +607,18 @@ export function BusinessContextProfile({ onDone }: { onDone?: () => void } = {})
       setWealthBuilding(record.wealthBuildingInterests)
       setCommLevel(record.communicationLevel)
       setLearningInterests(record.learningInterests)
+      setOfferStatement(record.offerStatement ?? "")
+      setIdealClientDefinition(record.idealClientDefinition ?? "")
+      setAcquisitionChannel(record.acquisitionChannel ?? "")
+      setConversionMechanism(record.conversionMechanism ?? "")
+      setHasOnboarding(record.hasOnboarding === undefined ? null : record.hasOnboarding ? "yes" : "no")
+      setDeliveryModel(record.deliveryModel ?? null)
+      setHasProofTestimonials(
+        record.hasProofTestimonials === undefined ? null : record.hasProofTestimonials ? "yes" : "no",
+      )
+      setReferralMechanism(record.referralMechanism ?? "")
+      setCurrentAiToolUse(record.currentAiToolUse ?? "")
+      setClientConnectionExperienceStatus(record.clientConnectionExperienceStatus ?? null)
 
       const { updatedAt: _updatedAt, ...profileData } = record
       saveBusinessContext(profileData)
@@ -627,6 +678,16 @@ export function BusinessContextProfile({ onDone }: { onDone?: () => void } = {})
       wealthBuildingInterests: wealthBuilding,
       communicationLevel: commLevel!,
       learningInterests,
+      offerStatement: offerStatement || undefined,
+      idealClientDefinition: idealClientDefinition || undefined,
+      acquisitionChannel: acquisitionChannel || undefined,
+      conversionMechanism: conversionMechanism || undefined,
+      hasOnboarding: hasOnboarding === null ? undefined : hasOnboarding === "yes",
+      deliveryModel: deliveryModel ?? undefined,
+      hasProofTestimonials: hasProofTestimonials === null ? undefined : hasProofTestimonials === "yes",
+      referralMechanism: referralMechanism || undefined,
+      currentAiToolUse: currentAiToolUse || undefined,
+      clientConnectionExperienceStatus: clientConnectionExperienceStatus ?? undefined,
     }
 
     // Local cache for instant loads, then the database — the account's
@@ -688,7 +749,7 @@ export function BusinessContextProfile({ onDone }: { onDone?: () => void } = {})
         </StepCard>
       )}
 
-      {/* ── Step 2: Business Model™ ───────────────────────────────────────── */}
+      {/* ── Step 2: Business Model™ ──���────────────────────────────────────── */}
       {step === 2 && (
         <StepCard>
           <StepLabel label="Business Identity™" step={3} total={TOTAL_STEPS} />
@@ -1008,7 +1069,7 @@ export function BusinessContextProfile({ onDone }: { onDone?: () => void } = {})
         </StepCard>
       )}
 
-      {/* ── Step 20: Business Banking™ ────────────────────────────────────── */}
+      {/* ── Step 20: Business Banking™ ────────────────────���───────────────── */}
       {step === 20 && (
         <StepCard>
           <StepLabel label="Financial Architecture™" step={21} total={TOTAL_STEPS} />
@@ -1110,9 +1171,165 @@ export function BusinessContextProfile({ onDone }: { onDone?: () => void } = {})
               )
             })}
           </div>
+          <ContinueButton onClick={advance} disabled={learningInterests.length === 0} />
+        </StepCard>
+      )}
+
+      {/* ── Step 25: Offer Statement — Business Reality™ ─────────────────── */}
+      {step === 25 && (
+        <StepCard>
+          <StepLabel label="Business Reality™" step={26} total={TOTAL_STEPS} />
+          <StepQuestion>In one sentence, what does your business offer?</StepQuestion>
+          <StepHint>Describe it the way you would to a new prospect — no need to make it perfect.</StepHint>
+          <textarea
+            value={offerStatement}
+            onChange={(e) => setOfferStatement(e.target.value)}
+            placeholder="e.g. We help busy founders reclaim their time through done-for-you operations support."
+            rows={3}
+            className="w-full rounded-2xl border border-[#E8E0D5] bg-white px-4 py-3 font-montserrat text-sm text-[#3A2E33] placeholder:text-[#6B5860]/40 focus:border-[#5B835F] focus:outline-none focus:ring-2 focus:ring-[#5B835F]/20"
+          />
+          <ContinueButton onClick={advance} disabled={!offerStatement.trim()} />
+        </StepCard>
+      )}
+
+      {/* ── Step 26: Ideal Client Definition — Business Reality™ ─────────── */}
+      {step === 26 && (
+        <StepCard>
+          <StepLabel label="Business Reality™" step={27} total={TOTAL_STEPS} />
+          <StepQuestion>Who is your ideal client, in your own words?</StepQuestion>
+          <textarea
+            value={idealClientDefinition}
+            onChange={(e) => setIdealClientDefinition(e.target.value)}
+            placeholder="Describe who they are, what they're struggling with, or what they want."
+            rows={3}
+            className="w-full rounded-2xl border border-[#E8E0D5] bg-white px-4 py-3 font-montserrat text-sm text-[#3A2E33] placeholder:text-[#6B5860]/40 focus:border-[#5B835F] focus:outline-none focus:ring-2 focus:ring-[#5B835F]/20"
+          />
+          <ContinueButton onClick={advance} disabled={!idealClientDefinition.trim()} />
+        </StepCard>
+      )}
+
+      {/* ── Step 27: Acquisition Channel — Business Reality™ ─────────────── */}
+      {step === 27 && (
+        <StepCard>
+          <StepLabel label="Business Reality™" step={28} total={TOTAL_STEPS} />
+          <StepQuestion>Where do most of your new clients come from right now?</StepQuestion>
+          <StepHint>e.g. referrals, social media, an existing list, paid ads, cold outreach.</StepHint>
+          <input
+            type="text"
+            value={acquisitionChannel}
+            onChange={(e) => setAcquisitionChannel(e.target.value)}
+            placeholder="Describe your main source of new clients"
+            className="w-full rounded-2xl border border-[#E8E0D5] bg-white px-4 py-3 font-montserrat text-sm text-[#3A2E33] placeholder:text-[#6B5860]/40 focus:border-[#5B835F] focus:outline-none focus:ring-2 focus:ring-[#5B835F]/20"
+          />
+          <ContinueButton onClick={advance} disabled={!acquisitionChannel.trim()} />
+        </StepCard>
+      )}
+
+      {/* ── Step 28: Conversion Mechanism — Business Reality™ ─────────────── */}
+      {step === 28 && (
+        <StepCard>
+          <StepLabel label="Business Reality™" step={29} total={TOTAL_STEPS} />
+          <StepQuestion>What is the primary way a prospect becomes a paying client?</StepQuestion>
+          <StepHint>e.g. a sales call, a checkout page, a proposal, a DM conversation.</StepHint>
+          <input
+            type="text"
+            value={conversionMechanism}
+            onChange={(e) => setConversionMechanism(e.target.value)}
+            placeholder="Describe how someone actually becomes a client"
+            className="w-full rounded-2xl border border-[#E8E0D5] bg-white px-4 py-3 font-montserrat text-sm text-[#3A2E33] placeholder:text-[#6B5860]/40 focus:border-[#5B835F] focus:outline-none focus:ring-2 focus:ring-[#5B835F]/20"
+          />
+          <ContinueButton onClick={advance} disabled={!conversionMechanism.trim()} />
+        </StepCard>
+      )}
+
+      {/* ── Step 29: Onboarding Existence — Business Reality™ ─────────────── */}
+      {step === 29 && (
+        <StepCard>
+          <StepLabel label="Business Reality™" step={30} total={TOTAL_STEPS} />
+          <StepQuestion>Do you have a defined onboarding process for new clients?</StepQuestion>
+          <StepHint>Just whether one exists today — not whether it's a good one.</StepHint>
+          <SingleChoice
+            options={YES_NO_OPTIONS}
+            value={hasOnboarding}
+            onChange={(v) => autoAdvanceSingle(setHasOnboarding, v)}
+          />
+        </StepCard>
+      )}
+
+      {/* ── Step 30: Delivery Model — Business Reality™ ───────────────────── */}
+      {step === 30 && (
+        <StepCard>
+          <StepLabel label="Business Reality™" step={31} total={TOTAL_STEPS} />
+          <StepQuestion>How do you primarily deliver your product or service?</StepQuestion>
+          <SingleChoice
+            options={DELIVERY_MODEL_OPTIONS}
+            value={deliveryModel}
+            onChange={(v) => autoAdvanceSingle(setDeliveryModel, v)}
+          />
+        </StepCard>
+      )}
+
+      {/* ── Step 31: Proof & Testimonials — Business Reality™ ─────────────── */}
+      {step === 31 && (
+        <StepCard>
+          <StepLabel label="Business Reality™" step={32} total={TOTAL_STEPS} />
+          <StepQuestion>Do you have client testimonials or proof of results?</StepQuestion>
+          <SingleChoice
+            options={YES_NO_OPTIONS}
+            value={hasProofTestimonials}
+            onChange={(v) => autoAdvanceSingle(setHasProofTestimonials, v)}
+          />
+        </StepCard>
+      )}
+
+      {/* ── Step 32: Referral Mechanism — Business Reality™ ───────────────── */}
+      {step === 32 && (
+        <StepCard>
+          <StepLabel label="Business Reality™" step={33} total={TOTAL_STEPS} />
+          <StepQuestion>How do referrals or repeat business currently happen, if at all?</StepQuestion>
+          <StepHint>It's okay to say "they don't yet" — that's useful information too.</StepHint>
+          <input
+            type="text"
+            value={referralMechanism}
+            onChange={(e) => setReferralMechanism(e.target.value)}
+            placeholder="Describe how referrals or repeat clients happen today"
+            className="w-full rounded-2xl border border-[#E8E0D5] bg-white px-4 py-3 font-montserrat text-sm text-[#3A2E33] placeholder:text-[#6B5860]/40 focus:border-[#5B835F] focus:outline-none focus:ring-2 focus:ring-[#5B835F]/20"
+          />
+          <ContinueButton onClick={advance} disabled={!referralMechanism.trim()} />
+        </StepCard>
+      )}
+
+      {/* ── Step 33: Current AI Tool Use — Business Reality™ ──────────────── */}
+      {step === 33 && (
+        <StepCard>
+          <StepLabel label="Business Reality™" step={34} total={TOTAL_STEPS} />
+          <StepQuestion>Which AI tools, if any, are you currently using in your business?</StepQuestion>
+          <StepHint>It's okay to say "none yet."</StepHint>
+          <input
+            type="text"
+            value={currentAiToolUse}
+            onChange={(e) => setCurrentAiToolUse(e.target.value)}
+            placeholder="e.g. ChatGPT for content, none yet, a scheduling assistant"
+            className="w-full rounded-2xl border border-[#E8E0D5] bg-white px-4 py-3 font-montserrat text-sm text-[#3A2E33] placeholder:text-[#6B5860]/40 focus:border-[#5B835F] focus:outline-none focus:ring-2 focus:ring-[#5B835F]/20"
+          />
+          <ContinueButton onClick={advance} disabled={!currentAiToolUse.trim()} />
+        </StepCard>
+      )}
+
+      {/* ── Step 34: Client Connection Experience™ — Business Reality™ ────── */}
+      {step === 34 && (
+        <StepCard>
+          <StepLabel label="Business Reality™" step={35} total={TOTAL_STEPS} />
+          <StepQuestion>Do you currently run a Client Connection Experience™?</StepQuestion>
+          <StepHint>Challenge, webinar, workshop, immersion, or mastermind — pick the one that applies today.</StepHint>
+          <SingleChoice
+            options={CLIENT_CONNECTION_EXPERIENCE_OPTIONS}
+            value={clientConnectionExperienceStatus}
+            onChange={setClientConnectionExperienceStatus}
+          />
           <ContinueButton
             onClick={handleFinish}
-            disabled={learningInterests.length === 0}
+            disabled={!clientConnectionExperienceStatus}
             label="Complete My Business Context Profile™"
           />
         </StepCard>
