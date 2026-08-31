@@ -46,6 +46,7 @@ import { addWorkItem, hasQueuedAsset } from "@/lib/ceo-workday/todays-work-store
 import { getWorkflowEntry } from "@/lib/ceo-workday/workflow-registry"
 import { CategorySelectorRow } from "@/components/ceo-workday/category-selector-row"
 import { TodaysWorkQueue } from "@/components/ceo-workday/todays-work-queue"
+import { ArticulationHighlightBanner } from "@/components/articulation/articulation-highlight-banner"
 
 /** Plain-language status pill label for every real `BuildLifecycleStatus`. Falls back to "In Progress" for any other active, non-terminal state. */
 const STATUS_LABEL: Record<string, string> = {
@@ -203,6 +204,8 @@ export function FounderGpsWorkspace() {
           </div>
         </div>
       )}
+
+      <ArticulationHighlightBanner />
 
       <div className="space-y-4">
         <p className="font-montserrat text-xs font-bold uppercase tracking-[0.16em] text-[#6B5860]">

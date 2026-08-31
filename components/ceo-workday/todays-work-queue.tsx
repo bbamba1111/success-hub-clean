@@ -17,7 +17,7 @@
  */
 
 import { useEffect, useState } from "react"
-import { ChevronDown, Sparkles, User } from "lucide-react"
+import { ChevronDown, Mic, Sparkles, User } from "lucide-react"
 
 import {
   getTodaysWork,
@@ -31,6 +31,12 @@ import { getBusinessAsset } from "@/lib/business-asset-library/business-asset-re
 import { AssetDetailView } from "@/components/business-asset-library/asset-detail-view"
 import { deriveDelegationBuildRecord } from "@/lib/build-record/delegation-brief-bridge"
 import { upsertBuildRecordToDb } from "@/utils/build-record-storage"
+import type { BusinessAssetBuildRecord } from "@/utils/business-asset-build-storage"
+import {
+  ArticulationPracticeDialog,
+  type ArticulationSourceContext,
+} from "@/components/articulation/articulation-practice-dialog"
+import { ARTICULATION_PURPOSE } from "@/lib/articulation/purpose"
 
 const STATUS_LABEL: Record<CeoWorkItemStatus, string> = {
   "not-started": "Not Started",
@@ -116,6 +122,21 @@ function TodaysWorkItemRow({
   const category = getCeoWorkCategory(item.category)
   const isAvailable = item.availability === "available"
   const asset = item.relatedAssetId ? getBusinessAsset(item.relatedAssetId) : null
+  const [ownedBuild, setOwnedBuild] = useState<BusinessAssetBuildRecord | null>(null)
+  const [showArticulation, setShowArticulation] = useState(false)
+
+  // Business Articulation Training™ (Phase 4 MVP): the real content the
+  // founder is currently working on — prefers what they've actually built;
+  // falls back to the asset's own "what is this / why does it matter" so
+  // the CTA is useful even before a build is finished.
+  const articulationSource: ArticulationSourceContext | null = asset
+    ? {
+        sourceTitle: item.selectedOptionLabel,
+        sourceKind: asset.category,
+        sourceContent: ownedBuild?.generatedContent?.trim() || `${asset.whatIsThis} ${asset.whyItMatters}`,
+        purpose: ARTICULATION_PURPOSE[item.category],
+      }
+    : null
 
   return (
     <div className="rounded-2xl border border-[#E8DFE2] bg-white overflow-hidden">
@@ -169,6 +190,7 @@ function TodaysWorkItemRow({
                 instanceKey={item.instanceKey}
                 instanceLabel={item.instanceKey ? item.selectedOptionLabel : undefined}
                 onOwnedBuildChange={(build) => {
+                  setOwnedBuild(build)
                   updateWorkItemStatus(item.id, build ? "completed" : "not-started", build?.id)
                   // Phase 3: bridge a completed Delegation Brief™ instance into its own
                   // independent Build Record™, same pattern as the existing Phase 1/2
@@ -179,7 +201,19 @@ function TodaysWorkItemRow({
                   }
                 }}
               />
-              <div className="flex items-center justify-end gap-3 pt-2">
+              <div className="flex items-center justify-between gap-3 pt-2">
+                {/* Business Articulation Training™ (Phase 4 MVP) — practice saying THIS
+                    real work out loud, using its actual content. Available as soon as the
+                    asset exists, regardless of build completion, so the founder never has
+                    to re-enter anything they've already created. */}
+                <button
+                  type="button"
+                  onClick={() => setShowArticulation(true)}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-[#5A7A45]/10 px-3 py-1.5 font-sans text-xs font-bold text-[#5A7A45] hover:bg-[#5A7A45]/15 transition-colors"
+                >
+                  <Mic className="h-3.5 w-3.5" aria-hidden />
+                  Practice Communicating This
+                </button>
                 {item.source === "barbara" ? (
                   <p className="font-sans text-xs text-[#B7A6AE]">Assigned by Barbara</p>
                 ) : (
@@ -197,6 +231,14 @@ function TodaysWorkItemRow({
             <ComingNextPanel item={item} onRemove={onRemove} />
           )}
         </div>
+      )}
+
+      {articulationSource && (
+        <ArticulationPracticeDialog
+          open={showArticulation}
+          onClose={() => setShowArticulation(false)}
+          source={articulationSource}
+        />
       )}
     </div>
   )
