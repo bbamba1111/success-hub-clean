@@ -34,6 +34,8 @@ export function GuidedBuildFlow({
   executiveName,
   onExit,
   onAssetSaved,
+  instanceKey,
+  instanceLabel,
 }: {
   asset: BusinessAsset
   mode: BuildModeDefinition
@@ -42,7 +44,16 @@ export function GuidedBuildFlow({
   onExit: () => void
   /** Fired once the founder's step notes have been saved, so the parent can refresh the ownership card. */
   onAssetSaved?: () => void
+  /**
+   * Phase 3: which specific instance of a multi-instance asset (e.g.
+   * Delegation Brief™) this flow is building. Omit for singleton assets —
+   * behavior is byte-for-byte unchanged.
+   */
+  instanceKey?: string | null
+  /** Display-only founder-given title for this instance (e.g. "Client Onboarding"). Defaults to asset.name. */
+  instanceLabel?: string
 }) {
+  const displayName = instanceLabel ?? asset.name
   const steps = asset.instructions[style]
   const example = asset.examples[style]
   const [stepIndex, setStepIndex] = useState(0)
@@ -65,7 +76,7 @@ export function GuidedBuildFlow({
   useEffect(() => {
     if (mode.id !== "guided-diy") return
     let active = true
-    getBusinessAssetBuildFromDb(asset.id, "guided-diy").then((existing) => {
+    getBusinessAssetBuildFromDb(asset.id, "guided-diy", instanceKey).then((existing) => {
       if (!active || !existing) return
       setBuildId(existing.id)
       setWasAlreadyCompleted(existing.status === "completed")
@@ -83,7 +94,7 @@ export function GuidedBuildFlow({
       active = false
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [asset.id, mode.id])
+  }, [asset.id, mode.id, instanceKey])
 
   function goNext() {
     setShowStuck(false)
@@ -105,6 +116,7 @@ export function GuidedBuildFlow({
             getBusinessStage(),
             buildId,
             asset.artifactKind ?? "business-asset",
+            instanceKey,
           ).then((id) => {
             if (id) setBuildId(id)
             setWasAlreadyCompleted(true)
@@ -129,7 +141,7 @@ export function GuidedBuildFlow({
           <PartyPopper className="h-7 w-7 text-brand-green" aria-hidden />
         </span>
         <h3 className="mt-4 font-display text-xl font-semibold text-brand-ink">
-          You&apos;ve worked through {asset.name}
+          You&apos;ve worked through {displayName}
         </h3>
         <p className="mx-auto mt-2 max-w-md text-pretty text-sm leading-relaxed text-brand-ink-soft">
           {isAi
@@ -148,7 +160,7 @@ export function GuidedBuildFlow({
             Revisit Builder Steps
           </button>
           <button type="button" onClick={onExit} className="ds-btn-primary">
-            Back to {asset.name}
+            Back to {displayName}
           </button>
         </div>
       </div>

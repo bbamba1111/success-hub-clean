@@ -29,6 +29,8 @@ import type { CeoWorkItem, CeoWorkItemStatus } from "@/lib/ceo-workday/types"
 import { getCeoWorkCategory } from "@/lib/ceo-workday/categories"
 import { getBusinessAsset } from "@/lib/business-asset-library/business-asset-registry"
 import { AssetDetailView } from "@/components/business-asset-library/asset-detail-view"
+import { deriveDelegationBuildRecord } from "@/lib/build-record/delegation-brief-bridge"
+import { upsertBuildRecordToDb } from "@/utils/build-record-storage"
 
 const STATUS_LABEL: Record<CeoWorkItemStatus, string> = {
   "not-started": "Not Started",
@@ -164,8 +166,17 @@ function TodaysWorkItemRow({
                   can't mark a queue item "Completed" without actually finishing the build. */}
               <AssetDetailView
                 asset={asset}
+                instanceKey={item.instanceKey}
+                instanceLabel={item.instanceKey ? item.selectedOptionLabel : undefined}
                 onOwnedBuildChange={(build) => {
                   updateWorkItemStatus(item.id, build ? "completed" : "not-started", build?.id)
+                  // Phase 3: bridge a completed Delegation Brief™ instance into its own
+                  // independent Build Record™, same pattern as the existing Phase 1/2
+                  // wiring above — one more line, no new engine.
+                  if (item.category === "DELEGATE" && build) {
+                    const record = deriveDelegationBuildRecord(build, asset, item.selectedOptionLabel)
+                    void upsertBuildRecordToDb(record)
+                  }
                 }}
               />
               <div className="flex items-center justify-end gap-3 pt-2">

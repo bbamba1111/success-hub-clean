@@ -38,6 +38,13 @@ export interface BusinessAssetBuildRecord {
   approvedAt: string | null
   /** Phase 1 Common Creation Engine discriminant. Defaults to "business-asset" for every existing row. */
   artifactKind: ArtifactKind
+  /**
+   * Phase 3: discriminates which specific instance of a multi-instance
+   * asset (e.g. Delegation Brief™) this row is. `null` for every existing
+   * singleton asset — never set by anything other than multi-instance
+   * flows.
+   */
+  instanceKey: string | null
 }
 
 async function getUserId(): Promise<string | null> {
@@ -69,6 +76,7 @@ function mapRow(row: Record<string, unknown> | null): BusinessAssetBuildRecord |
     businessStage: (row.business_stage as string | null) ?? null,
     approvedAt: (row.approved_at as string | null) ?? null,
     artifactKind: (row.artifact_kind as ArtifactKind) ?? "business-asset",
+    instanceKey: (row.instance_key as string | null) ?? null,
   }
 }
 
@@ -79,21 +87,25 @@ function mapRow(row: Record<string, unknown> | null): BusinessAssetBuildRecord |
 export async function getBusinessAssetBuildFromDb(
   businessAssetId: string,
   buildMode: BuildModeId,
+  instanceKey?: string | null,
 ): Promise<BusinessAssetBuildRecord | null> {
   const userId = await getUserId()
   if (!userId) return null
 
   try {
     const supabase = createClient()
-    const { data } = await supabase
+    let query = supabase
       .from("business_asset_builds")
       .select("*")
       .eq("user_id", userId)
       .eq("business_asset_id", businessAssetId)
       .eq("build_mode", buildMode)
-      .order("updated_at", { ascending: false })
-      .limit(1)
-      .maybeSingle()
+    // Explicit .eq/.is split: omitting instanceKey must match ONLY legacy
+    // singleton rows (instance_key is null), never a multi-instance row, and
+    // vice versa — the two families can never cross-match in either
+    // direction.
+    query = instanceKey ? query.eq("instance_key", instanceKey) : query.is("instance_key", null)
+    const { data } = await query.order("updated_at", { ascending: false }).limit(1).maybeSingle()
     return mapRow(data as Record<string, unknown> | null)
   } catch (error) {
     console.log("[v0] getBusinessAssetBuildFromDb skipped:", (error as Error)?.message)
@@ -110,6 +122,7 @@ export async function createBusinessAssetBuildInDb(
   buildMode: BuildModeId,
   businessStage?: string | null,
   artifactKind: ArtifactKind = "business-asset",
+  instanceKey?: string | null,
 ): Promise<string | null> {
   const userId = await getUserId()
   if (!userId) return null
@@ -126,6 +139,7 @@ export async function createBusinessAssetBuildInDb(
         messages: [],
         business_stage: businessStage ?? null,
         artifact_kind: artifactKind,
+        instance_key: instanceKey ?? null,
       })
       .select("id")
       .single()
@@ -189,21 +203,25 @@ export async function updateBusinessAssetBuildInDb(
  */
 export async function getLatestCompletedBuildForAsset(
   businessAssetId: string,
+  instanceKey?: string | null,
 ): Promise<BusinessAssetBuildRecord | null> {
   const userId = await getUserId()
   if (!userId) return null
 
   try {
     const supabase = createClient()
-    const { data } = await supabase
+    let query = supabase
       .from("business_asset_builds")
       .select("*")
       .eq("user_id", userId)
       .eq("business_asset_id", businessAssetId)
       .eq("status", "completed")
-      .order("updated_at", { ascending: false })
-      .limit(1)
-      .maybeSingle()
+    // Same explicit .eq/.is split as getBusinessAssetBuildFromDb — this
+    // feeds the ownership card directly, so it's the critical fix that
+    // stops two Delegation Brief™ instances from displaying identical
+    // "latest" content.
+    query = instanceKey ? query.eq("instance_key", instanceKey) : query.is("instance_key", null)
+    const { data } = await query.order("updated_at", { ascending: false }).limit(1).maybeSingle()
     return mapRow(data as Record<string, unknown> | null)
   } catch (error) {
     console.log("[v0] getLatestCompletedBuildForAsset skipped:", (error as Error)?.message)
@@ -281,6 +299,7 @@ export async function saveGuidedDiyCompletionToDb(
   businessStage?: string | null,
   existingBuildId?: string | null,
   artifactKind: ArtifactKind = "business-asset",
+  instanceKey?: string | null,
 ): Promise<string | null> {
   const userId = await getUserId()
   if (!userId) return null
@@ -303,15 +322,19 @@ export async function saveGuidedDiyCompletionToDb(
     } else {
       // Defensive re-check: never insert a second row for a build that
       // already exists, even if the caller's local state lost track of it.
-      const { data: existing } = await supabase
+      // Same explicit .eq/.is instance_key split as the read paths above —
+      // this re-check must never match across singleton/multi-instance rows
+      // or across two different Delegation Brief™ instances.
+      let existingQuery = supabase
         .from("business_asset_builds")
         .select("id, version, status")
         .eq("user_id", userId)
         .eq("business_asset_id", businessAssetId)
         .eq("build_mode", "guided-diy")
-        .order("updated_at", { ascending: false })
-        .limit(1)
-        .maybeSingle()
+      existingQuery = instanceKey
+        ? existingQuery.eq("instance_key", instanceKey)
+        : existingQuery.is("instance_key", null)
+      const { data: existing } = await existingQuery.order("updated_at", { ascending: false }).limit(1).maybeSingle()
       if (existing) {
         buildId = existing.id as string
         priorVersion = (existing.version as number) ?? 1
@@ -346,6 +369,7 @@ export async function saveGuidedDiyCompletionToDb(
         generated_content: generatedContent,
         business_stage: businessStage ?? null,
         artifact_kind: artifactKind,
+        instance_key: instanceKey ?? null,
       })
       .select("id")
       .single()

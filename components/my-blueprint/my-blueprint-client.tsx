@@ -764,7 +764,7 @@ export function MyBlueprintClient() {
                 return (
                   <Link
                     key={build.id}
-                    href={`/business-asset-library/${build.businessAssetId}`}
+                    href={`/business-asset-library/${build.businessAssetId}${build.instanceKey ? `?instance=${build.instanceKey}` : ""}`}
                     className="flex items-center justify-between gap-3 rounded-xl border border-brand-blush/60 bg-brand-cream/60 px-4 py-3 hover:border-brand-green/40 hover:bg-brand-green/5 transition-colors"
                   >
                     <div className="min-w-0">

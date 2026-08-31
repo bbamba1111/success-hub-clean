@@ -50,6 +50,15 @@ export interface CeoWorkItem {
   relatedSolutionId?: string
   /** Business Asset™ id, when this item's workflow is the Business Asset Builder. */
   relatedAssetId?: string
+  /**
+   * Phase 3: identifies which specific instance of a multi-instance asset
+   * (e.g. Delegation Brief™) this work item is. Omitted for singleton
+   * assets — every existing item is unaffected. Generated once when the
+   * founder names the instance in category-selector-row.tsx and threaded
+   * through to business-asset-build-storage.ts so distinct delegations
+   * (e.g. "Client Onboarding" vs. "Invoicing") never collide.
+   */
+  instanceKey?: string
   timeHorizon?: string
   businessStage?: string
   ceoWorkdayAction?: string

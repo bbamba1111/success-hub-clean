@@ -44,13 +44,24 @@ import { CommunicationStyleModal } from "./communication-style-modal"
 export function AssetDetailView({
   asset,
   onOwnedBuildChange,
+  instanceKey,
+  instanceLabel,
 }: {
   asset: BusinessAsset
   /** Fires whenever the real, saved completion record for this asset resolves or changes — lets a
    *  host (e.g. the CEO Workday's Today's Work queue) reflect the founder's TRUE build status
    *  instead of a manually-toggled one. */
   onOwnedBuildChange?: (build: BusinessAssetBuildRecord | null) => void
+  /**
+   * Phase 3: which specific instance of a multi-instance asset (e.g.
+   * Delegation Brief™) is being viewed. Omit for every other asset —
+   * behavior is byte-for-byte unchanged.
+   */
+  instanceKey?: string | null
+  /** Founder-given title for this instance (e.g. "Client Onboarding"). Defaults to asset.name. Display-only. */
+  instanceLabel?: string
 }) {
+  const displayName = instanceLabel ?? asset.name
   const [style, setStyle] = useState<CommunicationStyle>(DEFAULT_COMMUNICATION_STYLE)
   const [mounted, setMounted] = useState(false)
   const [activeMode, setActiveMode] = useState<BuildModeId | null>(null)
@@ -74,11 +85,11 @@ export function AssetDetailView({
   }, [])
 
   const refreshOwnedBuild = useCallback(() => {
-    getLatestCompletedBuildForAsset(asset.id).then((build) => {
+    getLatestCompletedBuildForAsset(asset.id, instanceKey).then((build) => {
       setOwnedBuild(build)
       onOwnedBuildChange?.(build)
     })
-  }, [asset.id, onOwnedBuildChange])
+  }, [asset.id, instanceKey, onOwnedBuildChange])
 
   useEffect(() => {
     refreshOwnedBuild()
@@ -112,7 +123,7 @@ export function AssetDetailView({
       </div>
 
       <h1 className="mt-3 text-balance font-display text-3xl font-semibold tracking-tight text-brand-ink sm:text-4xl">
-        {asset.name}
+        {displayName}
       </h1>
       <p className="mt-3 text-pretty text-base leading-relaxed text-brand-ink-soft" suppressHydrationWarning>
         {explanation.headline}. {explanation.body}
@@ -221,6 +232,8 @@ export function AssetDetailView({
                 executiveName={primaryOwnerName}
                 onExit={() => setActiveMode(null)}
                 onAssetSaved={refreshOwnedBuild}
+                instanceKey={instanceKey}
+                instanceLabel={instanceLabel}
               />
             )}
           </div>
@@ -231,7 +244,7 @@ export function AssetDetailView({
       {ownedBuild && (
         <div className="mt-10">
           <FounderAssetOwnershipCard
-            assetName={asset.name}
+            assetName={displayName}
             executiveName={primaryOwnerName}
             build={ownedBuild}
             onStatusChange={(next: BusinessAssetReviewStatus) =>

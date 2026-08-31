@@ -122,6 +122,16 @@ export interface BusinessAsset {
    * assets — defaults to "business-asset".
    */
   artifactKind?: ArtifactKind
+  /**
+   * Phase 3: when true, founders can create multiple independent instances
+   * of this asset (e.g. delegating "Client Onboarding" AND "Invoicing" as
+   * two separate, independently-persisted briefs). Omit on every other
+   * asset — defaults to false/singleton, the existing behavior. Only set on
+   * "delegation-brief". Each instance is identified by a generated
+   * `instanceKey` threaded through business-asset-build-storage.ts; the
+   * registry entry itself always stays a single row (the template).
+   */
+  isMultiInstance?: boolean
 }
 
 /** Shorthand so every seed asset declares the full style set without repeating the literal array. */
@@ -3140,6 +3150,7 @@ export const BUSINESS_ASSETS: BusinessAsset[] = [
     id: "delegation-brief",
     name: "Delegation Brief™",
     artifactKind: "delegation-artifact",
+    isMultiInstance: true,
     category: "Delegate the Business",
     shortDescription: "Define exactly what's being handed off — responsibility, authority, and what done looks like.",
     whatIsThis:
