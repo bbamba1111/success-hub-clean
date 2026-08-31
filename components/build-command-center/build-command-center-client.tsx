@@ -33,6 +33,9 @@ import {
   toggleInstalledItem,
   setBlockerNote,
   setExecutor,
+  setDelegateAssignee,
+  markDelegateBriefed,
+  markHandoffAccepted,
   generateCommunicationPackage,
   approveCommunicationPackage,
   isCommunicationPackageApplicable,
@@ -231,6 +234,7 @@ function BuildRecordDetail({
   const [executorDraft, setExecutorDraft] = useState(record.executor ?? "")
   const [liveEvidenceDraft, setLiveEvidenceDraft] = useState(record.liveEvidence.note ?? "")
   const [qaNotesDraft, setQaNotesDraft] = useState(record.qaGate.notes ?? "")
+  const [assigneeDraft, setAssigneeDraft] = useState(record.execution.kind === "delegate" ? record.execution.assignedTo ?? "" : "")
 
   const readyToInstallGate = canTransitionTo(record, "ready-to-install")
   const installingGate = canTransitionTo(record, "installing")
@@ -542,6 +546,59 @@ function BuildRecordDetail({
       {/* Phase 12 — Handoff Education™: only for the same 5 external/capacity
           Build Paths™ as the communication-packages workflow below. */}
       {handoffEducation && <HandoffEducationPanel education={handoffEducation} />}
+
+      {/* Delegation execution — only for "delegate" Build Path™ records. Activates the existing
+          DelegateExecution fields (assignedTo, briefedAt, handoffAcceptedAt); no new fields, no new table. */}
+      {record.execution.kind === "delegate" ? (
+        <section className="mb-6 rounded-2xl border border-brand-blush/70 bg-white p-5 shadow-sm">
+          <h2 className="font-sans text-xs font-bold uppercase tracking-[0.1em] text-brand-ink-soft mb-3">
+            Delegation handoff
+          </h2>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <input
+              type="text"
+              value={assigneeDraft}
+              onChange={(e) => setAssigneeDraft(e.target.value)}
+              placeholder="Assign to whom? (name or role, e.g. Client Success Lead)"
+              className="flex-1 rounded-lg border border-brand-blush/70 bg-white px-3 py-2 font-sans text-sm text-brand-ink placeholder:text-brand-ink-soft/60 focus:border-[#C13B6B]/50 focus:outline-none"
+            />
+            <button
+              onClick={() => onUpdate(setDelegateAssignee(record, assigneeDraft))}
+              className="shrink-0 rounded-lg border border-brand-blush px-4 py-2 font-sans text-xs font-semibold text-brand-ink-soft hover:bg-brand-blush/30"
+            >
+              Save
+            </button>
+          </div>
+
+          <div className="mt-3 flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => onUpdate(markDelegateBriefed(record))}
+              disabled={!record.execution.assignedTo || Boolean(record.execution.briefedAt)}
+              className="rounded-full border border-brand-blush px-4 py-2 font-sans text-xs font-semibold text-brand-ink-soft hover:bg-brand-blush/30 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {record.execution.briefedAt ? "Briefed ✓" : "Mark briefed"}
+            </button>
+            <button
+              type="button"
+              onClick={() => onUpdate(markHandoffAccepted(record))}
+              disabled={!record.execution.briefedAt || Boolean(record.execution.handoffAcceptedAt)}
+              className="rounded-full border border-brand-blush px-4 py-2 font-sans text-xs font-semibold text-brand-ink-soft hover:bg-brand-blush/30 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {record.execution.handoffAcceptedAt ? "Handoff accepted ✓" : "Mark handoff accepted"}
+            </button>
+          </div>
+
+          <ul className="mt-3 space-y-1 font-sans text-xs text-brand-ink-soft">
+            <li>Assigned to: {record.execution.assignedTo ?? "Not yet assigned"}</li>
+            <li>Briefed: {record.execution.briefedAt ? new Date(record.execution.briefedAt).toLocaleString() : "Not yet"}</li>
+            <li>
+              Handoff accepted:{" "}
+              {record.execution.handoffAcceptedAt ? new Date(record.execution.handoffAcceptedAt).toLocaleString() : "Not yet"}
+            </li>
+          </ul>
+        </section>
+      ) : null}
 
       {/* Communication packages — only for the 5 external/capacity Build Paths™ (delegate, hire, outsource, buy,
           partner). The 3 in-house paths (founder-build, co-build, ai-build) have no external recipient, so this

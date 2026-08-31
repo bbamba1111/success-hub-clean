@@ -394,6 +394,53 @@ export function setExecutor(record: BuildRecord, executor: string): BuildRecord 
 }
 
 /**
+ * DELEGATION EXECUTION — activates the 3 existing `DelegateExecution` fields
+ * (`assignedTo`, `briefedAt`, `handoffAcceptedAt`). No new fields, no new
+ * table, no new tracking model — these mutators are the missing wiring for
+ * schema that already existed. Each is a no-op on any non-"delegate" record,
+ * matching this file's existing convention of never touching a block that
+ * doesn't match `execution.kind`.
+ */
+
+/** Saves the founder-entered assignee (name/role) — free text, matching `executor`/`contractorName`/`partnerName`. Never invented. */
+export function setDelegateAssignee(record: BuildRecord, name: string): BuildRecord {
+  if (record.execution.kind !== "delegate") return record
+  const trimmed = name.trim()
+  const assignedTo = trimmed.length > 0 ? trimmed : null
+  return appendActivityLogEntry(
+    { ...record, execution: { ...record.execution, assignedTo }, updatedAt: new Date().toISOString() },
+    "note",
+    assignedTo ? `Assigned to: ${assignedTo}` : "Assignee cleared",
+  )
+}
+
+/** Marks the assignee as briefed — requires an assignee to already be set. */
+export function markDelegateBriefed(record: BuildRecord): BuildRecord {
+  if (record.execution.kind !== "delegate") return record
+  if (!record.execution.assignedTo) return record
+  if (record.execution.briefedAt) return record
+  const now = new Date().toISOString()
+  return appendActivityLogEntry(
+    { ...record, execution: { ...record.execution, briefedAt: now }, updatedAt: now },
+    "status-change",
+    `Briefed: ${record.execution.assignedTo}`,
+  )
+}
+
+/** Marks the handoff as accepted — requires the assignee to already be briefed. */
+export function markHandoffAccepted(record: BuildRecord): BuildRecord {
+  if (record.execution.kind !== "delegate") return record
+  if (!record.execution.briefedAt) return record
+  if (record.execution.handoffAcceptedAt) return record
+  const now = new Date().toISOString()
+  return appendActivityLogEntry(
+    { ...record, execution: { ...record.execution, handoffAcceptedAt: now }, updatedAt: now },
+    "status-change",
+    `Handoff accepted: ${record.execution.assignedTo}`,
+  )
+}
+
+/**
  * isCommunicationPackageApplicable — a handoff/communication package only
  * makes sense when another person or organization must receive the work.
  * The 3 in-house paths (founder-build, co-build, ai-build) never produce
