@@ -206,6 +206,34 @@ export async function getLatestCompletedBuildForAsset(
 }
 
 /**
+ * Loads EVERY completed Business Asset™ build for the signed-in founder,
+ * across every asset and build mode — the durable source for "My Blueprint
+ * History™" on /my-blueprint. Most-recently-completed first. Returns an
+ * empty array if signed out or nothing completed yet (never `null`, so
+ * callers don't need a fallback).
+ */
+export async function getAllCompletedBusinessAssetBuilds(): Promise<BusinessAssetBuildRecord[]> {
+  const userId = await getUserId()
+  if (!userId) return []
+
+  try {
+    const supabase = createClient()
+    const { data } = await supabase
+      .from("business_asset_builds")
+      .select("*")
+      .eq("user_id", userId)
+      .eq("status", "completed")
+      .order("updated_at", { ascending: false })
+    return ((data as Record<string, unknown>[] | null) ?? [])
+      .map(mapRow)
+      .filter((r): r is BusinessAssetBuildRecord => r !== null)
+  } catch (error) {
+    console.log("[v0] getAllCompletedBusinessAssetBuilds skipped:", (error as Error)?.message)
+    return []
+  }
+}
+
+/**
  * Moves a completed build through the founder-approval lifecycle
  * (draft → in-review → approved). Setting "approved" also stamps
  * `approved_at`; moving off "approved" clears it. Best-effort, silent no-op

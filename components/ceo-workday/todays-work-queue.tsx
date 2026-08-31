@@ -17,7 +17,7 @@
  */
 
 import { useEffect, useState } from "react"
-import { ChevronDown, Hammer, Sparkles, User } from "lucide-react"
+import { ChevronDown, Sparkles, User } from "lucide-react"
 
 import {
   getTodaysWork,
@@ -159,23 +159,27 @@ function TodaysWorkItemRow({
         <div className="border-t border-[#E8DFE2] bg-[#FAF8F5] px-4 py-5 sm:px-6">
           {isAvailable && asset ? (
             <div className="space-y-4">
-              <AssetDetailView asset={asset} />
-              <div className="flex items-center justify-between gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={() => updateWorkItemStatus(item.id, item.status === "completed" ? "in-progress" : "completed", asset.id)}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-[#5A7A45] px-4 py-2 font-sans text-xs font-bold text-white hover:opacity-90 transition-opacity"
-                >
-                  <Hammer className="h-3.5 w-3.5" aria-hidden />
-                  {item.status === "completed" ? "Mark In Progress" : "Mark Complete"}
-                </button>
-                <button
-                  type="button"
-                  onClick={onRemove}
-                  className="font-sans text-xs font-bold text-[#B7A6AE] hover:text-[#C4707B] transition-colors"
-                >
-                  Remove from Today&apos;s Work
-                </button>
+              {/* Status here is driven by the REAL, saved Business Asset™ build record
+                  (onOwnedBuildChange -> updateWorkItemStatus), never a manual toggle — a founder
+                  can't mark a queue item "Completed" without actually finishing the build. */}
+              <AssetDetailView
+                asset={asset}
+                onOwnedBuildChange={(build) => {
+                  updateWorkItemStatus(item.id, build ? "completed" : "not-started", build?.id)
+                }}
+              />
+              <div className="flex items-center justify-end gap-3 pt-2">
+                {item.source === "barbara" ? (
+                  <p className="font-sans text-xs text-[#B7A6AE]">Assigned by Barbara</p>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={onRemove}
+                    className="font-sans text-xs font-bold text-[#B7A6AE] hover:text-[#C4707B] transition-colors"
+                  >
+                    Remove from Today&apos;s Work
+                  </button>
+                )}
               </div>
             </div>
           ) : (
@@ -201,13 +205,17 @@ function ComingNextPanel({ item, onRemove }: { item: CeoWorkItem; onRemove: () =
         <span className="inline-flex items-center rounded-full bg-[#F4F1EC] px-3 py-1.5 font-montserrat text-[10px] font-bold uppercase tracking-[0.1em] text-[#6B5860]">
           Coming Next
         </span>
-        <button
-          type="button"
-          onClick={onRemove}
-          className="font-sans text-xs font-bold text-[#B7A6AE] hover:text-[#C4707B] transition-colors"
-        >
-          Remove from Today&apos;s Work
-        </button>
+        {item.source === "barbara" ? (
+          <p className="font-sans text-xs text-[#B7A6AE]">Assigned by Barbara</p>
+        ) : (
+          <button
+            type="button"
+            onClick={onRemove}
+            className="font-sans text-xs font-bold text-[#B7A6AE] hover:text-[#C4707B] transition-colors"
+          >
+            Remove from Today&apos;s Work
+          </button>
+        )}
       </div>
     </div>
   )

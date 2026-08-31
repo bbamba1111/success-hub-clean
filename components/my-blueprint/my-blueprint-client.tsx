@@ -35,6 +35,7 @@ import {
   Briefcase,
   MapPin,
   Navigation,
+  Hammer,
 } from "lucide-react"
 
 import { getAuditResults, type AuditData } from "@/utils/audit-storage"
@@ -54,6 +55,11 @@ import { useHarmonyContext } from "@/components/harmony-context/harmony-context-
 import { buildGpsContextFromSnapshot, deriveNextBestMove } from "@/lib/founder-gps/next-best-move-engine"
 import { getActiveBuildStatusByCapabilityId } from "@/lib/build-record/build-record-store"
 import { InPlaceResultsReview } from "@/components/my-blueprint/in-place-results-review"
+import {
+  getAllCompletedBusinessAssetBuilds,
+  type BusinessAssetBuildRecord,
+} from "@/utils/business-asset-build-storage"
+import { getBusinessAsset } from "@/lib/business-asset-library/business-asset-registry"
 
 // ── Small formatting helpers ─────────────────────────────────────────────────
 
@@ -276,12 +282,17 @@ export function MyBlueprintClient() {
   const [founder, setFounder] = useState<Record<string, unknown> | null>(null)
   const [bizContext, setBizContext] = useState<BusinessContextProfile | null>(null)
   const [destination, setDestination] = useState<FounderDestinationProfile | null>(null)
+  const [completedBuilds, setCompletedBuilds] = useState<BusinessAssetBuildRecord[]>([])
   const [ready, setReady] = useState(false)
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" })
     setLifeData(getAuditResults())
     setBizData(getEsaResults())
+    // My Blueprint History™ — every real, saved Business Asset™ build the
+    // founder has completed, across every asset and build mode. Read-only
+    // view over the existing business_asset_builds table; no new data.
+    getAllCompletedBusinessAssetBuilds().then(setCompletedBuilds)
     // Instant paint from the local cache, then reconcile with the database —
     // the account's canonical Founder Profile™ / Business Context Profile™ /
     // Founder Destination™ — once each resolves.
@@ -370,7 +381,7 @@ export function MyBlueprintClient() {
 
   return (
     <div className="min-h-screen bg-brand-cream">
-      {/* ── Hero header ──────────────────────────────────────────────────── */}
+      {/* ── Hero header ─────���────────────────────────────────────────────── */}
       <header className="relative isolate overflow-hidden">
         <div
           className="absolute inset-0 -z-10 bg-cover bg-center"
@@ -732,6 +743,63 @@ export function MyBlueprintClient() {
               message="Your Founder GPS™ Next Best Move™ will appear here once your Blueprint has enough signal to reason over — complete a few of the sections above to activate it."
               href="/founder-destination"
               cta="Set Your Founder Destination™"
+            />
+          )}
+        </BlueprintSection>
+
+        <LayerDivider label="What I've Actually Built" />
+
+        {/* 08 — MY BLUEPRINT HISTORY™ ──────────────────────────────────── */}
+        <BlueprintSection
+          eyebrow="08 — Build History"
+          icon={Hammer}
+          title="My Blueprint History™"
+          subtitle="Every Business Asset™ You've Actually Finished"
+          accent="#5A7A45"
+        >
+          {ready && completedBuilds.length > 0 ? (
+            <div className="space-y-2.5">
+              {completedBuilds.map((build) => {
+                const asset = getBusinessAsset(build.businessAssetId)
+                return (
+                  <Link
+                    key={build.id}
+                    href={`/business-asset-library/${build.businessAssetId}`}
+                    className="flex items-center justify-between gap-3 rounded-xl border border-brand-blush/60 bg-brand-cream/60 px-4 py-3 hover:border-brand-green/40 hover:bg-brand-green/5 transition-colors"
+                  >
+                    <div className="min-w-0">
+                      <p className="font-sans text-sm font-semibold text-brand-ink truncate">
+                        {asset?.name ?? "Business Asset™"}
+                      </p>
+                      <p className="mt-0.5 font-sans text-xs text-brand-ink-soft">
+                        {asset?.category ? `${asset.category} · ` : ""}
+                        Completed {formatDate(build.updatedAt) ?? "recently"}
+                      </p>
+                    </div>
+                    <span
+                      className={`shrink-0 inline-flex items-center rounded-full px-2.5 py-1 font-sans text-[10px] font-bold uppercase tracking-[0.08em] ${
+                        build.reviewStatus === "approved"
+                          ? "bg-brand-green/15 text-brand-green-dark"
+                          : build.reviewStatus === "in-review"
+                            ? "bg-[#E8A84E]/15 text-[#B9822F]"
+                            : "bg-brand-ink/[0.05] text-brand-ink-soft"
+                      }`}
+                    >
+                      {build.reviewStatus === "approved"
+                        ? "Approved"
+                        : build.reviewStatus === "in-review"
+                          ? "In Review"
+                          : "Draft"}
+                    </span>
+                  </Link>
+                )
+              })}
+            </div>
+          ) : (
+            <EmptyState
+              message="Every Business Asset™ you finish building — whether Do It Myself, Build With AI, or Let AI Do It — will show up here, permanently, as proof of what you've actually built."
+              href="/business-asset-library"
+              cta="Browse Business Asset Library™"
             />
           )}
         </BlueprintSection>

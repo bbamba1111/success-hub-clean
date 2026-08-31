@@ -39,12 +39,23 @@ import { DelegationBrief } from "./delegation-brief"
 import { ExpertScopeBrief } from "./expert-scope-brief"
 import { BuyVsBuildGuidance } from "./buy-vs-build-guidance"
 import { FounderAssetOwnershipCard } from "./founder-asset-ownership-card"
+import { CommunicationStyleModal } from "./communication-style-modal"
 
-export function AssetDetailView({ asset }: { asset: BusinessAsset }) {
+export function AssetDetailView({
+  asset,
+  onOwnedBuildChange,
+}: {
+  asset: BusinessAsset
+  /** Fires whenever the real, saved completion record for this asset resolves or changes — lets a
+   *  host (e.g. the CEO Workday's Today's Work queue) reflect the founder's TRUE build status
+   *  instead of a manually-toggled one. */
+  onOwnedBuildChange?: (build: BusinessAssetBuildRecord | null) => void
+}) {
   const [style, setStyle] = useState<CommunicationStyle>(DEFAULT_COMMUNICATION_STYLE)
   const [mounted, setMounted] = useState(false)
   const [activeMode, setActiveMode] = useState<BuildModeId | null>(null)
   const [ownedBuild, setOwnedBuild] = useState<BusinessAssetBuildRecord | null>(null)
+  const [showStyleModal, setShowStyleModal] = useState(false)
   const buildSectionRef = useRef<HTMLDivElement>(null)
 
   /** Reopens the exact build mode that produced the founder's saved asset — the flow components resume that SAME build row rather than starting a new one. */
@@ -63,8 +74,11 @@ export function AssetDetailView({ asset }: { asset: BusinessAsset }) {
   }, [])
 
   const refreshOwnedBuild = useCallback(() => {
-    getLatestCompletedBuildForAsset(asset.id).then(setOwnedBuild)
-  }, [asset.id])
+    getLatestCompletedBuildForAsset(asset.id).then((build) => {
+      setOwnedBuild(build)
+      onOwnedBuildChange?.(build)
+    })
+  }, [asset.id, onOwnedBuildChange])
 
   useEffect(() => {
     refreshOwnedBuild()
@@ -86,14 +100,15 @@ export function AssetDetailView({ asset }: { asset: BusinessAsset }) {
       {/* Communication Style™ indicator */}
       <div className="flex items-center justify-between gap-3">
         <p className="ds-eyebrow">{asset.category}</p>
-        <Link
-          href="/member-profile"
+        <button
+          type="button"
+          onClick={() => setShowStyleModal(true)}
           className="inline-flex items-center gap-1.5 text-xs font-medium text-brand-ink-soft ds-transition hover:text-brand-ink"
           suppressHydrationWarning
         >
           <MessageCircle className="h-3.5 w-3.5" aria-hidden />
           Explained in your {mounted ? styleDef.name : "Business Owner™"} style
-        </Link>
+        </button>
       </div>
 
       <h1 className="mt-3 text-balance font-display text-3xl font-semibold tracking-tight text-brand-ink sm:text-4xl">
@@ -232,13 +247,19 @@ export function AssetDetailView({ asset }: { asset: BusinessAsset }) {
         <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-brand-green" aria-hidden />
         <p className="text-pretty text-xs leading-relaxed text-brand-ink-soft">
           This is the same {asset.name} every founder in Harmony Lane™ builds — only the explanation changes to fit
-          how you like things communicated. Change your Communication Style™ anytime from your{" "}
-          <Link href="/member-profile" className="font-semibold text-brand-ink underline-offset-4 hover:underline">
-            profile
-          </Link>
+          how you like things communicated. Change your Communication Style™{" "}
+          <button
+            type="button"
+            onClick={() => setShowStyleModal(true)}
+            className="font-semibold text-brand-ink underline-offset-4 hover:underline"
+          >
+            anytime
+          </button>
           .
         </p>
       </div>
+
+      <CommunicationStyleModal open={showStyleModal} onClose={() => setShowStyleModal(false)} />
     </div>
   )
 }
