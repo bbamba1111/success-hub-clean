@@ -36,6 +36,9 @@ export type BusinessAssetCategory =
   | "Operate the Business"
   | "Grow the Business"
   | "Build the Team"
+  | "Design the Business" // Phase 1 Common Creation Engine: DESIGN category items only. Deliberately excluded
+  // from ALL_BUSINESS_ASSET_CATEGORIES below so these entries never surface in Library browse,
+  // BUILD's menu, or "Recommended For You" — reachable only via CEO Workday's DESIGN category.
 
 export const ALL_BUSINESS_ASSET_CATEGORIES: BusinessAssetCategory[] = [
   "Start Here",
@@ -46,6 +49,13 @@ export const ALL_BUSINESS_ASSET_CATEGORIES: BusinessAssetCategory[] = [
   "Grow the Business",
   "Build the Team",
 ]
+
+/**
+ * Phase 1 of the Common Creation Engine: which registry this entry belongs to
+ * conceptually. Omit entirely on existing Business Assets — treated as
+ * "business-asset" by default.
+ */
+export type ArtifactKind = "business-asset" | "operating-rule"
 
 /** Lifecycle of an asset within the architecture — mirrors Deliverable/Executive status conventions. */
 export type BusinessAssetStatus = "architecture"
@@ -99,6 +109,11 @@ export interface BusinessAsset {
    * Brief" or "Buy vs. Build" framing.
    */
   availableBuildModeIds?: BuildModeId[]
+  /**
+   * Phase 1 Common Creation Engine discriminant. Omitted on all existing
+   * assets — defaults to "business-asset".
+   */
+  artifactKind?: ArtifactKind
 }
 
 /** Shorthand so every seed asset declares the full style set without repeating the literal array. */
@@ -3036,6 +3051,82 @@ export const BUSINESS_ASSETS: BusinessAsset[] = [
     recommendedRenderer: "dashboard-card",
     futureGenerator: "generate/team-accountability-map",
     status: "architecture",
+  },
+  {
+    id: "meeting-rule",
+    name: "Meeting Rule™",
+    artifactKind: "operating-rule",
+    category: "Design the Business",
+    shortDescription: "Set the standing rule for how a recurring meeting actually runs.",
+    whatIsThis:
+      "A short, written operating rule that defines the purpose, cadence, attendees, and standard structure of a recurring meeting — so it runs the same disciplined way every time, not however it happens to go.",
+    whyItMatters:
+      "Meetings without a rule drift — they run long, wander off-topic, or quietly stop being worth the time. A written Meeting Rule turns a recurring meeting into a designed part of how the business operates, not an open-ended calendar block.",
+    ownerExecutiveIds: ["operations"],
+    recommendedBusinessStages: [], // Deliberately empty — never surfaces in "Recommended For You"; reached only via DESIGN.
+    supportedCommunicationStyles: ALL_STYLES,
+    explanations: {
+      foundation: {
+        headline: "Set the rule for a repeating meeting",
+        body: "Let's write one simple rule for a meeting you have again and again — why it happens, who's in it, and how long it runs.",
+      },
+      small_business: {
+        headline: "Design your Meeting Rule",
+        body: "A short written rule for a recurring meeting — purpose, cadence, attendees, and structure — so it stays useful instead of drifting.",
+      },
+      business_owner: {
+        headline: "Build your Meeting Rule™",
+        body: "A standing operating rule for a recurring meeting: purpose, cadence, required attendees, agenda structure, and decision rights.",
+      },
+      executive: {
+        headline: "Codify the meeting's operating rule",
+        body: "A governing rule for a recurring meeting — purpose, cadence, attendees, structure, and decision authority — applied consistently across the team.",
+      },
+      boardroom: {
+        headline: "Formalize the meeting governance rule",
+        body: "A formal governance rule for a recurring meeting, specifying cadence, mandatory attendance, structure, and decision authority for organizational consistency.",
+      },
+    },
+    instructions: {
+      foundation: [
+        "Name the meeting and what it's for, in one sentence.",
+        "Say how often it happens and how long it runs.",
+        "List who has to be there.",
+      ],
+      small_business: [
+        "State the meeting's purpose and how often it happens.",
+        "Set a standard structure (e.g. same 3 agenda items every time).",
+        "Name who must attend and who's optional.",
+      ],
+      business_owner: [
+        "Define the meeting's purpose, cadence, and maximum length.",
+        "Set the standard agenda structure every occurrence follows.",
+        "Name required attendees and who has final decision rights.",
+      ],
+      executive: [
+        "Define purpose, cadence, and time-box for the meeting.",
+        "Standardize the agenda structure and pre-read expectations.",
+        "Define attendee roles and decision-rights within the meeting.",
+      ],
+      boardroom: [
+        "Define the meeting's governance purpose, cadence, and time-box.",
+        "Codify the standard agenda and documentation requirements.",
+        "Define mandatory attendance and decision authority.",
+      ],
+    },
+    examples: {
+      foundation: "\"Monday Check-In: every Monday, 15 minutes, just me and my one contractor — what shipped, what's stuck, what's next.\"",
+      small_business: "\"Weekly Ops Huddle: every Friday, 30 min, whole team — wins, blockers, next week's priorities. No laptops open.\"",
+      business_owner: "\"Leadership Sync: every Tuesday, 45 min, department leads only — metrics review, blockers, one decision made before close.\"",
+      executive: "\"Monthly Ops Review: first Monday, 60 min, function heads — KPI review, variance flags, owners assigned, tracked to resolution.\"",
+      boardroom: "\"Quarterly Governance Review: 90 min, board + executive team — financials, risk register, compliance sign-off, minutes filed.\"",
+    },
+    digitalBuildAvailable: true,
+    printAvailable: true,
+    recommendedRenderer: "checklist",
+    futureGenerator: "generate/meeting-rule",
+    status: "architecture",
+    availableBuildModeIds: ["build-with-ai", "let-ai-do-it", "guided-diy"],
   },
 ]
 

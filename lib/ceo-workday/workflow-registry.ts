@@ -2,9 +2,10 @@
  * CEO Workday™ — Workflow Registry
  * ---------------------------------------------------------------------------
  * The plug-in contract between a CEO Work category and its real, executable
- * workflow. Today only BUILD has one — the existing Business Asset
- * Builder™ (`AssetDetailView`, unmodified). The other 11 categories are
- * declared here with a placeholder workflow id and
+ * workflow. BUILD and DESIGN both run through the existing Business Asset
+ * Builder™ (`AssetDetailView`, unmodified) — DESIGN offers Operating Rule
+ * artifacts (e.g. Meeting Rule™) from the same registry and engine. The
+ * other 10 categories are declared here with a placeholder workflow id and
  * `"workflow-not-yet-available"` so the architecture recognizes the full
  * range of CEO work without inventing fake builders to fill it in.
  *
@@ -23,7 +24,7 @@ export interface WorkflowRegistryEntry {
 
 export const WORKFLOW_REGISTRY: Record<CeoWorkCategoryId, WorkflowRegistryEntry> = {
   BUILD: { category: "BUILD", workflowId: "business-asset-builder", availability: "available" },
-  DESIGN: { category: "DESIGN", workflowId: "operating-rule-builder", availability: "workflow-not-yet-available" },
+  DESIGN: { category: "DESIGN", workflowId: "operating-rule-builder", availability: "available" },
   DECIDE: { category: "DECIDE", workflowId: "decision-workflow", availability: "workflow-not-yet-available" },
   SOLVE: { category: "SOLVE", workflowId: "problem-resolution-workflow", availability: "workflow-not-yet-available" },
   SYSTEMIZE: { category: "SYSTEMIZE", workflowId: "systemize-workflow", availability: "workflow-not-yet-available" },

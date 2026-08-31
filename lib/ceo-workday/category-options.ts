@@ -25,6 +25,18 @@ export function getBuildOptionGroups(): BuildOptionGroup[] {
   })).filter((group) => group.assets.length > 0)
 }
 
+/**
+ * DESIGN's real, selectable options — Operating Rule artifacts (e.g. Meeting
+ * Rule™). These live in the same registry as Business Assets but carry
+ * `artifactKind: "operating-rule"` and the "Design the Business" category,
+ * which is deliberately excluded from ALL_BUSINESS_ASSET_CATEGORIES so they
+ * never appear in getBuildOptionGroups() above.
+ */
+export function getDesignOptionGroups(): BuildOptionGroup[] {
+  const designAssets = BUSINESS_ASSETS.filter((asset) => asset.artifactKind === "operating-rule")
+  return designAssets.length > 0 ? [{ groupLabel: "Operating Rules", assets: designAssets }] : []
+}
+
 /** True for any category with no real workflow yet — used to render the "Coming Next" popover instead of options. */
 export function categoryHasComingNextOnly(categoryId: CeoWorkCategoryId): boolean {
   return !isWorkflowAvailable(categoryId)

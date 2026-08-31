@@ -98,7 +98,14 @@ export function GuidedBuildFlow({
           .join("\n\n")
         if (combined.trim()) {
           const fieldValues = steps.map((_, i) => notes[i]?.trim() ?? "")
-          void saveGuidedDiyCompletionToDb(asset.id, fieldValues, combined, getBusinessStage(), buildId).then((id) => {
+          void saveGuidedDiyCompletionToDb(
+            asset.id,
+            fieldValues,
+            combined,
+            getBusinessStage(),
+            buildId,
+            asset.artifactKind ?? "business-asset",
+          ).then((id) => {
             if (id) setBuildId(id)
             setWasAlreadyCompleted(true)
             onAssetSaved?.()

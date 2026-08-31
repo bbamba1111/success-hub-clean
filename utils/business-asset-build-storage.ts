@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/client"
 import type { BuildModeId } from "@/lib/business-asset-library/build-modes"
+import type { ArtifactKind } from "@/lib/business-asset-library/business-asset-registry"
 
 /**
  * Live AI Build™ persistence layer (Phase 12.2 proof of concept).
@@ -35,6 +36,8 @@ export interface BusinessAssetBuildRecord {
   version: number
   businessStage: string | null
   approvedAt: string | null
+  /** Phase 1 Common Creation Engine discriminant. Defaults to "business-asset" for every existing row. */
+  artifactKind: ArtifactKind
 }
 
 async function getUserId(): Promise<string | null> {
@@ -65,6 +68,7 @@ function mapRow(row: Record<string, unknown> | null): BusinessAssetBuildRecord |
     version: (row.version as number) ?? 1,
     businessStage: (row.business_stage as string | null) ?? null,
     approvedAt: (row.approved_at as string | null) ?? null,
+    artifactKind: (row.artifact_kind as ArtifactKind) ?? "business-asset",
   }
 }
 
@@ -105,6 +109,7 @@ export async function createBusinessAssetBuildInDb(
   businessAssetId: string,
   buildMode: BuildModeId,
   businessStage?: string | null,
+  artifactKind: ArtifactKind = "business-asset",
 ): Promise<string | null> {
   const userId = await getUserId()
   if (!userId) return null
@@ -120,6 +125,7 @@ export async function createBusinessAssetBuildInDb(
         status: "in-progress",
         messages: [],
         business_stage: businessStage ?? null,
+        artifact_kind: artifactKind,
       })
       .select("id")
       .single()
@@ -274,6 +280,7 @@ export async function saveGuidedDiyCompletionToDb(
   generatedContent: string,
   businessStage?: string | null,
   existingBuildId?: string | null,
+  artifactKind: ArtifactKind = "business-asset",
 ): Promise<string | null> {
   const userId = await getUserId()
   if (!userId) return null
@@ -338,6 +345,7 @@ export async function saveGuidedDiyCompletionToDb(
         field_values: fieldValues,
         generated_content: generatedContent,
         business_stage: businessStage ?? null,
+        artifact_kind: artifactKind,
       })
       .select("id")
       .single()

@@ -16,7 +16,7 @@ import { useRef, useState } from "react"
 import { ChevronDown } from "lucide-react"
 
 import { CEO_WORK_CATEGORIES, type CeoWorkCategoryId } from "@/lib/ceo-workday/categories"
-import { getBuildOptionGroups, categoryHasComingNextOnly } from "@/lib/ceo-workday/category-options"
+import { getBuildOptionGroups, getDesignOptionGroups, categoryHasComingNextOnly } from "@/lib/ceo-workday/category-options"
 import { getWorkflowEntry } from "@/lib/ceo-workday/workflow-registry"
 import { addWorkItem, hasQueuedAsset } from "@/lib/ceo-workday/todays-work-store"
 import type { BusinessAsset } from "@/lib/business-asset-library/business-asset-registry"
@@ -38,6 +38,23 @@ export function CategorySelectorRow({ onItemAdded }: { onItemAdded?: () => void 
         sourceDetail: "Selected from Build category menu",
         relatedAssetId: asset.id,
         tangibleOutcome: "Business Asset™",
+      })
+    }
+    setOpenCategory(null)
+    onItemAdded?.()
+  }
+
+  function handleAddDesignAsset(asset: BusinessAsset) {
+    if (!hasQueuedAsset(asset.id)) {
+      addWorkItem({
+        category: "DESIGN",
+        selectedOptionLabel: asset.name,
+        workflowId: getWorkflowEntry("DESIGN").workflowId,
+        availability: "available",
+        source: "founder",
+        sourceDetail: "Selected from Design category menu",
+        relatedAssetId: asset.id,
+        tangibleOutcome: "Business Operating Rule™",
       })
     }
     setOpenCategory(null)
@@ -78,6 +95,8 @@ export function CategorySelectorRow({ onItemAdded }: { onItemAdded?: () => void 
             <div className="absolute left-0 top-full z-20 mt-2 w-72 rounded-2xl border border-[#E8DFE2] bg-white p-3 shadow-lg">
               {category.id === "BUILD" ? (
                 <BuildOptionsMenu onSelect={handleAddBuildAsset} />
+              ) : category.id === "DESIGN" ? (
+                <BuildOptionsMenu onSelect={handleAddDesignAsset} groups={getDesignOptionGroups()} />
               ) : (
                 <ComingNextMenu category={category} onAdd={() => handleAddComingNext(category.id)} />
               )}
@@ -89,8 +108,13 @@ export function CategorySelectorRow({ onItemAdded }: { onItemAdded?: () => void 
   )
 }
 
-function BuildOptionsMenu({ onSelect }: { onSelect: (asset: BusinessAsset) => void }) {
-  const groups = getBuildOptionGroups()
+function BuildOptionsMenu({
+  onSelect,
+  groups = getBuildOptionGroups(),
+}: {
+  onSelect: (asset: BusinessAsset) => void
+  groups?: ReturnType<typeof getBuildOptionGroups>
+}) {
   return (
     <div className="max-h-80 overflow-y-auto space-y-3">
       {groups.map((group) => (
