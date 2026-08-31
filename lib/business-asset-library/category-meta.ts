@@ -42,4 +42,16 @@ export const CATEGORY_META: Record<BusinessAssetCategory, CategoryMeta> = {
     icon: "Users",
     tagline: "Bring on help without losing clarity.",
   },
+  // "Design the Business" and "Delegate the Business" are deliberately excluded from
+  // ALL_BUSINESS_ASSET_CATEGORIES (reachable only via CEO Workday's DESIGN/DELEGATE
+  // categories, never Library browse), but TypeScript still requires every
+  // BusinessAssetCategory key here since CATEGORY_META is a full Record.
+  "Design the Business": {
+    icon: "PenSquare",
+    tagline: "Set the operating rules that shape how the business runs.",
+  },
+  "Delegate the Business": {
+    icon: "Users",
+    tagline: "Hand off responsibility with a clear brief, not just a task.",
+  },
 }

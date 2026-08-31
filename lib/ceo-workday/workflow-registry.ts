@@ -2,12 +2,14 @@
  * CEO Workday™ — Workflow Registry
  * ---------------------------------------------------------------------------
  * The plug-in contract between a CEO Work category and its real, executable
- * workflow. BUILD and DESIGN both run through the existing Business Asset
- * Builder™ (`AssetDetailView`, unmodified) — DESIGN offers Operating Rule
- * artifacts (e.g. Meeting Rule™) from the same registry and engine. The
- * other 10 categories are declared here with a placeholder workflow id and
- * `"workflow-not-yet-available"` so the architecture recognizes the full
- * range of CEO work without inventing fake builders to fill it in.
+ * workflow. BUILD, DESIGN, and DELEGATE all run through the existing
+ * Business Asset Builder™ (`AssetDetailView`, unmodified) — DESIGN offers
+ * Operating Rule artifacts (e.g. Meeting Rule™) and DELEGATE offers
+ * Delegation Artifacts (e.g. Delegation Brief™), from the same registry and
+ * engine. The remaining 9 categories are declared here with a placeholder
+ * workflow id and `"workflow-not-yet-available"` so the architecture
+ * recognizes the full range of CEO work without inventing fake builders to
+ * fill it in.
  *
  * Do NOT flip an entry to "available" until its real workflow exists.
  */
@@ -28,7 +30,7 @@ export const WORKFLOW_REGISTRY: Record<CeoWorkCategoryId, WorkflowRegistryEntry>
   DECIDE: { category: "DECIDE", workflowId: "decision-workflow", availability: "workflow-not-yet-available" },
   SOLVE: { category: "SOLVE", workflowId: "problem-resolution-workflow", availability: "workflow-not-yet-available" },
   SYSTEMIZE: { category: "SYSTEMIZE", workflowId: "systemize-workflow", availability: "workflow-not-yet-available" },
-  DELEGATE: { category: "DELEGATE", workflowId: "delegation-workflow", availability: "workflow-not-yet-available" },
+  DELEGATE: { category: "DELEGATE", workflowId: "delegation-brief-builder", availability: "available" },
   AUGMENT: { category: "AUGMENT", workflowId: "ai-augmentation-workflow", availability: "workflow-not-yet-available" },
   SELL: { category: "SELL", workflowId: "sales-workflow", availability: "workflow-not-yet-available" },
   MARKET: { category: "MARKET", workflowId: "marketing-workflow", availability: "workflow-not-yet-available" },

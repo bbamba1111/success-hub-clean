@@ -37,6 +37,22 @@ export function getDesignOptionGroups(): BuildOptionGroup[] {
   return designAssets.length > 0 ? [{ groupLabel: "Operating Rules", assets: designAssets }] : []
 }
 
+/**
+ * DELEGATE's real, selectable options — Delegation Artifacts (e.g.
+ * Delegation Brief™). Same pattern as getDesignOptionGroups() above: these
+ * live in the same registry as Business Assets but carry
+ * `artifactKind: "delegation-artifact"` and the "Delegate the Business"
+ * category, excluded from ALL_BUSINESS_ASSET_CATEGORIES so they never
+ * appear in getBuildOptionGroups(). Selecting one here only produces the
+ * artifact CONTENT (what's being handed off) — assigning it to a person and
+ * tracking briefed/accepted status happens afterward, on the Build Record's
+ * existing DelegateExecution fields, not here.
+ */
+export function getDelegateOptionGroups(): BuildOptionGroup[] {
+  const delegateAssets = BUSINESS_ASSETS.filter((asset) => asset.artifactKind === "delegation-artifact")
+  return delegateAssets.length > 0 ? [{ groupLabel: "Delegation Artifacts", assets: delegateAssets }] : []
+}
+
 /** True for any category with no real workflow yet — used to render the "Coming Next" popover instead of options. */
 export function categoryHasComingNextOnly(categoryId: CeoWorkCategoryId): boolean {
   return !isWorkflowAvailable(categoryId)

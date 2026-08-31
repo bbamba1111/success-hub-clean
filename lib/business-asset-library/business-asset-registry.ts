@@ -39,6 +39,9 @@ export type BusinessAssetCategory =
   | "Design the Business" // Phase 1 Common Creation Engine: DESIGN category items only. Deliberately excluded
   // from ALL_BUSINESS_ASSET_CATEGORIES below so these entries never surface in Library browse,
   // BUILD's menu, or "Recommended For You" — reachable only via CEO Workday's DESIGN category.
+  | "Delegate the Business" // Phase 2 Common Creation Engine: DELEGATE category items only. Deliberately excluded
+  // from ALL_BUSINESS_ASSET_CATEGORIES below, same reasoning as "Design the Business" above —
+  // reachable only via CEO Workday's DELEGATE category.
 
 export const ALL_BUSINESS_ASSET_CATEGORIES: BusinessAssetCategory[] = [
   "Start Here",
@@ -51,11 +54,16 @@ export const ALL_BUSINESS_ASSET_CATEGORIES: BusinessAssetCategory[] = [
 ]
 
 /**
- * Phase 1 of the Common Creation Engine: which registry this entry belongs to
- * conceptually. Omit entirely on existing Business Assets — treated as
- * "business-asset" by default.
+ * Common Creation Engine: which registry this entry belongs to conceptually.
+ * Omit entirely on existing Business Assets — treated as "business-asset" by
+ * default. "operating-rule" was added in Phase 1 (e.g. Meeting Rule™).
+ * "delegation-artifact" was added in Phase 2 (e.g. Delegation Brief™) —
+ * WHAT is being handed off, never the WHO/WHEN of the handoff itself. The
+ * handoff's own state (assignee, briefed, accepted) lives separately on
+ * `DelegateExecution` (lib/build-record/types.ts) and is never duplicated
+ * here.
  */
-export type ArtifactKind = "business-asset" | "operating-rule"
+export type ArtifactKind = "business-asset" | "operating-rule" | "delegation-artifact"
 
 /** Lifecycle of an asset within the architecture — mirrors Deliverable/Executive status conventions. */
 export type BusinessAssetStatus = "architecture"
@@ -3127,6 +3135,94 @@ export const BUSINESS_ASSETS: BusinessAsset[] = [
     futureGenerator: "generate/meeting-rule",
     status: "architecture",
     availableBuildModeIds: ["build-with-ai", "let-ai-do-it", "guided-diy"],
+  },
+  {
+    id: "delegation-brief",
+    name: "Delegation Brief™",
+    artifactKind: "delegation-artifact",
+    category: "Delegate the Business",
+    shortDescription: "Define exactly what's being handed off — responsibility, authority, and what done looks like.",
+    whatIsThis:
+      "A short, written brief that defines WHAT is being handed off to someone else: the responsibility, its purpose, the expected outcome, the authority and boundaries that come with it, the resources available, the standard it must meet, and when to escalate back to you. It does not track WHO it's assigned to or WHEN the handoff happened — that lives with the actual delegation once you assign it.",
+    whyItMatters:
+      "Delegation fails most often not because the wrong person was chosen, but because the handoff itself was vague — responsibility without authority, or an outcome without a defined standard. A written Delegation Brief means the person taking this on knows exactly what they own, what they can decide without asking, and where the line is — so ownership actually leaves your hands instead of quietly staying with you.",
+    ownerExecutiveIds: ["operations"],
+    recommendedBusinessStages: [], // Deliberately empty — never surfaces in "Recommended For You"; reached only via DELEGATE.
+    supportedCommunicationStyles: ALL_STYLES,
+    explanations: {
+      foundation: {
+        headline: "Write down what you're handing off",
+        body: "Let's write one simple page about a job you want someone else to take over — what it is, why it matters, and how they'll know they did it right.",
+      },
+      small_business: {
+        headline: "Build your Delegation Brief",
+        body: "A short written brief for handing off a responsibility — what it is, what they can decide on their own, and what 'done well' looks like — so you don't have to keep explaining it.",
+      },
+      business_owner: {
+        headline: "Build your Delegation Brief™",
+        body: "A brief that defines a responsibility you're handing off: its purpose, the outcome you expect, the authority and boundaries that come with it, and when to escalate back to you.",
+      },
+      executive: {
+        headline: "Formalize the delegation brief",
+        body: "A structured brief defining a delegated responsibility — purpose, expected outcome, authority and boundaries, available resources, performance standard, and escalation conditions.",
+      },
+      boardroom: {
+        headline: "Codify the delegation of authority",
+        body: "A formal delegation-of-authority brief: responsibility, purpose, expected outcome, scope of authority and boundaries, resources, governing standard, and defined escalation path.",
+      },
+    },
+    instructions: {
+      foundation: [
+        "Name the job and why it matters, in one sentence.",
+        "Say what they get to decide on their own, and what they don't.",
+        "Describe what it looks like when it's done well.",
+      ],
+      small_business: [
+        "State the responsibility and its purpose.",
+        "Set the authority and boundaries — what's theirs to decide, what isn't.",
+        "Define what resources they have and what 'done well' looks like.",
+        "Name when they should come back to you instead of deciding alone.",
+      ],
+      business_owner: [
+        "Define the responsibility, its purpose, and the expected outcome.",
+        "Set the scope of authority and the boundaries around it.",
+        "List the resources available to them.",
+        "Define the standard the work must meet.",
+        "Define the conditions under which they escalate back to you.",
+      ],
+      executive: [
+        "Define the responsibility, purpose, and expected business outcome.",
+        "Define scope of authority, boundaries, and decision rights.",
+        "Confirm resources allocated to the responsibility.",
+        "Define the performance standard and how it's measured.",
+        "Define escalation conditions and the escalation path.",
+      ],
+      boardroom: [
+        "Define the delegated responsibility and its organizational purpose.",
+        "Codify scope of authority, boundaries, and decision rights.",
+        "Confirm resource allocation.",
+        "Codify the governing performance standard.",
+        "Codify escalation conditions and reporting path.",
+      ],
+    },
+    examples: {
+      foundation:
+        "\"Answering client emails: you own replying within a day. You can answer normal questions yourself. If someone's upset or asking for a refund, come find me first.\"",
+      small_business:
+        "\"Client onboarding follow-up: you own every new client's first 30 days. You can adjust the schedule and send standard materials on your own. Escalate if a client asks for a discount or contract change.\"",
+      business_owner:
+        "\"Client Success Lead owns onboarding: every new client is fully onboarded within 2 weeks. Full authority over scheduling, materials, and standard troubleshooting. Escalate pricing exceptions and any client threatening to cancel.\"",
+      executive:
+        "\"Head of Client Success owns the onboarding function: 95% of clients onboarded within 14 days, measured monthly. Full authority within approved playbook and budget. Escalate contract deviations and churn-risk accounts above $10K ARR.\"",
+      boardroom:
+        "\"VP Client Success holds delegated authority over onboarding operations: SLA of 14-day onboarding at 95%+ compliance, reviewed quarterly. Authority per governance manual §4. Escalation: contract exceptions, enterprise churn risk, budget variance >10%.\"",
+    },
+    digitalBuildAvailable: true,
+    printAvailable: true,
+    recommendedRenderer: "checklist",
+    futureGenerator: "generate/delegation-brief",
+    status: "architecture",
+    availableBuildModeIds: ["build-with-ai", "let-ai-do-it", "guided-diy", "give-to-team"],
   },
 ]
 

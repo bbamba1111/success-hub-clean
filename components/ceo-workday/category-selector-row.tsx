@@ -16,7 +16,12 @@ import { useRef, useState } from "react"
 import { ChevronDown } from "lucide-react"
 
 import { CEO_WORK_CATEGORIES, type CeoWorkCategoryId } from "@/lib/ceo-workday/categories"
-import { getBuildOptionGroups, getDesignOptionGroups, categoryHasComingNextOnly } from "@/lib/ceo-workday/category-options"
+import {
+  getBuildOptionGroups,
+  getDesignOptionGroups,
+  getDelegateOptionGroups,
+  categoryHasComingNextOnly,
+} from "@/lib/ceo-workday/category-options"
 import { getWorkflowEntry } from "@/lib/ceo-workday/workflow-registry"
 import { addWorkItem, hasQueuedAsset } from "@/lib/ceo-workday/todays-work-store"
 import type { BusinessAsset } from "@/lib/business-asset-library/business-asset-registry"
@@ -61,6 +66,23 @@ export function CategorySelectorRow({ onItemAdded }: { onItemAdded?: () => void 
     onItemAdded?.()
   }
 
+  function handleAddDelegateAsset(asset: BusinessAsset) {
+    if (!hasQueuedAsset(asset.id)) {
+      addWorkItem({
+        category: "DELEGATE",
+        selectedOptionLabel: asset.name,
+        workflowId: getWorkflowEntry("DELEGATE").workflowId,
+        availability: "available",
+        source: "founder",
+        sourceDetail: "Selected from Delegate category menu",
+        relatedAssetId: asset.id,
+        tangibleOutcome: "Delegation Artifact",
+      })
+    }
+    setOpenCategory(null)
+    onItemAdded?.()
+  }
+
   function handleAddComingNext(categoryId: CeoWorkCategoryId) {
     const category = CEO_WORK_CATEGORIES.find((c) => c.id === categoryId)
     const entry = getWorkflowEntry(categoryId)
@@ -97,6 +119,8 @@ export function CategorySelectorRow({ onItemAdded }: { onItemAdded?: () => void 
                 <BuildOptionsMenu onSelect={handleAddBuildAsset} />
               ) : category.id === "DESIGN" ? (
                 <BuildOptionsMenu onSelect={handleAddDesignAsset} groups={getDesignOptionGroups()} />
+              ) : category.id === "DELEGATE" ? (
+                <BuildOptionsMenu onSelect={handleAddDelegateAsset} groups={getDelegateOptionGroups()} />
               ) : (
                 <ComingNextMenu category={category} onAdd={() => handleAddComingNext(category.id)} />
               )}
