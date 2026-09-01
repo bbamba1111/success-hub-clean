@@ -716,31 +716,19 @@ export function DebriefSpace() {
           </p>
         </div>
 
-        <CollapsibleSubSection
-          title="30-Minute Movement Window"
-          containerClassName="border-[#BFDDA8] bg-[#F1F7EC]"
-        >
+        <CollapsibleSubSection title="30-Minute Movement Window">
           <MovementIntentionForm />
         </CollapsibleSubSection>
 
-        <CollapsibleSubSection
-          title="4-Hour Focused CEO Workday"
-          containerClassName="border-[#A9CE8A] bg-[#E8F1DD]"
-        >
+        <CollapsibleSubSection title="4-Hour Focused CEO Workday">
           <CeoWorkdayActivitiesForm />
         </CollapsibleSubSection>
 
-        <CollapsibleSubSection
-          title="Extended Healthy Hybrid Lunch Break"
-          containerClassName="border-[#93BE6C] bg-[#DEEBCE]"
-        >
+        <CollapsibleSubSection title="Extended Healthy Hybrid Lunch Break">
           <LunchIntentionForm />
         </CollapsibleSubSection>
 
-        <CollapsibleSubSection
-          title="Time Freedom"
-          containerClassName="border-[#7FB069] bg-[#D3E4BE]"
-        >
+        <CollapsibleSubSection title="Time Freedom">
           {(open) => (
             <div className="space-y-5">
               <UpcomingLifeEvents onPlan={setTimeFreedomPrompt} />
@@ -754,10 +742,7 @@ export function DebriefSpace() {
           )}
         </CollapsibleSubSection>
 
-        <CollapsibleSubSection
-          title="Power Down"
-          containerClassName="border-[#6B9A55] bg-[#C5D9AC]"
-        >
+        <CollapsibleSubSection title="Power Down">
           <PowerDownIntentionForm />
         </CollapsibleSubSection>
       </div>

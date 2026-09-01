@@ -23,18 +23,12 @@ export function CollapsibleSubSection({
   defaultOpen = false,
   open: controlledOpen,
   onOpenChange,
-  containerClassName,
-  headerHoverClassName,
 }: {
   title: string
   children: ReactNode | ((open: boolean) => ReactNode)
   defaultOpen?: boolean
   open?: boolean
   onOpenChange?: (open: boolean) => void
-  /** Overrides the default border/background — used to give a group of tabs varying accent shades. */
-  containerClassName?: string
-  /** Overrides the default header hover background — pairs with `containerClassName`. */
-  headerHoverClassName?: string
 }) {
   const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen)
   const isControlled = controlledOpen !== undefined
@@ -47,21 +41,30 @@ export function CollapsibleSubSection({
   }
 
   return (
-    <div className={`rounded-2xl border overflow-hidden ${containerClassName ?? "border-[#E8DFE2] bg-[#FDFBF9]"}`}>
+    // Closed = soft sage green accent. Open ("selected") = white content
+    // panel with a darker-sage header, so the active segment reads clearly
+    // against its still-closed siblings.
+    <div
+      className={`rounded-2xl border overflow-hidden transition-colors ${
+        open ? "border-[#7FB069] bg-white" : "border-[#BFDDA8] bg-[#EEF6E7]"
+      }`}
+    >
       <button
         type="button"
         onClick={toggle}
         aria-expanded={open}
-        className={`flex w-full items-center justify-between gap-3 px-5 py-4 text-left transition-colors ${headerHoverClassName ?? "hover:bg-[#F7F3EE]"}`}
+        className={`flex w-full items-center justify-between gap-3 px-5 py-4 text-left transition-colors ${
+          open ? "bg-[#5F8F47] hover:bg-[#548039]" : "hover:bg-[#E1EFD5]"
+        }`}
       >
-        <span className="font-sans text-sm font-semibold text-[#2E1F27]">{title}</span>
+        <span className={`font-sans text-sm font-semibold ${open ? "text-white" : "text-[#2E1F27]"}`}>{title}</span>
         <ChevronDown
-          className={`h-4 w-4 shrink-0 text-[#6B5860] transition-transform ${open ? "rotate-180" : ""}`}
+          className={`h-4 w-4 shrink-0 transition-transform ${open ? "rotate-180 text-white" : "text-[#6B5860]"}`}
           aria-hidden
         />
       </button>
       {open && (
-        <div className="border-t border-[#E8DFE2] px-5 py-5">
+        <div className="border-t border-[#7FB069]/20 bg-white px-5 py-5">
           {typeof children === "function" ? children(open) : children}
         </div>
       )}
