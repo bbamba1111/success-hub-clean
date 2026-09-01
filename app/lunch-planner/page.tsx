@@ -2,13 +2,16 @@
 
 import { Button } from "@/components/ui/button"
 import { Home } from "lucide-react"
-import { SleepTrackerWidget } from "@/components/planners/sleep-tracker-widget"
+import { LunchPlannerWidget } from "@/components/planners/lunch-planner-widget"
 
-export default function SleepTrackerPage() {
+export default function LunchPlannerPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F5F1E8] to-white py-12">
+    <div
+      className="min-h-screen py-12 bg-cover bg-center bg-fixed"
+      style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.94)), url('/images/women-tea-cherry-blossoms.png')" }}
+    >
       <div className="max-w-3xl mx-auto px-6 space-y-8">
-        <SleepTrackerWidget />
+        <LunchPlannerWidget />
 
         {/* Back to home */}
         <div className="flex justify-center">

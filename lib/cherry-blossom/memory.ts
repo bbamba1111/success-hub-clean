@@ -26,6 +26,7 @@ export type MemorySource =
   | "planning_choice"
   | "reality_check"
   | "time_freedom_moment"
+  | "founder_profile"
 
 export interface MemoryInput {
   memory_type: MemoryType
@@ -183,6 +184,50 @@ export function formatUpcomingReminders(memories: MemoryRow[], windowDays = 14, 
     const whenLabel =
       e.days === 0 ? "today" : e.days === 1 ? "tomorrow" : `in ${e.days} days`
     lines.push(`- ${e.label} (${e.detail}) is ${whenLabel}.`)
+  }
+  return lines.join("\n")
+}
+
+/**
+ * Fixed-date US seasonal holidays and celebration days — shown to every
+ * member regardless of what's in their Memory Vault™, so Time Freedom's
+ * Life Events™ always has something to surface even before a founder has
+ * filled in their Founder Profile™. Deliberately excludes floating-date
+ * holidays (Thanksgiving, Mother's/Father's Day) that would need real
+ * calendar math to compute correctly.
+ */
+const SEASONAL_HOLIDAYS: { label: string; month: number; day: number }[] = [
+  { label: "New Year's Day", month: 1, day: 1 },
+  { label: "Valentine's Day", month: 2, day: 14 },
+  { label: "Independence Day", month: 7, day: 4 },
+  { label: "Halloween", month: 10, day: 31 },
+  { label: "Christmas Eve", month: 12, day: 24 },
+  { label: "Christmas Day", month: 12, day: 25 },
+  { label: "New Year's Eve", month: 12, day: 31 },
+]
+
+/**
+ * Returns a prompt block describing seasonal holidays within the next
+ * `windowDays`, formatted the same way as `formatUpcomingReminders` so both
+ * can be concatenated into one memory-context section. Returns "" when
+ * nothing seasonal is upcoming.
+ */
+export function formatSeasonalHolidays(windowDays = 14, now = new Date()): string {
+  const upcoming = SEASONAL_HOLIDAYS.map((h) => ({
+    label: h.label,
+    days: daysUntil(h.month, h.day, now),
+  }))
+    .filter((e) => e.days >= 0 && e.days <= windowDays)
+    .sort((a, b) => a.days - b.days)
+
+  if (upcoming.length === 0) return ""
+
+  const lines: string[] = [
+    "UPCOMING SEASONAL DAYS — mention naturally if it fits, and offer to help plan something special. Do not force it.",
+  ]
+  for (const e of upcoming) {
+    const whenLabel = e.days === 0 ? "today" : e.days === 1 ? "tomorrow" : `in ${e.days} days`
+    lines.push(`- ${e.label} is ${whenLabel}.`)
   }
   return lines.join("\n")
 }

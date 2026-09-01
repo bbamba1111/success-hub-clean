@@ -1,4 +1,6 @@
 import { createClient } from "@/lib/supabase/client"
+import { upsertMemories } from "@/lib/cherry-blossom/memory"
+import { seedLifeEventMemories } from "@/lib/founder-profile/seed-life-event-memories"
 
 /**
  * Founder Profile™ persistence layer — database-backed.
@@ -160,6 +162,15 @@ export async function saveFounderProfileToDb(profile: FounderProfileData): Promi
       },
       { onConflict: "user_id" },
     )
+
+    // Keep Cherry Blossom's Memory Vault™ in sync automatically — every save
+    // seeds/refreshes Life Events™ (birthday, anniversary, children's
+    // birthdays) so reminders stay current as founders share more, with no
+    // separate data-entry screen required.
+    const lifeEvents = seedLifeEventMemories(profile)
+    if (lifeEvents.length > 0) {
+      await upsertMemories(supabase, userId, lifeEvents)
+    }
   } catch (error) {
     console.log("[v0] saveFounderProfileToDb skipped:", (error as Error)?.message)
   }

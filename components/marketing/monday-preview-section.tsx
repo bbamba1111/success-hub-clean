@@ -8,7 +8,7 @@ const RHYTHM = [
   "Flex Time™",
   "Morning GIV•EN™",
   "Reality Check™",
-  "Decide My Priority Focus Areas For The Week™",
+  "Decide & Design My Work-Life Balance Business Day™",
   "Movement™",
   "Extended Healthy Hybrid Lunch™",
   "4-Hour Focused CEO Workday™",
