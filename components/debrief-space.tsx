@@ -662,12 +662,59 @@ export function DebriefSpace() {
         )}
       </div>
 
-      {/* ── 3. Operating Behaviors ───────────────────────────────────────────── */}
+      {/* ── 3. Bottlenecks ────────────────────────────────────────────────────── */}
+      <div className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm px-8 py-7 space-y-5">
+        <div>
+          <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60">
+            Step 3 · Bottlenecks
+          </p>
+          <p className="mt-2 font-sans text-sm text-[#3A2E33] leading-relaxed">
+            Pick 1–{MAX_BOTTLENECKS} open gaps from your Entrepreneur Gap Assessment™ that are actually in the way
+            this week.
+          </p>
+        </div>
+
+        {openEgaEntries.length === 0 ? (
+          <p className="font-sans text-sm text-[#6B5860]">
+            No open gaps right now — nothing to name here this week.
+          </p>
+        ) : (
+          <>
+            <p className="font-sans text-xs text-[#6B5860]">
+              Pick 1–{MAX_BOTTLENECKS} ({bottleneckIds.length}/{MAX_BOTTLENECKS} selected)
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {openEgaEntries.map((entry) => {
+                const selected = bottleneckIds.includes(entry.id)
+                const disabled = !selected && bottleneckIds.length >= MAX_BOTTLENECKS
+                return (
+                  <button
+                    key={entry.id}
+                    type="button"
+                    onClick={() => toggleBottleneck(entry.id)}
+                    disabled={disabled}
+                    aria-pressed={selected}
+                    className={`inline-flex items-center rounded-full border px-4 py-2 text-left font-sans text-sm transition-colors ${
+                      selected
+                        ? "border-[#C0545A] bg-[#C0545A] text-white"
+                        : "border-[#C0545A]/25 bg-[#FDF8F5] text-[#3A2E33] hover:bg-[#C0545A]/10"
+                    } ${disabled ? "cursor-not-allowed opacity-40" : ""}`}
+                  >
+                    {entry.gap || entry.signal}
+                  </button>
+                )
+              })}
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* ── 4. Operating Behaviors ───────────────────────────────────────────── */}
       {selectedArea && (
         <div className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm px-8 py-7 space-y-5">
           <div>
             <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60">
-              Step 3 · Operating Behaviors
+              Step 4 · Operating Behaviors
             </p>
             <p className="mt-2 font-sans text-sm text-[#3A2E33] leading-relaxed">
               Which behaviors, done consistently, will move {selectedArea.name.toLowerCase()} forward this week?
@@ -696,11 +743,11 @@ export function DebriefSpace() {
         </div>
       )}
 
-      {/* ── 4. Human Zone of Genius™ practice ────────────────────────────────── */}
+      {/* ── 4. Human Zone of Genius��� practice ────────────────────────────────── */}
       <div className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm px-8 py-7 space-y-5">
         <div>
           <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60">
-            Step 4 · Human Zone of Genius™
+            Step 5 · Human Zone of Genius™
           </p>
           <p className="mt-2 font-sans text-sm text-[#3A2E33] leading-relaxed">
             Which practice matters most this week — the irreplaceable work only you can do?
@@ -734,7 +781,7 @@ export function DebriefSpace() {
         <div className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm px-8 py-7 space-y-5">
           <div>
             <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60">
-              Step 5 · Assigned AI Executive(s)
+              Step 6 · Assigned AI Executive(s)
             </p>
             <p className="mt-2 font-sans text-sm text-[#3A2E33] leading-relaxed">
               Auto-assigned from your chosen outcomes — coordinated by Cherry Blossom™.
@@ -748,7 +795,7 @@ export function DebriefSpace() {
         </div>
       )}
 
-      {/* ── 6. This Week's Weekly WLBB Menu™ — summary + GPS ─────────────────── */}
+      {/* ── 7. This Week's Weekly WLBB Menu™ — summary + GPS ─────────────────── */}
       <div className="rounded-3xl border border-[#7FB069]/25 bg-[#F7FBF4] px-8 py-7 space-y-5">
         <div className="flex items-center gap-2">
           <Compass className="h-4 w-4 text-[#5B835F]" aria-hidden />
@@ -769,6 +816,15 @@ export function DebriefSpace() {
               </li>
             ))}
           </ul>
+        )}
+        {bottleneckIds.length > 0 && (
+          <p className="font-sans text-sm text-[#2E1F27]">
+            <span className="font-semibold">Bottlenecks this week:</span>{" "}
+            {openEgaEntries
+              .filter((e) => bottleneckIds.includes(e.id))
+              .map((e) => e.gap || e.signal)
+              .join(", ")}
+          </p>
         )}
         {week.business.humanZoneOfGeniusPracticeTitle && (
           <p className="font-sans text-sm text-[#2E1F27]">
