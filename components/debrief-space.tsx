@@ -24,10 +24,9 @@ import { FUNCTIONS, type FunctionArea } from "@/components/founder-os/ai-executi
 import { humanSkills } from "@/components/founder-os/human-zone-of-genius"
 import { BUSINESS_AREAS, getAreaById } from "@/lib/wlbb-week/catalog"
 import { MovementIntentionForm } from "@/components/planners/movement-intention-form"
-import { SleepTrackerWidget } from "@/components/planners/sleep-tracker-widget"
-import { LunchPlannerWidget } from "@/components/planners/lunch-planner-widget"
+import { LunchIntentionForm } from "@/components/planners/lunch-intention-form"
+import { PowerDownIntentionForm } from "@/components/planners/power-down-intention-form"
 import { CherryBlossomWorkstation } from "@/components/cherry-blossom-workstation"
-import { LunchShareSocial } from "@/components/lunch-share-social"
 import { TimeFreedomSocial } from "@/components/time-freedom-social"
 import { UpcomingLifeEvents } from "@/components/cherry-blossom/upcoming-life-events"
 import {
@@ -780,9 +779,8 @@ export function DebriefSpace() {
         <CollapsibleSubSection title="Extended Healthy Hybrid Lunch Break">
           {(open) => (
             <div className="space-y-5">
-              <LunchPlannerWidget />
-              <CherryBlossomWorkstation context="lunch-break" active={open} />
-              <LunchShareSocial active={open} />
+              <LunchIntentionForm />
+              <TimeFreedomSocial active={open} />
             </div>
           )}
         </CollapsibleSubSection>
@@ -802,7 +800,7 @@ export function DebriefSpace() {
         </CollapsibleSubSection>
 
         <CollapsibleSubSection title="Power Down">
-          <SleepTrackerWidget />
+          <PowerDownIntentionForm />
         </CollapsibleSubSection>
       </div>
 
