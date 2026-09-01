@@ -1,6 +1,7 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { CheckCircle2, ChevronRight, Sparkles } from "lucide-react"
 import {
@@ -8,6 +9,8 @@ import {
   loadMovementDeclaration,
   type MovementDeclaration,
 } from "@/lib/daily-plan/movement-declaration"
+
+const GLASS_REVEAL_MS = 8000
 
 const WORKOUT_TYPES = [
   "Radio Taiso", "Yoga", "Pilates", "HIIT", "Walking", "Running",
@@ -35,15 +38,23 @@ export function MovementIntentionForm() {
   const [type, setType] = useState("")
   const [duration, setDuration] = useState(30)
   const [built, setBuilt] = useState<MovementDeclaration | null>(null)
+  const [showGlass, setShowGlass] = useState(false)
+  const glassTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     setBuilt(loadMovementDeclaration())
+    return () => {
+      if (glassTimerRef.current) clearTimeout(glassTimerRef.current)
+    }
   }, [])
 
   const handleBuild = () => {
     if (!type) return
     const record = saveMovementDeclaration({ type, duration, declaration: buildDeclaration(type, duration) })
     setBuilt(record)
+    setShowGlass(true)
+    if (glassTimerRef.current) clearTimeout(glassTimerRef.current)
+    glassTimerRef.current = setTimeout(() => setShowGlass(false), GLASS_REVEAL_MS)
   }
 
   const handleEdit = () => {
@@ -56,27 +67,60 @@ export function MovementIntentionForm() {
 
   if (built) {
     return (
-      <div className="space-y-4 rounded-2xl border-2 border-[#7FB069]/30 bg-[#7FB069]/5 px-5 py-6 text-center">
-        <CheckCircle2 className="mx-auto h-8 w-8 text-[#7FB069]" aria-hidden />
-        <div>
-          <p className="font-sans text-base font-bold text-[#2E1F27]">Your Movement Declaration™ is ready</p>
-          <p className="mt-1 font-sans text-sm text-[#6B5860]">
-            {built.duration} minutes of {built.type}
+      <>
+        {/* Glass reveal — dynamic-hero-message style: the declaration itself holds mid-screen for
+            8 seconds, then drops away, as if descending into the real 30-Minute Movement Window™. */}
+        <AnimatePresence>
+          {showGlass && (
+            <motion.div
+              key={built.builtAt}
+              initial={{ opacity: 0, y: -16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 240 }}
+              transition={{ duration: 1.1, ease: [0.4, 0, 0.2, 1] }}
+              className="pointer-events-none fixed left-1/2 top-24 z-50 w-[min(90vw,420px)] -translate-x-1/2 px-6 py-5 text-center"
+              style={{
+                background: "rgba(255,255,255,0.28)",
+                backdropFilter: "blur(16px) saturate(1.3)",
+                WebkitBackdropFilter: "blur(16px) saturate(1.3)",
+                borderRadius: "20px",
+                border: "1px solid rgba(255,255,255,0.5)",
+                boxShadow: "0 8px 32px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.6)",
+              }}
+            >
+              <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#3A6B3E]">
+                Your Movement Declaration™
+              </p>
+              <p className="mt-2 font-serif text-lg italic leading-snug text-[#1F2A1F]">{built.declaration}</p>
+              <p className="mt-3 font-montserrat text-[10px] font-semibold uppercase tracking-[0.16em] text-[#3A6B3E]/80">
+                Arriving in your 30-Minute Movement Window™ …
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <div className="space-y-4 rounded-2xl border-2 border-[#7FB069]/30 bg-[#7FB069]/5 px-5 py-6 text-center">
+          <CheckCircle2 className="mx-auto h-8 w-8 text-[#7FB069]" aria-hidden />
+          <div>
+            <p className="font-sans text-base font-bold text-[#2E1F27]">Your Movement Declaration™ is ready</p>
+            <p className="mt-1 font-sans text-sm text-[#6B5860]">
+              {built.duration} minutes of {built.type}
+            </p>
+          </div>
+          <p className="mx-auto max-w-sm font-sans text-sm leading-relaxed text-[#6B5860]">
+            It will appear at the top of your{" "}
+            <span className="font-semibold text-[#2E1F27]">30-Minute Movement Window™</span> — open it and you&apos;ll
+            see it arrive, ready to read aloud and declare.
           </p>
+          <button
+            type="button"
+            onClick={handleEdit}
+            className="font-sans text-xs font-semibold text-[#6B5860] underline underline-offset-2 hover:text-[#2E1F27]"
+          >
+            Build a different declaration
+          </button>
         </div>
-        <p className="mx-auto max-w-sm font-sans text-sm leading-relaxed text-[#6B5860]">
-          It will appear at the top of your{" "}
-          <span className="font-semibold text-[#2E1F27]">30-Minute Movement Window™</span> — open it and you&apos;ll
-          see it arrive, ready to read aloud and declare.
-        </p>
-        <button
-          type="button"
-          onClick={handleEdit}
-          className="font-sans text-xs font-semibold text-[#6B5860] underline underline-offset-2 hover:text-[#2E1F27]"
-        >
-          Build a different declaration
-        </button>
-      </div>
+      </>
     )
   }
 

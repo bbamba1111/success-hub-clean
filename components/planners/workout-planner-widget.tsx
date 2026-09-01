@@ -4,21 +4,18 @@ import { useEffect, useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { Badge } from "@/components/ui/badge"
-import { Calendar, Dumbbell, Clock, TrendingUp, Target, Trash2, Copy, Check, ChevronRight } from "lucide-react"
+import { Dumbbell, Copy, Check, ChevronRight } from "lucide-react"
+import {
+  loadMovementHistory,
+  saveWorkoutEntry,
+  deleteWorkoutEntry,
+  getWeeklyMovementStats,
+  type WorkoutEntry,
+} from "@/lib/daily-plan/movement-history"
+import { MovementTrackerStats } from "@/components/planners/movement-tracker-stats"
+import { MovementHistoryList } from "@/components/planners/movement-history-list"
 
 // ─── Types ───────────────────────────────────────────────────────────────────
-
-interface WorkoutEntry {
-  id: string
-  date: string
-  type: string
-  duration: number
-  declaration: string
-  completionStatus: "yes" | "partially" | "no"
-  completedDuration?: number
-  reflection: string
-}
 
 type Step = "intention" | "declare" | "complete" | "celebrate"
 
@@ -75,8 +72,7 @@ export function WorkoutPlannerWidget() {
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
-    const saved = localStorage.getItem("workouts_v2")
-    if (saved) setHistory(JSON.parse(saved))
+    setHistory(loadMovementHistory())
     localStorage.setItem("dashboardVisited", "true")
     setMounted(true)
   }, [])
@@ -106,9 +102,7 @@ export function WorkoutPlannerWidget() {
       completedDuration: state.completionStatus === "partially" ? state.completedDuration : undefined,
       reflection: state.reflection,
     }
-    const updated = [record, ...history]
-    setHistory(updated)
-    localStorage.setItem("workouts_v2", JSON.stringify(updated))
+    setHistory(saveWorkoutEntry(record))
     setState((p) => ({ ...p, step: "celebrate" }))
   }
 
@@ -125,20 +119,11 @@ export function WorkoutPlannerWidget() {
     } catch {}
   }
 
-  const deleteEntry = (id: string) => {
-    const updated = history.filter((w) => w.id !== id)
-    setHistory(updated)
-    localStorage.setItem("workouts_v2", JSON.stringify(updated))
-  }
+  const deleteEntry = (id: string) => setHistory(deleteWorkoutEntry(id))
 
   if (!mounted) return null
 
-  const weeklySessions = history.filter((w) => {
-    const d = new Date(w.date)
-    const now = new Date()
-    return d >= new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
-  })
-  const weeklyMinutes = weeklySessions.reduce((s, w) => s + w.duration, 0)
+  const weeklyStats = getWeeklyMovementStats(history)
 
   return (
     <div className="space-y-8">
@@ -152,21 +137,7 @@ export function WorkoutPlannerWidget() {
       </div>
 
       {/* Weekly stats */}
-      <div className="grid grid-cols-3 gap-3">
-        {([
-          { icon: Target, label: "Sessions this week", value: weeklySessions.length },
-          { icon: Clock, label: "Minutes this week", value: weeklyMinutes },
-          { icon: TrendingUp, label: "Avg per session", value: weeklySessions.length > 0 ? Math.round(weeklyMinutes / weeklySessions.length) : 0 },
-        ] as const).map(({ icon: Icon, label, value }) => (
-          <Card key={label} className="border-2 border-[#7FB069]/20">
-            <CardContent className="pt-4 pb-3">
-              <Icon className="h-4 w-4 text-[#7FB069] mb-2" />
-              <div className="text-2xl font-bold text-[#7FB069]">{value}</div>
-              <p className="text-xs text-gray-500 mt-1">{label}</p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      <MovementTrackerStats stats={weeklyStats} />
 
       {/* ── STEP 1: Intention ── */}
       {state.step === "intention" && (
@@ -400,56 +371,7 @@ export function WorkoutPlannerWidget() {
       )}
 
       {/* ── History ── */}
-      {history.length > 0 && (
-        <Card className="border-2 border-[#7FB069]/20">
-          <CardContent className="pt-5 pb-5">
-            <div className="flex items-center gap-2 mb-4">
-              <Calendar className="h-4 w-4 text-[#7FB069]" />
-              <h4 className="font-semibold text-gray-700">Movement History</h4>
-            </div>
-            <div className="space-y-3">
-              {history.map((w) => (
-                <div
-                  key={w.id}
-                  className="flex items-start justify-between p-3 rounded-lg bg-[#7FB069]/5 border border-[#7FB069]/15"
-                >
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <Badge className="bg-[#7FB069] text-white text-xs">{w.type}</Badge>
-                      <span className="text-xs text-gray-500">{w.duration} min</span>
-                      <span className="text-xs text-gray-400" suppressHydrationWarning>
-                        {new Date(w.date).toLocaleDateString()}
-                      </span>
-                      <span
-                        className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                          w.completionStatus === "yes"
-                            ? "bg-green-100 text-green-700"
-                            : w.completionStatus === "partially"
-                            ? "bg-amber-100 text-amber-700"
-                            : "bg-red-50 text-red-500"
-                        }`}
-                      >
-                        {w.completionStatus === "yes"
-                          ? "Completed"
-                          : w.completionStatus === "partially"
-                          ? "Partial"
-                          : "Missed"}
-                      </span>
-                    </div>
-                    {w.reflection && <p className="text-xs text-gray-500 mt-1 truncate">{w.reflection}</p>}
-                  </div>
-                  <button
-                    onClick={() => deleteEntry(w.id)}
-                    className="ml-3 text-gray-300 hover:text-red-400 transition-colors flex-shrink-0"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      <MovementHistoryList history={history} onDelete={deleteEntry} />
     </div>
   )
 }
