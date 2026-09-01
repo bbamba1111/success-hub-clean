@@ -9,24 +9,22 @@
  * Ritual™" label + time differ).
  *
  * Builds this WLBB Week's Weekly WLBB Menu™:
- *  1. Life Intentions (incl. private relationship-repair entries) — capped at 1–3
+ *  1. Life Priorities — real Work-Life Balance Audit™ Focus Areas (≤60%) +
+ *     a custom entry, capped at 1–3
  *  2. Business Outcome (Area → 1–3 outcomes)
  *  3. Bottlenecks (1–3, drawn from open Entrepreneur Gap Assessment™ entries)
  *  4. Operating Behaviors (scoped to the chosen area)
- *  5. Human Zone of Genius™ practice for the week
- *  6. Assigned AI Executive(s) — auto-derived, read-only
- *  7. This Week's Weekly WLBB Menu — summary + GPS next-best-move
- *  8. Hand-off into the CEO Workspace™
+ *  5. Assigned AI Executive(s) — auto-derived, read-only
+ *  6. Hand-off into the CEO Workspace™
  *
  * All state persists through `lib/wlbb-week/storage.ts` on every change —
  * this is a real weekly record, not session-only reflection.
  */
 
 import { useEffect, useMemo, useState, type ReactNode } from "react"
-import { Plus, X, Compass, Clock } from "lucide-react"
+import { Plus, X, Clock } from "lucide-react"
 import { SCHEDULE_BY_ID } from "@/operating-engine/config/schedule"
 import { FUNCTIONS, type FunctionArea } from "@/components/founder-os/ai-executive-leadership-team"
-import { humanSkills } from "@/components/founder-os/human-zone-of-genius"
 import { BUSINESS_AREAS, getAreaById } from "@/lib/wlbb-week/catalog"
 import { CollapsibleSubSection } from "@/components/collapsible-sub-section"
 import { MovementIntentionForm } from "@/components/planners/movement-intention-form"
@@ -43,11 +41,7 @@ import {
   setBusinessArea,
   setOutcomes,
   setBottlenecks,
-  setHumanZoneOfGeniusPractice,
-  setGpsRecommendation,
-  getDailyEntry,
 } from "@/lib/wlbb-week/storage"
-import { getGpsRecommendation } from "@/lib/wlbb-week/gps"
 import type { BusinessOutcome, LifeIntention, LifeIntentionKind, WlbbWeekState } from "@/lib/wlbb-week/types"
 import { getAuditResults } from "@/utils/audit-storage"
 import { getEsaResults } from "@/lib/entrepreneur-success/esa-storage"
@@ -79,17 +73,6 @@ const PILLAR_TO_BUSINESS_AREA: Record<string, string> = {
   "growth-innovation": "growth-innovation",
 }
 
-const QUICK_INTENTIONS: { label: string; kind: LifeIntentionKind; isRelationshipRepair?: boolean }[] = [
-  { label: "Family dinner", kind: "family" },
-  { label: "Walk", kind: "movement" },
-  { label: "Tai Chi", kind: "movement" },
-  { label: "Time in nature", kind: "nature" },
-  { label: "Rest", kind: "rest" },
-  { label: "Reconnect with someone", kind: "reconnect", isRelationshipRepair: true },
-  { label: "Forgive someone", kind: "forgive", isRelationshipRepair: true },
-  { label: "Ask forgiveness", kind: "ask-forgiveness", isRelationshipRepair: true },
-]
-
 const MAX_OUTCOMES = 3
 /** Life Intentions are capped at 1–3 for the week — same cap discipline as Business Outcome. */
 const MAX_LIFE = 3
@@ -110,6 +93,19 @@ const LIFE_KIND_TO_BLOCK: Partial<Record<LifeIntentionKind, string>> = {
   family: "time-freedom",
   nature: "lunch-break",
   recreation: "time-freedom",
+}
+
+/**
+ * Best-effort mapping from a Work-Life Balance Audit™ `category` key to the
+ * existing schedule block that already protects that category's kind of
+ * time — used so a low-scoring Focus Area chip for Movement, Sleep
+ * (Power Down), or Nourishment (Lunch) can be labeled "already built into
+ * your day" instead of implying the founder needs to carve out new time.
+ */
+const FOCUS_AREA_TO_BLOCK: Record<string, string> = {
+  physicalMovement: "movement-window",
+  physicalSleep: "power-down",
+  physicalNourishment: "lunch-break",
 }
 
 function makeId(): string {
@@ -230,21 +226,6 @@ export function DebriefSpace() {
     [assignedExecutiveIds],
   )
 
-  const gpsRecommendation = useMemo(() => {
-    if (!week) return null
-    const today = getDailyEntry(week, "monday")
-    return getGpsRecommendation(week.business.outcomes, today)
-  }, [week])
-
-  // Keep the stored GPS recommendation in sync whenever this week's outcomes change.
-  useEffect(() => {
-    if (!week || gpsRecommendation === null) return
-    if (week.gpsRecommendation !== gpsRecommendation) {
-      setWeek(setGpsRecommendation(week, gpsRecommendation))
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gpsRecommendation])
-
   if (!week) {
     return <section className="w-full py-10 text-center text-sm text-[#6B5860]">Loading this week&apos;s Debrief™…</section>
   }
@@ -255,18 +236,6 @@ export function DebriefSpace() {
   const currentWeek = week
 
   const lifeAtCap = currentWeek.life.intentions.length >= MAX_LIFE
-
-  function addQuickIntention(item: (typeof QUICK_INTENTIONS)[number]) {
-    if (lifeAtCap) return
-    const intention: LifeIntention = {
-      id: makeId(),
-      kind: item.kind,
-      label: item.label,
-      isRelationshipRepair: item.isRelationshipRepair,
-      addedOn: new Date().toISOString(),
-    }
-    setWeek(addLifeIntention(currentWeek, intention))
-  }
 
   function addCustomIntention() {
     if (!customLabel.trim() || lifeAtCap) return
@@ -360,11 +329,7 @@ export function DebriefSpace() {
     }
   }
 
-  function selectPractice(title: string) {
-    const next = currentWeek.business.humanZoneOfGeniusPracticeTitle === title ? null : title
-    setWeek(setHumanZoneOfGeniusPractice(currentWeek, next))
-  }
-
+  
   return (
     <section className="w-full space-y-6">
       {/* ── Header ─────────────────────────────────────────────────────────── */}
@@ -424,14 +389,16 @@ export function DebriefSpace() {
             Step 1 · Life Priorities
           </p>
           <p className="mt-2 font-sans text-sm text-[#3A2E33] leading-relaxed">
-            What do you want to make time for this week? Relationship-repair entries stay private to you.
+            Where do I need to focus my time and attention this week? Pick 1–{MAX_LIFE} Areas.
           </p>
           <p className="mt-1 font-sans text-xs text-[#6B5860]">
-            Pick 1–{MAX_LIFE} ({currentWeek.life.intentions.length}/{MAX_LIFE} selected)
+            {currentWeek.life.intentions.length}/{MAX_LIFE} selected
           </p>
         </div>
 
-        {/* Real Audit™ categories at or below {FOCUS_THRESHOLD} — select any to add as a life intention. */}
+        {/* Real Audit™ categories at or below {FOCUS_THRESHOLD} — select any to add as a life intention.
+            Any area that maps to Movement, Power Down, or Lunch (FOCUS_AREA_TO_BLOCK) already has
+            protected time on the schedule, so it's labeled as such instead of implying new time is needed. */}
         {lifeFocusAreas.length > 0 && (
           <div className="rounded-2xl border border-[#E26C73]/20 bg-[#FDF8F5] px-5 py-4 space-y-3">
             <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#C0545A]">
@@ -441,47 +408,43 @@ export function DebriefSpace() {
               {lifeFocusAreas.map((area) => {
                 const selected = week.life.intentions.some((i) => i.label === area.name)
                 const disabled = !selected && lifeAtCap
+                const blockId = FOCUS_AREA_TO_BLOCK[area.id]
+                const block = blockId ? SCHEDULE_BY_ID[blockId] : undefined
                 return (
-                  <button
-                    key={area.id}
-                    type="button"
-                    onClick={() => toggleLifeFocusArea(area)}
-                    disabled={disabled}
-                    aria-pressed={selected}
-                    className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 font-sans text-sm transition-colors ${
-                      selected
-                        ? "border-[#E26C73] bg-[#E26C73] text-white"
-                        : "border-[#E26C73]/30 bg-white text-[#3A2E33] hover:bg-[#E26C73]/10"
-                    } ${disabled ? "cursor-not-allowed opacity-40" : ""}`}
-                  >
-                    {area.name}
-                    <span
-                      className={`rounded-full px-2 py-0.5 text-xs font-bold tabular-nums ${
-                        selected ? "bg-white/20 text-white" : "bg-[#E26C73]/10 text-[#C0545A]"
-                      }`}
+                  <div key={area.id} className="flex flex-col items-start gap-1">
+                    <button
+                      type="button"
+                      onClick={() => toggleLifeFocusArea(area)}
+                      disabled={disabled}
+                      aria-pressed={selected}
+                      className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 font-sans text-sm transition-colors ${
+                        selected
+                          ? "border-[#E26C73] bg-[#E26C73] text-white"
+                          : block
+                            ? "border-[#5D9D61]/40 bg-[#5D9D61]/10 text-[#2E1F27] hover:bg-[#5D9D61]/20"
+                            : "border-[#E26C73]/30 bg-white text-[#3A2E33] hover:bg-[#E26C73]/10"
+                      } ${disabled ? "cursor-not-allowed opacity-40" : ""}`}
                     >
-                      {area.score}/100
-                    </span>
-                  </button>
+                      {area.name}
+                      <span
+                        className={`rounded-full px-2 py-0.5 text-xs font-bold tabular-nums ${
+                          selected ? "bg-white/20 text-white" : "bg-[#E26C73]/10 text-[#C0545A]"
+                        }`}
+                      >
+                        {area.score}/100
+                      </span>
+                    </button>
+                    {block && (
+                      <p className="px-1 font-sans text-[11px] text-[#5B835F]">
+                        Already built into your day — {block.shortTitle}
+                      </p>
+                    )}
+                  </div>
                 )
               })}
             </div>
           </div>
         )}
-        <div className="flex flex-wrap gap-2">
-          {QUICK_INTENTIONS.map((item) => (
-            <button
-              key={item.label}
-              type="button"
-              onClick={() => addQuickIntention(item)}
-              disabled={lifeAtCap}
-              className="inline-flex items-center gap-1.5 rounded-full border border-[#7FB069]/30 bg-[#F7FBF4] px-4 py-2 font-sans text-sm text-[#3A2E33] transition-colors hover:bg-[#7FB069]/10 disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              <Plus className="h-3.5 w-3.5 text-[#7FB069]" aria-hidden />
-              {item.label}
-            </button>
-          ))}
-        </div>
         <div className="flex flex-wrap items-center gap-2">
           <input
             type="text"
@@ -816,38 +779,6 @@ export function DebriefSpace() {
       )}
 
       {/* ── 4. Human Zone of Genius��� practice ────────────────────────────────── */}
-      <div className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm px-8 py-7 space-y-5">
-        <div>
-          <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60">
-            Step 5 · Human Zone of Genius™
-          </p>
-          <p className="mt-2 font-sans text-sm text-[#3A2E33] leading-relaxed">
-            Which practice matters most this week — the irreplaceable work only you can do?
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {humanSkills.map((skill) => {
-            const active = week.business.humanZoneOfGeniusPracticeTitle === skill.title
-            return (
-              <button
-                key={skill.title}
-                type="button"
-                onClick={() => selectPractice(skill.title)}
-                aria-pressed={active}
-                className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2 font-sans text-sm transition-colors ${
-                  active
-                    ? "bg-[#C0545A] text-white"
-                    : "border border-[#C0545A]/25 bg-white text-[#3A2E33] hover:bg-[#C0545A]/10"
-                }`}
-              >
-                <skill.icon className="h-3.5 w-3.5" aria-hidden />
-                {skill.title}
-              </button>
-            )
-          })}
-        </div>
-      </div>
-
       {/* ── 5. Assigned AI Executive(s) — read-only, auto-derived ───────────── */}
       {assignedExecutives.length > 0 && (
         <div className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm px-8 py-7 space-y-5">
@@ -866,53 +797,6 @@ export function DebriefSpace() {
           </div>
         </div>
       )}
-
-      {/* ── 7. This Week's Weekly WLBB Menu™ — summary + GPS ─────────────────── */}
-      <div className="rounded-3xl border border-[#7FB069]/25 bg-[#F7FBF4] px-8 py-7 space-y-5">
-        <div className="flex items-center gap-2">
-          <Compass className="h-4 w-4 text-[#5B835F]" aria-hidden />
-          <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
-            This Week&apos;s Weekly WLBB Menu™
-          </p>
-        </div>
-        {week.business.outcomes.length === 0 ? (
-          <p className="font-sans text-sm text-[#6B5860]">Choose a Business Area and outcome above to build your menu.</p>
-        ) : (
-          <ul className="space-y-2">
-            {week.business.outcomes.map((outcome) => (
-              <li key={outcome.id} className="font-sans text-sm text-[#2E1F27]">
-                <span className="font-semibold">{outcome.text}</span>
-                {outcome.operatingBehaviors.length > 0 && (
-                  <span className="text-[#6B5860]"> — {outcome.operatingBehaviors.join(", ")}</span>
-                )}
-              </li>
-            ))}
-          </ul>
-        )}
-        {bottleneckIds.length > 0 && (
-          <p className="font-sans text-sm text-[#2E1F27]">
-            <span className="font-semibold">Bottlenecks this week:</span>{" "}
-            {openEgaEntries
-              .filter((e) => bottleneckIds.includes(e.id))
-              .map((e) => e.gap || e.signal)
-              .join(", ")}
-          </p>
-        )}
-        {week.business.humanZoneOfGeniusPracticeTitle && (
-          <p className="font-sans text-sm text-[#2E1F27]">
-            <span className="font-semibold">Human Zone of Genius™ focus:</span>{" "}
-            {week.business.humanZoneOfGeniusPracticeTitle}
-          </p>
-        )}
-        {gpsRecommendation && (
-          <div className="rounded-2xl border border-[#5D9D61]/20 bg-white px-5 py-4">
-            <p className="font-sans text-xs font-semibold uppercase tracking-[0.15em] text-[#5D9D61]">
-              Weekly WLBB GPS™
-            </p>
-            <p className="mt-1.5 font-sans text-sm text-[#2E1F27] leading-relaxed">{gpsRecommendation}</p>
-          </div>
-        )}
-      </div>
 
     </section>
   )

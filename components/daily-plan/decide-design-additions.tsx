@@ -4,13 +4,10 @@
  * Decide & Design Additions™ — Decide → Populate → Execute (Daily Operating
  * Experience rebuild)
  * ---------------------------------------------------------------------------
- * Renders below the existing Decide & Design™ content (Founder GPS™ Next
- * Best Move, This Week's Menu, identity/boundary pickers, CEO outcome
- * picker — all untouched). This is the ONE place the founder decides
- * Movement, Lunch, CEO Workday activities, Time Freedom, and Power Down for
- * today — every downstream segment (Movement Window™, Lunch Break™, CEO
- * Workday™, Time Freedom™, Power Down™) reads this same `TodaysPlanRecord`
- * back. No re-entry required later.
+ * Renders below the existing Decide & Design™ content (identity picker).
+ * This is the ONE place the founder decides CEO Workday activities for
+ * today — the CEO Workday™ segment reads this same `TodaysPlanRecord` back.
+ * No re-entry required later.
  *
  * Plain record-keeping only — no new planner, GPS, or recommendation engine.
  */
@@ -22,22 +19,10 @@ import {
   loadTodaysPlan,
   updateTodaysPlan,
 } from "@/lib/daily-plan/storage"
-import type { CeoActivity, LunchCategory, LunchSelection, TodaysPlanRecord } from "@/lib/daily-plan/types"
-import { CEO_WORKDAY_CAP_MINUTES, TIME_FREEDOM_CAP_MINUTES } from "@/lib/daily-plan/types"
+import type { CeoActivity, TodaysPlanRecord } from "@/lib/daily-plan/types"
+import { CEO_WORKDAY_CAP_MINUTES } from "@/lib/daily-plan/types"
 import { BUILD_PATH_DEFINITIONS } from "@/lib/build-strategy/build-path-registry"
 import type { BuildPathId } from "@/lib/build-strategy/types"
-
-const MOVEMENT_QUICK_PICKS = ["Walk", "Mobility", "Stretch", "Dance", "Workout", "Other"]
-
-const LUNCH_OPTIONS: { category: LunchCategory; label: string }[] = [
-  { category: "nourish", label: "Nourish — a real, unhurried meal" },
-  { category: "connect", label: "Connect — with a person, not a screen" },
-  { category: "move", label: "Move — a short walk outside" },
-  { category: "reset", label: "Reset — quiet, no input" },
-  { category: "disconnect", label: "Disconnect — phone away, notifications off" },
-]
-
-const TIME_FREEDOM_QUICK_CATEGORIES = ["Family", "Nature", "Creativity", "Personal", "Rest", "Other"]
 
 function newId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
@@ -45,8 +30,6 @@ function newId(): string {
 
 export function DecideDesignAdditions() {
   const [plan, setPlan] = useState<TodaysPlanRecord | null>(null)
-  const [movementNote, setMovementNote] = useState("")
-  const [movementOther, setMovementOther] = useState("")
 
   useEffect(() => {
     setPlan(loadTodaysPlan(getDateKey()))
@@ -62,18 +45,6 @@ export function DecideDesignAdditions() {
 
   function patch(update: Partial<Omit<TodaysPlanRecord, "dateKey">>) {
     setPlan(updateTodaysPlan(update, data.dateKey))
-  }
-
-  // ── Movement ──────────────────────────────────────────────────────────
-  function setMovement(label: string) {
-    patch({ movement: { label, note: movementNote.trim() || undefined } })
-  }
-
-  // ── Lunch ─────────────────────────────────────────────────────────────
-  function toggleLunch(option: LunchSelection) {
-    const exists = data.lunch.some((l) => l.category === option.category)
-    const next = exists ? data.lunch.filter((l) => l.category !== option.category) : [...data.lunch, option]
-    patch({ lunch: next })
   }
 
   // ── CEO Workday activities ───────────────────────────────────────────
@@ -99,29 +70,6 @@ export function DecideDesignAdditions() {
     patch({ ceoActivities: data.ceoActivities.filter((a) => a.id !== id) })
   }
 
-  // ── Time Freedom ─────────────────────────────────────────────────────
-  const timeFreedomTotal = data.timeFreedom.reduce((sum, a) => sum + a.minutes, 0)
-  const timeFreedomRemaining = TIME_FREEDOM_CAP_MINUTES - timeFreedomTotal
-
-  function addTimeFreedomAllocation() {
-    patch({
-      timeFreedom: [...data.timeFreedom, { id: newId(), category: "Family", label: "", minutes: 30 }],
-    })
-  }
-
-  function updateTimeFreedomAllocation(id: string, updates: Partial<TodaysPlanRecord["timeFreedom"][number]>) {
-    patch({ timeFreedom: data.timeFreedom.map((a) => (a.id === id ? { ...a, ...updates } : a)) })
-  }
-
-  function removeTimeFreedomAllocation(id: string) {
-    patch({ timeFreedom: data.timeFreedom.filter((a) => a.id !== id) })
-  }
-
-  // ── Power Down ────────────────────────────────────────────────────────
-  function setPowerDown(updates: Partial<TodaysPlanRecord["powerDown"]>) {
-    patch({ powerDown: { ...data.powerDown, ...updates } })
-  }
-
   return (
     <div className="space-y-6">
       <div className="pt-2">
@@ -129,81 +77,9 @@ export function DecideDesignAdditions() {
           Decide → Populate → Execute
         </p>
         <p className="mt-1 font-sans text-sm text-[#6B5860]">
-          Decide the rest of today right here — Movement, Lunch, your CEO Workday™, Time Freedom™, and Power
-          Down™ will all be ready and waiting for you when you get there.
+          Decide your CEO Workday™ activities right here — they&apos;ll be ready and waiting for you when you get
+          there.
         </p>
-      </div>
-
-      {/* ── Movement ──────────────────────────────────────────────────── */}
-      <div className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm px-6 py-5 sm:px-7 sm:py-6 space-y-3">
-        <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60">
-          Decide Today&apos;s Movement
-        </p>
-        <div className="flex flex-wrap gap-2">
-          {MOVEMENT_QUICK_PICKS.map((label) => {
-            const selected = plan.movement?.label === label
-            return (
-              <button
-                key={label}
-                type="button"
-                aria-pressed={selected}
-                onClick={() => setMovement(label)}
-                className={`inline-flex items-center rounded-full border px-4 py-2 font-sans text-sm transition-colors ${
-                  selected
-                    ? "border-[#8DAE72] bg-[#8DAE72] text-white"
-                    : "border-[#E5E5E5] bg-white text-[#2E1F27] hover:bg-[#F4F7F0]"
-                }`}
-              >
-                {label}
-              </button>
-            )
-          })}
-        </div>
-        {plan.movement?.label === "Other" && (
-          <input
-            type="text"
-            value={movementOther}
-            onChange={(e) => setMovementOther(e.target.value)}
-            onBlur={() => movementOther.trim() && setMovement(movementOther.trim())}
-            placeholder="What movement will you do today?"
-            className="w-full rounded-full border border-[#E8DFE2] bg-white px-4 py-2 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
-          />
-        )}
-        <input
-          type="text"
-          value={movementNote}
-          onChange={(e) => setMovementNote(e.target.value)}
-          onBlur={() => plan.movement && patch({ movement: { ...plan.movement, note: movementNote.trim() || undefined } })}
-          placeholder="Why this movement today? (optional)"
-          className="w-full rounded-full border border-[#E8DFE2] bg-white px-4 py-2 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
-        />
-      </div>
-
-      {/* ── Healthy Hybrid Lunch ──────────────────────────────────────── */}
-      <div className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm px-6 py-5 sm:px-7 sm:py-6 space-y-3">
-        <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60">
-          Decide Today&apos;s Healthy Hybrid Lunch™
-        </p>
-        <div className="flex flex-wrap gap-2">
-          {LUNCH_OPTIONS.map((option) => {
-            const selected = plan.lunch.some((l) => l.category === option.category)
-            return (
-              <button
-                key={option.category}
-                type="button"
-                aria-pressed={selected}
-                onClick={() => toggleLunch(option)}
-                className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-2 font-sans text-sm transition-colors ${
-                  selected
-                    ? "border-[#8DAE72] bg-[#8DAE72] text-white"
-                    : "border-[#E5E5E5] bg-white text-[#2E1F27] hover:bg-[#F4F7F0]"
-                }`}
-              >
-                {option.label}
-              </button>
-            )
-          })}
-        </div>
       </div>
 
       {/* ── CEO Workday activities ───────────────────────────────────── */}
@@ -293,96 +169,6 @@ export function DecideDesignAdditions() {
           <Plus className="h-3.5 w-3.5" aria-hidden />
           Add an activity
         </button>
-      </div>
-
-      {/* ── Time Freedom ──────────────────────────────────────────────── */}
-      <div className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm px-6 py-5 sm:px-7 sm:py-6 space-y-4">
-        <div className="flex items-center justify-between">
-          <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60">
-            Decide What You&apos;ll Make Time For (Time Freedom™)
-          </p>
-          <span className="font-sans text-xs font-semibold text-[#6B5860]">
-            {timeFreedomRemaining >= 0 ? `${timeFreedomRemaining} min remaining` : `${Math.abs(timeFreedomRemaining)} min over`}
-          </span>
-        </div>
-        <div className="space-y-3">
-          {plan.timeFreedom.map((allocation) => (
-            <div key={allocation.id} className="flex items-center gap-2">
-              <select
-                value={allocation.category}
-                onChange={(e) => updateTimeFreedomAllocation(allocation.id, { category: e.target.value })}
-                className="rounded-lg border border-[#E8DFE2] bg-white px-2 py-2 font-sans text-sm text-[#2E1F27] focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
-              >
-                {TIME_FREEDOM_QUICK_CATEGORIES.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
-              <input
-                type="text"
-                value={allocation.label}
-                onChange={(e) => updateTimeFreedomAllocation(allocation.id, { label: e.target.value })}
-                placeholder="What will you make time for?"
-                className="flex-1 rounded-lg border border-[#E8DFE2] bg-white px-3 py-2 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
-              />
-              <input
-                type="number"
-                min={0}
-                value={allocation.minutes}
-                onChange={(e) =>
-                  updateTimeFreedomAllocation(allocation.id, { minutes: Math.max(0, Number(e.target.value) || 0) })
-                }
-                className="w-20 rounded-lg border border-[#E8DFE2] bg-white px-2 py-2 font-sans text-sm text-[#2E1F27] focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
-                aria-label="Minutes"
-              />
-              <button
-                type="button"
-                onClick={() => removeTimeFreedomAllocation(allocation.id)}
-                aria-label="Remove allocation"
-                className="rounded-full p-1.5 text-[#6B5860]/50 hover:bg-black/[0.04]"
-              >
-                <X className="h-4 w-4" aria-hidden />
-              </button>
-            </div>
-          ))}
-        </div>
-        <button
-          type="button"
-          onClick={addTimeFreedomAllocation}
-          className="inline-flex items-center gap-1.5 rounded-full border border-[#8DAE72]/50 bg-white px-4 py-2 font-sans text-sm text-[#5F7F49] hover:bg-[#F4F7F0]"
-        >
-          <Plus className="h-3.5 w-3.5" aria-hidden />
-          Add what you&apos;ll make time for
-        </button>
-      </div>
-
-      {/* ── Power Down ────────────────────────────────────────────────── */}
-      <div className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm px-6 py-5 sm:px-7 sm:py-6 space-y-3">
-        <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60">
-          Decide Tonight&apos;s Power Down™
-        </p>
-        <textarea
-          value={plan.powerDown.release}
-          onChange={(e) => setPowerDown({ release: e.target.value })}
-          placeholder="What will you release from today?"
-          rows={2}
-          className="w-full rounded-2xl border border-[#E8DFE2] bg-white px-4 py-3 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
-        />
-        <textarea
-          value={plan.powerDown.tomorrowNote}
-          onChange={(e) => setPowerDown({ tomorrowNote: e.target.value })}
-          placeholder="What's tomorrow's single priority?"
-          rows={2}
-          className="w-full rounded-2xl border border-[#E8DFE2] bg-white px-4 py-3 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
-        />
-        <input
-          type="text"
-          value={plan.powerDown.windDownActivity}
-          onChange={(e) => setPowerDown({ windDownActivity: e.target.value })}
-          placeholder="What will help your mind begin to slow tonight?"
-          className="w-full rounded-full border border-[#E8DFE2] bg-white px-4 py-2 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
-        />
       </div>
     </div>
   )

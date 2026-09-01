@@ -408,15 +408,15 @@ export function BusinessDayBlock({
             )}
 
             {/* Debrief Space™ — placeholder reflective pause between the Reality Check™ and Movement Window™.
-                Today's Design™ (DecideIdentitySpace) runs immediately after it on Monday too, so the
-                weekly decision layer flows straight into the same daily design engine Tue–Sun already
-                use. Tue–Sun's daily-planning-gps block now renders the identical DebriefSpace +
-                DecideIdentitySpace pairing as Monday — same content, same order, only the hero
-                background image and title ("My" vs "Your") ever differed, and title now matches too. */}
+                Today's Design™ (DecideIdentitySpace) now runs immediately before it — deciding who
+                you're being today comes first, then Life Priorities builds on that identity. Tue–Sun's
+                daily-planning-gps block renders the identical DecideIdentitySpace + DebriefSpace pairing
+                as Monday — same content, same order, only the hero background image and title
+                ("My" vs "Your") ever differed, and title now matches too. */}
             {(blockId === "monday-debrief" || blockId === "daily-planning-gps") && (
               <div className="px-7 py-8 space-y-8">
-                <DebriefSpace />
                 <DecideIdentitySpace />
+                <DebriefSpace />
               </div>
             )}
 
