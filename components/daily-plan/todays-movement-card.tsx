@@ -118,6 +118,7 @@ export function TodaysMovementCard() {
     setLoggedToday(false)
     setCompletionStatus(null)
     setReflection("")
+    window.location.href = "/?openSpace=monday-debrief"
   }
 
   if (!mounted) return null
