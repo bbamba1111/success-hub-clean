@@ -146,6 +146,13 @@ export function formatMemoryVault(memories: MemoryRow[]): string {
   return lines.join("\n")
 }
 
+/** A single upcoming date, shared shape for both Memory Vault™ dates and seasonal holidays. */
+export interface UpcomingEvent {
+  label: string
+  detail: string
+  days: number
+}
+
 /** Number of whole days from today (local) until the next occurrence of month/day. */
 function daysUntil(month: number, day: number, today: Date): number {
   const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate())
@@ -160,12 +167,12 @@ function daysUntil(month: number, day: number, today: Date): number {
 }
 
 /**
- * Returns a prompt block describing important dates within the next `windowDays`
- * so Cherry Blossom can gently mention them and offer to help plan. Returns ""
- * when nothing is upcoming.
+ * Structured list of Memory Vault™ `important_date` rows falling within the
+ * next `windowDays`, soonest first. Shared by `formatUpcomingReminders`
+ * (prompt text) and the `/api/cherry-blossom/upcoming-events` route (JSON).
  */
-export function formatUpcomingReminders(memories: MemoryRow[], windowDays = 14, now = new Date()): string {
-  const upcoming = memories
+export function getUpcomingMemoryEvents(memories: MemoryRow[], windowDays = 14, now = new Date()): UpcomingEvent[] {
+  return memories
     .filter((m) => m.memory_type === "important_date" && m.event_month && m.event_day)
     .map((m) => ({
       label: m.memory_key,
@@ -174,6 +181,15 @@ export function formatUpcomingReminders(memories: MemoryRow[], windowDays = 14, 
     }))
     .filter((e) => e.days >= 0 && e.days <= windowDays)
     .sort((a, b) => a.days - b.days)
+}
+
+/**
+ * Returns a prompt block describing important dates within the next `windowDays`
+ * so Cherry Blossom can gently mention them and offer to help plan. Returns ""
+ * when nothing is upcoming.
+ */
+export function formatUpcomingReminders(memories: MemoryRow[], windowDays = 14, now = new Date()): string {
+  const upcoming = getUpcomingMemoryEvents(memories, windowDays, now)
 
   if (upcoming.length === 0) return ""
 
@@ -207,18 +223,28 @@ const SEASONAL_HOLIDAYS: { label: string; month: number; day: number }[] = [
 ]
 
 /**
+ * Structured list of upcoming seasonal holidays within the next `windowDays`,
+ * soonest first. Shared by `formatSeasonalHolidays` (prompt text) and the
+ * `/api/cherry-blossom/upcoming-events` route (JSON).
+ */
+export function getUpcomingSeasonalHolidays(windowDays = 14, now = new Date()): UpcomingEvent[] {
+  return SEASONAL_HOLIDAYS.map((h) => ({
+    label: h.label,
+    detail: h.label,
+    days: daysUntil(h.month, h.day, now),
+  }))
+    .filter((e) => e.days >= 0 && e.days <= windowDays)
+    .sort((a, b) => a.days - b.days)
+}
+
+/**
  * Returns a prompt block describing seasonal holidays within the next
  * `windowDays`, formatted the same way as `formatUpcomingReminders` so both
  * can be concatenated into one memory-context section. Returns "" when
  * nothing seasonal is upcoming.
  */
 export function formatSeasonalHolidays(windowDays = 14, now = new Date()): string {
-  const upcoming = SEASONAL_HOLIDAYS.map((h) => ({
-    label: h.label,
-    days: daysUntil(h.month, h.day, now),
-  }))
-    .filter((e) => e.days >= 0 && e.days <= windowDays)
-    .sort((a, b) => a.days - b.days)
+  const upcoming = getUpcomingSeasonalHolidays(windowDays, now)
 
   if (upcoming.length === 0) return ""
 

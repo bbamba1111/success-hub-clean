@@ -17,12 +17,19 @@
  * this is a real weekly record, not session-only reflection.
  */
 
-import { useEffect, useMemo, useState } from "react"
-import { Plus, X, Compass, Clock } from "lucide-react"
+import { useEffect, useMemo, useState, type ReactNode } from "react"
+import { Plus, X, Compass, Clock, ChevronDown } from "lucide-react"
 import { SCHEDULE_BY_ID } from "@/operating-engine/config/schedule"
 import { FUNCTIONS, type FunctionArea } from "@/components/founder-os/ai-executive-leadership-team"
 import { humanSkills } from "@/components/founder-os/human-zone-of-genius"
 import { BUSINESS_AREAS, getAreaById } from "@/lib/wlbb-week/catalog"
+import { WorkoutPlannerWidget } from "@/components/planners/workout-planner-widget"
+import { SleepTrackerWidget } from "@/components/planners/sleep-tracker-widget"
+import { LunchPlannerWidget } from "@/components/planners/lunch-planner-widget"
+import { CherryBlossomWorkstation } from "@/components/cherry-blossom-workstation"
+import { LunchShareSocial } from "@/components/lunch-share-social"
+import { TimeFreedomSocial } from "@/components/time-freedom-social"
+import { UpcomingLifeEvents } from "@/components/cherry-blossom/upcoming-life-events"
 import {
   getWeekKey,
   loadWeek,
@@ -143,6 +150,42 @@ function ExecutiveMiniCard({ area }: { area: FunctionArea }) {
   )
 }
 
+/**
+ * Simple local accordion used inside "Design My Work-Life Balance Business™" —
+ * click-to-expand, one `useState` per section, same card styling as the rest
+ * of this file. `children` may be a render function so callers can pass the
+ * current open state through to inline chat/social widgets (so their
+ * `active` prop only goes true once the section is actually expanded).
+ */
+function CollapsibleSubSection({
+  title,
+  children,
+  defaultOpen = false,
+}: {
+  title: string
+  children: ReactNode | ((open: boolean) => ReactNode)
+  defaultOpen?: boolean
+}) {
+  const [open, setOpen] = useState(defaultOpen)
+  return (
+    <div className="rounded-2xl border border-[#E8DFE2] bg-[#FDFBF9] overflow-hidden">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left transition-colors hover:bg-[#F7F3EE]"
+      >
+        <span className="font-sans text-sm font-semibold text-[#2E1F27]">{title}</span>
+        <ChevronDown
+          className={`h-4 w-4 shrink-0 text-[#6B5860] transition-transform ${open ? "rotate-180" : ""}`}
+          aria-hidden
+        />
+      </button>
+      {open && <div className="border-t border-[#E8DFE2] px-5 py-5">{typeof children === "function" ? children(open) : children}</div>}
+    </div>
+  )
+}
+
 export function DebriefSpace() {
   const debriefSchedule = SCHEDULE_BY_ID["monday-debrief"]
   const [week, setWeek] = useState<WlbbWeekState | null>(null)
@@ -156,6 +199,9 @@ export function DebriefSpace() {
   // picks from, so Bottlenecks reuses EGA's existing data instead of
   // introducing a second, parallel bottleneck-tracking system.
   const [openEgaEntries, setOpenEgaEntries] = useState<EgaEntry[]>([])
+  // Seeded from the Time Freedom collapsible's Life Events™ list — bumping this
+  // with a new prompt string auto-sends it into the adjacent Cherry Blossom chat.
+  const [timeFreedomPrompt, setTimeFreedomPrompt] = useState<string | undefined>(undefined)
 
   useEffect(() => {
     const loaded = loadWeek(getWeekKey())
@@ -346,7 +392,7 @@ export function DebriefSpace() {
           Priority Focus™
         </p>
         <h2 className="font-serif text-3xl font-semibold text-[#2E1F27] text-balance leading-tight">
-          Decide My Priority Focus Areas For The Week™
+          My Priority Focus Areas For The Week™
         </h2>
       </div>
 
@@ -359,7 +405,7 @@ export function DebriefSpace() {
           </p>
         </div>
         <p className="font-serif text-2xl font-semibold text-[#2E1F27] leading-snug">
-          Decide My Priority Focus Areas For The Week™
+          My Priority Focus Areas For The Week™
         </p>
 
         {/* ── Permission-giving intro ──────────────────────────────────────── */}
@@ -394,7 +440,7 @@ export function DebriefSpace() {
       <div className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm px-8 py-7 space-y-5">
         <div>
           <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60">
-            Step 1 · Life Intentions
+            Step 1 · Life Priorities
           </p>
           <p className="mt-2 font-sans text-sm text-[#3A2E33] leading-relaxed">
             What do you want to make time for this week? Relationship-repair entries stay private to you.
@@ -545,6 +591,12 @@ export function DebriefSpace() {
           </div>
         )}
       </div>
+
+      {/* ── Business Building Priorities and Bottleneck Breakthroughs (groups Steps 2 + 3) ── */}
+      <div className="space-y-4">
+        <p className="font-montserrat text-xs font-bold uppercase tracking-[0.2em] text-[#6B5860]/70 px-1">
+          Business Building Priorities and Bottleneck Breakthroughs
+        </p>
 
       {/* ── 2. Business Outcome ──────────────────────────────────────────────── */}
       <div className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm px-8 py-7 space-y-5">
@@ -707,6 +759,51 @@ export function DebriefSpace() {
             </div>
           </>
         )}
+      </div>
+      </div>
+
+      {/* ── Design My Work-Life Balance Business™ ────────────────────────────── */}
+      <div className="rounded-3xl border border-[#7FB069]/25 bg-white shadow-sm px-8 py-7 space-y-4">
+        <div>
+          <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
+            Design My Work-Life Balance Business™
+          </p>
+          <p className="mt-2 font-sans text-sm text-[#3A2E33] leading-relaxed">
+            Open any section below to plan the protected time already built into your day.
+          </p>
+        </div>
+
+        <CollapsibleSubSection title="30-Minute Movement Window">
+          <WorkoutPlannerWidget />
+        </CollapsibleSubSection>
+
+        <CollapsibleSubSection title="Extended Healthy Hybrid Lunch Break">
+          {(open) => (
+            <div className="space-y-5">
+              <LunchPlannerWidget />
+              <CherryBlossomWorkstation context="lunch-break" active={open} />
+              <LunchShareSocial active={open} />
+            </div>
+          )}
+        </CollapsibleSubSection>
+
+        <CollapsibleSubSection title="Time Freedom">
+          {(open) => (
+            <div className="space-y-5">
+              <UpcomingLifeEvents onPlan={setTimeFreedomPrompt} />
+              <CherryBlossomWorkstation
+                context="lifestyle-experiences"
+                active={open}
+                pendingPrompt={timeFreedomPrompt}
+              />
+              <TimeFreedomSocial active={open} />
+            </div>
+          )}
+        </CollapsibleSubSection>
+
+        <CollapsibleSubSection title="Power Down">
+          <SleepTrackerWidget />
+        </CollapsibleSubSection>
       </div>
 
       {/* ── 4. Operating Behaviors ───────────────────────────────────────────── */}

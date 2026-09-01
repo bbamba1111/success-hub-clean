@@ -12,6 +12,12 @@ interface CherryBlossomWorkstationProps {
   context: string
   /** When true, the workstation lazily loads the welcome message (once). */
   active: boolean
+  /**
+   * Optional prompt to seed and auto-send as the member's next message —
+   * e.g. from a "Plan this with Cherry Blossom" button elsewhere on the page.
+   * Bump this with a new string value (even the same text) to resend.
+   */
+  pendingPrompt?: string
 }
 
 interface Message {
@@ -90,7 +96,7 @@ function formatMessage(content: string) {
  * behavior (welcome message, universal planning choices, Memory Vault™) but is
  * laid out to live inside a card rather than a centered overlay.
  */
-export function CherryBlossomWorkstation({ context, active }: CherryBlossomWorkstationProps) {
+export function CherryBlossomWorkstation({ context, active, pendingPrompt }: CherryBlossomWorkstationProps) {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -98,6 +104,7 @@ export function CherryBlossomWorkstation({ context, active }: CherryBlossomWorks
   const [closedForNight, setClosedForNight] = useState(false)
   const hasLoadedRef = useRef(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const lastPromptRef = useRef<string | undefined>(undefined)
 
   // Lazily load the welcome message the first time the workstation is opened.
   useEffect(() => {
@@ -136,10 +143,22 @@ export function CherryBlossomWorkstation({ context, active }: CherryBlossomWorks
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" })
   }, [messages, isLoading, showPlanning])
 
-  const sendMessage = async () => {
-    if (!input.trim() || isLoading) return
+  // Auto-send a seeded prompt (e.g. from a "Plan this with Cherry Blossom"
+  // button) whenever it changes to a new, non-empty value.
+  useEffect(() => {
+    if (!pendingPrompt || !pendingPrompt.trim()) return
+    if (lastPromptRef.current === pendingPrompt) return
+    lastPromptRef.current = pendingPrompt
+    setShowPlanning(false)
+    sendMessage(pendingPrompt)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pendingPrompt])
 
-    const userMessage: Message = { role: "user", content: input }
+  const sendMessage = async (overrideText?: string) => {
+    const text = overrideText ?? input
+    if (!text.trim() || isLoading) return
+
+    const userMessage: Message = { role: "user", content: text }
     setMessages((prev) => [...prev, userMessage])
     setInput("")
     setIsLoading(true)
@@ -300,7 +319,7 @@ export function CherryBlossomWorkstation({ context, active }: CherryBlossomWorks
           disabled={isLoading}
         />
         <Button
-          onClick={sendMessage}
+          onClick={() => sendMessage()}
           disabled={isLoading || !input.trim()}
           className="bg-gradient-to-r from-[#7FB069]/80 to-[#E26C73]/80 shadow-md hover:from-[#7FB069] hover:to-[#E26C73]"
         >

@@ -5,6 +5,7 @@ import {
   loadMemories,
   formatMemoryVault,
   formatUpcomingReminders,
+  formatSeasonalHolidays,
   shouldAskMonthlyCheckin,
   savePlanningPreference,
 } from "@/lib/cherry-blossom/memory"
@@ -127,6 +128,9 @@ async function buildMemoryContext(): Promise<string> {
 
     const reminders = formatUpcomingReminders(memories)
     if (reminders) sections.push(reminders)
+
+    const seasonalDays = formatSeasonalHolidays()
+    if (seasonalDays) sections.push(seasonalDays)
 
     if (shouldAskMonthlyCheckin(memories)) {
       sections.push(
