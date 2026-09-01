@@ -19,23 +19,35 @@ const POWER_DOWN_ACTIVITIES = [
   "Nothing — just rest", "Other",
 ]
 
-function buildDeclaration(activity: string): string {
-  if (!activity) return ""
-  return `I am someone who protects my Power Down™ and releases the day fully. Tonight I commit to ${activity.toLowerCase()} — because rest is what makes tomorrow's clarity possible.`
+const SLEEP_HOURS_OPTIONS = [6, 6.5, 7, 7.5, 8, 8.5, 9]
+
+function formatHours(h: number): string {
+  const whole = Math.floor(h)
+  const mins = Math.round((h - whole) * 60)
+  return mins > 0 ? `${whole}h ${mins}m` : `${whole}h`
+}
+
+function buildDeclaration(activity: string, sleepHours: number): string {
+  if (!activity || !sleepHours) return ""
+  return `I am someone who protects my Power Down™ and honours my rest. Tonight I commit to ${activity.toLowerCase()}, and to ${formatHours(sleepHours)} of sleep starting at 11:00 PM — because rest is what makes tomorrow's clarity possible.`
 }
 
 /**
  * PowerDownIntentionForm — Step 1 of 3, and the ONLY step that lives inside
  * the "Power Down" collapsible in Decide & Design™. Mirrors
  * `MovementIntentionForm` / `LunchIntentionForm` exactly — no duration is
- * set or tracked; this protected window is honoured, not timed. Building a
- * declaration here saves it to the shared Power Down Declaration™ store;
- * Steps 2 (read + declare) and 3 (completion check-in) then populate on
- * their own inside the real Power Down™ segment later in the day, alongside
- * the always-present Power Down History™.
+ * set or tracked; this protected window is honoured, not timed. Also
+ * captures planned sleep hours for the 11 PM Unplug Digital Detox™ window,
+ * so Power Down and tonight's sleep intention arrive as ONE combined
+ * declaration rather than two separate ones. Building a declaration here
+ * saves it to the shared Power Down Declaration™ store; Steps 2 (read +
+ * declare) and 3 (completion check-in) then populate on their own inside
+ * the real Power Down™ segment later in the day, alongside the
+ * always-present Power Down History™, Sleep Tracker™, and Sleep History™.
  */
 export function PowerDownIntentionForm() {
   const [activity, setActivity] = useState("")
+  const [sleepHours, setSleepHours] = useState(0)
   const [built, setBuilt] = useState<PowerDownDeclaration | null>(null)
   const [showGlass, setShowGlass] = useState(false)
   const glassTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -48,8 +60,12 @@ export function PowerDownIntentionForm() {
   }, [])
 
   const handleBuild = () => {
-    if (!activity) return
-    const record = savePowerDownDeclaration({ activity, declaration: buildDeclaration(activity) })
+    if (!activity || !sleepHours) return
+    const record = savePowerDownDeclaration({
+      activity,
+      sleepHours,
+      declaration: buildDeclaration(activity, sleepHours),
+    })
     setBuilt(record)
     setShowGlass(true)
     if (glassTimerRef.current) clearTimeout(glassTimerRef.current)
@@ -57,7 +73,10 @@ export function PowerDownIntentionForm() {
   }
 
   const handleEdit = () => {
-    if (built) setActivity(built.activity)
+    if (built) {
+      setActivity(built.activity)
+      setSleepHours(built.sleepHours)
+    }
     setBuilt(null)
   }
 
@@ -159,9 +178,34 @@ export function PowerDownIntentionForm() {
         />
       </div>
 
+      <div>
+        <p className="mb-1 font-sans text-sm font-semibold text-[#2E1F27]">
+          How many hours are you planning to sleep tonight?
+        </p>
+        <p className="mb-3 font-sans text-xs text-[#6B5860]">
+          Your Unplug Digital Detox™ begins at 11:00 PM — this becomes part of the same declaration.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {SLEEP_HOURS_OPTIONS.map((h) => (
+            <button
+              key={h}
+              type="button"
+              onClick={() => setSleepHours(h)}
+              className={`rounded-full border px-3 py-1.5 font-sans text-sm transition-all ${
+                sleepHours === h
+                  ? "border-[#5B6EA8] bg-[#5B6EA8] font-semibold text-white"
+                  : "border-[#E5E5E5] bg-white text-[#3A2E33] hover:border-[#5B6EA8] hover:text-[#5B6EA8]"
+              }`}
+            >
+              {formatHours(h)}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <Button
         onClick={handleBuild}
-        disabled={!activity}
+        disabled={!activity || !sleepHours}
         className="w-full bg-[#5B6EA8] py-6 text-base font-semibold text-white hover:bg-[#4A5D97] disabled:opacity-40"
       >
         <Sparkles className="mr-2 h-4 w-4" />

@@ -11,6 +11,8 @@ export interface PowerDownLogEntry {
   id: string
   date: string
   activity: string
+  /** Planned hours of sleep declared alongside the Power Down activity — the combined declaration. */
+  sleepHours: number
   declaration: string
   completionStatus: "yes" | "partially" | "no"
   reflection: string

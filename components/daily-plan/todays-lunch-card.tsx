@@ -22,7 +22,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { Copy, Check, ChevronRight, Sparkles } from "lucide-react"
+import { ChevronRight, Sparkles } from "lucide-react"
 import {
   loadLunchDeclaration,
   markLunchDeclarationStarted,
@@ -39,6 +39,7 @@ import {
   type LunchLogEntry,
 } from "@/lib/daily-plan/lunch-history"
 import { LunchHistoryList } from "@/components/planners/lunch-history-list"
+import { MiddayTimeFreedomSocial } from "@/components/midday-time-freedom-social"
 
 type CompletionStatus = "yes" | "partially" | "no"
 
@@ -47,7 +48,6 @@ export function TodaysLunchCard() {
   const [declaration, setDeclaration] = useState<LunchDeclaration | null>(null)
   const [history, setHistory] = useState<LunchLogEntry[]>([])
   const [showWrapUp, setShowWrapUp] = useState(false)
-  const [copied, setCopied] = useState(false)
   const [loggedToday, setLoggedToday] = useState(false)
 
   // Step 3 fields
@@ -78,15 +78,6 @@ export function TodaysLunchCard() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  const handleCopy = async () => {
-    if (!declaration) return
-    try {
-      await navigator.clipboard.writeText(declaration.declaration)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2500)
-    } catch {}
-  }
 
   const handleSave = () => {
     if (!declaration || !completionStatus) return
@@ -164,14 +155,6 @@ export function TodaysLunchCard() {
               {declaration.declaration}
             </p>
             <p className="font-sans text-sm text-[#6B5860]">Read it aloud. Step away and live from it.</p>
-            <Button
-              variant="outline"
-              onClick={handleCopy}
-              className="border-[#E26C73]/40 text-[#C0545A] hover:bg-[#E26C73]/10 bg-transparent"
-            >
-              {copied ? <Check className="mr-2 h-4 w-4" /> : <Copy className="mr-2 h-4 w-4" />}
-              {copied ? "Copied!" : "Copy to Zoom Chat"}
-            </Button>
           </motion.div>
         )}
       </AnimatePresence>
@@ -281,6 +264,10 @@ export function TodaysLunchCard() {
 
       {/* ── Lunch Break History™ — always present ── */}
       <LunchHistoryList history={history} onDelete={deleteEntry} />
+
+      {/* ── Midday & Time Freedom Moments™ — moved here from Decide & Design's
+          lunch collapsible, renamed, now living in the real Lunch Break™ segment ── */}
+      <MiddayTimeFreedomSocial active={mounted} />
     </div>
   )
 }

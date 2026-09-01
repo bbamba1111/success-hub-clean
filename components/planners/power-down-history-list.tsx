@@ -36,6 +36,11 @@ export function PowerDownHistoryList({
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <Badge className="bg-[#5B6EA8] text-white text-xs">{w.activity}</Badge>
+                  {w.sleepHours > 0 && (
+                    <Badge variant="outline" className="border-[#5B6EA8]/40 text-[#5B6EA8] text-xs">
+                      {w.sleepHours}h sleep planned
+                    </Badge>
+                  )}
                   <span className="text-xs text-gray-400" suppressHydrationWarning>
                     {new Date(w.date).toLocaleDateString()}
                   </span>

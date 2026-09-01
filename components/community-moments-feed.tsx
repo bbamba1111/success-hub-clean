@@ -26,7 +26,7 @@ import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 
-const MAX_IMAGE_BYTES = 10 * 1024 * 1024 // 10MB
+const DEFAULT_MAX_IMAGE_BYTES = 10 * 1024 * 1024 // 10MB, used unless a feed's config overrides it
 
 /**
  * Positive-only reactions — shared across every Community Moments feed
@@ -190,6 +190,8 @@ export interface CommunityMomentsFeedConfig {
   mediaPath: string
   maxVideoSeconds: number
   maxVideoBytes: number
+  /** Defaults to 10MB (`DEFAULT_MAX_IMAGE_BYTES`) when omitted. */
+  maxImageBytes?: number
   emptyStateTitle: string
   emptyStateSubtitle: string
   footerHint: string
@@ -310,8 +312,9 @@ export function CommunityMomentsFeed({ active, config }: { active: boolean; conf
       setUploadError("Please choose a photo or video.")
       return
     }
-    if (isImage && selected.size > MAX_IMAGE_BYTES) {
-      setUploadError("Photos must be 10MB or smaller.")
+    const maxImageBytes = config.maxImageBytes ?? DEFAULT_MAX_IMAGE_BYTES
+    if (isImage && selected.size > maxImageBytes) {
+      setUploadError(`Photos must be ${Math.round(maxImageBytes / (1024 * 1024))}MB or smaller.`)
       return
     }
     if (isVideo && selected.size > config.maxVideoBytes) {

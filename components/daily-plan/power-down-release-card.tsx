@@ -10,13 +10,17 @@
  * tracking:
  *
  *   Step 2 — Read + declare it. Shows the moment the founder opens this
- *            segment, so she reads it aloud and lives from it.
+ *            segment, so she reads it aloud and lives from it. The
+ *            declaration now combines the Power Down activity AND tonight's
+ *            planned sleep hours as ONE declaration (set together in Step 1).
  *   Step 3 — Wrap-up. Auto-appears 5 minutes after she arrives here, asking
  *            how tonight's wind-down went.
  *
- * The Power Down History™ is always visible below, regardless of where
- * tonight's declaration/wrap-up stands. Ends in the static UNPLUG™ closure
- * banner, unchanged.
+ * The Power Down History™ is always visible below, followed by the Sleep
+ * Tracker™ (bedtime/wake time + Sleep History™) so tonight's sleep can be
+ * tracked without leaving this space. Ends in the static UNPLUG™ closure
+ * banner. Text and backgrounds throughout are intentionally light — this is
+ * a wind-down space, not a high-contrast one.
  */
 
 import { useEffect, useRef, useState } from "react"
@@ -41,6 +45,7 @@ import {
   type PowerDownLogEntry,
 } from "@/lib/daily-plan/power-down-history"
 import { PowerDownHistoryList } from "@/components/planners/power-down-history-list"
+import { SleepTrackerWidget } from "@/components/planners/sleep-tracker-widget"
 
 type CompletionStatus = "yes" | "partially" | "no"
 
@@ -97,6 +102,7 @@ export function PowerDownReleaseCard() {
       id: Date.now().toString(),
       date: now.split("T")[0],
       activity: declaration.activity,
+      sleepHours: declaration.sleepHours,
       declaration: declaration.declaration,
       completionStatus,
       reflection,
@@ -130,12 +136,12 @@ export function PowerDownReleaseCard() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
-            className="rounded-3xl border border-[#8B8FA3]/25 bg-[#F3F4F7] px-6 py-5 sm:px-7 sm:py-6"
+            className="rounded-3xl border border-[#8B8FA3]/20 bg-[#F9FAFC] px-6 py-5 sm:px-7 sm:py-6"
           >
-            <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#3A4A7A]">
+            <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B7599]">
               Tonight&apos;s Power Down Declaration™
             </p>
-            <p className="mt-2 font-sans text-sm text-[#3A2E33]">
+            <p className="mt-2 font-sans text-sm text-[#7A7178]">
               You haven&apos;t set tonight&apos;s Power Down Intention™ yet.
             </p>
             <a
@@ -152,24 +158,31 @@ export function PowerDownReleaseCard() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-            className="rounded-3xl border-2 border-[#5B6EA8]/30 bg-[#5B6EA8]/5 px-6 py-6 sm:px-7 space-y-4"
+            className="rounded-3xl border-2 border-[#5B6EA8]/20 bg-[#5B6EA8]/[0.025] px-6 py-6 sm:px-7 space-y-4"
           >
-            <div className="flex items-center justify-between gap-3">
-              <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#3A4A7A]">
+            <div className="flex items-center justify-between gap-3 flex-wrap">
+              <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B7599]">
                 Step 2 · My Intention Declaration™
               </p>
-              <span className="rounded-full bg-[#5B6EA8]/15 px-2.5 py-1 font-montserrat text-[10px] font-semibold text-[#3A4A7A]">
-                {declaration.activity}
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="rounded-full bg-[#5B6EA8]/10 px-2.5 py-1 font-montserrat text-[10px] font-semibold text-[#6B7599]">
+                  {declaration.activity}
+                </span>
+                {declaration.sleepHours > 0 && (
+                  <span className="rounded-full bg-[#5B6EA8]/10 px-2.5 py-1 font-montserrat text-[10px] font-semibold text-[#6B7599]">
+                    {declaration.sleepHours}h sleep
+                  </span>
+                )}
+              </div>
             </div>
-            <p className="font-serif text-lg italic leading-relaxed text-[#2E1F27] sm:text-xl">
+            <p className="font-serif text-lg italic leading-relaxed text-[#5C5865] sm:text-xl">
               {declaration.declaration}
             </p>
-            <p className="font-sans text-sm text-[#6B5860]">Read it aloud. Let the day release for real.</p>
+            <p className="font-sans text-sm text-[#8A8090]">Read it aloud. Let the day release for real.</p>
             <Button
               variant="outline"
               onClick={handleCopy}
-              className="border-[#5B6EA8]/40 text-[#3A4A7A] hover:bg-[#5B6EA8]/10 bg-transparent"
+              className="border-[#5B6EA8]/30 text-[#6B7599] hover:bg-[#5B6EA8]/5 bg-transparent"
             >
               {copied ? <Check className="mr-2 h-4 w-4" /> : <Copy className="mr-2 h-4 w-4" />}
               {copied ? "Copied!" : "Copy to Zoom Chat"}
@@ -188,19 +201,19 @@ export function PowerDownReleaseCard() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <Card className="border-2 border-[#5B6EA8]/30">
+            <Card className="border-2 border-[#5B6EA8]/20">
               <CardContent className="pt-6 pb-6 space-y-5">
                 <div>
-                  <p className="text-xs font-semibold text-[#5B6EA8] uppercase tracking-widest mb-1">Step 3 · Wrap Up</p>
-                  <h4 className="text-xl font-bold text-gray-800 mb-1">How did tonight&apos;s Power Down go?</h4>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-xs font-semibold text-[#6B7599] uppercase tracking-widest mb-1">Step 3 · Wrap Up</p>
+                  <h4 className="text-xl font-semibold text-gray-600 mb-1">How did tonight&apos;s Power Down go?</h4>
+                  <p className="text-sm text-gray-400">
                     Your intention was{" "}
-                    <span className="font-semibold text-gray-700">{declaration.activity.toLowerCase()}</span>.
+                    <span className="font-medium text-gray-500">{declaration.activity.toLowerCase()}</span>.
                   </p>
                 </div>
 
                 <div>
-                  <p className="text-sm font-semibold text-gray-700 mb-3">Did you actually power down?</p>
+                  <p className="text-sm font-medium text-gray-500 mb-3">Did you actually power down?</p>
                   <div className="grid grid-cols-3 gap-3">
                     {(["yes", "partially", "no"] as const).map((status) => {
                       const labels = { yes: "Yes, fully", partially: "Partially", no: "Not this time" }
@@ -226,7 +239,7 @@ export function PowerDownReleaseCard() {
                 </div>
 
                 <div className="space-y-2">
-                  <p className="text-sm font-semibold text-gray-700">How was it? (optional)</p>
+                  <p className="text-sm font-medium text-gray-500">How was it? (optional)</p>
                   <Textarea
                     placeholder="What did you notice? What helped you release the day?"
                     value={reflection}
@@ -258,16 +271,21 @@ export function PowerDownReleaseCard() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.4 }}
           >
-            <Card className="border-2 border-[#5B6EA8]/30 text-center">
+            <Card className="border-2 border-[#5B6EA8]/20 text-center">
               <CardContent className="pt-10 pb-10 space-y-4">
                 <div className="text-5xl mb-2">🌙</div>
-                <h4 className="text-xl font-bold text-[#5B6EA8]">
+                <h4 className="text-xl font-semibold text-[#8890B5]">
                   {completionStatus === "yes"
                     ? "You released the day fully. That's everything."
                     : completionStatus === "partially"
                       ? "Partial release still counts. You still stepped back."
                       : "You were honest with yourself. That matters."}
                 </h4>
+                {declaration && declaration.sleepHours > 0 && (
+                  <p className="text-gray-400 text-sm max-w-xs mx-auto">
+                    Tonight&apos;s plan: {declaration.sleepHours}h of sleep, starting at 11:00 PM.
+                  </p>
+                )}
                 <Button
                   onClick={handleNewIntention}
                   className="mt-4 bg-[#5B6EA8] hover:bg-[#4A5D97] text-white px-8 py-5 font-semibold"
@@ -283,6 +301,9 @@ export function PowerDownReleaseCard() {
 
       {/* ── Power Down History™ — always present ── */}
       <PowerDownHistoryList history={history} onDelete={deleteEntry} />
+
+      {/* ── Sleep Tracker™ + Sleep History™ — track tonight's actual rest without leaving Power Down ── */}
+      <SleepTrackerWidget />
 
       {/* Static closure banner — no new planning, just the day's honest end. */}
       <div className="rounded-2xl bg-[#2E2F3A] px-5 py-4 text-center">

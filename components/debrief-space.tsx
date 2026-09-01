@@ -777,12 +777,7 @@ export function DebriefSpace() {
         </CollapsibleSubSection>
 
         <CollapsibleSubSection title="Extended Healthy Hybrid Lunch Break">
-          {(open) => (
-            <div className="space-y-5">
-              <LunchIntentionForm />
-              <TimeFreedomSocial active={open} />
-            </div>
-          )}
+          <LunchIntentionForm />
         </CollapsibleSubSection>
 
         <CollapsibleSubSection title="Time Freedom">

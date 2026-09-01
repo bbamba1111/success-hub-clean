@@ -2,9 +2,9 @@ import { put } from "@vercel/blob"
 import { type NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 
-// Photos up to 15MB, videos up to 100MB (≈60s at reasonable quality).
-const MAX_IMAGE_BYTES = 15 * 1024 * 1024
-const MAX_VIDEO_BYTES = 100 * 1024 * 1024
+// Photos up to 25MB, videos up to 250MB (≈2 minutes at reasonable quality).
+const MAX_IMAGE_BYTES = 25 * 1024 * 1024
+const MAX_VIDEO_BYTES = 250 * 1024 * 1024
 const ALLOWED_IMAGE = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/heic", "image/heif"]
 const ALLOWED_VIDEO = ["video/mp4", "video/quicktime", "video/webm"]
 
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
     const maxBytes = isVideo ? MAX_VIDEO_BYTES : MAX_IMAGE_BYTES
     if (file.size > maxBytes) {
       return NextResponse.json(
-        { error: isVideo ? "Videos must be under 100MB." : "Photos must be under 15MB." },
+        { error: isVideo ? "Videos must be under 250MB." : "Photos must be under 25MB." },
         { status: 413 },
       )
     }
