@@ -7,7 +7,8 @@
  *
  * Step 1 — Work-Life Balance Audit™
  * Step 2 — Entrepreneur Success Assessment™
- * Step 3 — Work-Life Balance Reality Check™ → direct hand-off into Debrief Space™
+ * Step 3 — Entrepreneur Gap Assessment™ (weekly current-state capture)
+ * Step 4 — Work-Life Balance Reality Check™ → direct hand-off into Debrief Space™
  *
  * Business Context does NOT appear here. It belongs exclusively in Measure Monthly™.
  * Weekly state is keyed by the Monday of the current week so it resets automatically.
@@ -23,6 +24,8 @@ import type { EsaResults } from "@/lib/entrepreneur-success/types"
 import { SCHEDULE_BY_ID } from "@/operating-engine/config/schedule"
 import WorkLifeBalanceAudit from "@/components/work-life-balance-audit"
 import EntrepreneurSuccessAssessment from "@/components/entrepreneur-success/entrepreneur-success-assessment"
+import { EgaWeeklyCheck } from "@/components/ega/ega-weekly-check"
+import { DIRECT_EGA_PROBLEM_STATEMENTS } from "@/lib/ega/direct-ega-catalog"
 
 // ─── Storage ─────────────────────────────────────────────────────────────────
 
@@ -58,6 +61,10 @@ interface WeeklyState {
    *  answer starts pre-filled instead of blank. */
   auditAnswers: Record<number, number> | null
   assessmentDone: boolean
+  /** Step 3 — whether this week's EGA current-state capture has been saved. */
+  egaDone: boolean
+  /** Step 3 — the DIRECT_EGA_PROBLEM_STATEMENTS ids the founder selected this week. */
+  egaGapIds: string[]
   completedAt: string | null
 }
 
@@ -68,12 +75,21 @@ function loadWeekly(): WeeklyState {
     if (raw) {
       const parsed = JSON.parse(raw) as WeeklyState
       if (parsed.weekKey === current) {
-        // Backfill defaults for state saved before attempt-tracking existed.
-        return { auditAttempts: parsed.auditDone ? 1 : 0, auditAnswers: null, ...parsed }
+        // Backfill defaults for state saved before attempt-tracking / EGA existed.
+        return { auditAttempts: parsed.auditDone ? 1 : 0, auditAnswers: null, egaDone: false, egaGapIds: [], ...parsed }
       }
     }
   } catch { /* ignore */ }
-  return { weekKey: current, auditDone: false, auditAttempts: 0, auditAnswers: null, assessmentDone: false, completedAt: null }
+  return {
+    weekKey: current,
+    auditDone: false,
+    auditAttempts: 0,
+    auditAnswers: null,
+    assessmentDone: false,
+    egaDone: false,
+    egaGapIds: [],
+    completedAt: null,
+  }
 }
 
 function saveWeekly(s: WeeklyState) {
@@ -104,8 +120,10 @@ export function ReflectionSpace() {
   // reopened quiz straight to the last question instead of the first.
   const [auditEditMode, setAuditEditMode]   = useState(false)
   const [assessmentDone, setAssessmentDone] = useState(false)
+  const [egaDone, setEgaDone]               = useState(false)
+  const [egaGapIds, setEgaGapIds]           = useState<string[]>([])
   const [completedAt, setCompletedAt]       = useState<string | null>(null)
-  const [activeStep, setActiveStep]         = useState<1 | 2 | 3>(1)
+  const [activeStep, setActiveStep]         = useState<1 | 2 | 3 | 4>(1)
   const [auditData, setAuditData]           = useState<AuditData | null>(null)
   const [esaData, setEsaData]               = useState<EsaResults | null>(null)
   const [showBreakdown, setShowBreakdown]   = useState(false)
@@ -123,11 +141,15 @@ export function ReflectionSpace() {
     setAuditAttempts(ws.auditAttempts)
     setAuditAnswers(ws.auditAnswers)
     setAssessmentDone(ws.assessmentDone)
+    setEgaDone(ws.egaDone)
+    setEgaGapIds(ws.egaGapIds)
     setCompletedAt(ws.completedAt)
     setAuditData(getAuditResults())
     setEsaData(getEsaResults())
 
-    if (ws.auditDone && ws.assessmentDone) {
+    if (ws.auditDone && ws.assessmentDone && ws.egaDone) {
+      setActiveStep(4)
+    } else if (ws.auditDone && ws.assessmentDone) {
       setActiveStep(3)
     } else if (ws.auditDone) {
       setActiveStep(2)
@@ -145,6 +167,8 @@ export function ReflectionSpace() {
       auditAttempts: attempts,
       auditAnswers: answers,
       assessmentDone,
+      egaDone,
+      egaGapIds,
       completedAt,
     }
     saveWeekly(next)
@@ -178,17 +202,48 @@ export function ReflectionSpace() {
 
   const markAssessmentDone = () => {
     const now = new Date().toISOString()
-    const next: WeeklyState = { weekKey: getWeekKey(), auditDone, assessmentDone: true, completedAt: now }
+    const next: WeeklyState = {
+      weekKey: getWeekKey(),
+      auditDone,
+      auditAttempts,
+      auditAnswers,
+      assessmentDone: true,
+      egaDone,
+      egaGapIds,
+      completedAt: now,
+    }
     saveWeekly(next)
-    // Persist First Reality Check™ completion forever so future visits switch to 7-day wording
-    if (isBaseline) markFirstRealityCheckComplete()
     setAssessmentDone(true)
     setCompletedAt(now)
     setEsaData(getEsaResults())
     setTimeout(() => setActiveStep(3), 500)
   }
 
-  const bothDone = auditDone && assessmentDone
+  /** Step 3 — EGA Weekly Check™: saves the founder's selected gap ids for this week. */
+  const markEgaDone = (selectedIds: string[]) => {
+    const now = new Date().toISOString()
+    const next: WeeklyState = {
+      weekKey: getWeekKey(),
+      auditDone,
+      auditAttempts,
+      auditAnswers,
+      assessmentDone,
+      egaDone: true,
+      egaGapIds: selectedIds,
+      completedAt: now,
+    }
+    saveWeekly(next)
+    // Persist First Reality Check™ completion forever so future visits switch to 7-day wording —
+    // moved here from markAssessmentDone since the Reality Check now only completes once all
+    // three steps (Audit, Assessment, EGA) are done.
+    if (isBaseline) markFirstRealityCheckComplete()
+    setEgaDone(true)
+    setEgaGapIds(selectedIds)
+    setCompletedAt(now)
+    setTimeout(() => setActiveStep(4), 500)
+  }
+
+  const allDone = auditDone && assessmentDone && egaDone
 
   const lifeScore = auditData?.overallScore ?? null
   const businessScore = esaData?.overallScore ?? null
@@ -202,10 +257,10 @@ export function ReflectionSpace() {
   // The "Life Reflection Complete" message (shown once the Audit is done but the
   // Assessment isn't yet) has its own dedicated block between the two step cards
   // instead of living in this top banner — see `auditCompleteRef` below.
-  const cherryBlossomMessage = bothDone
+  const cherryBlossomMessage = allDone
     ? "Reflection Complete\n\nYou have just created something many founders never do.\n\nYou created a protected time and space to reflect on both your life and your business before reacting to the week ahead.\n\nMost founders begin Monday by opening their inbox. You began by creating awareness.\n\nThat single decision changes how the rest of your week unfolds."
     : isBaseline
-    ? "There\u2019s nowhere to rush to.\n\nBefore you redesign your entry into the workweek, let\u2019s begin with two short reflections \u2014 your Work-Life Balance Audit\u2122 and your Entrepreneur Success Assessment\u2122.\n\nThe audit helps me understand how your life has been operating, and the assessment helps me understand how your business has been operating, so I can guide you throughout your Work-Life Balance Business Day\u2122.\n\nComplete both once. We\u2019ll use them as the foundation for your Monday reflections and your experience inside Harmony Lane\u2122."
+    ? "There\u2019s nowhere to rush to.\n\nBefore you redesign your entry into the workweek, let\u2019s begin with a few short reflections \u2014 your Work-Life Balance Audit\u2122, your Entrepreneur Success Assessment\u2122, and a quick check on what\u2019s getting in your way.\n\nThe audit helps me understand how your life has been operating, and the assessment helps me understand how your business has been operating, so I can guide you throughout your Work-Life Balance Business Day\u2122.\n\nComplete each once. We\u2019ll use them as the foundation for your Monday reflections and your experience inside Harmony Lane\u2122."
     : "There\u2019s nowhere to rush to.\n\nBefore you redesign your entry into the workweek, let\u2019s take a few moments to reflect on the past 7 days.\n\nEach Monday is an opportunity to celebrate your progress, learn from the previous week, and intentionally create the week ahead."
 
   if (!mounted) {
@@ -243,15 +298,15 @@ export function ReflectionSpace() {
         {/* ── Permission-giving intro ──────────────────────────────────────── */}
         <div className="rounded-2xl border border-[#7FB069]/25 bg-[#F7FBF4] px-5 py-4">
           <p className="font-sans text-sm text-[#3A2E33] leading-relaxed">
-            You have permission to pause before you produce. There&apos;s nowhere to rush to — just two short
+            You have permission to pause before you produce. There&apos;s nowhere to rush to — just a few short
             reflections, one at a time.
           </p>
         </div>
 
         {/* ── Step progress ribbon ────────────────────────────────────────── */}
         <StepRibbon
-          steps={["Audit", "Assessment", "Reality Check"]}
-          doneFlags={[auditDone, assessmentDone, bothDone]}
+          steps={["Audit", "Assessment", "Gaps", "Reality Check"]}
+          doneFlags={[auditDone, assessmentDone, egaDone, allDone]}
         />
 
         {/* ── Cherry Blossom coaching ──────────────────────────────────────── */}
@@ -445,9 +500,31 @@ export function ReflectionSpace() {
         </div>
       </StepCard>
 
+      {/* ── Step 3 — Entrepreneur Gap Assessment™ (weekly) ─────────────────── */}
+      <StepCard
+        stepNumber={3}
+        label="Activity 3"
+        title="Entrepreneur Gap Assessment™"
+        done={egaDone}
+        active={activeStep === 3}
+        locked={!assessmentDone}
+        onToggle={() => {
+          if (!assessmentDone) return
+          setActiveStep(activeStep === 3 ? (egaDone ? 4 : 3) : 3)
+        }}
+      >
+        <p className="font-sans text-sm text-[#5A4A52] leading-relaxed">
+          Now name what&apos;s actually getting in your way <strong>this week</strong>. There are no right or
+          wrong answers — just what&apos;s true right now. This is separate from the Gaps you named when you
+          first got started; it resets fresh every Monday so it always reflects your current week.
+        </p>
+
+        <EgaWeeklyCheck onComplete={markEgaDone} />
+      </StepCard>
+
       {/* ── Step 4 — Work-Life Balance Reality Check™ ──────────────────────── */}
       <AnimatePresence>
-        {bothDone && (
+        {allDone && (
           <motion.div
             key="complete"
             initial={{ opacity: 0, y: 16 }}
@@ -458,7 +535,7 @@ export function ReflectionSpace() {
             <div className="rounded-3xl border border-[#7FB069]/25 bg-[#F7FBF4] p-8 space-y-6">
               <div className="text-center space-y-1">
                 <p className="font-sans text-xs font-semibold uppercase tracking-[0.25em] text-[#5B835F]">
-                  Activity 3 — Your Work-Life Balance Reality Check™
+                  Activity 4 — Your Work-Life Balance Reality Check™
                 </p>
                 <p className="font-serif text-xl font-semibold text-[#2E1F27]">
                   Your life and business reflections have now been brought together into one personalized Work-Life Balance Reality Check™.
@@ -543,9 +620,29 @@ export function ReflectionSpace() {
                 </div>
               </div>
 
+              {/* What's getting in the way this week — label only, EGA isn't scored */}
+              {egaGapIds.length > 0 && (
+                <div className="rounded-2xl border border-[#E8DFE2] bg-white px-6 py-5 space-y-3">
+                  <p className="font-sans text-xs font-semibold uppercase tracking-[0.18em] text-[#6B5860]">
+                    What&apos;s Getting In Your Way This Week
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {DIRECT_EGA_PROBLEM_STATEMENTS.filter((p) => egaGapIds.includes(p.id)).map((p) => (
+                      <span
+                        key={p.id}
+                        className="inline-flex items-center rounded-full border border-[#E26C73]/25 bg-[#FDF8F5] px-3 py-1 font-sans text-xs font-medium text-[#3A2E33]"
+                      >
+                        {p.statement}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div className="space-y-2">
                 <CompletionBadge label="Life Reflection Complete" />
                 <CompletionBadge label="Business Reflection Complete" />
+                <CompletionBadge label="Gaps Named For This Week" />
               </div>
             </div>
           </motion.div>

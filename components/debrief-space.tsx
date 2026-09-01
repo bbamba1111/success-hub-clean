@@ -1,16 +1,17 @@
 "use client"
 
 /**
- * DebriefSpace™ — Design My Work-Life Balance Business Week™ (Monday only).
+ * DebriefSpace™ — Decide My Priority Focus Areas For The Week™ (Monday only).
  *
  * Builds this WLBB Week's Weekly WLBB Menu™:
- *  1. Life Intentions (incl. private relationship-repair entries)
+ *  1. Life Intentions (incl. private relationship-repair entries) — capped at 1–3
  *  2. Business Outcome (Area → 1–3 outcomes)
- *  3. Operating Behaviors (scoped to the chosen area)
- *  4. Human Zone of Genius™ practice for the week
- *  5. Assigned AI Executive(s) — auto-derived, read-only
- *  6. This Week's Weekly WLBB Menu — summary + GPS next-best-move
- *  7. Hand-off into the CEO Workspace™
+ *  3. Bottlenecks (1–3, drawn from open Entrepreneur Gap Assessment™ entries)
+ *  4. Operating Behaviors (scoped to the chosen area)
+ *  5. Human Zone of Genius™ practice for the week
+ *  6. Assigned AI Executive(s) — auto-derived, read-only
+ *  7. This Week's Weekly WLBB Menu — summary + GPS next-best-move
+ *  8. Hand-off into the CEO Workspace™
  *
  * All state persists through `lib/wlbb-week/storage.ts` on every change —
  * this is a real weekly record, not session-only reflection.
@@ -22,11 +23,24 @@ import { SCHEDULE_BY_ID } from "@/operating-engine/config/schedule"
 import { FUNCTIONS, type FunctionArea } from "@/components/founder-os/ai-executive-leadership-team"
 import { humanSkills } from "@/components/founder-os/human-zone-of-genius"
 import { BUSINESS_AREAS, getAreaById } from "@/lib/wlbb-week/catalog"
-import { getWeekKey, loadWeek, addLifeIntention, removeLifeIntention, setBusinessArea, setOutcomes, setHumanZoneOfGeniusPractice, setGpsRecommendation, getDailyEntry } from "@/lib/wlbb-week/storage"
+import {
+  getWeekKey,
+  loadWeek,
+  addLifeIntention,
+  removeLifeIntention,
+  setBusinessArea,
+  setOutcomes,
+  setBottlenecks,
+  setHumanZoneOfGeniusPractice,
+  setGpsRecommendation,
+  getDailyEntry,
+} from "@/lib/wlbb-week/storage"
 import { getGpsRecommendation } from "@/lib/wlbb-week/gps"
 import type { BusinessOutcome, LifeIntention, LifeIntentionKind, WlbbWeekState } from "@/lib/wlbb-week/types"
 import { getAuditResults } from "@/utils/audit-storage"
 import { getEsaResults } from "@/lib/entrepreneur-success/esa-storage"
+import { getEgaEntriesByStatus } from "@/lib/ega/ega-storage"
+import type { EgaEntry } from "@/lib/ega/types"
 
 /** Same threshold used on the Reality Check™ page — keeps "Focus Areas" consistent everywhere. */
 const FOCUS_THRESHOLD = 60
@@ -65,6 +79,26 @@ const QUICK_INTENTIONS: { label: string; kind: LifeIntentionKind; isRelationship
 ]
 
 const MAX_OUTCOMES = 3
+/** Life Intentions are capped at 1–3 for the week — same cap discipline as Business Outcome. */
+const MAX_LIFE = 3
+/** Bottlenecks (drawn from open EGA entries) are capped at 1–3 for the week. */
+const MAX_BOTTLENECKS = 3
+
+/**
+ * Best-effort mapping from a Life Intention's kind to the existing schedule
+ * block (operating-engine/config/schedule.ts) that already protects that
+ * kind of time — so choosing it here surfaces a "this is already protected"
+ * hint instead of implying the founder needs to carve out new time for it.
+ * Kinds with no clean single-block match (reconnect/forgive/ask-forgiveness/
+ * other) are intentionally left unmapped — no hint renders for those.
+ */
+const LIFE_KIND_TO_BLOCK: Partial<Record<LifeIntentionKind, string>> = {
+  movement: "movement-window",
+  rest: "power-down",
+  family: "time-freedom",
+  nature: "lunch-break",
+  recreation: "time-freedom",
+}
 
 function makeId(): string {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID()
@@ -118,6 +152,10 @@ export function DebriefSpace() {
   const [selectedBehaviors, setSelectedBehaviors] = useState<string[]>([])
   const [lifeFocusAreas, setLifeFocusAreas] = useState<FocusArea[]>([])
   const [businessFocusAreas, setBusinessFocusAreas] = useState<FocusArea[]>([])
+  // Open Entrepreneur Gap Assessment™ entries — the pool the Bottlenecks step
+  // picks from, so Bottlenecks reuses EGA's existing data instead of
+  // introducing a second, parallel bottleneck-tracking system.
+  const [openEgaEntries, setOpenEgaEntries] = useState<EgaEntry[]>([])
 
   useEffect(() => {
     const loaded = loadWeek(getWeekKey())
@@ -144,6 +182,7 @@ export function DebriefSpace() {
         .map((p) => ({ id: p.pillarId, name: p.pillarName, score: p.percentage }))
         .sort((a, b) => a.score - b.score),
     )
+    getEgaEntriesByStatus("open").then(setOpenEgaEntries)
   }, [])
 
   const selectedArea = week?.business.businessAreaId ? getAreaById(week.business.businessAreaId) : undefined
@@ -188,7 +227,10 @@ export function DebriefSpace() {
   // closure over outer `week` state across the early return above).
   const currentWeek = week
 
+  const lifeAtCap = currentWeek.life.intentions.length >= MAX_LIFE
+
   function addQuickIntention(item: (typeof QUICK_INTENTIONS)[number]) {
+    if (lifeAtCap) return
     const intention: LifeIntention = {
       id: makeId(),
       kind: item.kind,
@@ -200,7 +242,7 @@ export function DebriefSpace() {
   }
 
   function addCustomIntention() {
-    if (!customLabel.trim()) return
+    if (!customLabel.trim() || lifeAtCap) return
     const intention: LifeIntention = {
       id: makeId(),
       kind: "other",
@@ -226,6 +268,7 @@ export function DebriefSpace() {
       removeIntention(existing.id)
       return
     }
+    if (lifeAtCap) return
     const intention: LifeIntention = {
       id: makeId(),
       kind: "other",
@@ -233,6 +276,21 @@ export function DebriefSpace() {
       addedOn: new Date().toISOString(),
     }
     setWeek(addLifeIntention(currentWeek, intention))
+  }
+
+  const bottleneckIds = currentWeek.business.bottleneckEgaEntryIds
+
+  /** Toggles an open EGA entry in/out of this week's Bottlenecks — capped at MAX_BOTTLENECKS. */
+  function toggleBottleneck(entryId: string) {
+    const already = bottleneckIds.includes(entryId)
+    let nextIds: string[]
+    if (already) {
+      nextIds = bottleneckIds.filter((id) => id !== entryId)
+    } else {
+      if (bottleneckIds.length >= MAX_BOTTLENECKS) return
+      nextIds = [...bottleneckIds, entryId]
+    }
+    setWeek(setBottlenecks(currentWeek, nextIds))
   }
 
   function selectArea(areaId: string) {
@@ -285,10 +343,10 @@ export function DebriefSpace() {
       {/* ── Header ─────────────────────────────────────────────────────────── */}
       <div className="text-center space-y-3 pb-2">
         <p className="font-sans text-xs font-semibold uppercase tracking-[0.25em] text-[#C0545A]">
-          Debrief Space™
+          Priority Focus™
         </p>
         <h2 className="font-serif text-3xl font-semibold text-[#2E1F27] text-balance leading-tight">
-          Design My Work-Life Balance Business Week™
+          Decide My Priority Focus Areas For The Week™
         </h2>
       </div>
 
@@ -301,7 +359,7 @@ export function DebriefSpace() {
           </p>
         </div>
         <p className="font-serif text-2xl font-semibold text-[#2E1F27] leading-snug">
-          Design My Work-Life Balance Business Week™
+          Decide My Priority Focus Areas For The Week™
         </p>
 
         {/* ── Permission-giving intro ──────────────────────────────────────── */}
@@ -341,6 +399,9 @@ export function DebriefSpace() {
           <p className="mt-2 font-sans text-sm text-[#3A2E33] leading-relaxed">
             What do you want to make time for this week? Relationship-repair entries stay private to you.
           </p>
+          <p className="mt-1 font-sans text-xs text-[#6B5860]">
+            Pick 1–{MAX_LIFE} ({currentWeek.life.intentions.length}/{MAX_LIFE} selected)
+          </p>
         </div>
 
         {/* Real Audit™ categories at or below {FOCUS_THRESHOLD} — select any to add as a life intention. */}
@@ -352,17 +413,19 @@ export function DebriefSpace() {
             <div className="flex flex-wrap gap-2">
               {lifeFocusAreas.map((area) => {
                 const selected = week.life.intentions.some((i) => i.label === area.name)
+                const disabled = !selected && lifeAtCap
                 return (
                   <button
                     key={area.id}
                     type="button"
                     onClick={() => toggleLifeFocusArea(area)}
+                    disabled={disabled}
                     aria-pressed={selected}
                     className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 font-sans text-sm transition-colors ${
                       selected
                         ? "border-[#E26C73] bg-[#E26C73] text-white"
                         : "border-[#E26C73]/30 bg-white text-[#3A2E33] hover:bg-[#E26C73]/10"
-                    }`}
+                    } ${disabled ? "cursor-not-allowed opacity-40" : ""}`}
                   >
                     {area.name}
                     <span
@@ -384,7 +447,8 @@ export function DebriefSpace() {
               key={item.label}
               type="button"
               onClick={() => addQuickIntention(item)}
-              className="inline-flex items-center gap-1.5 rounded-full border border-[#7FB069]/30 bg-[#F7FBF4] px-4 py-2 font-sans text-sm text-[#3A2E33] transition-colors hover:bg-[#7FB069]/10"
+              disabled={lifeAtCap}
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#7FB069]/30 bg-[#F7FBF4] px-4 py-2 font-sans text-sm text-[#3A2E33] transition-colors hover:bg-[#7FB069]/10 disabled:cursor-not-allowed disabled:opacity-40"
             >
               <Plus className="h-3.5 w-3.5 text-[#7FB069]" aria-hidden />
               {item.label}
@@ -397,32 +461,40 @@ export function DebriefSpace() {
             value={customLabel}
             onChange={(e) => setCustomLabel(e.target.value)}
             placeholder="Something else…"
-            className="min-w-[10rem] flex-1 rounded-full border border-[#E8DFE2] bg-white px-4 py-2 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#7FB069]/30"
+            disabled={lifeAtCap}
+            className="min-w-[10rem] flex-1 rounded-full border border-[#E8DFE2] bg-white px-4 py-2 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#7FB069]/30 disabled:cursor-not-allowed disabled:opacity-40"
           />
           <input
             type="text"
             value={customDay}
             onChange={(e) => setCustomDay(e.target.value)}
             placeholder="Day (optional)"
-            className="w-32 rounded-full border border-[#E8DFE2] bg-white px-4 py-2 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#7FB069]/30"
+            disabled={lifeAtCap}
+            className="w-32 rounded-full border border-[#E8DFE2] bg-white px-4 py-2 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#7FB069]/30 disabled:cursor-not-allowed disabled:opacity-40"
           />
           <input
             type="text"
             value={customTime}
             onChange={(e) => setCustomTime(e.target.value)}
             placeholder="Time (optional)"
-            className="w-32 rounded-full border border-[#E8DFE2] bg-white px-4 py-2 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#7FB069]/30"
+            disabled={lifeAtCap}
+            className="w-32 rounded-full border border-[#E8DFE2] bg-white px-4 py-2 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#7FB069]/30 disabled:cursor-not-allowed disabled:opacity-40"
           />
           <button
             type="button"
             onClick={addCustomIntention}
-            disabled={!customLabel.trim()}
+            disabled={!customLabel.trim() || lifeAtCap}
             className="inline-flex items-center gap-1.5 rounded-full bg-[#7FB069] px-5 py-2 font-sans text-sm font-semibold text-white transition-colors hover:bg-[#6FA058] disabled:cursor-not-allowed disabled:opacity-40"
           >
             <Plus className="h-3.5 w-3.5" aria-hidden />
             Add
           </button>
         </div>
+        {lifeAtCap && (
+          <p className="font-sans text-xs text-[#6B5860]">
+            You&apos;ve selected {MAX_LIFE} Life Intentions for this week — remove one to add another.
+          </p>
+        )}
         {week.life.intentions.length > 0 && (
           <ul className="flex flex-wrap gap-2 pt-1">
             {week.life.intentions.map((intention) => (
@@ -450,6 +522,27 @@ export function DebriefSpace() {
               </li>
             ))}
           </ul>
+        )}
+
+        {/* Protected-boundary hints — surfaced for any selected Life Intention whose kind
+            already has a dedicated schedule block, so the founder decides *what* to do
+            with time that's already protected instead of thinking they need to carve out new time. */}
+        {week.life.intentions.some((i) => LIFE_KIND_TO_BLOCK[i.kind]) && (
+          <div className="space-y-2 pt-1">
+            {week.life.intentions
+              .filter((i) => LIFE_KIND_TO_BLOCK[i.kind])
+              .map((intention) => {
+                const blockId = LIFE_KIND_TO_BLOCK[intention.kind] as string
+                const block = SCHEDULE_BY_ID[blockId]
+                if (!block) return null
+                return (
+                  <p key={intention.id} className="font-sans text-xs text-[#5B835F] leading-relaxed">
+                    Your {block.shortTitle} is already protected. Decide what &quot;{intention.label}&quot; looks
+                    like during it.
+                  </p>
+                )
+              })}
+          </div>
         )}
       </div>
 

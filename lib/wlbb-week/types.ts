@@ -73,6 +73,8 @@ export interface WlbbWeekState {
     businessAreaId: string | null
     outcomes: BusinessOutcome[]
     humanZoneOfGeniusPracticeTitle: string | null
+    /** Ids of open EgaEntry rows (lib/ega/types.ts) the founder chose as this week's Bottlenecks — max 3. */
+    bottleneckEgaEntryIds: string[]
   }
   gpsRecommendation: string | null
   debriefCompletedAt: string | null // ISO timestamp — set once the Monday Debrief™ is completed

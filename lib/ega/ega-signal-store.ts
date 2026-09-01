@@ -6,11 +6,16 @@
  *
  *   Founder Profile™ → Business Context™ → EGA Screen 1 → Cherry Blossom Thank-You™
  *
- * IMPORTANT — this gate is ONLY about the one-time onboarding signal capture.
- * EGA is NOT a recurring weekly assessment. After onboarding, EGA operates as
- * a diagnostic layer that reacts to signals (ESA, Business Context, asset/rule
- * state) and surfaces targeted follow-up questions only when relevant — the
- * founder is never asked to "take the EGA" again in full.
+ * IMPORTANT — this gate is ONLY about the one-time onboarding signal capture,
+ * tracked by `direct_ega`-sourced entries. It is separate from the recurring
+ * weekly current-state capture that now runs inside the Monday Reality
+ * Check (Step 3 of components/reflection-space.tsx, via
+ * components/ega/ega-weekly-check.tsx), which re-uses this same Screen 1
+ * catalog but writes `weekly_reality_check`-sourced entries instead and has
+ * no onboarding gate of its own — it simply resets with the week. Outside
+ * of onboarding and the weekly check, EGA still operates as a diagnostic
+ * layer that reacts to signals (ESA, Business Context, asset/rule state)
+ * and surfaces targeted follow-up questions only when relevant.
  *
  * Client-side localStorage storage following the exact pattern of
  * business-context-store.ts / onboarding-welcome-store.ts.

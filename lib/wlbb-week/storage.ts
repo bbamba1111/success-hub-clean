@@ -40,7 +40,7 @@ function emptyWeek(weekKey: string): WlbbWeekState {
   return {
     weekKey,
     life: { intentions: [] },
-    business: { businessAreaId: null, outcomes: [], humanZoneOfGeniusPracticeTitle: null },
+    business: { businessAreaId: null, outcomes: [], humanZoneOfGeniusPracticeTitle: null, bottleneckEgaEntryIds: [] },
     gpsRecommendation: null,
     debriefCompletedAt: null,
     daily: {},
@@ -60,8 +60,12 @@ export function loadWeek(weekKey: string = getWeekKey()): WlbbWeekState {
     const raw = localStorage.getItem(keyFor(weekKey))
     if (raw) {
       const parsed = JSON.parse(raw) as WlbbWeekState
-      // Defensive merge in case the shape grows over time.
-      return { ...emptyWeek(weekKey), ...parsed }
+      // Defensive merge in case the shape grows over time. `business` is
+      // merged one level deeper so a week saved before a new business.*
+      // field existed (e.g. bottleneckEgaEntryIds) still gets that field's
+      // default instead of losing it to the shallow top-level spread.
+      const base = emptyWeek(weekKey)
+      return { ...base, ...parsed, business: { ...base.business, ...parsed.business } }
     }
   } catch {
     // ignore malformed storage
@@ -105,6 +109,15 @@ export function setBusinessArea(state: WlbbWeekState, areaId: string | null): Wl
 
 export function setOutcomes(state: WlbbWeekState, outcomes: BusinessOutcome[]): WlbbWeekState {
   const next: WlbbWeekState = { ...state, business: { ...state.business, outcomes } }
+  saveWeek(next)
+  return next
+}
+
+export function setBottlenecks(state: WlbbWeekState, egaEntryIds: string[]): WlbbWeekState {
+  const next: WlbbWeekState = {
+    ...state,
+    business: { ...state.business, bottleneckEgaEntryIds: egaEntryIds },
+  }
   saveWeek(next)
   return next
 }

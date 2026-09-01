@@ -18,7 +18,8 @@
 export type EgaSource =
   | "esa" // ESA practice scored below the EGA gap-signal threshold
   | "business_context" // top challenge / growth opportunity flagged
-  | "direct_ega" // founder answered a direct EGA question
+  | "direct_ega" // founder answered a direct EGA question (one-time onboarding baseline)
+  | "weekly_reality_check" // founder re-selected what's getting in their way during the Monday Reality Check (recurring)
   | "asset_condition" // asset started but never finished / no operating rule exists
   | "operating_rule_state" // existing rule overridden or conflicted
   | "gps_context" // founder previously flagged as a bottleneck (future GPS use)
