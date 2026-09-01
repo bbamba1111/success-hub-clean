@@ -23,7 +23,7 @@ import { SCHEDULE_BY_ID } from "@/operating-engine/config/schedule"
 import { FUNCTIONS, type FunctionArea } from "@/components/founder-os/ai-executive-leadership-team"
 import { humanSkills } from "@/components/founder-os/human-zone-of-genius"
 import { BUSINESS_AREAS, getAreaById } from "@/lib/wlbb-week/catalog"
-import { WorkoutPlannerWidget } from "@/components/planners/workout-planner-widget"
+import { MovementIntentionForm } from "@/components/planners/movement-intention-form"
 import { SleepTrackerWidget } from "@/components/planners/sleep-tracker-widget"
 import { LunchPlannerWidget } from "@/components/planners/lunch-planner-widget"
 import { CherryBlossomWorkstation } from "@/components/cherry-blossom-workstation"
@@ -774,7 +774,7 @@ export function DebriefSpace() {
         </div>
 
         <CollapsibleSubSection title="30-Minute Movement Window">
-          <WorkoutPlannerWidget />
+          <MovementIntentionForm />
         </CollapsibleSubSection>
 
         <CollapsibleSubSection title="Extended Healthy Hybrid Lunch Break">
