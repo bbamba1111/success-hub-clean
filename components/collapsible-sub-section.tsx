@@ -23,12 +23,18 @@ export function CollapsibleSubSection({
   defaultOpen = false,
   open: controlledOpen,
   onOpenChange,
+  containerClassName,
+  headerHoverClassName,
 }: {
   title: string
   children: ReactNode | ((open: boolean) => ReactNode)
   defaultOpen?: boolean
   open?: boolean
   onOpenChange?: (open: boolean) => void
+  /** Overrides the default border/background — used to give a group of tabs varying accent shades. */
+  containerClassName?: string
+  /** Overrides the default header hover background — pairs with `containerClassName`. */
+  headerHoverClassName?: string
 }) {
   const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen)
   const isControlled = controlledOpen !== undefined
@@ -41,12 +47,12 @@ export function CollapsibleSubSection({
   }
 
   return (
-    <div className="rounded-2xl border border-[#E8DFE2] bg-[#FDFBF9] overflow-hidden">
+    <div className={`rounded-2xl border overflow-hidden ${containerClassName ?? "border-[#E8DFE2] bg-[#FDFBF9]"}`}>
       <button
         type="button"
         onClick={toggle}
         aria-expanded={open}
-        className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left transition-colors hover:bg-[#F7F3EE]"
+        className={`flex w-full items-center justify-between gap-3 px-5 py-4 text-left transition-colors ${headerHoverClassName ?? "hover:bg-[#F7F3EE]"}`}
       >
         <span className="font-sans text-sm font-semibold text-[#2E1F27]">{title}</span>
         <ChevronDown

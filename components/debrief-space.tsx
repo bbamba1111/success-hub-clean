@@ -11,11 +11,16 @@
  * Builds this WLBB Week's Weekly WLBB Menu™:
  *  1. Life Priorities — real Work-Life Balance Audit™ Focus Areas (≤60%) +
  *     a custom entry, capped at 1–3
- *  2. Business Outcome (Area → 1–3 outcomes)
- *  3. Bottlenecks (1–3, drawn from open Entrepreneur Gap Assessment™ entries)
+ *  2. Business Building Priorities (Area → 1–3 outcomes)
+ *  3. Bottleneck Priorities (1–3, drawn from open Entrepreneur Gap Assessment™ entries)
  *  4. Operating Behaviors (scoped to the chosen area)
  *  5. Assigned AI Executive(s) — auto-derived, read-only
  *  6. Hand-off into the CEO Workspace™
+ *
+ * Also renders "Design My Work-Life Balance Business Day™" — a set of
+ * collapsible tabs (varying sage-green shades) for planning the protected
+ * time already built into the day: Movement, the 4-Hour Focused CEO
+ * Workday™, Lunch, Time Freedom, and Power Down.
  *
  * All state persists through `lib/wlbb-week/storage.ts` on every change —
  * this is a real weekly record, not session-only reflection.
@@ -28,6 +33,7 @@ import { FUNCTIONS, type FunctionArea } from "@/components/founder-os/ai-executi
 import { BUSINESS_AREAS, getAreaById } from "@/lib/wlbb-week/catalog"
 import { CollapsibleSubSection } from "@/components/collapsible-sub-section"
 import { MovementIntentionForm } from "@/components/planners/movement-intention-form"
+import { CeoWorkdayActivitiesForm } from "@/components/planners/ceo-workday-activities-form"
 import { LunchIntentionForm } from "@/components/planners/lunch-intention-form"
 import { PowerDownIntentionForm } from "@/components/planners/power-down-intention-form"
 import { CherryBlossomWorkstation } from "@/components/cherry-blossom-workstation"
@@ -338,7 +344,7 @@ export function DebriefSpace() {
           Priority Focus™
         </p>
         <h2 className="font-serif text-3xl font-semibold text-[#2E1F27] text-balance leading-tight">
-          My Priority Focus Areas For The Week™
+          Decide My Priority Focus Areas For The Week™
         </h2>
       </div>
 
@@ -351,7 +357,7 @@ export function DebriefSpace() {
           </p>
         </div>
         <p className="font-serif text-2xl font-semibold text-[#2E1F27] leading-snug">
-          My Priority Focus Areas For The Week™
+          Decide My Priority Focus Areas For The Week™
         </p>
 
         {/* ── Permission-giving intro ──────────────────────────────────────── */}
@@ -536,17 +542,11 @@ export function DebriefSpace() {
         )}
       </div>
 
-      {/* ── Business Building Priorities and Bottleneck Breakthroughs (groups Steps 2 + 3) ── */}
-      <div className="space-y-4">
-        <p className="font-montserrat text-xs font-bold uppercase tracking-[0.2em] text-[#6B5860]/70 px-1">
-          Business Building Priorities and Bottleneck Breakthroughs
-        </p>
-
       {/* ── 2. Business Outcome ──────────────────────────────────────────────── */}
       <div className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm px-8 py-7 space-y-5">
         <div>
           <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60">
-            Step 2 · Business Outcome
+            Step 2 · Business Building Priorities
           </p>
           <p className="mt-2 font-sans text-sm text-[#3A2E33] leading-relaxed">
             Choose one Business Area, then 1–3 outcomes you want to move this week.
@@ -662,7 +662,7 @@ export function DebriefSpace() {
       <div className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm px-8 py-7 space-y-5">
         <div>
           <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60">
-            Step 3 · Bottlenecks
+            Step 3 · Bottleneck Priorities
           </p>
           <p className="mt-2 font-sans text-sm text-[#3A2E33] leading-relaxed">
             Pick 1–{MAX_BOTTLENECKS} open gaps from your Entrepreneur Gap Assessment™ that are actually in the way
@@ -704,28 +704,43 @@ export function DebriefSpace() {
           </>
         )}
       </div>
-      </div>
 
-      {/* ── Design My Work-Life Balance Business™ ────────────────────────────── */}
-      <div className="rounded-3xl border border-[#7FB069]/25 bg-white shadow-sm px-8 py-7 space-y-4">
+      {/* ── Design My Work-Life Balance Business Day™ ────────────────────────── */}
+      <div className="rounded-3xl border border-[#7FB069]/30 bg-[#F3F8ED] shadow-sm px-8 py-7 space-y-4">
         <div>
-          <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
-            Design My Work-Life Balance Business™
+          <p className="font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#5B835F]">
+            Design My Work-Life Balance Business Day™
           </p>
           <p className="mt-2 font-sans text-sm text-[#3A2E33] leading-relaxed">
             Open any section below to plan the protected time already built into your day.
           </p>
         </div>
 
-        <CollapsibleSubSection title="30-Minute Movement Window">
+        <CollapsibleSubSection
+          title="30-Minute Movement Window"
+          containerClassName="border-[#BFDDA8] bg-[#F1F7EC]"
+        >
           <MovementIntentionForm />
         </CollapsibleSubSection>
 
-        <CollapsibleSubSection title="Extended Healthy Hybrid Lunch Break">
+        <CollapsibleSubSection
+          title="4-Hour Focused CEO Workday"
+          containerClassName="border-[#A9CE8A] bg-[#E8F1DD]"
+        >
+          <CeoWorkdayActivitiesForm />
+        </CollapsibleSubSection>
+
+        <CollapsibleSubSection
+          title="Extended Healthy Hybrid Lunch Break"
+          containerClassName="border-[#93BE6C] bg-[#DEEBCE]"
+        >
           <LunchIntentionForm />
         </CollapsibleSubSection>
 
-        <CollapsibleSubSection title="Time Freedom">
+        <CollapsibleSubSection
+          title="Time Freedom"
+          containerClassName="border-[#7FB069] bg-[#D3E4BE]"
+        >
           {(open) => (
             <div className="space-y-5">
               <UpcomingLifeEvents onPlan={setTimeFreedomPrompt} />
@@ -739,7 +754,10 @@ export function DebriefSpace() {
           )}
         </CollapsibleSubSection>
 
-        <CollapsibleSubSection title="Power Down">
+        <CollapsibleSubSection
+          title="Power Down"
+          containerClassName="border-[#6B9A55] bg-[#C5D9AC]"
+        >
           <PowerDownIntentionForm />
         </CollapsibleSubSection>
       </div>

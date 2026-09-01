@@ -61,7 +61,7 @@ function freshState(): PageState {
  * WorkoutPlannerWidget — the intention → declare → complete → celebrate →
  * history flow for the 30-Minute Movement Window™. Extracted from
  * `/workout-planner` so it can be embedded inline (e.g. inside the Monday
- * "Design My Work-Life Balance Business™" collapsible) and still power the
+ * "Design My Work-Life Balance Business Day™" collapsible) and still power the
  * standalone page. Persists to the same `workouts_v2` localStorage key
  * either way, so history stays unified across both surfaces.
  */

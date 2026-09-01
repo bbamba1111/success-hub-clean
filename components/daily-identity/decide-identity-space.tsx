@@ -5,7 +5,6 @@
  * (Tue–Thu, 9:45–10:30 AM — `daily-planning-gps` block).
  *
  * Flow:
- *  0. Where do I need to focus today? — opportunity picker.
  *  1. Decide who you're being today — a quick-pick + free-text identity
  *     statement, stored per calendar day.
  *
@@ -20,8 +19,6 @@ import { getWeekKey, loadWeek } from "@/lib/wlbb-week/storage"
 import type { WlbbWeekState } from "@/lib/wlbb-week/types"
 import { getDateKey, loadDailyIdentity, updateDailyIdentity } from "@/lib/daily-identity/storage"
 import type { DailyIdentityRecord } from "@/lib/daily-identity/types"
-import { OpportunityFocusPicker } from "@/components/daily-identity/opportunity-focus-picker"
-import { DecideDesignAdditions } from "@/components/daily-plan/decide-design-additions"
 
 const IDENTITY_QUICK_PICKS = [
   "A calm, decisive CEO",
@@ -52,10 +49,7 @@ export function DecideIdentitySpace() {
 
   return (
     <div className="space-y-6">
-      {/* ── 0. Where do I need to focus today? (opportunity picker) ──────── */}
-      <OpportunityFocusPicker />
-
-      {/* ── 2. Decide who you're being today ─────────────────────────────── */}
+      {/* ── Decide who you're being today ────────────────────────────────── */}
       <div className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm px-6 py-5 sm:px-7 sm:py-6 space-y-4">
         <div>
           <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60">
@@ -98,11 +92,6 @@ export function DecideIdentitySpace() {
           />
         </div>
       </div>
-
-      {/* ── Decide → Populate → Execute: Movement / Lunch / CEO Workday
-          activities / Time Freedom / Power Down — feeds every downstream
-          segment's "Today's X" card so nothing is re-entered later. ────── */}
-      <DecideDesignAdditions />
     </div>
   )
 }
