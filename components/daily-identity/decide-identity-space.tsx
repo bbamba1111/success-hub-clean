@@ -155,6 +155,23 @@ export function DecideIdentitySpace() {
             ))}
           </ul>
         )}
+        {week.life.intentions.length > 0 && (
+          <>
+            <p className="mt-4 font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5A7A45]">
+              This Week's Life Intentions
+            </p>
+            <ul className="mt-2 flex flex-wrap gap-2">
+              {week.life.intentions.map((intention) => (
+                <li
+                  key={intention.id}
+                  className="inline-flex items-center rounded-full bg-white px-3 py-1 font-sans text-xs text-[#3A2E33] shadow-sm"
+                >
+                  {intention.label}
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
       </div>
 
       {/* ── 2. Decide who you're being today ─────────────────────────────── */}

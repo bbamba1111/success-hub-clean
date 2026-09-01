@@ -47,7 +47,7 @@ export function TimeFreedomTodayCard() {
               You haven&apos;t decided what to make time for yet.
             </p>
             <a
-              href="/?openSpace=daily-planning-gps"
+              href={new Date().getDay() === 1 ? "/?openSpace=monday-debrief" : "/?openSpace=daily-planning-gps"}
               className="mt-3 inline-flex items-center rounded-full border border-[#E8A24C]/40 bg-white px-4 py-2 font-sans text-xs font-semibold text-[#3A2E33] transition-colors hover:bg-[#E8A24C]/10"
             >
               Decide it in Decide & Design™

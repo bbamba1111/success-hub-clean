@@ -407,10 +407,14 @@ export function BusinessDayBlock({
               </div>
             )}
 
-            {/* Debrief Space™ — placeholder reflective pause between the Reality Check™ and Movement Window™ */}
+            {/* Debrief Space™ — placeholder reflective pause between the Reality Check™ and Movement Window™.
+                Today's Design™ (DecideIdentitySpace) runs immediately after it on Monday too, so the
+                weekly decision layer flows straight into the same daily design engine Tue–Thu already
+                use — no separate Monday planner, no dead link into the excluded daily-planning-gps block. */}
             {blockId === "monday-debrief" && (
-              <div className="px-7 py-8">
+              <div className="px-7 py-8 space-y-8">
                 <DebriefSpace />
+                <DecideIdentitySpace />
               </div>
             )}
 
