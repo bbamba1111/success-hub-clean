@@ -23,11 +23,12 @@
  */
 
 import { useEffect, useMemo, useState, type ReactNode } from "react"
-import { Plus, X, Compass, Clock, ChevronDown } from "lucide-react"
+import { Plus, X, Compass, Clock } from "lucide-react"
 import { SCHEDULE_BY_ID } from "@/operating-engine/config/schedule"
 import { FUNCTIONS, type FunctionArea } from "@/components/founder-os/ai-executive-leadership-team"
 import { humanSkills } from "@/components/founder-os/human-zone-of-genius"
 import { BUSINESS_AREAS, getAreaById } from "@/lib/wlbb-week/catalog"
+import { CollapsibleSubSection } from "@/components/collapsible-sub-section"
 import { MovementIntentionForm } from "@/components/planners/movement-intention-form"
 import { LunchIntentionForm } from "@/components/planners/lunch-intention-form"
 import { PowerDownIntentionForm } from "@/components/planners/power-down-intention-form"
@@ -154,41 +155,10 @@ function ExecutiveMiniCard({ area }: { area: FunctionArea }) {
   )
 }
 
-/**
- * Simple local accordion used inside "Design My Work-Life Balance Business™" —
- * click-to-expand, one `useState` per section, same card styling as the rest
- * of this file. `children` may be a render function so callers can pass the
- * current open state through to inline chat/social widgets (so their
- * `active` prop only goes true once the section is actually expanded).
- */
-function CollapsibleSubSection({
-  title,
-  children,
-  defaultOpen = false,
-}: {
-  title: string
-  children: ReactNode | ((open: boolean) => ReactNode)
-  defaultOpen?: boolean
-}) {
-  const [open, setOpen] = useState(defaultOpen)
-  return (
-    <div className="rounded-2xl border border-[#E8DFE2] bg-[#FDFBF9] overflow-hidden">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-        className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left transition-colors hover:bg-[#F7F3EE]"
-      >
-        <span className="font-sans text-sm font-semibold text-[#2E1F27]">{title}</span>
-        <ChevronDown
-          className={`h-4 w-4 shrink-0 text-[#6B5860] transition-transform ${open ? "rotate-180" : ""}`}
-          aria-hidden
-        />
-      </button>
-      {open && <div className="border-t border-[#E8DFE2] px-5 py-5">{typeof children === "function" ? children(open) : children}</div>}
-    </div>
-  )
-}
+// CollapsibleSubSection™ now lives in "@/components/collapsible-sub-section"
+// (imported above) so it can be shared with the real segment cards
+// (TodaysMovementCard, TodaysLunchCard, PowerDownReleaseCard) that host their
+// own inline "Change My Intention™" editors.
 
 export function DebriefSpace() {
   // Renders identically on Monday (`monday-debrief`) and Tue–Sun
@@ -407,7 +377,7 @@ export function DebriefSpace() {
         </h2>
       </div>
 
-      {/* ── Repeated title card ────────────────────────────────────────────── */}
+      {/* ── Repeated title card ───────���────────────────────────────────────── */}
       <div className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm px-8 py-7 space-y-5">
         <div className="flex items-center gap-2">
           <Clock className="h-3.5 w-3.5 text-[#5B835F]" aria-hidden />

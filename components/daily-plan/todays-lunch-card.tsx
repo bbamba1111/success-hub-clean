@@ -3,15 +3,23 @@
 /**
  * Today's Lunch card — the real Extended Healthy Hybrid Lunch Break™ segment.
  *
- * Step 1 (Set My Lunch Break Intention™) lives in Decide & Design™ and hands
- * off a `LunchDeclaration` through `lib/daily-plan/lunch-declaration`. This
- * card is where Steps 2 and 3 actually happen — mirrors `TodaysMovementCard`
- * exactly, minus any duration tracking:
+ * Step 1 (Set My Lunch Break Intention™) is built in Decide & Design™, but
+ * also lives right here inside a "Change My Lunch Break Intention™"
+ * collapsible below the declaration — so a founder never has to leave this
+ * space to set it for the first time or make a last-minute edit. Steps 2 and
+ * 3 happen below that — mirrors `TodaysMovementCard` exactly, minus any
+ * duration tracking:
  *
  *   Step 2 — Read + declare it. Shows the moment the founder opens this
  *            segment, so she reads it aloud and lives from it.
  *   Step 3 — Wrap-up. Auto-appears 5 minutes after she arrives here, asking
  *            how lunch went and whether she took it at all.
+ *
+ * Today's declaration is never auto-cleared — it (and the wrap-up/celebrate
+ * state) stays visible in this segment for the rest of the day, so a
+ * founder can come back and review it any time before the 11 PM Power
+ * Down™. Building a new declaration in the collapsible simply overwrites
+ * it in place, resetting Steps 2 & 3 for the fresh intention.
  *
  * The Lunch Break History™ is always visible below, regardless of where
  * today's declaration/wrap-up stands.
@@ -27,7 +35,6 @@ import {
   loadLunchDeclaration,
   markLunchDeclarationStarted,
   minutesElapsedSinceLunchStart,
-  clearLunchDeclaration,
   LUNCH_DECLARATION_EVENT,
   LUNCH_WRAP_UP_MINUTES,
   type LunchDeclaration,
@@ -40,6 +47,8 @@ import {
 } from "@/lib/daily-plan/lunch-history"
 import { LunchHistoryList } from "@/components/planners/lunch-history-list"
 import { MiddayTimeFreedomSocial } from "@/components/midday-time-freedom-social"
+import { LunchIntentionForm } from "@/components/planners/lunch-intention-form"
+import { CollapsibleSubSection } from "@/components/collapsible-sub-section"
 
 type CompletionStatus = "yes" | "partially" | "no"
 
@@ -49,22 +58,35 @@ export function TodaysLunchCard() {
   const [history, setHistory] = useState<LunchLogEntry[]>([])
   const [showWrapUp, setShowWrapUp] = useState(false)
   const [loggedToday, setLoggedToday] = useState(false)
+  // Controls the inline "Change My Lunch Break Intention™" collapsible so
+  // Step 1 can be set/edited without ever leaving this segment.
+  const [editOpen, setEditOpen] = useState(false)
 
   // Step 3 fields
   const [completionStatus, setCompletionStatus] = useState<CompletionStatus | null>(null)
   const [reflection, setReflection] = useState("")
 
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const lastBuiltAtRef = useRef<string | null>(null)
 
   const refresh = () => {
     const d = loadLunchDeclaration()
-    setDeclaration(d)
     setHistory(loadLunchHistory())
     if (d) {
+      // A new declaration (fresh `builtAt`) was just built in the inline
+      // editor — start Steps 2 & 3 over for it instead of showing the prior
+      // wrap-up/celebrate state against the new intention.
+      if (lastBuiltAtRef.current && lastBuiltAtRef.current !== d.builtAt) {
+        setLoggedToday(false)
+        setCompletionStatus(null)
+        setReflection("")
+      }
+      lastBuiltAtRef.current = d.builtAt
       markLunchDeclarationStarted(d.dateKey)
       const elapsed = minutesElapsedSinceLunchStart(d.dateKey)
       setShowWrapUp(elapsed !== null && elapsed >= LUNCH_WRAP_UP_MINUTES)
     }
+    setDeclaration(d)
   }
 
   useEffect(() => {
@@ -96,15 +118,10 @@ export function TodaysLunchCard() {
 
   const deleteEntry = (id: string) => setHistory(deleteLunchLogEntry(id))
 
-  const handleNewIntention = () => {
-    clearLunchDeclaration()
-    setDeclaration(null)
-    setShowWrapUp(false)
-    setLoggedToday(false)
-    setCompletionStatus(null)
-    setReflection("")
-    window.location.href = "/?openSpace=monday-debrief"
-  }
+  // Opens the inline "Change My Lunch Break Intention™" collapsible right
+  // here in the segment — today's celebrated declaration stays visible
+  // until a new one is actually built (or until the day rolls over).
+  const handleNewIntention = () => setEditOpen(true)
 
   if (!mounted) return null
 
@@ -127,12 +144,13 @@ export function TodaysLunchCard() {
             <p className="mt-2 font-sans text-sm text-[#3A2E33]">
               You haven&apos;t set today&apos;s Lunch Break Intention™ yet.
             </p>
-            <a
-              href="/?openSpace=monday-debrief"
+            <button
+              type="button"
+              onClick={() => setEditOpen(true)}
               className="mt-3 inline-flex items-center rounded-full border border-[#E26C73]/40 bg-white px-4 py-2 font-sans text-xs font-semibold text-[#3A2E33] transition-colors hover:bg-[#FDF3F4]"
             >
-              Set it in Decide &amp; Design™
-            </a>
+              Set It Now
+            </button>
           </motion.div>
         ) : (
           <motion.div
@@ -158,6 +176,16 @@ export function TodaysLunchCard() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ── Step 1, inline: set or change today's Lunch Break Intention™ without
+          ever leaving this segment. Opens by itself when there's nothing set yet. ── */}
+      <CollapsibleSubSection
+        title={declaration ? "Change My Lunch Break Intention™" : "Set My Lunch Break Intention™"}
+        open={editOpen}
+        onOpenChange={setEditOpen}
+      >
+        <LunchIntentionForm />
+      </CollapsibleSubSection>
 
       {/* ── Step 3: wrap-up, auto-arrives 5 minutes in ── */}
       <AnimatePresence>

@@ -3,14 +3,22 @@
 /**
  * Today's Movement™ card — the real 30-Minute Movement Window™ segment.
  *
- * Step 1 (Set My Movement Intention™) lives in Decide & Design™ and hands
- * off a `MovementDeclaration` through `lib/daily-plan/movement-declaration`.
- * This card is where Steps 2 and 3 actually happen:
+ * Step 1 (Set My Movement Intention™) is built in Decide & Design™, but also
+ * lives right here inside a "Change My Movement Intention™" collapsible
+ * below the declaration — so a founder never has to leave this space to set
+ * it for the first time or make a last-minute edit. Steps 2 and 3 happen
+ * below that:
  *
  *   Step 2 — Read + declare it. Shows the moment the founder opens this
  *            segment, so she reads it aloud and lives from it.
  *   Step 3 — Wrap-up. Auto-appears 5 minutes after she arrives here, so she
  *            can log how it went.
+ *
+ * Today's declaration is never auto-cleared — it (and the wrap-up/celebrate
+ * state) stays visible in this segment for the rest of the day, so a
+ * founder can come back and review it any time before the 11 PM Power
+ * Down™. Building a new declaration in the collapsible simply overwrites
+ * it in place, resetting Steps 2 & 3 for the fresh intention.
  *
  * The Movement Tracker™ (weekly stats) and Movement History™ (past
  * sessions) are always visible below, regardless of where today's
@@ -22,12 +30,11 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { Copy, Check, ChevronRight, Sparkles } from "lucide-react"
+import { Copy, Check, ChevronRight, Sparkles, Pencil } from "lucide-react"
 import {
   loadMovementDeclaration,
   markMovementDeclarationStarted,
   minutesElapsedSinceStart,
-  clearMovementDeclaration,
   MOVEMENT_DECLARATION_EVENT,
   MOVEMENT_WRAP_UP_MINUTES,
   type MovementDeclaration,
@@ -41,6 +48,8 @@ import {
 } from "@/lib/daily-plan/movement-history"
 import { MovementTrackerStats } from "@/components/planners/movement-tracker-stats"
 import { MovementHistoryList } from "@/components/planners/movement-history-list"
+import { MovementIntentionForm } from "@/components/planners/movement-intention-form"
+import { CollapsibleSubSection } from "@/components/collapsible-sub-section"
 
 type CompletionStatus = "yes" | "partially" | "no"
 
@@ -51,6 +60,9 @@ export function TodaysMovementCard() {
   const [showWrapUp, setShowWrapUp] = useState(false)
   const [copied, setCopied] = useState(false)
   const [loggedToday, setLoggedToday] = useState(false)
+  // Controls the inline "Change My Movement Intention™" collapsible so Step 1
+  // can be set/edited without ever leaving this segment.
+  const [editOpen, setEditOpen] = useState(false)
 
   // Step 3 fields
   const [completionStatus, setCompletionStatus] = useState<CompletionStatus | null>(null)
@@ -58,17 +70,27 @@ export function TodaysMovementCard() {
   const [reflection, setReflection] = useState("")
 
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const lastBuiltAtRef = useRef<string | null>(null)
 
   const refresh = () => {
     const d = loadMovementDeclaration()
-    setDeclaration(d)
     setHistory(loadMovementHistory())
     if (d) {
+      // A new declaration (fresh `builtAt`) was just built in the inline
+      // editor — start Steps 2 & 3 over for it instead of showing the prior
+      // wrap-up/celebrate state against the new intention.
+      if (lastBuiltAtRef.current && lastBuiltAtRef.current !== d.builtAt) {
+        setLoggedToday(false)
+        setCompletionStatus(null)
+        setReflection("")
+      }
+      lastBuiltAtRef.current = d.builtAt
       markMovementDeclarationStarted(d.dateKey)
       const elapsed = minutesElapsedSinceStart(d.dateKey)
       setShowWrapUp(elapsed !== null && elapsed >= MOVEMENT_WRAP_UP_MINUTES)
       setCompletedDuration((prev) => (prev === 30 ? d.duration : prev))
     }
+    setDeclaration(d)
   }
 
   useEffect(() => {
@@ -111,15 +133,10 @@ export function TodaysMovementCard() {
 
   const deleteEntry = (id: string) => setHistory(deleteWorkoutEntry(id))
 
-  const handleNewIntention = () => {
-    clearMovementDeclaration()
-    setDeclaration(null)
-    setShowWrapUp(false)
-    setLoggedToday(false)
-    setCompletionStatus(null)
-    setReflection("")
-    window.location.href = "/?openSpace=monday-debrief"
-  }
+  // Opens the inline "Change My Movement Intention™" collapsible right here
+  // in the segment — today's celebrated declaration stays visible until a
+  // new one is actually built (or until the day rolls over).
+  const handleNewIntention = () => setEditOpen(true)
 
   if (!mounted) return null
 
@@ -144,12 +161,13 @@ export function TodaysMovementCard() {
             <p className="mt-2 font-sans text-sm text-[#3A2E33]">
               You haven&apos;t set today&apos;s Movement Intention™ yet.
             </p>
-            <a
-              href="/?openSpace=monday-debrief"
+            <button
+              type="button"
+              onClick={() => setEditOpen(true)}
               className="mt-3 inline-flex items-center rounded-full border border-[#8DAE72]/40 bg-white px-4 py-2 font-sans text-xs font-semibold text-[#3A2E33] transition-colors hover:bg-[#F4F7F0]"
             >
-              Set it in Decide &amp; Design™
-            </a>
+              Set It Now
+            </button>
           </motion.div>
         ) : (
           <motion.div
@@ -183,6 +201,16 @@ export function TodaysMovementCard() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ── Step 1, inline: set or change today's Movement Intention™ without ever
+          leaving this segment. Opens by itself when there's nothing set yet. ── */}
+      <CollapsibleSubSection
+        title={declaration ? "Change My Movement Intention™" : "Set My Movement Intention™"}
+        open={editOpen}
+        onOpenChange={setEditOpen}
+      >
+        <MovementIntentionForm />
+      </CollapsibleSubSection>
 
       {/* ── Step 3: wrap-up, auto-arrives 5 minutes in ── */}
       <AnimatePresence>

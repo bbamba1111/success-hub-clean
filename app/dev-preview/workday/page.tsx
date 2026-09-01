@@ -33,7 +33,7 @@ import { seedWorkdayPreviewFixture } from "@/lib/dev-preview/workday-fixture"
 function AutoOpenCeoWorkday() {
   const activeSpace = useActiveSpace()
   useEffect(() => {
-    activeSpace?.enterSpace("ceo-workday", "block-ceo-workday")
+    activeSpace?.enterSpace("movement-window", "block-movement-window")
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   return null

@@ -3,11 +3,12 @@
 /**
  * Today's Power Down™ card — the real Power Down™ segment.
  *
- * Step 1 (Set My Power Down Intention™) lives in Decide & Design™ and hands
- * off a `PowerDownDeclaration` through `lib/daily-plan/power-down-declaration`.
- * This card is where Steps 2 and 3 actually happen — mirrors
- * `TodaysMovementCard` / `TodaysLunchCard` exactly, minus any duration
- * tracking:
+ * Step 1 (Set My Power Down Intention™) is built in Decide & Design™, but
+ * also lives right here inside a "Change My Power Down Intention™"
+ * collapsible below the declaration — so a founder never has to leave this
+ * space to set it for the first time or make a last-minute edit. Steps 2
+ * and 3 happen below that — mirrors `TodaysMovementCard` / `TodaysLunchCard`
+ * exactly, minus any duration tracking:
  *
  *   Step 2 — Read + declare it. Shows the moment the founder opens this
  *            segment, so she reads it aloud and lives from it. The
@@ -15,6 +16,12 @@
  *            planned sleep hours as ONE declaration (set together in Step 1).
  *   Step 3 — Wrap-up. Auto-appears 5 minutes after she arrives here, asking
  *            how tonight's wind-down went.
+ *
+ * Today's declaration is never auto-cleared — it (and the wrap-up/celebrate
+ * state) stays visible in this segment for the rest of the day, so a
+ * founder can come back and review it any time before the 11 PM UNPLUG™.
+ * Building a new declaration in the collapsible simply overwrites it in
+ * place, resetting Steps 2 & 3 for the fresh intention.
  *
  * The Power Down History™ is always visible below, followed by the Sleep
  * Tracker™ (bedtime/wake time + Sleep History™) so tonight's sleep can be
@@ -33,7 +40,6 @@ import {
   loadPowerDownDeclaration,
   markPowerDownDeclarationStarted,
   minutesElapsedSincePowerDownStart,
-  clearPowerDownDeclaration,
   POWER_DOWN_DECLARATION_EVENT,
   POWER_DOWN_WRAP_UP_MINUTES,
   type PowerDownDeclaration,
@@ -46,6 +52,8 @@ import {
 } from "@/lib/daily-plan/power-down-history"
 import { PowerDownHistoryList } from "@/components/planners/power-down-history-list"
 import { SleepTrackerWidget } from "@/components/planners/sleep-tracker-widget"
+import { PowerDownIntentionForm } from "@/components/planners/power-down-intention-form"
+import { CollapsibleSubSection } from "@/components/collapsible-sub-section"
 
 type CompletionStatus = "yes" | "partially" | "no"
 
@@ -56,22 +64,35 @@ export function PowerDownReleaseCard() {
   const [showWrapUp, setShowWrapUp] = useState(false)
   const [copied, setCopied] = useState(false)
   const [loggedToday, setLoggedToday] = useState(false)
+  // Controls the inline "Change My Power Down Intention™" collapsible so
+  // Step 1 can be set/edited without ever leaving this segment.
+  const [editOpen, setEditOpen] = useState(false)
 
   // Step 3 fields
   const [completionStatus, setCompletionStatus] = useState<CompletionStatus | null>(null)
   const [reflection, setReflection] = useState("")
 
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const lastBuiltAtRef = useRef<string | null>(null)
 
   const refresh = () => {
     const d = loadPowerDownDeclaration()
-    setDeclaration(d)
     setHistory(loadPowerDownHistory())
     if (d) {
+      // A new declaration (fresh `builtAt`) was just built in the inline
+      // editor — start Steps 2 & 3 over for it instead of showing the prior
+      // wrap-up/celebrate state against the new intention.
+      if (lastBuiltAtRef.current && lastBuiltAtRef.current !== d.builtAt) {
+        setLoggedToday(false)
+        setCompletionStatus(null)
+        setReflection("")
+      }
+      lastBuiltAtRef.current = d.builtAt
       markPowerDownDeclarationStarted(d.dateKey)
       const elapsed = minutesElapsedSincePowerDownStart(d.dateKey)
       setShowWrapUp(elapsed !== null && elapsed >= POWER_DOWN_WRAP_UP_MINUTES)
     }
+    setDeclaration(d)
   }
 
   useEffect(() => {
@@ -113,15 +134,10 @@ export function PowerDownReleaseCard() {
 
   const deleteEntry = (id: string) => setHistory(deletePowerDownLogEntry(id))
 
-  const handleNewIntention = () => {
-    clearPowerDownDeclaration()
-    setDeclaration(null)
-    setShowWrapUp(false)
-    setLoggedToday(false)
-    setCompletionStatus(null)
-    setReflection("")
-    window.location.href = "/?openSpace=monday-debrief"
-  }
+  // Opens the inline "Change My Power Down Intention™" collapsible right
+  // here in the segment — tonight's celebrated declaration stays visible
+  // until a new one is actually built (or until the day rolls over).
+  const handleNewIntention = () => setEditOpen(true)
 
   if (!mounted) return null
 
@@ -144,12 +160,13 @@ export function PowerDownReleaseCard() {
             <p className="mt-2 font-sans text-sm text-[#7A7178]">
               You haven&apos;t set tonight&apos;s Power Down Intention™ yet.
             </p>
-            <a
-              href="/?openSpace=monday-debrief"
+            <button
+              type="button"
+              onClick={() => setEditOpen(true)}
               className="mt-3 inline-flex items-center rounded-full border border-[#5B6EA8]/40 bg-white px-4 py-2 font-sans text-xs font-semibold text-[#3A2E33] transition-colors hover:bg-[#5B6EA8]/10"
             >
-              Set it in Decide &amp; Design™
-            </a>
+              Set It Now
+            </button>
           </motion.div>
         ) : (
           <motion.div
@@ -190,6 +207,16 @@ export function PowerDownReleaseCard() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ── Step 1, inline: set or change tonight's Power Down Intention™ without
+          ever leaving this segment. Opens by itself when there's nothing set yet. ── */}
+      <CollapsibleSubSection
+        title={declaration ? "Change My Power Down Intention™" : "Set My Power Down Intention™"}
+        open={editOpen}
+        onOpenChange={setEditOpen}
+      >
+        <PowerDownIntentionForm />
+      </CollapsibleSubSection>
 
       {/* ── Step 3: wrap-up, auto-arrives 5 minutes in ── */}
       <AnimatePresence>
