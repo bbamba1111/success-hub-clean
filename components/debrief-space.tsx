@@ -1,7 +1,12 @@
 "use client"
 
 /**
- * DebriefSpace™ — Decide My Priority Focus Areas For The Week™ (Monday only).
+ * DebriefSpace™ — Decide My Priority Focus Areas For The Week™. Renders
+ * inside "Decide & Design My Work-Life Balance Business Day™" every day of
+ * the week — Monday via the `monday-debrief` block, Tue–Sun via the
+ * `daily-planning-gps` block (same title, same content, only the day-specific
+ * hero background image and this section's own "Monday Ritual™"/"Daily
+ * Ritual™" label + time differ).
  *
  * Builds this WLBB Week's Weekly WLBB Menu™:
  *  1. Life Intentions (incl. private relationship-repair entries) — capped at 1–3
@@ -186,7 +191,14 @@ function CollapsibleSubSection({
 }
 
 export function DebriefSpace() {
-  const debriefSchedule = SCHEDULE_BY_ID["monday-debrief"]
+  // Renders identically on Monday (`monday-debrief`) and Tue–Sun
+  // (`daily-planning-gps`) — only the schedule lookup (and therefore the
+  // ritual label + time shown just below) differs by day.
+  const [isMonday, setIsMonday] = useState(true)
+  useEffect(() => {
+    setIsMonday(new Date().getDay() === 1)
+  }, [])
+  const debriefSchedule = SCHEDULE_BY_ID[isMonday ? "monday-debrief" : "daily-planning-gps"]
   const [week, setWeek] = useState<WlbbWeekState | null>(null)
   const [customLabel, setCustomLabel] = useState("")
   const [customDay, setCustomDay] = useState("")
@@ -400,7 +412,7 @@ export function DebriefSpace() {
         <div className="flex items-center gap-2">
           <Clock className="h-3.5 w-3.5 text-[#5B835F]" aria-hidden />
           <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
-            Monday Ritual™ · {debriefSchedule?.timeLabel ?? "10:30–11:00 AM"}
+            {isMonday ? "Monday Ritual™" : "Daily Ritual™"} · {debriefSchedule?.timeLabel ?? "10:30–11:00 AM"}
           </p>
         </div>
         <p className="font-serif text-2xl font-semibold text-[#2E1F27] leading-snug">

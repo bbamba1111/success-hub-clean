@@ -96,7 +96,7 @@ const STATUS_BADGE_EVENING: Record<BlockStatus, string> = {
 const CREAM_GRADIENT = "linear-gradient(135deg, #FDF6F0 0%, #FBF0F4 40%, #F0F5EE 70%, #FDFAF6 100%)"
 const SOLID_GREEN = "#7FB069"
 
-/** These 5 segments now get a dedicated "Today's X" card (reading Today's Plan™) instead of the old generic Operating Planner™ chip-picker flow. `daily-planning-gps` was already excluded — it renders `DecideIdentitySpace` instead. */
+/** These 5 segments now get a dedicated "Today's X" card (reading Today's Plan™) instead of the old generic Operating Planner™ chip-picker flow. `daily-planning-gps` was already excluded — it renders `DebriefSpace` + `DecideIdentitySpace` instead, same as `monday-debrief`. */
 const LEGACY_PLANNER_EXCLUDED_IDS = new Set([
   "movement-window",
   "lunch-break",
@@ -409,22 +409,13 @@ export function BusinessDayBlock({
 
             {/* Debrief Space™ — placeholder reflective pause between the Reality Check™ and Movement Window™.
                 Today's Design™ (DecideIdentitySpace) runs immediately after it on Monday too, so the
-                weekly decision layer flows straight into the same daily design engine Tue–Thu already
-                use — no separate Monday planner, no dead link into the excluded daily-planning-gps block. */}
-            {blockId === "monday-debrief" && (
+                weekly decision layer flows straight into the same daily design engine Tue–Sun already
+                use. Tue–Sun's daily-planning-gps block now renders the identical DebriefSpace +
+                DecideIdentitySpace pairing as Monday — same content, same order, only the hero
+                background image and title ("My" vs "Your") ever differed, and title now matches too. */}
+            {(blockId === "monday-debrief" || blockId === "daily-planning-gps") && (
               <div className="px-7 py-8 space-y-8">
                 <DebriefSpace />
-                <DecideIdentitySpace />
-              </div>
-            )}
-
-            {/* Decide My Identity & Design My Business Boundaries For Today™ (Tue–Thu) —
-                Founder GPS™ Next Best Move™ (read-only) + This Week's Menu recap,
-                identity + boundary decision, and the CEO Workday™ outcome picker
-                that feeds directly into the Weekly WLBB Menu™'s DailyEntry
-                (same store the CEO Workspace™ reads). */}
-            {blockId === "daily-planning-gps" && (
-              <div className="px-7 py-8">
                 <DecideIdentitySpace />
               </div>
             )}
