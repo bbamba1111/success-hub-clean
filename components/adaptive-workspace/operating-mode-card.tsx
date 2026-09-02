@@ -24,7 +24,9 @@ export function OperatingModeCard() {
   const modeData = useMemo(() => {
     if (!ctx.ready || !ctx.hasDesignedWeek) return null
     try {
-      const agg = assembleHarmonyContext(ctx)
+      // Reuse the provider's already-resolved BBA signals (fetched
+      // server-side once via getBbaSignalSummary()) rather than re-fetching.
+      const agg = assembleHarmonyContext(ctx, ctx.snapshot.intelligence.gpsContext.bbaSignalSummary)
       const result = deriveOperatingMode(agg)
       const def = MODE_DEFINITIONS[result.mode]
       return { ...result, def }

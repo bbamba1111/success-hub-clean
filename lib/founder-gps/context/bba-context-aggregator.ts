@@ -1,3 +1,5 @@
+"use server"
+
 /**
  * Founder GPS™ — Business Bottleneck Audit™ (BBA™) Context Aggregator
  * ---------------------------------------------------------------------------
@@ -14,9 +16,11 @@
  *   consuming rule yet, it is still computed and exposed (never dropped),
  *   with the gap documented at the call site in `deriveActiveGpsSignals()`.
  *
- * Server-only: reads through bba-server.ts, which requires a Supabase
- * server client. Callers on the client should go through a server action /
- * route handler.
+ * Server-only reads under the hood (via bba-server.ts, which requires a
+ * Supabase server client) — but this module itself is `"use server"`, so
+ * `getBbaSignalSummary()` is a Server Action and may be called directly
+ * from client components (e.g. `HarmonyProvider`) as well as other server
+ * contexts (route handlers, server actions, server components).
  */
 
 import {

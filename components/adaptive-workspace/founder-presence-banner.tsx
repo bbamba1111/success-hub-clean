@@ -29,7 +29,9 @@ export function FounderPresenceBanner() {
     if (!ctx.ready || !ctx.hasDesignedWeek) return { modeName: null, dayNote: null }
 
     try {
-      const agg = assembleHarmonyContext(ctx)
+      // Reuse the provider's already-resolved BBA signals (fetched
+      // server-side once via getBbaSignalSummary()) rather than re-fetching.
+      const agg = assembleHarmonyContext(ctx, ctx.snapshot.intelligence.gpsContext.bbaSignalSummary)
       const modeResult = deriveOperatingMode(agg)
       const def = MODE_DEFINITIONS[modeResult.mode]
 

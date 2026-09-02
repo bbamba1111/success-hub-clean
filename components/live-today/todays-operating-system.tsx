@@ -435,7 +435,10 @@ function SegmentCard({ segment, isCurrent }: { segment: HarmonySegment; isCurren
   // Derive Founder GPS™ recommendation for this segment (Phase 10.2: aggregate-enriched)
   const gpsSegmentId = toGpsSegmentId(segment.id)
   const gpsProgress = deriveProgressSummary()
-  const gpsAggregate = assembleHarmonyContext(ctx)
+  // Phase 10.2 aggregate is a separate reasoning object from the Next Best
+  // Move™ GpsContext, but the provider's snapshot already resolved BBA
+  // signals server-side — reuse them here rather than re-fetching.
+  const gpsAggregate = assembleHarmonyContext(ctx, ctx.snapshot.intelligence.gpsContext.bbaSignalSummary)
   const gpsCard = gpsSegmentId
     ? deriveGpsRecommendation(gpsSegmentId, ctx, gpsProgress, gpsAggregate)
     : null

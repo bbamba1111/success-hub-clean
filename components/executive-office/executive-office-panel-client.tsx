@@ -12,6 +12,7 @@
 
 import { useState, useEffect } from "react"
 import { assembleHarmonyContext } from "@/lib/founder-gps/context/harmony-context-aggregator"
+import { getBbaSignalSummary, type BbaSignalSummary } from "@/lib/founder-gps/context/bba-context-aggregator"
 import {
   deriveExecutiveFindings,
   buildExecutiveBrief,
@@ -41,6 +42,12 @@ export function ExecutiveOfficePanelClient() {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { getBusinessContextFromDb } = require("@/utils/business-context-storage")
 
+    // Business Bottleneck Audit™ (BBA™) signals — server-only data, fetched
+    // once via the getBbaSignalSummary() Server Action and re-applied to
+    // whatever business-context snapshot is current when it resolves.
+    // Stays undefined (never a false "no BBA data" default) until fetched.
+    let latestBba: BbaSignalSummary | undefined
+
     const buildDerived = (bc: ReturnType<typeof getBusinessContext>) => {
       try {
         const stage = getBusinessStage()
@@ -56,7 +63,7 @@ export function ExecutiveOfficePanelClient() {
           hasDesignedWeek: gpsHistory.length > 0,
         }
 
-        const agg = assembleHarmonyContext(miniCtx as Parameters<typeof assembleHarmonyContext>[0])
+        const agg = assembleHarmonyContext(miniCtx as Parameters<typeof assembleHarmonyContext>[0], latestBba)
         const findings = deriveExecutiveFindings(agg)
         const brief = buildExecutiveBrief(findings, agg)
         const statuses = deriveExecutiveStatuses(findings)
@@ -74,6 +81,24 @@ export function ExecutiveOfficePanelClient() {
       const { updatedAt: _updatedAt, ...profile } = record
       saveBusinessContext(profile)
       buildDerived(profile)
+    })
+
+    // Best-effort: anonymous sessions resolve to no BBA signals and the
+    // aggregate still assembles cleanly (see assembleHarmonyContext's
+    // degrades-gracefully contract).
+    import("@/lib/supabase/client").then(({ createClient }) =>
+      createClient()
+        .auth.getUser()
+        .then(({ data }) => data.user?.id ?? null),
+    ).then((userId) => {
+      if (!userId) return null
+      return getBbaSignalSummary(userId)
+    }).then((summary) => {
+      if (!summary) return
+      latestBba = summary
+      buildDerived(getBusinessContext())
+    }).catch(() => {
+      // no-op — BBA signals simply stay unavailable
     })
   }, [])
 

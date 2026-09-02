@@ -32,6 +32,7 @@ import type { BusinessModelProfile } from "@/lib/business-model-classification/t
 import { classifyBusinessModel } from "@/lib/business-model-classification/classify"
 import type { BusinessOperatingFingerprint } from "@/lib/business-operating-fingerprint/types"
 import { deriveBusinessOperatingFingerprint } from "@/lib/business-operating-fingerprint/derive"
+import type { BbaSignalSummary } from "@/lib/founder-gps/context/bba-context-aggregator"
 
 /* ===========================================================================
  * Harmony Context Snapshot™
@@ -485,6 +486,7 @@ export function assembleHarmonySnapshot(input: AssemblyInput): HarmonyContextSna
     founderDestination,
     realityCheck,
     operatingHistory: operatingHistoryInput,
+    bbaSignalSummary,
   } = input
 
   // --- Identity ---
@@ -680,6 +682,11 @@ export function assembleHarmonySnapshot(input: AssemblyInput): HarmonyContextSna
     // (Phase 9A) passthrough — same values as the top-level snapshot fields.
     businessModelProfile,
     businessOperatingFingerprint,
+    // Business Bottleneck Audit™ (BBA™) signals — additive; see
+    // `lib/founder-gps/context/bba-context-aggregator.ts`. Undefined when
+    // the caller hasn't fetched it yet (or the founder has no BBA data),
+    // never a false signal.
+    bbaSignalSummary: bbaSignalSummary ?? undefined,
   }
 
   const resolvedOperatingHistory: OperatingHistorySummary = operatingHistoryInput ?? {
@@ -755,6 +762,13 @@ export interface AssemblyInput {
   operatingHistory?: OperatingHistorySummary | null
   /** Business Performance™ snapshot. */
   performance?: Partial<BusinessPerformanceSnapshot> | null
+  /**
+   * Business Bottleneck Audit™ (BBA™) signal summary — see
+   * `lib/founder-gps/context/bba-context-aggregator.ts`. Optional and
+   * purely additive; omitting it changes nothing (same "degrades
+   * gracefully" contract as every other GpsContext field).
+   */
+  bbaSignalSummary?: BbaSignalSummary | null
 }
 
 /* ===========================================================================

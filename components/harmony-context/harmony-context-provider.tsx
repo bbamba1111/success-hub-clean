@@ -95,6 +95,7 @@ import {
 } from "@/lib/harmony-context/engine"
 import type { EsaResults } from "@/lib/entrepreneur-success/types"
 import { createClient } from "@/lib/supabase/client"
+import { getBbaSignalSummary, type BbaSignalSummary } from "@/lib/founder-gps/context/bba-context-aggregator"
 
 /** id → human label / config lookups (built once). */
 const FOCUS_LABEL = new Map(FOCUS_AREA_OPTIONS.map((o) => [o.id, o.label]))
@@ -163,6 +164,12 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
   const [realityCheck, setRealityCheck] = useState<RealityCheckInput | null>(null)
   const [operatingHistory, setOperatingHistory] = useState<OperatingHistorySummary | null>(null)
   const [userId, setUserId] = useState<string | null>(null)
+  // Business Bottleneck Audit™ (BBA™) signal summary — server-only data,
+  // fetched via the `getBbaSignalSummary()` Server Action once `userId`
+  // resolves. Stays `null` (never a false "no BBA data" signal) until the
+  // fetch settles — see bba-context-aggregator.ts's degrades-gracefully
+  // contract for why this distinction matters.
+  const [bbaSignalSummary, setBbaSignalSummary] = useState<BbaSignalSummary | null>(null)
 
   useEffect(() => {
     setInstalled(getInstalledWeek())
@@ -183,7 +190,16 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
     // the snapshot still assembles cleanly (never blocks paint or throws).
     createClient()
       .auth.getUser()
-      .then(({ data }) => setUserId(data.user?.id ?? null))
+      .then(({ data }) => {
+        const id = data.user?.id ?? null
+        setUserId(id)
+        // BBA signals require a signed-in founder — anonymous sessions
+        // simply never populate bbaSignalSummary (never a false "no BBA
+        // data" default; see bba-context-aggregator.ts).
+        if (id) {
+          getBbaSignalSummary(id).then(setBbaSignalSummary).catch(() => setBbaSignalSummary(null))
+        }
+      })
       .catch(() => setUserId(null))
     getLatestRealityCheck().then((record) => {
       if (!record) return
@@ -379,6 +395,7 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
           founderDestination,
           realityCheck,
           operatingHistory,
+          bbaSignalSummary,
         })
       : EMPTY_HARMONY_SNAPSHOT
 
@@ -405,6 +422,7 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
     auditScore,
     realityCheck,
     operatingHistory,
+    bbaSignalSummary,
   ])
 
   return <HarmonyContext.Provider value={value}>{children}</HarmonyContext.Provider>
