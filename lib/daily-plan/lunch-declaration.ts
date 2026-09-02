@@ -18,7 +18,8 @@ import { getDateKey } from "./storage"
 
 export interface LunchDeclaration {
   dateKey: string
-  activity: string
+  /** One or more activities selected together for today's break. */
+  activities: string[]
   declaration: string
   /** ISO timestamp of when the declaration was built — powers the glass reveal + wrap-up timing. */
   builtAt: string
@@ -34,10 +35,10 @@ export const LUNCH_WRAP_UP_MINUTES = 5
 /** Fired on window after a save so the Lunch Break can pick it up if already mounted. */
 export const LUNCH_DECLARATION_EVENT = "hl:lunch-declaration:changed"
 
-export function saveLunchDeclaration(input: { activity: string; declaration: string }): LunchDeclaration {
+export function saveLunchDeclaration(input: { activities: string[]; declaration: string }): LunchDeclaration {
   const record: LunchDeclaration = {
     dateKey: getDateKey(),
-    activity: input.activity,
+    activities: input.activities,
     declaration: input.declaration,
     builtAt: new Date().toISOString(),
   }

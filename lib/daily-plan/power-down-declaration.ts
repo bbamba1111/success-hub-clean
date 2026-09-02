@@ -18,8 +18,9 @@ import { getDateKey } from "./storage"
 
 export interface PowerDownDeclaration {
   dateKey: string
-  activity: string
-  /** Planned hours of sleep tonight — captured in the same Step 1 as `activity`, so Power Down™ and the 11 PM Unplug Digital Detox™ share one combined declaration. */
+  /** One or more activities selected together for tonight's wind-down. */
+  activities: string[]
+  /** Planned hours of sleep tonight — captured in the same Step 1 as `activities`, so Power Down™ and the 11 PM Unplug Digital Detox™ share one combined declaration. */
   sleepHours: number
   declaration: string
   /** ISO timestamp of when the declaration was built — powers the glass reveal + wrap-up timing. */
@@ -37,13 +38,13 @@ export const POWER_DOWN_WRAP_UP_MINUTES = 5
 export const POWER_DOWN_DECLARATION_EVENT = "hl:power-down-declaration:changed"
 
 export function savePowerDownDeclaration(input: {
-  activity: string
+  activities: string[]
   sleepHours: number
   declaration: string
 }): PowerDownDeclaration {
   const record: PowerDownDeclaration = {
     dateKey: getDateKey(),
-    activity: input.activity,
+    activities: input.activities,
     sleepHours: input.sleepHours,
     declaration: input.declaration,
     builtAt: new Date().toISOString(),

@@ -16,7 +16,8 @@ import { getDateKey } from "./storage"
 
 export interface MovementDeclaration {
   dateKey: string
-  type: string
+  /** One or more movement/exercise types selected together for today's window. */
+  types: string[]
   duration: number
   declaration: string
   /** ISO timestamp of when the declaration was built — powers the glass reveal + wrap-up timing. */
@@ -33,10 +34,14 @@ export const MOVEMENT_WRAP_UP_MINUTES = 5
 /** Fired on window after a save so the Movement Window can pick it up if already mounted. */
 export const MOVEMENT_DECLARATION_EVENT = "hl:movement-declaration:changed"
 
-export function saveMovementDeclaration(input: { type: string; duration: number; declaration: string }): MovementDeclaration {
+export function saveMovementDeclaration(input: {
+  types: string[]
+  duration: number
+  declaration: string
+}): MovementDeclaration {
   const record: MovementDeclaration = {
     dateKey: getDateKey(),
-    type: input.type,
+    types: input.types,
     duration: input.duration,
     declaration: input.declaration,
     builtAt: new Date().toISOString(),

@@ -120,7 +120,7 @@ export function TodaysMovementCard() {
     const entry: WorkoutEntry = {
       id: Date.now().toString(),
       date: now.split("T")[0],
-      type: declaration.type,
+      type: declaration.types.join(", "),
       duration: completionStatus === "partially" ? completedDuration : declaration.duration,
       declaration: declaration.declaration,
       completionStatus,
@@ -183,7 +183,7 @@ export function TodaysMovementCard() {
                 Step 2 · My Intention Declaration™
               </p>
               <span className="rounded-full bg-[#7FB069]/15 px-2.5 py-1 font-montserrat text-[10px] font-semibold text-[#3A6B3E]">
-                {declaration.duration} min · {declaration.type}
+                {declaration.duration} min · {declaration.types.join(", ")}
               </span>
             </div>
             <p className="font-serif text-lg italic leading-relaxed text-[#2E1F27] sm:text-xl">
@@ -230,7 +230,7 @@ export function TodaysMovementCard() {
                   <p className="text-sm text-gray-500">
                     Your intention was{" "}
                     <span className="font-semibold text-gray-700">
-                      {declaration.duration} min of {declaration.type}
+                      {declaration.duration} min of {declaration.types.join(", ")}
                     </span>
                     .
                   </p>

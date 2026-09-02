@@ -122,7 +122,7 @@ export function PowerDownReleaseCard() {
     const entry: PowerDownLogEntry = {
       id: Date.now().toString(),
       date: now.split("T")[0],
-      activity: declaration.activity,
+      activity: declaration.activities.join(", "),
       sleepHours: declaration.sleepHours,
       declaration: declaration.declaration,
       completionStatus,
@@ -183,7 +183,7 @@ export function PowerDownReleaseCard() {
               </p>
               <div className="flex items-center gap-2">
                 <span className="rounded-full bg-[#5B6EA8]/10 px-2.5 py-1 font-montserrat text-[10px] font-semibold text-[#6B7599]">
-                  {declaration.activity}
+                  {declaration.activities.join(", ")}
                 </span>
                 {declaration.sleepHours > 0 && (
                   <span className="rounded-full bg-[#5B6EA8]/10 px-2.5 py-1 font-montserrat text-[10px] font-semibold text-[#6B7599]">
@@ -235,7 +235,10 @@ export function PowerDownReleaseCard() {
                   <h4 className="text-xl font-semibold text-gray-600 mb-1">How did tonight&apos;s Power Down go?</h4>
                   <p className="text-sm text-gray-400">
                     Your intention was{" "}
-                    <span className="font-medium text-gray-500">{declaration.activity.toLowerCase()}</span>.
+                    <span className="font-medium text-gray-500">
+                      {declaration.activities.map((a) => a.toLowerCase()).join(", ")}
+                    </span>
+                    .
                   </p>
                 </div>
 

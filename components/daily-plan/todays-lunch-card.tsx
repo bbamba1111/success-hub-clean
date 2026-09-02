@@ -107,7 +107,7 @@ export function TodaysLunchCard() {
     const entry: LunchLogEntry = {
       id: Date.now().toString(),
       date: now.split("T")[0],
-      activity: declaration.activity,
+      activity: declaration.activities.join(", "),
       declaration: declaration.declaration,
       completionStatus,
       reflection,
@@ -166,7 +166,7 @@ export function TodaysLunchCard() {
                 Step 2 · My Intention Declaration™
               </p>
               <span className="rounded-full bg-[#E26C73]/15 px-2.5 py-1 font-montserrat text-[10px] font-semibold text-[#C0545A]">
-                {declaration.activity}
+                {declaration.activities.join(", ")}
               </span>
             </div>
             <p className="font-serif text-lg italic leading-relaxed text-[#2E1F27] sm:text-xl">
@@ -204,7 +204,10 @@ export function TodaysLunchCard() {
                   <h4 className="text-xl font-bold text-gray-800 mb-1">How was lunch?</h4>
                   <p className="text-sm text-gray-500">
                     Your intention was{" "}
-                    <span className="font-semibold text-gray-700">{declaration.activity.toLowerCase()}</span>.
+                    <span className="font-semibold text-gray-700">
+                      {declaration.activities.map((a) => a.toLowerCase()).join(", ")}
+                    </span>
+                    .
                   </p>
                 </div>
 

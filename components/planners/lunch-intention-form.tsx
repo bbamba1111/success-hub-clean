@@ -19,9 +19,18 @@ const LUNCH_ACTIVITIES = [
   "Call someone I love", "Nap", "Other",
 ]
 
-function buildDeclaration(activity: string): string {
-  if (!activity) return ""
-  return `I am someone who protects my Extended Healthy Hybrid Lunch Break™. Today I commit to ${activity.toLowerCase()} — because a nourished body and an unrushed mind build a sustainable business.`
+/** Joins a list of selections into natural language: "A", "A and B", "A, B, and C". */
+function joinNaturally(items: string[]): string {
+  if (items.length === 0) return ""
+  if (items.length === 1) return items[0]
+  if (items.length === 2) return `${items[0]} and ${items[1]}`
+  return `${items.slice(0, -1).join(", ")}, and ${items[items.length - 1]}`
+}
+
+function buildDeclaration(activities: string[]): string {
+  if (activities.length === 0) return ""
+  const joined = joinNaturally(activities.map((a) => a.toLowerCase()))
+  return `I am someone who protects my Extended Healthy Hybrid Lunch Break™. Today I commit to ${joined} — because a nourished body and an unrushed mind build a sustainable business.`
 }
 
 /**
@@ -35,7 +44,8 @@ function buildDeclaration(activity: string): string {
  * Break History™.
  */
 export function LunchIntentionForm() {
-  const [activity, setActivity] = useState("")
+  const [activities, setActivities] = useState<string[]>([])
+  const [customActivity, setCustomActivity] = useState("")
   const [built, setBuilt] = useState<LunchDeclaration | null>(null)
   const [showGlass, setShowGlass] = useState(false)
   const glassTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -47,9 +57,20 @@ export function LunchIntentionForm() {
     }
   }, [])
 
+  const toggleActivity = (a: string) => {
+    setActivities((prev) => (prev.includes(a) ? prev.filter((x) => x !== a) : [...prev, a]))
+  }
+
+  const addCustomActivity = () => {
+    const value = customActivity.trim()
+    if (!value || activities.includes(value)) return
+    setActivities((prev) => [...prev, value])
+    setCustomActivity("")
+  }
+
   const handleBuild = () => {
-    if (!activity) return
-    const record = saveLunchDeclaration({ activity, declaration: buildDeclaration(activity) })
+    if (activities.length === 0) return
+    const record = saveLunchDeclaration({ activities, declaration: buildDeclaration(activities) })
     setBuilt(record)
     setShowGlass(true)
     if (glassTimerRef.current) clearTimeout(glassTimerRef.current)
@@ -57,7 +78,7 @@ export function LunchIntentionForm() {
   }
 
   const handleEdit = () => {
-    if (built) setActivity(built.activity)
+    if (built) setActivities(built.activities)
     setBuilt(null)
   }
 
@@ -99,7 +120,7 @@ export function LunchIntentionForm() {
           <CheckCircle2 className="mx-auto h-8 w-8 text-[#E26C73]" aria-hidden />
           <div>
             <p className="font-sans text-base font-bold text-[#2E1F27]">Your Lunch Declaration™ is ready</p>
-            <p className="mt-1 font-sans text-sm text-[#6B5860]">{built.activity}</p>
+            <p className="mt-1 font-sans text-sm text-[#6B5860]">{joinNaturally(built.activities)}</p>
           </div>
           <p className="mx-auto max-w-sm font-sans text-sm leading-relaxed text-[#6B5860]">
             It will appear at the top of your{" "}
@@ -132,16 +153,17 @@ export function LunchIntentionForm() {
 
       <div>
         <p className="mb-3 font-sans text-sm font-semibold text-[#2E1F27]">
-          Choose an activity below … or create your own
+          Choose one or more activities below … or add your own
         </p>
         <div className="mb-3 flex flex-wrap gap-2">
           {LUNCH_ACTIVITIES.map((t) => (
             <button
               key={t}
               type="button"
-              onClick={() => setActivity(t)}
+              aria-pressed={activities.includes(t)}
+              onClick={() => toggleActivity(t)}
               className={`rounded-full border px-3 py-1.5 font-sans text-sm transition-all ${
-                activity === t
+                activities.includes(t)
                   ? "border-[#E26C73] bg-[#E26C73] font-semibold text-white"
                   : "border-[#E5E5E5] bg-white text-[#3A2E33] hover:border-[#E26C73] hover:text-[#E26C73]"
               }`}
@@ -150,18 +172,54 @@ export function LunchIntentionForm() {
             </button>
           ))}
         </div>
-        <input
-          type="text"
-          placeholder="Or type your own plan…"
-          value={LUNCH_ACTIVITIES.includes(activity) ? "" : activity}
-          onChange={(e) => setActivity(e.target.value)}
-          className="w-full rounded-lg border border-[#E5E5E5] px-3 py-2 font-sans text-sm focus:outline-none focus:ring-2 focus:ring-[#E26C73]/40"
-        />
+        <div className="flex gap-2">
+          <input
+            type="text"
+            placeholder="Or type your own plan…"
+            value={customActivity}
+            onChange={(e) => setCustomActivity(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.nativeEvent.isComposing) {
+                e.preventDefault()
+                addCustomActivity()
+              }
+            }}
+            className="flex-1 rounded-lg border border-[#E5E5E5] px-3 py-2 font-sans text-sm focus:outline-none focus:ring-2 focus:ring-[#E26C73]/40"
+          />
+          <button
+            type="button"
+            onClick={addCustomActivity}
+            disabled={!customActivity.trim()}
+            className="rounded-lg border border-[#E26C73]/40 px-4 py-2 font-sans text-sm font-semibold text-[#C0545A] transition-colors hover:bg-[#E26C73]/10 disabled:opacity-40"
+          >
+            Add
+          </button>
+        </div>
+        {activities.length > 0 && (
+          <div className="mt-3 flex flex-wrap gap-2">
+            {activities.map((a) => (
+              <span
+                key={a}
+                className="inline-flex items-center gap-1.5 rounded-full bg-[#E26C73]/10 px-3 py-1 font-sans text-xs font-semibold text-[#C0545A]"
+              >
+                {a}
+                <button
+                  type="button"
+                  onClick={() => toggleActivity(a)}
+                  aria-label={`Remove ${a}`}
+                  className="text-[#C0545A]/60 hover:text-[#C0545A]"
+                >
+                  ×
+                </button>
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
       <Button
         onClick={handleBuild}
-        disabled={!activity}
+        disabled={activities.length === 0}
         className="w-full bg-[#E26C73] py-6 text-base font-semibold text-white hover:bg-[#D05A60] disabled:opacity-40"
       >
         <Sparkles className="mr-2 h-4 w-4" />
