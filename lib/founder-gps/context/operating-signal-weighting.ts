@@ -238,5 +238,51 @@ export function evaluateOperatingSignals(
     })
   }
 
+  // ── Business Bottleneck Audit™ (BBA™) ───────────────────────────────────
+  // Additive signals derived from bba-context-aggregator.ts. Does not touch
+  // or replace any ESA-era business-context signal above.
+  //
+  // INTEGRATION GAP: bbaSignalSummary is only populated when the caller runs
+  // server-side and passes it into assembleHarmonyContext() (BBA lives in
+  // Supabase, so it can't be read synchronously here the way localStorage
+  // signals are). When it's undefined we cannot distinguish "no baseline
+  // yet" from "caller didn't fetch it" — so we deliberately stay silent
+  // rather than guess, and only evaluate once bba is present.
+
+  const bba = agg.bbaSignalSummary
+
+  if (bba && !bba.hasBaseline) {
+    signals.push({
+      id: "no-bba-completed",
+      category: "business-context",
+      weight: 78,
+      influence: "primary",
+      outcome: "build-compounding-assets",
+      label: "Business Bottleneck Audit\u2122 baseline not completed",
+    })
+  } else if (bba) {
+    if (bba.hasWidespreadOwnershipGap) {
+      signals.push({
+        id: "bba-ownership-gap-widespread",
+        category: "business-context",
+        weight: 60,
+        influence: "contributing",
+        outcome: "build-compounding-assets",
+        label: `${bba.unownedCategoryIds.length} business areas have no clear owner`,
+      })
+    }
+
+    if (bba.assignmentRepeatedlyBlocked) {
+      signals.push({
+        id: "bba-assignment-repeatedly-blocked",
+        category: "behavior",
+        weight: 65,
+        influence: "primary",
+        outcome: "reduce-execution-friction",
+        label: "Business Building Assignment\u2122 blocked again this week",
+      })
+    }
+  }
+
   return signals.sort((a, b) => b.weight - a.weight)
 }

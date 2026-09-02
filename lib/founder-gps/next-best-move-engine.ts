@@ -71,6 +71,13 @@ export interface NextBestMoveInput {
   activePersonalGoalsCount?: number
   hasRelationships?: boolean
   businessPerformance?: Partial<BusinessPerformanceSnapshot> | null
+  /**
+   * Business Bottleneck Audit™ (BBA™) signal summary — see
+   * `lib/founder-gps/context/bba-context-aggregator.ts`. Server-side callers
+   * should `await getBbaSignalSummary(userId)` and pass the result in.
+   * Optional and purely additive; omitting it changes nothing.
+   */
+  bbaSignalSummary?: import("./context/bba-context-aggregator").BbaSignalSummary | null
 }
 
 function weakestPillar(esa?: EsaResults | null): OperatingPillarId | null {
@@ -118,6 +125,7 @@ export function buildGpsContext(input: NextBestMoveInput): GpsContext {
     hasRelationships: input.hasRelationships ?? false,
     daysUntilNextSignificantEvent: daysUntil,
     inLifeProtectionMode: daysUntil != null && daysUntil <= 3,
+    bbaSignalSummary: input.bbaSignalSummary ?? undefined,
   }
 }
 
@@ -193,6 +201,20 @@ export function deriveActiveGpsSignals(ctx: GpsContext): GpsSignalId[] {
   }
 
   if (ctx.hasEventRequiringPreparation) signals.push("event-requires-preparation")
+
+  // Business Bottleneck Audit™ (BBA™) — additive; see NextBestMoveInput doc.
+  // Only evaluated when a caller actually fetched and passed the summary in
+  // (see harmony-context-aggregator.ts's INTEGRATION GAP note for why this
+  // can't be read synchronously the way `ctx.entrepreneurSuccessScore` is).
+  if (ctx.bbaSignalSummary) {
+    const bba = ctx.bbaSignalSummary
+    if (!bba.hasBaseline) {
+      signals.push("no-bba-completed")
+    } else {
+      if (bba.hasWidespreadOwnershipGap) signals.push("bba-ownership-gap-widespread")
+      if (bba.assignmentRepeatedlyBlocked) signals.push("bba-assignment-repeatedly-blocked")
+    }
+  }
 
   return signals
 }

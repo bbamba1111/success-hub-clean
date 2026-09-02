@@ -86,6 +86,15 @@ export interface HarmonyContextAggregate {
   weakestEsaPillar: OperatingPillarId | null
   strongestEsaPillar: OperatingPillarId | null
 
+  // ── Business Bottleneck Audit™ (BBA™) ──────────────────────────────────────
+  /**
+   * Optional — only populated when a server-side caller fetches it via
+   * `getBbaSignalSummary()` and passes it into `assembleHarmonyContext()`.
+   * See that function's param doc for why this can't be derived here the
+   * way every other field above is.
+   */
+  bbaSignalSummary?: import("@/lib/founder-gps/context/bba-context-aggregator").BbaSignalSummary
+
   // ── CEO Workday ───────────────────────────────────────────────────────────
   weekDesigned: boolean
   weeklyIntention: string | null
@@ -159,15 +168,23 @@ export interface HarmonyContextAggregate {
  * Assembles the HarmonyContextAggregate from all available signal sources.
  * Safe to call from any non-React context (server actions, pure TS modules).
  * Returns a fully-populated aggregate with safe defaults for missing data.
+ *
+ * @param bbaSignalSummary Optional Business Bottleneck Audit™ signal summary.
+ *   BBA lives in Supabase, so — unlike every other signal here — it cannot be
+ *   read synchronously inside this pure function. Server-side callers should
+ *   `await getBbaSignalSummary(userId)` (bba-context-aggregator.ts) and pass
+ *   the result in. Client-only callers that omit it simply get no BBA
+ *   signals rather than an incorrect default.
  */
 export function assembleHarmonyContext(
   ctx: HarmonyContextValue,
+  bbaSignalSummary?: import("@/lib/founder-gps/context/bba-context-aggregator").BbaSignalSummary,
 ): HarmonyContextAggregate {
   const bc = ctx.businessContext
   const fl = ctx.founderLearning
   const ceo = ctx.ceo
 
-  // ── Progress Intelligence ──────────────────────────────────────────────
+  // ── Progress Intelligence ─────���────────────────────────────────────────
   let progress: ProgressSummary | null = null
   try {
     progress = deriveProgressSummary()
@@ -274,6 +291,9 @@ export function assembleHarmonyContext(
     entrepreneurSuccessScore,
     weakestEsaPillar,
     strongestEsaPillar,
+
+    // Business Bottleneck Audit™ (BBA™) — see param doc above.
+    bbaSignalSummary,
 
     // CEO Workday
     weekDesigned: ctx.hasDesignedWeek,
