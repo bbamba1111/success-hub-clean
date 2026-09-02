@@ -1,40 +1,32 @@
 import { createClient } from "@/lib/supabase/server"
-import { getCycleContext } from "@/lib/sunday-cycle/cycle-actions"
-import { deriveAssessmentCadence, type AssessmentType, type AssessmentWindow } from "@/lib/assessment-cadence"
-import { EsaPageClient } from "@/components/entrepreneur-success/esa-page-client"
+import { hasCompletedBbaBaselineServer } from "@/lib/business-bottleneck-audit/bba-server"
+import { BbaPageClient } from "@/components/business-bottleneck-audit/bba-page-client"
 
 export const metadata = {
-  title: "Entrepreneur Success Assessment™ | Harmony Lane™",
+  title: "Business Bottleneck Audit™ | Harmony Lane™",
   description:
-    "A honest snapshot of how your business has been operating. Calm, guided, and context-aware.",
+    "An honest baseline of where your business is bottlenecked across 15 business areas, paired with a lightweight weekly measurement — not a full re-take every Monday.",
 }
 
+/**
+ * BBA™ (Business Bottleneck Audit™) replaces the Entrepreneur Success
+ * Assessment™ (ESA) as the active business diagnostic at this same route —
+ * every existing onboarding/nav link into /entrepreneur-success-assessment
+ * keeps working unchanged. Unlike the ESA, BBA™ is a ONE-TIME baseline
+ * (manually re-runnable later) paired with a lightweight Monday weekly
+ * measurement layer — it is never retaken in full every week.
+ *
+ * The old ESA registry/storage/scoring/components remain completely
+ * intact and unrouted below this page for historical reference — this
+ * change does not delete or migrate any existing ESA data.
+ */
 export default async function EntrepreneurSuccessAssessmentPage() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
-  let assessmentWindow: AssessmentWindow = "30-day"
-  let assessmentType: AssessmentType = "baseline_30_day"
+  const hasBaseline = user ? await hasCompletedBbaBaselineServer(user.id) : false
 
-  if (user) {
-    const cycleContext = await getCycleContext(user.id)
-    const cadence = deriveAssessmentCadence(
-      cycleContext.mode === "initial_baseline" ? null : "set",
-      cycleContext.cycleWeek,
-    )
-    assessmentWindow = cadence.window
-    assessmentType = cadence.type
-  }
-
-  // Mirrors app/audit/page.tsx: the 30-day look-back happens ONLY the very
-  // first time — every Monday after that reflects on the past 7 days.
-  const isBaseline = assessmentType === "baseline_30_day"
-
-  return (
-    <EsaPageClient
-      assessmentWindow={assessmentWindow}
-      assessmentType={assessmentType}
-      isBaseline={isBaseline}
-    />
-  )
+  return <BbaPageClient hasBaseline={hasBaseline} />
 }

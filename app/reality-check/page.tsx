@@ -4,12 +4,11 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import { ArrowRight, Loader2 } from "lucide-react"
 import { getAuditResults } from "@/utils/audit-storage"
-import { getEsaResults } from "@/lib/entrepreneur-success/esa-storage"
+import { getBbaRealityCheckSnapshot, type BbaRealityCheckSnapshot } from "@/lib/business-bottleneck-audit/bba-storage"
 import { getStoredAssessmentWindow } from "@/lib/assessment-cadence"
 import { CherryBlossomScene, CherryBlossomSceneCard } from "@/components/cherry-blossom/cherry-blossom-scene"
 import { CherryBlossomTransitionCard } from "@/components/cherry-blossom/cherry-blossom-transition-card"
 import type { AuditData } from "@/utils/audit-storage"
-import type { EsaResults } from "@/lib/entrepreneur-success/types"
 
 /** Any area at or below this score becomes a "Focus This Week™" candidate. */
 const FOCUS_THRESHOLD = 60
@@ -157,7 +156,7 @@ function RealityCheckLoading({ secondsLeft }: { secondsLeft: number }) {
 
 export default function RealityCheckPage() {
   const [lifeData, setLifeData] = useState<AuditData | null>(null)
-  const [bizData, setBizData] = useState<EsaResults | null>(null)
+  const [bizData, setBizData] = useState<BbaRealityCheckSnapshot | null>(null)
   const [period, setPeriod] = useState("7 days")
   const [ready, setReady] = useState(false)
   const [secondsLeft, setSecondsLeft] = useState(LOADING_DURATION)
@@ -165,7 +164,7 @@ export default function RealityCheckPage() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" })
     setLifeData(getAuditResults())
-    setBizData(getEsaResults())
+    getBbaRealityCheckSnapshot().then(setBizData)
     setPeriod(getStoredAssessmentWindow() === "30-day" ? "30 days" : "7 days")
 
     const interval = setInterval(() => {
@@ -290,10 +289,10 @@ export default function RealityCheckPage() {
             <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-brand-blush py-10 text-center">
               <p className="font-sans text-sm text-brand-ink-soft max-w-sm">
                 {lifeData === null && bizData === null
-                  ? "Complete your Work-Life Balance Audit™ and Entrepreneur Success Assessment™ to see your Reality Check™."
+                  ? "Complete your Work-Life Balance Audit™ and Business Bottleneck Audit™ to see your Reality Check™."
                   : lifeData === null
                     ? "Complete your Work-Life Balance Audit™ to finish your Reality Check™."
-                    : "Complete your Entrepreneur Success Assessment™ to finish your Reality Check™."}
+                    : "Complete your Business Bottleneck Audit™ to finish your Reality Check™."}
               </p>
               <Link
                 href={lifeData === null ? "/audit" : "/entrepreneur-success-assessment"}

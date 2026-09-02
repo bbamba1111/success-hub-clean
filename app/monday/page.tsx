@@ -77,7 +77,7 @@ export default async function MondayLandingPage() {
           </div>
 
           <p className="font-poppins text-sm text-gray-500 text-center max-w-2xl mx-auto">
-            New members begin with a one-time 30-day baseline Audit + Entrepreneur Success Assessment™. Returning
+            New members begin with a one-time 30-day baseline Audit + Business Bottleneck Audit™. Returning
             members reflect on the past 7 days — once measured, it&apos;s locked until next Monday, so you can spend
             the week living it rather than re-measuring it.
           </p>

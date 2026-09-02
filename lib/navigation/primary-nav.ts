@@ -158,9 +158,9 @@ export const PRIMARY_NAV: PrimarySection[] = [
         description: "Measure how your life has been operating over the past 30 days.",
       },
       {
-        label: "Entrepreneur Success Assessment™",
+        label: "Business Bottleneck Audit™",
         href: "/entrepreneur-success-assessment",
-        description: "Measure how your business has been operating over the past 30 days.",
+        description: "Establish your business baseline across 15 business areas, then keep it current every Monday.",
       },
       {
         label: "Founder Memory™",
@@ -341,7 +341,7 @@ export const INTERNAL_MODULES: PrimarySection[] = [
     title: "Measure Monthly™",
     href: "/founder-profile",
     icon: CalendarCheck,
-    tagline: "Complete your monthly Work-Life Balance Reality Check™ and Entrepreneur Success Assessment™.",
+    tagline: "Complete your monthly Work-Life Balance Reality Check™ and Business Bottleneck Audit™.",
     built: true,
     workspaces: [
       {
@@ -355,9 +355,9 @@ export const INTERNAL_MODULES: PrimarySection[] = [
         description: "Measure how your life has been operating over the past 30 days.",
       },
       {
-        label: "Entrepreneur Success Assessment™",
+        label: "Business Bottleneck Audit™",
         href: "/entrepreneur-success-assessment",
-        description: "Measure how your business has been operating over the past 30 days.",
+        description: "Establish your business baseline across 15 business areas, then keep it current every Monday.",
       },
     ],
   },

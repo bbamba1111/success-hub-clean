@@ -119,3 +119,36 @@ export interface BbaBaselineRecord {
   otherText: Record<string, string>
   completedAt: string
 }
+
+/* ===========================================================================
+ * Monday Weekly Business Measurement™ — the lightweight layer that runs
+ * AFTER a baseline exists. Deliberately NOT a full re-take of the BBA.
+ * ======================================================================== */
+
+/** One business asset the founder reports on this week, referencing the Business Asset Library™ registry by id. */
+export interface BbaWeeklyAssetEntry {
+  assetId: string
+  /** Which of the three states apply this week — created / communicated / in-use (spec requires all three be distinguishable). */
+  states: Array<"created" | "communicated" | "in-use">
+}
+
+/** One stakeholder/investor/reporting obligation the founder is tracking this week. */
+export interface BbaStakeholderDeadline {
+  id: string
+  stakeholderName: string
+  obligation: string
+  dueDate?: string
+  status: "upcoming" | "met" | "missed"
+}
+
+export interface BbaWeeklyCheckinRecord {
+  weekKey: string
+  lifeImprovement: { selectedIds: string[]; otherText?: string }
+  businessImprovement: { selectedIds: string[]; otherText?: string }
+  bottlenecksClearedCount: number | null
+  businessAssets: BbaWeeklyAssetEntry[]
+  assignmentStatus: string | null
+  assignmentProblems: { selectedIds: string[]; otherText?: string }
+  stakeholderDeadlines: BbaStakeholderDeadline[]
+  completedAt: string | null
+}

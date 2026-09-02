@@ -179,6 +179,16 @@ export interface GpsContext {
    */
   businessModelProfile?: BusinessModelProfile
   businessOperatingFingerprint?: BusinessOperatingFingerprint
+
+  /**
+   * BUSINESS BOTTLENECK AUDIT™ (BBA™) SIGNALS
+   * Distilled from `lib/founder-gps/context/bba-context-aggregator.ts`.
+   * Optional and additive — the ESA fields above are left completely
+   * intact for historical reference; this is BBA's own signal surface,
+   * not a replacement for `entrepreneurSuccessScore` / `weakestEsaPillar`.
+   * No GpsContext fields are removed or renamed.
+   */
+  bbaSignalSummary?: import("./context/bba-context-aggregator").BbaSignalSummary
 }
 
 /** A point-in-time snapshot of Business Performance™ signals. */
@@ -343,6 +353,11 @@ export type GpsSignalId =
   | "last-recommendation-deferred"
   | "pattern-skipped-3x"
   | "significant-event-soon"
+  // Business Bottleneck Audit™ (BBA™) signals — see bba-context-aggregator.ts.
+  // Additive; the ESA signals above are untouched.
+  | "no-bba-completed"
+  | "bba-ownership-gap-widespread"
+  | "bba-assignment-repeatedly-blocked"
 
 export interface GpsSignalWeight {
   signalId: GpsSignalId

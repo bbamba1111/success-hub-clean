@@ -1,9 +1,9 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Entrepreneur Success Assessment™ | Harmony Lane™",
+  title: "Business Bottleneck Audit™ | Harmony Lane™",
   description:
-    "Reflect on how your business has been operating over the past 7 days so we can bring both your life and your business together in your Work-Life Balance Reality Check™.",
+    "Establish your one-time Business Bottleneck Audit™ baseline across 15 business areas, then keep it current with a lightweight Monday Weekly Business Measurement™.",
 }
 
 export default function EntrepreneurSuccessAssessmentLayout({
