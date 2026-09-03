@@ -55,7 +55,7 @@ const bba = (over: Partial<BbaSignalSummary> = {}): BbaSignalSummary => ({
   ...over,
 })
 
-const names = { "irresistible-offer": "Irresistible Offer™", "sales-conversation-guide": "Sales Conversation Guide™" }
+const names = { "offer-design-canvas": "Offer Design Canvas™", "discovery-call-blueprint": "Discovery Call Blueprint™" }
 
 /* [A] matrix sanity */
 console.log("\n[A] Intervention matrix sanity\n")
@@ -106,12 +106,12 @@ const d = designCeoWorkday({
   bottleneckEntries: [ega({ obstacleType: "time" })],
   bbaSignals: bba(),
   assetNameById: names,
-  assetStatusById: { "irresistible-offer": "installed" },
+  assetStatusById: { "offer-design-canvas": "installed" },
 })
 check("[D] treatment is implement-operate", d.treatment === "implement-operate")
-check("[D] primary title names the asset", /Irresistible Offer/.test(d.items[0].title))
+check("[D] primary title names the asset", /Offer Design Canvas/.test(d.items[0].title))
 check("[D] no card says 'Strengthen' (no rebuild)", !d.items.some((i) => /^Strengthen/.test(i.title)))
-check("[D] relatedAssetId is the installed asset", d.relatedAssetId === "irresistible-offer")
+check("[D] relatedAssetId is the installed asset", d.relatedAssetId === "offer-design-canvas")
 
 /* [E] needs-update asset → revise existing (BUILD/CHANGE) but same asset id */
 console.log("\n[E] Asset needs-update → revise, never a new asset\n")
@@ -119,10 +119,10 @@ const e = designCeoWorkday({
   businessAreaId: "sales-revenue",
   bottleneckEntries: [ega({ obstacleType: "knowledge" })],
   assetNameById: names,
-  assetStatusById: { "irresistible-offer": "needs-update" },
+  assetStatusById: { "offer-design-canvas": "needs-update" },
 })
 check("[E] treatment is build-change", e.treatment === "build-change")
-check("[E] related asset is the existing one", e.relatedAssetId === "irresistible-offer")
+check("[E] related asset is the existing one", e.relatedAssetId === "offer-design-canvas")
 check("[E] intervention mentions revision", /revision|needs-update/i.test(e.items[0].purpose))
 
 /* [F] BBA widespread ownership gap + installed asset → DELEGATE/TRANSFER */
@@ -131,8 +131,8 @@ const f = designCeoWorkday({
   businessAreaId: "operations",
   bottleneckEntries: [ega({ obstacleType: "delegation", signal: "I own every client onboarding step" })],
   bbaSignals: bba({ hasWidespreadOwnershipGap: true, unownedCategoryIds: ["a", "b", "c"] as never }),
-  assetNameById: { "client-onboarding-sop": "Client Onboarding SOP™" },
-  assetStatusById: { "client-onboarding-sop": "installed" },
+  assetNameById: { "sop-playbook-template": "SOP / Playbook Template™" },
+  assetStatusById: { "sop-playbook-template": "installed" },
 })
 check("[F] treatment is delegate-transfer", f.treatment === "delegate-transfer")
 check("[F] primary function is delegate", f.items[0].businessFunction === "delegate")
@@ -145,7 +145,7 @@ const g = designCeoWorkday({
   bottleneckEntries: [ega({ obstacleType: "system" })],
   bbaSignals: bba({ assignmentRepeatedlyBlocked: true }),
   assetNameById: names,
-  assetStatusById: { "irresistible-offer": "installed" },
+  assetStatusById: { "offer-design-canvas": "installed" },
 })
 check("[G] treatment is implement-operate (not automate)", g.treatment === "implement-operate")
 check("[G] WHY explains stabilizing first", /stabiliz/i.test(g.items[0].purpose))
@@ -157,7 +157,7 @@ const h = designCeoWorkday({
   bottleneckEntries: [ega({ obstacleType: "system" })],
   bbaSignals: bba(),
   assetNameById: names,
-  assetStatusById: { "irresistible-offer": "installed" },
+  assetStatusById: { "offer-design-canvas": "installed" },
 })
 check("[H] treatment is systemize-augment-automate-ai", h.treatment === "systemize-augment-automate-ai")
 
