@@ -40,11 +40,15 @@ export function loadDailyIdentity(dateKey: string = getDateKey()): DailyIdentity
   return emptyRecord(dateKey)
 }
 
+/** Same-tab change notification (the native `storage` event only fires in other tabs). */
+export const DAILY_IDENTITY_CHANGED_EVENT = "daily-identity:changed"
+
 export function saveDailyIdentity(record: DailyIdentityRecord): void {
   if (typeof window === "undefined") return
   try {
     const next: DailyIdentityRecord = { ...record, updatedAt: new Date().toISOString() }
     localStorage.setItem(keyFor(record.dateKey), JSON.stringify(next))
+    window.dispatchEvent(new CustomEvent(DAILY_IDENTITY_CHANGED_EVENT, { detail: { dateKey: record.dateKey } }))
   } catch {
     // ignore storage failures (private browsing, quota, etc.)
   }

@@ -313,10 +313,10 @@ export function designCeoWorkday(input: DesignEngineInput): DesignEngineOutput {
   }
 }
 
-/** Planned minutes of items the founder is keeping (not removed). */
+/** Minutes that actually occupy today's container. Removed, deferred and delegated work leaves today. */
 export function plannedMinutes(items: CeoPlanItem[]): number {
   return items
-    .filter((i) => i.founderDecision !== "remove")
+    .filter((i) => i.founderDecision !== "remove" && i.status !== "deferred" && i.status !== "delegated")
     .reduce((s, i) => s + Math.max(0, Math.round(i.estimatedMinutes || 0)), 0)
 }
 

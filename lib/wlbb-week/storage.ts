@@ -73,11 +73,19 @@ export function loadWeek(weekKey: string = getWeekKey()): WlbbWeekState {
   return emptyWeek(weekKey)
 }
 
+/**
+ * Same-tab change notification. The native `storage` event only fires in
+ * OTHER tabs, so sibling components on the same page (e.g. the CEO Workday™
+ * design form below the weekly priority pickers) subscribe to this instead.
+ */
+export const WLBB_WEEK_CHANGED_EVENT = "wlbb-week:changed"
+
 export function saveWeek(state: WlbbWeekState): void {
   if (typeof window === "undefined") return
   try {
     const next: WlbbWeekState = { ...state, updatedAt: new Date().toISOString() }
     localStorage.setItem(keyFor(state.weekKey), JSON.stringify(next))
+    window.dispatchEvent(new CustomEvent(WLBB_WEEK_CHANGED_EVENT, { detail: { weekKey: state.weekKey } }))
   } catch {
     // ignore storage failures (private browsing, quota, etc.)
   }

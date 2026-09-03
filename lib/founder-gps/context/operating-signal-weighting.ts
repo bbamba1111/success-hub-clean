@@ -284,5 +284,31 @@ export function evaluateOperatingSignals(
     }
   }
 
+  // ── CEO Workday™ evidence ──────────────────────────────────────────────────
+  // Only populated when HarmonyContextProvider fetched getCeoWorkdayEvidence().
+  const ceoEv = agg.ceoWorkdayEvidence
+  if (ceoEv) {
+    if (ceoEv.carryForward.length > 0) {
+      signals.push({
+        id: "ceo-workday-carry-forward",
+        category: "behavior",
+        weight: 62,
+        influence: "primary",
+        outcome: "reduce-execution-friction",
+        label: `${ceoEv.carryForward.length} CEO Workday\u2122 item${ceoEv.carryForward.length === 1 ? "" : "s"} carried forward: "${ceoEv.carryForward[0].title}"`,
+      })
+    }
+    if (ceoEv.itemCount > 0 && ceoEv.founderChangedCount / ceoEv.itemCount >= 0.5) {
+      signals.push({
+        id: "ceo-workday-founder-overrode-gps",
+        category: "behavior",
+        weight: 40,
+        influence: "contributing",
+        outcome: "build-compounding-assets",
+        label: `Founder reshaped ${ceoEv.founderChangedCount} of ${ceoEv.itemCount} GPS-proposed CEO work cards`,
+      })
+    }
+  }
+
   return signals.sort((a, b) => b.weight - a.weight)
 }

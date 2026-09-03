@@ -24,7 +24,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { CheckCircle2, ChevronRight, Sparkles, Plus, RefreshCw, Pencil, X, Check } from "lucide-react"
 
-import { getWeekKey, loadWeek } from "@/lib/wlbb-week/storage"
+import { getWeekKey, loadWeek, WLBB_WEEK_CHANGED_EVENT } from "@/lib/wlbb-week/storage"
 import { getAreaById } from "@/lib/wlbb-week/catalog"
 import type { WlbbWeekState } from "@/lib/wlbb-week/types"
 import { getEgaEntriesByStatus } from "@/lib/ega/ega-storage"
@@ -32,7 +32,7 @@ import type { EgaEntry } from "@/lib/ega/types"
 import { getInstalledStatusByAssetId } from "@/lib/business-asset-inventory/business-asset-inventory-store"
 import { BUSINESS_ASSETS } from "@/lib/business-asset-library/business-asset-registry"
 import { getBusinessStage } from "@/lib/business-stage/business-stage-store"
-import { loadDailyIdentity } from "@/lib/daily-identity/storage"
+import { loadDailyIdentity, DAILY_IDENTITY_CHANGED_EVENT } from "@/lib/daily-identity/storage"
 import { getDateKey } from "@/lib/daily-plan/storage"
 import { createClient } from "@/lib/supabase/client"
 import { getBbaSignalSummary, type BbaSignalSummary } from "@/lib/founder-gps/context/bba-context-aggregator"
@@ -161,6 +161,32 @@ export function CeoWorkdayDesignForm() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // ── stay in sync with the pickers above ──────────────────────────────────
+  // The weekly Business Building Priority, Bottleneck Priority and "Decide
+  // who you're being today" all live higher on this same page. Their stores
+  // announce same-tab changes; re-read so GPS re-proposes without a reload.
+  useEffect(() => {
+    let cancelled = false
+    const onWeek = () => {
+      const w = loadWeek(getWeekKey())
+      setWeek(w)
+      const ids = new Set(w.business.bottleneckEgaEntryIds)
+      getEgaEntriesByStatus("open")
+        .then((ega) => {
+          if (!cancelled) setBottlenecks(ega.filter((e) => ids.has(e.id)))
+        })
+        .catch(() => {})
+    }
+    const onIdentity = () => setIdentity(loadDailyIdentity(dateKey).identityStatement || null)
+    window.addEventListener(WLBB_WEEK_CHANGED_EVENT, onWeek)
+    window.addEventListener(DAILY_IDENTITY_CHANGED_EVENT, onIdentity)
+    return () => {
+      cancelled = true
+      window.removeEventListener(WLBB_WEEK_CHANGED_EVENT, onWeek)
+      window.removeEventListener(DAILY_IDENTITY_CHANGED_EVENT, onIdentity)
+    }
+  }, [dateKey])
 
   // ── propose ───────────────────────────────────────────────────────────────
   const assetNameById = useMemo(() => Object.fromEntries(BUSINESS_ASSETS.map((a) => [a.id, a.name])), [])

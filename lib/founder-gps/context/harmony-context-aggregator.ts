@@ -95,6 +95,15 @@ export interface HarmonyContextAggregate {
    */
   bbaSignalSummary?: import("@/lib/founder-gps/context/bba-context-aggregator").BbaSignalSummary
 
+  // ── CEO Workday™ evidence ────────────────────────────────────────────────
+  /**
+   * Optional — designed vs adjusted vs done vs decided-next from the most
+   * recent CEO Workday™ plan. Fetched by HarmonyContextProvider via
+   * `getCeoWorkdayEvidence()` and carried on `gpsContext`; read from there
+   * so existing callers need no signature change.
+   */
+  ceoWorkdayEvidence?: import("@/lib/ceo-workday/plan-types").CeoWorkdayEvidenceSummary
+
   // ── CEO Workday ───────────────────────────────────────────────────────────
   weekDesigned: boolean
   weeklyIntention: string | null
@@ -294,6 +303,9 @@ export function assembleHarmonyContext(
 
     // Business Bottleneck Audit™ (BBA™) — see param doc above.
     bbaSignalSummary,
+
+    // CEO Workday™ evidence — read from gpsContext (populated by the provider).
+    ceoWorkdayEvidence: ctx.snapshot.intelligence.gpsContext.ceoWorkdayEvidence,
 
     // CEO Workday
     weekDesigned: ctx.hasDesignedWeek,

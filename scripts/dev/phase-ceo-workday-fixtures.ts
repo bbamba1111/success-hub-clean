@@ -189,6 +189,14 @@ console.log("\n[J] Founder decisions\n")
 const j = designCeoWorkday({ businessAreaId: "finance", bottleneckEntries: [] })
 const jItems = j.items.map((it, idx) => (idx === 0 ? { ...it, founderDecision: "remove" as const } : it))
 check("[J] removed item excluded from planned minutes", plannedMinutes(jItems) === j.plannedMinutes - j.items[0].estimatedMinutes)
+const jDeferred = j.items.map((it, idx) =>
+  idx === 0 ? { ...it, founderDecision: "defer" as const, status: "deferred" as const } : it,
+)
+check("[J] deferred item leaves today's minutes", plannedMinutes(jDeferred) === j.plannedMinutes - j.items[0].estimatedMinutes)
+const jDelegated = j.items.map((it, idx) =>
+  idx === 0 ? { ...it, founderDecision: "delegate" as const, status: "delegated" as const } : it,
+)
+check("[J] delegated item leaves today's minutes", plannedMinutes(jDelegated) === j.plannedMinutes - j.items[0].estimatedMinutes)
 
 /* [K] Declaration */
 console.log("\n[K] Declaration\n")
