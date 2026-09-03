@@ -52,6 +52,7 @@ import type { BusinessOutcome, LifeIntention, LifeIntentionKind, WlbbWeekState }
 import { getAuditResults } from "@/utils/audit-storage"
 import { getEsaResults } from "@/lib/entrepreneur-success/esa-storage"
 import { getEgaEntriesByStatus } from "@/lib/ega/ega-storage"
+import { syncBbaBottlenecksToEga } from "@/lib/business-bottleneck-audit/bba-ega-bridge"
 import type { EgaEntry } from "@/lib/ega/types"
 
 /** Same threshold used on the Reality Check™ page — keeps "Focus Areas" consistent everywhere. */
@@ -211,7 +212,13 @@ export function DebriefSpace() {
         .map((p) => ({ id: p.pillarId, name: p.pillarName, score: p.percentage }))
         .sort((a, b) => a.score - b.score),
     )
-    getEgaEntriesByStatus("open").then(setOpenEgaEntries)
+    // A completed Business Bottleneck Audit™ must surface here as selectable
+    // Bottleneck Priorities — materialize its flagged bottlenecks as open EGA
+    // entries (idempotent) BEFORE reading the open list.
+    syncBbaBottlenecksToEga()
+      .catch(() => [])
+      .then(() => getEgaEntriesByStatus("open"))
+      .then(setOpenEgaEntries)
   }, [])
 
   const selectedArea = week?.business.businessAreaId ? getAreaById(week.business.businessAreaId) : undefined
@@ -665,14 +672,15 @@ export function DebriefSpace() {
             Step 3 · Bottleneck Priorities
           </p>
           <p className="mt-2 font-sans text-sm text-[#3A2E33] leading-relaxed">
-            Pick 1–{MAX_BOTTLENECKS} open gaps from your Entrepreneur Gap Assessment™ that are actually in the way
-            this week.
+            Pick 1–{MAX_BOTTLENECKS} open gaps — from your Business Bottleneck Audit™ and Entrepreneur Gap
+            Assessment™ — that are actually in the way this week.
           </p>
         </div>
 
         {openEgaEntries.length === 0 ? (
           <p className="font-sans text-sm text-[#6B5860]">
-            No open gaps right now — nothing to name here this week.
+            No open gaps right now. Complete your Business Bottleneck Audit™ and the bottlenecks you flag will
+            appear here to choose from.
           </p>
         ) : (
           <>

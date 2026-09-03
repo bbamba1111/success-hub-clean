@@ -85,7 +85,10 @@ export const INTERVENTION_MATRIX: Record<string, AreaIntervention> = {
     areaId: "sales-revenue",
     areaName: "Sales & Revenue",
     destination: "consistent revenue from a sales process that does not depend on you being in every conversation",
-    assetIds: ["irresistible-offer", "sales-conversation-guide", "follow-up-sequence", "pricing-strategy"],
+    // Real Business Asset Library™ ids (lib/business-asset-library/business-asset-registry.ts).
+    // Every id here MUST exist in the registry — it's what links a CEO Workday™
+    // item to its step-by-step builder (AssetDetailView) in Today's Work.
+    assetIds: ["offer-design-canvas", "discovery-call-blueprint", "objection-map", "sales-journey", "revenue-model", "referral-blueprint"],
     assetFallbackName: "your offer and sales message",
     chains: {
       "build-change": [
@@ -213,7 +216,7 @@ export const INTERVENTION_MATRIX: Record<string, AreaIntervention> = {
     areaId: "growth-innovation",
     areaName: "Growth & Innovation",
     destination: "a visible, repeatable growth engine that creates demand ahead of your calendar",
-    assetIds: ["visibility-strategy", "content-strategy", "signature-keynote", "ideal-client-compass"],
+    assetIds: ["growth-plan", "28-day-focus-plan", "content-planning-canvas", "campaign-brief", "conversion-test-canvas", "ideal-client-compass"],
     assetFallbackName: "your visibility strategy",
     chains: {
       "build-change": [
@@ -299,7 +302,7 @@ export const INTERVENTION_MATRIX: Record<string, AreaIntervention> = {
     areaId: "operations",
     areaName: "Operations",
     destination: "delivery that runs on process instead of memory, protecting your margin and your time",
-    assetIds: ["client-onboarding-sop", "workflow-map", "weekly-ops-checklist"],
+    assetIds: ["sop-playbook-template", "accountability-map", "business-scorecard", "initiative-brief", "tool-stack-audit"],
     assetFallbackName: "your core operating process",
     chains: {
       "build-change": [
@@ -375,7 +378,7 @@ export const INTERVENTION_MATRIX: Record<string, AreaIntervention> = {
     areaId: "client-experience",
     areaName: "Client Experience",
     destination: "clients who stay, renew, and refer — the most profitable revenue you have",
-    assetIds: ["client-retention-playbook", "client-onboarding-sop", "testimonial-system"],
+    assetIds: ["proof-capture-playbook", "sales-journey", "referral-blueprint", "sop-playbook-template", "ideal-client-compass"],
     assetFallbackName: "your client experience",
     chains: {
       "build-change": [
@@ -451,7 +454,7 @@ export const INTERVENTION_MATRIX: Record<string, AreaIntervention> = {
     areaId: "authority",
     areaName: "Authority",
     destination: "recognized expertise that pulls the right clients toward you and shortens every sale",
-    assetIds: ["signature-keynote", "thought-leadership-platform", "podcast-pitch-list", "book-outline"],
+    assetIds: ["positioning-canvas", "brand-foundation", "messaging-map", "content-planning-canvas", "proof-capture-playbook"],
     assetFallbackName: "your authority platform",
     chains: {
       "build-change": [
@@ -539,7 +542,7 @@ export const INTERVENTION_MATRIX: Record<string, AreaIntervention> = {
     areaId: "finance",
     areaName: "Finance",
     destination: "profit and healthy cash flow you can see, predict, and decide from",
-    assetIds: ["pricing-strategy", "cash-flow-forecast", "profit-plan"],
+    assetIds: ["revenue-model", "business-scorecard", "business-model-canvas", "priority-clarity-score"],
     assetFallbackName: "your numbers",
     chains: {
       "build-change": [
@@ -605,7 +608,7 @@ export const INTERVENTION_MATRIX: Record<string, AreaIntervention> = {
     areaId: "ai-automation",
     areaName: "AI & Automation",
     destination: "capacity you did not have to hire — applied only where the process is already proven",
-    assetIds: ["ai-workflow-map", "automation-inventory"],
+    assetIds: ["tool-stack-audit", "sop-playbook-template", "accountability-map", "delegation-brief"],
     assetFallbackName: "your automation candidates",
     chains: {
       "build-change": [

@@ -55,7 +55,10 @@ import {
   updateCeoPlanStatus,
   type HourCheckinItemOutcome,
 } from "@/lib/ceo-workday/plan-server"
-import { updateWorkItemStatus } from "@/lib/ceo-workday/todays-work-store"
+import { linkWorkItemAsset, updateWorkItemStatus } from "@/lib/ceo-workday/todays-work-store"
+import { BUSINESS_ASSETS, getBusinessAsset } from "@/lib/business-asset-library/business-asset-registry"
+import { AssetDetailView } from "@/components/business-asset-library/asset-detail-view"
+import type { BusinessAssetBuildRecord } from "@/utils/business-asset-build-storage"
 import { CeoHourCheckin } from "./ceo-hour-checkin"
 
 type AdjustAction = "change" | "defer" | "delegate" | "remove" | "help" | "other"
@@ -75,6 +78,8 @@ export function CeoWorkdayLivePlan() {
   const [checkinOpen, setCheckinOpen] = useState<HourBlock | null>(null)
   const [checkinOpenedAt, setCheckinOpenedAt] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+  /** Which plan item's work surface (builder / template picker) is open. */
+  const [openItemId, setOpenItemId] = useState<string | null>(null)
 
   // Platform clock, ticked every 15s — deterministic, no random timers.
   const [nowMin, setNowMin] = useState(() => platformMinutes())
@@ -178,6 +183,21 @@ export function CeoWorkdayLivePlan() {
     setPlan((p) => p && { ...p, items: p.items.map((i) => (i.id === item.id ? { ...i, status: "completed", nextAction: null } : i)) })
     await updateCeoPlanItem(item.id, { status: "completed", nextAction: null })
     if (item.localWorkItemId) updateWorkItemStatus(item.localWorkItemId, "completed")
+  }
+
+  /** Start = open the work surface. Marks in-progress the first time. */
+  function openWork(item: CeoPlanItem) {
+    setOpenItemId(item.id)
+    if (item.status === "planned" || ["deferred", "blocked", "other"].includes(item.status)) void startItem(item)
+  }
+
+  /** Founder links an unlinked item to a Business Asset Library™ template. */
+  async function linkAsset(item: CeoPlanItem, assetId: string) {
+    if (!plan) return
+    const asset = getBusinessAsset(assetId)
+    setPlan((p) => p && { ...p, items: p.items.map((i) => (i.id === item.id ? { ...i, relatedAssetId: assetId, relatedAssetTitle: asset?.name ?? null } : i)) })
+    await updateCeoPlanItem(item.id, { relatedAssetId: assetId })
+    if (item.localWorkItemId) linkWorkItemAsset(item.localWorkItemId, assetId)
   }
 
   async function saveWorkingOn() {
@@ -356,24 +376,45 @@ export function CeoWorkdayLivePlan() {
                         <span className="font-semibold text-[#5A7A45]">Expected outcome:</span> {item.expectedEvidence}
                       </p>
                     )}
-                    {!adjusting && plan.status !== "closed" && item.founderDecision !== "remove" && (
+                    {!adjusting && plan.status !== "closed" && item.founderDecision !== "remove" && item.status !== "eliminated" && (
                       <div className="mt-2 flex flex-wrap gap-2">
-                        {item.status === "planned" && (
-                          <button type="button" onClick={() => startItem(item)} className="inline-flex items-center gap-1.5 rounded-full bg-[#5A7A45] px-3.5 py-1.5 font-sans text-xs font-bold text-white hover:opacity-90">
-                            <Play className="h-3 w-3" aria-hidden /> Start
+                        {openItemId !== item.id ? (
+                          <button
+                            type="button"
+                            onClick={() => openWork(item)}
+                            className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 font-sans text-xs font-bold ${
+                              item.status === "completed"
+                                ? "border border-[#E8DFE2] bg-white text-[#6B5860] hover:bg-black/[0.03]"
+                                : item.status === "planned"
+                                  ? "bg-[#5A7A45] text-white hover:opacity-90"
+                                  : "border border-[#5A7A45] text-[#5A7A45] hover:bg-[#5A7A45]/5"
+                            }`}
+                          >
+                            <Play className="h-3 w-3" aria-hidden />
+                            {item.status === "planned" ? "Start" : item.status === "completed" ? "Open" : "Continue"}
                           </button>
-                        )}
-                        {item.status === "in-progress" && (
-                          <button type="button" onClick={() => completeItem(item)} className="inline-flex items-center gap-1.5 rounded-full border border-[#5A7A45] px-3.5 py-1.5 font-sans text-xs font-bold text-[#5A7A45] hover:bg-[#5A7A45]/5">
-                            <Check className="h-3 w-3" aria-hidden /> Mark complete
-                          </button>
-                        )}
-                        {["deferred", "blocked", "other"].includes(item.status) && (
-                          <button type="button" onClick={() => startItem(item)} className="inline-flex items-center gap-1.5 rounded-full border border-[#E8DFE2] bg-white px-3.5 py-1.5 font-sans text-xs font-semibold text-[#6B5860] hover:bg-black/[0.03]">
-                            <Play className="h-3 w-3" aria-hidden /> Resume
+                        ) : (
+                          <button type="button" onClick={() => setOpenItemId(null)} className="inline-flex items-center gap-1.5 rounded-full border border-[#E8DFE2] bg-white px-3.5 py-1.5 font-sans text-xs font-semibold text-[#6B5860] hover:bg-black/[0.03]">
+                            Close work surface
                           </button>
                         )}
                       </div>
+                    )}
+
+                    {/* The work surface — the founder never leaves the CEO Workday.
+                        With a linked Business Asset™, this is the REAL step-by-step
+                        builder (AssetDetailView, unmodified); completion is driven by
+                        the saved build record, never by a bare button. */}
+                    {openItemId === item.id && plan.status !== "closed" && (
+                      <CeoPlanItemWorkSurface
+                        item={item}
+                        onLinkAsset={(assetId) => linkAsset(item, assetId)}
+                        onBuildChange={(build) => {
+                          if (build && item.status !== "completed") void completeItem(item)
+                          if (!build && item.status === "completed") void startItem(item)
+                        }}
+                        onManualComplete={() => completeItem(item)}
+                      />
                     )}
                     {adjusting && !["completed", "eliminated"].includes(item.status) && (
                       <div className="mt-2 flex flex-wrap gap-1.5">
@@ -502,6 +543,144 @@ export function CeoWorkdayLivePlan() {
               </p>
             </div>
           )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* ── Work surface ──────────────────────────────────────────────────────────── */
+
+/**
+ * Where the assignment is actually done. Three states:
+ *  1. Linked to a Business Asset™ → the real, unmodified step-by-step builder
+ *     (`AssetDetailView`). Completion is reported by the saved build record.
+ *  2. Not linked → a template picker from the Business Asset Library™, grouped
+ *     by category, so the founder connects the work to a real solution.
+ *  3. Non-asset work (the founder chose to proceed without a template) →
+ *     the expected outcome is shown and completion is an explicit, deliberate
+ *     confirmation — never a button sitting where "Start" just was.
+ */
+function CeoPlanItemWorkSurface({
+  item,
+  onLinkAsset,
+  onBuildChange,
+  onManualComplete,
+}: {
+  item: CeoPlanItem
+  onLinkAsset: (assetId: string) => void
+  onBuildChange: (build: BusinessAssetBuildRecord | null) => void
+  onManualComplete: () => void
+}) {
+  const asset = item.relatedAssetId ? getBusinessAsset(item.relatedAssetId) : null
+  const [withoutTemplate, setWithoutTemplate] = useState(false)
+  const [confirming, setConfirming] = useState(false)
+
+  const grouped = useMemo(() => {
+    const m = new Map<string, typeof BUSINESS_ASSETS>()
+    for (const a of BUSINESS_ASSETS) {
+      const list = m.get(a.category) ?? []
+      list.push(a)
+      m.set(a.category, list)
+    }
+    return Array.from(m.entries())
+  }, [])
+
+  if (asset) {
+    return (
+      <div className="mt-3 rounded-2xl border border-[#E8DFE2] bg-[#FAF8F5] px-4 py-4 sm:px-5">
+        <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.16em] text-[#5A7A45]">
+          Business Asset™ template · {asset.name}
+        </p>
+        {item.expectedEvidence && (
+          <p className="mt-1 font-sans text-xs text-[#6B5860]">
+            Done when: <span className="text-[#3A2E33]">{item.expectedEvidence}</span>
+          </p>
+        )}
+        <div className="mt-4">
+          <AssetDetailView asset={asset} onOwnedBuildChange={onBuildChange} />
+        </div>
+      </div>
+    )
+  }
+
+  if (!withoutTemplate) {
+    return (
+      <div className="mt-3 rounded-2xl border border-[#E8DFE2] bg-[#FAF8F5] px-4 py-4 sm:px-5">
+        <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.16em] text-[#5A7A45]">
+          Link this work to a Business Asset™ template
+        </p>
+        <p className="mt-1 font-sans text-sm leading-relaxed text-[#3A2E33] text-pretty">
+          Choose the step-by-step template from your Business Asset Library™ that produces this outcome. The
+          builder opens right here, and finishing it completes this assignment.
+        </p>
+        <label className="mt-3 block">
+          <span className="sr-only">Business Asset template</span>
+          <select
+            defaultValue=""
+            onChange={(e) => e.target.value && onLinkAsset(e.target.value)}
+            className="w-full rounded-xl border border-[#E8DFE2] bg-white px-3 py-2.5 font-sans text-sm text-[#2E1F27] focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
+          >
+            <option value="" disabled>
+              Select a template…
+            </option>
+            {grouped.map(([cat, list]) => (
+              <optgroup key={cat} label={cat}>
+                {list.map((a) => (
+                  <option key={a.id} value={a.id}>
+                    {a.name}
+                  </option>
+                ))}
+              </optgroup>
+            ))}
+          </select>
+        </label>
+        <button
+          type="button"
+          onClick={() => setWithoutTemplate(true)}
+          className="mt-3 font-sans text-xs font-semibold text-[#6B5860] underline underline-offset-2 hover:text-[#2E1F27]"
+        >
+          This work doesn&apos;t need a template
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="mt-3 rounded-2xl border border-[#E8DFE2] bg-[#FAF8F5] px-4 py-4 sm:px-5">
+      <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.16em] text-[#5A7A45]">Working without a template</p>
+      {item.purpose && <p className="mt-2 font-sans text-sm leading-relaxed text-[#3A2E33] text-pretty">{item.purpose}</p>}
+      <p className="mt-2 font-sans text-sm text-[#3A2E33]">
+        <span className="font-semibold text-[#5A7A45]">Done when:</span> {item.expectedEvidence ?? "the outcome you designed exists."}
+      </p>
+      {item.status !== "completed" && (
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          {!confirming ? (
+            <button
+              type="button"
+              onClick={() => setConfirming(true)}
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#5A7A45] px-3.5 py-1.5 font-sans text-xs font-bold text-[#5A7A45] hover:bg-[#5A7A45]/5"
+            >
+              <Check className="h-3 w-3" aria-hidden /> The outcome exists — mark complete
+            </button>
+          ) : (
+            <>
+              <span className="font-sans text-xs text-[#6B5860]">Confirm the expected outcome is real and in place?</span>
+              <button type="button" onClick={onManualComplete} className="rounded-full bg-[#5A7A45] px-3.5 py-1.5 font-sans text-xs font-bold text-white hover:opacity-90">
+                Yes, complete
+              </button>
+              <button type="button" onClick={() => setConfirming(false)} className="font-sans text-xs font-semibold text-[#6B5860] underline underline-offset-2">
+                Not yet
+              </button>
+            </>
+          )}
+          <button
+            type="button"
+            onClick={() => setWithoutTemplate(false)}
+            className="ml-auto font-sans text-xs font-semibold text-[#6B5860] underline underline-offset-2 hover:text-[#2E1F27]"
+          >
+            Link a template instead
+          </button>
         </div>
       )}
     </div>

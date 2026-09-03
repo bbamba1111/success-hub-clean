@@ -85,6 +85,19 @@ export function updateWorkItemStatus(itemId: string, status: CeoWorkItemStatus, 
   writeFile(file)
 }
 
+/**
+ * Links a queued item to a Business Asset Library™ template so Today's Work
+ * can render its real step-by-step builder. Used when a CEO Workday™ plan item
+ * was designed without an asset and the founder picks one at execution time.
+ */
+export function linkWorkItemAsset(itemId: string, relatedAssetId: string): void {
+  const file = readFile()
+  file.items = file.items.map((item) =>
+    item.id === itemId ? { ...item, relatedAssetId, updatedAt: new Date().toISOString() } : item,
+  )
+  writeFile(file)
+}
+
 export function removeWorkItem(itemId: string): void {
   const file = readFile()
   file.items = file.items.filter((item) => item.id !== itemId)

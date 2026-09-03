@@ -318,7 +318,7 @@ export async function updateCeoPlanDeclaration(planId: string, declaration: stri
 /** Execution-time adjustment or check-in outcome: SAME item, new state. */
 export async function updateCeoPlanItem(
   itemId: string,
-  patch: Partial<Pick<CeoPlanItem, "title" | "estimatedMinutes" | "status" | "nextAction" | "founderDecision">>,
+  patch: Partial<Pick<CeoPlanItem, "title" | "estimatedMinutes" | "status" | "nextAction" | "founderDecision" | "relatedAssetId">>,
 ) {
   try {
     const { supabase, userId } = await requireUser()
@@ -329,6 +329,8 @@ export async function updateCeoPlanItem(
     if (patch.status !== undefined) row.status = patch.status
     if (patch.nextAction !== undefined) row.next_action = patch.nextAction
     if (patch.founderDecision !== undefined) row.founder_decision = patch.founderDecision
+    // Linking (or re-linking) the item to a Business Asset Library™ template.
+    if (patch.relatedAssetId !== undefined) row.related_asset_id = patch.relatedAssetId
     await supabase.from("ceo_workday_plan_items").update(row).eq("id", itemId).eq("user_id", userId)
   } catch {
     // best-effort
