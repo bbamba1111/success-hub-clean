@@ -18,7 +18,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Check, Clock, Copy, Mic, Pencil } from "lucide-react"
+import { Check, Clock, Copy, Mic, Pencil, Play } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 import { getDateKey } from "@/lib/daily-plan/storage"
@@ -156,6 +156,28 @@ export function CeoWorkdayLivePlan() {
     setPlan((p) => p && { ...p, items: p.items.map((i) => (i.id === item.id ? { ...i, title: t, founderDecision: "edit" } : i)) })
     await updateCeoPlanItem(item.id, { title: t, founderDecision: "edit" })
     await updateCeoPlanStatus(plan.id, "adjusted")
+  }
+
+  // Direct per-item controls. Starting work is never gated behind the
+  // 1:00–5:00 PM hour-block clock or the "Tell us what you're working on"
+  // field — the founder can start any assignment the moment they enter.
+  async function startItem(item: CeoPlanItem) {
+    if (!plan) return
+    if (!entered) {
+      setEntered(true)
+      await updateCeoPlanStatus(plan.id, "entered")
+    }
+    setPlan((p) => p && { ...p, status: "in-progress", items: p.items.map((i) => (i.id === item.id ? { ...i, status: "in-progress" } : i)) })
+    await updateCeoPlanItem(item.id, { status: "in-progress" })
+    if (item.localWorkItemId) updateWorkItemStatus(item.localWorkItemId, "in-progress")
+    await updateCeoPlanStatus(plan.id, "in-progress")
+  }
+
+  async function completeItem(item: CeoPlanItem) {
+    if (!plan) return
+    setPlan((p) => p && { ...p, items: p.items.map((i) => (i.id === item.id ? { ...i, status: "completed", nextAction: null } : i)) })
+    await updateCeoPlanItem(item.id, { status: "completed", nextAction: null })
+    if (item.localWorkItemId) updateWorkItemStatus(item.localWorkItemId, "completed")
   }
 
   async function saveWorkingOn() {
@@ -329,6 +351,30 @@ export function CeoWorkdayLivePlan() {
                       {item.estimatedMinutes} min{item.relatedAssetTitle ? ` · ${item.relatedAssetTitle}` : ""}
                       {item.nextAction && item.status !== "completed" ? ` · next: ${item.nextAction.replace(/-/g, " ")}` : ""}
                     </p>
+                    {item.expectedEvidence && (
+                      <p className="mt-1 font-sans text-xs text-[#3A2E33]">
+                        <span className="font-semibold text-[#5A7A45]">Expected outcome:</span> {item.expectedEvidence}
+                      </p>
+                    )}
+                    {!adjusting && plan.status !== "closed" && item.founderDecision !== "remove" && (
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {item.status === "planned" && (
+                          <button type="button" onClick={() => startItem(item)} className="inline-flex items-center gap-1.5 rounded-full bg-[#5A7A45] px-3.5 py-1.5 font-sans text-xs font-bold text-white hover:opacity-90">
+                            <Play className="h-3 w-3" aria-hidden /> Start
+                          </button>
+                        )}
+                        {item.status === "in-progress" && (
+                          <button type="button" onClick={() => completeItem(item)} className="inline-flex items-center gap-1.5 rounded-full border border-[#5A7A45] px-3.5 py-1.5 font-sans text-xs font-bold text-[#5A7A45] hover:bg-[#5A7A45]/5">
+                            <Check className="h-3 w-3" aria-hidden /> Mark complete
+                          </button>
+                        )}
+                        {["deferred", "blocked", "other"].includes(item.status) && (
+                          <button type="button" onClick={() => startItem(item)} className="inline-flex items-center gap-1.5 rounded-full border border-[#E8DFE2] bg-white px-3.5 py-1.5 font-sans text-xs font-semibold text-[#6B5860] hover:bg-black/[0.03]">
+                            <Play className="h-3 w-3" aria-hidden /> Resume
+                          </button>
+                        )}
+                      </div>
+                    )}
                     {adjusting && !["completed", "eliminated"].includes(item.status) && (
                       <div className="mt-2 flex flex-wrap gap-1.5">
                         {(

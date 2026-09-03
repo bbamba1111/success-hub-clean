@@ -42,7 +42,7 @@ import { buildGpsContextFromSnapshot, deriveNextBestMove } from "@/lib/founder-g
 import { getActiveBuildStatusByCapabilityId, getBuildRecord } from "@/lib/build-record/build-record-store"
 import { getRecommendedBusinessAsset } from "@/lib/business-asset-library/gps-recommendation-link"
 import { getAudienceBenefits } from "@/lib/business-asset-library/audience-benefits"
-import { addWorkItem, hasQueuedAsset } from "@/lib/ceo-workday/todays-work-store"
+import { addWorkItem, getTodaysWork, hasQueuedAsset } from "@/lib/ceo-workday/todays-work-store"
 import { getWorkflowEntry } from "@/lib/ceo-workday/workflow-registry"
 import { CategorySelectorRow } from "@/components/ceo-workday/category-selector-row"
 import { TodaysWorkQueue } from "@/components/ceo-workday/todays-work-queue"
@@ -120,6 +120,33 @@ export function FounderGpsWorkspace() {
     setQueuedAssetId(asset.id)
   }
 
+  // A GPS move that has no Business Asset™ link yet is still real work.
+  // Previously the CTA was a Link to "/?openSpace=ceo-workday" — which, from
+  // inside the CEO Workday, just reloaded the home page at the hero and never
+  // showed the move. Now the move is rendered inline (below) and this puts it
+  // straight into Today's Work so the founder can start it.
+  const moveQueued =
+    !!recommendationId && getTodaysWork().some((w) => w.relatedGapId === recommendationId)
+  function handleStartMove() {
+    if (!nextBestMove || !recommendationId) return
+    if (!moveQueued) {
+      const wf = getWorkflowEntry("BUILD")
+      addWorkItem({
+        category: "BUILD",
+        selectedOptionLabel: nextBestMove.capabilityName ?? nextBestMove.nextTurn,
+        workflowId: wf.workflowId,
+        availability: wf.availability,
+        source: "gps",
+        sourceDetail: "Founder GPS™ Next Best Move™",
+        relatedGapId: recommendationId,
+        tangibleOutcome: nextBestMove.expectedOutcome ?? nextBestMove.definitionOfDone,
+        purpose: nextBestMove.reason,
+        expectedEvidence: nextBestMove.expectedOutcome ?? nextBestMove.definitionOfDone,
+      })
+    }
+    setQueuedAssetId(recommendationId)
+  }
+
   return (
     <div className="space-y-6">
       {/* The CEO Workday™ plan designed in Decide & Design™ — arrival banner,
@@ -155,7 +182,7 @@ export function FounderGpsWorkspace() {
           <div className="rounded-2xl border border-[#E8DFE2] bg-white px-6 py-6 space-y-6">
             <div className="flex items-start justify-between gap-3">
               <p className="font-display text-2xl font-semibold text-[#2E1F27] text-pretty leading-tight">
-                {asset ? <>Build Your {asset.name}</> : "Review Your Next Move"}
+                {asset ? <>Build Your {asset.name}</> : nextBestMove.capabilityName ?? "Your Next Move"}
               </p>
               {asset && (
                 <span className="shrink-0 inline-flex items-center rounded-full bg-[#8DAE72]/15 px-3.5 py-1.5 font-montserrat text-[10px] font-bold uppercase tracking-[0.12em] text-[#5A7A45] whitespace-nowrap">
@@ -195,17 +222,42 @@ export function FounderGpsWorkspace() {
               </>
             ) : (
               <>
-                <p className="font-sans text-base leading-relaxed text-[#6B5860] text-pretty">
-                  Founder GPS™ has a recommendation for you, but it isn&apos;t linked to a specific Business Asset™
-                  yet. Review it before deciding what to build next.
-                </p>
-                <Link
-                  href={nextBestMove.cta.href}
-                  className="inline-flex items-center gap-2 rounded-full border border-[#5A7A45] px-7 py-3.5 font-sans text-base font-bold text-[#5A7A45] hover:bg-[#5A7A45]/5 transition-colors"
+                {/* The move itself — rendered here, never behind a link that
+                    leaves the CEO Workday. */}
+                <div className="space-y-4">
+                  <p className="font-sans text-base leading-relaxed text-[#2E1F27] text-pretty">{nextBestMove.nextTurn}</p>
+                  <BenefitRow label="Why now" text={nextBestMove.whyNow ?? nextBestMove.reason} />
+                  {nextBestMove.currentState && nextBestMove.targetState && (
+                    <BenefitRow label="From → To" text={`${nextBestMove.currentState} → ${nextBestMove.targetState}`} />
+                  )}
+                  {(nextBestMove.expectedOutcome ?? nextBestMove.definitionOfDone) && (
+                    <BenefitRow label="Expected outcome" text={nextBestMove.expectedOutcome ?? nextBestMove.definitionOfDone!} />
+                  )}
+                  {nextBestMove.sequencing && nextBestMove.sequencing.length > 0 && (
+                    <div className="flex gap-3">
+                      <span className="w-28 shrink-0 font-montserrat text-[10px] font-bold uppercase tracking-[0.14em] text-[#5A7A45] pt-0.5">
+                        Steps
+                      </span>
+                      <ol className="space-y-1 font-sans text-sm leading-relaxed text-[#3A2E33]">
+                        {nextBestMove.sequencing.map((s, i) => (
+                          <li key={i}>
+                            {i + 1}. {s}
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+                  )}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleStartMove}
+                  disabled={moveQueued || queuedAssetId === recommendationId}
+                  className="inline-flex items-center gap-2 rounded-full bg-[#5A7A45] px-7 py-3.5 font-sans text-base font-bold text-white hover:opacity-90 transition-opacity disabled:opacity-60 disabled:cursor-default"
                 >
-                  {nextBestMove.cta.label}
+                  {moveQueued || queuedAssetId === recommendationId ? "Added to Today's Work" : "Start This Move"}
                   <ArrowRight className="h-4 w-4" aria-hidden />
-                </Link>
+                </button>
               </>
             )}
           </div>
