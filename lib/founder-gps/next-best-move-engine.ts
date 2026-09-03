@@ -78,6 +78,11 @@ export interface NextBestMoveInput {
    * Optional and purely additive; omitting it changes nothing.
    */
   bbaSignalSummary?: import("./context/bba-context-aggregator").BbaSignalSummary | null
+  /**
+   * CEO Workday™ evidence — see `lib/ceo-workday/plan-server.ts`
+   * getCeoWorkdayEvidence(). Optional and purely additive.
+   */
+  ceoWorkdayEvidence?: import("@/lib/ceo-workday/plan-types").CeoWorkdayEvidenceSummary | null
 }
 
 function weakestPillar(esa?: EsaResults | null): OperatingPillarId | null {
@@ -126,6 +131,7 @@ export function buildGpsContext(input: NextBestMoveInput): GpsContext {
     daysUntilNextSignificantEvent: daysUntil,
     inLifeProtectionMode: daysUntil != null && daysUntil <= 3,
     bbaSignalSummary: input.bbaSignalSummary ?? undefined,
+    ceoWorkdayEvidence: input.ceoWorkdayEvidence ?? undefined,
   }
 }
 
@@ -214,6 +220,13 @@ export function deriveActiveGpsSignals(ctx: GpsContext): GpsSignalId[] {
       if (bba.hasWidespreadOwnershipGap) signals.push("bba-ownership-gap-widespread")
       if (bba.assignmentRepeatedlyBlocked) signals.push("bba-assignment-repeatedly-blocked")
     }
+  }
+
+  // CEO Workday™ evidence — additive; only when a caller fetched it.
+  if (ctx.ceoWorkdayEvidence) {
+    const ev = ctx.ceoWorkdayEvidence
+    if (ev.carryForward.length > 0) signals.push("ceo-workday-carry-forward")
+    if (ev.itemCount > 0 && ev.founderChangedCount / ev.itemCount >= 0.5) signals.push("ceo-workday-founder-overrode-gps")
   }
 
   return signals

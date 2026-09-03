@@ -615,6 +615,28 @@ function buildGentleIntervention(ctx: HarmonyContextValue, progress: ProgressSum
     }
   }
 
+  // CEO Workday™ evidence — real persisted history, never a random reminder.
+  // If the founder left work in progress in a previous CEO Workday™ and chose
+  // to continue it later, name it — this is the context-aware follow-through
+  // the hourly 5-Minute Check-In™ exists to make possible.
+  const ceoEvidence = ctx.snapshot.intelligence.gpsContext.ceoWorkdayEvidence
+  if (ceoEvidence && ceoEvidence.planStatus === "closed" && ceoEvidence.carryForward.length > 0) {
+    const first = ceoEvidence.carryForward[0]
+    const verb =
+      first.nextAction === "later"
+        ? "chose to continue it later"
+        : first.nextAction === "need-help"
+          ? "asked for help with it"
+          : first.nextAction === "move-segment"
+            ? "chose to move it to another segment"
+            : "chose to continue it"
+    return {
+      concern: `"${first.title}" was still in progress when you left your last CEO Workday™.`,
+      message: `You ${verb}. Unfinished work in the same intervention comes before anything new — would you like to handle that today?`,
+      suggestedAction: "Design today's CEO Workday™ in Decide & Design",
+    }
+  }
+
   // CEO priorities empty during CEO Workday™
   if (ctx.currentSegment?.id === "ceo-workday" && !ctx.ceo.priorities?.trim()) {
     return {

@@ -33,6 +33,7 @@ import { classifyBusinessModel } from "@/lib/business-model-classification/class
 import type { BusinessOperatingFingerprint } from "@/lib/business-operating-fingerprint/types"
 import { deriveBusinessOperatingFingerprint } from "@/lib/business-operating-fingerprint/derive"
 import type { BbaSignalSummary } from "@/lib/founder-gps/context/bba-context-aggregator"
+import type { CeoWorkdayEvidenceSummary } from "@/lib/ceo-workday/plan-types"
 
 /* ===========================================================================
  * Harmony Context Snapshot™
@@ -487,6 +488,7 @@ export function assembleHarmonySnapshot(input: AssemblyInput): HarmonyContextSna
     realityCheck,
     operatingHistory: operatingHistoryInput,
     bbaSignalSummary,
+    ceoWorkdayEvidence,
   } = input
 
   // --- Identity ---
@@ -687,6 +689,8 @@ export function assembleHarmonySnapshot(input: AssemblyInput): HarmonyContextSna
     // the caller hasn't fetched it yet (or the founder has no BBA data),
     // never a false signal.
     bbaSignalSummary: bbaSignalSummary ?? undefined,
+    // CEO Workday™ evidence — additive; undefined until fetched.
+    ceoWorkdayEvidence: ceoWorkdayEvidence ?? undefined,
   }
 
   const resolvedOperatingHistory: OperatingHistorySummary = operatingHistoryInput ?? {
@@ -769,6 +773,8 @@ export interface AssemblyInput {
    * gracefully" contract as every other GpsContext field).
    */
   bbaSignalSummary?: BbaSignalSummary | null
+  /** CEO Workday™ evidence (lib/ceo-workday/plan-server.ts getCeoWorkdayEvidence). Optional, additive. */
+  ceoWorkdayEvidence?: CeoWorkdayEvidenceSummary | null
 }
 
 /* ===========================================================================

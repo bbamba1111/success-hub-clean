@@ -46,6 +46,7 @@ import { addWorkItem, hasQueuedAsset } from "@/lib/ceo-workday/todays-work-store
 import { getWorkflowEntry } from "@/lib/ceo-workday/workflow-registry"
 import { CategorySelectorRow } from "@/components/ceo-workday/category-selector-row"
 import { TodaysWorkQueue } from "@/components/ceo-workday/todays-work-queue"
+import { CeoWorkdayLivePlan } from "@/components/ceo-workday/ceo-workday-live-plan"
 import { ArticulationHighlightBanner } from "@/components/articulation/articulation-highlight-banner"
 
 /** Plain-language status pill label for every real `BuildLifecycleStatus`. Falls back to "In Progress" for any other active, non-terminal state. */
@@ -121,6 +122,12 @@ export function FounderGpsWorkspace() {
 
   return (
     <div className="space-y-6">
+      {/* The CEO Workday™ plan designed in Decide & Design™ — arrival banner,
+          declaration, adjust step, hour blocks and the deterministic hourly
+          5-Minute Check-In™. Renders nothing when no plan was designed today,
+          so the existing GPS recommendation + queue below are untouched. */}
+      <CeoWorkdayLivePlan />
+
       {!nextBestMove ? (
         <div className="rounded-3xl border border-dashed border-[#E8DFE2] px-6 py-10 text-center space-y-5">
           <p className="font-sans text-base leading-relaxed text-[#6B5860] max-w-sm mx-auto text-pretty">

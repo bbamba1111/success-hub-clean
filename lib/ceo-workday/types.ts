@@ -65,6 +65,19 @@ export interface CeoWorkItem {
   tangibleOutcome?: string
   /** Reference to the produced outcome once the item is completed (asset id, rule id, etc). */
   outcomeRef?: string
+  /**
+   * When this queue item is the local mirror of a designed CEO Workday™ plan
+   * item (Supabase `ceo_workday_plan_items.id`). The plan is the source of
+   * truth; this id lets the live workspace update the SAME item's state
+   * during the hourly 5-Minute Check-In™ rather than creating a copy.
+   */
+  planItemId?: string
+  /** Estimated minutes carried from the designed plan, when present. */
+  estimatedMinutes?: number
+  /** WHY THIS WORK, carried from the designed plan. */
+  purpose?: string
+  /** EXPECTED OUTCOME / EVIDENCE, carried from the designed plan. */
+  expectedEvidence?: string
   createdAt: string
   updatedAt: string
 }

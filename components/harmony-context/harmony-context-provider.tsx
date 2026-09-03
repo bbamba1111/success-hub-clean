@@ -96,6 +96,8 @@ import {
 import type { EsaResults } from "@/lib/entrepreneur-success/types"
 import { createClient } from "@/lib/supabase/client"
 import { getBbaSignalSummary, type BbaSignalSummary } from "@/lib/founder-gps/context/bba-context-aggregator"
+import { getCeoWorkdayEvidence } from "@/lib/ceo-workday/plan-server"
+import type { CeoWorkdayEvidenceSummary } from "@/lib/ceo-workday/plan-types"
 
 /** id → human label / config lookups (built once). */
 const FOCUS_LABEL = new Map(FOCUS_AREA_OPTIONS.map((o) => [o.id, o.label]))
@@ -170,6 +172,9 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
   // fetch settles — see bba-context-aggregator.ts's degrades-gracefully
   // contract for why this distinction matters.
   const [bbaSignalSummary, setBbaSignalSummary] = useState<BbaSignalSummary | null>(null)
+  // CEO Workday™ evidence — designed vs done vs decided-next from the most
+  // recent plan. Same contract as BBA: null until fetched, never a false default.
+  const [ceoWorkdayEvidence, setCeoWorkdayEvidence] = useState<CeoWorkdayEvidenceSummary | null>(null)
 
   useEffect(() => {
     setInstalled(getInstalledWeek())
@@ -198,6 +203,7 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
         // data" default; see bba-context-aggregator.ts).
         if (id) {
           getBbaSignalSummary(id).then(setBbaSignalSummary).catch(() => setBbaSignalSummary(null))
+          getCeoWorkdayEvidence(id).then(setCeoWorkdayEvidence).catch(() => setCeoWorkdayEvidence(null))
         }
       })
       .catch(() => setUserId(null))
@@ -396,6 +402,7 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
           realityCheck,
           operatingHistory,
           bbaSignalSummary,
+          ceoWorkdayEvidence,
         })
       : EMPTY_HARMONY_SNAPSHOT
 
@@ -423,6 +430,7 @@ export function HarmonyProvider({ children }: { children: ReactNode }) {
     realityCheck,
     operatingHistory,
     bbaSignalSummary,
+    ceoWorkdayEvidence,
   ])
 
   return <HarmonyContext.Provider value={value}>{children}</HarmonyContext.Provider>

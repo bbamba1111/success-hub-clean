@@ -189,6 +189,13 @@ export interface GpsContext {
    * No GpsContext fields are removed or renamed.
    */
   bbaSignalSummary?: import("./context/bba-context-aggregator").BbaSignalSummary
+  /**
+   * CEO Workday™ evidence — what was designed vs adjusted vs done vs
+   * decided-next in the founder's most recent CEO Workday™. From
+   * `lib/ceo-workday/plan-server.ts` getCeoWorkdayEvidence(). Optional and
+   * additive; undefined until a caller fetches it.
+   */
+  ceoWorkdayEvidence?: import("@/lib/ceo-workday/plan-types").CeoWorkdayEvidenceSummary
 }
 
 /** A point-in-time snapshot of Business Performance™ signals. */
@@ -358,6 +365,10 @@ export type GpsSignalId =
   | "no-bba-completed"
   | "bba-ownership-gap-widespread"
   | "bba-assignment-repeatedly-blocked"
+  // CEO Workday™ evidence signals — see lib/ceo-workday/plan-server.ts
+  // getCeoWorkdayEvidence(). Additive.
+  | "ceo-workday-carry-forward" // founder chose "continue later" on unfinished work
+  | "ceo-workday-founder-overrode-gps" // founder changed most of what GPS proposed
 
 export interface GpsSignalWeight {
   signalId: GpsSignalId

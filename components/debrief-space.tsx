@@ -33,7 +33,7 @@ import { FUNCTIONS, type FunctionArea } from "@/components/founder-os/ai-executi
 import { BUSINESS_AREAS, getAreaById } from "@/lib/wlbb-week/catalog"
 import { CollapsibleSubSection } from "@/components/collapsible-sub-section"
 import { MovementIntentionForm } from "@/components/planners/movement-intention-form"
-import { CeoWorkdayActivitiesForm } from "@/components/planners/ceo-workday-activities-form"
+import { CeoWorkdayDesignForm } from "@/components/planners/ceo-workday-design-form"
 import { LunchIntentionForm } from "@/components/planners/lunch-intention-form"
 import { PowerDownIntentionForm } from "@/components/planners/power-down-intention-form"
 import { CherryBlossomWorkstation } from "@/components/cherry-blossom-workstation"
@@ -721,7 +721,7 @@ export function DebriefSpace() {
         </CollapsibleSubSection>
 
         <CollapsibleSubSection title="4-Hour Focused CEO Workday">
-          <CeoWorkdayActivitiesForm />
+          <CeoWorkdayDesignForm />
         </CollapsibleSubSection>
 
         <CollapsibleSubSection title="Extended Healthy Hybrid Lunch Break">
