@@ -14,7 +14,7 @@
 
 import { useEffect, useMemo, useState, type ReactNode } from "react"
 import { Check, Megaphone, Pencil, RefreshCw } from "lucide-react"
-import { CommunicateChangeDialog } from "@/components/communications/communicate-change-dialog"
+import { CommunicateDelegateDialog } from "@/components/communications/communicate-delegate-dialog"
 import type { CommitmentType } from "@/lib/communications/types"
 import { useWeeklyCommitments } from "@/lib/weekly-commitments/use-weekly-commitments"
 import {
@@ -577,13 +577,16 @@ export function WeeklyPrioritiesDesigner() {
         </Card>
       )}
 
-      {/* One builder, two entry points — pre-filled from the commitment above. */}
-      <CommunicateChangeDialog
+      {/* Communicate + Delegate™ — pre-filled from the commitment above. */}
+      <CommunicateDelegateDialog
         open={communicate !== null}
         onOpenChange={(o) => !o && setCommunicate(null)}
-        weeklyCommitmentId={c.id}
+        sourceContext="decide-design"
+        commitmentId={c.id}
         commitmentType={communicate ?? "life"}
+        initialType={communicate === "operating-rule" ? "operating-rule" : "boundary"}
         commitmentText={communicate === "operating-rule" ? c.operatingRule ?? "" : lifePhrase || c.lifePriority || ""}
+        initialSubjectText={communicate === "operating-rule" ? c.operatingRule ?? "" : lifePhrase || c.lifePriority || ""}
         initialAudience={communicate === "life" ? c.boundaryAudiences : []}
         initialTiming={
           communicate === "life"

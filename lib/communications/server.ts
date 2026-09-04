@@ -1,63 +1,87 @@
 "use server"
 
 /**
- * Commitment Communications — Server Actions (Supabase, RLS-scoped)
+ * Communicate + Delegate™ — Server Actions (Supabase, RLS-scoped)
  * ---------------------------------------------------------------------------
- * A communication belongs to one weekly commitment. Several communications
- * (team message, family explanation, client note) may share the same commitment;
- * none of them ever create a duplicate weekly priority.
+ * A communication is the SOURCE message for one decision the founder made. It
+ * may hang off a weekly commitment, off a live CEO Workday work item, or off
+ * nothing at all. Several communications can share the same context; none of
+ * them ever create a weekly priority or a task.
  *
- *   listCommunications   ← everything for this week's commitment
- *   saveCommunication    ← create or update (draft / approved)
- *   markCommunicationUsed← founder explicitly says "I sent / shared this"
+ * The column names here match scripts/024_communications_extensible.sql exactly
+ * (this is what fixes the "Could not find the 'audience' column" schema-cache
+ * error — the old code queried columns that never existed).
  */
 
 import { createClient } from "@/lib/supabase/server"
-import type { Audience, CommitmentCommunication, CommitmentType, CommunicationFormat, CommunicationStatus, Tone } from "./types"
+import type {
+  Audience,
+  CommitmentType,
+  CommunicationDetails,
+  CommunicationFormat,
+  CommunicationRecord,
+  CommunicationStatus,
+  CommunicationType,
+  SourceContext,
+  Tone,
+} from "./types"
 
 async function requireUser() {
   const supabase = await createClient()
   const { data } = await supabase.auth.getUser()
-  if (!data.user) return { supabase, userId: null as string | null }
-  return { supabase, userId: data.user.id as string | null }
+  return { supabase, userId: (data.user?.id ?? null) as string | null }
 }
 
 type Row = {
   id: string
   user_id: string
-  weekly_commitment_id: string
+  commitment_id: string | null
   commitment_type: CommitmentType
   commitment_text: string
-  audience: Audience[]
+  communication_type: CommunicationType
+  source_context: SourceContext
+  work_item_id: string | null
+  plan_id: string | null
+  audience: Audience[] | null
   audience_other: string | null
   timing: string | null
+  subject_text: string | null
+  message_intent: string | null
   desired_outcome: string | null
   tone: Tone
-  generated_subject: string | null
-  generated_body: string | null
-  final_subject: string | null
-  final_body: string | null
+  details: CommunicationDetails | null
+  source_subject: string | null
+  source_message: string | null
+  approved_subject: string | null
+  approved_message: string | null
   final_format: CommunicationFormat | null
   status: CommunicationStatus
   created_at: string
   updated_at: string
 }
 
-function rowToRecord(r: Row): CommitmentCommunication {
+function rowToRecord(r: Row): CommunicationRecord {
   return {
     id: r.id,
-    weeklyCommitmentId: r.weekly_commitment_id,
+    commitmentId: r.commitment_id,
     commitmentType: r.commitment_type,
     commitmentText: r.commitment_text,
+    communicationType: r.communication_type,
+    sourceContext: r.source_context,
+    workItemId: r.work_item_id,
+    planId: r.plan_id,
     audience: r.audience ?? [],
     audienceOther: r.audience_other,
     timing: r.timing,
+    subjectText: r.subject_text,
+    messageIntent: r.message_intent,
     desiredOutcome: r.desired_outcome,
     tone: r.tone,
-    generatedSubject: r.generated_subject,
-    generatedBody: r.generated_body,
-    finalSubject: r.final_subject,
-    finalBody: r.final_body,
+    details: r.details ?? {},
+    sourceSubject: r.source_subject,
+    sourceBody: r.source_message,
+    approvedSubject: r.approved_subject,
+    approvedBody: r.approved_message,
     finalFormat: r.final_format,
     status: r.status,
     createdAt: r.created_at,
@@ -67,58 +91,75 @@ function rowToRecord(r: Row): CommitmentCommunication {
 
 const clip = (s: string | null | undefined, n: number) => (s == null ? null : s.slice(0, n))
 
-export async function listCommunications(weeklyCommitmentId: string, commitmentType: CommitmentType) {
+export interface ListCommunicationsFilter {
+  commitmentId?: string | null
+  workItemId?: string | null
+}
+
+/** Everything the founder has created for a given commitment or work item. */
+export async function listCommunications(filter: ListCommunicationsFilter) {
   const { supabase, userId } = await requireUser()
-  if (!userId) return [] as CommitmentCommunication[]
-  const { data, error } = await supabase
-    .from("commitment_communications")
-    .select("*")
-    .eq("user_id", userId)
-    .eq("weekly_commitment_id", weeklyCommitmentId)
-    .eq("commitment_type", commitmentType)
-    .order("created_at", { ascending: false })
+  if (!userId) return [] as CommunicationRecord[]
+  let query = supabase.from("commitment_communications").select("*").eq("user_id", userId)
+  if (filter.commitmentId) query = query.eq("commitment_id", filter.commitmentId)
+  if (filter.workItemId) query = query.eq("work_item_id", filter.workItemId)
+  const { data, error } = await query.order("created_at", { ascending: false })
   if (error || !data) return []
   return (data as Row[]).map(rowToRecord)
 }
 
 export interface SaveCommunicationInput {
   id?: string | null
-  weeklyCommitmentId: string
+  commitmentId?: string | null
   commitmentType: CommitmentType
   commitmentText: string
+  communicationType: CommunicationType
+  sourceContext: SourceContext
+  workItemId?: string | null
+  planId?: string | null
   audience: Audience[]
   audienceOther?: string | null
   timing?: string | null
+  subjectText?: string | null
+  messageIntent?: string | null
   desiredOutcome?: string | null
   tone: Tone
-  generatedSubject?: string | null
-  generatedBody?: string | null
-  finalSubject?: string | null
-  finalBody?: string | null
+  details?: CommunicationDetails
+  sourceSubject?: string | null
+  sourceBody?: string | null
+  approvedSubject?: string | null
+  approvedBody?: string | null
   finalFormat?: CommunicationFormat | null
   status: Exclude<CommunicationStatus, "used">
 }
 
 export async function saveCommunication(
   input: SaveCommunicationInput,
-): Promise<{ ok: true; record: CommitmentCommunication } | { ok: false; error: string }> {
+): Promise<{ ok: true; record: CommunicationRecord } | { ok: false; error: string }> {
   const { supabase, userId } = await requireUser()
   if (!userId) return { ok: false, error: "Please sign in to save your communication." }
 
   const payload = {
     user_id: userId,
-    weekly_commitment_id: input.weeklyCommitmentId,
+    commitment_id: input.commitmentId ?? null,
     commitment_type: input.commitmentType,
     commitment_text: clip(input.commitmentText, 600) ?? "",
+    communication_type: input.communicationType,
+    source_context: input.sourceContext,
+    work_item_id: input.workItemId ?? null,
+    plan_id: input.planId ?? null,
     audience: input.audience,
     audience_other: clip(input.audienceOther, 120),
-    timing: clip(input.timing, 160),
-    desired_outcome: clip(input.desiredOutcome, 600),
+    timing: clip(input.timing, 200),
+    subject_text: clip(input.subjectText, 600),
+    message_intent: clip(input.messageIntent, 800),
+    desired_outcome: clip(input.desiredOutcome, 800),
     tone: input.tone,
-    generated_subject: clip(input.generatedSubject, 200),
-    generated_body: clip(input.generatedBody, 4000),
-    final_subject: clip(input.finalSubject, 200),
-    final_body: clip(input.finalBody, 4000),
+    details: input.details ?? {},
+    source_subject: clip(input.sourceSubject, 200),
+    source_message: clip(input.sourceBody, 4000),
+    approved_subject: clip(input.approvedSubject, 200),
+    approved_message: clip(input.approvedBody, 4000),
     final_format: input.finalFormat ?? null,
     status: input.status,
   }
@@ -138,7 +179,7 @@ export async function markCommunicationUsed(id: string, format: CommunicationFor
   if (!userId) return { ok: false as const, error: "Please sign in." }
   const { data, error } = await supabase
     .from("commitment_communications")
-    .update({ status: "used", final_format: format })
+    .update({ status: "used", final_format: format, used_at: new Date().toISOString() })
     .eq("id", id)
     .eq("user_id", userId)
     .select("*")

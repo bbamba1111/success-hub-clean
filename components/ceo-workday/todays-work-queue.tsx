@@ -17,7 +17,7 @@
  */
 
 import { useEffect, useState } from "react"
-import { ChevronDown, Mic, Sparkles, User } from "lucide-react"
+import { ChevronDown, Mic, Send, Sparkles, User } from "lucide-react"
 
 import {
   getTodaysWork,
@@ -37,6 +37,7 @@ import {
   type ArticulationSourceContext,
 } from "@/components/articulation/articulation-practice-dialog"
 import { ARTICULATION_PURPOSE } from "@/lib/articulation/purpose"
+import { CommunicateDelegateDialog } from "@/components/communications/communicate-delegate-dialog"
 
 const STATUS_LABEL: Record<CeoWorkItemStatus, string> = {
   "not-started": "Not Started",
@@ -124,6 +125,7 @@ function TodaysWorkItemRow({
   const asset = item.relatedAssetId ? getBusinessAsset(item.relatedAssetId) : null
   const [ownedBuild, setOwnedBuild] = useState<BusinessAssetBuildRecord | null>(null)
   const [showArticulation, setShowArticulation] = useState(false)
+  const [showCommunicate, setShowCommunicate] = useState(false)
 
   // Business Articulation Training™ (Phase 4 MVP): the real content the
   // founder is currently working on — prefers what they've actually built;
@@ -206,14 +208,24 @@ function TodaysWorkItemRow({
                     real work out loud, using its actual content. Available as soon as the
                     asset exists, regardless of build completion, so the founder never has
                     to re-enter anything they've already created. */}
-                <button
-                  type="button"
-                  onClick={() => setShowArticulation(true)}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-[#5A7A45]/10 px-3 py-1.5 font-sans text-xs font-bold text-[#5A7A45] hover:bg-[#5A7A45]/15 transition-colors"
-                >
-                  <Mic className="h-3.5 w-3.5" aria-hidden />
-                  Practice Communicating This
-                </button>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowArticulation(true)}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-[#5A7A45]/10 px-3 py-1.5 font-sans text-xs font-bold text-[#5A7A45] hover:bg-[#5A7A45]/15 transition-colors"
+                  >
+                    <Mic className="h-3.5 w-3.5" aria-hidden />
+                    Practice Communicating This
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowCommunicate(true)}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-[#5A7A45]/10 px-3 py-1.5 font-sans text-xs font-bold text-[#5A7A45] hover:bg-[#5A7A45]/15 transition-colors"
+                  >
+                    <Send className="h-3.5 w-3.5" aria-hidden />
+                    Communicate + Delegate™
+                  </button>
+                </div>
                 {item.source === "barbara" ? (
                   <p className="font-sans text-xs text-[#B7A6AE]">Assigned by Barbara</p>
                 ) : (
@@ -228,7 +240,7 @@ function TodaysWorkItemRow({
               </div>
             </div>
           ) : (
-            <ComingNextPanel item={item} onRemove={onRemove} />
+            <ComingNextPanel item={item} onRemove={onRemove} onCommunicate={() => setShowCommunicate(true)} />
           )}
         </div>
       )}
@@ -240,11 +252,28 @@ function TodaysWorkItemRow({
           source={articulationSource}
         />
       )}
+
+      <CommunicateDelegateDialog
+        open={showCommunicate}
+        onOpenChange={setShowCommunicate}
+        sourceContext="ceo-workday"
+        contextLabel="Working on"
+        commitmentText={item.selectedOptionLabel}
+        workItemId={item.planItemId ?? null}
+      />
     </div>
   )
 }
 
-function ComingNextPanel({ item, onRemove }: { item: CeoWorkItem; onRemove: () => void }) {
+function ComingNextPanel({
+  item,
+  onRemove,
+  onCommunicate,
+}: {
+  item: CeoWorkItem
+  onRemove: () => void
+  onCommunicate: () => void
+}) {
   const category = getCeoWorkCategory(item.category)
   return (
     <div className="space-y-4">
@@ -254,6 +283,14 @@ function ComingNextPanel({ item, onRemove }: { item: CeoWorkItem; onRemove: () =
         architecture, and a real, step-by-step workflow for {category.label.toLowerCase()} work is coming next.
         {item.tangibleOutcome && <> The outcome it will produce: {item.tangibleOutcome}.</>}
       </p>
+      <button
+        type="button"
+        onClick={onCommunicate}
+        className="inline-flex items-center gap-1.5 rounded-full bg-[#5A7A45]/10 px-3 py-1.5 font-sans text-xs font-bold text-[#5A7A45] hover:bg-[#5A7A45]/15 transition-colors"
+      >
+        <Send className="h-3.5 w-3.5" aria-hidden />
+        Communicate + Delegate™
+      </button>
       <div className="flex items-center justify-between gap-3">
         <span className="inline-flex items-center rounded-full bg-[#F4F1EC] px-3 py-1.5 font-montserrat text-[10px] font-bold uppercase tracking-[0.1em] text-[#6B5860]">
           Coming Next

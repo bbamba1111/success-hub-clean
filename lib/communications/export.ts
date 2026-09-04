@@ -4,9 +4,11 @@
 import { AUDIENCE_LABEL, type Audience, type CommitmentType } from "./types"
 
 export interface ExportPayload {
-  title: string // "Communicate My Change™" | "Communicate My Boundary™"
+  title: string // e.g. "Communicate + Delegate™" or the action label
   commitmentType: CommitmentType
   commitmentText: string
+  /** Footer label for the context block, e.g. "Weekly Operating Rule Priority™". */
+  contextLabel?: string
   audience: Audience[]
   audienceOther?: string | null
   timing?: string | null
@@ -86,11 +88,13 @@ export async function downloadPdf(p: ExportPayload) {
   }
   doc.setDrawColor(232, 223, 226).line(margin, y, margin + width, y)
   y += 18
-  doc.setFont("helvetica", "bold").setFontSize(9).setTextColor(90, 122, 69)
-  doc.text(p.commitmentType === "operating-rule" ? "WEEKLY OPERATING RULE PRIORITY™" : "WEEKLY LIFE PRIORITY™", margin, y)
-  y += 14
-  doc.setFont("helvetica", "normal").setFontSize(10).setTextColor(107, 88, 96)
-  doc.text(doc.splitTextToSize(p.commitmentText, width), margin, y)
+  if (p.commitmentText?.trim()) {
+    doc.setFont("helvetica", "bold").setFontSize(9).setTextColor(90, 122, 69)
+    doc.text((p.contextLabel ?? "Context").toUpperCase(), margin, y)
+    y += 14
+    doc.setFont("helvetica", "normal").setFontSize(10).setTextColor(107, 88, 96)
+    doc.text(doc.splitTextToSize(p.commitmentText, width), margin, y)
+  }
 
   doc.save(`${fileStem(p)}.pdf`)
 }
@@ -114,9 +118,8 @@ p{font-size:16px;white-space:pre-wrap}
 <div class="k">${esc(p.title)}</div>
 <h1>${esc(p.subject)}</h1>
 <div class="meta">To: ${esc(audienceText(p.audience, p.audienceOther))}${p.timing ? `<br>When: ${esc(p.timing)}` : ""}<br>Date: ${esc(date)}</div>
-<hr><p>${esc(p.body)}</p><hr>
-<div class="k">${p.commitmentType === "operating-rule" ? "Weekly Operating Rule Priority™" : "Weekly Life Priority™"}</div>
-<div class="c">${esc(p.commitmentText)}</div>
+<hr><p>${esc(p.body)}</p>
+${p.commitmentText?.trim() ? `<hr><div class="k">${esc(p.contextLabel ?? "Context")}</div><div class="c">${esc(p.commitmentText)}</div>` : ""}
 <script>window.onload=function(){window.print()}</script>
 </body></html>`)
   w.document.close()
