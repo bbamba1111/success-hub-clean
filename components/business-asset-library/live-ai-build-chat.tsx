@@ -24,7 +24,8 @@
  */
 
 import { useEffect, useRef, useState } from "react"
-import { ArrowLeft, CheckCircle2, Loader2, Send, Sparkles } from "lucide-react"
+import { ArrowLeft, CheckCircle2, Loader2, Send, Sparkles, Share2 } from "lucide-react"
+import { CommunicateDelegateDialog } from "@/components/communications/communicate-delegate-dialog"
 import type { BusinessAsset } from "@/lib/business-asset-library/business-asset-registry"
 import type { BuildModeDefinition } from "@/lib/business-asset-library/build-modes"
 import type { CommunicationStyle } from "@/lib/business-comprehension/business-comprehension"
@@ -67,6 +68,9 @@ export function LiveAiBuildChat({
   const [buildId, setBuildId] = useState<string | null>(null)
   const [finalDraft, setFinalDraft] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  // Opens the Communicate + Delegate™ tool once the document is done, carrying
+  // the finished draft as the hand-off context.
+  const [showCommunicate, setShowCommunicate] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
 
   // The structured Template™ panel — the same guided-step content
@@ -251,6 +255,24 @@ export function LiveAiBuildChat({
         <div className="mt-5 rounded-xl border border-black/[0.06] bg-brand-cream/60 p-5 text-left">
           <p className="whitespace-pre-wrap text-pretty text-sm leading-relaxed text-brand-ink">{finalDraft}</p>
         </div>
+
+        {/* Now that the document exists, offer the hand-off tool. */}
+        <div className="mx-auto mt-6 max-w-md rounded-xl border border-brand-green/25 bg-brand-green/[0.05] px-5 py-4 text-left">
+          <p className="ds-eyebrow">Next: hand it off</p>
+          <p className="mt-1 text-pretty text-sm leading-relaxed text-brand-ink-soft">
+            Turn this {asset.name} into a message you can send — delegate the work, set the rule, or let the right
+            people know.
+          </p>
+          <button
+            type="button"
+            onClick={() => setShowCommunicate(true)}
+            className="ds-btn-secondary mt-3"
+          >
+            <Share2 className="h-4 w-4" aria-hidden />
+            Communicate + Delegate™
+          </button>
+        </div>
+
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
           <button
             type="button"
@@ -265,12 +287,23 @@ export function LiveAiBuildChat({
             Back to {asset.name}
           </button>
         </div>
+
+        <CommunicateDelegateDialog
+          open={showCommunicate}
+          onOpenChange={setShowCommunicate}
+          sourceContext="other"
+          commitmentType="delegation"
+          commitmentText={asset.name}
+          contextLabel={asset.name}
+          initialType="delegate"
+          initialSubjectText={finalDraft}
+        />
       </div>
     )
   }
 
   return (
-    <div className="grid gap-5 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-start">
+    <div className="grid gap-5 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:items-start">
       {/* Template™ panel — the PRIMARY workspace: the actual Business Asset™ taking shape. */}
       <div className="harmony-panel p-5 sm:p-6">
         <div className="flex items-start justify-between gap-3">

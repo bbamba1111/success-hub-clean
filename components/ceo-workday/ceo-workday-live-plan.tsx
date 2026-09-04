@@ -27,6 +27,7 @@ import {
   loadCeoWorkdayDeclaration,
   type CeoWorkdayDeclaration,
 } from "@/lib/daily-plan/ceo-workday-declaration"
+import { WeeklyPrioritiesPanel } from "@/components/ceo-workday/weekly-priorities-panel"
 import { useWeeklyCommitments } from "@/lib/weekly-commitments/use-weekly-commitments"
 import {
   HOUR_BLOCKS,
@@ -376,6 +377,10 @@ export function CeoWorkdayLivePlan() {
           </div>
         </motion.div>
       )}
+
+      {/* This Week's Three Priorities™ — now directly UNDER the declaration
+          (the two were reversed), collapsible with inline intention editing. */}
+      <WeeklyPrioritiesPanel />
 
       {/* Arrival banner — under the declaration, before the work */}
       <AnimatePresence mode="wait">

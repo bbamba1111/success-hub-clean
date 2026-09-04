@@ -15,13 +15,26 @@
  * their id here — no changes needed anywhere else that reads this list.
  */
 
-/** Business Asset™ ids wired to a real, live AI conversation. */
+/**
+ * Business Asset™ ids that were the original live-AI proof of concept.
+ * Kept for reference/telemetry only — the live template + chat builder is now
+ * the shared experience for EVERY asset's AI build modes (see below), because
+ * the API route and Template™ panel read only generic registry content
+ * (`instructions`, `whatIsThis`, `whyItMatters`, Communication Style™), which
+ * every asset already has.
+ */
 export const LIVE_AI_BUILD_ASSET_IDS: string[] = [
   "founder-destination",
   "founder-onboarding-template",
   "ideal-client-compass",
 ]
 
-export function isLiveAiBuildAvailable(assetId: string): boolean {
-  return LIVE_AI_BUILD_ASSET_IDS.includes(assetId)
+/**
+ * Every Business Asset™ now gets the two-column Template™ + live AI EXEC chat
+ * experience for its AI build modes — so any asset can be built and saved as a
+ * hand-off-ready document. The founder can always type into the template
+ * directly and Compile & Save even before the chat is used.
+ */
+export function isLiveAiBuildAvailable(_assetId: string): boolean {
+  return true
 }

@@ -190,13 +190,31 @@ export function AssetDetailView({
           Either way, {primaryOwnerName} guides you through it — you&apos;re never left to figure this out alone.
         </p>
 
-        <div className="mt-5">
-          <BuildModePicker
-            activeMode={activeMode}
-            onSelect={setActiveMode}
-            availableModeIds={asset.availableBuildModeIds}
-          />
-        </div>
+        {/* Once a mode is chosen the picker collapses into a compact bar so the
+            workspace below gets the room — "Change how I build this" reopens
+            the full picker. */}
+        {mode ? (
+          <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-brand-green/25 bg-brand-green/[0.05] px-4 py-3">
+            <p className="text-sm text-brand-ink">
+              <span className="font-semibold">Working this way:</span> {mode.label}
+            </p>
+            <button
+              type="button"
+              onClick={() => setActiveMode(null)}
+              className="text-xs font-semibold text-brand-ink-soft underline-offset-4 ds-transition hover:text-brand-ink hover:underline"
+            >
+              Change how I build this
+            </button>
+          </div>
+        ) : (
+          <div className="mt-5">
+            <BuildModePicker
+              activeMode={activeMode}
+              onSelect={setActiveMode}
+              availableModeIds={asset.availableBuildModeIds}
+            />
+          </div>
+        )}
 
         {mode && (
           <div className="mt-6">

@@ -22,13 +22,13 @@
  * Mounted by `TodaysCeoWorkdayCard`.
  */
 
-import { WeeklyPrioritiesPanel } from "@/components/ceo-workday/weekly-priorities-panel"
 import { CeoWorkdayLivePlan } from "@/components/ceo-workday/ceo-workday-live-plan"
 
 export function FounderGpsWorkspace() {
   return (
     <div className="space-y-6">
-      <WeeklyPrioritiesPanel />
+      {/* This Week's Three Priorities™ now renders inside CeoWorkdayLivePlan,
+          directly under the Workday Declaration™ (the two cards were reversed). */}
       <CeoWorkdayLivePlan />
     </div>
   )

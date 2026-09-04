@@ -9,7 +9,6 @@ import { PLANNER_CONFIG } from "@/components/operating-planner/planner-config"
 import { TodaysMoveCard } from "@/components/operating-planner/todays-move-card"
 import { ReflectionSpace } from "@/components/reflection-space"
 import { DebriefSpace } from "@/components/debrief-space"
-import { DecideIdentitySpace } from "@/components/daily-identity/decide-identity-space"
 import { TodaysMovementCard } from "@/components/daily-plan/todays-movement-card"
 import { TodaysLunchCard } from "@/components/daily-plan/todays-lunch-card"
 import { TodaysCeoWorkdayCard } from "@/components/daily-plan/todays-ceo-workday-card"
@@ -415,7 +414,9 @@ export function BusinessDayBlock({
                 ("My" vs "Your") ever differed, and title now matches too. */}
             {(blockId === "monday-debrief" || blockId === "daily-planning-gps") && (
               <div className="px-7 py-8 space-y-8">
-                <DecideIdentitySpace />
+                {/* DecideIdentitySpace now renders inside DebriefSpace, directly
+                    under the Decide & Design heading (heading + identity box
+                    were reversed per design). */}
                 <DebriefSpace />
               </div>
             )}
