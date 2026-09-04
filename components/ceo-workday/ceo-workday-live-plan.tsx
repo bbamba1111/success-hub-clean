@@ -145,7 +145,7 @@ export function CeoWorkdayLivePlan() {
           will appear here.
         </p>
         <a
-          href="/?openSpace=debrief"
+          href={new Date().getDay() === 1 ? "/?openSpace=monday-debrief" : "/?openSpace=daily-planning-gps"}
           className="inline-flex items-center gap-1.5 font-sans text-sm font-bold text-[#5A7A45] hover:underline"
         >
           Open Decide &amp; Design
