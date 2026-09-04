@@ -29,7 +29,7 @@ import { CherryBlossomWorkstation } from "@/components/cherry-blossom-workstatio
 import { TimeFreedomSocial } from "@/components/time-freedom-social"
 import { UpcomingLifeEvents } from "@/components/cherry-blossom/upcoming-life-events"
 import { WeeklyPrioritiesDesigner } from "@/components/decide-design/weekly-priorities-designer"
-import { WeeklyCommitmentsSummary } from "@/components/decide-design/weekly-commitments-summary"
+import { WorkdayDeclaration } from "@/components/decide-design/workday-declaration"
 
 export function DebriefSpace() {
   // Renders identically on Monday (`monday-debrief`) and Tue–Sun
@@ -115,7 +115,7 @@ export function DebriefSpace() {
         </CollapsibleSubSection>
 
         <CollapsibleSubSection title="4-Hour Focused CEO Workday">
-          <WeeklyCommitmentsSummary />
+          <WorkdayDeclaration mode="build" />
         </CollapsibleSubSection>
 
         <CollapsibleSubSection title="Extended Healthy Hybrid Lunch Break">

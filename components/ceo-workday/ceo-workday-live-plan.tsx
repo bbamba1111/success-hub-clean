@@ -27,6 +27,7 @@ import {
   loadCeoWorkdayDeclaration,
   type CeoWorkdayDeclaration,
 } from "@/lib/daily-plan/ceo-workday-declaration"
+import { useWeeklyCommitments } from "@/lib/weekly-commitments/use-weekly-commitments"
 import {
   HOUR_BLOCKS,
   blockNeedingCheckin,
@@ -66,6 +67,8 @@ type AdjustAction = "change" | "defer" | "delegate" | "remove" | "help" | "other
 export function CeoWorkdayLivePlan() {
   const dateKey = getDateKey()
   const [local, setLocal] = useState<CeoWorkdayDeclaration | null>(null)
+  const { commitments: weekly } = useWeeklyCommitments()
+  const weeklyDeclaration = weekly.workdayDeclaration?.trim() || null
   const [plan, setPlan] = useState<CeoWorkdayPlan | null>(null)
   const [loaded, setLoaded] = useState(false)
   const [savedBlocks, setSavedBlocks] = useState<Set<number>>(new Set())
@@ -125,9 +128,11 @@ export function CeoWorkdayLivePlan() {
   }, [due, plan, entered, checkinOpen])
 
   if (!loaded) return null
-  if (!plan && !local) return null
+  if (!plan && !local && !weeklyDeclaration) return null
 
-  const declaration = plan?.declaration ?? local?.declaration ?? null
+  // My 4-Hour CEO Workday Declaration™ — built in Decide & Design™ from the three
+  // Weekly Priorities™ — is the source of truth. Legacy per-day text is a fallback.
+  const declaration = weeklyDeclaration ?? plan?.declaration ?? local?.declaration ?? null
   const plannedMinutes = plan?.plannedMinutes ?? local?.plannedMinutes ?? 0
 
   // ── handlers ─────────────────────────────────────────────────────────────
@@ -282,7 +287,7 @@ export function CeoWorkdayLivePlan() {
       {/* Declaration — always at the top, like Movement/Lunch */}
       {declaration && (
         <motion.div
-          key={plan?.id ?? local?.builtAt}
+          key={weeklyDeclaration ? `weekly-${weekly.workdayDeclarationBuiltAt ?? weekly.weekKey}` : (plan?.id ?? local?.builtAt)}
           initial={{ opacity: 0, y: -14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
@@ -290,7 +295,7 @@ export function CeoWorkdayLivePlan() {
         >
           <div className="flex items-center justify-between gap-3">
             <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5A7A45]">
-              Your CEO Workday Declaration™
+              {weeklyDeclaration ? "My 4-Hour CEO Workday Declaration™" : "Your CEO Workday Declaration™"}
             </p>
             {plan?.identityStatement && (
               <span className="rounded-full bg-[#7FB069]/15 px-2.5 py-1 font-montserrat text-[10px] font-semibold text-[#3A6B3E]">

@@ -29,7 +29,7 @@ import { PLANNER_CONFIG } from "@/components/operating-planner/planner-config"
 import { FlexTimeGuidedMoments } from "@/components/guided-moments/flex-time-moments"
 import { FlexTimeHistory } from "@/components/guided-moments/flex-time-history"
 import { MorningGivenExperience } from "@/components/guided-moments/morning-given-experience"
-import { WeeklyCommitmentsSummary } from "@/components/decide-design/weekly-commitments-summary"
+import { WorkdayDeclaration } from "@/components/decide-design/workday-declaration"
 import { LifeIntentionsCard } from "@/components/wlbb-week/life-intentions-card"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
 import dynamic from "next/dynamic"
@@ -1008,11 +1008,11 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
           <SleepPlanner value={plannedSleep} onChange={setPlannedSleep} />
         )}
 
-        {/* This Week's Work-Life Balance Commitments™ — ceo-workday, Tue/Wed/Thu (Monday chooses them in Decide & Design™).
-            The same weekly record, visible as context — not a task list for the four hours. */}
+        {/* My 4-Hour CEO Workday Declaration™ — ceo-workday, Tue/Wed/Thu. Built on Monday in Decide & Design™
+            from the three Weekly Priorities™; read here before the first hour block. */}
         {blockId === "ceo-workday" && wlbbMenuDay && (
-          <div className="mb-8 rounded-2xl border border-brand-green/20 bg-brand-green/[0.04] px-6 py-6 sm:px-8">
-            <WeeklyCommitmentsSummary />
+          <div className="mb-8">
+            <WorkdayDeclaration mode="read" />
           </div>
         )}
 
