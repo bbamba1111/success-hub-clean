@@ -23,23 +23,37 @@ const AUTOSAVE_MS = 900
 
 export function useWeeklyCommitments(weekKey: string = getWeekKey()) {
   const key = ["weekly-commitments", weekKey] as const
-  const { data, mutate, isLoading } = useSWR(key, () => getWeeklyCommitments(weekKey), {
-    fallbackData: emptyWeeklyCommitments(weekKey),
-    revalidateOnFocus: false,
-  })
-  const commitments = data ?? emptyWeeklyCommitments(weekKey)
 
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const pending = useRef<WeeklyCommitments | null>(null)
   const errorRef = useRef<string | null>(null)
 
+  const { data, mutate, isLoading } = useSWR(key, () => getWeeklyCommitments(weekKey), {
+    fallbackData: emptyWeeklyCommitments(weekKey),
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+    dedupingInterval: 10_000,
+    // The founder's unsaved choices are authoritative. A second subscriber
+    // mounting (e.g. the CEO Workday accordion summary) must not trigger a
+    // refetch that overwrites the optimistic draft before the debounced save
+    // lands — or after a save failed and the draft is being kept for retry.
+    isPaused: () => pending.current !== null,
+  })
+  const commitments = data ?? emptyWeeklyCommitments(weekKey)
+
   const flush = useCallback(async () => {
     const c = pending.current
-    pending.current = null
     if (!c) return
     const res = await saveWeeklyCommitments(c)
-    errorRef.current = res.ok ? null : (res.error ?? "Could not save.")
-    if (res.ok && res.commitments) void mutate(res.commitments, { revalidate: false })
+    if (res.ok) {
+      errorRef.current = null
+      // Only clear if nothing newer was queued while the request was in flight.
+      if (pending.current === c) pending.current = null
+      if (res.commitments) void mutate(res.commitments, { revalidate: false })
+    } else {
+      // Keep the draft (and stay paused) so the choices survive the failure.
+      errorRef.current = res.error ?? "Could not save."
+    }
   }, [mutate])
 
   useEffect(
@@ -73,9 +87,14 @@ export function useWeeklyCommitments(weekKey: string = getWeekKey()) {
   const saveWeek = useCallback(async () => {
     if (timer.current) clearTimeout(timer.current)
     const c = pending.current ?? commitments
-    pending.current = null
     const res = await saveWeeklyCommitments(c, { markDesigned: true })
-    if (res.ok && res.commitments) void mutate(res.commitments, { revalidate: false })
+    if (res.ok) {
+      errorRef.current = null
+      if (pending.current === c) pending.current = null
+      if (res.commitments) void mutate(res.commitments, { revalidate: false })
+    } else {
+      errorRef.current = res.error ?? "Could not save."
+    }
     return res
   }, [commitments, mutate])
 
