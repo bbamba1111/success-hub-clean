@@ -75,6 +75,15 @@ export interface WeeklyCommitments {
   operatingRuleIntentionEdited: boolean
   operatingRuleStatus: OperatingRuleStatus
 
+  // My 4-Hour CEO Workday Declaration™ — the three priorities woven into one
+  // first-person declaration, built in Decide & Design™ and read aloud at the
+  // top of the live CEO Workday™ every day this week.
+  workdayDeclaration: string | null
+  workdayDeclarationVariant: number
+  workdayDeclarationEdited: boolean
+  /** Set when the founder presses "Build My Declaration". */
+  workdayDeclarationBuiltAt: string | null
+
   /** Set when the founder presses "Save My Week". */
   designedAt: string | null
   createdAt: string | null
@@ -107,6 +116,10 @@ export function emptyWeeklyCommitments(weekKey: string): WeeklyCommitments {
     operatingRuleIntentionVariant: 0,
     operatingRuleIntentionEdited: false,
     operatingRuleStatus: "not-started",
+    workdayDeclaration: null,
+    workdayDeclarationVariant: 0,
+    workdayDeclarationEdited: false,
+    workdayDeclarationBuiltAt: null,
     designedAt: null,
     createdAt: null,
     updatedAt: null,

@@ -56,6 +56,10 @@ type Row = {
   operating_rule_intention_variant: number
   operating_rule_intention_edited: boolean
   operating_rule_status: OperatingRuleStatus
+  workday_declaration: string | null
+  workday_declaration_variant: number | null
+  workday_declaration_edited: boolean | null
+  workday_declaration_built_at: string | null
   designed_at: string | null
   created_at: string
   updated_at: string
@@ -87,6 +91,10 @@ function fromRow(r: Row): WeeklyCommitments {
     operatingRuleIntentionVariant: r.operating_rule_intention_variant ?? 0,
     operatingRuleIntentionEdited: r.operating_rule_intention_edited,
     operatingRuleStatus: r.operating_rule_status,
+    workdayDeclaration: r.workday_declaration,
+    workdayDeclarationVariant: r.workday_declaration_variant ?? 0,
+    workdayDeclarationEdited: r.workday_declaration_edited ?? false,
+    workdayDeclarationBuiltAt: r.workday_declaration_built_at,
     designedAt: r.designed_at,
     createdAt: r.created_at,
     updatedAt: r.updated_at,
@@ -121,6 +129,10 @@ function toRow(c: WeeklyCommitments, userId: string) {
     operating_rule_intention_variant: c.operatingRuleIntentionVariant,
     operating_rule_intention_edited: c.operatingRuleIntentionEdited,
     operating_rule_status: c.operatingRuleStatus,
+    workday_declaration: clip(c.workdayDeclaration, 1200),
+    workday_declaration_variant: c.workdayDeclarationVariant,
+    workday_declaration_edited: c.workdayDeclarationEdited,
+    workday_declaration_built_at: c.workdayDeclarationBuiltAt,
     designed_at: c.designedAt,
   }
 }
