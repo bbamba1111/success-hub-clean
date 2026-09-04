@@ -30,6 +30,7 @@ import { TimeFreedomSocial } from "@/components/time-freedom-social"
 import { UpcomingLifeEvents } from "@/components/cherry-blossom/upcoming-life-events"
 import { WeeklyPrioritiesDesigner } from "@/components/decide-design/weekly-priorities-designer"
 import { WorkdayDeclaration } from "@/components/decide-design/workday-declaration"
+import { WhatMustHappenToday } from "@/components/decide-design/what-must-happen-today"
 
 export function DebriefSpace() {
   // Renders identically on Monday (`monday-debrief`) and Tue–Sun
@@ -49,54 +50,21 @@ export function DebriefSpace() {
     <section className="w-full space-y-6">
       {/* ── Header ─────────────────────────────────────────────────────────── */}
       <div className="text-center space-y-3 pb-2">
-        <p className="font-sans text-xs font-semibold uppercase tracking-[0.25em] text-[#C0545A]">Decide &amp; Design™</p>
+        <p className="font-sans text-xs font-semibold uppercase tracking-[0.25em] text-[#C0545A]">Decide &amp; Design</p>
         <h2 className="font-serif text-3xl font-semibold text-[#2E1F27] text-balance leading-tight">
-          This is where I choose how I want to enter and operate my week.
+          This is where I choose how I want to enter and operate my week and what must happen today.
         </h2>
-      </div>
-
-      {/* ── Title card ─────────────────────────────────────────────────────── */}
-      <div className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm px-8 py-7 space-y-5">
-        <div className="flex items-center gap-2">
-          <Clock className="h-3.5 w-3.5 text-[#5B835F]" aria-hidden />
-          <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
-            {isMonday ? "Monday Ritual™" : "Daily Ritual™"} · {debriefSchedule?.timeLabel ?? "10:30–11:00 AM"}
-          </p>
-        </div>
-        <p className="font-serif text-2xl font-semibold text-[#2E1F27] leading-snug">
-          Protect my life. Move one thing off my plate. Change one condition of how work operates.
+        <p className="inline-flex items-center justify-center gap-2 font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
+          <Clock className="h-3.5 w-3.5" aria-hidden />
+          {isMonday ? "Monday Ritual™" : "Daily Ritual™"} · {debriefSchedule?.timeLabel ?? "10:30–11:00 AM"}
         </p>
-
-        {/* ── Permission-giving intro ──────────────────────────────────────── */}
-        <div className="rounded-2xl border border-[#7FB069]/25 bg-[#F7FBF4] px-5 py-4">
-          <p className="font-sans text-sm text-[#3A2E33] leading-relaxed">
-            You have permission to design intentionally, not react. There&apos;s nowhere to rush to — you are not
-            being given more work. You are choosing three changes.
-          </p>
-        </div>
-
-        {/* ── Cherry Blossom coaching ───────────────────────────────────────── */}
-        <div className="rounded-2xl border border-[#E26C73]/20 bg-[#FDF8F5] px-6 py-5 flex gap-4 items-start">
-          <div className="shrink-0 mt-0.5">
-            <span className="text-xl select-none" role="img" aria-label="Cherry blossom">
-              🌸
-            </span>
-          </div>
-          <div className="space-y-2">
-            <p className="font-sans text-xs font-semibold uppercase tracking-[0.2em] text-[#E26C73]">Cherry Blossom™</p>
-            <p className="font-serif text-base font-semibold text-[#2E1F27] leading-snug">
-              Sit with what surfaced — then choose deliberately.
-            </p>
-            <p className="font-sans text-sm text-[#3A2E33] leading-relaxed">
-              Awareness without a pause to process it rarely becomes lasting change. Take a few quiet minutes, then
-              choose your three weekly priorities below — what you decide here stays with you Monday through Thursday.
-            </p>
-          </div>
-        </div>
       </div>
 
       {/* ── Decide My Three Weekly Priorities™ ──────────────────────────────── */}
       <WeeklyPrioritiesDesigner />
+
+      {/* ── What Must Happen Today™ → Save My Day (creates today's CEO Workday™) ── */}
+      <WhatMustHappenToday />
 
       {/* ── Design My Work-Life Balance Business Day™ ────────────────────────── */}
       <div className="rounded-3xl border border-[#7FB069]/30 bg-[#F3F8ED] shadow-sm px-8 py-7 space-y-4">

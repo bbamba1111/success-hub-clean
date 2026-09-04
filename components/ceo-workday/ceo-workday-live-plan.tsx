@@ -130,9 +130,10 @@ export function CeoWorkdayLivePlan() {
   if (!loaded) return null
   if (!plan && !local && !weeklyDeclaration) return null
 
-  // My 4-Hour CEO Workday Declaration™ — built in Decide & Design™ from the three
-  // Weekly Priorities™ — is the source of truth. Legacy per-day text is a fallback.
-  const declaration = weeklyDeclaration ?? plan?.declaration ?? local?.declaration ?? null
+  // Today's Day Declaration™ (built by "Save My Day" from What Must Happen Today™)
+  // reads first; the weekly 4-Hour CEO Workday Declaration™ is the fallback.
+  const dayDeclaration = plan?.declaration?.trim() || local?.declaration?.trim() || null
+  const declaration = dayDeclaration ?? weeklyDeclaration
   const plannedMinutes = plan?.plannedMinutes ?? local?.plannedMinutes ?? 0
 
   // ── handlers ─────────────────────────────────────────────────────────────
@@ -287,7 +288,7 @@ export function CeoWorkdayLivePlan() {
       {/* Declaration — always at the top, like Movement/Lunch */}
       {declaration && (
         <motion.div
-          key={weeklyDeclaration ? `weekly-${weekly.workdayDeclarationBuiltAt ?? weekly.weekKey}` : (plan?.id ?? local?.builtAt)}
+          key={dayDeclaration ? (plan?.id ?? local?.builtAt) : `weekly-${weekly.workdayDeclarationBuiltAt ?? weekly.weekKey}`}
           initial={{ opacity: 0, y: -14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
@@ -295,7 +296,7 @@ export function CeoWorkdayLivePlan() {
         >
           <div className="flex items-center justify-between gap-3">
             <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5A7A45]">
-              {weeklyDeclaration ? "My 4-Hour CEO Workday Declaration™" : "Your CEO Workday Declaration™"}
+              {dayDeclaration ? "My Day Declaration™" : "My 4-Hour CEO Workday Declaration™"}
             </p>
             {plan?.identityStatement && (
               <span className="rounded-full bg-[#7FB069]/15 px-2.5 py-1 font-montserrat text-[10px] font-semibold text-[#3A6B3E]">
