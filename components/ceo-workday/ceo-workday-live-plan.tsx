@@ -128,7 +128,24 @@ export function CeoWorkdayLivePlan() {
   }, [due, plan, entered, checkinOpen])
 
   if (!loaded) return null
-  if (!plan && !local && !weeklyDeclaration) return null
+  if (!plan && !local && !weeklyDeclaration) {
+    // Nothing decided for today yet — say so plainly rather than render nothing.
+    return (
+      <div className="rounded-3xl border border-dashed border-[#E8DFE2] px-6 py-10 text-center space-y-4">
+        <p className="font-sans text-base leading-relaxed text-[#6B5860] max-w-md mx-auto text-pretty">
+          Today&apos;s CEO Workday™ hasn&apos;t been decided yet. Name what must happen today in Decide &amp; Design
+          and press <span className="font-semibold text-[#2E1F27]">Save My Day</span> — your declaration and work
+          will appear here.
+        </p>
+        <a
+          href="/?openSpace=debrief"
+          className="inline-flex items-center gap-1.5 font-sans text-sm font-bold text-[#5A7A45] hover:underline"
+        >
+          Open Decide &amp; Design
+        </a>
+      </div>
+    )
+  }
 
   // Today's Day Declaration™ (built by "Save My Day" from What Must Happen Today™)
   // reads first; the weekly 4-Hour CEO Workday Declaration™ is the fallback.
