@@ -18,7 +18,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Check, Clock, Copy, Mic, Pencil, Play } from "lucide-react"
+import { Check, Clock, Copy, Mic, Pencil, Play, Plus, RotateCcw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 import { getDateKey } from "@/lib/daily-plan/storage"
@@ -48,15 +48,18 @@ import {
   type CeoWorkdayPlan,
 } from "@/lib/ceo-workday/plan-types"
 import {
+  addCeoPlanItem,
   closeCeoWorkdayPlan,
   getCeoWorkdayCheckins,
   getCeoWorkdayPlan,
+  linkPlanItemsToLocalQueue,
   saveWorkingOnDeclaration,
   updateCeoPlanItem,
   updateCeoPlanStatus,
   type HourCheckinItemOutcome,
 } from "@/lib/ceo-workday/plan-server"
-import { linkWorkItemAsset, updateWorkItemStatus } from "@/lib/ceo-workday/todays-work-store"
+import { addWorkItem, linkWorkItemAsset, updateWorkItemStatus } from "@/lib/ceo-workday/todays-work-store"
+import { getWorkflowEntry } from "@/lib/ceo-workday/workflow-registry"
 import { BUSINESS_ASSETS, getBusinessAsset } from "@/lib/business-asset-library/business-asset-registry"
 import { AssetDetailView } from "@/components/business-asset-library/asset-detail-view"
 import type { BusinessAssetBuildRecord } from "@/utils/business-asset-build-storage"
@@ -83,6 +86,10 @@ export function CeoWorkdayLivePlan() {
   const [copied, setCopied] = useState(false)
   /** Which plan item's work surface (builder / template picker) is open. */
   const [openItemId, setOpenItemId] = useState<string | null>(null)
+  /** Founder adding a piece of work in her own words. */
+  const [addingOpen, setAddingOpen] = useState(false)
+  const [addDraft, setAddDraft] = useState("")
+  const [addingBusy, setAddingBusy] = useState(false)
 
   // Platform clock, ticked every 15s — deterministic, no random timers.
   const [nowMin, setNowMin] = useState(() => platformMinutes())
@@ -174,6 +181,64 @@ export function CeoWorkdayLivePlan() {
     await updateCeoPlanItem(item.id, { status, nextAction })
     if (item.localWorkItemId) updateWorkItemStatus(item.localWorkItemId, status === "blocked" ? "blocked" : "deferred")
     await updateCeoPlanStatus(plan.id, "adjusted")
+  }
+
+  /** Bring an eliminated / removed piece of work back into today. */
+  async function recallItem(item: CeoPlanItem) {
+    if (!plan) return
+    setPlan((p) => p && { ...p, items: p.items.map((i) => (i.id === item.id ? { ...i, status: "planned", nextAction: null, founderDecision: "edit" } : i)) })
+    await updateCeoPlanItem(item.id, { status: "planned", nextAction: null, founderDecision: "edit" })
+    if (item.localWorkItemId) updateWorkItemStatus(item.localWorkItemId, "not-started")
+    await updateCeoPlanStatus(plan.id, "adjusted")
+  }
+
+  /** Founder adds a piece of work to What Must Happen Today™ in her own words. */
+  async function addWork() {
+    if (!plan) return
+    const title = addDraft.trim()
+    if (!title) return
+    setAddingBusy(true)
+    const wf = getWorkflowEntry("BUILD")
+    const purpose = "Added by me inside my CEO Workday™ as something that must happen today."
+    const created = await addCeoPlanItem(plan.id, {
+      title,
+      purpose,
+      expectedEvidence: "",
+      treatment: "build-change",
+      businessFunction: "build",
+      role: "founder-added",
+      estimatedMinutes: 60,
+      relatedAssetId: null,
+      relatedAssetTitle: null,
+      ceoWorkCategory: "BUILD",
+      founderDecision: "added",
+      status: "planned",
+      nextAction: null,
+      localWorkItemId: null,
+    })
+    if (created) {
+      // Mirror into the Today's Work™ queue so the plan stays the single source.
+      const local = addWorkItem({
+        category: "BUILD",
+        selectedOptionLabel: title,
+        workflowId: wf.workflowId,
+        availability: wf.availability,
+        source: "founder",
+        sourceDetail: "What Must Happen Today™ · CEO Workday",
+        status: "not-started",
+        planItemId: created.id,
+        estimatedMinutes: created.estimatedMinutes,
+        purpose,
+        expectedEvidence: "",
+        tangibleOutcome: "",
+      })
+      void linkPlanItemsToLocalQueue([{ itemId: created.id, localWorkItemId: local.id }])
+      setPlan((p) => p && { ...p, items: [...p.items, { ...created, localWorkItemId: local.id }], plannedMinutes: p.plannedMinutes + created.estimatedMinutes })
+      await updateCeoPlanStatus(plan.id, "adjusted")
+    }
+    setAddDraft("")
+    setAddingOpen(false)
+    setAddingBusy(false)
   }
 
   async function commitTitle(item: CeoPlanItem, title: string) {
@@ -277,32 +342,7 @@ export function CeoWorkdayLivePlan() {
   // ── render ───────────────────────────────────────────────────────────────
   return (
     <div className="space-y-5">
-      {/* Arrival banner */}
-      <AnimatePresence mode="wait">
-        {!entered && (
-          <motion.div
-            key="arrive"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-            className="rounded-3xl border-2 border-[#7FB069]/30 bg-[#7FB069]/5 px-6 py-6 sm:px-7 space-y-3"
-          >
-            <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5A7A45]">
-              Your CEO Workday™ is ready
-            </p>
-            <p className="font-sans text-sm leading-relaxed text-[#3A2E33]">
-              You designed this work during Decide &amp; Design. Step into your protected 4-hour CEO Workday™.
-            </p>
-            <p className="font-sans text-xs text-[#6B5860]">
-              {plannedMinutes} of 240 minutes planned · {activeItems.length || local?.itemCount || 0}{" "}
-              {(activeItems.length || local?.itemCount || 0) === 1 ? "piece" : "pieces"} of meaningful work
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Declaration — always at the top, like Movement/Lunch */}
+      {/* My Workday Declaration™ — always first in the space, like Movement/Lunch */}
       {declaration && (
         <motion.div
           key={dayDeclaration ? (plan?.id ?? local?.builtAt) : `weekly-${weekly.workdayDeclarationBuiltAt ?? weekly.weekKey}`}
@@ -313,7 +353,7 @@ export function CeoWorkdayLivePlan() {
         >
           <div className="flex items-center justify-between gap-3">
             <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5A7A45]">
-              {dayDeclaration ? "My Day Declaration™" : "My 4-Hour CEO Workday Declaration™"}
+              {dayDeclaration ? "My Workday Declaration™" : "My 4-Hour CEO Workday Declaration™"}
             </p>
             {plan?.identityStatement && (
               <span className="rounded-full bg-[#7FB069]/15 px-2.5 py-1 font-montserrat text-[10px] font-semibold text-[#3A6B3E]">
@@ -337,12 +377,37 @@ export function CeoWorkdayLivePlan() {
         </motion.div>
       )}
 
+      {/* Arrival banner — under the declaration, before the work */}
+      <AnimatePresence mode="wait">
+        {!entered && (
+          <motion.div
+            key="arrive"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="rounded-3xl border-2 border-[#7FB069]/30 bg-[#7FB069]/5 px-6 py-6 sm:px-7 space-y-3"
+          >
+            <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5A7A45]">
+              What Must Happen Today™ is ready
+            </p>
+            <p className="font-sans text-sm leading-relaxed text-[#3A2E33]">
+              You decided this work during Decide &amp; Design. Step into your protected 4-hour CEO Workday™.
+            </p>
+            <p className="font-sans text-xs text-[#6B5860]">
+              {plannedMinutes} of 240 minutes planned · {activeItems.length || local?.itemCount || 0}{" "}
+              {(activeItems.length || local?.itemCount || 0) === 1 ? "piece" : "pieces"} of meaningful work
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Plan + adjust */}
       {plan && (
         <div className="rounded-3xl border border-[#8DAE72]/30 bg-[#F4F7F0] px-6 py-6 sm:px-7 space-y-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="font-montserrat text-xs font-bold uppercase tracking-[0.18em] text-[#5A7A45]">Your CEO Workday™</p>
+              <p className="font-montserrat text-xs font-bold uppercase tracking-[0.18em] text-[#5A7A45]">What Must Happen Today™</p>
               {plan.constraintSummary && <p className="mt-1 font-sans text-xs text-[#6B5860]">{plan.constraintSummary}</p>}
             </div>
             <span className="font-sans text-xs font-semibold text-[#6B5860]">{plan.plannedMinutes} / 240 min planned</span>
@@ -398,6 +463,15 @@ export function CeoWorkdayLivePlan() {
                       <p className="mt-1 font-sans text-xs text-[#3A2E33]">
                         <span className="font-semibold text-[#5A7A45]">Expected outcome:</span> {item.expectedEvidence}
                       </p>
+                    )}
+                    {plan.status !== "closed" && (item.founderDecision === "remove" || item.status === "eliminated") && (
+                      <button
+                        type="button"
+                        onClick={() => recallItem(item)}
+                        className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-[#5A7A45] px-3.5 py-1.5 font-sans text-xs font-bold text-[#5A7A45] hover:bg-[#5A7A45]/5"
+                      >
+                        <RotateCcw className="h-3 w-3" aria-hidden /> Recall to today
+                      </button>
                     )}
                     {!adjusting && plan.status !== "closed" && item.founderDecision !== "remove" && item.status !== "eliminated" && (
                       <div className="mt-2 flex flex-wrap gap-2">
@@ -463,6 +537,48 @@ export function CeoWorkdayLivePlan() {
               </li>
             ))}
           </ol>
+
+          {/* Add work — the founder's words, mirrored into the plan and queue */}
+          {plan.status !== "closed" && (
+            addingOpen ? (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  void addWork()
+                }}
+                className="flex flex-col gap-2 rounded-2xl border border-dashed border-[#8DAE72]/50 bg-white px-4 py-3 sm:flex-row sm:items-center"
+              >
+                <input
+                  autoFocus
+                  value={addDraft}
+                  onChange={(e) => setAddDraft(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Escape") setAddingOpen(false)
+                  }}
+                  placeholder="What else must happen today?"
+                  aria-label="Add work to today"
+                  className="flex-1 rounded-lg border border-[#E8DFE2] px-3 py-2 font-sans text-sm text-[#2E1F27] focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
+                />
+                <div className="flex gap-2">
+                  <button type="submit" disabled={addingBusy || !addDraft.trim()} className="rounded-full bg-[#5A7A45] px-4 py-2 font-sans text-xs font-bold text-white hover:opacity-90 disabled:opacity-50">
+                    {addingBusy ? "Adding…" : "Add to today"}
+                  </button>
+                  <button type="button" onClick={() => setAddingOpen(false)} className="rounded-full border border-[#E8DFE2] bg-white px-4 py-2 font-sans text-xs font-semibold text-[#6B5860] hover:bg-black/[0.03]">
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setAddingOpen(true)}
+                className="inline-flex items-center gap-1.5 rounded-full border border-dashed border-[#8DAE72]/60 bg-white px-3.5 py-1.5 font-sans text-xs font-bold text-[#5A7A45] hover:bg-[#5A7A45]/5"
+              >
+                <Plus className="h-3 w-3" aria-hidden /> Add work to today
+              </button>
+            )
+          )}
+
           {adjusting && (
             <button type="button" onClick={() => setAdjusting(false)} className="font-sans text-xs font-semibold text-[#5A7A45] underline underline-offset-2">
               Done adjusting

@@ -6,12 +6,12 @@
  * The founder names up to three things that must happen in today's four
  * focused hours — in her own words, not the GPS's. "Save My Day" then uses the
  * same declaration technology as the weekly one: it weaves her answers into a
- * first-person Day Declaration™, creates today's CEO Workday™ plan in Supabase,
+ * first-person Workday Declaration™, creates today's CEO Workday™ plan in Supabase,
  * mirrors the work into the Today's Work™ queue, and notifies the live
  * workspace so the plan (and its dropdown) populates immediately.
  */
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { Check, Pencil, Plus, RefreshCw, Sparkles, X } from "lucide-react"
 import { useWeeklyCommitments } from "@/lib/weekly-commitments/use-weekly-commitments"
 import { getWeekKey } from "@/lib/wlbb-week/storage"
@@ -41,14 +41,30 @@ const newItem = (title = ""): MustHappenItem => ({
   done: "",
 })
 
-export function WhatMustHappenToday() {
+export function WhatMustHappenToday({
+  onSaved,
+  editSignal = 0,
+}: {
+  /** Fires with the declaration text after Save My Day succeeds (drives the reveal). */
+  onSaved?: (declaration: string) => void
+  /** Increment to re-open editing from elsewhere (e.g. "Edit my workday"). */
+  editSignal?: number
+} = {}) {
   const dateKey = getDateKey()
   const { commitments: weekly } = useWeeklyCommitments()
+  const sectionRef = useRef<HTMLElement | null>(null)
 
   const [items, setItems] = useState<MustHappenItem[]>([newItem()])
   const [existing, setExisting] = useState<CeoWorkdayPlan | null>(null)
   const [loaded, setLoaded] = useState(false)
   const [editing, setEditing] = useState(true)
+
+  // Parent asked to edit the saved day — reopen and bring the section into view.
+  useEffect(() => {
+    if (!editSignal) return
+    setEditing(true)
+    sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+  }, [editSignal])
 
   const [variant, setVariant] = useState(0)
   const [declaration, setDeclaration] = useState("")
@@ -206,13 +222,14 @@ export function WhatMustHappenToday() {
     setSavedAt(new Date().toISOString())
     setSaving(false)
     setEditing(false)
+    onSaved?.(text)
   }
 
   const chip =
     "inline-flex items-center gap-1.5 rounded-full border px-4 py-2 font-sans text-sm transition-colors border-[#E5E5E5] bg-white text-[#2E1F27] hover:bg-[#F4F7F0]"
 
   return (
-    <section className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm px-8 py-7 space-y-6">
+    <section ref={sectionRef} className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm px-8 py-7 space-y-6 scroll-mt-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#5B835F]">
@@ -254,7 +271,7 @@ export function WhatMustHappenToday() {
           </ol>
           {declaration && (
             <blockquote className="rounded-2xl border border-[#7FB069]/25 bg-white px-5 py-4">
-              <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">My Day Declaration™</p>
+              <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">My Workday Declaration™</p>
               <p className="mt-2 font-serif text-lg leading-relaxed text-[#2E1F27] text-pretty">{declaration}</p>
             </blockquote>
           )}
@@ -327,7 +344,7 @@ export function WhatMustHappenToday() {
           {/* ── Declaration technology ──────────────────────────────────────── */}
           <div className="rounded-2xl border border-[#7FB069]/25 bg-[#F7FBF4] px-5 py-5 space-y-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">My Day Declaration™</p>
+              <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">My Workday Declaration™</p>
               {declaration && (
                 <div className="flex flex-wrap gap-2">
                   <button
@@ -358,7 +375,7 @@ export function WhatMustHappenToday() {
                   setEdited(true)
                 }}
                 rows={5}
-                aria-label="My Day Declaration"
+                aria-label="My Workday Declaration"
                 className="w-full resize-y rounded-2xl border border-[#E8DFE2] bg-white px-4 py-3 font-serif text-base leading-relaxed text-[#2E1F27] focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
               />
             ) : (

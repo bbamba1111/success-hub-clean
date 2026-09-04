@@ -18,7 +18,8 @@
  * not modified — it remains the protected container for real business work.
  */
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import { AnimatePresence, motion } from "framer-motion"
 import { Clock } from "lucide-react"
 import { SCHEDULE_BY_ID } from "@/operating-engine/config/schedule"
 import { CollapsibleSubSection } from "@/components/collapsible-sub-section"
@@ -31,6 +32,7 @@ import { UpcomingLifeEvents } from "@/components/cherry-blossom/upcoming-life-ev
 import { WeeklyPrioritiesDesigner } from "@/components/decide-design/weekly-priorities-designer"
 import { WorkdayDeclaration } from "@/components/decide-design/workday-declaration"
 import { WhatMustHappenToday } from "@/components/decide-design/what-must-happen-today"
+import { TodaysWorkdayCard } from "@/components/decide-design/todays-workday-card"
 
 export function DebriefSpace() {
   // Renders identically on Monday (`monday-debrief`) and Tue–Sun
@@ -45,6 +47,23 @@ export function DebriefSpace() {
   // Seeded from the Time Freedom collapsible's Life Events™ list — bumping this
   // with a new prompt string auto-sends it into the adjacent Cherry Blossom chat.
   const [timeFreedomPrompt, setTimeFreedomPrompt] = useState<string | undefined>(undefined)
+
+  // Save My Day → the Workday Declaration™ is revealed on its own for 10 seconds,
+  // then drops down into the "4-Hour Focused CEO Workday" panel, which opens.
+  const [reveal, setReveal] = useState<string | null>(null)
+  const [workdayOpen, setWorkdayOpen] = useState(false)
+  const [editSignal, setEditSignal] = useState(0)
+  const workdayPanelRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    if (!reveal) return
+    const t = setTimeout(() => {
+      setReveal(null)
+      setWorkdayOpen(true)
+      workdayPanelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+    }, 10_000)
+    return () => clearTimeout(t)
+  }, [reveal])
 
   return (
     <section className="w-full space-y-6">
@@ -64,7 +83,31 @@ export function DebriefSpace() {
       <WeeklyPrioritiesDesigner />
 
       {/* ── What Must Happen Today™ → Save My Day (creates today's CEO Workday™) ── */}
-      <WhatMustHappenToday />
+      <WhatMustHappenToday onSaved={(text) => setReveal(text)} editSignal={editSignal} />
+
+      {/* ── Workday Declaration™ reveal — 10 seconds, then drops into the panel below ── */}
+      <AnimatePresence>
+        {reveal && (
+          <motion.div
+            key="reveal"
+            role="status"
+            aria-live="polite"
+            initial={{ opacity: 0, y: -24, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 160, scale: 0.96 }}
+            transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
+            className="rounded-3xl border-2 border-[#7FB069]/40 bg-white shadow-lg px-8 py-8 space-y-4"
+          >
+            <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
+              My Workday Declaration™
+            </p>
+            <p className="font-serif text-xl italic leading-relaxed text-[#2E1F27] sm:text-2xl text-pretty">{reveal}</p>
+            <p className="font-sans text-sm text-[#6B5860]">
+              Read it aloud. In a moment it settles into your 4-Hour Focused CEO Workday below.
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── Design My Work-Life Balance Business Day™ ────────────────────────── */}
       <div className="rounded-3xl border border-[#7FB069]/30 bg-[#F3F8ED] shadow-sm px-8 py-7 space-y-4">
@@ -82,9 +125,20 @@ export function DebriefSpace() {
           <MovementIntentionForm />
         </CollapsibleSubSection>
 
-        <CollapsibleSubSection title="4-Hour Focused CEO Workday">
-          <WorkdayDeclaration mode="build" />
-        </CollapsibleSubSection>
+        <div ref={workdayPanelRef} className="scroll-mt-6">
+          <CollapsibleSubSection title="4-Hour Focused CEO Workday" open={workdayOpen} onOpenChange={setWorkdayOpen}>
+            <div className="space-y-6">
+              <TodaysWorkdayCard
+                onEdit={() => {
+                  setEditSignal((n) => n + 1)
+                }}
+              />
+              <div className="border-t border-[#E8DFE2] pt-6">
+                <WorkdayDeclaration mode="build" />
+              </div>
+            </div>
+          </CollapsibleSubSection>
+        </div>
 
         <CollapsibleSubSection title="Extended Healthy Hybrid Lunch Break">
           <LunchIntentionForm />

@@ -1,5 +1,5 @@
 /**
- * My Day Declaration™ — Decide & Design
+ * My Workday Declaration™ — Decide & Design
  * ---------------------------------------------------------------------------
  * The founder answers "What must happen today?" in her own words (the GPS does
  * not answer for her). "Save My Day" weaves those answers — and, quietly, the
