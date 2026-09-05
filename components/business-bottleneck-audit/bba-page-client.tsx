@@ -25,13 +25,15 @@ import { CherryBlossomScene, CherryBlossomSceneCard } from "@/components/cherry-
 import { AlreadyMeasuredNotice } from "@/components/assessment-cadence/already-measured-notice"
 import BbaBaselineWizard from "@/components/business-bottleneck-audit/bba-baseline-wizard"
 import BbaWeeklyCheckin from "@/components/business-bottleneck-audit/bba-weekly-checkin"
-import { hasCompletedThisWeeksBbaCheckin } from "@/lib/business-bottleneck-audit/bba-storage"
+import { BbaBaselineSummary } from "@/components/business-bottleneck-audit/bba-baseline-summary"
+import { getCurrentBbaBaseline, hasCompletedThisWeeksBbaCheckin } from "@/lib/business-bottleneck-audit/bba-storage"
+import type { BbaBaselineRecord, BbaCategoryId } from "@/lib/business-bottleneck-audit/types"
 import { OnboardingProgressBanner } from "@/components/onboarding/onboarding-progress-banner"
 import type { OnboardingProgress } from "@/lib/onboarding/onboarding-progress"
 
 const RESULTS_URL = "/reality-check"
 
-type Mode = "loading" | "baseline" | "weekly" | "already-measured" | "complete"
+type Mode = "loading" | "baseline" | "summary" | "weekly" | "already-measured" | "complete"
 
 export function BbaPageClient({
   hasBaseline,
@@ -46,28 +48,78 @@ export function BbaPageClient({
 }) {
   const router = useRouter()
   const [mode, setMode] = useState<Mode>(hasBaseline ? "loading" : "baseline")
+  // The current saved baseline, loaded for the editable summary view.
+  const [baseline, setBaseline] = useState<BbaBaselineRecord | null>(null)
+  // When editing from the summary, which category the wizard opens on.
+  const [editCategory, setEditCategory] = useState<BbaCategoryId | undefined>(undefined)
 
-  // Finishing the one-time baseline as part of onboarding continues into the
-  // Cherry Blossom Thank-You™ transition (the final on-ramp step) instead of
-  // the standalone in-page completion screen.
-  const handleBaselineComplete = () => {
+  // Load the saved baseline and switch to the editable summary — the shape the
+  // founder sees whenever a baseline already exists during onboarding, and the
+  // review screen shown right after completing/saving the audit.
+  const showSummary = async () => {
+    const record = await getCurrentBbaBaseline()
+    if (record) {
+      setBaseline(record)
+      setEditCategory(undefined)
+      setMode("summary")
+      window.scrollTo({ top: 0, behavior: "smooth" })
+      return true
+    }
+    return false
+  }
+
+  // Onboarding: finishing (or re-saving) the one-time baseline lands on the
+  // editable summary so the founder can review every answer, not the standalone
+  // completion card. Outside onboarding it keeps the original completion card.
+  const handleBaselineComplete = async () => {
     if (onboarding) {
-      router.push("/welcome/cherry-blossom/complete")
+      const shown = await showSummary()
+      if (!shown) router.push("/welcome/cherry-blossom/complete")
       return
     }
     setMode("complete")
   }
 
+  const handleEditCategory = (categoryId: BbaCategoryId) => {
+    setEditCategory(categoryId)
+    setMode("baseline")
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }
+
+  // Summary "Continue" is the final on-ramp step → Cherry Blossom Thank-You™.
+  const handleContinueFromSummary = () => {
+    router.push("/welcome/cherry-blossom/complete")
+  }
+
   useEffect(() => {
     if (!hasBaseline) return
     let isMounted = true
+
+    // During onboarding a completed baseline should surface as the editable
+    // summary — NOT the weekly measurement (that belongs to the ongoing weekly
+    // rhythm, not the one-time onboarding baseline).
+    if (onboarding) {
+      getCurrentBbaBaseline().then((record) => {
+        if (!isMounted) return
+        if (record) {
+          setBaseline(record)
+          setMode("summary")
+        } else {
+          setMode("baseline")
+        }
+      })
+      return () => {
+        isMounted = false
+      }
+    }
+
     hasCompletedThisWeeksBbaCheckin().then((alreadyDone) => {
       if (isMounted) setMode(alreadyDone ? "already-measured" : "weekly")
     })
     return () => {
       isMounted = false
     }
-  }, [hasBaseline])
+  }, [hasBaseline, onboarding])
 
   if (mode === "loading") {
     return <div className="min-h-screen bg-brand-cream" aria-hidden />
@@ -121,8 +173,14 @@ export function BbaPageClient({
       <CherryBlossomScene variant="business-bottleneck" minHeight="min-h-[70vh]">
         <CherryBlossomSceneCard
           title="Business Bottleneck Audit™"
-          time={mode === "baseline" ? "Approx. 15 mins" : "Approx. 5 mins"}
-          scrollPrompt={mode === "baseline" ? "Begin Business Bottleneck Audit™" : "Begin Weekly Business Measurement™"}
+          time={mode === "baseline" ? "Approx. 15 mins" : mode === "summary" ? "Review & edit" : "Approx. 5 mins"}
+          scrollPrompt={
+            mode === "baseline"
+              ? "Begin Business Bottleneck Audit™"
+              : mode === "summary"
+                ? "Review My Business Bottleneck Audit™"
+                : "Begin Weekly Business Measurement™"
+          }
         >
           {mode === "baseline" ? (
             <>
@@ -134,6 +192,17 @@ export function BbaPageClient({
               <p className="text-brand-ink-soft">
                 It&apos;s a <strong>one-time baseline</strong>, not a weekly retake — and it&apos;s what lets GPS™
                 recommend your right next move. There are no wrong answers.
+              </p>
+            </>
+          ) : mode === "summary" ? (
+            <>
+              <p>Beautiful work — your <strong>Business Bottleneck Audit™</strong> is complete.</p>
+              <p>
+                Here&apos;s everything you told me, across all <strong>15 areas</strong>. Review it, edit anything that
+                needs a second look, then continue.
+              </p>
+              <p className="text-brand-ink-soft">
+                This baseline now feeds Founder GPS™ and every recommendation ahead.
               </p>
             </>
           ) : (
@@ -149,10 +218,26 @@ export function BbaPageClient({
       </CherryBlossomScene>
 
       <div className="bg-white">
-        {onboarding && progress && mode === "baseline" && (
+        {onboarding && progress && (mode === "baseline" || mode === "summary") && (
           <OnboardingProgressBanner progress={progress} currentStep="bbaComplete" />
         )}
-        {mode === "baseline" && <BbaBaselineWizard onComplete={handleBaselineComplete} />}
+        {mode === "baseline" && (
+          <BbaBaselineWizard
+            onComplete={handleBaselineComplete}
+            initialResponses={editCategory ? baseline?.responses : undefined}
+            initialOtherText={editCategory ? baseline?.otherText : undefined}
+            startCategoryId={editCategory}
+            completeLabel={editCategory ? "Save Changes" : "Complete Audit"}
+          />
+        )}
+        {mode === "summary" && baseline && (
+          <BbaBaselineSummary
+            responses={baseline.responses}
+            otherText={baseline.otherText}
+            onEditCategory={handleEditCategory}
+            onContinue={onboarding ? handleContinueFromSummary : undefined}
+          />
+        )}
         {mode === "weekly" && <BbaWeeklyCheckin onComplete={() => setMode("complete")} />}
       </div>
     </div>

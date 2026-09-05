@@ -17,7 +17,13 @@
 import { useCallback, useMemo, useState } from "react"
 import { ArrowRight } from "lucide-react"
 import { BBA_CATEGORIES, BBA_QUESTIONS } from "@/lib/business-bottleneck-audit/bba-registry"
-import { BBA_OWNERSHIP_OPTIONS, type BbaQuestion, type BbaResponseValue } from "@/lib/business-bottleneck-audit/types"
+import {
+  BBA_OWNERSHIP_OPTIONS,
+  type BbaBaselineResponses,
+  type BbaCategoryId,
+  type BbaQuestion,
+  type BbaResponseValue,
+} from "@/lib/business-bottleneck-audit/types"
 import { saveBaselineDraft, saveBbaBaseline } from "@/lib/business-bottleneck-audit/bba-storage"
 
 function questionIsVisible(question: BbaQuestion, responses: Record<string, BbaResponseValue>): boolean {
@@ -133,14 +139,32 @@ function QuestionBlock({
   )
 }
 
-export default function BbaBaselineWizard({ onComplete }: { onComplete: () => void }) {
-  const [categoryIndex, setCategoryIndex] = useState(0)
-  const [responses, setResponses] = useState<Record<string, BbaResponseValue>>({})
-  const [otherText, setOtherText] = useState<Record<string, string>>({})
+export default function BbaBaselineWizard({
+  onComplete,
+  initialResponses,
+  initialOtherText,
+  startCategoryId,
+  completeLabel = "Complete Audit",
+}: {
+  onComplete: () => void
+  /** Prefill answers when re-opening the audit to edit an existing baseline. */
+  initialResponses?: BbaBaselineResponses
+  initialOtherText?: Record<string, string>
+  /** Open directly on a specific category (used by the summary's per-section Edit). */
+  startCategoryId?: BbaCategoryId
+  /** Label for the final action — e.g. "Save Changes" when editing. */
+  completeLabel?: string
+}) {
+  const orderedCategories = useMemo(() => [...BBA_CATEGORIES].sort((a, b) => a.order - b.order), [])
+  const [categoryIndex, setCategoryIndex] = useState(() => {
+    if (!startCategoryId) return 0
+    const idx = orderedCategories.findIndex((c) => c.id === startCategoryId)
+    return idx >= 0 ? idx : 0
+  })
+  const [responses, setResponses] = useState<Record<string, BbaResponseValue>>(() => initialResponses ?? {})
+  const [otherText, setOtherText] = useState<Record<string, string>>(() => initialOtherText ?? {})
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
-
-  const orderedCategories = useMemo(() => [...BBA_CATEGORIES].sort((a, b) => a.order - b.order), [])
   const category = orderedCategories[categoryIndex]
   const isLastCategory = categoryIndex === orderedCategories.length - 1
 
@@ -292,7 +316,7 @@ export default function BbaBaselineWizard({ onComplete }: { onComplete: () => vo
             disabled={saving}
             className="inline-flex items-center gap-1.5 rounded-full bg-brand-green px-5 py-2 font-sans text-sm font-bold text-white shadow transition-colors hover:bg-brand-green-dark disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/40"
           >
-            {saving ? "Saving…" : isLastCategory ? "Complete Audit" : "Next Category"}
+            {saving ? "Saving…" : isLastCategory ? completeLabel : "Next Category"}
             <ArrowRight className="h-4 w-4" aria-hidden />
           </button>
         </div>
