@@ -52,10 +52,10 @@ export function DecideIdentitySpace() {
       {/* ── Decide who you're being today ────────────────────────────────── */}
       <div className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm px-6 py-5 sm:px-7 sm:py-6 space-y-4">
         <div>
-          <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60">
+          <h2 className="font-serif text-2xl font-semibold text-[#2E1F27] text-balance sm:text-3xl">
             Decide Who You&apos;re Being Today
-          </p>
-          <p className="mt-1 font-sans text-sm text-[#6B5860]">
+          </h2>
+          <p className="mt-2 font-sans text-base text-[#6B5860] leading-relaxed text-pretty">
             Your identity for today drives your decisions before your circumstances do.
           </p>
         </div>

@@ -425,6 +425,63 @@ export function WeeklyPrioritiesDesigner() {
         <PriorityChooser options={LIFE_PRIORITY_OPTIONS} selectedOptionId={c.lifePriorityOptionId} selectedLabel={c.lifePriority} onChoose={chooseLife} accent="pink" />
       </Card>
 
+      {/* ── Life Priority Messenger & Boundary Communicator™ ──────────────────
+          The moment a Life Priority is chosen, its companion opens right here —
+          directly under the selection, not after Save My Week. It carries the
+          chosen priority forward, protects the time, and (via the button)
+          drafts a first-person boundary message. */}
+      {c.lifePriority && (
+        <Card tone="pink">
+          <div>
+            <p className="font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#C0545A]">
+              Life Priority Messenger &amp; Boundary Communicator™
+            </p>
+            <p className="mt-2 font-sans text-sm text-[#3A2E33] leading-relaxed text-pretty">
+              Turn what matters to you into protected time—and make sure the people who need to know understand it.
+            </p>
+          </div>
+
+          <div>
+            <Eyebrow>When will I make room for this?</Eyebrow>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {windows.map((w) => (
+                <Chip key={w} accent="pink" selected={c.lifeWindows.includes(w)} onClick={() => toggleWindow(w)}>
+                  {LIFE_WINDOW_LABEL[w]}
+                </Chip>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-[#E8DFE2] bg-white px-5 py-4 space-y-3">
+            <div>
+              <Eyebrow>Who needs to know?</Eyebrow>
+              <p className="mt-1 font-sans text-sm text-[#2E1F27]">
+                Choose everyone who should understand the time you&apos;re protecting.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {audiences.map((a) => (
+                <Chip key={a} accent="pink" selected={c.boundaryAudiences.includes(a)} onClick={() => toggleAudience(a)}>
+                  {BOUNDARY_AUDIENCE_LABEL[a]}
+                </Chip>
+              ))}
+            </div>
+            <div className="flex flex-wrap items-center gap-3 pt-1">
+              <button
+                type="button"
+                onClick={() => setCommunicate("life")}
+                className="inline-flex items-center gap-2 rounded-full border border-[#C0545A] bg-[#C0545A] px-4 py-2 font-sans text-sm font-bold text-white hover:opacity-90"
+              >
+                <Megaphone className="h-4 w-4" aria-hidden /> Communicate My Boundary™
+              </button>
+              <p className="font-sans text-xs text-[#6B5860]">
+                Say what you want them to understand — I&apos;ll draft a first-person message you can edit.
+              </p>
+            </div>
+          </div>
+        </Card>
+      )}
+
       {/* ── Priority 2 · Delegation ─────────────────────────────────────────── */}
       <Card>
         <div>
@@ -526,53 +583,6 @@ export function WeeklyPrioritiesDesigner() {
                 <p className="font-sans text-xs text-[#6B5860]">Make the new rule clear to the people who need to know.</p>
               </div>
             )}
-          </div>
-        </Card>
-      )}
-
-      {/* ── After 5 / Weekend Life Priority™ ────────────────────────────────── */}
-      {c.lifePriority && (
-        <Card tone="pink">
-          <div>
-            <p className="font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#C0545A]">
-              After 5 / Weekend Life Priority™
-            </p>
-            <p className="mt-2 font-serif text-lg text-[#2E1F27]">When will you make room for this?</p>
-            <p className="mt-1 font-sans text-sm text-[#6B5860] leading-relaxed">
-              Turn the intention into actual protected space. Choose where {lifePhrase || "it"} lives this week.
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {windows.map((w) => (
-              <Chip key={w} accent="pink" selected={c.lifeWindows.includes(w)} onClick={() => toggleWindow(w)}>
-                {LIFE_WINDOW_LABEL[w]}
-              </Chip>
-            ))}
-          </div>
-
-          {/* Communicate My Boundary™ */}
-          <div className="rounded-2xl border border-[#E8DFE2] bg-white px-5 py-4 space-y-3">
-            <div>
-              <Eyebrow>Communicate My Boundary™</Eyebrow>
-              <p className="mt-1 font-sans text-sm text-[#2E1F27]">Who needs to know about the time you&apos;re protecting?</p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {audiences.map((a) => (
-                <Chip key={a} accent="pink" selected={c.boundaryAudiences.includes(a)} onClick={() => toggleAudience(a)}>
-                  {BOUNDARY_AUDIENCE_LABEL[a]}
-                </Chip>
-              ))}
-            </div>
-            <div className="flex flex-wrap items-center gap-3 pt-1">
-              <button
-                type="button"
-                onClick={() => setCommunicate("life")}
-                className="inline-flex items-center gap-2 rounded-full border border-[#C0545A] bg-white px-4 py-2 font-sans text-sm font-bold text-[#C0545A] hover:bg-[#C0545A]/5"
-              >
-                <Megaphone className="h-4 w-4" aria-hidden /> Communicate My Boundary™
-              </button>
-              <p className="font-sans text-xs text-[#6B5860]">A short, first-person note — written for you, edited by you.</p>
-            </div>
           </div>
         </Card>
       )}
