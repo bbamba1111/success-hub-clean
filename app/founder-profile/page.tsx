@@ -33,24 +33,17 @@ export default async function FounderProfilePage() {
       <CherryBlossomScene variant="ceo-office" minHeight="min-h-[72vh]">
         <CherryBlossomSceneCard
           title="Founder Profile™"
-          time="10 – 15 mins"
+          time="3 – 5 mins"
+          step="Step 1 of 3"
           scrollPrompt="Begin My Founder Profile™"
           maxWidth="max-w-2xl"
         >
-          {/* Badge */}
-          <div className="flex justify-center mb-1 -mt-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-white/30 bg-white/20 px-3 py-1 font-montserrat text-[10px] font-bold uppercase tracking-[0.22em] text-brand-ink/80 backdrop-blur-sm">
-              <span className="h-1.5 w-1.5 rounded-full bg-brand-coral shrink-0" aria-hidden />
-              Step 1 of 3
-            </span>
-          </div>
-
           <p>
             First, tell me a little about <strong>you</strong> — who you are and the life your
             business is meant to support.
           </p>
           <p className="text-brand-ink-soft">
-            This is step one of three. It takes about 10 minutes, every field is optional, and it
+            This is step one of three. It takes about 3 – 5 minutes, every field is optional, and it
             teaches Harmony Lane™ how to guide you from day one.
           </p>
         </CherryBlossomSceneCard>

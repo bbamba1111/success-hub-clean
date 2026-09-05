@@ -173,7 +173,8 @@ export function BbaPageClient({
       <CherryBlossomScene variant="business-bottleneck" minHeight="min-h-[70vh]">
         <CherryBlossomSceneCard
           title="Business Bottleneck Audit™"
-          time={mode === "baseline" ? "Approx. 15 mins" : mode === "summary" ? "Review & edit" : "Approx. 5 mins"}
+          time={mode === "baseline" ? "Approx. 10 mins" : mode === "summary" ? "Review & edit" : "Approx. 5 mins"}
+          step={onboarding && (mode === "baseline" || mode === "summary") ? "Step 3 of 3" : undefined}
           scrollPrompt={
             mode === "baseline"
               ? "Begin Business Bottleneck Audit™"

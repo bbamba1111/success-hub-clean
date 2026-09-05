@@ -21,6 +21,7 @@ export default async function BusinessContextPage() {
         <CherryBlossomSceneCard
           title="Business Context Profile™"
           time="Approx. 10 mins"
+          step="Step 2 of 3"
           scrollPrompt="Build My Business Context Profile™"
         >
           <p>

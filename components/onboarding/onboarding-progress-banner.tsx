@@ -5,7 +5,7 @@ import type { OnboardingProgress } from "@/lib/onboarding/onboarding-progress"
 /**
  * Onboarding Progress™ banner — shows a member exactly where they stand in
  * the required Founder Profile™ → Business Context™ → Business Bottleneck
- * Assessment™ on-ramp whenever they're routed into (or back into) any of
+ * Audit™ on-ramp whenever they're routed into (or back into) any of
  * those three steps.
  *
  * Rendered above the step content so a returning member who already
@@ -32,7 +32,7 @@ const STEPS: OnboardingStepDef[] = [
   { key: "businessContextComplete", label: "Business Context™", href: "/business-context" },
   {
     key: "bbaComplete",
-    label: "Business Bottleneck Assessment™",
+    label: "Business Bottleneck Audit™",
     href: "/entrepreneur-success-assessment?onboarding=1",
   },
 ]

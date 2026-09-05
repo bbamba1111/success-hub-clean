@@ -129,6 +129,8 @@ interface SceneCardProps {
   title: string
   children: React.ReactNode
   time?: string
+  /** Optional onboarding step marker (e.g. "Step 1 of 3") shown under the timing. */
+  step?: string
   /** Optional animated scroll prompt displayed beneath the card. */
   scrollPrompt?: string
   /** Tailwind max-width class override. Defaults to max-w-2xl. */
@@ -140,6 +142,7 @@ export function CherryBlossomSceneCard({
   title,
   children,
   time,
+  step,
   scrollPrompt,
   maxWidth = "max-w-2xl",
 }: SceneCardProps) {
@@ -185,6 +188,16 @@ export function CherryBlossomSceneCard({
             <polyline points="12 6 12 12 16 14"/>
           </svg>
           {time}
+        </div>
+      )}
+
+      {/* Onboarding step marker — sits directly beneath the timing */}
+      {step && (
+        <div className="mt-2.5 flex justify-center">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-coral/25 bg-white/40 px-3 py-1 font-sans text-[10px] font-bold uppercase tracking-[0.22em] text-brand-ink/80 backdrop-blur-sm">
+            <span className="h-1.5 w-1.5 rounded-full bg-brand-coral shrink-0" aria-hidden />
+            {step}
+          </span>
         </div>
       )}
     </div>
