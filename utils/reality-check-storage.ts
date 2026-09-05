@@ -293,9 +293,10 @@ export async function getOperatingCenterData(): Promise<OperatingCenterData> {
  *      or straight to /founder-profile (if Welcome was already seen but the
  *      member left before finishing).
  *   2. Business Context™ NOT completed → /business-context.
- *   3. EGA Screen 1 ("What is getting in your way?") NOT completed →
- *      /entrepreneur-gap-assessment?onboarding=1. This is a ONE-TIME signal
- *      capture, not a recurring assessment — see lib/ega/ega-signal-store.ts.
+ *   3. Business Bottleneck Assessment™ baseline NOT completed →
+ *      /entrepreneur-success-assessment?onboarding=1. This is the ONE-TIME
+ *      15-area baseline, not a recurring assessment — see
+ *      lib/business-bottleneck-audit/bba-storage.ts.
  *   4. All three complete but the Cherry Blossom Thank-You™ transition hasn't
  *      been shown yet → /welcome/cherry-blossom/complete.
  *   5. On-ramp fully complete → fall back to the recurring measurement/daily
@@ -329,14 +330,13 @@ export async function getPostLoginDestination(): Promise<string> {
     try {
       const { hasCompletedFounderProfile } = await import("@/lib/founder-profile/founder-profile-store")
       const { hasCompletedBusinessContext } = await import("@/lib/business-context/business-context-store")
-      const { hasCompletedEgaOnboardingSignal } = await import("@/lib/ega/ega-signal-store")
+      const { hasCompletedBbaBaseline } = await import("@/lib/business-bottleneck-audit/bba-storage")
       const {
         hasSeenCherryBlossomWelcome,
         hasSeenCherryBlossomThankYou,
       } = await import("@/lib/onboarding/onboarding-welcome-store")
       const { hasCompletedFounderProfileInDb } = await import("@/utils/founder-profile-storage")
       const { hasCompletedBusinessContextInDb } = await import("@/utils/business-context-storage")
-      const { hasCompletedEgaOnboardingSignalInDb } = await import("@/lib/ega/ega-storage")
 
       const founderProfileDone = hasCompletedFounderProfile() || (await hasCompletedFounderProfileInDb())
       if (!founderProfileDone) {
@@ -348,9 +348,9 @@ export async function getPostLoginDestination(): Promise<string> {
         return "/business-context"
       }
 
-      const egaDone = hasCompletedEgaOnboardingSignal() || (await hasCompletedEgaOnboardingSignalInDb())
-      if (!egaDone) {
-        return "/entrepreneur-gap-assessment?onboarding=1"
+      const bbaDone = await hasCompletedBbaBaseline()
+      if (!bbaDone) {
+        return "/entrepreneur-success-assessment?onboarding=1"
       }
 
       if (!hasSeenCherryBlossomThankYou()) {

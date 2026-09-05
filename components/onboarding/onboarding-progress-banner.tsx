@@ -4,8 +4,9 @@ import type { OnboardingProgress } from "@/lib/onboarding/onboarding-progress"
 
 /**
  * Onboarding Progress™ banner — shows a member exactly where they stand in
- * the required Founder Profile™ → Business Context™ → EGA Screen 1 on-ramp
- * whenever they're routed into (or back into) any of those three steps.
+ * the required Founder Profile™ → Business Context™ → Business Bottleneck
+ * Assessment™ on-ramp whenever they're routed into (or back into) any of
+ * those three steps.
  *
  * Rendered above the step content so a returning member who already
  * finished a step or two, but is landing on this page again (new device,
@@ -14,8 +15,8 @@ import type { OnboardingProgress } from "@/lib/onboarding/onboarding-progress"
  * instead of silently re-answering questions with no context.
  *
  * Every completed step is a link back to its own summary/edit view (see
- * founder-profile-form.tsx, business-context-profile.tsx, and
- * ega-page-client.tsx), and a Back/Next row below lets a member move
+ * founder-profile-form.tsx, business-context-profile.tsx, and the
+ * Business Bottleneck Audit™), and a Back/Next row below lets a member move
  * between the three required steps directly, without detouring through the
  * dashboard.
  */
@@ -30,9 +31,9 @@ const STEPS: OnboardingStepDef[] = [
   { key: "founderProfileComplete", label: "Founder Profile™", href: "/founder-profile" },
   { key: "businessContextComplete", label: "Business Context™", href: "/business-context" },
   {
-    key: "egaComplete",
-    label: "What's Getting In Your Way™",
-    href: "/entrepreneur-gap-assessment?onboarding=1",
+    key: "bbaComplete",
+    label: "Business Bottleneck Assessment™",
+    href: "/entrepreneur-success-assessment?onboarding=1",
   },
 ]
 
@@ -56,7 +57,7 @@ export function OnboardingProgressBanner({
       : null
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-4 pt-8">
+    <div className="mx-auto w-full max-w-4xl px-4 pt-8">
       <div className="rounded-lg border border-brand-blush bg-white px-5 py-4 shadow-sm sm:px-6">
         <p className="mb-3 font-montserrat text-[11px] font-bold uppercase tracking-[0.18em] text-brand-ink-soft">
           Your Onboarding Progress · {completedCount} of {STEPS.length} complete

@@ -208,21 +208,10 @@ export const BBA_QUESTIONS: BbaQuestion[] = [
     order: 1,
     status: "active",
   },
-  {
-    id: "marketing.enoughInterest",
-    categoryId: "marketing",
-    kind: "single-select",
-    prompt: "Are you getting enough interest in your product or service from the right people?",
-    showIf: { questionId: "marketing.currentlyMarketing", equalsAny: ["yes", "inconsistently"] },
-    options: [
-      { id: "yes", label: "Yes" },
-      { id: "no", label: "No" },
-      { id: "inconsistently", label: "Inconsistently" },
-      { id: "not-sure", label: "I'm not sure" },
-    ],
-    order: 2,
-    status: "active",
-  },
+  // NOTE: A "getting enough interest / from the right people" question used to
+  // live here. It was a near-verbatim duplicate of `offer.enoughInterest`
+  // ("…from your ideal customers/clients?"), so it was removed and the Offer
+  // question is the single source for that signal.
   {
     id: "marketing.methodsUsed",
     categoryId: "marketing",
@@ -972,26 +961,24 @@ export const BBA_QUESTIONS: BbaQuestion[] = [
     id: "day.typicalWorkday",
     categoryId: "day-at-a-glance",
     kind: "multi-select",
+    // Scoped to the SHAPE of a single day (how it starts, interruptions,
+    // day-level ownership). Weekly-allocation statements that used to also
+    // live here ("too many meetings", "strategic work gets pushed aside",
+    // "I work beyond my intended workday", "busy without moving the business
+    // forward", "protected CEO focus time", "meaningful time building the
+    // business") were duplicates of `week.typicalWeek` and now live only there.
     prompt: "During a typical workday, which of these are true?",
     options: [
       { id: "start-reacting-to-messages", label: "I start by reacting to messages" },
       { id: "start-without-clear-priority", label: "I start without a clear priority" },
       { id: "interrupted-frequently", label: "I get interrupted frequently" },
       { id: "jump-between-tasks", label: "I jump between tasks" },
-      { id: "too-many-meetings", label: "I have too many meetings" },
       { id: "answer-team-questions-all-day", label: "I answer team questions throughout the day" },
       { id: "approve-too-many-decisions", label: "I approve too many decisions" },
       { id: "do-work-someone-else-could-own", label: "I do work someone else could own" },
       { id: "repetitive-admin-work", label: "I do repetitive administrative work" },
       { id: "fix-recurring-problems", label: "I fix recurring problems" },
-      { id: "urgent-work-takes-over", label: "Urgent work takes over" },
-      { id: "strategic-work-pushed-aside", label: "Strategic work gets pushed aside" },
-      { id: "work-beyond-intended-workday", label: "I work beyond my intended workday" },
-      { id: "carry-business-work-into-personal-time", label: "I carry business work into personal time" },
-      { id: "busy-without-moving-business-forward", label: "I am busy without moving the business forward" },
-      { id: "have-protected-ceo-focus-time", label: "I have protected CEO focus time" },
       { id: "know-priority-before-focused-work", label: "I know my priority before focused work" },
-      { id: "spend-meaningful-time-building-business", label: "I spend meaningful time building the business" },
     ],
     order: 7,
     status: "active",

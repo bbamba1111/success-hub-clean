@@ -208,7 +208,7 @@ export default function BbaBaselineWizard({ onComplete }: { onComplete: () => vo
   const globalProgress = ((categoryIndex + 1) / orderedCategories.length) * 100
 
   return (
-    <div className="w-full max-w-3xl mx-auto px-4 py-10">
+    <div className="w-full max-w-4xl mx-auto px-4 py-10">
       {/* Progress header */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-2">

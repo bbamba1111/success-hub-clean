@@ -20,18 +20,43 @@
  */
 
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import { CherryBlossomScene, CherryBlossomSceneCard } from "@/components/cherry-blossom/cherry-blossom-scene"
 import { AlreadyMeasuredNotice } from "@/components/assessment-cadence/already-measured-notice"
 import BbaBaselineWizard from "@/components/business-bottleneck-audit/bba-baseline-wizard"
 import BbaWeeklyCheckin from "@/components/business-bottleneck-audit/bba-weekly-checkin"
 import { hasCompletedThisWeeksBbaCheckin } from "@/lib/business-bottleneck-audit/bba-storage"
+import { OnboardingProgressBanner } from "@/components/onboarding/onboarding-progress-banner"
+import type { OnboardingProgress } from "@/lib/onboarding/onboarding-progress"
 
 const RESULTS_URL = "/reality-check"
 
 type Mode = "loading" | "baseline" | "weekly" | "already-measured" | "complete"
 
-export function BbaPageClient({ hasBaseline }: { hasBaseline: boolean }) {
+export function BbaPageClient({
+  hasBaseline,
+  onboarding = false,
+  progress,
+}: {
+  hasBaseline: boolean
+  /** True when reached as required onboarding Step 3 (?onboarding=1). */
+  onboarding?: boolean
+  /** Onboarding Progress™ snapshot — only passed when onboarding=true. */
+  progress?: OnboardingProgress
+}) {
+  const router = useRouter()
   const [mode, setMode] = useState<Mode>(hasBaseline ? "loading" : "baseline")
+
+  // Finishing the one-time baseline as part of onboarding continues into the
+  // Cherry Blossom Thank-You™ transition (the final on-ramp step) instead of
+  // the standalone in-page completion screen.
+  const handleBaselineComplete = () => {
+    if (onboarding) {
+      router.push("/welcome/cherry-blossom/complete")
+      return
+    }
+    setMode("complete")
+  }
 
   useEffect(() => {
     if (!hasBaseline) return
@@ -101,17 +126,14 @@ export function BbaPageClient({ hasBaseline }: { hasBaseline: boolean }) {
         >
           {mode === "baseline" ? (
             <>
-              <p>Your business has bottlenecks — every business does. This audit finds them.</p>
+              <p>Every business has bottlenecks — this is where we <strong>find yours</strong>.</p>
               <p>
-                Across <strong>15 business areas</strong>, you&apos;ll tell us what&apos;s working, what&apos;s not, and who
-                currently owns each part of your business.
-              </p>
-              <p>
-                This is a <strong>one-time baseline</strong>. You won&apos;t retake this in full every week — instead,
-                a short weekly measurement tracks your progress against it.
+                Across <strong>15 areas</strong> of your business, you&apos;ll mark what&apos;s working, what
+                isn&apos;t, and who currently owns each part.
               </p>
               <p className="text-brand-ink-soft">
-                There are no right or wrong answers. Honesty here is what lets GPS™ recommend the right next move.
+                It&apos;s a <strong>one-time baseline</strong>, not a weekly retake — and it&apos;s what lets GPS™
+                recommend your right next move. There are no wrong answers.
               </p>
             </>
           ) : (
@@ -127,7 +149,10 @@ export function BbaPageClient({ hasBaseline }: { hasBaseline: boolean }) {
       </CherryBlossomScene>
 
       <div className="bg-white">
-        {mode === "baseline" && <BbaBaselineWizard onComplete={() => setMode("complete")} />}
+        {onboarding && progress && mode === "baseline" && (
+          <OnboardingProgressBanner progress={progress} currentStep="bbaComplete" />
+        )}
+        {mode === "baseline" && <BbaBaselineWizard onComplete={handleBaselineComplete} />}
         {mode === "weekly" && <BbaWeeklyCheckin onComplete={() => setMode("complete")} />}
       </div>
     </div>

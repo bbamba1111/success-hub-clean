@@ -24,16 +24,11 @@ export default async function BusinessContextPage() {
           scrollPrompt="Build My Business Context Profile™"
         >
           <p>
-            Beautiful. Now I want to understand the business you are building so{" "}
-            <strong>every recommendation I make reflects your actual context</strong>.
-          </p>
-          <p>
-            This is not an assessment — there are no scores. I am simply learning about your
-            business so Harmony Lane™ can guide you with precision rather than guessing.
+            Now tell me about <strong>the business</strong> you&apos;re building, so every
+            recommendation I make fits your real situation.
           </p>
           <p className="text-brand-ink-soft">
-            Everything you share here stays on your device and is used only to personalize your
-            experience.
+            Step two of three — no scores, no right answers, just context. About 10 minutes.
           </p>
         </CherryBlossomSceneCard>
       </CherryBlossomScene>

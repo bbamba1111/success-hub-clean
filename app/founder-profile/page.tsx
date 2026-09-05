@@ -46,13 +46,12 @@ export default async function FounderProfilePage() {
           </div>
 
           <p>
-            Tell us about yourself and the business you&apos;re building so Harmony Lane™ can
-            personalize your experience from day one.
+            First, tell me a little about <strong>you</strong> — who you are and the life your
+            business is meant to support.
           </p>
-          <p>
-            This information will be saved to your{" "}
-            <strong>My Work-Life Harmony Blueprint™</strong> and can be updated at any time.
-            Every field is optional — complete as much or as little as you like.
+          <p className="text-brand-ink-soft">
+            This is step one of three. It takes about 10 minutes, every field is optional, and it
+            teaches Harmony Lane™ how to guide you from day one.
           </p>
         </CherryBlossomSceneCard>
       </CherryBlossomScene>

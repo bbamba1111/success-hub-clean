@@ -20,7 +20,7 @@ import { ArrowRight, Check, ChevronLeft, ChevronRight, Plus, X } from "lucide-re
 import { saveBusinessContext, getBusinessContext, hasCompletedBusinessContext } from "@/lib/business-context/business-context-store"
 import { saveFounderLearning } from "@/lib/founder-learning/founder-learning-store"
 import { saveBusinessContextToDb, getBusinessContextFromDb } from "@/utils/business-context-storage"
-import { hasCompletedEgaOnboardingSignal } from "@/lib/ega/ega-signal-store"
+import { hasCompletedBbaBaseline } from "@/lib/business-bottleneck-audit/bba-storage"
 import {
   COMMUNICATION_LEVELS,
   LEARNING_TOPIC_OPTIONS,
@@ -560,9 +560,9 @@ export function BusinessContextProfile({
   // which only reflects THIS profile) so Back-navigating here mid-onboarding
   // and then Continuing always keeps moving forward instead of stalling.
   const handleContinue = onDone
-    ? () => {
-        if (!hasCompletedEgaOnboardingSignal()) {
-          router.push("/entrepreneur-gap-assessment?onboarding=1")
+    ? async () => {
+        if (!(await hasCompletedBbaBaseline())) {
+          router.push("/entrepreneur-success-assessment?onboarding=1")
           return
         }
         onDone()
@@ -571,7 +571,7 @@ export function BusinessContextProfile({
 
   if (mode === "summary") {
     return (
-      <div className="w-full max-w-3xl mx-auto px-4 py-10">
+      <div className="w-full max-w-4xl mx-auto px-4 py-10">
         <BusinessContextSummary
           onContinue={handleContinue}
           data={{
@@ -620,7 +620,7 @@ export function BusinessContextProfile({
   const completedSteps = step
 
   return (
-    <div className="w-full max-w-3xl mx-auto px-4 py-10" ref={cardRef}>
+    <div className="w-full max-w-4xl mx-auto px-4 py-10" ref={cardRef}>
       <ProgressBar step={completedSteps} total={TOTAL_STEPS} />
 
       {/* ── Back / Forward — present on every step so a member can revisit

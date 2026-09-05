@@ -4,16 +4,16 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useRef } from "react"
 import { BusinessContextProfile } from "@/components/business-context/business-context-profile"
 import { hasCompletedBusinessContext } from "@/lib/business-context/business-context-store"
-import { hasCompletedEgaOnboardingSignal } from "@/lib/ega/ega-signal-store"
+import { hasCompletedBbaBaseline } from "@/lib/business-bottleneck-audit/bba-storage"
 
 /**
  * Wires the required onboarding routing on top of the reusable
  * BusinessContextProfile wizard. /business-context is reached two ways:
  *   1. First-time on-ramp (Founder Profile™ just completed, Business
- *      Context™ not yet done) → finishing here leads to EGA Screen 1
- *      ("What is getting in your way?") — the founder's one-time signal
- *      capture — and only then the Cherry Blossom Thank-You™ transition.
- *      Never straight into the daily Audit/ESA rhythm (those live inside
+ *      Context™ not yet done) → finishing here leads to the Business
+ *      Bottleneck Assessment™ — the founder's one-time 15-area baseline —
+ *      and only then the Cherry Blossom Thank-You™ transition. Never
+ *      straight into the daily Audit/ESA rhythm (those live inside
  *      Reality Check™, not onboarding).
  *   2. A returning member reviewing/updating their profile later from My
  *      Harmony™ or My Blueprint™ → finishing here should NOT replay the
@@ -37,16 +37,16 @@ export function BusinessContextOnboardingFlow() {
   const wasAlreadyComplete = useRef(hasCompletedBusinessContext())
   const returnTo = searchParams.get("from") || "/my-harmony"
 
-  function handleDone() {
+  async function handleDone() {
     // A completed Business Context™ alone doesn't mean onboarding itself is
     // done — a founder who goes Back to Founder Profile™ mid-onboarding and
     // then forward again lands back here with `wasAlreadyComplete` true even
-    // though they've never reached EGA yet. Only treat this as a genuine
-    // post-onboarding revisit (→ returnTo) once EGA's own signal capture is
-    // ALSO on record; otherwise always keep moving forward through the
-    // required sequence.
-    const onboardingFullyComplete = wasAlreadyComplete.current && hasCompletedEgaOnboardingSignal()
-    router.push(onboardingFullyComplete ? returnTo : "/entrepreneur-gap-assessment?onboarding=1")
+    // though they've never reached the Business Bottleneck Assessment™ yet.
+    // Only treat this as a genuine post-onboarding revisit (→ returnTo) once
+    // the BBA baseline is ALSO on record; otherwise always keep moving
+    // forward through the required sequence.
+    const onboardingFullyComplete = wasAlreadyComplete.current && (await hasCompletedBbaBaseline())
+    router.push(onboardingFullyComplete ? returnTo : "/entrepreneur-success-assessment?onboarding=1")
   }
 
   function handleHydrated(completedInDb: boolean) {

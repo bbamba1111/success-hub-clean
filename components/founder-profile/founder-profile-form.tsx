@@ -307,7 +307,7 @@ export function FounderProfileForm() {
   if (mode === "summary") {
     return (
       <div className="w-full bg-[#FAF6F0] px-4 py-12 sm:px-8">
-        <div className="mx-auto max-w-3xl">
+        <div className="mx-auto max-w-4xl">
           <FounderProfileSummary
             data={form}
             onEdit={() => {
@@ -323,7 +323,7 @@ export function FounderProfileForm() {
 
   return (
     <div className="w-full bg-[#FAF6F0] px-4 py-12 sm:px-8">
-      <div className="mx-auto max-w-3xl">
+      <div className="mx-auto max-w-4xl">
 
         {/* Intro context */}
         <div className="mb-8 text-center">
