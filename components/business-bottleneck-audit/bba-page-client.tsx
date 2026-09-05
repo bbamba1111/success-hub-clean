@@ -118,7 +118,7 @@ export function BbaPageClient({
 
   return (
     <div className="min-h-screen bg-brand-cream">
-      <CherryBlossomScene variant="executive" minHeight="min-h-[70vh]">
+      <CherryBlossomScene variant="business-bottleneck" minHeight="min-h-[70vh]">
         <CherryBlossomSceneCard
           title="Business Bottleneck Audit™"
           time={mode === "baseline" ? "Approx. 15 mins" : "Approx. 5 mins"}

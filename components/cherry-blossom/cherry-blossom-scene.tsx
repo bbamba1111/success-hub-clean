@@ -11,6 +11,7 @@
  *   garden     — Cherry blossom garden at golden hour (/begin)
  *   pond       — Women with tea under cherry blossoms (/audit WLB)
  *   executive  — CEO at desk with cherry blossoms (/audit ESA)
+ *   business-bottleneck — Golden-hour garden, koi pond & pavilion (BBA onboarding)
  */
 
 import React from "react"
@@ -36,6 +37,12 @@ const SCENE_CONFIG = {
     overlay: "bg-gradient-to-b from-[#3D2B1F]/10 via-transparent to-[#2C3E2D]/15",
     ariaLabel: "Japanese garden with cherry blossoms, pagoda, zen stones, and a wooden deck with tea and books",
   },
+  "business-bottleneck": {
+    src: "/images/business-bottleneck-assessment-bg.png",
+    overlay: "bg-gradient-to-b from-[#3D2B1F]/10 via-transparent to-[#2C3E2D]/15",
+    ariaLabel:
+      "Japanese garden at golden hour with cherry blossoms, a koi pond, stone bridge, waterfall, wooden pavilion, and a deck with lounge chairs",
+  },
   "ceo-office": {
     src: "/images/ceo-workday-hero-bg.png",
     overlay: "bg-gradient-to-b from-[#2C3E2D]/20 via-transparent to-[#1A2B1B]/30",
@@ -53,7 +60,14 @@ const SCENE_CONFIG = {
   },
 } as const
 
-export type SceneVariant = "garden" | "pond" | "executive" | "ceo-office" | "workspace" | "design-my-week"
+export type SceneVariant =
+  | "garden"
+  | "pond"
+  | "executive"
+  | "business-bottleneck"
+  | "ceo-office"
+  | "workspace"
+  | "design-my-week"
 
 interface CherryBlossomSceneProps {
   variant: SceneVariant
