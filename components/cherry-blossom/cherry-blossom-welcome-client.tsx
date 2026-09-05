@@ -32,8 +32,9 @@ export function CherryBlossomWelcomeClient() {
           get to know you — and the business you&apos;re building.
         </p>
         <p>
-          You&apos;ll complete two short steps: your <strong>Founder Profile™</strong>{" "}
-          and your <strong>Business Context™</strong>. Together, they let Harmony Lane™
+          You&apos;ll complete three short steps: your <strong>Founder Profile™</strong>,
+          your <strong>Business Context Profile™</strong>, and your{" "}
+          <strong>Business Bottleneck Assessment™</strong>. Together, they let Harmony Lane™
           personalize everything that follows.
         </p>
       </CherryBlossomSceneCard>
@@ -44,7 +45,7 @@ export function CherryBlossomWelcomeClient() {
         disabled={entering}
         className="mt-2 inline-flex items-center gap-2 rounded-xl bg-brand-green px-7 py-3.5 font-sans text-sm font-bold text-white shadow-[0_4px_20px_rgba(0,0,0,0.15)] hover:bg-brand-green/90 active:scale-[0.98] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
       >
-        {entering ? "Beginning…" : "Begin My Founder & Business Profile™"}
+        {entering ? "Beginning…" : "Begin My Founder Profile™"}
         {!entering && <ChevronRight className="h-4 w-4" aria-hidden />}
       </button>
     </CherryBlossomScene>

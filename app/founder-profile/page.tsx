@@ -32,16 +32,16 @@ export default async function FounderProfilePage() {
       {/* ── Cherry Blossom™ Hero — CEO Executive Office ─────────────── */}
       <CherryBlossomScene variant="ceo-office" minHeight="min-h-[72vh]">
         <CherryBlossomSceneCard
-          title="Welcome to Harmony Lane™"
+          title="Founder Profile™"
           time="10 – 15 mins"
-          scrollPrompt="Begin My Founder & Business Profile™"
+          scrollPrompt="Begin My Founder Profile™"
           maxWidth="max-w-2xl"
         >
           {/* Badge */}
           <div className="flex justify-center mb-1 -mt-2">
             <span className="inline-flex items-center gap-1.5 rounded-full border border-white/30 bg-white/20 px-3 py-1 font-montserrat text-[10px] font-bold uppercase tracking-[0.22em] text-brand-ink/80 backdrop-blur-sm">
               <span className="h-1.5 w-1.5 rounded-full bg-brand-coral shrink-0" aria-hidden />
-              Founder &amp; Business Profile™
+              Step 1 of 3
             </span>
           </div>
 
