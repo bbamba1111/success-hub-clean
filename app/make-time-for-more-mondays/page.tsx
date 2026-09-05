@@ -446,7 +446,7 @@ export default function MakeTimeForMoreMondaysPage() {
                     </p>
                     <ul className="list-disc list-inside space-y-1">
                       <li>A comprehensive 15-question assessment</li>
-                      <li>Assess your work-life balance over the past 30 days</li>
+                      <li>Assess your work-life balance over the past 7 days</li>
                       <li>Instant baseline and personalized scores in all 15 areas</li>
                       <li>Quick course correction tips you can apply starting today!</li>
                       <li>

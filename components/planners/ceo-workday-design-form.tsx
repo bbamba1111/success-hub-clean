@@ -1,0 +1,1034 @@
+"use client"
+
+/**
+ * Design My 4-Hour CEO Workday™ — lives inside the "4-Hour Focused CEO
+ * Workday" collapsible of Design My Work-Life Balance Business Day™.
+ *
+ * The central question is always: "What must happen today to move the
+ * business priority forward?" — never "what else can you do?"
+ *
+ *   1. Source decisions (weekly Business Building Priority, Bottleneck
+ *      Priority, related asset) are shown — never re-asked.
+ *   2. WHAT MUST HAPPEN TODAY? → business function → what needs to happen →
+ *      expected outcome → Add Work Item (the founder's own work, when needed).
+ *   3. TODAY'S CEO WORK — the design engine's proposed chain. Expected Outcome
+ *      is always visible and directly editable; Edit means editing the work.
+ *   4. YOUR CEO WORKDAY DECLARATION™ is generated from the FINAL approved
+ *      work and flags itself stale if the work changes after a manual edit.
+ *   5. "Build My CEO Workday™" activates from the real design state (approved
+ *      work with outcomes + declaration + weekly context) and persists the
+ *      plan (Supabase source of truth), mirrors it into the Today's Work™
+ *      queue, and saves the local declaration record for the 1 PM arrival.
+ *
+ * Matches the Movement/Lunch intention forms' visual language exactly.
+ */
+
+import { useEffect, useMemo, useRef, useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { Button } from "@/components/ui/button"
+import { CheckCircle2, ChevronRight, Sparkles, Plus, RefreshCw, Pencil, Check, AlertCircle } from "lucide-react"
+
+import { getWeekKey, loadWeek, WLBB_WEEK_CHANGED_EVENT } from "@/lib/wlbb-week/storage"
+import { getAreaById } from "@/lib/wlbb-week/catalog"
+import type { WlbbWeekState } from "@/lib/wlbb-week/types"
+import { getEgaEntriesByStatus } from "@/lib/ega/ega-storage"
+import type { EgaEntry } from "@/lib/ega/types"
+import { getInstalledStatusByAssetId } from "@/lib/business-asset-inventory/business-asset-inventory-store"
+import { BUSINESS_ASSETS } from "@/lib/business-asset-library/business-asset-registry"
+import { getBusinessStage } from "@/lib/business-stage/business-stage-store"
+import { loadDailyIdentity, DAILY_IDENTITY_CHANGED_EVENT } from "@/lib/daily-identity/storage"
+import { getDateKey } from "@/lib/daily-plan/storage"
+import { createClient } from "@/lib/supabase/client"
+import { getBbaSignalSummary, type BbaSignalSummary } from "@/lib/founder-gps/context/bba-context-aggregator"
+
+import {
+  designCeoWorkday,
+  buildCeoWorkdayDeclaration,
+  plannedMinutes as sumPlanned,
+  CEO_WORKDAY_CONTAINER_MINUTES,
+  type DesignEngineOutput,
+} from "@/lib/ceo-workday/design-engine"
+import {
+  CEO_FUNCTION_LABEL,
+  CEO_TREATMENT_LABEL,
+  type CeoBusinessFunction,
+  type CeoFounderDecision,
+  type CeoPlanItem,
+  type CeoTreatment,
+} from "@/lib/ceo-workday/plan-types"
+import {
+  getCeoWorkdayEvidence,
+  getCeoWorkdayPlan,
+  linkPlanItemsToLocalQueue,
+  saveCeoWorkdayPlan,
+} from "@/lib/ceo-workday/plan-server"
+import { addWorkItem, getTodaysWork, removeWorkItem } from "@/lib/ceo-workday/todays-work-store"
+import { getWorkflowEntry } from "@/lib/ceo-workday/workflow-registry"
+import {
+  loadCeoWorkdayDeclaration,
+  saveCeoWorkdayDeclaration,
+  type CeoWorkdayDeclaration,
+} from "@/lib/daily-plan/ceo-workday-declaration"
+
+const GLASS_REVEAL_MS = 8000
+
+const ROLE_LABEL: Record<CeoPlanItem["role"], string> = {
+  primary: "PRIMARY",
+  supporting: "SUPPORTING",
+  validate: "VALIDATE",
+  continue: "CONTINUE",
+  "founder-added": "ADDED BY FOUNDER",
+}
+
+const DECISION_LABEL: Record<CeoFounderDecision, string> = {
+  keep: "kept",
+  edit: "edited",
+  replace: "replaced",
+  defer: "deferred",
+  delegate: "delegated",
+  remove: "removed",
+  added: "added",
+}
+
+const FUNCTION_ORDER: CeoBusinessFunction[] = [
+  "build",
+  "decide",
+  "own",
+  "delegate",
+  "systemize",
+  "augment-automate-ai",
+  "connect",
+  "communicate",
+  "sell",
+  "market",
+  "deliver",
+  "solve",
+]
+
+function newLocalId() {
+  return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+}
+
+/** Is this item part of today's approved, executable design? */
+function isApproved(i: CeoPlanItem) {
+  return i.founderDecision !== "remove" && i.status === "planned"
+}
+
+/** Stable signature of the approved work — used to detect a stale declaration. */
+function approvedSignature(items: CeoPlanItem[]) {
+  return items
+    .filter(isApproved)
+    .map((i) => `${i.id}|${i.title.trim()}|${i.businessFunction}`)
+    .join("\n")
+}
+
+export function CeoWorkdayDesignForm() {
+  const [week, setWeek] = useState<WlbbWeekState | null>(null)
+  const [bottlenecks, setBottlenecks] = useState<EgaEntry[]>([])
+  const [bba, setBba] = useState<BbaSignalSummary | null>(null)
+  const [prior, setPrior] = useState<Awaited<ReturnType<typeof getCeoWorkdayEvidence>>>(null)
+  const [identity, setIdentity] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  const [design, setDesign] = useState<DesignEngineOutput | null>(null)
+  const [items, setItems] = useState<CeoPlanItem[]>([])
+  const [editingId, setEditingId] = useState<string | null>(null)
+
+  // Founder work composer — WHAT MUST HAPPEN TODAY? → function → work → outcome
+  const [addFn, setAddFn] = useState<CeoBusinessFunction | null>(null)
+  const [addWork, setAddWork] = useState("")
+  const [addOutcome, setAddOutcome] = useState("")
+  const [addMinutes, setAddMinutes] = useState(30)
+  const composerRef = useRef<HTMLDivElement | null>(null)
+  const workInputRef = useRef<HTMLTextAreaElement | null>(null)
+
+  // Declaration — generated from the FINAL approved work
+  const [declVariant, setDeclVariant] = useState(0)
+  const [declaration, setDeclaration] = useState("")
+  const [declEditing, setDeclEditing] = useState(false)
+  /** True once the founder has hand-edited the declaration (auto-sync stops). */
+  const [declManual, setDeclManual] = useState(false)
+  /** Approved-work signature the current declaration text describes. */
+  const [declBasis, setDeclBasis] = useState("")
+
+  const [built, setBuilt] = useState<CeoWorkdayDeclaration | null>(null)
+  const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
+  const [showGlass, setShowGlass] = useState(false)
+  const glassTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const dateKey = getDateKey()
+
+  // ── load sources ──────────────────────────────────────────────────────────
+  useEffect(() => {
+    let cancelled = false
+    const w = loadWeek(getWeekKey())
+    setWeek(w)
+    setIdentity(loadDailyIdentity(dateKey).identityStatement || null)
+    setBuilt(loadCeoWorkdayDeclaration(dateKey))
+
+    Promise.all([
+      getEgaEntriesByStatus("open").catch(() => [] as EgaEntry[]),
+      createClient()
+        .auth.getUser()
+        .then(({ data }) => (data.user?.id ? getBbaSignalSummary(data.user.id) : null))
+        .catch(() => null),
+      getCeoWorkdayEvidence().catch(() => null),
+      getCeoWorkdayPlan(dateKey).catch(() => null),
+    ]).then(([ega, bbaSummary, evidence, existingPlan]) => {
+      if (cancelled) return
+      const ids = new Set(w.business.bottleneckEgaEntryIds)
+      setBottlenecks(ega.filter((e) => ids.has(e.id)))
+      setBba(bbaSummary)
+      setPrior(evidence && evidence.planDate !== dateKey ? evidence : null)
+      if (existingPlan && existingPlan.declaration && !loadCeoWorkdayDeclaration(dateKey)) {
+        setBuilt(
+          saveCeoWorkdayDeclaration({
+            planId: existingPlan.id,
+            identityStatement: existingPlan.identityStatement ?? null,
+            declaration: existingPlan.declaration,
+            plannedMinutes: existingPlan.plannedMinutes,
+            itemCount: existingPlan.items.length,
+          }),
+        )
+      }
+      setLoading(false)
+    })
+    return () => {
+      cancelled = true
+      if (glassTimerRef.current) clearTimeout(glassTimerRef.current)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // ── stay in sync with the pickers above ──────────────────────────────────
+  useEffect(() => {
+    let cancelled = false
+    const onWeek = () => {
+      const w = loadWeek(getWeekKey())
+      setWeek(w)
+      const ids = new Set(w.business.bottleneckEgaEntryIds)
+      getEgaEntriesByStatus("open")
+        .then((ega) => {
+          if (!cancelled) setBottlenecks(ega.filter((e) => ids.has(e.id)))
+        })
+        .catch(() => {})
+    }
+    const onIdentity = () => setIdentity(loadDailyIdentity(dateKey).identityStatement || null)
+    window.addEventListener(WLBB_WEEK_CHANGED_EVENT, onWeek)
+    window.addEventListener(DAILY_IDENTITY_CHANGED_EVENT, onIdentity)
+    return () => {
+      cancelled = true
+      window.removeEventListener(WLBB_WEEK_CHANGED_EVENT, onWeek)
+      window.removeEventListener(DAILY_IDENTITY_CHANGED_EVENT, onIdentity)
+    }
+  }, [dateKey])
+
+  // ── propose ───────────────────────────────────────────────────────────────
+  const assetNameById = useMemo(() => Object.fromEntries(BUSINESS_ASSETS.map((a) => [a.id, a.name])), [])
+
+  useEffect(() => {
+    if (loading || !week || built) return
+    const out = designCeoWorkday({
+      businessAreaId: week.business.businessAreaId,
+      outcomeTexts: week.business.outcomes.map((o) => o.text),
+      bottleneckEntries: bottlenecks,
+      bbaSignals: bba,
+      assetStatusById: getInstalledStatusByAssetId(),
+      assetNameById,
+      currentAssignment: null,
+      priorEvidence: prior,
+      businessStage: getBusinessStage(),
+    })
+    setDesign(out)
+    // Re-proposing replaces GPS items but keeps anything the founder added.
+    setItems((prev) => [...out.items, ...prev.filter((i) => i.role === "founder-added")])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, week, bottlenecks, bba, prior, built])
+
+  const approved = items.filter(isApproved)
+  const planned = sumPlanned(items)
+  const signature = approvedSignature(items)
+  const declStale = declManual && declBasis !== signature && approved.length > 0
+
+  // Auto-sync the declaration from the FINAL approved work until the founder
+  // hand-edits it. After that, changes to the work flag it stale instead.
+  useEffect(() => {
+    if (declEditing || declManual || !design) return
+    setDeclaration(
+      buildCeoWorkdayDeclaration({
+        identityStatement: identity,
+        items,
+        areaName: design.areaName,
+        destination: design.destination,
+        variant: declVariant,
+      }),
+    )
+    setDeclBasis(signature)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items, identity, design, declVariant, declEditing, declManual])
+
+  function rebuildDeclaration() {
+    setDeclEditing(false)
+    setDeclManual(false)
+    setDeclVariant((v) => v + 1)
+  }
+
+  // ── founder controls ──────────────────────────────────────────────────────
+  /** Content patches on a kept GPS card become a recorded founder edit. */
+  function patchItem(id: string, patch: Partial<CeoPlanItem>) {
+    setItems((prev) =>
+      prev.map((i) => {
+        if (i.id !== id) return i
+        const touchesContent =
+          "title" in patch || "expectedEvidence" in patch || "businessFunction" in patch || "estimatedMinutes" in patch
+        const decision: CeoFounderDecision =
+          touchesContent && i.founderDecision === "keep" && i.gpsOriginal ? "edit" : i.founderDecision
+        return { ...i, ...patch, founderDecision: decision }
+      }),
+    )
+  }
+  function decide(id: string, decision: CeoFounderDecision) {
+    const item = items.find((i) => i.id === id)
+    if (!item) return
+    if (decision === "keep") {
+      const o = item.gpsOriginal
+      setItems((prev) =>
+        prev.map((i) =>
+          i.id === id
+            ? o
+              ? { ...i, ...o, founderDecision: "keep", status: "planned" }
+              : { ...i, founderDecision: i.role === "founder-added" ? "added" : "keep", status: "planned" }
+            : i,
+        ),
+      )
+      if (editingId === id) setEditingId(null)
+      return
+    }
+    if (decision === "edit" || decision === "replace") {
+      setItems((prev) => prev.map((i) => (i.id === id ? { ...i, founderDecision: decision, status: "planned" } : i)))
+      setEditingId(id)
+      return
+    }
+    setItems((prev) =>
+      prev.map((i) =>
+        i.id === id
+          ? {
+              ...i,
+              founderDecision: decision,
+              status: decision === "defer" ? "deferred" : decision === "delegate" ? "delegated" : "planned",
+            }
+          : i,
+      ),
+    )
+    if (editingId === id) setEditingId(null)
+  }
+
+  const composerReady = !!addFn && addWork.trim().length > 0 && addOutcome.trim().length > 0
+  function addFounderWork() {
+    if (!composerReady || !addFn) return
+    const item: CeoPlanItem = {
+      id: `cwp_manual_${newLocalId()}`,
+      position: items.length,
+      title: addWork.trim(),
+      purpose: "Added by you — chosen to move this week's business priority forward.",
+      expectedEvidence: addOutcome.trim(),
+      treatment: "implement-operate" as CeoTreatment,
+      businessFunction: addFn,
+      role: "founder-added",
+      estimatedMinutes: Math.max(5, addMinutes),
+      ceoWorkCategory: CEO_FUNCTION_TO_CATEGORY[addFn],
+      gpsOriginal: null,
+      founderDecision: "added",
+      status: "planned",
+    }
+    setItems((prev) => [...prev, item])
+    setAddFn(null)
+    setAddWork("")
+    setAddOutcome("")
+    setAddMinutes(30)
+  }
+  function openComposer() {
+    composerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+    if (!addFn) setAddFn("build")
+    setTimeout(() => workInputRef.current?.focus(), 350)
+  }
+
+  // ── build readiness (from the real design state) ──────────────────────────
+  const missingOutcome = approved.filter((i) => !i.expectedEvidence.trim())
+  const missingTitle = approved.filter((i) => !i.title.trim())
+  const readiness: string[] = []
+  if (!week?.business.businessAreaId) readiness.push("choose this week's Business Building Priority above")
+  if (approved.length === 0) readiness.push("keep or add at least one piece of work")
+  if (missingTitle.length) readiness.push("give every kept piece of work a title")
+  if (missingOutcome.length) readiness.push("add an expected outcome to every kept piece of work")
+  if (!declaration.trim()) readiness.push("build your declaration")
+  const canBuild = !saving && readiness.length === 0 && week !== null && design !== null
+
+  // ── build ─────────────────────────────────────────────────────────────────
+  async function handleBuild() {
+    if (!canBuild || !week || !design) return
+    setSaving(true)
+    setSaveError(null)
+    const saved = await saveCeoWorkdayPlan({
+      planDate: dateKey,
+      weekKey: week.weekKey,
+      businessAreaId: week.business.businessAreaId,
+      bottleneckEgaEntryIds: week.business.bottleneckEgaEntryIds,
+      primaryAssetId: design.relatedAssetId,
+      constraintSummary: design.constraintSummary,
+      interventionSummary: design.interventionSummary,
+      identityStatement: identity,
+      declaration: declaration.trim(),
+      items: items.map(({ id: _id, planId: _p, ...rest }, idx) => ({ ...rest, position: idx })),
+    })
+    if (!saved) {
+      setSaving(false)
+      setSaveError("Your plan could not be saved. Please make sure you are signed in and try again.")
+      return
+    }
+
+    // Mirror into the Today's Work™ queue the live workspace already renders
+    // (clear previous CEO-plan mirrors for today first so nothing duplicates).
+    getTodaysWork()
+      .filter((w) => w.planItemId)
+      .forEach((w) => removeWorkItem(w.id))
+    const pairs: Array<{ itemId: string; localWorkItemId: string }> = []
+    saved.items.filter(isApproved).forEach((i) => {
+      const category = i.ceoWorkCategory ?? "BUILD"
+      const wf = getWorkflowEntry(category)
+      const local = addWorkItem({
+        category,
+        selectedOptionLabel: i.title,
+        workflowId: wf.workflowId,
+        availability: wf.availability,
+        source: i.role === "founder-added" ? "founder" : "gps",
+        sourceDetail: i.role === "founder-added" ? "Designed in Decide & Design™" : "Founder GPS™ CEO Workday design",
+        status: "not-started",
+        relatedAssetId: i.relatedAssetId ?? undefined,
+        planItemId: i.id,
+        estimatedMinutes: i.estimatedMinutes,
+        purpose: i.purpose,
+        expectedEvidence: i.expectedEvidence,
+        tangibleOutcome: i.expectedEvidence,
+      })
+      pairs.push({ itemId: i.id, localWorkItemId: local.id })
+    })
+    void linkPlanItemsToLocalQueue(pairs)
+
+    const record = saveCeoWorkdayDeclaration({
+      planId: saved.id,
+      identityStatement: identity,
+      declaration: declaration.trim(),
+      plannedMinutes: saved.plannedMinutes,
+      itemCount: saved.items.filter(isApproved).length,
+    })
+    setBuilt(record)
+    setSaving(false)
+    setShowGlass(true)
+    if (glassTimerRef.current) clearTimeout(glassTimerRef.current)
+    glassTimerRef.current = setTimeout(() => setShowGlass(false), GLASS_REVEAL_MS)
+  }
+
+  function handleEdit() {
+    setBuilt(null)
+    setDeclEditing(false)
+  }
+
+  // ── render ────────────────────────────────────────────────────────────────
+  if (loading) {
+    return <div className="px-1 py-2 font-sans text-sm text-[#6B5860]">Reading this week&apos;s decisions…</div>
+  }
+
+  if (built) {
+    return (
+      <>
+        <AnimatePresence>
+          {showGlass && (
+            <motion.div
+              key={built.builtAt}
+              initial={{ opacity: 0, y: -16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 240 }}
+              transition={{ duration: 1.1, ease: [0.4, 0, 0.2, 1] }}
+              className="pointer-events-none fixed left-1/2 top-24 z-50 w-[min(90vw,420px)] -translate-x-1/2 px-6 py-5 text-center"
+              style={{
+                background: "rgba(255,255,255,0.28)",
+                backdropFilter: "blur(16px) saturate(1.3)",
+                WebkitBackdropFilter: "blur(16px) saturate(1.3)",
+                borderRadius: "20px",
+                border: "1px solid rgba(255,255,255,0.5)",
+                boxShadow: "0 8px 32px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.6)",
+              }}
+            >
+              <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#3A6B3E]">
+                Your CEO Workday Declaration™
+              </p>
+              <p className="mt-2 font-serif text-lg italic leading-snug text-[#1F2A1F]">{built.declaration}</p>
+              <p className="mt-3 font-montserrat text-[10px] font-semibold uppercase tracking-[0.16em] text-[#3A6B3E]/80">
+                Arriving in your 4-Hour Focused CEO Workday™ …
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <div className="space-y-4 rounded-2xl border-2 border-[#7FB069]/30 bg-[#7FB069]/5 px-5 py-6 text-center">
+          <CheckCircle2 className="mx-auto h-8 w-8 text-[#7FB069]" aria-hidden />
+          <div>
+            <p className="font-sans text-base font-bold text-[#2E1F27]">Your CEO Workday Declaration™ is ready</p>
+            <p className="mt-1 font-sans text-sm text-[#6B5860]">
+              {built.plannedMinutes} minutes of meaningful CEO work designed · {built.itemCount}{" "}
+              {built.itemCount === 1 ? "piece" : "pieces"} of work
+            </p>
+          </div>
+          <p className="mx-auto max-w-sm font-serif text-base italic leading-relaxed text-[#2E1F27]">{built.declaration}</p>
+          <p className="mx-auto max-w-sm font-sans text-sm leading-relaxed text-[#6B5860]">
+            It will appear at the top of your{" "}
+            <span className="font-semibold text-[#2E1F27]">4-Hour Focused CEO Workday™</span> when you arrive at 1 PM.
+          </p>
+          <div className="flex items-center justify-center gap-4">
+            <button
+              type="button"
+              onClick={handleEdit}
+              className="font-sans text-xs font-semibold text-[#6B5860] underline underline-offset-2 hover:text-[#2E1F27]"
+            >
+              Edit my CEO Workday™
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                handleEdit()
+                rebuildDeclaration()
+              }}
+              className="font-sans text-xs font-semibold text-[#6B5860] underline underline-offset-2 hover:text-[#2E1F27]"
+            >
+              Build a different declaration
+            </button>
+          </div>
+        </div>
+      </>
+    )
+  }
+
+  const area = week?.business.businessAreaId ? getAreaById(week.business.businessAreaId) : undefined
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <p className="mb-1 font-montserrat text-xs font-semibold uppercase tracking-widest text-[#7FB069]">
+          GPS proposes. You decide.
+        </p>
+        <h4 className="mb-1 font-sans text-xl font-bold text-[#2E1F27]">Design My 4-Hour CEO Workday™</h4>
+        <p className="font-sans text-sm text-[#6B5860]">
+          Shape the work that will move this week&apos;s business priority forward inside your protected 4-hour CEO
+          Workday™.
+        </p>
+        <p className="mt-2 font-sans text-xs leading-relaxed text-[#6B5860]/80">
+          Your CEO Workday™ protects 240 minutes for meaningful business work. You do not need to fill every minute.
+        </p>
+      </div>
+
+      {/* Source decisions */}
+      <div className="grid gap-3 rounded-2xl border border-[#E8DFE2] bg-[#FAF8F5] p-4 sm:grid-cols-2">
+        <SourceCell label="This week's business priority" value={area?.name ?? "Not selected yet"} muted={!area} />
+        <SourceCell
+          label="Primary bottleneck"
+          value={
+            bottlenecks.length
+              ? bottlenecks.map((b) => b.gap ?? b.signal).slice(0, 2).join(" · ")
+              : bba?.hasWidespreadOwnershipGap
+                ? "No clear owner across several functions (BBA)"
+                : "None selected"
+          }
+          muted={!bottlenecks.length && !bba?.hasWidespreadOwnershipGap}
+        />
+        {design?.relatedAssetName && <SourceCell label="Related Business Asset™" value={design.relatedAssetName} />}
+        {design?.constraintSummary && (
+          <div className="sm:col-span-2">
+            <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60">
+              GPS reading
+            </p>
+            <p className="mt-1 font-sans text-sm leading-relaxed text-[#2E1F27]">{design.constraintSummary}</p>
+            <p className="mt-1 font-sans text-xs leading-relaxed text-[#6B5860]">{design.interventionSummary}</p>
+          </div>
+        )}
+      </div>
+
+      {/* WHAT MUST HAPPEN TODAY? → function → work → outcome */}
+      <div ref={composerRef} className="space-y-4 rounded-2xl border border-[#E8DFE2] bg-white p-5 scroll-mt-24">
+        <div>
+          <p className="font-montserrat text-xs font-bold uppercase tracking-[0.18em] text-[#2E1F27]">
+            What must happen today?
+          </p>
+          <p className="mt-1 font-sans text-sm text-[#6B5860]">
+            Choose the work that must move this week&apos;s priority forward.
+          </p>
+        </div>
+
+        <div>
+          <p className="mb-2 font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60">
+            Business function
+          </p>
+          <div className="flex flex-wrap gap-1.5" role="group" aria-label="Business function">
+            {FUNCTION_ORDER.map((fn) => (
+              <button
+                key={fn}
+                type="button"
+                aria-pressed={addFn === fn}
+                onClick={() => {
+                  setAddFn(fn)
+                  setTimeout(() => workInputRef.current?.focus(), 50)
+                }}
+                className={`rounded-full border px-2.5 py-1 font-montserrat text-[10px] font-bold uppercase tracking-wider transition-colors ${
+                  addFn === fn
+                    ? "border-[#3A2E33] bg-[#3A2E33] text-white"
+                    : "border-[#E8DFE2] bg-white text-[#6B5860] hover:bg-black/[0.03]"
+                }`}
+              >
+                {CEO_FUNCTION_LABEL[fn]}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <AnimatePresence initial={false}>
+          {addFn && (
+            <motion.div
+              key="composer"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.25 }}
+              className="space-y-4 overflow-hidden"
+            >
+              <div>
+                <label
+                  htmlFor="ceo-add-work"
+                  className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60"
+                >
+                  What needs to happen?
+                </label>
+                <p className="mb-2 mt-0.5 font-sans text-xs text-[#6B5860]">
+                  Tell us what you need to accomplish in this CEO Workday™.
+                </p>
+                <textarea
+                  id="ceo-add-work"
+                  ref={workInputRef}
+                  value={addWork}
+                  onChange={(e) => setAddWork(e.target.value)}
+                  rows={2}
+                  placeholder="e.g. Update my LinkedIn campaign and invite founders to Make Time For More On Mondays."
+                  className="w-full rounded-lg border border-[#E8DFE2] bg-white px-3 py-2 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="ceo-add-outcome"
+                  className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60"
+                >
+                  Expected outcome
+                </label>
+                <p className="mb-2 mt-0.5 font-sans text-xs text-[#6B5860]">
+                  What should be different or true when this work is complete?
+                </p>
+                <textarea
+                  id="ceo-add-outcome"
+                  value={addOutcome}
+                  onChange={(e) => setAddOutcome(e.target.value)}
+                  rows={2}
+                  placeholder="e.g. Founders begin visiting the website and expressing interest."
+                  className="w-full rounded-lg border border-[#E8DFE2] bg-white px-3 py-2 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
+                />
+              </div>
+
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="flex items-center gap-2">
+                  <label className="font-sans text-xs text-[#6B5860]" htmlFor="ceo-add-minutes">
+                    Estimated time
+                  </label>
+                  <input
+                    id="ceo-add-minutes"
+                    type="number"
+                    min={5}
+                    max={CEO_WORKDAY_CONTAINER_MINUTES}
+                    value={addMinutes}
+                    onChange={(e) => setAddMinutes(Math.max(5, Number(e.target.value) || 0))}
+                    className="w-20 rounded-lg border border-[#E8DFE2] bg-white px-2 py-1.5 font-sans text-sm text-[#2E1F27] focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
+                  />
+                  <span className="font-sans text-xs text-[#6B5860]">min</span>
+                </div>
+                <div className="ml-auto flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAddFn(null)
+                      setAddWork("")
+                      setAddOutcome("")
+                    }}
+                    className="font-sans text-sm text-[#6B5860] hover:text-[#2E1F27]"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={addFounderWork}
+                    disabled={!composerReady}
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-[#7FB069]/40 px-4 py-2 font-sans text-sm font-semibold text-[#3A6B3E] hover:bg-[#7FB069]/10 disabled:opacity-40"
+                  >
+                    <Plus className="h-3.5 w-3.5" aria-hidden /> Add Work Item
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* TODAY'S CEO WORK */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60">
+            Today&apos;s CEO work
+          </p>
+          <span
+            className={`font-sans text-xs font-semibold ${
+              planned > CEO_WORKDAY_CONTAINER_MINUTES ? "text-[#C13B6B]" : "text-[#6B5860]"
+            }`}
+          >
+            {planned} / {CEO_WORKDAY_CONTAINER_MINUTES} min planned
+          </span>
+        </div>
+
+        {design && !design.ok && items.length === 0 && (
+          <div className="rounded-2xl border border-dashed border-[#E8DFE2] bg-white p-4 font-sans text-sm text-[#6B5860]">
+            {design.reason} You can still add the work that must happen today above.
+          </div>
+        )}
+
+        {items.map((item) => (
+          <WorkCard
+            key={item.id}
+            item={item}
+            editing={editingId === item.id}
+            onDecide={(d) => decide(item.id, d)}
+            onPatch={(p) => patchItem(item.id, p)}
+            onDoneEditing={() => setEditingId(null)}
+          />
+        ))}
+
+        <button
+          type="button"
+          onClick={openComposer}
+          className="inline-flex items-center gap-1.5 rounded-full border border-[#E8DFE2] bg-white px-4 py-2 font-sans text-xs text-[#6B5860] hover:bg-black/[0.03]"
+        >
+          <Plus className="h-3.5 w-3.5" aria-hidden />
+          Add Another CEO Work Item
+        </button>
+      </div>
+
+      {/* Declaration */}
+      <div
+        className={`space-y-3 rounded-2xl border bg-white p-5 ${
+          declStale ? "border-[#C13B6B]/40" : "border-[#7FB069]/30"
+        }`}
+      >
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#3A6B3E]">
+            Your CEO Workday Declaration™
+          </p>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={rebuildDeclaration}
+              className="inline-flex items-center gap-1 font-sans text-xs font-semibold text-[#6B5860] hover:text-[#2E1F27]"
+            >
+              <RefreshCw className="h-3 w-3" aria-hidden /> Rebuild
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                if (declEditing) {
+                  // Done — the founder's text now describes the current approved work.
+                  setDeclEditing(false)
+                  setDeclBasis(signature)
+                } else {
+                  setDeclEditing(true)
+                  setDeclManual(true)
+                }
+              }}
+              className="inline-flex items-center gap-1 font-sans text-xs font-semibold text-[#6B5860] hover:text-[#2E1F27]"
+            >
+              {declEditing ? (
+                <>
+                  <Check className="h-3 w-3" aria-hidden /> Done
+                </>
+              ) : (
+                <>
+                  <Pencil className="h-3 w-3" aria-hidden /> Edit
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+        {declStale && !declEditing && (
+          <p className="inline-flex items-start gap-1.5 font-sans text-xs text-[#C13B6B]">
+            <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
+            Your work changed since this declaration was written. Rebuild it so it describes today&apos;s final design.
+          </p>
+        )}
+        {!identity && (
+          <p className="font-sans text-xs text-[#6B5860]">
+            Tip: choose who you&apos;re being today in{" "}
+            <span className="font-semibold">Decide Who You&apos;re Being Today</span> above and your declaration will
+            speak in that voice.
+          </p>
+        )}
+        {declEditing ? (
+          <textarea
+            value={declaration}
+            onChange={(e) => setDeclaration(e.target.value)}
+            rows={3}
+            className="w-full rounded-lg border border-[#E8DFE2] bg-white px-3 py-2 font-serif text-base italic leading-relaxed text-[#2E1F27] focus:outline-none focus:ring-2 focus:ring-[#7FB069]/40"
+          />
+        ) : (
+          <p className="font-serif text-lg italic leading-snug text-[#1F2A1F]">
+            {declaration || "Keep or add at least one piece of work to build your declaration."}
+          </p>
+        )}
+      </div>
+
+      {saveError && <p className="font-sans text-xs text-[#C13B6B]">{saveError}</p>}
+      {!canBuild && !saving && readiness.length > 0 && (
+        <p className="font-sans text-xs text-[#6B5860]">
+          To build your CEO Workday™: {readiness.join("; ")}.
+        </p>
+      )}
+
+      <Button
+        onClick={handleBuild}
+        disabled={!canBuild}
+        className="w-full bg-[#7FB069] py-6 text-base font-semibold text-white hover:bg-[#6FA055] disabled:opacity-40"
+      >
+        <Sparkles className="mr-2 h-4 w-4" />
+        {saving ? "Building…" : "Build My CEO Workday™"} <ChevronRight className="ml-2 h-4 w-4" />
+      </Button>
+    </div>
+  )
+}
+
+// ── subcomponents ───────────────────────────────────────────────────────────
+
+function SourceCell({ label, value, muted }: { label: string; value: string; muted?: boolean }) {
+  return (
+    <div>
+      <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60">{label}</p>
+      <p className={`mt-1 font-sans text-sm font-semibold leading-snug ${muted ? "text-[#6B5860]/60" : "text-[#2E1F27]"}`}>
+        {value}
+      </p>
+    </div>
+  )
+}
+
+function provenanceLabel(item: CeoPlanItem) {
+  if (item.role === "founder-added") return "Added by founder"
+  if (item.founderDecision === "keep") return "GPS proposed"
+  return `GPS proposed · founder ${DECISION_LABEL[item.founderDecision]}`
+}
+
+function WorkCard({
+  item,
+  editing,
+  onDecide,
+  onPatch,
+  onDoneEditing,
+}: {
+  item: CeoPlanItem
+  editing: boolean
+  onDecide: (d: CeoFounderDecision) => void
+  onPatch: (p: Partial<CeoPlanItem>) => void
+  onDoneEditing: () => void
+}) {
+  const removed = item.founderDecision === "remove"
+  const parked = item.founderDecision === "defer" || item.founderDecision === "delegate"
+  const outcomeMissing = !removed && !parked && !item.expectedEvidence.trim()
+
+  return (
+    <div
+      className={`rounded-2xl border p-4 transition-colors ${
+        removed
+          ? "border-dashed border-[#E8DFE2] bg-white/60 opacity-60"
+          : parked
+            ? "border-[#E8DFE2] bg-white"
+            : "border-[#E8DFE2] bg-[#FAF8F5]"
+      }`}
+    >
+      <div className="flex flex-wrap items-center gap-2">
+        <span
+          className={`rounded-full px-2 py-0.5 font-montserrat text-[9px] font-bold uppercase tracking-[0.16em] ${
+            item.role === "primary" ? "bg-[#3A2E33] text-white" : "bg-[#E8DFE2] text-[#3A2E33]"
+          }`}
+        >
+          {ROLE_LABEL[item.role]}
+        </span>
+        <span className="font-montserrat text-[9px] font-bold uppercase tracking-[0.16em] text-[#5B835F]">
+          {CEO_FUNCTION_LABEL[item.businessFunction]}
+        </span>
+        <span className="font-montserrat text-[9px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/60">
+          {CEO_TREATMENT_LABEL[item.treatment]}
+        </span>
+        <span className="ml-auto font-sans text-xs font-semibold text-[#6B5860]">{item.estimatedMinutes} min</span>
+      </div>
+
+      {editing ? (
+        <div className="mt-3 space-y-3">
+          <div>
+            <label
+              htmlFor={`title-${item.id}`}
+              className="font-montserrat text-[9px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/60"
+            >
+              {item.founderDecision === "replace" ? "Replace with" : "Work"}
+            </label>
+            <input
+              id={`title-${item.id}`}
+              type="text"
+              value={item.title}
+              onChange={(e) => onPatch({ title: e.target.value })}
+              className="mt-1 w-full rounded-lg border border-[#E8DFE2] bg-white px-3 py-2 font-sans text-sm font-semibold text-[#2E1F27] focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
+            />
+          </div>
+          <div>
+            <p className="font-montserrat text-[9px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/60">
+              Business function
+            </p>
+            <div className="mt-1 flex flex-wrap gap-1.5" role="group" aria-label="Business function">
+              {FUNCTION_ORDER.map((fn) => (
+                <button
+                  key={fn}
+                  type="button"
+                  aria-pressed={item.businessFunction === fn}
+                  onClick={() => onPatch({ businessFunction: fn, ceoWorkCategory: CEO_FUNCTION_TO_CATEGORY[fn] })}
+                  className={`rounded-full border px-2 py-0.5 font-montserrat text-[9px] font-bold uppercase tracking-wider transition-colors ${
+                    item.businessFunction === fn
+                      ? "border-[#3A2E33] bg-[#3A2E33] text-white"
+                      : "border-[#E8DFE2] bg-white text-[#6B5860] hover:bg-black/[0.03]"
+                  }`}
+                >
+                  {CEO_FUNCTION_LABEL[fn]}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <label className="font-sans text-xs text-[#6B5860]" htmlFor={`min-${item.id}`}>
+              Estimated time
+            </label>
+            <input
+              id={`min-${item.id}`}
+              type="number"
+              min={5}
+              max={CEO_WORKDAY_CONTAINER_MINUTES}
+              value={item.estimatedMinutes}
+              onChange={(e) => onPatch({ estimatedMinutes: Math.max(5, Number(e.target.value) || 0) })}
+              className="w-20 rounded-lg border border-[#E8DFE2] bg-white px-2 py-1.5 font-sans text-sm text-[#2E1F27] focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
+            />
+            <span className="font-sans text-xs text-[#6B5860]">min</span>
+          </div>
+        </div>
+      ) : (
+        <>
+          <p className={`mt-2 font-sans text-base font-bold text-[#2E1F27] ${removed ? "line-through" : ""}`}>
+            {item.title}
+          </p>
+          {item.relatedAssetTitle && (
+            <p className="mt-1 font-sans text-xs text-[#6B5860]">
+              Related Business Asset™:{" "}
+              <span className="font-semibold text-[#2E1F27]">{item.relatedAssetTitle}</span>
+            </p>
+          )}
+        </>
+      )}
+
+      {!removed && (
+        <div className="mt-3 grid gap-3 sm:grid-cols-2">
+          <div>
+            <p className="font-montserrat text-[9px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/60">
+              Why this work
+            </p>
+            <p className="mt-1 font-sans text-xs leading-relaxed text-[#3A2E33]">{item.purpose}</p>
+          </div>
+          <div>
+            <label
+              htmlFor={`outcome-${item.id}`}
+              className={`font-montserrat text-[9px] font-bold uppercase tracking-[0.16em] ${
+                outcomeMissing ? "text-[#C13B6B]" : "text-[#6B5860]/60"
+              }`}
+            >
+              Expected outcome
+            </label>
+            {/* Always visible and directly editable — never hidden behind Edit. */}
+            <textarea
+              id={`outcome-${item.id}`}
+              value={item.expectedEvidence}
+              onChange={(e) => onPatch({ expectedEvidence: e.target.value })}
+              rows={2}
+              placeholder="What should be different or true when this work is complete?"
+              className={`mt-1 w-full rounded-lg border bg-white px-2.5 py-1.5 font-sans text-xs leading-relaxed text-[#3A2E33] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30 ${
+                outcomeMissing ? "border-[#C13B6B]/40" : "border-[#E8DFE2]"
+              }`}
+            />
+          </div>
+        </div>
+      )}
+
+      <div className="mt-3 flex flex-wrap items-center gap-1.5">
+        {editing ? (
+          <button
+            type="button"
+            onClick={onDoneEditing}
+            className="inline-flex items-center gap-1 rounded-lg border border-[#7FB069]/40 px-3 py-1.5 font-sans text-xs font-semibold text-[#3A6B3E] hover:bg-[#7FB069]/10"
+          >
+            <Check className="h-3 w-3" aria-hidden /> Done
+          </button>
+        ) : (
+          (["keep", "edit", "replace", "defer", "delegate", "remove"] as CeoFounderDecision[]).map((d) => {
+            const active = item.founderDecision === d || (d === "keep" && item.founderDecision === "added")
+            return (
+              <button
+                key={d}
+                type="button"
+                aria-pressed={active}
+                onClick={() => onDecide(d)}
+                className={`rounded-full border px-2.5 py-1 font-sans text-xs capitalize transition-colors ${
+                  active
+                    ? "border-[#3A2E33] bg-[#3A2E33] text-white"
+                    : "border-[#E8DFE2] bg-white text-[#6B5860] hover:bg-black/[0.03]"
+                }`}
+              >
+                {d}
+              </button>
+            )
+          })
+        )}
+        <span className="ml-auto font-montserrat text-[9px] font-bold uppercase tracking-[0.14em] text-[#6B5860]/70">
+          {provenanceLabel(item)}
+        </span>
+      </div>
+    </div>
+  )
+}
+
+const CEO_FUNCTION_TO_CATEGORY: Record<CeoBusinessFunction, CeoPlanItem["ceoWorkCategory"]> = {
+  build: "BUILD",
+  decide: "DECIDE",
+  own: "DECIDE",
+  delegate: "DELEGATE",
+  systemize: "SYSTEMIZE",
+  "augment-automate-ai": "AUGMENT",
+  connect: "CONNECT",
+  communicate: "COMMUNICATE",
+  sell: "SELL",
+  market: "MARKET",
+  deliver: "DELIVER",
+  solve: "SOLVE",
+}
