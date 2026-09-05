@@ -14,7 +14,7 @@
  *     it programmatically (e.g. "Change My Intention™" buttons).
  */
 
-import { useState, type ReactNode } from "react"
+import { useRef, useState, type ReactNode } from "react"
 import { ChevronDown } from "lucide-react"
 
 export function CollapsibleSubSection({
@@ -23,16 +23,30 @@ export function CollapsibleSubSection({
   defaultOpen = false,
   open: controlledOpen,
   onOpenChange,
+  /**
+   * When true, children stay mounted while collapsed (hidden with CSS) so any
+   * unsaved draft state inside a segment survives collapse/reopen. Defaults to
+   * true because the Business Day™ segment forms (Movement, Lunch, Power Down)
+   * hold local draft state that must not reset when the founder pops a section
+   * closed. Pass `false` for heavy render-only content that is safe to unmount.
+   */
+  keepMounted = true,
 }: {
   title: string
   children: ReactNode | ((open: boolean) => ReactNode)
   defaultOpen?: boolean
   open?: boolean
   onOpenChange?: (open: boolean) => void
+  keepMounted?: boolean
 }) {
   const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen)
   const isControlled = controlledOpen !== undefined
   const open = isControlled ? controlledOpen : uncontrolledOpen
+  // Once opened, remember that we've mounted the content so keepMounted can
+  // hide-not-unmount it thereafter (avoids paying the first render until the
+  // founder actually opens the section).
+  const hasOpened = useRef(false)
+  if (open) hasOpened.current = true
 
   const toggle = () => {
     const next = !open
@@ -63,11 +77,17 @@ export function CollapsibleSubSection({
           aria-hidden
         />
       </button>
-      {open && (
-        <div className="border-t border-[#7FB069]/20 bg-white px-5 py-5">
-          {typeof children === "function" ? children(open) : children}
-        </div>
-      )}
+      {keepMounted
+        ? hasOpened.current && (
+            <div hidden={!open} className="border-t border-[#7FB069]/20 bg-white px-5 py-5">
+              {typeof children === "function" ? children(open) : children}
+            </div>
+          )
+        : open && (
+            <div className="border-t border-[#7FB069]/20 bg-white px-5 py-5">
+              {typeof children === "function" ? children(open) : children}
+            </div>
+          )}
     </div>
   )
 }

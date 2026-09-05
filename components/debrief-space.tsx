@@ -157,7 +157,7 @@ export function DebriefSpace() {
             <LunchIntentionForm />
           </CollapsibleSubSection>
 
-          <CollapsibleSubSection title="Time Freedom">
+          <CollapsibleSubSection title="Time Freedom" keepMounted={false}>
             {(open) => (
               <div className="space-y-5">
                 <UpcomingLifeEvents onPlan={setTimeFreedomPrompt} />

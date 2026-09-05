@@ -15,10 +15,12 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { ArrowRight, ChevronDown, Compass, Pencil } from "lucide-react"
+import { ArrowRight, ChevronDown, Compass, Pencil, SlidersHorizontal } from "lucide-react"
 
 import { useWeeklyCommitments } from "@/lib/weekly-commitments/use-weekly-commitments"
 import type { WeeklyCommitments } from "@/lib/weekly-commitments/types"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { WeeklyPrioritiesDesigner } from "@/components/decide-design/weekly-priorities-designer"
 
 /** Maps each priority row to the `weekly_commitments` field its intention persists to. */
 const INTENTION_FIELD: Record<string, keyof WeeklyCommitments> = {
@@ -79,6 +81,9 @@ export function WeeklyPrioritiesPanel() {
   // Which priority's intention is being edited inline, and its draft text.
   const [editingKey, setEditingKey] = useState<string | null>(null)
   const [draft, setDraft] = useState("")
+  // Full "Edit This Week's Priorities™" surface — reuses the exact Decide &
+  // Design designer against the same shared weekly_commitments records.
+  const [editingWeek, setEditingWeek] = useState(false)
 
   if (isLoading && !commitments.id) return null
 
@@ -211,6 +216,35 @@ export function WeeklyPrioritiesPanel() {
           ))}
         </ul>
       )}
+
+      {/* Explicit, intentional edit of the week's priorities — opens the exact
+          Decide & Design designer bound to the same records. Nothing here or
+          in the designer regenerates priorities; only the founder's edits and
+          Save land changes. */}
+      {open && chosen.length > 0 && (
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={() => setEditingWeek(true)}
+            className="inline-flex items-center gap-1.5 rounded-full border border-[#8DAE72] bg-white px-4 py-2 font-sans text-sm font-bold text-[#5A7A45] hover:bg-[#F4F7F0]"
+          >
+            <SlidersHorizontal className="h-4 w-4" aria-hidden />
+            Edit This Week&apos;s Priorities™
+          </button>
+        </div>
+      )}
+
+      <Dialog open={editingWeek} onOpenChange={setEditingWeek}>
+        <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto bg-[#FBFAF7]">
+          <DialogHeader>
+            <DialogTitle className="font-serif text-2xl text-[#2E1F27]">Edit This Week&apos;s Priorities™</DialogTitle>
+          </DialogHeader>
+          {/* Same designer, same weekly_commitments source of truth — edits made
+              here save straight back and the panel updates via the shared hook.
+              The founder can close this the moment she's done. */}
+          <WeeklyPrioritiesDesigner />
+        </DialogContent>
+      </Dialog>
     </section>
   )
 }
