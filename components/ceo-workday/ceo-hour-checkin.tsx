@@ -26,6 +26,7 @@ import {
 } from "@/lib/ceo-workday/plan-types"
 import { saveHourCheckin, type HourCheckinItemOutcome } from "@/lib/ceo-workday/plan-server"
 import { updateWorkItemStatus } from "@/lib/ceo-workday/todays-work-store"
+import { useHourlyWork } from "@/lib/ceo-workday/use-hourly-work"
 
 const STATUS_OPTIONS: CeoPlanItemStatus[] = ["completed", "in-progress", "deferred", "delegated", "eliminated", "blocked", "other"]
 const NEXT_OPTIONS: CeoNextAction[] = ["continue-next-hour", "move-segment", "later", "delegate", "eliminate", "need-help", "other"]
@@ -68,6 +69,9 @@ export function CeoHourCheckin({ planId, block, scheduledAt, openedAt, items, is
     () => items.filter((i) => i.founderDecision !== "remove" && !["completed", "eliminated"].includes(i.status)),
     [items],
   )
+  // The founder's own statement for this hour, written in What Must Happen Today™.
+  const { hours } = useHourlyWork()
+  const planned = hours[block.index]
   const [status, setStatus] = useState<Record<string, CeoPlanItemStatus>>({})
   const [next, setNext] = useState<Record<string, CeoNextAction>>({})
   const [blocker, setBlocker] = useState<Record<string, string>>({})
@@ -110,6 +114,20 @@ export function CeoHourCheckin({ planId, block, scheduledAt, openedAt, items, is
           Each piece of work gets its own outcome. Anything not finished gets a next decision.
         </p>
       </div>
+
+      {planned.work.trim() && (
+        <div className="rounded-2xl border border-[#7FB069]/30 bg-[#F3F8ED] px-4 py-3">
+          <p className="font-montserrat text-[9px] font-bold uppercase tracking-[0.16em] text-[#5B835F]">
+            What you planned to work on this hour
+          </p>
+          <p className="mt-1 font-sans text-sm leading-relaxed text-[#2E1F27] text-pretty">{planned.work}</p>
+          {planned.affirmation && (
+            <p className="mt-2 font-serif text-sm italic leading-relaxed text-[#5A7A45] text-pretty">
+              {planned.affirmation}
+            </p>
+          )}
+        </div>
+      )}
 
       {live.length === 0 ? (
         <p className="rounded-2xl border border-dashed border-[#E8DFE2] bg-white px-4 py-4 font-sans text-sm text-[#6B5860]">

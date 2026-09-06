@@ -16,7 +16,7 @@
  * this panel is the same plan mirrored, never a second copy.
  */
 
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Check, Clock, Copy, Mic, Pencil, Play, Plus, RotateCcw } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -28,6 +28,7 @@ import {
   type CeoWorkdayDeclaration,
 } from "@/lib/daily-plan/ceo-workday-declaration"
 import { WeeklyPrioritiesPanel } from "@/components/ceo-workday/weekly-priorities-panel"
+import { WhatMustHappenToday } from "@/components/ceo-workday/what-must-happen-today"
 import { useWeeklyCommitments } from "@/lib/weekly-commitments/use-weekly-commitments"
 import {
   HOUR_BLOCKS,
@@ -54,6 +55,7 @@ import {
   getCeoWorkdayCheckins,
   getCeoWorkdayPlan,
   linkPlanItemsToLocalQueue,
+  saveCeoWorkdayPlan,
   saveWorkingOnDeclaration,
   updateCeoPlanItem,
   updateCeoPlanStatus,
@@ -120,6 +122,29 @@ export function CeoWorkdayLivePlan() {
     return () => window.removeEventListener(CEO_WORKDAY_DECLARATION_EVENT, refresh)
   }, [refresh])
 
+  // What Must Happen Today™ is now planned in the workday itself, so there is no
+  // "Save My Day" to pre-create the server plan. Ensure one exists lazily once
+  // the founder has designed her week (Weekly Declaration™ present), so the four
+  // 5-Minute Check-Ins™ have a planId to persist against. The upsert is keyed on
+  // (user_id, plan_date), so this never creates a duplicate.
+  const ensuringPlan = useRef(false)
+  useEffect(() => {
+    if (!loaded || plan || ensuringPlan.current || !weeklyDeclaration) return
+    ensuringPlan.current = true
+    void (async () => {
+      const created = await saveCeoWorkdayPlan({
+        planDate: dateKey,
+        weekKey: weekly.weekKey,
+        bottleneckEgaEntryIds: [],
+        declaration: weeklyDeclaration,
+        identityStatement: null,
+        items: [],
+      })
+      if (created) setPlan(created)
+      ensuringPlan.current = false
+    })()
+  }, [loaded, plan, weeklyDeclaration, dateKey, weekly.weekKey])
+
   const activeItems = useMemo(() => plan?.items.filter((i) => i.founderDecision !== "remove") ?? [], [plan])
   const block = currentHourBlock(nowMin)
   const due = blockNeedingCheckin(nowMin, savedBlocks)
@@ -141,9 +166,9 @@ export function CeoWorkdayLivePlan() {
     return (
       <div className="rounded-3xl border border-dashed border-[#E8DFE2] px-6 py-10 text-center space-y-4">
         <p className="font-sans text-base leading-relaxed text-[#6B5860] max-w-md mx-auto text-pretty">
-          Today&apos;s CEO Workday™ hasn&apos;t been decided yet. Name what must happen today in Decide &amp; Design
-          and press <span className="font-semibold text-[#2E1F27]">Save My Day</span> — your declaration and work
-          will appear here.
+          Your CEO Workday™ opens once you&apos;ve designed your week. In Decide &amp; Design, choose who you&apos;re
+          being, your three priorities and your <span className="font-semibold text-[#2E1F27]">Weekly Declaration™</span>
+          {" "}— then your protected 4-hour workday and What Must Happen Today™ appear here.
         </p>
         <a
           href={new Date().getDay() === 1 ? "/?openSpace=monday-debrief" : "/?openSpace=daily-planning-gps"}
@@ -381,6 +406,11 @@ export function CeoWorkdayLivePlan() {
       {/* This Week's Three Priorities™ — now directly UNDER the declaration
           (the two were reversed), collapsible with inline intention editing. */}
       <WeeklyPrioritiesPanel />
+
+      {/* What Must Happen Today™ — the founder's own four protected hours. This is
+          the "WHAT": the founder decides, hour by hour, what must happen and creates
+          a work affirmation. The GPS execution layer below is the "HOW". */}
+      <WhatMustHappenToday />
 
       {/* Arrival banner — under the declaration, before the work */}
       <AnimatePresence mode="wait">

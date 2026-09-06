@@ -23,6 +23,7 @@ import { saveEsaResults } from "@/lib/entrepreneur-success/esa-storage"
 import type { EsaResults, OperatingPillarId, PillarScore } from "@/lib/entrepreneur-success/types"
 import { getDateKey, updateTodaysPlan } from "@/lib/daily-plan/storage"
 import type { CeoActivity } from "@/lib/daily-plan/types"
+import { saveCeoWorkdayDeclaration } from "@/lib/daily-plan/ceo-workday-declaration"
 
 const PILLAR_NAMES: Record<OperatingPillarId, string> = {
   "strategic-foundation": "Strategic Foundation™",
@@ -180,4 +181,15 @@ export function seedWorkdayPreviewFixture(): void {
   saveFounderProfile(fixtureFounderProfile())
   saveEsaResults(fixtureEsaResults())
   updateTodaysPlan({ ceoActivities: fixtureCeoActivities() }, getDateKey())
+  // Seed a local Day Declaration™ so the live CEO Workday™ renders past its
+  // "design your week first" gate — the What Must Happen Today™ four-hour panel
+  // is what this preview exists to exercise. Dev-only; never touches Supabase.
+  saveCeoWorkdayDeclaration({
+    planId: "fixture-plan-1",
+    identityStatement: "a focused CEO who protects her time",
+    declaration:
+      "Today I am building customer clarity so my next cohort fills with ideal-fit clients — and I am protecting my life by finishing by 5.",
+    plannedMinutes: 240,
+    itemCount: 2,
+  })
 }

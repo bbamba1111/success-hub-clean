@@ -15,12 +15,21 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { ArrowRight, ChevronDown, Compass, Pencil, SlidersHorizontal } from "lucide-react"
+import { ArrowRight, ChevronDown, Compass, Megaphone, Pencil, SlidersHorizontal } from "lucide-react"
 
 import { useWeeklyCommitments } from "@/lib/weekly-commitments/use-weekly-commitments"
 import type { WeeklyCommitments } from "@/lib/weekly-commitments/types"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { WeeklyPrioritiesDesigner } from "@/components/decide-design/weekly-priorities-designer"
+import { CommunicateDelegateDialog } from "@/components/communications/communicate-delegate-dialog"
+import type { CommitmentType } from "@/lib/communications/types"
+
+/** Each priority row's "Communicate It™" maps to the commitment + action the tool opens with. */
+const KEY_TO_COMMITMENT: Record<string, CommitmentType> = {
+  life: "life",
+  delegation: "delegation",
+  rule: "operating-rule",
+}
 
 /** Maps each priority row to the `weekly_commitments` field its intention persists to. */
 const INTENTION_FIELD: Record<string, keyof WeeklyCommitments> = {
@@ -84,6 +93,14 @@ export function WeeklyPrioritiesPanel() {
   // Full "Edit This Week's Priorities™" surface — reuses the exact Decide &
   // Design designer against the same shared weekly_commitments records.
   const [editingWeek, setEditingWeek] = useState(false)
+  // Which priority is being communicated (opens the shared Communicate + Delegate™ tool).
+  const [communicate, setCommunicate] = useState<CommitmentType | null>(null)
+
+  function subjectFor(t: CommitmentType | null): string {
+    if (t === "operating-rule") return commitments.operatingRule ?? ""
+    if (t === "delegation") return commitments.delegationPriority ?? ""
+    return commitments.lifePriority ?? ""
+  }
 
   if (isLoading && !commitments.id) return null
 
@@ -206,6 +223,13 @@ export function WeeklyPrioritiesPanel() {
                       />
                     </button>
                   )}
+                  <button
+                    type="button"
+                    onClick={() => setCommunicate(KEY_TO_COMMITMENT[r.key])}
+                    className="mt-1 inline-flex w-fit items-center gap-1.5 rounded-full border border-[#5A7A45] bg-white px-3.5 py-1.5 font-sans text-xs font-bold text-[#5A7A45] transition-colors hover:bg-[#5A7A45]/5"
+                  >
+                    <Megaphone className="h-3.5 w-3.5" aria-hidden /> Communicate It™
+                  </button>
                 </>
               ) : (
                 <p className="font-sans text-sm leading-relaxed text-[#6B5860]">
@@ -245,6 +269,23 @@ export function WeeklyPrioritiesPanel() {
           <WeeklyPrioritiesDesigner />
         </DialogContent>
       </Dialog>
+
+      {/* Communicate + Delegate™ — opened from a priority row, pre-filled from that
+          commitment. It never creates a new priority or task; it drafts one message. */}
+      <CommunicateDelegateDialog
+        open={communicate !== null}
+        onOpenChange={(o) => !o && setCommunicate(null)}
+        sourceContext="ceo-workday"
+        commitmentId={commitments.id}
+        commitmentType={communicate ?? "life"}
+        initialType={
+          communicate === "operating-rule" ? "operating-rule" : communicate === "delegation" ? "delegate" : "boundary"
+        }
+        commitmentText={subjectFor(communicate)}
+        initialSubjectText={subjectFor(communicate)}
+        initialAudience={communicate === "life" ? commitments.boundaryAudiences : []}
+        initialTiming="During the 1–5 PM CEO Workday™"
+      />
     </section>
   )
 }
