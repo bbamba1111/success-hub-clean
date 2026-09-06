@@ -412,37 +412,16 @@ export function CeoWorkdayLivePlan() {
           a work affirmation. The GPS execution layer below is the "HOW". */}
       <WhatMustHappenToday />
 
-      {/* Arrival banner — under the declaration, before the work */}
-      <AnimatePresence mode="wait">
-        {!entered && (
-          <motion.div
-            key="arrive"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-            className="rounded-3xl border-2 border-[#7FB069]/30 bg-[#7FB069]/5 px-6 py-6 sm:px-7 space-y-3"
-          >
-            <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5A7A45]">
-              What Must Happen Today™ is ready
-            </p>
-            <p className="font-sans text-sm leading-relaxed text-[#3A2E33]">
-              You decided this work during Decide &amp; Design. Step into your protected 4-hour CEO Workday™.
-            </p>
-            <p className="font-sans text-xs text-[#6B5860]">
-              {plannedMinutes} of 240 minutes planned · {activeItems.length || local?.itemCount || 0}{" "}
-              {(activeItems.length || local?.itemCount || 0) === 1 ? "piece" : "pieces"} of meaningful work
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Plan + adjust */}
-      {plan && (
+      {/* CEO Workday execution — the GPS "how" layer (Start/Continue/Complete,
+          Business Asset builders). Kept fully intact, but only shown once the plan
+          actually holds work items. What Must Happen Today™ (the four-hour panel
+          above) is now where the founder declares today's work, so the old empty
+          planning card no longer appears. */}
+      {plan && plan.items.length > 0 && (
         <div className="rounded-3xl border border-[#8DAE72]/30 bg-[#F4F7F0] px-6 py-6 sm:px-7 space-y-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="font-montserrat text-xs font-bold uppercase tracking-[0.18em] text-[#5A7A45]">What Must Happen Today™</p>
+              <p className="font-montserrat text-xs font-bold uppercase tracking-[0.18em] text-[#5A7A45]">CEO Workday Execution™</p>
               {plan.constraintSummary && <p className="mt-1 font-sans text-xs text-[#6B5860]">{plan.constraintSummary}</p>}
             </div>
             <span className="font-sans text-xs font-semibold text-[#6B5860]">{plan.plannedMinutes} / 240 min planned</span>
