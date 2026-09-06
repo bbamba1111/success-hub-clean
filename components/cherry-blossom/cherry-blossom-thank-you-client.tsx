@@ -5,7 +5,6 @@ import { useState } from "react"
 import { ChevronRight } from "lucide-react"
 import { CherryBlossomScene, CherryBlossomSceneCard } from "@/components/cherry-blossom/cherry-blossom-scene"
 import { markCherryBlossomThankYouSeen } from "@/lib/onboarding/onboarding-welcome-store"
-import { getPostLoginDestination } from "@/utils/reality-check-storage"
 
 /**
  * Cherry Blossom Thank-You™ / Transition
@@ -18,14 +17,15 @@ export function CherryBlossomThankYouClient() {
   const router = useRouter()
   const [entering, setEntering] = useState(false)
 
-  async function handleEnter() {
+  function handleEnter() {
     setEntering(true)
     markCherryBlossomThankYouSeen()
-    // Both on-ramp gates and the Thank-You screen are now satisfied, so the
-    // existing routing engine resolves straight to the correct current day
-    // (or this week's Reality Check ritual if that's still outstanding).
-    const destination = await getPostLoginDestination()
-    router.push(destination)
+    // Reaching this screen means every on-ramp gate (Founder Profile™,
+    // Business Context™, Business Bottleneck Audit™) is already complete, so
+    // this ritual leads straight into the Work-Life Balance Business Day™
+    // front door ("/") — NOT the Weekly Reality Check™ / Work-Life Balance
+    // Audit™ at /audit, which the founder starts on their own cadence.
+    router.push("/")
   }
 
   return (
