@@ -133,7 +133,7 @@ function PriorityChooser({
           <p className="font-sans text-xs text-[#6B5860]">{suggestedLead}</p>
           <div className="flex flex-wrap gap-2">
             {suggested.map((o) => (
-              <Chip key={o.id} accent={accent} selected={selectedOptionId === o.id} onClick={() => { setCreating(false); onChoose(o.id, o.label, o.phrase) }}>
+              <Chip key={o.id} accent={accent} selected={!creating && selectedOptionId === o.id} onClick={() => { setCreating(false); onChoose(o.id, o.label, o.phrase) }}>
                 {o.label}
               </Chip>
             ))}
@@ -143,7 +143,7 @@ function PriorityChooser({
       )}
       <div className="flex flex-wrap gap-2">
         {rest.map((o) => (
-          <Chip key={o.id} accent={accent} selected={selectedOptionId === o.id} onClick={() => { setCreating(false); onChoose(o.id, o.label, o.phrase) }}>
+          <Chip key={o.id} accent={accent} selected={!creating && selectedOptionId === o.id} onClick={() => { setCreating(false); onChoose(o.id, o.label, o.phrase) }}>
             {o.label}
           </Chip>
         ))}
