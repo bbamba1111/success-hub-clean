@@ -13,9 +13,7 @@
  */
 
 import { useEffect, useMemo, useState, type ReactNode } from "react"
-import { Check, Megaphone, Pencil, RefreshCw } from "lucide-react"
-import { CommunicateDelegateDialog } from "@/components/communications/communicate-delegate-dialog"
-import type { CommitmentType } from "@/lib/communications/types"
+  import { Check, Pencil, RefreshCw } from "lucide-react"
 import { useWeeklyCommitments } from "@/lib/weekly-commitments/use-weekly-commitments"
 import {
   DELEGATION_OPTIONS,
@@ -266,8 +264,6 @@ export function WeeklyPrioritiesDesigner() {
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
   const [saved, setSaved] = useState(false)
-  /** Which commitment the Communicate My Change™ / Boundary™ builder is open for. */
-  const [communicate, setCommunicate] = useState<CommitmentType | null>(null)
 
   useEffect(() => {
     getCurrentBbaBaseline().then(setBba).catch(() => setBba(null))
@@ -514,39 +510,9 @@ export function WeeklyPrioritiesDesigner() {
                 }}
               />
             )}
-            {c.operatingRule && (
-              <div className="flex flex-wrap items-center gap-3 pt-1">
-                <button
-                  type="button"
-                  onClick={() => setCommunicate("operating-rule")}
-                  className="inline-flex items-center gap-2 rounded-full border border-[#5A7A45] bg-white px-4 py-2 font-sans text-sm font-bold text-[#5A7A45] hover:bg-[#5A7A45]/5"
-                >
-                  <Megaphone className="h-4 w-4" aria-hidden /> Communicate My Change™
-                </button>
-                <p className="font-sans text-xs text-[#6B5860]">Make the new rule clear to the people who need to know.</p>
-              </div>
-            )}
           </div>
         </Card>
       )}
-
-      {/* Communicate + Delegate™ — pre-filled from the commitment above. */}
-      <CommunicateDelegateDialog
-        open={communicate !== null}
-        onOpenChange={(o) => !o && setCommunicate(null)}
-        sourceContext="decide-design"
-        commitmentId={c.id}
-        commitmentType={communicate ?? "life"}
-        initialType={communicate === "operating-rule" ? "operating-rule" : "boundary"}
-        commitmentText={communicate === "operating-rule" ? c.operatingRule ?? "" : lifePhrase || c.lifePriority || ""}
-        initialSubjectText={communicate === "operating-rule" ? c.operatingRule ?? "" : lifePhrase || c.lifePriority || ""}
-        initialAudience={communicate === "life" ? c.boundaryAudiences : []}
-        initialTiming={
-          communicate === "life"
-            ? c.lifeWindows.map((w) => LIFE_WINDOW_LABEL[w]).join(", ") || null
-            : "During the 1–5 PM CEO Workday™"
-        }
-      />
 
       {/* ── Save My Week ────────────────────────────────────────────────────── */}
       <Card>
