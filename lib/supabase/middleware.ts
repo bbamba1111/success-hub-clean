@@ -2,27 +2,48 @@ import { createServerClient } from "@supabase/ssr"
 import { NextResponse, type NextRequest } from "next/server"
 
 // Routes that are publicly accessible without any authentication
+// NOTE: "/" is intentionally NOT public — it is the authenticated daily
+// Work-Life Balance Business Day experience and must require a paid membership.
 const PUBLIC_ROUTES = [
-  "/",
   "/auth",
   "/api",
   "/_next",
   "/images",
   "/marketing",
+  "/landing",
+  "/monday",
+  // "/1day" — the new $1,997 live group "Make Time For More on Mondays™"
+  // offer landing page. Public for the same reason /monday is: it's a
+  // pre-purchase marketing/checkout page, not gated app content.
+  "/1day",
   "/sunday-shift",
   "/garden",
   "/audit",
   "/focus-areas",
   "/my-results",
   "/preview-results",
+  // /pricing no longer has its own page — it's a thin redirect to
+  // /experiences (the one canonical pricing page) and must stay public so
+  // that redirect resolves before the auth check below runs.
   "/pricing",
+  // /welcome is the brand-new customer's FIRST visit after purchase — they
+  // have no session yet, so it must be reachable pre-login. Its security is
+  // enforced independently by the one-time onboarding_token required by
+  // /api/auth/send-confirmation (see that route for details), not by
+  // Supabase session auth.
+  "/welcome",
 ]
 
 // Routes that require authentication but NOT paid membership (free access after login)
 const AUTH_ONLY_ROUTES = [
-  "/welcome",
+  "/installation",
   "/human-zone-of-genius-team",
   "/ai-executive-team",
+  // "Make Time For More Experiences™" is the upgrade/continuation decision
+  // point itself — every logged-in member (paid or not) must be able to
+  // reach it, otherwise non-paid members bounce straight back to the same
+  // page and never see it.
+  "/experiences",
 ]
 
 // Valid paid membership tiers (from database constraint)
@@ -71,6 +92,15 @@ export async function updateSession(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname
 
+  // DEVELOPMENT-ONLY: lets the "/dev-preview" fixture routes render without a
+  // real paid account so the live 4-Hour CEO Workday™ UI can be visually
+  // verified with realistic seeded data. The route itself also 404s outside
+  // development (see app/dev-preview/workday/page.tsx) — this is a second,
+  // independent guard so production auth/paywall behavior never changes.
+  if (process.env.NODE_ENV !== "production" && pathname.startsWith("/dev-preview")) {
+    return supabaseResponse
+  }
+
   // Allow public routes without any checks
   if (isPublicRoute(pathname)) {
     return supabaseResponse
@@ -105,9 +135,9 @@ export async function updateSession(request: NextRequest) {
   const isPaid = PAID_TIERS.includes(membershipTier)
 
   if (!isPaid) {
-    // Redirect non-paid users to pricing/upgrade page
+    // Redirect non-paid users to the one canonical upgrade page.
     const url = request.nextUrl.clone()
-    url.pathname = "/pricing"
+    url.pathname = "/experiences"
     url.searchParams.set("upgrade", "true")
     return NextResponse.redirect(url)
   }

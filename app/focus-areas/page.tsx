@@ -6,7 +6,9 @@ import { Card, CardContent } from "@/components/ui/card"
 import { CheckCircle2, Circle, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { getAuditResults } from "@/utils/audit-storage"
+import { updateRealityCheck } from "@/utils/reality-check-storage"
 import { categoryLabels } from "@/components/work-life-balance-audit"
+import { CherryBlossomGuidance } from "@/components/cherry-blossom/cherry-blossom-guidance"
 
 interface FocusArea {
   id: string
@@ -96,6 +98,10 @@ export default function FocusAreasPage() {
   const saveFocusAreas = () => {
     const selectedAreas = focusAreas.filter((area) => area.selected).map((area) => area.id)
     localStorage.setItem("focusAreas", JSON.stringify(selectedAreas))
+
+    // Enrich this week's Reality Check record with the chosen priority areas
+    // (best-effort; no-op for anonymous visitors). Same weekly row, no duplicate.
+    void updateRealityCheck({ selectedPriorityAreas: selectedAreas })
   }
 
   return (
@@ -112,21 +118,28 @@ export default function FocusAreasPage() {
               className="rounded-full shadow-lg"
             />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            Select Your Priority Areas For Your 28-Day Transformation
+          <h1 className="mb-6 font-display text-3xl font-bold tracking-tight text-brand-ink text-balance">
+            Choose Your Priority Focus Areas&trade;
           </h1>
-          <p className="text-gray-600 mb-6">
-            Choose 1-3 areas from your lowest scoring areas (below 80%) to focus on improving over the next 28-30 days.
-            These will become your personalized intention setting areas for maximum transformation impact.
-          </p>
+        </div>
 
-          {/* Selection Counter */}
-          <div className="bg-[#7FB069]/10 border border-[#7FB069] rounded-lg p-4 mb-8">
-            <p className="text-[#7FB069] font-medium">
-              <span className="text-[#7FB069] font-bold">Selected: {selectedCount}/3</span> - You can select up to 3
-              focus areas for your 28-day intention setting cycle.
+        {/* Cherry Blossom coaches the choice — she already knows the scores. */}
+        <div className="mb-8 text-left">
+          <CherryBlossomGuidance greeting="I&apos;ve reviewed your Reality Check&trade;.">
+            <p>You don&apos;t need to transform every part of your life at once.</p>
+            <p>
+              Choose the one to three areas you&apos;re ready to intentionally nurture over the next 28 days. We&apos;ll
+              build your weekly rhythm around these.
             </p>
-          </div>
+          </CherryBlossomGuidance>
+        </div>
+
+        {/* Selection Counter — live, dynamic; restyled to the brand system. */}
+        <div className="mb-8 rounded-xl border border-brand-green/30 bg-brand-green/10 p-4 text-center">
+          <p className="font-medium text-brand-green-dark">
+            <span className="font-bold">Selected: {selectedCount}/3</span> — you can nurture up to three areas this
+            cycle.
+          </p>
         </div>
 
         {/* Focus Areas Grid */}

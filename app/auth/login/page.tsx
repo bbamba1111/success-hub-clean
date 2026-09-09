@@ -2,6 +2,7 @@
 
 import type React from "react"
 import { createClient } from "@/lib/supabase/client"
+import { getPostLoginDestination } from "@/utils/reality-check-storage"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -31,7 +32,10 @@ export default function LoginPage() {
 
       if (error) throw error
 
-      window.location.href = "/"
+      // Returning-member routing: if this week's Weekly Reality Check™ isn't
+      // done, open the onboarding ritual (/begin); otherwise land on Live Today™.
+      const destination = await getPostLoginDestination()
+      window.location.href = destination
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred")
     } finally {
@@ -113,10 +117,14 @@ export default function LoginPage() {
                   >
                     {isLoading ? "Logging in..." : "Login"}
                   </Button>
+                  {/* No self-service "Sign up" link here on purpose — every
+                      account is created via the token-gated /welcome flow
+                      after a verified SamCart purchase, never from a public
+                      form. New visitors belong on the checkout page. */}
                   <div className="mt-2 text-center text-sm text-gray-600">
-                    Don't have an account?{" "}
-                    <Link href="/auth/signup" className="text-[#7FB069] hover:text-[#6FA055] font-semibold underline">
-                      Sign up
+                    Don't have an account yet?{" "}
+                    <Link href="/monday" className="text-[#7FB069] hover:text-[#6FA055] font-semibold underline">
+                      Get started
                     </Link>
                   </div>
                 </div>

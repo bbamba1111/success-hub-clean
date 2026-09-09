@@ -8,7 +8,7 @@ import { Menu, X } from "lucide-react"
 const navItems = [
   { label: "Home", href: "/" },
   { label: "The Sunday Shift", href: "#sunday-shift" },
-  { label: "Mondays", href: "/mondays" },
+  { label: "Mondays", href: "/monday" },
   { label: "Experiences", href: "/experiences" },
   { label: "About Barbara", href: "/about" },
   { label: "Speaking", href: "/speaking" },

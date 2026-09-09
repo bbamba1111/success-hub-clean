@@ -6,31 +6,49 @@
 
 @layer base {
   :root {
+    /*
+     * Phase 2A Design System — semantic tokens mapped to the brand palette.
+     * Green #5D9D61 (primary) · Coral #E26C73 (destructive-accent) ·
+     * Ink #3A2E33 (foreground) · Blush #F6E4E7 (secondary) · warm neutrals.
+     * shadcn primitives (Button, Badge, Card, Input) inherit these directly.
+     */
+    /*
+     * Visual Design System™ (Phase 5.4.2) — WHITE canvas + near-black body text.
+     * Readability is prioritized over aesthetic softness: text on white uses
+     * near-black (#1A1A1A ≈ 0 0% 10%). Warmth comes from photography, blossom
+     * accents, glass, and shadow — never from beige/cream page backgrounds.
+     */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 0 0% 10%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 0 0% 10%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-    --radius: 0.5rem;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --popover-foreground: 0 0% 10%;
+    --primary: 123 26% 49%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 347 47% 93%;
+    --secondary-foreground: 0 0% 13%;
+    --muted: 20 16% 96%;
+    --muted-foreground: 0 0% 32%;
+    --accent: 123 30% 92%;
+    --accent-foreground: 125 25% 28%;
+    --destructive: 356 67% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 20 15% 90%;
+    --input: 20 15% 90%;
+    --ring: 123 26% 49%;
+    /*
+     * Harmony Lane™ radius hierarchy (restrained luxury — not pill, not square).
+     * Base 10px drives the shared scale so all primitives inherit shape order:
+     *   sm 6px (forms) · md 8px (buttons/inputs) · lg 10px (cards) ·
+     *   xl 14px (workspace panels) · 2xl 18px (hero / major surfaces).
+     */
+    --radius: 0.625rem;
+    --chart-1: 123 26% 49%;
+    --chart-2: 356 67% 66%;
+    --chart-3: 43 74% 66%;
+    --chart-4: 197 37% 44%;
+    --chart-5: 335 11% 30%;
   }
 
   .dark {
@@ -66,7 +84,307 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans antialiased;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    line-height: 1.6;
+  }
+}
+
+/*
+ * ============================================================================
+ * PHASE 2A · GLOBAL DESIGN SYSTEM
+ * ----------------------------------------------------------------------------
+ * Opt-in, reusable primitives so every surface speaks one visual language.
+ * These are additive (new class names) so existing markup is never broken.
+ *   Typography · Buttons · Badges · Cards · Glass · Motion · Icons · Spacing
+ * ============================================================================
+ */
+@layer components {
+  /* ---- Typography -------------------------------------------------------- */
+  /* Playfair Display — hero + major page titles ONLY. */
+  .ds-hero-title {
+    @apply font-display font-semibold tracking-tight text-brand-ink;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1.1;
+  }
+  .ds-page-title {
+    @apply font-display font-semibold tracking-tight text-brand-ink;
+    font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+    line-height: 1.15;
+  }
+  /* Section + sub headings (H2–H4) use Montserrat Bold. */
+  .ds-section-title {
+    @apply font-sans font-bold text-brand-ink;
+    font-size: clamp(1.15rem, 2vw, 1.5rem);
+    line-height: 1.25;
+  }
+  .ds-eyebrow {
+    @apply font-sans text-xs font-semibold uppercase tracking-[0.14em] text-brand-green;
+  }
+  /* Playfair Display italic — editorial quotes, affirmations, intentions. */
+  .ds-affirmation {
+    @apply font-serif italic text-brand-ink;
+    line-height: 1.6;
+  }
+
+  /* ---- Buttons ----------------------------------------------------------- */
+  .ds-btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5
+      text-sm font-semibold transition-all duration-200 ease-out
+      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
+      focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+  }
+  .ds-btn-primary {
+    @apply ds-btn bg-brand-green text-white shadow-ds hover:bg-brand-green-dark
+      hover:shadow-ds-glow hover:-translate-y-0.5;
+  }
+  .ds-btn-secondary {
+    @apply ds-btn bg-brand-blush text-brand-ink hover:bg-brand-coral hover:text-white;
+  }
+  .ds-btn-ghost {
+    @apply ds-btn bg-transparent text-brand-ink hover:bg-brand-green/10;
+  }
+
+  /* ---- Badges ------------------------------------------------------------ */
+  .ds-badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5
+      text-xs font-medium;
+  }
+  .ds-badge-green {
+    @apply ds-badge bg-brand-green/10 text-brand-green-dark;
+  }
+  .ds-badge-coral {
+    @apply ds-badge bg-brand-coral/10 text-brand-coral-dark;
+  }
+  .ds-badge-neutral {
+    @apply ds-badge bg-muted text-muted-foreground;
+  }
+
+  /* ---- Cards ------------------------------------------------------------- */
+  /* Standard cards sit at the card tier of the shape hierarchy (10px). */
+  .ds-card {
+    @apply rounded-lg border border-border bg-card text-card-foreground
+      shadow-ds transition-all duration-200 ease-out;
+  }
+  .ds-card-interactive {
+    @apply ds-card hover:-translate-y-0.5 hover:shadow-ds-md;
+  }
+  .ds-card-pad {
+    @apply p-5 sm:p-6;
+  }
+
+  /* ---- Glass hierarchy --------------------------------------------------- */
+  /* (base .glass-panel / .glass-chip defined below — these extend the scale.) */
+  .glass-strong {
+    background-color: rgba(255, 255, 255, 0.55);
+    -webkit-backdrop-filter: blur(14px) saturate(120%);
+    backdrop-filter: blur(14px) saturate(120%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 20px 50px rgba(58, 46, 51, 0.12);
+  }
+  .glass-subtle {
+    background-color: rgba(255, 255, 255, 0.08);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+  }
+
+  /* ---- Harmony Lane™ material system ------------------------------------- */
+  /*
+   * The standard building blocks for every future page. Compose these instead
+   * of hand-rolling glass/borders/radii so the platform stays one calm,
+   * editorial visual language. Softness comes from glass, generous whitespace,
+   * and refined borders — never from oversized rounded corners.
+   */
+
+  /* Harmony Surface™ — a premium solid surface for content that sits on the page. */
+  .harmony-surface {
+    @apply rounded-lg border border-black/[0.06] bg-card text-card-foreground shadow-ds-sm;
+  }
+
+  /* Harmony Panel™ — a workspace panel: architectural, one tier above cards. */
+  .harmony-panel {
+    @apply rounded-xl border border-black/[0.06] bg-card text-card-foreground shadow-ds;
+  }
+
+  /* Harmony Workspace™ — the largest container: a focused room for a segment. */
+  .harmony-workspace {
+    @apply rounded-2xl border border-white/70 bg-card text-card-foreground shadow-ds-md;
+  }
+
+  /* Harmony Glass™ — refined frosted glass; the primary translucent material. */
+  .harmony-glass {
+    background-color: rgba(255, 255, 255, 0.16);
+    -webkit-backdrop-filter: blur(9px) saturate(118%);
+    backdrop-filter: blur(9px) saturate(118%);
+    border: 1px solid rgba(255, 255, 255, 0.42);
+    box-shadow: 0 12px 40px rgba(58, 46, 51, 0.1);
+    border-radius: calc(var(--radius) + 4px);
+  }
+
+  /* Harmony Divider™ — an elegant hairline for separating content. */
+  .harmony-divider {
+    @apply h-px w-full border-0 bg-gradient-to-r from-transparent via-black/[0.08] to-transparent;
+  }
+
+  /* Harmony Section™ — consistent, generous vertical rhythm between sections. */
+  .harmony-section {
+    @apply py-12 sm:py-16 lg:py-20;
+  }
+
+  /* ---- Motion ------------------------------------------------------------ */
+  .ds-transition {
+    @apply transition-all duration-200 ease-out;
+  }
+  .ds-hover-lift {
+    @apply transition-transform duration-200 ease-out hover:-translate-y-1;
+  }
+
+  /* ---- Icons ------------------------------------------------------------- */
+  .ds-icon-sm {
+    @apply h-4 w-4 shrink-0;
+  }
+  .ds-icon {
+    @apply h-5 w-5 shrink-0;
+  }
+  .ds-icon-lg {
+    @apply h-6 w-6 shrink-0;
+  }
+
+  /* ---- Section spacing --------------------------------------------------- */
+  .ds-section {
+    @apply py-10 sm:py-14;
+  }
+  .ds-container {
+    @apply mx-auto w-full max-w-5xl px-4 sm:px-6;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-btn-primary,
+  .ds-card-interactive,
+  .ds-hover-lift {
+    transition: none;
+  }
+  .ds-btn-primary:hover,
+  .ds-card-interactive:hover,
+  .ds-hover-lift:hover {
+    transform: none;
+  }
+}
+
+/* Glowing cherry-blossom indicator light — soft pulsing halo */
+@keyframes blossom-pulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 2px rgba(232, 143, 162, 0.7)) drop-shadow(0 0 5px rgba(232, 143, 162, 0.5));
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 6px rgba(232, 143, 162, 0.95)) drop-shadow(0 0 12px rgba(232, 143, 162, 0.7));
+    transform: scale(1.12);
+  }
+}
+
+.blossom-glow {
+  display: inline-block;
+  animation: blossom-pulse 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blossom-glow {
+    animation: none;
+  }
+}
+
+/*
+ * Segment breathing — a slow, gentle scale on the segment currently in
+ * session so it "breathes" and draws the eye. Only transform is animated
+ * (never box-shadow) so it never fights the card's ring or hover shadow.
+ */
+@keyframes segment-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.012);
+  }
+}
+
+.segment-breathing {
+  animation: segment-breathe 5s ease-in-out infinite;
+  transform-origin: center;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .segment-breathing {
+    animation: none;
+  }
+}
+
+/*
+ * Shared glass treatment — "luxury wellness retreat" language.
+ * Lighter + less blur than before so the background imagery is gently
+ * perceptible through the glass, while text stays the highest priority.
+ * Use `.glass-panel` for primary cards and `.glass-chip` for small pills/insets.
+ */
+.glass-panel {
+  background-color: rgba(255, 255, 255, 0.14);
+  -webkit-backdrop-filter: blur(7px) saturate(115%);
+  backdrop-filter: blur(7px) saturate(115%);
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  box-shadow: 0 10px 40px rgba(90, 74, 82, 0.12);
+}
+
+.glass-chip {
+  background-color: rgba(255, 255, 255, 0.28);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 0 2px 12px rgba(90, 74, 82, 0.08);
+}
+
+/*
+ * Floating cherry-blossom petals — a calm, ambient sense of arrival.
+ * Individual petals set their own duration/delay/offset via inline styles.
+ */
+@keyframes petal-drift {
+  0% {
+    transform: translate3d(0, -8vh, 0) rotate(0deg);
+    opacity: 0;
+  }
+  8% {
+    opacity: var(--petal-opacity, 0.6);
+  }
+  92% {
+    opacity: var(--petal-opacity, 0.6);
+  }
+  100% {
+    transform: translate3d(var(--petal-drift-x, 40px), 108vh, 0) rotate(320deg);
+    opacity: 0;
+  }
+}
+
+.petal {
+  position: absolute;
+  top: 0;
+  width: 14px;
+  height: 14px;
+  background: radial-gradient(circle at 30% 30%, #f7c9d4 0%, #e88fa2 70%, #d97a90 100%);
+  /* Asymmetric radius gives a soft petal/teardrop silhouette */
+  border-radius: 100% 0 100% 100%;
+  will-change: transform, opacity;
+  animation-name: petal-drift;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .petal {
+    display: none;
   }
 }
 
