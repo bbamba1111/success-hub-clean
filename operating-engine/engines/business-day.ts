@@ -11,6 +11,7 @@ import {
   SCHEDULE,
   SCHEDULE_BY_ID,
   nextReachableIndex,
+  orderedBlocksForDay,
   previousReachableIndex,
   resolveEffectiveBlock,
 } from "../config/schedule"
@@ -51,10 +52,20 @@ export function getNextOperatingSegment(currentIndex: number, time: TimeContext)
   const current = SCHEDULE[currentIndex]
 
   // Only the overnight closure ("digital-detox") needs bespoke day-aware
-  // logic below. For all other blocks, advance to the next reachable block
-  // (skipping `mondayOnly` blocks on every day except Monday) and apply that
-  // block's day-aware timing.
+  // logic below. For all other blocks, advance to the next block by EFFECTIVE
+  // TIME for the day (not array order) — this keeps Monday's resequenced
+  // morning correct, where Morning GIV•EN™ sits first in the array but runs
+  // at 10:15 AM. The block after the last daytime block is the overnight
+  // Digital Detox™.
   if (current.id !== "digital-detox") {
+    const ordered = orderedBlocksForDay(time.dayOfWeek)
+    const pos = ordered.findIndex((b) => b.id === current.id)
+    if (pos !== -1) {
+      return pos < ordered.length - 1
+        ? ordered[pos + 1]
+        : resolveEffectiveBlock(SCHEDULE_BY_ID["digital-detox"]!, time.dayOfWeek)
+    }
+    // Defensive fallback: array-order next (should not be reached).
     return resolveEffectiveBlock(SCHEDULE[nextReachableIndex(currentIndex, time.dayOfWeek)], time.dayOfWeek)
   }
 
@@ -114,24 +125,27 @@ function resolveProgress(minutes: number): number {
 }
 
 /** Build the per-block timeline with current/upcoming/completed states.
- *  Blocks marked `mondayOnly` are excluded on every day except Monday (dayOfWeek === 1).
- *  Blocks marked `excludeMonday` (Tuesday–Thursday's Daily Planning + GPS™) are
- *  excluded on Monday, which shows Reality Check™ + Debrief™ in that slot instead.
- *  Every block's day-aware timing (see `resolveEffectiveBlock`) is applied, so
- *  Monday's resequenced morning (Morning GIV•EN™ → Reality Check™ → Debrief™
- *  → Movement™ → Lunch™) renders with the correct times automatically.
+ *  Blocks are ordered by their EFFECTIVE START TIME for the day (via
+ *  `orderedBlocksForDay`), NOT by SCHEDULE array position — this is what makes
+ *  Monday's resequenced morning (Reality Check™ → Decide & Design™ →
+ *  Transition Break™ → Morning GIV•EN™ → Movement™ → Lunch™) render in the
+ *  right order even though GIV•EN™ sits first in the array. `mondayOnly` /
+ *  `excludeMonday` visibility is handled inside `orderedBlocksForDay`.
+ *
+ *  State is derived from each block's position relative to the currently-active
+ *  block (identified by id): earlier in the day → completed, the active block →
+ *  current, later → upcoming.
  */
-function buildTimeline(currentIndex: number, dayOfWeek: number): TimelineEntry[] {
-  const isMonday = dayOfWeek === 1
-  return SCHEDULE.flatMap((block, index) => {
-    // Hide mondayOnly blocks on non-Monday days, and excludeMonday blocks on Monday.
-    if (block.mondayOnly && !isMonday) return []
-    if (block.excludeMonday && isMonday) return []
-    const resolvedBlock = resolveEffectiveBlock(block, dayOfWeek)
+function buildTimeline(currentBlockId: string, dayOfWeek: number): TimelineEntry[] {
+  const ordered = orderedBlocksForDay(dayOfWeek)
+  const currentPos = ordered.findIndex((b) => b.id === currentBlockId)
+  return ordered.map((block, pos) => {
     let state: TimelineEntry["state"] = "upcoming"
-    if (index === currentIndex) state = "current"
-    else if (index < currentIndex) state = "completed"
-    return [{ block: resolvedBlock, state }]
+    if (currentPos !== -1) {
+      if (pos === currentPos) state = "current"
+      else if (pos < currentPos) state = "completed"
+    }
+    return { block, state }
   })
 }
 
@@ -184,7 +198,7 @@ export function getBusinessDayState(time: TimeContext): BusinessDayState {
       countdownToNext: buildCountdown(minutesUntilNext),
       status,
       progress: resolveProgress(minutes),
-      timeline: buildTimeline(detoxIndex, time.dayOfWeek),
+      timeline: buildTimeline("digital-detox", time.dayOfWeek),
     }
   }
 
@@ -214,7 +228,7 @@ export function getBusinessDayState(time: TimeContext): BusinessDayState {
       countdownToNext: buildCountdown(minutesUntilNext),
       status,
       progress: resolveProgress(minutes),
-      timeline: buildTimeline(tfIndex, time.dayOfWeek),
+      timeline: buildTimeline("time-freedom", time.dayOfWeek),
     }
   }
   // ── Standard weekday logic ────────────────────────────────────────────────
@@ -224,10 +238,18 @@ export function getBusinessDayState(time: TimeContext): BusinessDayState {
 
   const currentIndex = getCurrentBlockIndex(minutes, time.dayOfWeek)
   const current: BlockConfig = resolveEffectiveBlock(SCHEDULE[currentIndex], time.dayOfWeek)
-  const previous = resolveEffectiveBlock(
-    SCHEDULE[previousReachableIndex(currentIndex, time.dayOfWeek)],
-    time.dayOfWeek,
-  )
+  // Previous block by EFFECTIVE TIME for the day (not array order), so Monday's
+  // resequenced morning resolves correctly. The block before the first daytime
+  // block (Flex Time™) is the overnight Digital Detox™.
+  const orderedToday = orderedBlocksForDay(time.dayOfWeek)
+  const currentPos = orderedToday.findIndex((b) => b.id === current.id)
+  const previous =
+    currentPos > 0
+      ? orderedToday[currentPos - 1]
+      : resolveEffectiveBlock(
+          SCHEDULE[previousReachableIndex(currentIndex, time.dayOfWeek)],
+          time.dayOfWeek,
+        )
   const next = getNextOperatingSegment(currentIndex, time)
 
   const minutesUntilNext = minutesUntil(minutes, next.startMinutes)
@@ -241,6 +263,6 @@ export function getBusinessDayState(time: TimeContext): BusinessDayState {
     countdownToNext: buildCountdown(minutesUntilNext),
     status,
     progress: resolveProgress(minutes),
-    timeline: buildTimeline(currentIndex, time.dayOfWeek),
+    timeline: buildTimeline(current.id, time.dayOfWeek),
   }
 }

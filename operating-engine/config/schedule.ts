@@ -25,16 +25,21 @@ const h = (hours: number, minutes = 0) => hours * 60 + minutes
  * (Unplug Digital Detox™) wraps past midnight (23:00 → 07:00).
  *
  * Monday resequencing — Make Time For More On Mondays™:
- * On every other weekday, Morning GIV•EN™ runs 9:00–10:30 AM and Movement /
- * Lunch follow immediately after. On Mondays the morning is resequenced so
- * members align first, then reflect, then debrief, before moving on:
- *   Flex Time (7:00–9:00) → Morning GIV•EN™ (9:00–9:45) →
- *   Reality Check™ (9:45–10:30) → Work-Life Balance Debrief™ (10:30–11:00) →
+ * On every other weekday, Morning GIV•EN™ runs first (9:00–9:45 AM) and
+ * Movement / Lunch follow. On Mondays the morning is resequenced so members
+ * check in with their life first, decide & design their day, take a brief
+ * transition, and only THEN align in Morning GIV•EN™ before moving:
+ *   Flex Time (7:00–9:00) → Work-Life Balance Reality Check™ (9:00–9:30) →
+ *   Decide & Design My Business Day™ (9:30–10:00) →
+ *   Transition Break™ (10:00–10:15) → Morning GIV•EN™ (10:15–11:00) →
  *   Movement Window™ (11:00–11:30) → Lunch Break™ (11:30 AM–1:00 PM).
  * Each affected block carries its Monday-specific times via
- * `mondayStartMinutes` / `mondayEndMinutes` / `mondayTimeLabel`; the two
- * Monday-only blocks (`monday-reality-check`, `monday-debrief`) simply don't
- * exist on any other day (`mondayOnly: true`) and are hidden by the engine.
+ * `mondayStartMinutes` / `mondayEndMinutes` / `mondayTimeLabel`; the three
+ * Monday-only blocks (`monday-reality-check`, `monday-debrief`,
+ * `monday-transition-break`) simply don't exist on any other day
+ * (`mondayOnly: true`) and are hidden by the engine. Because Monday's order no
+ * longer matches this array's order, the engine builds the Monday timeline by
+ * EFFECTIVE START TIME (see `orderedBlocksForDay`), not array position.
  */
 export const SCHEDULE: BlockConfig[] = [
   {
@@ -70,6 +75,11 @@ export const SCHEDULE: BlockConfig[] = [
     timeLabel: "9:00–9:45 AM",
     startMinutes: h(9),
     endMinutes: h(9, 45),
+    // Mondays: runs LAST in the morning sequence (after Reality Check™,
+    // Decide & Design™, and the Transition Break™) from 10:15–11:00 AM.
+    mondayTimeLabel: "10:15–11:00 AM",
+    mondayStartMinutes: h(10, 15),
+    mondayEndMinutes: h(11),
     description:
       "Align mind, body, spirit, and priorities before work—Gratitude, Invitation, Vision, Emotional Embodiment, and Nurture Non-Negotiables™.",
     emoji: "🌸",
@@ -89,17 +99,18 @@ export const SCHEDULE: BlockConfig[] = [
     ],
   },
   // ── Monday-only block ─────────────────────────────────────────────────────
-  // Appears after Morning GIV•EN™ on Mondays only (9:45–10:30 AM).
+  // Opens the Monday morning (9:00–9:30 AM) — the first thing members do,
+  // before Decide & Design™, the Transition Break™, and Morning GIV•EN™.
   {
     id: "monday-reality-check",
     sectionId: "block-monday-reality-check",
     title: "Take My Work-Life Balance Reality Check™",
     shortTitle: "Make Time For More On Mondays™",
-    timeLabel: "9:45–10:30 AM",
-    startMinutes: h(9, 45),
-    endMinutes: h(10, 30),
+    timeLabel: "9:00–9:30 AM",
+    startMinutes: h(9),
+    endMinutes: h(9, 30),
     description:
-      "Before you manage your business, manage your life. Take 45 minutes to honestly examine where you are — boundaries, energy, and commitments — and redesign your entry into the workweek.",
+      "Before you manage your business, manage your life. Take 30 minutes to honestly examine where you are — boundaries, energy, and commitments — and redesign your entry into the workweek.",
     emoji: "🌸",
     tint: "252 240 238",
     backgroundImage: [
@@ -119,17 +130,17 @@ export const SCHEDULE: BlockConfig[] = [
     ],
   },
   // ── Monday-only block ─────────────────────────────────────────────────────
-  // Appears after the Reality Check™ on Mondays only (10:30–11:00 AM).
+  // Appears after the Reality Check™ on Mondays only (9:30–10:00 AM).
   {
     id: "monday-debrief",
     sectionId: "block-monday-debrief",
     title: "Decide & Design My Work-Life Balance Business Day™",
     shortTitle: "Decide & Design My Business Day™",
-    timeLabel: "10:30–11:00 AM",
-    startMinutes: h(10, 30),
-    endMinutes: h(11),
+    timeLabel: "9:30–10:00 AM",
+    startMinutes: h(9, 30),
+    endMinutes: h(10),
     description:
-      "A protected time and space to sit with what surfaced in your Reality Check™ — before you move into today's Movement Window™.",
+      "A protected time and space to sit with what surfaced in your Reality Check™ — and design how you'll enter the week — before your Transition Break™ and Morning GIV•EN™.",
     emoji: "🌸",
     tint: "252 240 238",
     backgroundImage: "/images/cherry-blossom-intentions-design.png",
@@ -143,6 +154,34 @@ export const SCHEDULE: BlockConfig[] = [
     mondayOnly: true,
     messages: [
       "Sit with what surfaced. Awareness without a pause to process it rarely becomes lasting change.",
+    ],
+  },
+  // ── Monday-only block ─────────────────────────────────────────────────────
+  // A brief 15-minute transition (10:00–10:15 AM) between Decide & Design™ and
+  // Morning GIV•EN™ — a moment to step away, breathe, and arrive present.
+  {
+    id: "monday-transition-break",
+    sectionId: "block-monday-transition-break",
+    title: "Transition Break™",
+    shortTitle: "Transition Break™",
+    timeLabel: "10:00–10:15 AM",
+    startMinutes: h(10),
+    endMinutes: h(10, 15),
+    description:
+      "A short, protected pause between designing your day and Morning GIV•EN™ — step away from the screen, breathe, and arrive present for alignment.",
+    emoji: "🌿",
+    tint: "240 245 236",
+    backgroundImage: "/images/block-movement-window.png",
+    cta: "Take My Transition Break™",
+    engagement: "self-guided",
+    part: "morning",
+    greetingPeriod: "Morning",
+    greetingEmoji: "🌿",
+    themePeriod: "morning",
+    communityOpen: true,
+    mondayOnly: true,
+    messages: [
+      "A short pause lets what you just decided settle before you shift into alignment.",
     ],
   },
   // ── Tuesday–Thursday-only block ───────────────────────────────────────────
@@ -411,4 +450,25 @@ export function previousReachableIndex(fromIndex: number, dayOfWeek: number): nu
     idx = (idx - 1 + len) % len
   }
   return idx
+}
+
+/**
+ * The visible blocks for `dayOfWeek`, each resolved to its effective times for
+ * that day, ordered by when they actually happen — NOT by array position.
+ *
+ * This is what lets Monday present GIV•EN™ *after* the Reality Check™ /
+ * Decide & Design™ even though GIV•EN™ sits first in the SCHEDULE array. Every
+ * block from 7:00 AM onward sorts by effective start minute; the overnight
+ * Digital Detox™ (which wraps past midnight, start 23:00) is always pinned
+ * last so the day reads open → close.
+ */
+export function orderedBlocksForDay(dayOfWeek: number): BlockConfig[] {
+  return SCHEDULE.filter((block) => !isHiddenOnDay(block, dayOfWeek))
+    .map((block) => resolveEffectiveBlock(block, dayOfWeek))
+    .sort((a, b) => {
+      // Pin the overnight wrap-around block (Digital Detox™) last.
+      if (a.id === "digital-detox") return 1
+      if (b.id === "digital-detox") return -1
+      return a.startMinutes - b.startMinutes
+    })
 }

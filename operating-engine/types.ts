@@ -16,6 +16,7 @@ export type BlockId =
   | "monday-flex"
   | "monday-reality-check"
   | "monday-debrief"
+  | "monday-transition-break"
   | "early-access"
   | "morning-given"
   | "daily-planning-gps"
@@ -134,8 +135,9 @@ export interface BlockConfig {
   mondayOnly?: boolean
   /**
    * If true, this block is hidden on Mondays (dayOfWeek === 1). Used for
-   * the Tuesday–Thursday "Daily Planning + GPS™" block, which replaces
-   * Monday's `monday-reality-check` in the same 9:45–10:30 AM slot.
+   * the Tuesday–Thursday "Daily Planning + GPS™" block (9:45–10:30 AM),
+   * whose Monday equivalent is the resequenced Reality Check™ → Decide &
+   * Design™ → Transition Break™ morning.
    */
   excludeMonday?: boolean
   /** Override startMinutes used on Mondays (Make Time For More On Mondays™ resequences the morning). */

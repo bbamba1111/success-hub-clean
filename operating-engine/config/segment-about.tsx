@@ -57,6 +57,45 @@ function FlexBox({ children }: { children: ReactNode }) {
 
 export const SEGMENT_ABOUT: Record<string, SegmentAbout> = {
 
+  /* Monday-only ─ Transition Break™ ───────────────────────────────────── */
+  "monday-transition-break": {
+    sections: [
+      {
+        heading: "Purpose",
+        body: (
+          <Para>
+            The Transition Break™ is a short, protected 15-minute pause (10:00–10:15 AM on Mondays) between
+            Decide &amp; Design My Business Day™ and Morning GIV&bull;EN™. You have just examined your life in
+            the Reality Check™ and designed your entry into the week — this is the space to let it settle before
+            you shift into alignment.
+          </Para>
+        ),
+      },
+      {
+        heading: "How To Use It",
+        body: (
+          <Bullets
+            items={[
+              "Step away from the screen — stand up, stretch, or step outside.",
+              "Breathe. Let what surfaced in your Reality Check™ settle without acting on it.",
+              "Arrive present for Morning GIV•EN™ rather than rushing straight into it.",
+            ]}
+          />
+        ),
+      },
+      {
+        heading: "Why It Matters",
+        body: (
+          <Para>
+            Transitions are where intention is either kept or lost. A deliberate pause between reflection and
+            alignment prevents the morning from collapsing into one rushed block, so you enter Morning
+            GIV&bull;EN™ grounded instead of scattered.
+          </Para>
+        ),
+      },
+    ],
+  },
+
   /* 1 ─ Early Entry / Flex Time™ ──────────────────────────────────────── */
   "early-access": {
     sections: [
@@ -361,7 +400,7 @@ export const SEGMENT_ABOUT: Record<string, SegmentAbout> = {
     ],
   },
 
-  /* 4 ─ Healthy Hybrid Lunch™ ────────────────────────────────────────── */
+  /* 4 ─ Healthy Hybrid Lunch™ ───────────────────��────────────────────── */
   "lunch-break": {
     sections: [
       {
