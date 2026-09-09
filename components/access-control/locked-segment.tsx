@@ -101,7 +101,8 @@ export function LockedSegment({
         </div>
       </div>
 
-      {/* About This Segment™ — always readable while locked */}
+      {/* About This Segment™ — always readable while locked. Framed as the
+          segment's Work-Life Balance Time & Space Boundary™ (spec §17). */}
       {aboutContent && (
         <div className="space-y-4">
           <p
@@ -109,7 +110,7 @@ export function LockedSegment({
               isEvening ? "text-white/60" : "text-[#6B5860]/60"
             }`}
           >
-            About This Segment
+            Work-Life Balance Time &amp; Space Boundary™
           </p>
           <div className={isEvening ? "text-white/80" : ""}>{aboutContent}</div>
         </div>

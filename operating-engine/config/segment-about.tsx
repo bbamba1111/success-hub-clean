@@ -97,82 +97,61 @@ export const SEGMENT_ABOUT: Record<string, SegmentAbout> = {
   },
 
   /* 1 ─ Early Entry / Flex Time™ ──────────────────────────────────────── */
+  // Work-Life Balance Time & Space Boundary™ framing (see §21). Flex Time™ runs
+  // Monday–Friday, up to 3 hours/day; up to 1 hour may be borrowed from the
+  // Extended Healthy Hybrid Lunch™ ONLY. Morning GIV•EN™ (45 min) and the CEO
+  // Workday™ (4 hours) are protected and never borrowed from.
   "early-access": {
     sections: [
       {
         heading: "Purpose",
         body: (
           <Para>
-            Early Entry / Flex Time™ is a deliberately engineered buffer — not wasted time. It is one of The
-            New 9-to-5 & Nighttime Non-Negotiable SOPs™ that protects your Daily Non-Negotiables™ and ensures
-            life&apos;s unavoidable demands never spill into your CEO Workday™.
+            Flex Time™ is a deliberately engineered flexibility window that gives founders room to handle
+            life&apos;s unavoidable demands without allowing those demands to take over the protected work and
+            life boundaries that follow. It is not wasted time. It is not catch-up time. It is a protected
+            buffer for real life.
           </Para>
-        ),
-      },
-      {
-        heading: "How Flex Time™ Works",
-        body: (
-          <FlexBox>
-            <p className="mb-2">
-              <strong>Default:</strong> 2 hours available by default (7:00 AM – 9:00 AM).
-            </p>
-            <p className="mb-2">
-              <strong>Borrowing:</strong> When life requires it, you may temporarily expand Flex Time™ by
-              borrowing:
-            </p>
-            <ul className="mb-2 space-y-1 pl-1">
-              <li className="flex items-start gap-2">
-                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#5B835F]/50" aria-hidden />
-                Morning GIV&bull;EN™ — up to 1 hour
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#5B835F]/50" aria-hidden />
-                Healthy Hybrid Lunch™ — up to 1 hour
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#5B835F]/50" aria-hidden />
-                4 hours maximum when both are borrowed.
-              </li>
-            </ul>
-            <p>
-              <strong>Important:</strong> Borrowing is reserved for genuine life demands — not a daily habit.
-              Your 4-Hour CEO Workday™ (1:00 PM – 5:00 PM) is never borrowed from and never shortened.
-            </p>
-          </FlexBox>
         ),
       },
       {
         heading: "Why It Matters",
         body: (
-          <Para>
-            Without a protected flexibility window, life events become fires. The CEO Workday™ gets stolen.
-            Sustainable Operating Practices™ get sacrificed. Flex Time™ is how high-performing founders stay
-            anchored to their operating rhythm even when life is unpredictable.
-          </Para>
+          <>
+            <Para>
+              Life does not always happen on schedule. Appointments, family responsibilities, community
+              commitments, unexpected needs, and other real-life demands can become interruptions when there is
+              no space designed to contain them. Flex Time™ creates that space.
+            </Para>
+            <Tip>Contain the interruption without allowing the interruption to become the operating system.</Tip>
+          </>
         ),
       },
       {
-        heading: "Scientific Foundation",
+        heading: "Your Boundary",
         body: (
-          <Para>
-            Research in cognitive load and decision fatigue shows that unplanned interruptions during deep
-            work windows reduce overall productivity by up to 40%. The Progress Principle (Amabile & Kramer)
-            demonstrates that protecting small daily wins — like keeping the CEO Workday™ intact — compounds
-            into significantly higher motivation, creativity, and performance over time. Pre-scheduling a flex
-            buffer eliminates reactive decision-making and protects the cognitive resources reserved for flow
-            state during the CEO Workday™.
-          </Para>
-        ),
-      },
-      {
-        heading: "Business Value",
-        body: (
-          <Para>
-            Every hour you protect your CEO Workday™ is an hour available for your highest-leverage business
-            work. Flex Time™ is the front-line defense that makes that protection possible. Founders who
-            install this buffer report fewer scheduling conflicts, lower stress, and stronger consistency with
-            their Sustainable Operating Practices™ — even during the most demanding weeks.
-          </Para>
+          <FlexBox>
+            <ul className="space-y-2 pl-1">
+              <li className="flex items-start gap-2">
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#5B835F]/50" aria-hidden />
+                Flex Time™ may be used Monday–Friday as needed, <strong>up to 3 hours per day</strong>.
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#5B835F]/50" aria-hidden />
+                <span>
+                  <strong>Up to 1 hour</strong> may be borrowed from the Extended Healthy Hybrid Lunch™ when
+                  additional flexibility is needed — the only borrowing source.
+                </span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#5B835F]/50" aria-hidden />
+                <span>
+                  Morning GIV&bull;EN™ is <strong>never borrowed</strong>. It is always 45 minutes, and the
+                  4-Hour Focused CEO Workday™ is always 4 hours.
+                </span>
+              </li>
+            </ul>
+          </FlexBox>
         ),
       },
       {
@@ -180,34 +159,35 @@ export const SEGMENT_ABOUT: Record<string, SegmentAbout> = {
         body: (
           <Bullets
             items={[
-              "Allowing Flex Time™ to expand beyond 4 hours on a regular basis.",
-              "Using borrowed Flex Time™ every day rather than occasionally.",
-              "Not having a defined anchor commitment for this window — defaulting to reactive behavior.",
-              "Treating personal errands and family responsibilities as interruptions rather than protected commitments.",
+              "Treating Flex Time™ as extra work time.",
+              "Turning it into a daily overflow container for unfinished CEO work.",
+              "Borrowing from Morning GIV•EN™.",
+              "Allowing it to routinely exceed 3 hours.",
+              "Letting flexibility become the reason work moves into evenings or weekends.",
             ]}
           />
         ),
       },
       {
-        heading: "Best Practices",
+        heading: "Best Practice",
         body: (
           <Bullets
             items={[
-              "Install one consistent anchor commitment (e.g. school drop-off, networking breakfast, morning prep).",
-              "Treat borrowing as a weekly exception — not a daily routine.",
-              "Use this window for medical appointments, community commitments, and family responsibilities by design.",
-              "Return borrowed time the next opportunity by compressing flex needs.",
+              "Use Flex Time™ intentionally.",
+              "Use it for real-life demands.",
+              "Protect the 45-minute Morning GIV•EN™ Routine™.",
+              "Protect the 4-hour CEO Workday™.",
+              "Use the lunch borrowing option only when genuinely necessary.",
             ]}
           />
         ),
       },
       {
-        heading: "",
+        heading: "Cherry Blossom™ Tip",
         body: (
           <Tip>
-            Your Flex Time™ commitment is not about filling every minute. It is about knowing in advance how
-            your morning unfolds so your CEO Workday™ always begins on time — and your Sustainable Operating
-            Practices™ remain intact, even on imperfect days.
+            Flexibility works best when it has a boundary. You do not need to control every part of your day.
+            You do need to protect the parts of your day that matter most.
           </Tip>
         ),
       },

@@ -3,7 +3,7 @@
 import { type ReactNode, useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import { ChevronDown } from "lucide-react"
+import { ChevronDown, Lock } from "lucide-react"
 import { OperatingPlanner } from "@/components/operating-planner/operating-planner"
 import { PLANNER_CONFIG } from "@/components/operating-planner/planner-config"
 import { TodaysMoveCard } from "@/components/operating-planner/todays-move-card"
@@ -20,6 +20,7 @@ import { useOperatingEngine } from "@/components/operating-engine-provider"
 import { LockedSegment } from "@/components/access-control/locked-segment"
 import { resolveSegmentAccessFromExperience } from "@/lib/access-control/segment-access"
 import { useSegmentOverrides } from "@/lib/access-control/use-segment-overrides"
+import { useAboutSeen } from "@/lib/access-control/about-seen-store"
 import { SPACE_LABEL } from "@/operating-engine/config/space-labels"
 import { SEGMENT_INNER_BG, SEGMENT_SAGE_OUTER, type SegmentInnerTone } from "@/lib/segment-theme"
 
@@ -169,6 +170,11 @@ export function BusinessDayBlock({
       : null
   const locked = segmentAccess?.locked ?? false
 
+  // §18 — remember when the founder opens this segment's About This Segment™
+  // in the pre-Monday preview, so the card can show a quiet "Reviewed" marker.
+  // Only tracks while the workspace is locked (the orientation phase).
+  const { seen: aboutSeen, markSeen: markAboutSeen } = useAboutSeen(locked ? blockId : undefined)
+
   // Support crossfading through multiple background images (e.g. the laptop
   // screen "changing" every few seconds) when an array is passed.
   const backgroundImages = Array.isArray(backgroundImage)
@@ -266,6 +272,16 @@ export function BusinessDayBlock({
           >
             <div className="w-full">
               <div className="mb-2.5 flex flex-wrap items-center gap-2.5">
+                {locked && (
+                  <span
+                    className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] ${
+                      isEvening ? "bg-white/15 text-white/85" : "bg-black/[0.06] text-[#6B5860]"
+                    }`}
+                  >
+                    <Lock className="h-3 w-3" aria-hidden />
+                    Workspace Locked
+                  </span>
+                )}
                 {isCurrent ? (() => {
                   const nowLabel = blockId === "digital-detox"
                     ? "Sleeping Now"
@@ -387,7 +403,14 @@ export function BusinessDayBlock({
           <button
             type="button"
             aria-expanded={open}
-            onClick={() => setOpen((v) => !v)}
+            onClick={() =>
+              setOpen((v) => {
+                const next = !v
+                // §18 — opening a locked card reveals About This Segment™; remember it.
+                if (next && locked) markAboutSeen()
+                return next
+              })
+            }
             className={`flex w-full items-center justify-center gap-1.5 border-t py-3 font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] transition-colors ${
               isEvening
                 ? "border-white/15 text-white/75 hover:bg-white/10"
@@ -401,10 +424,19 @@ export function BusinessDayBlock({
             {open
               ? "Close"
               : locked
-                ? "Preview This Segment"
+                ? "About This Segment™"
                 : blockId && SPACE_LABEL[blockId as keyof typeof SPACE_LABEL]
                   ? `Enter ${SPACE_LABEL[blockId as keyof typeof SPACE_LABEL]}`
                   : "Open Segment"}
+            {!open && locked && aboutSeen && (
+              <span
+                className={`ml-1.5 inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-semibold normal-case tracking-normal ${
+                  isEvening ? "bg-white/15 text-white/70" : "bg-[#7FB069]/15 text-[#5A7A45]"
+                }`}
+              >
+                Reviewed
+              </span>
+            )}
           </button>
         )}
 

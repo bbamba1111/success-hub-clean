@@ -16,21 +16,20 @@ import { GuidedMoments } from "@/components/guided-moments/guided-moments"
 import { getDayKey, saveLocalDay, syncFlexTimeDay } from "@/utils/flex-time-storage"
 
 /**
- * Day-aware borrowing rule for anything left outstanding at the 8:55 check-in:
- *   - Monday: Morning GIV•EN™ is compressed to 45 min (9:45–10:30, after the
- *     Reality Check), so it's never offered. Only Healthy Hybrid Lunch™ or defer.
- *   - Tuesday–Friday: both Morning GIV•EN™ and Healthy Hybrid Lunch™ are
- *     eligible, plus defer.
+ * Borrowing rule for anything left outstanding at the 8:55 check-in.
+ *
+ * Per the Flex Time™ operating rule: the Extended Healthy Hybrid Lunch™ is the
+ * ONLY segment Flex Time™ may borrow from (up to 1 hour), on every day. Morning
+ * GIV•EN™ is protected and never borrowed, and neither is Movement™, Reality
+ * Check™, Decide & Design™, the Transition Break™, the CEO Workday™, Time
+ * Freedom™, or Power Down & Unplug™. The only alternative to borrowing from
+ * lunch is to defer the outstanding item to tomorrow's Flex Time™.
  */
-function getResolutionOptions(now: Date): ResolutionOption[] {
-  const isMonday = now.getDay() === 1
-  const options: ResolutionOption[] = []
-  if (!isMonday) {
-    options.push({ id: "morning-given", label: "Morning GIV•EN™", kind: "borrow" })
-  }
-  options.push({ id: "healthy-hybrid-lunch", label: "Extended Healthy Hybrid Lunch™", kind: "borrow" })
-  options.push({ id: "defer", label: "Leave it for today — defer to tomorrow's Flex Time™", kind: "defer" })
-  return options
+function getResolutionOptions(_now: Date): ResolutionOption[] {
+  return [
+    { id: "healthy-hybrid-lunch", label: "Extended Healthy Hybrid Lunch™ — up to 1 hour", kind: "borrow" },
+    { id: "defer", label: "Leave it for today — defer to tomorrow's Flex Time™", kind: "defer" },
+  ]
 }
 
 /** True at/after 8:55 AM local time (5 minutes before Flex Time's 9:00 AM end). */
