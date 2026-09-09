@@ -14,6 +14,7 @@ import { useState } from "react"
 import { FlaskConical, X, RotateCcw, Clock } from "lucide-react"
 import { SCHEDULE, type BlockId, type LiveSessionOverride, type Season } from "@/operating-engine"
 import { useDeveloperMode, useOperatingEngine } from "@/components/operating-engine-provider"
+import { AccessControlPanel } from "@/components/access-control/access-control-panel"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
@@ -165,6 +166,12 @@ export function DeveloperToolbar() {
         ) : (
           <span className="text-slate-500">Loading…</span>
         )}
+      </div>
+
+      {/* Work-Life Balance Access Control™ — a real admin control (not
+          simulation), so it renders whether or not Developer Mode is on. */}
+      <div className="border-b border-slate-700 px-3 py-3">
+        <AccessControlPanel />
       </div>
 
       {!enabled ? (

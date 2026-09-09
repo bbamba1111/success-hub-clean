@@ -19,6 +19,7 @@ import { useActiveSpace } from "@/components/active-space-provider"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
 import { LockedSegment } from "@/components/access-control/locked-segment"
 import { resolveSegmentAccessFromExperience } from "@/lib/access-control/segment-access"
+import { useSegmentOverrides } from "@/lib/access-control/use-segment-overrides"
 import { SPACE_LABEL } from "@/operating-engine/config/space-labels"
 import { SEGMENT_INNER_BG, SEGMENT_SAGE_OUTER, type SegmentInnerTone } from "@/lib/segment-theme"
 
@@ -161,8 +162,11 @@ export function BusinessDayBlock({
   // show About This Segment™ + a countdown instead of the live workspace, so
   // members can prepare without jumping ahead of the day's rhythm.
   const experience = useOperatingEngine()
+  const { overrideFor } = useSegmentOverrides()
   const segmentAccess =
-    experience && blockId ? resolveSegmentAccessFromExperience(experience, blockId) : null
+    experience && blockId
+      ? resolveSegmentAccessFromExperience(experience, blockId, overrideFor(blockId))
+      : null
   const locked = segmentAccess?.locked ?? false
 
   // Support crossfading through multiple background images (e.g. the laptop
