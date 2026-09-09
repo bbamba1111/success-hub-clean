@@ -11,7 +11,8 @@
 import { useState, useTransition } from "react"
 import { Lock, Unlock, LockOpen, RotateCcw } from "lucide-react"
 import { SCHEDULE } from "@/operating-engine"
-import { GATED_SEGMENT_IDS } from "@/lib/access-control/segment-access"
+import { useOperatingEngine } from "@/components/operating-engine-provider"
+import { GATED_SEGMENT_IDS, resolveSegmentAccess } from "@/lib/access-control/segment-access"
 import {
   unlockSegment,
   lockSegment,
@@ -33,8 +34,23 @@ const GATED_SEGMENTS = SCHEDULE.filter((b) => GATED_SEGMENT_IDS.has(b.id)).map((
 
 export function AccessControlPanel() {
   const { unlockedIds } = useSegmentOverrides()
+  const experience = useOperatingEngine()
   const [pending, startTransition] = useTransition()
   const [busyId, setBusyId] = useState<string | null>(null)
+
+  // What the CLOCK says for a segment right now (ignoring admin bypass and any
+  // override), so Barbara can see which segments are actually locked for
+  // members at this moment and choose to override them.
+  const clockStatusFor = (segmentId: string) => {
+    if (!experience) return null
+    return resolveSegmentAccess({
+      segmentId,
+      dayOfWeek: experience.time.dayOfWeek,
+      minutesSinceMidnight: experience.time.minutesSinceMidnight,
+      isAdmin: false,
+      override: null,
+    })
+  }
 
   const run = (id: string | null, fn: () => Promise<AccessControlResult>) => {
     setBusyId(id ?? "__all__")
@@ -98,6 +114,15 @@ export function AccessControlPanel() {
         {GATED_SEGMENTS.map((seg) => {
           const isUnlocked = unlockedIds.has(seg.id)
           const isBusy = busyId === seg.id && pending
+          const clock = clockStatusFor(seg.id)
+          // What members experience right now on the clock (before override).
+          const clockLabel = !clock
+            ? null
+            : clock.reason === "not-today"
+              ? "Not today"
+              : clock.locked
+                ? `Locked · opens ${clock.unlockAtLabel}`
+                : "Open now"
           return (
             <li key={seg.id}>
               <button
@@ -113,7 +138,23 @@ export function AccessControlPanel() {
                     : "bg-slate-800 text-slate-300 hover:bg-slate-700",
                 )}
               >
-                <span className="truncate">{seg.title}</span>
+                <span className="flex min-w-0 flex-col">
+                  <span className="truncate">{seg.title}</span>
+                  {clockLabel && (
+                    <span
+                      className={cn(
+                        "text-[10px] font-medium normal-case tracking-normal",
+                        isUnlocked
+                          ? "text-emerald-300/70"
+                          : clock?.locked
+                            ? "text-amber-400/80"
+                            : "text-slate-500",
+                      )}
+                    >
+                      {isUnlocked ? `Override active · was ${clockLabel.toLowerCase()}` : clockLabel}
+                    </span>
+                  )}
+                </span>
                 <span className="flex shrink-0 items-center gap-1 text-[10px] font-semibold uppercase tracking-wide">
                   {isBusy ? (
                     "…"
