@@ -17,7 +17,7 @@
  *   Q7 solution-match   — multi, max 3, grouped
  */
 
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useMemo, useRef, useState } from "react"
 import { ArrowRight } from "lucide-react"
 import {
   FOUNDER_DEPENDENCY_OPTION,
@@ -82,6 +82,18 @@ export default function TimeLeakWizard({ onComplete }: { onComplete: () => void 
   const step = STEP_ORDER[stepIndex]
   const isLast = stepIndex === STEP_ORDER.length - 1
 
+  // Scroll to the top of the wizard (NOT the page top — that is the 70vh
+  // Cherry Blossom hero scene, which is jarring to jump back to on every
+  // answer). Aligning the wizard's own top to just below the viewport top
+  // keeps the progress header and the next question in view.
+  const rootRef = useRef<HTMLDivElement>(null)
+  const scrollToWizardTop = useCallback(() => {
+    const el = rootRef.current
+    if (!el) return
+    const top = el.getBoundingClientRect().top + window.scrollY - 16
+    window.scrollTo({ top: top < 0 ? 0 : top, behavior: "smooth" })
+  }, [])
+
   const persist = useCallback((next: TimeLeakResponses) => {
     setResponses(next)
     saveTimeLeakDraft(next, {})
@@ -129,7 +141,7 @@ export default function TimeLeakWizard({ onComplete }: { onComplete: () => void 
   const handleNext = useCallback(async () => {
     if (!isLast) {
       setStepIndex((i) => i + 1)
-      window.scrollTo({ top: 0, behavior: "smooth" })
+      scrollToWizardTop()
       return
     }
     setSaving(true)
@@ -150,14 +162,14 @@ export default function TimeLeakWizard({ onComplete }: { onComplete: () => void 
   const handleBack = useCallback(() => {
     if (stepIndex > 0) {
       setStepIndex((i) => i - 1)
-      window.scrollTo({ top: 0, behavior: "smooth" })
+      scrollToWizardTop()
     }
-  }, [stepIndex])
+  }, [stepIndex, scrollToWizardTop])
 
   const progress = ((stepIndex + 1) / STEP_ORDER.length) * 100
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 py-10">
+    <div ref={rootRef} className="w-full max-w-4xl mx-auto px-4 py-10 scroll-mt-4">
       {/* Progress header */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-2">
