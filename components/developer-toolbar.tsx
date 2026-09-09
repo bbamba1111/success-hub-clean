@@ -114,9 +114,9 @@ export function DeveloperToolbar() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 z-[100] w-[320px] max-w-[calc(100vw-2rem)] rounded-xl border border-slate-700 bg-slate-900 text-slate-100 shadow-2xl">
+    <div className="fixed bottom-4 right-4 z-[100] flex max-h-[calc(100vh-2rem)] w-[320px] max-w-[calc(100vw-2rem)] flex-col rounded-xl border border-slate-700 bg-slate-900 text-slate-100 shadow-2xl">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-slate-700 px-3 py-2.5">
+      <div className="flex shrink-0 items-center justify-between border-b border-slate-700 px-3 py-2.5">
         <div className="flex items-center gap-2">
           <FlaskConical className="h-4 w-4 text-emerald-400" />
           <span className="text-sm font-semibold">Developer Mode</span>
@@ -152,7 +152,7 @@ export function DeveloperToolbar() {
       </div>
 
       {/* Status line */}
-      <div className="flex items-center gap-2 border-b border-slate-700 px-3 py-2 text-xs">
+      <div className="flex shrink-0 items-center gap-2 border-b border-slate-700 px-3 py-2 text-xs">
         <Clock className="h-3.5 w-3.5 text-slate-400" />
         {experience ? (
           <span className="text-slate-300">
@@ -168,19 +168,23 @@ export function DeveloperToolbar() {
         )}
       </div>
 
-      {/* Work-Life Balance Access Control™ — a real admin control (not
-          simulation), so it renders whether or not Developer Mode is on. */}
-      <div className="border-b border-slate-700 px-3 py-3">
-        <AccessControlPanel />
-      </div>
-
-      {!enabled ? (
-        <div className="px-3 py-4 text-xs text-slate-400">
-          Developer Mode is off. You see exactly what members see, including the Community Closed lockout at night.
-          Turn it on to bypass business hours and preview any phase.
+      {/* Single scroll region so the scrollbar spans the full vertical height
+          of the toolbar (bounded to the viewport by the flex-col container
+          above), rather than a short inner scroll capped at 60vh. */}
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        {/* Work-Life Balance Access Control™ — a real admin control (not
+            simulation), so it renders whether or not Developer Mode is on. */}
+        <div className="border-b border-slate-700 px-3 py-3">
+          <AccessControlPanel />
         </div>
-      ) : (
-        <div className="max-h-[60vh] space-y-3 overflow-y-auto px-3 py-3">
+
+        {!enabled ? (
+          <div className="px-3 py-4 text-xs text-slate-400">
+            Developer Mode is off. You see exactly what members see, including the Community Closed lockout at night.
+            Turn it on to bypass business hours and preview any phase.
+          </div>
+        ) : (
+          <div className="space-y-3 px-3 py-3">
           <Field label="Time Block (Time Travel)">
             {SCHEDULE.map((b) => (
               <Pill
@@ -264,7 +268,8 @@ export function DeveloperToolbar() {
             </Button>
           </div>
         </div>
-      )}
+        )}
+      </div>
     </div>
   )
 }
