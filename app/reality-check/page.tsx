@@ -4,7 +4,6 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import { ArrowRight, Loader2 } from "lucide-react"
 import { getAuditResults } from "@/utils/audit-storage"
-import { getBbaRealityCheckSnapshot, type BbaRealityCheckSnapshot } from "@/lib/business-bottleneck-audit/bba-storage"
 import { getStoredAssessmentWindow } from "@/lib/assessment-cadence"
 import { CherryBlossomScene, CherryBlossomSceneCard } from "@/components/cherry-blossom/cherry-blossom-scene"
 import { CherryBlossomTransitionCard } from "@/components/cherry-blossom/cherry-blossom-transition-card"
@@ -19,7 +18,6 @@ const LOADING_DURATION = 15
 interface FocusArea {
   name: string
   score: number
-  source: "Life" | "Business"
 }
 
 // ── Score ring ────────────────────────────────────────────────────────────
@@ -28,8 +26,8 @@ function ScoreRing({
   score,
   color,
   label,
-  size = 130,
-  stroke = 9,
+  size = 160,
+  stroke = 10,
 }: {
   score: number
   color: string
@@ -58,23 +56,12 @@ function ScoreRing({
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="font-sans text-2xl font-bold tabular-nums" style={{ color }}>
+          <span className="font-sans text-3xl font-bold tabular-nums" style={{ color }}>
             {score}
           </span>
           <span className="font-sans text-xs text-brand-ink-soft">/100</span>
         </div>
       </div>
-      <p className="font-sans text-xs font-semibold uppercase tracking-wider text-brand-ink-soft text-center">
-        {label}
-      </p>
-    </div>
-  )
-}
-
-function EmptyRing({ label }: { label: string }) {
-  return (
-    <div className="flex flex-col items-center gap-2 opacity-40">
-      <div className="h-[130px] w-[130px] rounded-full border-8 border-dashed border-brand-blush" />
       <p className="font-sans text-xs font-semibold uppercase tracking-wider text-brand-ink-soft text-center">
         {label}
       </p>
@@ -91,19 +78,11 @@ function realityColor(score: number): string {
 // ── Focus area row ──────────────────────────────────────────────────────────
 
 function FocusAreaRow({ area }: { area: FocusArea }) {
-  const accent = area.source === "Life" ? "#E26C73" : "#5B835F"
+  const accent = realityColor(area.score)
   return (
     <div className="rounded-2xl border border-brand-blush bg-white px-5 py-4">
       <div className="flex items-center justify-between gap-3 mb-2">
-        <div className="flex items-center gap-2">
-          <span
-            className="inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.14em]"
-            style={{ backgroundColor: accent + "15", color: accent }}
-          >
-            {area.source === "Life" ? "Life" : "Business"}
-          </span>
-          <p className="font-sans text-sm font-semibold text-brand-ink">{area.name}</p>
-        </div>
+        <p className="font-sans text-sm font-semibold text-brand-ink">{area.name}</p>
         <span className="font-sans text-sm font-bold tabular-nums" style={{ color: accent }}>
           {area.score}/100
         </span>
@@ -131,7 +110,7 @@ function RealityCheckLoading({ secondsLeft }: { secondsLeft: number }) {
       <Loader2 className="h-6 w-6 animate-spin text-brand-coral" aria-hidden />
       <div className="space-y-1.5">
         <p className="font-playfair text-xl font-bold text-brand-ink">
-          Bringing your life and business together&hellip;
+          Bringing your work-life balance into focus&hellip;
         </p>
         <p className="font-sans text-sm text-brand-ink-soft">
           Your Work-Life Balance Reality Check™ is almost ready.
@@ -156,7 +135,6 @@ function RealityCheckLoading({ secondsLeft }: { secondsLeft: number }) {
 
 export default function RealityCheckPage() {
   const [lifeData, setLifeData] = useState<AuditData | null>(null)
-  const [bizData, setBizData] = useState<BbaRealityCheckSnapshot | null>(null)
   const [period, setPeriod] = useState("7 days")
   const [ready, setReady] = useState(false)
   const [secondsLeft, setSecondsLeft] = useState(LOADING_DURATION)
@@ -164,7 +142,6 @@ export default function RealityCheckPage() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" })
     setLifeData(getAuditResults())
-    getBbaRealityCheckSnapshot().then(setBizData)
     setPeriod(getStoredAssessmentWindow() === "30-day" ? "30 days" : "7 days")
 
     const interval = setInterval(() => {
@@ -180,24 +157,15 @@ export default function RealityCheckPage() {
     return () => clearInterval(interval)
   }, [])
 
-  const lifeScore = lifeData?.overallScore ?? null
-  const bizScore = bizData?.overallScore ?? null
-  const realityScore =
-    lifeScore !== null && bizScore !== null
-      ? Math.round((lifeScore + bizScore) / 2)
-      : lifeScore ?? bizScore ?? 0
+  const realityScore = lifeData?.overallScore ?? 0
   const rColor = realityColor(realityScore)
 
-  const focusAreas: FocusArea[] = [
-    ...(lifeData?.results ?? [])
-      .filter((r) => r.percentage <= FOCUS_THRESHOLD)
-      .map((r) => ({ name: r.label, score: r.percentage, source: "Life" as const })),
-    ...(bizData?.pillarScores ?? [])
-      .filter((p) => p.percentage <= FOCUS_THRESHOLD)
-      .map((p) => ({ name: p.pillarName, score: p.percentage, source: "Business" as const })),
-  ].sort((a, b) => a.score - b.score)
+  const focusAreas: FocusArea[] = (lifeData?.results ?? [])
+    .filter((r) => r.percentage <= FOCUS_THRESHOLD)
+    .map((r) => ({ name: r.label, score: r.percentage }))
+    .sort((a, b) => a.score - b.score)
 
-  const bothComplete = lifeData !== null && bizData !== null
+  const complete = lifeData !== null
 
   return (
     <div className="min-h-screen bg-brand-cream">
@@ -208,16 +176,16 @@ export default function RealityCheckPage() {
           scrollPrompt="See My Reality Check™"
         >
           <p>
-            Your life and business reflections from the past <strong>{period}</strong> have been
+            Your work-life balance reflections from the past <strong>{period}</strong> have been
             brought together into one Work-Life Balance Reality Check™.
           </p>
           <p>
-            Below, you&apos;ll see exactly which areas are working well — and which ones are worth
-            your attention this week.
+            Below, you&apos;ll see exactly which areas of your life are working well — and which ones
+            are worth your attention this week.
           </p>
           <p className="text-brand-ink-soft">
-            This updates every Monday, so it always reflects how your life and business have
-            really been operating — not how you wish they were.
+            This updates every Monday, so it always reflects how your life has really been
+            operating — not how you wish it were.
           </p>
         </CherryBlossomSceneCard>
       </CherryBlossomScene>
@@ -236,19 +204,18 @@ export default function RealityCheckPage() {
                 This Week&apos;s Reality Check™
               </p>
               <h2 className="font-playfair text-3xl font-bold text-brand-ink mb-8">
-                How life and business are operating together
+                How your work-life balance is really operating
               </h2>
-              <div className="flex flex-col items-center gap-10 sm:flex-row sm:justify-around">
-                {lifeScore !== null ? (
-                  <ScoreRing score={lifeScore} color="#E26C73" label="Life Balance Score™" />
+              <div className="flex flex-col items-center gap-6">
+                {complete ? (
+                  <ScoreRing score={realityScore} color={rColor} label="Work-Life Balance Score™" />
                 ) : (
-                  <EmptyRing label="Life Balance Score™" />
-                )}
-                <ScoreRing score={realityScore} color={rColor} label="Reality Check Score™" size={160} stroke={10} />
-                {bizScore !== null ? (
-                  <ScoreRing score={bizScore} color="#5B835F" label="Business Score™" />
-                ) : (
-                  <EmptyRing label="Business Score™" />
+                  <div className="flex flex-col items-center gap-2 opacity-40">
+                    <div className="h-[160px] w-[160px] rounded-full border-8 border-dashed border-brand-blush" />
+                    <p className="font-sans text-xs font-semibold uppercase tracking-wider text-brand-ink-soft text-center">
+                      Work-Life Balance Score™
+                    </p>
+                  </div>
                 )}
               </div>
             </div>
@@ -267,15 +234,15 @@ export default function RealityCheckPage() {
           </h2>
           <p className="font-sans text-sm text-brand-ink-soft mb-6 max-w-xl text-pretty">
             {focusAreas.length > 0
-              ? `Any area at ${FOCUS_THRESHOLD} or below is listed here — not as a judgment, but as a shortlist. Pick one or two to design intentional time around this week.`
+              ? `Any area of your life at ${FOCUS_THRESHOLD} or below is listed here — not as a judgment, but as a shortlist. Pick one or two to design intentional time around this week.`
               : "Nothing scored at or below 60 this week. Use this momentum to design a week that protects what's already working."}
           </p>
 
-          {ready && bothComplete ? (
+          {ready && complete ? (
             focusAreas.length > 0 ? (
               <div className="space-y-3">
                 {focusAreas.map((area) => (
-                  <FocusAreaRow key={`${area.source}-${area.name}`} area={area} />
+                  <FocusAreaRow key={area.name} area={area} />
                 ))}
               </div>
             ) : (
@@ -288,17 +255,13 @@ export default function RealityCheckPage() {
           ) : (
             <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-brand-blush py-10 text-center">
               <p className="font-sans text-sm text-brand-ink-soft max-w-sm">
-                {lifeData === null && bizData === null
-                  ? "Complete your Work-Life Balance Audit™ and Business Bottleneck Audit™ to see your Reality Check™."
-                  : lifeData === null
-                    ? "Complete your Work-Life Balance Audit™ to finish your Reality Check™."
-                    : "Complete your Business Bottleneck Audit™ to finish your Reality Check™."}
+                Complete your Work-Life Balance Audit™ to see your Reality Check™.
               </p>
               <Link
-                href={lifeData === null ? "/audit" : "/entrepreneur-success-assessment"}
+                href="/audit"
                 className="inline-flex items-center gap-1.5 rounded-full bg-brand-green/10 px-4 py-2 font-sans text-xs font-bold text-brand-green hover:bg-brand-green/20 transition-colors"
               >
-                {lifeData === null ? "Take the Audit™" : "Take the Assessment™"}
+                Take the Audit™
                 <ArrowRight className="h-3.5 w-3.5" aria-hidden />
               </Link>
             </div>
