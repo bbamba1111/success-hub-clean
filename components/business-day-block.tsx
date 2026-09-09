@@ -9,6 +9,7 @@ import { PLANNER_CONFIG } from "@/components/operating-planner/planner-config"
 import { TodaysMoveCard } from "@/components/operating-planner/todays-move-card"
 import { ReflectionSpace } from "@/components/reflection-space"
 import { DebriefSpace } from "@/components/debrief-space"
+import { TransitionSpaceInvitation } from "@/components/transition-space-invitation"
 import { TodaysMovementCard } from "@/components/daily-plan/todays-movement-card"
 import { TodaysLunchCard } from "@/components/daily-plan/todays-lunch-card"
 import { TodaysCeoWorkdayCard } from "@/components/daily-plan/todays-ceo-workday-card"
@@ -479,12 +480,16 @@ export function BusinessDayBlock({
               </div>
             )}
 
+            {/* Transition Space™ (Monday 10:00–10:15) — the "You're Invited to
+                Join Us NOW!" decision moment with the $997 / $1,997 upgrade. */}
+            {blockId === "monday-transition-break" && <TransitionSpaceInvitation />}
+
             {/* Today's Move™ (Phase 1: Execute → Check) — shows the Decide-originated
                 declaration + why-it-matters for THIS segment, if the founder set one
                 today via the "Where do I need to focus today?" picker. Renders nothing
                 (no regression) when no such declaration exists. Excluded for the 5
                 segments that now render a dedicated "Today's X" card instead. */}
-            {blockId && blockId !== "digital-detox" && blockId !== "monday-reality-check" && blockId !== "monday-debrief" && blockId !== "daily-planning-gps" && !LEGACY_PLANNER_EXCLUDED_IDS.has(blockId) && PLANNER_CONFIG[blockId as keyof typeof PLANNER_CONFIG] && (
+            {blockId && blockId !== "digital-detox" && blockId !== "monday-reality-check" && blockId !== "monday-debrief" && blockId !== "monday-transition-break" && blockId !== "daily-planning-gps" && !LEGACY_PLANNER_EXCLUDED_IDS.has(blockId) && PLANNER_CONFIG[blockId as keyof typeof PLANNER_CONFIG] && (
               <TodaysMoveCard segmentId={blockId} segmentRemaining={segmentRemaining} />
             )}
 
@@ -492,7 +497,7 @@ export function BusinessDayBlock({
                 Uses the exact same working component as /design-my-week.
                 Skips digital-detox, the two Monday-only reflective blocks, and the 5
                 segments that now render a dedicated "Today's X" card instead. */}
-            {blockId && blockId !== "digital-detox" && blockId !== "monday-reality-check" && blockId !== "monday-debrief" && blockId !== "daily-planning-gps" && !LEGACY_PLANNER_EXCLUDED_IDS.has(blockId) && PLANNER_CONFIG[blockId as keyof typeof PLANNER_CONFIG] && (
+            {blockId && blockId !== "digital-detox" && blockId !== "monday-reality-check" && blockId !== "monday-debrief" && blockId !== "monday-transition-break" && blockId !== "daily-planning-gps" && !LEGACY_PLANNER_EXCLUDED_IDS.has(blockId) && PLANNER_CONFIG[blockId as keyof typeof PLANNER_CONFIG] && (
               <OperatingPlanner blockId={blockId as any} />
             )}
 
@@ -509,7 +514,7 @@ export function BusinessDayBlock({
                 Design™ are intentionally independent of Zoom — self-guided windows,
                 not live rooms. Flex Time™ (early-access) now also carries the
                 Join Us Live™ link. */}
-            {blockId !== "monday-debrief" && blockId !== "daily-planning-gps" && (
+            {blockId !== "monday-debrief" && blockId !== "monday-transition-break" && blockId !== "daily-planning-gps" && (
               <>
                 <div className="px-7 py-5">
                   <a

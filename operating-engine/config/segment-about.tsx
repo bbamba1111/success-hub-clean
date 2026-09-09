@@ -57,28 +57,28 @@ function FlexBox({ children }: { children: ReactNode }) {
 
 export const SEGMENT_ABOUT: Record<string, SegmentAbout> = {
 
-  /* Monday-only ─ Transition Break™ ───────────────────────────────────── */
+  /* Monday-only ─ Transition Space™ ───────────────────────────────────── */
   "monday-transition-break": {
     sections: [
       {
         heading: "Purpose",
         body: (
           <Para>
-            The Transition Break™ is a short, protected 15-minute pause (10:00–10:15 AM on Mondays) between
-            Decide &amp; Design My Business Day™ and Morning GIV&bull;EN™. You have just examined your life in
-            the Reality Check™ and designed your entry into the week — this is the space to let it settle before
-            you shift into alignment.
+            Transition Space™ (10:00–10:15 AM on Mondays) is the invitation and decision moment — not a separate
+            program, and not a live segment of the Day itself. Your Weekly Work-Life Balance Reality Check™ is
+            complete and your entry into the workweek has been redesigned. Now you&apos;re invited to LIVE the
+            Work-Life Balance Business Day™ or Week™ with us, in real time.
           </Para>
         ),
       },
       {
-        heading: "How To Use It",
+        heading: "Your Choice",
         body: (
           <Bullets
             items={[
-              "Step away from the screen — stand up, stretch, or step outside.",
-              "Breathe. Let what surfaced in your Reality Check™ settle without acting on it.",
-              "Arrive present for Morning GIV•EN™ rather than rushing straight into it.",
+              "Live The Work-Life Balance Business Day™ — $997 total, less your $97 credit, $900 remaining.",
+              "Live The Work-Life Balance Business Week™ — $1,997 total, less your $97 credit, $1,900 remaining.",
+              "At 10:15 AM the live experience begins with Morning GIV•EN™ for those who choose to join.",
             ]}
           />
         ),
@@ -87,9 +87,9 @@ export const SEGMENT_ABOUT: Record<string, SegmentAbout> = {
         heading: "Why It Matters",
         body: (
           <Para>
-            Transitions are where intention is either kept or lost. A deliberate pause between reflection and
-            alignment prevents the morning from collapsing into one rushed block, so you enter Morning
-            GIV&bull;EN™ grounded instead of scattered.
+            The $97 gave you your Reality Check™ and your Redesign Your Entry Into The Workweek™. Transition
+            Space™ is where that becomes lived experience: the bridge from redesigning your entry into actually
+            living the rhythm with us — in real time — beginning at 10:15 AM.
           </Para>
         ),
       },
@@ -194,7 +194,7 @@ export const SEGMENT_ABOUT: Record<string, SegmentAbout> = {
     ],
   },
 
-  /* 2 ─ Morning GIV•EN™ ──────────────────────────────────────────────── */
+  /* 2 ─ Morning GIV•EN™ ────────────────────────────────────────��─────── */
   "morning-given": {
     sections: [
       {

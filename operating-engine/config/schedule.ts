@@ -30,8 +30,8 @@ const h = (hours: number, minutes = 0) => hours * 60 + minutes
  * check in with their life first, decide & design their day, take a brief
  * transition, and only THEN align in Morning GIV•EN™ before moving:
  *   Flex Time (7:00–9:00) → Work-Life Balance Reality Check™ (9:00–9:30) →
- *   Decide & Design My Business Day™ (9:30–10:00) →
- *   Transition Break™ (10:00–10:15) → Morning GIV•EN™ (10:15–11:00) →
+ *   Redesign Your Entry Into The Workweek™ (9:30–10:00) →
+ *   Transition Space™ (10:00–10:15) → Morning GIV•EN™ (10:15–11:00) →
  *   Movement Window™ (11:00–11:30) → Lunch Break™ (11:30 AM–1:00 PM).
  * Each affected block carries its Monday-specific times via
  * `mondayStartMinutes` / `mondayEndMinutes` / `mondayTimeLabel`; the three
@@ -134,13 +134,16 @@ export const SCHEDULE: BlockConfig[] = [
   {
     id: "monday-debrief",
     sectionId: "block-monday-debrief",
-    title: "Decide & Design My Work-Life Balance Business Day™",
-    shortTitle: "Decide & Design My Business Day™",
+    // The Monday 9:30–10:00 segment IS "Redesign Your Entry Into The Workweek™";
+    // Decide & Design™ is the mechanism it runs on (workspace + CTA below). This
+    // is what the $97 covers.
+    title: "Redesign Your Entry Into The Workweek™",
+    shortTitle: "Redesign Your Entry™",
     timeLabel: "9:30–10:00 AM",
     startMinutes: h(9, 30),
     endMinutes: h(10),
     description:
-      "A protected time and space to sit with what surfaced in your Reality Check™ — and design how you'll enter the week — before your Transition Break™ and Morning GIV•EN™.",
+      "Inside Decide & Design™: review what surfaced in your Reality Check™, tour the Work-Life Balance Business Day/Week™, decide what matters for the new week, and design your entry into the established rhythm. This is what the $97 covers.",
     emoji: "🌸",
     tint: "252 240 238",
     backgroundImage: "/images/cherry-blossom-intentions-design.png",
@@ -157,22 +160,26 @@ export const SCHEDULE: BlockConfig[] = [
     ],
   },
   // ── Monday-only block ─────────────────────────────────────────────────────
-  // A brief 15-minute transition (10:00–10:15 AM) between Decide & Design™ and
-  // Morning GIV•EN™ — a moment to step away, breathe, and arrive present.
+  // The 10:00–10:15 AM invitation & decision moment (NOT a live segment of the
+  // Day itself). The Reality Check™ is done and the entry has been redesigned;
+  // now the founder is invited to LIVE the Work-Life Balance Business Day™ or
+  // Week™ in real time (the $997 / $1,997 upgrade). At 10:15 the live
+  // experience begins with Morning GIV•EN™ — there is NO additional segment
+  // between Transition Space™ and Morning GIV•EN™.
   {
     id: "monday-transition-break",
     sectionId: "block-monday-transition-break",
-    title: "Transition Break™",
-    shortTitle: "Transition Break™",
+    title: "Transition Space™",
+    shortTitle: "Transition Space™",
     timeLabel: "10:00–10:15 AM",
     startMinutes: h(10),
     endMinutes: h(10, 15),
     description:
-      "A short, protected pause between designing your day and Morning GIV•EN™ — step away from the screen, breathe, and arrive present for alignment.",
+      "You're invited to join us NOW — live the Work-Life Balance Business Day™ or Week™ in real time. Your Reality Check™ is complete and your entry into the workweek has been redesigned; now choose how you'll experience the rhythm with us.",
     emoji: "🌿",
     tint: "240 245 236",
     backgroundImage: "/images/block-movement-window.png",
-    cta: "Take My Transition Break™",
+    cta: "You're Invited — Join Us NOW!",
     engagement: "self-guided",
     part: "morning",
     greetingPeriod: "Morning",
@@ -181,7 +188,7 @@ export const SCHEDULE: BlockConfig[] = [
     communityOpen: true,
     mondayOnly: true,
     messages: [
-      "A short pause lets what you just decided settle before you shift into alignment.",
+      "You're invited to join us NOW — live the Work-Life Balance Business Day™ or Week™ in real time.",
     ],
   },
   // ── Tuesday–Thursday-only block ───────────────────────────────────────────
