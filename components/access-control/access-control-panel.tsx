@@ -120,9 +120,11 @@ export function AccessControlPanel() {
             ? null
             : clock.reason === "not-today"
               ? "Not today"
-              : clock.locked
-                ? `Locked · opens ${clock.unlockAtLabel}`
-                : "Open now"
+              : clock.reason === "closed-for-day"
+                ? "Closed for today · 5:00 PM"
+                : clock.locked
+                  ? `Locked · opens ${clock.unlockAtLabel}`
+                  : "Open now"
           return (
             <li key={seg.id}>
               <button

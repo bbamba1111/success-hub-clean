@@ -38,16 +38,23 @@ export function LockedSegment({
   isEvening?: boolean
 }) {
   const notToday = access.reason === "not-today"
+  const closedForDay = access.reason === "closed-for-day"
 
-  const headline = notToday
-    ? "This space opens on its scheduled day"
-    : `This space unlocks at ${access.unlockAtLabel ?? "its scheduled time"}`
+  const eyebrow = closedForDay ? "Complete For Today" : notToday ? "Not Available Today" : "Opens Soon"
 
-  const subline = notToday
-    ? "It isn't part of today's Work-Life Balance Business Day™ — it'll be here when its day comes around."
-    : `Honoring the rhythm of the day keeps you present. You'll be able to enter ${formatCountdown(
-        access.minutesUntilUnlock,
-      )}.`
+  const headline = closedForDay
+    ? "This space is complete for today"
+    : notToday
+      ? "This space opens on its scheduled day"
+      : `This space unlocks at ${access.unlockAtLabel ?? "its scheduled time"}`
+
+  const subline = closedForDay
+    ? "Your work window has closed at 5:00 PM. Step fully into the rest of your day — this space returns tomorrow."
+    : notToday
+      ? "It isn't part of today's Work-Life Balance Business Day™ — it'll be here when its day comes around."
+      : `Honoring the rhythm of the day keeps you present. You'll be able to enter ${formatCountdown(
+          access.minutesUntilUnlock,
+        )}.`
 
   return (
     <div className="px-7 py-8 space-y-6">
@@ -70,7 +77,7 @@ export function LockedSegment({
               isEvening ? "text-white/60" : "text-[#C13B6B]"
             }`}
           >
-            {notToday ? "Not Available Today" : "Opens Soon"}
+            {eyebrow}
           </p>
           <p
             className={`mt-1 font-playfair text-lg font-medium leading-snug text-balance ${
@@ -82,7 +89,7 @@ export function LockedSegment({
           <p className={`mt-1 text-sm leading-relaxed text-pretty ${isEvening ? "text-white/70" : "text-[#5C4F55]"}`}>
             {subline}
           </p>
-          {!notToday && access.unlockAtLabel && (
+          {!notToday && !closedForDay && access.unlockAtLabel && (
             <p
               className={`mt-3 inline-flex items-center gap-2 rounded-full px-3 py-1 font-sans text-xs font-bold tabular-nums ${
                 isEvening ? "bg-white/10 text-white" : "bg-[#7FB069]/15 text-[#5A7A45]"

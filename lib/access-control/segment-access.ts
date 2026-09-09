@@ -43,6 +43,20 @@ export const GATED_SEGMENT_IDS: ReadonlySet<string> = new Set([
 ])
 
 /**
+ * The 5:00 PM workspace close — deliberately NARROW. At 5 PM ONLY these two
+ * segments lock for the rest of the day: the 4-Hour Focused CEO Workday™ and
+ * Decide & Design My Business Day™ (`monday-debrief`). 5 PM is the end of
+ * *work* access, NOT a blanket "lock every workspace" — Flex Time™, Movement™,
+ * the Extended Healthy Hybrid Lunch™, Time Freedom™, Power Down & Unplug™, and
+ * every other segment stay available on their own schedule. Barbara's manual
+ * unlock (and admin) still override this close, same as any other lock.
+ */
+export const CLOSES_AT_5PM: ReadonlySet<string> = new Set(["ceo-workday", "monday-debrief"])
+
+/** Minutes-since-midnight of the 5:00 PM work-access close. */
+export const WORK_CLOSE_MINUTES = 17 * 60
+
+/**
  * A manual override from Barbara's Work-Life Balance Access Control™ panel.
  * `"unlocked"` forces a segment open ahead of its time; `null` means "no
  * override — follow the clock". (Phase D supplies the live value; Phase C
@@ -54,7 +68,7 @@ export interface SegmentAccess {
   /** True when the workspace must stay closed and show About + countdown. */
   locked: boolean
   /** Why it's locked, for copy/telemetry. `null` when unlocked. */
-  reason: "before-unlock" | "not-today" | null
+  reason: "before-unlock" | "not-today" | "closed-for-day" | null
   /** Human label of the unlock moment, e.g. "9:00 AM". `null` when N/A. */
   unlockAtLabel: string | null
   /** Minutes-since-midnight of the unlock moment today. `null` when N/A. */
@@ -109,16 +123,32 @@ export function resolveSegmentAccess(params: ResolveSegmentAccessParams): Segmen
     return { locked: true, reason: "not-today", unlockAtLabel: null, unlockAtMinutes: null, minutesUntilUnlock: 0 }
   }
 
-  // Unlocked once the clock reaches the segment's start; stays open all day.
-  if (minutesSinceMidnight >= todaysBlock.startMinutes) return UNLOCKED
-
-  return {
-    locked: true,
-    reason: "before-unlock",
-    unlockAtLabel: formatClockLabel(todaysBlock.startMinutes),
-    unlockAtMinutes: todaysBlock.startMinutes,
-    minutesUntilUnlock: Math.max(0, todaysBlock.startMinutes - minutesSinceMidnight),
+  // Before the segment's start time — locked until it opens.
+  if (minutesSinceMidnight < todaysBlock.startMinutes) {
+    return {
+      locked: true,
+      reason: "before-unlock",
+      unlockAtLabel: formatClockLabel(todaysBlock.startMinutes),
+      unlockAtMinutes: todaysBlock.startMinutes,
+      minutesUntilUnlock: Math.max(0, todaysBlock.startMinutes - minutesSinceMidnight),
+    }
   }
+
+  // The narrow 5:00 PM work-access close: CEO Workday™ and Decide & Design™
+  // lock for the rest of the day at 5 PM. Every other segment stays open once
+  // its start has passed. Does not reopen today (no countdown).
+  if (CLOSES_AT_5PM.has(segmentId) && minutesSinceMidnight >= WORK_CLOSE_MINUTES) {
+    return {
+      locked: true,
+      reason: "closed-for-day",
+      unlockAtLabel: null,
+      unlockAtMinutes: null,
+      minutesUntilUnlock: 0,
+    }
+  }
+
+  // Open: start has passed and it hasn't hit a same-day close.
+  return UNLOCKED
 }
 
 /**
