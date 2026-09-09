@@ -293,10 +293,11 @@ export async function getOperatingCenterData(): Promise<OperatingCenterData> {
  *      or straight to /founder-profile (if Welcome was already seen but the
  *      member left before finishing).
  *   2. Business Context™ NOT completed → /business-context.
- *   3. Business Bottleneck Assessment™ baseline NOT completed →
- *      /entrepreneur-success-assessment?onboarding=1. This is the ONE-TIME
- *      15-area baseline, not a recurring assessment — see
- *      lib/business-bottleneck-audit/bba-storage.ts.
+ *   3. Work-Life Balance Time-Leak Check™ NOT completed →
+ *      /time-leak-check?onboarding=1. This is the onboarding diagnostic that
+ *      identifies the causes of overwork — see lib/wlb-time-leak/storage.ts.
+ *      (The Business Bottleneck Audit remains intact at
+ *      /entrepreneur-success-assessment but is no longer part of onboarding.)
  *   4. All three complete but the Cherry Blossom Thank-You™ transition hasn't
  *      been shown yet → /welcome/cherry-blossom/complete.
  *   5. On-ramp fully complete → fall back to the recurring measurement/daily
@@ -330,7 +331,7 @@ export async function getPostLoginDestination(): Promise<string> {
     try {
       const { hasCompletedFounderProfile } = await import("@/lib/founder-profile/founder-profile-store")
       const { hasCompletedBusinessContext } = await import("@/lib/business-context/business-context-store")
-      const { hasCompletedBbaBaseline } = await import("@/lib/business-bottleneck-audit/bba-storage")
+      const { hasCompletedTimeLeakCheck } = await import("@/lib/wlb-time-leak/storage")
       const {
         hasSeenCherryBlossomWelcome,
         hasSeenCherryBlossomThankYou,
@@ -348,9 +349,9 @@ export async function getPostLoginDestination(): Promise<string> {
         return "/business-context"
       }
 
-      const bbaDone = await hasCompletedBbaBaseline()
-      if (!bbaDone) {
-        return "/entrepreneur-success-assessment?onboarding=1"
+      const timeLeakDone = await hasCompletedTimeLeakCheck()
+      if (!timeLeakDone) {
+        return "/time-leak-check?onboarding=1"
       }
 
       if (!hasSeenCherryBlossomThankYou()) {

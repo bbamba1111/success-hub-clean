@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useRef } from "react"
 import { BusinessContextProfile } from "@/components/business-context/business-context-profile"
 import { hasCompletedBusinessContext } from "@/lib/business-context/business-context-store"
-import { hasCompletedBbaBaseline } from "@/lib/business-bottleneck-audit/bba-storage"
+import { hasCompletedTimeLeakCheck } from "@/lib/wlb-time-leak/storage"
 
 /**
  * Wires the required onboarding routing on top of the reusable
@@ -41,12 +41,12 @@ export function BusinessContextOnboardingFlow() {
     // A completed Business Context™ alone doesn't mean onboarding itself is
     // done — a founder who goes Back to Founder Profile™ mid-onboarding and
     // then forward again lands back here with `wasAlreadyComplete` true even
-    // though they've never reached the Business Bottleneck Assessment™ yet.
-    // Only treat this as a genuine post-onboarding revisit (→ returnTo) once
-    // the BBA baseline is ALSO on record; otherwise always keep moving
-    // forward through the required sequence.
-    const onboardingFullyComplete = wasAlreadyComplete.current && (await hasCompletedBbaBaseline())
-    router.push(onboardingFullyComplete ? returnTo : "/entrepreneur-success-assessment?onboarding=1")
+    // though they've never reached the Time-Leak Check™ yet. Only treat this
+    // as a genuine post-onboarding revisit (→ returnTo) once the Time-Leak
+    // Check™ is ALSO on record; otherwise always keep moving forward through
+    // the required sequence.
+    const onboardingFullyComplete = wasAlreadyComplete.current && (await hasCompletedTimeLeakCheck())
+    router.push(onboardingFullyComplete ? returnTo : "/time-leak-check?onboarding=1")
   }
 
   function handleHydrated(completedInDb: boolean) {

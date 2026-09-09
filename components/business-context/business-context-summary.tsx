@@ -17,25 +17,14 @@ import {
   ROLE_OPTIONS,
   TEAM_OPTIONS,
   REVENUE_OPTIONS,
-  GOAL_OPTIONS,
-  CHALLENGE_OPTIONS,
-  OPERATING_ENV_OPTIONS,
   SUPPORT_NETWORK_OPTIONS,
-  OPPORTUNITY_OPTIONS,
-  CAPITAL_OPTIONS,
   GROWTH_OPTIONS,
   EXIT_OPTIONS,
-  CREDIT_OPTIONS,
-  BANKING_OPTIONS,
-  FIN_FOUNDATION_OPTIONS,
-  WEALTH_OPTIONS,
   DELIVERY_MODEL_OPTIONS,
   CLIENT_CONNECTION_EXPERIENCE_OPTIONS,
-  YES_NO_OPTIONS,
   labelFor,
   labelsFor,
 } from "@/lib/business-context/options"
-import { COMMUNICATION_LEVELS } from "@/lib/founder-learning/types"
 import type {
   BusinessBankingOption,
   BusinessCreditOption,
@@ -157,10 +146,6 @@ export function BusinessContextSummary({
   onContinue?: () => void
   continueLabel?: string
 }) {
-  const commLabel = data.commLevel
-    ? COMMUNICATION_LEVELS.find((l) => l.id === data.commLevel)?.label ?? data.commLevel
-    : undefined
-
   return (
     <div className="flex flex-col gap-5">
       <div className="flex items-center justify-between">
@@ -192,6 +177,9 @@ export function BusinessContextSummary({
         </div>
       </div>
 
+      {/* Only the approved, currently-presented questions appear here. Hidden
+          questions remain in the wizard code + database but are intentionally
+          left off this summary, and every "Edit" jumps to a visible step. */}
       <SummarySection title="Business Identity™" onEdit={() => onEditSection(0)}>
         <Field label="Business Name" value={data.businessName || undefined} />
         <Field label="Stage" value={labelFor(STAGE_OPTIONS, data.businessStage)} />
@@ -199,54 +187,26 @@ export function BusinessContextSummary({
         <Field label="Industry" value={data.industry || undefined} />
         <Field label="Founder Role" value={labelFor(ROLE_OPTIONS, data.founderRole)} />
         <Field label="Team Size" value={labelFor(TEAM_OPTIONS, data.teamSize)} />
-        <Field label="Revenue Stage" value={labelFor(REVENUE_OPTIONS, data.revenueStage)} />
       </SummarySection>
 
-      <SummarySection title="Goals & Operating Environment™" onEdit={() => onEditSection(7)}>
-        <Field label="Biggest Goals" value={labelsFor(GOAL_OPTIONS, data.biggestGoals)} />
-        <Field label="Biggest Challenges" value={labelsFor(CHALLENGE_OPTIONS, data.biggestChallenges)} />
-        <Field label="Operating Environment" value={labelFor(OPERATING_ENV_OPTIONS, data.operatingEnvironment)} />
+      <SummarySection title="Founder Support Network™" onEdit={() => onEditSection(6)}>
+        <Field label="Annual Revenue" value={labelFor(REVENUE_OPTIONS, data.revenueStage)} />
         <Field label="Support Network" value={labelsFor(SUPPORT_NETWORK_OPTIONS, data.supportNetwork)} />
-        <Field label="Biggest Opportunities" value={labelsFor(OPPORTUNITY_OPTIONS, data.biggestOpportunities)} />
       </SummarySection>
 
-      <SummarySection title="Your Vision™" onEdit={() => onEditSection(12)}>
-        <Field label="1-Year Vision" value={data.vision.oneYear || undefined} />
-        <Field label="3-Year Vision" value={data.vision.threeYear || undefined} />
-        <Field label="5-Year Vision" value={data.vision.fiveYear || undefined} />
-        <Field label="10-Year Vision" value={data.vision.tenYear || undefined} />
+      <SummarySection title="Your Vision™" onEdit={() => onEditSection(13)}>
         <Field label="Next 90 Days" value={data.biggestGoalText || undefined} />
-        <Field label="Biggest Challenge" value={data.biggestChallengeText || undefined} />
-        <Field label="Success Vision" value={data.successVision || undefined} />
+        <Field label="#1 Thing in the Way" value={data.biggestChallengeText || undefined} />
+        <Field label="Winning Looks Like" value={data.successVision || undefined} />
       </SummarySection>
 
-      <SummarySection title="Growth & Capital™" onEdit={() => onEditSection(16)}>
-        <Field label="Capital Strategy" value={labelsFor(CAPITAL_OPTIONS, data.capitalStrategy)} />
+      <SummarySection title="Growth & Capital™" onEdit={() => onEditSection(17)}>
         <Field label="Growth Vision" value={labelFor(GROWTH_OPTIONS, data.growthVision)} />
         <Field label="Exit Vision" value={labelFor(EXIT_OPTIONS, data.exitVision)} />
       </SummarySection>
 
-      <SummarySection title="Financial Architecture™" onEdit={() => onEditSection(19)}>
-        <Field label="Business Credit" value={labelFor(CREDIT_OPTIONS, data.businessCredit)} />
-        <Field label="Business Banking" value={labelFor(BANKING_OPTIONS, data.businessBanking)} />
-        <Field label="Financial Foundation" value={labelsFor(FIN_FOUNDATION_OPTIONS, data.financialFoundation)} />
-        <Field label="Wealth Building" value={labelsFor(WEALTH_OPTIONS, data.wealthBuilding)} />
-      </SummarySection>
-
-      <SummarySection title="Executive Communication & Learning™" onEdit={() => onEditSection(23)}>
-        <Field label="Communication Level" value={commLabel} />
-        <Field label="Learning Interests" value={data.learningInterests.join(", ") || undefined} />
-      </SummarySection>
-
-      <SummarySection title="Business Reality™" onEdit={() => onEditSection(25)}>
-        <Field label="Offer Statement" value={data.offerStatement || undefined} />
-        <Field label="Ideal Client" value={data.idealClientDefinition || undefined} />
-        <Field label="Acquisition Channel" value={data.acquisitionChannel || undefined} />
-        <Field label="Conversion Mechanism" value={data.conversionMechanism || undefined} />
-        <Field label="Has Onboarding Process" value={labelFor(YES_NO_OPTIONS, data.hasOnboarding)} />
+      <SummarySection title="Business Reality™" onEdit={() => onEditSection(30)}>
         <Field label="Delivery Model" value={labelFor(DELIVERY_MODEL_OPTIONS, data.deliveryModel)} />
-        <Field label="Has Testimonials" value={labelFor(YES_NO_OPTIONS, data.hasProofTestimonials)} />
-        <Field label="Referral Mechanism" value={data.referralMechanism || undefined} />
         <Field label="Current AI Tool Use" value={data.currentAiToolUse || undefined} />
         <Field
           label="Client Connection Experience™"

@@ -38,13 +38,13 @@ export function MondayCtaLink({
     Promise.all([
       import("@/lib/founder-profile/founder-profile-store"),
       import("@/lib/business-context/business-context-store"),
-      import("@/lib/business-bottleneck-audit/bba-storage"),
+      import("@/lib/wlb-time-leak/storage"),
       import("@/lib/onboarding/onboarding-welcome-store"),
     ]).then(
       async ([
         { hasCompletedFounderProfile },
         { hasCompletedBusinessContext },
-        { hasCompletedBbaBaseline },
+        { hasCompletedTimeLeakCheck },
         { hasSeenCherryBlossomWelcome, hasSeenCherryBlossomThankYou },
       ]) => {
         if (!hasCompletedFounderProfile()) {
@@ -55,8 +55,8 @@ export function MondayCtaLink({
           setHref("/business-context")
           return
         }
-        if (!(await hasCompletedBbaBaseline())) {
-          setHref("/entrepreneur-success-assessment?onboarding=1")
+        if (!(await hasCompletedTimeLeakCheck())) {
+          setHref("/time-leak-check?onboarding=1")
           return
         }
         if (!hasSeenCherryBlossomThankYou()) {

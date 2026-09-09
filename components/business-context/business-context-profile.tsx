@@ -20,7 +20,7 @@ import { ArrowRight, Check, ChevronLeft, ChevronRight, Plus, X } from "lucide-re
 import { saveBusinessContext, getBusinessContext, hasCompletedBusinessContext } from "@/lib/business-context/business-context-store"
 import { saveFounderLearning } from "@/lib/founder-learning/founder-learning-store"
 import { saveBusinessContextToDb, getBusinessContextFromDb } from "@/utils/business-context-storage"
-import { hasCompletedBbaBaseline } from "@/lib/business-bottleneck-audit/bba-storage"
+import { hasCompletedTimeLeakCheck } from "@/lib/wlb-time-leak/storage"
 import {
   COMMUNICATION_LEVELS,
   LEARNING_TOPIC_OPTIONS,
@@ -268,7 +268,47 @@ function ProgressBar({ step, total }: { step: number; total: number }) {
 
 // ─── Main wizard ─────────────────────────────────────────────────────────────
 
+// Every question block still lives below (steps 0–34) and every state field +
+// DB write is untouched — hidden questions simply keep their default/empty
+// values exactly as when a member skips optional inputs. The onboarding
+// presentation now walks ONLY the approved subset, in the existing order,
+// under the existing categories. To bring a hidden question back later, add
+// its step index here.
+//
+// Approved 16 (by category):
+//   Business Identity™     0 name · 1 stage · 2 revenue model · 3 industry · 4 role · 5 team size
+//   Founder Support Net™   6 annual revenue · 10 who supports your business
+//   Your Vision™           13 90-day goal · 14 #1 in the way · 15 winning picture
+//   Growth & Capital™      17 growth vision · 18 exit vision
+//   Business Reality™      30 delivery model · 33 current AI tools · 34 Client Connection Experience™
+const VISIBLE_STEPS = [0, 1, 2, 3, 4, 5, 6, 10, 13, 14, 15, 17, 18, 30, 33, 34] as const
+
 const TOTAL_STEPS = 35
+/** Count shown to the member — the approved question count, not the full 35. */
+const VISIBLE_TOTAL = VISIBLE_STEPS.length
+/** Index of a raw step within the visible walk, or -1 if hidden. */
+function visiblePosition(step: number): number {
+  return VISIBLE_STEPS.indexOf(step as (typeof VISIBLE_STEPS)[number])
+}
+/** The next visible raw step after `step`, or null if `step` is the last visible one. */
+function nextVisibleStep(step: number): number | null {
+  const pos = visiblePosition(step)
+  if (pos === -1) {
+    // Defensive: from a hidden step, jump to the first visible step at/after it.
+    const forward = VISIBLE_STEPS.find((s) => s > step)
+    return forward ?? null
+  }
+  return pos < VISIBLE_STEPS.length - 1 ? VISIBLE_STEPS[pos + 1] : null
+}
+/** The previous visible raw step before `step`, or null if `step` is the first visible one. */
+function prevVisibleStep(step: number): number | null {
+  const pos = visiblePosition(step)
+  if (pos === -1) {
+    const back = [...VISIBLE_STEPS].reverse().find((s) => s < step)
+    return back ?? null
+  }
+  return pos > 0 ? VISIBLE_STEPS[pos - 1] : null
+}
 
 export function BusinessContextProfile({
   onDone,
@@ -447,15 +487,34 @@ export function BusinessContextProfile({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // handleFinish is declared below; advance() needs to call it when it reaches
+  // the last visible step. A ref keeps advance/autoAdvanceSingle stable while
+  // always invoking the latest finish closure.
+  const finishRef = useRef<() => void>(() => {})
+
   const advance = useCallback(() => {
     hasAdvancedRef.current = true
-    setStep((s) => Math.min(s + 1, TOTAL_STEPS - 1))
+    setStep((s) => {
+      const next = nextVisibleStep(s)
+      if (next === null) {
+        finishRef.current()
+        return s
+      }
+      return next
+    })
   }, [])
 
   const autoAdvanceSingle = useCallback(<T extends string>(setter: (v: T) => void, value: T) => {
     setter(value)
     hasAdvancedRef.current = true
-    setStep((s) => Math.min(s + 1, TOTAL_STEPS - 1))
+    setStep((s) => {
+      const next = nextVisibleStep(s)
+      if (next === null) {
+        finishRef.current()
+        return s
+      }
+      return next
+    })
   }, [])
 
   // Collect all "learn" items for the Founder Learning Profile™
@@ -541,6 +600,7 @@ export function BusinessContextProfile({
       router.push("/audit")
     }
   }
+  finishRef.current = handleFinish
 
   const jumpToStep = useCallback((targetStep: number) => {
     userRequestedEdit.current = true
@@ -552,17 +612,17 @@ export function BusinessContextProfile({
 
   // Landing on an already-complete profile only ever offered per-section
   // "Edit" — there was no way to move forward again (e.g. to the required
-  // EGA Screen 1 onboarding step) without re-editing and re-saving the
+  // Time-Leak Check™ onboarding step) without re-editing and re-saving the
   // whole wizard. This mirrors handleFinish's "already complete" branch,
   // except it routes to whatever the founder actually still needs rather
-  // than assuming nothing does: EGA's own signal capture is checked
-  // directly (not `onDone`'s caller-side "was already complete" flag,
-  // which only reflects THIS profile) so Back-navigating here mid-onboarding
-  // and then Continuing always keeps moving forward instead of stalling.
+  // than assuming nothing does: the Time-Leak Check™ is checked directly
+  // (not `onDone`'s caller-side "was already complete" flag, which only
+  // reflects THIS profile) so Back-navigating here mid-onboarding and then
+  // Continuing always keeps moving forward instead of stalling.
   const handleContinue = onDone
     ? async () => {
-        if (!(await hasCompletedBbaBaseline())) {
-          router.push("/entrepreneur-success-assessment?onboarding=1")
+        if (!(await hasCompletedTimeLeakCheck())) {
+          router.push("/time-leak-check?onboarding=1")
           return
         }
         onDone()
@@ -617,23 +677,27 @@ export function BusinessContextProfile({
     )
   }
 
-  const completedSteps = step
+  // Member-facing progress is measured over the visible walk, not the raw
+  // 0–34 step index (which now skips hidden questions).
+  const visiblePos = visiblePosition(step)
+  const completedSteps = visiblePos === -1 ? 0 : visiblePos
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4 py-10" ref={cardRef}>
-      <ProgressBar step={completedSteps} total={TOTAL_STEPS} />
+      <ProgressBar step={completedSteps} total={VISIBLE_TOTAL} />
 
       {/* ── Back / Forward — present on every step so a member can revisit
            an earlier answer or return to where they left off. Forward only
            ever reveals a step already reached, so a first-time pass through
            the wizard can never be skipped ahead. ─────────────────────── */}
       <div className="mb-4 flex items-center justify-between">
-        {step > 0 ? (
+        {prevVisibleStep(step) !== null ? (
           <button
             type="button"
             onClick={() => {
               hasAdvancedRef.current = true
-              setStep((s) => Math.max(0, s - 1))
+              const prev = prevVisibleStep(step)
+              if (prev !== null) setStep(prev)
             }}
             className="inline-flex items-center gap-1.5 font-montserrat text-sm font-medium text-[#6B5860] transition-colors hover:text-[#3A2E33]"
           >
@@ -643,12 +707,13 @@ export function BusinessContextProfile({
         ) : (
           <span />
         )}
-        {step < maxStepReached ? (
+        {step < maxStepReached && nextVisibleStep(step) !== null ? (
           <button
             type="button"
             onClick={() => {
               hasAdvancedRef.current = true
-              setStep((s) => Math.min(maxStepReached, s + 1))
+              const next = nextVisibleStep(step)
+              if (next !== null && next <= maxStepReached) setStep(next)
             }}
             className="inline-flex items-center gap-1.5 font-montserrat text-sm font-medium text-[#5B835F] transition-colors hover:text-[#4c6f50]"
           >
@@ -663,7 +728,7 @@ export function BusinessContextProfile({
       {/* ── Step 0: Business Name ─────────────────────────────────────────── */}
       {step === 0 && (
         <StepCard>
-          <StepLabel label="Business Identity™" step={1} total={TOTAL_STEPS} />
+          <StepLabel label="Business Identity™" step={completedSteps + 1} total={VISIBLE_TOTAL} />
           <StepQuestion>What is the name of your business?</StepQuestion>
           <StepHint>
             If you have not named it yet, use your working name or your own name.
@@ -682,7 +747,7 @@ export function BusinessContextProfile({
       {/* ── Step 1: Business Stage™ ───────────────────────────────────────── */}
       {step === 1 && (
         <StepCard>
-          <StepLabel label="Business Identity™" step={2} total={TOTAL_STEPS} />
+          <StepLabel label="Business Identity™" step={completedSteps + 1} total={VISIBLE_TOTAL} />
           <StepQuestion>Which stage best describes where your business is right now?</StepQuestion>
           <SingleChoice
             options={STAGE_OPTIONS}
@@ -695,7 +760,7 @@ export function BusinessContextProfile({
       {/* ── Step 2: Business Model™ ──���────────────────────────────────────── */}
       {step === 2 && (
         <StepCard>
-          <StepLabel label="Business Identity™" step={3} total={TOTAL_STEPS} />
+          <StepLabel label="Business Identity™" step={completedSteps + 1} total={VISIBLE_TOTAL} />
           <StepQuestion>How does your business generate revenue?</StepQuestion>
           <StepHint>Select all that apply.</StepHint>
           <MultiChoice
@@ -710,7 +775,7 @@ export function BusinessContextProfile({
       {/* ── Step 3: Industry™ ─────────────────────────────────────────────── */}
       {step === 3 && (
         <StepCard>
-          <StepLabel label="Business Identity™" step={4} total={TOTAL_STEPS} />
+          <StepLabel label="Business Identity™" step={completedSteps + 1} total={VISIBLE_TOTAL} />
           <StepQuestion>What industry does your business operate in?</StepQuestion>
           <div className="flex flex-col gap-2">
             {INDUSTRY_OPTIONS.map((opt) => {
@@ -722,9 +787,15 @@ export function BusinessContextProfile({
                   onClick={() => {
                     setIndustry(opt)
                     if (opt !== "Other") {
-                      autoAdvanceSingle(() => {}, opt as never)
                       hasAdvancedRef.current = true
-                      setStep((s) => Math.min(s + 1, TOTAL_STEPS - 1))
+                      setStep((s) => {
+                        const next = nextVisibleStep(s)
+                        if (next === null) {
+                          finishRef.current()
+                          return s
+                        }
+                        return next
+                      })
                     }
                   }}
                   className={`flex items-center gap-3 rounded-2xl border px-4 py-3 text-left font-montserrat text-sm font-semibold transition-all ${
@@ -756,7 +827,7 @@ export function BusinessContextProfile({
       {/* ── Step 4: Founder Role™ ─────────────────────────────────────────── */}
       {step === 4 && (
         <StepCard>
-          <StepLabel label="Business Identity™" step={5} total={TOTAL_STEPS} />
+          <StepLabel label="Business Identity™" step={completedSteps + 1} total={VISIBLE_TOTAL} />
           <StepQuestion>How would you describe your role in the business?</StepQuestion>
           <SingleChoice
             options={ROLE_OPTIONS}
@@ -769,7 +840,7 @@ export function BusinessContextProfile({
       {/* ── Step 5: Team Size™ ────────────────────────────────────────────── */}
       {step === 5 && (
         <StepCard>
-          <StepLabel label="Business Identity™" step={6} total={TOTAL_STEPS} />
+          <StepLabel label="Business Identity™" step={completedSteps + 1} total={VISIBLE_TOTAL} />
           <StepQuestion>How many people work in your business, including contractors?</StepQuestion>
           <SingleChoice
             options={TEAM_OPTIONS}
@@ -782,7 +853,7 @@ export function BusinessContextProfile({
       {/* ── Step 6: Revenue Stage™ ────────────────────────────────────────── */}
       {step === 6 && (
         <StepCard>
-          <StepLabel label="Business Identity™" step={7} total={TOTAL_STEPS} />
+          <StepLabel label="Founder Support Network™" step={completedSteps + 1} total={VISIBLE_TOTAL} />
           <StepQuestion>Which best describes your current annual revenue?</StepQuestion>
           <StepHint>This is kept private and only used to personalize your experience.</StepHint>
           <SingleChoice
@@ -841,7 +912,7 @@ export function BusinessContextProfile({
       {/* ── Step 10: Founder Support Network™ ────────────────────────────── */}
       {step === 10 && (
         <StepCard>
-          <StepLabel label="Founder Support Network™" step={11} total={TOTAL_STEPS} />
+          <StepLabel label="Founder Support Network™" step={completedSteps + 1} total={VISIBLE_TOTAL} />
           <StepQuestion>Who currently supports your business?</StepQuestion>
           <StepHint>Select all that apply.</StepHint>
           <MultiChoice
@@ -910,7 +981,7 @@ export function BusinessContextProfile({
       {/* ── Step 13: Biggest Goal™ (open-text) ───────────────────────────── */}
       {step === 13 && (
         <StepCard innerRef={cardRef}>
-          <StepLabel label="Your Vision™" step={14} total={TOTAL_STEPS} />
+          <StepLabel label="Your Vision™" step={completedSteps + 1} total={VISIBLE_TOTAL} />
           <StepQuestion>What is the most important thing you want to achieve in the next 90 days?</StepQuestion>
           <StepHint>In business and in life. Be as specific as you like.</StepHint>
           <textarea
@@ -927,7 +998,7 @@ export function BusinessContextProfile({
       {/* ── Step 14: Biggest Challenge™ (open-text) ──────────────────────── */}
       {step === 14 && (
         <StepCard innerRef={cardRef}>
-          <StepLabel label="Your Vision™" step={15} total={TOTAL_STEPS} />
+          <StepLabel label="Your Vision™" step={completedSteps + 1} total={VISIBLE_TOTAL} />
           <StepQuestion>What is the number one thing getting in the way of the life and business you want?</StepQuestion>
           <StepHint>There is no wrong answer — honesty here makes every recommendation sharper.</StepHint>
           <textarea
@@ -944,7 +1015,7 @@ export function BusinessContextProfile({
       {/* ── Step 15: Success Vision™ (open-text) ──────────────────────────── */}
       {step === 15 && (
         <StepCard innerRef={cardRef}>
-          <StepLabel label="Your Vision™" step={16} total={TOTAL_STEPS} />
+          <StepLabel label="Your Vision™" step={completedSteps + 1} total={VISIBLE_TOTAL} />
           <StepQuestion>Describe what your life looks like when you are truly winning — in both business and life.</StepQuestion>
           <StepHint>Paint the picture. This becomes the north star for your entire operating system.</StepHint>
           <textarea
@@ -976,7 +1047,7 @@ export function BusinessContextProfile({
       {/* ── Step 17: Growth Vision™ ───────────────────────────────────────── */}
       {step === 17 && (
         <StepCard>
-          <StepLabel label="Growth & Capital™" step={18} total={TOTAL_STEPS} />
+          <StepLabel label="Growth & Capital™" step={completedSteps + 1} total={VISIBLE_TOTAL} />
           <StepQuestion>What is your overall growth vision for this business?</StepQuestion>
           <SingleChoice
             options={GROWTH_OPTIONS}
@@ -989,7 +1060,7 @@ export function BusinessContextProfile({
       {/* ── Step 18: Exit Vision™ ─────────────────────────────────────────── */}
       {step === 18 && (
         <StepCard>
-          <StepLabel label="Growth & Capital™" step={19} total={TOTAL_STEPS} />
+          <StepLabel label="Growth & Capital™" step={completedSteps + 1} total={VISIBLE_TOTAL} />
           <StepQuestion>What is your long-term exit vision?</StepQuestion>
           <SingleChoice
             options={EXIT_OPTIONS}
@@ -1202,7 +1273,7 @@ export function BusinessContextProfile({
       {/* ── Step 30: Delivery Model — Business Reality™ ───────────────────── */}
       {step === 30 && (
         <StepCard>
-          <StepLabel label="Business Reality™" step={31} total={TOTAL_STEPS} />
+          <StepLabel label="Business Reality™" step={completedSteps + 1} total={VISIBLE_TOTAL} />
           <StepQuestion>How do you primarily deliver your product or service?</StepQuestion>
           <SingleChoice
             options={DELIVERY_MODEL_OPTIONS}
@@ -1245,7 +1316,7 @@ export function BusinessContextProfile({
       {/* ── Step 33: Current AI Tool Use — Business Reality™ ──────────────── */}
       {step === 33 && (
         <StepCard>
-          <StepLabel label="Business Reality™" step={34} total={TOTAL_STEPS} />
+          <StepLabel label="Business Reality™" step={completedSteps + 1} total={VISIBLE_TOTAL} />
           <StepQuestion>Which AI tools, if any, are you currently using in your business?</StepQuestion>
           <StepHint>It's okay to say "none yet."</StepHint>
           <input
@@ -1262,7 +1333,7 @@ export function BusinessContextProfile({
       {/* ── Step 34: Client Connection Experience™ — Business Reality™ ────── */}
       {step === 34 && (
         <StepCard>
-          <StepLabel label="Business Reality™" step={35} total={TOTAL_STEPS} />
+          <StepLabel label="Business Reality™" step={completedSteps + 1} total={VISIBLE_TOTAL} />
           <StepQuestion>Do you currently run a Client Connection Experience™?</StepQuestion>
           <StepHint>Challenge, webinar, workshop, immersion, or mastermind — pick the one that applies today.</StepHint>
           <SingleChoice

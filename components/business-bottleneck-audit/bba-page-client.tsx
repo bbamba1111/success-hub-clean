@@ -28,7 +28,6 @@ import BbaWeeklyCheckin from "@/components/business-bottleneck-audit/bba-weekly-
 import { BbaBaselineSummary } from "@/components/business-bottleneck-audit/bba-baseline-summary"
 import { getCurrentBbaBaseline, hasCompletedThisWeeksBbaCheckin } from "@/lib/business-bottleneck-audit/bba-storage"
 import type { BbaBaselineRecord, BbaCategoryId } from "@/lib/business-bottleneck-audit/types"
-import { OnboardingProgressBanner } from "@/components/onboarding/onboarding-progress-banner"
 import type { OnboardingProgress } from "@/lib/onboarding/onboarding-progress"
 
 const RESULTS_URL = "/reality-check"
@@ -219,9 +218,6 @@ export function BbaPageClient({
       </CherryBlossomScene>
 
       <div className="bg-white">
-        {onboarding && progress && (mode === "baseline" || mode === "summary") && (
-          <OnboardingProgressBanner progress={progress} currentStep="bbaComplete" />
-        )}
         {mode === "baseline" && (
           <BbaBaselineWizard
             onComplete={handleBaselineComplete}
