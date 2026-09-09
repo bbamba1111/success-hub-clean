@@ -16,6 +16,9 @@ import { TimeFreedomTodayCard } from "@/components/daily-plan/time-freedom-today
 import { PowerDownReleaseCard } from "@/components/daily-plan/power-down-release-card"
 import { SoundRitual } from "@/components/sound-ritual"
 import { useActiveSpace } from "@/components/active-space-provider"
+import { useOperatingEngine } from "@/components/operating-engine-provider"
+import { LockedSegment } from "@/components/access-control/locked-segment"
+import { resolveSegmentAccessFromExperience } from "@/lib/access-control/segment-access"
 import { SPACE_LABEL } from "@/operating-engine/config/space-labels"
 import { SEGMENT_INNER_BG, SEGMENT_SAGE_OUTER, type SegmentInnerTone } from "@/lib/segment-theme"
 
@@ -152,6 +155,15 @@ export function BusinessDayBlock({
   const [showAbout, setShowAbout] = useState(false)
   const [music, setMusic] = useState<MusicChoice | null>(null)
   const activeSpace = useActiveSpace()
+
+  // Segment Access Control™ — a gated segment's workspace stays closed until
+  // its time arrives (admins and manual unlocks bypass this). When locked we
+  // show About This Segment™ + a countdown instead of the live workspace, so
+  // members can prepare without jumping ahead of the day's rhythm.
+  const experience = useOperatingEngine()
+  const segmentAccess =
+    experience && blockId ? resolveSegmentAccessFromExperience(experience, blockId) : null
+  const locked = segmentAccess?.locked ?? false
 
   // Support crossfading through multiple background images (e.g. the laptop
   // screen "changing" every few seconds) when an array is passed.
@@ -384,9 +396,11 @@ export function BusinessDayBlock({
             />
             {open
               ? "Close"
-              : blockId && SPACE_LABEL[blockId as keyof typeof SPACE_LABEL]
-                ? `Enter ${SPACE_LABEL[blockId as keyof typeof SPACE_LABEL]}`
-                : "Open Segment"}
+              : locked
+                ? "Preview This Segment"
+                : blockId && SPACE_LABEL[blockId as keyof typeof SPACE_LABEL]
+                  ? `Enter ${SPACE_LABEL[blockId as keyof typeof SPACE_LABEL]}`
+                  : "Open Segment"}
           </button>
         )}
 
@@ -398,6 +412,14 @@ export function BusinessDayBlock({
             className={`border-t ${isEvening ? "border-white/10" : "border-black/[0.06]"}`}
             style={{ background: innerBg }}
           >
+            {locked && segmentAccess ? (
+              <LockedSegment
+                access={segmentAccess}
+                aboutContent={aboutContent ?? description}
+                isEvening={isEvening}
+              />
+            ) : (
+              <>
 
             {/* Reflection Space™ — guided Work-Life Balance Reality Check™ for Monday */}
             {blockId === "monday-reality-check" && (
@@ -554,6 +576,8 @@ export function BusinessDayBlock({
                 </div>
               )}
             </div>
+            </>
+            )}
 
           </div>
         )}
