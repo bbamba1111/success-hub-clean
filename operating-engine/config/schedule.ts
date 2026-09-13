@@ -136,14 +136,14 @@ export const SCHEDULE: BlockConfig[] = [
     sectionId: "block-monday-debrief",
     // The Monday 9:30–10:00 segment IS "Redesign Your Entry Into The Workweek™";
     // Decide & Design™ is the mechanism it runs on (workspace + CTA below). This
-    // is what the $97 covers.
+    // is Part One of Monday — what the $197 entry covers.
     title: "Redesign Your Entry Into The Workweek™",
     shortTitle: "Redesign Your Entry™",
     timeLabel: "9:30–10:00 AM",
     startMinutes: h(9, 30),
     endMinutes: h(10),
     description:
-      "Inside Decide & Design™: review what surfaced in your Reality Check™, tour the Work-Life Balance Business Day/Week™, decide what matters for the new week, and design your entry into the established rhythm. This is what the $97 covers.",
+      "Inside Decide & Design™: review what surfaced in your Reality Check™, tour the Work-Life Balance Business Day/Week™, decide what matters for the new week, and design your entry into the established rhythm. This is Part One of Monday — what the $197 entry covers.",
     emoji: "🌸",
     tint: "252 240 238",
     backgroundImage: "/images/cherry-blossom-intentions-design.png",

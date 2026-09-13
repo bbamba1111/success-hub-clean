@@ -9,10 +9,17 @@ import Link from "next/link"
  * Journey" somewhere that actually exists on that page instead — the $497
  * embedded checkout on /monday, rather than a section that isn't there.
  */
-export function LandingNav({ experiencesHref = "#experiences" }: { experiencesHref?: string }) {
+export function LandingNav({
+  experiencesHref = "#experiences",
+  links,
+}: {
+  experiencesHref?: string
+  /** Optional override for the primary nav links (pages compose different sections). */
+  links?: { label: string; href: string }[]
+}) {
   const [scrolled, setScrolled] = useState(false)
 
-  const links = [
+  const navLinks = links ?? [
     { label: "The Business Day", href: "#business-day" },
     { label: "The Ritual", href: "#ritual" },
     { label: "Cherry Blossom AI", href: "#cherry-blossom" },
@@ -47,7 +54,7 @@ export function LandingNav({ experiencesHref = "#experiences" }: { experiencesHr
         </Link>
 
         <div className="hidden items-center gap-8 lg:flex">
-          {links.map((link) => (
+          {navLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}

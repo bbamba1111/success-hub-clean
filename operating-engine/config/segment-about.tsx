@@ -76,8 +76,8 @@ export const SEGMENT_ABOUT: Record<string, SegmentAbout> = {
         body: (
           <Bullets
             items={[
-              "Live The Work-Life Balance Business Day™ — $997 total, less your $97 credit, $900 remaining.",
-              "Live The Work-Life Balance Business Week™ — $1,997 total, less your $97 credit, $1,900 remaining.",
+              "Live The Work-Life Balance Business Day™ — $997 total, less your $197 entry credit, $800 remaining.",
+              "Live The Work-Life Balance Business Week™ — $1,997 total, less your $197 entry credit, $1,800 remaining.",
               "At 10:15 AM the live experience begins with Morning GIV•EN™ for those who choose to join.",
             ]}
           />
@@ -87,9 +87,9 @@ export const SEGMENT_ABOUT: Record<string, SegmentAbout> = {
         heading: "Why It Matters",
         body: (
           <Para>
-            The $97 gave you your Reality Check™ and your Redesign Your Entry Into The Workweek™. Transition
-            Space™ is where that becomes lived experience: the bridge from redesigning your entry into actually
-            living the rhythm with us — in real time — beginning at 10:15 AM.
+            The $197 gave you your Reality Check™ and your Redesign Your Entry Into The Workweek™ — Part One of
+            Monday. Transition Space™ is where that becomes lived experience: the bridge into Part Two, actually
+            living the rhythm with us in real time, beginning at 10:15 AM.
           </Para>
         ),
       },

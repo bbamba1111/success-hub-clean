@@ -1,11 +1,11 @@
 import type { Metadata } from "next"
 import { LandingNav } from "@/components/landing/landing-nav"
-import { LandingHero } from "@/components/landing/landing-hero"
+import { MondayHeroSection } from "@/components/landing/monday-hero-section"
+import { MondayJourney } from "@/components/landing/monday-journey"
 import { BusinessDayShowcase } from "@/components/landing/business-day-showcase"
-import { RitualSection } from "@/components/landing/ritual-section"
+import { MondayOffer } from "@/components/landing/monday-offer"
 import { CherryBlossomSection } from "@/components/landing/cherry-blossom-section"
 import { TestimonialsSection } from "@/components/landing/testimonials-section"
-import { ExperiencesSection } from "@/components/landing/experiences-section"
 import { LandingFooter } from "@/components/landing/landing-footer"
 
 export const metadata: Metadata = {
@@ -36,13 +36,21 @@ export const viewport = {
 export default function LandingPage() {
   return (
     <main className="min-h-screen bg-white">
-      <LandingNav />
-      <LandingHero />
+      <LandingNav
+        experiencesHref="#entry-offer"
+        links={[
+          { label: "Your Monday", href: "#your-monday" },
+          { label: "The Business Day", href: "#business-day" },
+          { label: "Cherry Blossom AI", href: "#cherry-blossom" },
+          { label: "The Offer", href: "#entry-offer" },
+        ]}
+      />
+      <MondayHeroSection />
+      <MondayJourney />
       <BusinessDayShowcase />
-      <RitualSection />
+      <MondayOffer />
       <CherryBlossomSection />
       <TestimonialsSection />
-      <ExperiencesSection />
       <LandingFooter />
     </main>
   )
