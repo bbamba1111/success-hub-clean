@@ -19,6 +19,7 @@ import { SoundRitual } from "@/components/sound-ritual"
 import { useActiveSpace } from "@/components/active-space-provider"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
 import { LockedSegment } from "@/components/access-control/locked-segment"
+import { SegmentLearnMore } from "@/components/access-control/segment-learn-more"
 import { resolveSegmentAccessFromExperience } from "@/lib/access-control/segment-access"
 import { useSegmentOverrides } from "@/lib/access-control/use-segment-overrides"
 import { useAboutSeen } from "@/lib/access-control/about-seen-store"
@@ -155,7 +156,6 @@ export function BusinessDayBlock({
   const isEvening = isSage && innerTone === "evening"
   const showProgress = isCurrent && typeof segmentProgress === "number"
   const [open, setOpen] = useState(false)
-  const [showAbout, setShowAbout] = useState(false)
   const [music, setMusic] = useState<MusicChoice | null>(null)
   const activeSpace = useActiveSpace()
 
@@ -345,6 +345,32 @@ export function BusinessDayBlock({
               >
                 {description}
               </div>
+
+              {/* Locked workspace card face — the founder is already inside
+                  Harmony Lane™ and can explore the destination before it opens.
+                  We surface the SAME About This Segment™ content here via the
+                  canonical Learn More modal, plus a quiet unlock hint. No Join
+                  Us Live™ appears while locked. */}
+              {locked && (
+                <div className="mt-4 flex flex-col gap-2.5">
+                  {segmentAccess?.unlockAtLabel && (
+                    <span
+                      className={`inline-flex w-fit items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold tabular-nums ${
+                        isEvening ? "bg-white/10 text-white/85" : "bg-[#7FB069]/12 text-[#5A7A45]"
+                      }`}
+                    >
+                      Opens {segmentAccess.unlockAtLabel}
+                    </span>
+                  )}
+                  <SegmentLearnMore
+                    segmentId={blockId}
+                    title={title}
+                    aboutContent={aboutContent ?? description}
+                    isEvening={isEvening}
+                    tone="locked"
+                  />
+                </div>
+              )}
 
               {children}
 
@@ -593,29 +619,18 @@ export function BusinessDayBlock({
 
             <div className={`mx-7 border-t ${isEvening ? "border-white/10" : "border-black/[0.05]"}`} />
 
-            {/* Row 3 — About This Segment */}
-            <div>
-              <button
-                type="button"
-                aria-expanded={showAbout}
-                onClick={() => setShowAbout((v) => !v)}
-                className={`flex w-full items-center gap-2 px-7 py-4 text-left transition-colors ${isEvening ? "hover:bg-white/5" : "hover:bg-black/[0.02]"}`}
-              >
-                <ChevronDown
-                  className={`h-4 w-4 transition-transform duration-200 ${showAbout ? "rotate-180" : ""} ${isEvening ? "text-white/50" : "text-[#6B5860]/40"}`}
-                  aria-hidden
-                />
-                <span className={`font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] ${isEvening ? "text-white/60" : "text-[#6B5860]/50"}`}>
-                  About This Segment
-                </span>
-              </button>
-              {showAbout && (
-                <div className={`px-7 pb-7 pt-4 border-t space-y-4 ${isEvening ? "border-white/10" : "border-black/[0.05]"}`}>
-                  {aboutContent ?? (
-                    <div className={`text-sm leading-relaxed ${isEvening ? "text-white/80" : "text-[#5C4F55]"}`}>{description}</div>
-                  )}
-                </div>
-              )}
+            {/* Row 3 — Learn More About This Segment™. Stays available INSIDE
+                the open workspace after access opens, using the exact same
+                canonical modal (and the same `aboutContent` source) the locked
+                card face uses — so the pre-Day and in-workspace views can never
+                drift apart. */}
+            <div className="px-7 py-5">
+              <SegmentLearnMore
+                segmentId={blockId}
+                title={title}
+                aboutContent={aboutContent ?? description}
+                isEvening={isEvening}
+              />
             </div>
             </>
             )}
