@@ -25,8 +25,8 @@ export function CherryBlossomSection() {
           className="relative order-2 overflow-hidden rounded-[2rem] shadow-2xl lg:order-1"
         >
           <img
-            src="/images/barbara-cherry-garden.jpg"
-            alt="Cherry Blossom, your AI coach, amid a cherry blossom garden"
+            src="/images/barbara-portrait.png"
+            alt="Barbara, founder of Harmony Lane, smiling in front of a cherry blossom window"
             className="h-full w-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#2E2A3A]/50 to-transparent" />

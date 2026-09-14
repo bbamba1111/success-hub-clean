@@ -11,22 +11,44 @@
  *
  * Public rules honored here: no clock times, no pricing, no sales urgency.
  */
-import { motion } from "framer-motion"
+import { useEffect, useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { SCHEDULE } from "@/operating-engine/config/schedule"
 
 export function MondayHeroSection() {
+  const [index, setIndex] = useState(0)
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setIndex((i) => (i + 1) % SCHEDULE.length)
+    }, 4600)
+    return () => clearInterval(timer)
+  }, [])
+
+  const block = SCHEDULE[index]
+  const bg = (Array.isArray(block.backgroundImage) ? block.backgroundImage[0] : block.backgroundImage) || "/placeholder.svg"
+
   return (
     <section id="top" className="relative min-h-[100svh] w-full overflow-hidden">
       <div className="absolute inset-0">
-        <img
-          src="/images/barbara-portrait.png"
-          alt="Barbara, founder of Harmony Lane, smiling in front of a cherry blossom window"
-          className="absolute inset-0 h-full w-full object-cover object-[68%_18%]"
-        />
+        <AnimatePresence mode="sync">
+          <motion.img
+            key={bg}
+            src={bg}
+            alt=""
+            aria-hidden="true"
+            initial={{ opacity: 0, scale: 1.08 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ opacity: { duration: 1.6, ease: "easeInOut" }, scale: { duration: 6, ease: "easeOut" } }}
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        </AnimatePresence>
         <div
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(90deg, rgba(255,241,245,0.92) 0%, rgba(255,241,245,0.55) 46%, rgba(255,241,245,0.1) 76%)",
+              "linear-gradient(90deg, rgba(255,241,245,0.88) 0%, rgba(255,241,245,0.5) 48%, rgba(255,241,245,0.08) 74%)",
           }}
         />
       </div>
