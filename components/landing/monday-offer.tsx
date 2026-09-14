@@ -19,13 +19,25 @@ import { BUSINESS_DAY, BUSINESS_WEEK } from "@/lib/monday-offer"
 type Offer = {
   data: typeof BUSINESS_DAY | typeof BUSINESS_WEEK
   cta: string
+  href: string
   featured: boolean
   badge?: string
 }
 
 const OFFERS: Offer[] = [
-  { data: BUSINESS_DAY, cta: "Experience the Day", featured: false },
-  { data: BUSINESS_WEEK, cta: "Live the Week", featured: true, badge: "Live the rhythm" },
+  {
+    data: BUSINESS_DAY,
+    cta: "Experience the Day",
+    href: "https://app.paperbell.com/checkout/packages/234456",
+    featured: false,
+  },
+  {
+    data: BUSINESS_WEEK,
+    cta: "Live the Week",
+    href: "https://app.paperbell.com/checkout/packages/234458",
+    featured: true,
+    badge: "Live the rhythm",
+  },
 ]
 
 export function MondayOffer() {
@@ -47,7 +59,7 @@ export function MondayOffer() {
         </div>
 
         <div className="mt-12 grid gap-6 sm:grid-cols-2">
-          {OFFERS.map(({ data, cta, featured, badge }) => (
+          {OFFERS.map(({ data, cta, href, featured, badge }) => (
             <div
               key={data.name}
               className={`relative flex flex-col rounded-3xl border bg-white p-8 shadow-lg ${
@@ -69,15 +81,17 @@ export function MondayOffer() {
               </div>
               <p className="font-poppins mt-3 text-pretty text-sm leading-relaxed text-[#6B5860]">{data.promise}</p>
 
-              <Link
-                href="/pricing"
+              <a
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
                 className={`font-poppins mt-7 inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-base font-semibold text-white shadow-sm transition-colors ${
                   featured ? "bg-[#C13B6B] hover:bg-[#a52f59]" : "bg-[#7FB069] hover:bg-[#6a9857]"
                 }`}
               >
                 {cta}
                 <ArrowRight className="h-4 w-4" aria-hidden />
-              </Link>
+              </a>
             </div>
           ))}
         </div>
