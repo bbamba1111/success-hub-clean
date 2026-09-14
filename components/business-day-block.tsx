@@ -151,7 +151,11 @@ export function BusinessDayBlock({
   // gradient as the outer frame, so no visible seam/frame appears — this
   // keeps every non-sage segment (morning-given, the Monday-only blocks,
   // digital-detox, etc.) pixel-identical to before.
-  const outerBg = isSage ? SEGMENT_SAGE_OUTER : CREAM_GRADIENT
+  // The six Daily Operating Segment™ cards (Decide & Design™ → Power Down™)
+  // no longer show the sage-green OUTER frame — the outer layer now matches
+  // each card's inner tone, so the previously visible green border disappears
+  // while the two-layer structure stays intact.
+  const outerBg = isSage ? SEGMENT_INNER_BG[innerTone] : CREAM_GRADIENT
   const innerBg = isSage ? SEGMENT_INNER_BG[innerTone] : CREAM_GRADIENT
   const isEvening = isSage && innerTone === "evening"
   const showProgress = isCurrent && typeof segmentProgress === "number"
