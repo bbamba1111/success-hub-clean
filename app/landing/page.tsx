@@ -1,23 +1,26 @@
 import type { Metadata } from "next"
 import { LandingNav } from "@/components/landing/landing-nav"
 import { MondayHeroSection } from "@/components/landing/monday-hero-section"
-import { ParallelLaneSection } from "@/components/landing/parallel-lane-section"
-import { BusinessDayFlow } from "@/components/landing/business-day-flow"
-import { MondayJourney } from "@/components/landing/monday-journey"
-import { DestinationSection } from "@/components/landing/destination-section"
-import { MondayOffer } from "@/components/landing/monday-offer"
+import { HustleProblemSection } from "@/components/landing/hustle-problem-section"
+import { IntentionSection } from "@/components/landing/intention-section"
+import { FounderDestinationSection } from "@/components/landing/founder-destination-section"
+import { AiAgeSection } from "@/components/landing/ai-age-section"
 import { CherryBlossomSection } from "@/components/landing/cherry-blossom-section"
-import { TestimonialsSection } from "@/components/landing/testimonials-section"
+import { JourneySection } from "@/components/landing/journey-section"
+import { ExperienceSection } from "@/components/landing/experience-section"
+import { MondayOffer } from "@/components/landing/monday-offer"
+import { BiggerPurposeSection } from "@/components/landing/bigger-purpose-section"
+import { FinalCtaSection } from "@/components/landing/final-cta-section"
 import { LandingFooter } from "@/components/landing/landing-footer"
 
 export const metadata: Metadata = {
   title: "Harmony Lane™ — The Work-Life Balance Destination™",
   description:
-    "Make Time For More™: experience the Work-Life Balance Business Day™ in real time. Harmony Lane™ is the parallel lane to hustle entrepreneurship for founders who want to live, work, and lead in balance.",
+    "You built the business. Now decide what you want it to make possible. Harmony Lane™ is a premium destination for successful entrepreneurs who want to redesign how they live, work, and lead — and experience the Work-Life Balance Business Day™ in real time.",
   openGraph: {
     title: "Harmony Lane™ — The Work-Life Balance Destination™",
     description:
-      "Experience the Work-Life Balance Business Day™ in real time. A destination for founders who want sustainable success, not more hustle.",
+      "A premium destination for successful entrepreneurs. Reconnect with your original intention, define your Founder Destination™, and experience Work-Life Balance in real time.",
     type: "website",
   },
 }
@@ -27,13 +30,15 @@ export const viewport = {
 }
 
 /**
- * Premium public marketing site (Phase 1) at /landing.
+ * Public marketing site at /landing — Harmony Lane™ category positioning.
  *
- * Built with the Success Hub design system (Playfair/Poppins/Great Vibes,
- * cherry palette, glassmorphism, immersive imagery, framer-motion). Kept as a
- * separate route so the existing Hub (/) and legacy /marketing page are
- * untouched; this can later be promoted to the production homepage with
- * minimal refactoring.
+ * Hierarchy (positioning first, proof of experience second, offer third):
+ *   Hero → The Problem → Original Intention → Founder Destination → The AI Age
+ *   → Cherry Blossom™ → The Journey → The Experience → Depth of Entry
+ *   → Bigger Purpose → Final CTA
+ *
+ * Kept separate from the Hub (/) so app functionality, auth, payments, and
+ * routes are untouched. Paperbell links and $297/$497 pricing are spec-locked.
  */
 export default function LandingPage() {
   return (
@@ -41,21 +46,24 @@ export default function LandingPage() {
       <LandingNav
         experiencesHref="#offer"
         links={[
-          { label: "The Parallel Lane", href: "#parallel-lane" },
-          { label: "Why Monday", href: "#monday" },
-          { label: "The Business Day", href: "#business-day" },
-          { label: "The Destination", href: "#destination" },
-          { label: "The Experience", href: "#offer" },
+          { label: "The Invitation", href: "#problem" },
+          { label: "Founder Destination", href: "#destination" },
+          { label: "The Journey", href: "#journey" },
+          { label: "The Experience", href: "#experience" },
+          { label: "Enter", href: "#offer" },
         ]}
       />
       <MondayHeroSection />
-      <ParallelLaneSection />
-      <MondayJourney />
-      <BusinessDayFlow />
-      <DestinationSection />
-      <MondayOffer />
+      <HustleProblemSection />
+      <IntentionSection />
+      <FounderDestinationSection />
+      <AiAgeSection />
       <CherryBlossomSection />
-      <TestimonialsSection />
+      <JourneySection />
+      <ExperienceSection />
+      <MondayOffer />
+      <BiggerPurposeSection />
+      <FinalCtaSection />
       <LandingFooter />
     </main>
   )

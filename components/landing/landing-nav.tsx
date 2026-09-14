@@ -43,13 +43,13 @@ export function LandingNav({
         <Link href="#top" className="flex items-center gap-2.5">
           <img
             src="/images/logo.png"
-            alt="Make Time For More"
+            alt="Harmony Lane"
             width={36}
             height={36}
             className="rounded-full shadow-sm"
           />
           <span className="font-playfair text-lg font-bold tracking-tight text-[#4A3A42]">
-            Make Time For More
+            Harmony Lane™
           </span>
         </Link>
 
@@ -76,7 +76,7 @@ export function LandingNav({
             href={experiencesHref}
             className="font-poppins rounded-full bg-[#E26C73] px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-[#E26C73]/25 transition-transform hover:scale-[1.03] hover:bg-[#d65a62]"
           >
-            Begin Your Journey
+            Enter Harmony Lane™
           </a>
         </div>
       </nav>
