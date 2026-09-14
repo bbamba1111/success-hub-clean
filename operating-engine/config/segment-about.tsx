@@ -64,21 +64,21 @@ export const SEGMENT_ABOUT: Record<string, SegmentAbout> = {
         heading: "Purpose",
         body: (
           <Para>
-            Transition Space™ (10:00–10:15 AM on Mondays) is the invitation and decision moment — not a separate
-            program, and not a live segment of the Day itself. Your Weekly Work-Life Balance Reality Check™ is
-            complete and your entry into the workweek has been redesigned. Now you&apos;re invited to LIVE the
-            Work-Life Balance Business Day™ or Week™ with us, in real time.
+            Transition Space™ (10:00–10:15 AM on Mondays) is a short, protected pause between Redesign Your
+            Entry Into The Workweek™ and Morning GIV&bull;EN™. You have just examined your current reality and
+            redesigned how you&apos;ll enter the week — this is the space to let it settle before you move into
+            the rhythm of the day. It is a genuine preparation boundary, nothing to decide or buy.
           </Para>
         ),
       },
       {
-        heading: "Your Choice",
+        heading: "How To Use It",
         body: (
           <Bullets
             items={[
-              "Live The Work-Life Balance Business Day™ — $997 total, less your $197 entry credit, $800 remaining.",
-              "Live The Work-Life Balance Business Week™ — $1,997 total, less your $197 entry credit, $1,800 remaining.",
-              "At 10:15 AM the live experience begins with Morning GIV•EN™ for those who choose to join.",
+              "Step away from the screen — stand up, stretch, or step outside.",
+              "Let what surfaced in your Reality Check™ settle without acting on it.",
+              "Arrive present for Morning GIV•EN™ rather than rushing straight into it.",
             ]}
           />
         ),
@@ -87,9 +87,9 @@ export const SEGMENT_ABOUT: Record<string, SegmentAbout> = {
         heading: "Why It Matters",
         body: (
           <Para>
-            The $197 gave you your Reality Check™ and your Redesign Your Entry Into The Workweek™ — Part One of
-            Monday. Transition Space™ is where that becomes lived experience: the bridge into Part Two, actually
-            living the rhythm with us in real time, beginning at 10:15 AM.
+            Transitions are where intention is either kept or lost. A deliberate pause between reflection and
+            the live rhythm prevents the morning from collapsing into one rushed block, so you enter Morning
+            GIV&bull;EN™ grounded instead of scattered.
           </Para>
         ),
       },

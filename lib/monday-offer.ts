@@ -1,35 +1,30 @@
 /**
- * Canonical DISPLAY copy for the Monday "Make Time For More™" commercial
- * architecture. This is presentation only — it does NOT drive entitlement,
+ * Canonical DISPLAY copy for the public "Make Time For More™" commercial
+ * architecture. Presentation only — it does NOT drive entitlement,
  * access-control, or checkout logic (those live in lib/entitlements,
  * lib/membership, and the payment providers and are intentionally untouched).
  *
- * The model (spec-locked — do not "simplify" the remaining amounts):
+ * PUBLIC MODEL (spec-locked — do not reintroduce the retired entry/credit tiers):
  *
- *   $197 — Redesign Your Entry Into The Workweek™   (entry investment)
- *   Day  — $997 total = $197 entry + $800 remaining
- *   Week — $1,997 total = $197 entry + $1,800 remaining
+ *   $297 — The Work-Life Balance Business Day™   (the COMPLETE Business Day)
+ *   $497 — The Work-Life Balance Business Week™   (Monday–Thursday)
  *
- * The $197 entry is CREDITED toward either the Day or the Week, so the amounts
- * shown at the Transition Space™ invitation are the remaining $800 / $1,800 —
- * NOT $900 / $1,900, and NOT the full totals.
+ * There is NO separate entry product, NO mid-day upgrade, and NO sales
+ * transition inside the experience. The $297 buys the whole Day; the $497 Week
+ * extends it. Retired amounts ($97 / $197 / $800 / $900 / $1,800 / $1,900 /
+ * $997 / $1,997) must never appear on any public-facing surface.
  */
 
-export const ENTRY = {
-  price: "$197",
-  name: "Redesign Your Entry Into The Workweek™",
+export const BUSINESS_DAY = {
+  name: "The Work-Life Balance Business Day™",
+  price: "$297",
+  cadence: "One complete day",
+  promise: "One day lets you experience it.",
 } as const
 
-export const LIVE_DAY = {
-  name: "Live The Work-Life Balance Business Day™",
-  total: "$997",
-  credit: "$197",
-  remaining: "$800",
-} as const
-
-export const LIVE_WEEK = {
-  name: "Live The Work-Life Balance Business Week™",
-  total: "$1,997",
-  credit: "$197",
-  remaining: "$1,800",
+export const BUSINESS_WEEK = {
+  name: "The Work-Life Balance Business Week™",
+  price: "$497",
+  cadence: "Monday–Thursday",
+  promise: "Four days lets you live the rhythm.",
 } as const

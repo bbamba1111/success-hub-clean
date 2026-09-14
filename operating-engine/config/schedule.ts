@@ -136,14 +136,14 @@ export const SCHEDULE: BlockConfig[] = [
     sectionId: "block-monday-debrief",
     // The Monday 9:30–10:00 segment IS "Redesign Your Entry Into The Workweek™";
     // Decide & Design™ is the mechanism it runs on (workspace + CTA below). This
-    // is Part One of Monday — what the $197 entry covers.
+    // is Part One of the Monday Business Day.
     title: "Redesign Your Entry Into The Workweek™",
     shortTitle: "Redesign Your Entry™",
     timeLabel: "9:30–10:00 AM",
     startMinutes: h(9, 30),
     endMinutes: h(10),
     description:
-      "Inside Decide & Design™: review what surfaced in your Reality Check™, tour the Work-Life Balance Business Day/Week™, decide what matters for the new week, and design your entry into the established rhythm. This is Part One of Monday — what the $197 entry covers.",
+      "Inside Decide & Design™: review what surfaced in your Reality Check™, tour the Work-Life Balance Business Day/Week™, decide what matters for the new week, and design your entry into the established rhythm. This is Part One of the Monday Business Day.",
     emoji: "🌸",
     tint: "252 240 238",
     backgroundImage: "/images/cherry-blossom-intentions-design.png",
@@ -160,12 +160,11 @@ export const SCHEDULE: BlockConfig[] = [
     ],
   },
   // ── Monday-only block ─────────────────────────────────────────────────────
-  // The 10:00–10:15 AM invitation & decision moment (NOT a live segment of the
-  // Day itself). The Reality Check™ is done and the entry has been redesigned;
-  // now the founder is invited to LIVE the Work-Life Balance Business Day™ or
-  // Week™ in real time (the $997 / $1,997 upgrade). At 10:15 the live
-  // experience begins with Morning GIV•EN™ — there is NO additional segment
-  // between Transition Space™ and Morning GIV•EN™.
+  // A genuine ~15-minute preparation boundary (10:00–10:15 AM) between Redesign
+  // Your Entry Into The Workweek™ and Morning GIV•EN™. This is NOT a sales
+  // moment or a decision point — no pricing, no upgrade, no "join us now." It is
+  // simply protected space to let the redesign settle before the live rhythm
+  // continues with Morning GIV•EN™.
   {
     id: "monday-transition-break",
     sectionId: "block-monday-transition-break",
@@ -175,11 +174,11 @@ export const SCHEDULE: BlockConfig[] = [
     startMinutes: h(10),
     endMinutes: h(10, 15),
     description:
-      "You're invited to join us NOW — live the Work-Life Balance Business Day™ or Week™ in real time. Your Reality Check™ is complete and your entry into the workweek has been redesigned; now choose how you'll experience the rhythm with us.",
+      "A short, protected pause between redesigning your entry into the workweek and Morning GIV•EN™ — step away from the screen, breathe, and let what surfaced settle so you arrive present for the rhythm of the day.",
     emoji: "🌿",
     tint: "240 245 236",
     backgroundImage: "/images/block-movement-window.png",
-    cta: "You're Invited — Join Us NOW!",
+    cta: "Take My Transition Space™",
     engagement: "self-guided",
     part: "morning",
     greetingPeriod: "Morning",
@@ -188,7 +187,7 @@ export const SCHEDULE: BlockConfig[] = [
     communityOpen: true,
     mondayOnly: true,
     messages: [
-      "You're invited to join us NOW — live the Work-Life Balance Business Day™ or Week™ in real time.",
+      "A short pause lets what you just decided settle before you move into Morning GIV•EN™.",
     ],
   },
   // ── Tuesday–Thursday-only block ───────────────────────────────────────────

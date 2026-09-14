@@ -1,21 +1,23 @@
 import type { Metadata } from "next"
 import { LandingNav } from "@/components/landing/landing-nav"
 import { MondayHeroSection } from "@/components/landing/monday-hero-section"
+import { ParallelLaneSection } from "@/components/landing/parallel-lane-section"
+import { BusinessDayFlow } from "@/components/landing/business-day-flow"
 import { MondayJourney } from "@/components/landing/monday-journey"
-import { BusinessDayShowcase } from "@/components/landing/business-day-showcase"
+import { DestinationSection } from "@/components/landing/destination-section"
 import { MondayOffer } from "@/components/landing/monday-offer"
 import { CherryBlossomSection } from "@/components/landing/cherry-blossom-section"
 import { TestimonialsSection } from "@/components/landing/testimonials-section"
 import { LandingFooter } from "@/components/landing/landing-footer"
 
 export const metadata: Metadata = {
-  title: "Make Time For More — Build a business that gives you more life",
+  title: "Harmony Lane™ — The Work-Life Balance Destination™",
   description:
-    "A guided daily operating system for founders and leaders. Live the Work-Life Balance Business Day™ with AI coaching from Cherry Blossom™ and a community that keeps you present.",
+    "Make Time For More™: experience the Work-Life Balance Business Day™ in real time. Harmony Lane™ is the parallel lane to hustle entrepreneurship for founders who want to live, work, and lead in balance.",
   openGraph: {
-    title: "Make Time For More — Build a business that gives you more life",
+    title: "Harmony Lane™ — The Work-Life Balance Destination™",
     description:
-      "Live the Work-Life Balance Business Day™ — eight guided phases, a weekly ritual, and an AI coach who remembers you.",
+      "Experience the Work-Life Balance Business Day™ in real time. A destination for founders who want sustainable success, not more hustle.",
     type: "website",
   },
 }
@@ -37,17 +39,20 @@ export default function LandingPage() {
   return (
     <main className="min-h-screen bg-white">
       <LandingNav
-        experiencesHref="#entry-offer"
+        experiencesHref="#offer"
         links={[
-          { label: "Your Monday", href: "#your-monday" },
+          { label: "The Parallel Lane", href: "#parallel-lane" },
           { label: "The Business Day", href: "#business-day" },
-          { label: "Cherry Blossom AI", href: "#cherry-blossom" },
-          { label: "The Offer", href: "#entry-offer" },
+          { label: "Why Monday", href: "#monday" },
+          { label: "The Destination", href: "#destination" },
+          { label: "The Experience", href: "#offer" },
         ]}
       />
       <MondayHeroSection />
+      <ParallelLaneSection />
+      <BusinessDayFlow />
       <MondayJourney />
-      <BusinessDayShowcase />
+      <DestinationSection />
       <MondayOffer />
       <CherryBlossomSection />
       <TestimonialsSection />
