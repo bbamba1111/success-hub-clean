@@ -137,8 +137,8 @@ export const SCHEDULE: BlockConfig[] = [
     // The Monday 9:30–10:00 segment IS "Redesign Your Entry Into The Workweek™";
     // Decide & Design™ is the mechanism it runs on (workspace + CTA below). This
     // is Part One of the Monday Business Day.
-    title: "Redesign Your Entry Into The Workweek™",
-    shortTitle: "Redesign Your Entry™",
+    title: "Decide & Redesign Your Entry Into The Workweek™",
+    shortTitle: "Decide & Redesign™",
     timeLabel: "9:30–10:00 AM",
     startMinutes: h(9, 30),
     endMinutes: h(10),
@@ -146,7 +146,7 @@ export const SCHEDULE: BlockConfig[] = [
       "Inside Decide & Design™: review what surfaced in your Reality Check™, tour the Work-Life Balance Business Day/Week™, decide what matters for the new week, and design your entry into the established rhythm. This is Part One of the Monday Business Day.",
     emoji: "🌸",
     tint: "252 240 238",
-    backgroundImage: "/images/cherry-blossom-intentions-design.png",
+    backgroundImage: "/images/decide-redesign-workweek.png",
     cta: "Decide & Design My Work-Life Balance Business Day™",
     engagement: "self-guided",
     part: "morning",
