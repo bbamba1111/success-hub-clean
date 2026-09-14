@@ -124,6 +124,7 @@ export function FlexTimeGuidedMoments() {
       summaryLeadIn="You're making time for:"
       summaryConfirmation="Beautiful. You've intentionally created room for the responsibilities and experiences that matter this morning while keeping your CEO Workday™ protected."
       copy={{ label: "Copy My Morning Plan", buildText: buildCopyText }}
+      confirmationHoldMs={8000}
     />
   )
 }

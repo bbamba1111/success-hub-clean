@@ -114,6 +114,8 @@ export interface GuidedMomentsProps {
     label: string
     buildText: (selectionsByMoment: Record<string, string[]>) => string
   }
+  /** How long the Cherry Blossom™ confirmation is held on screen before auto-advancing, in ms. Defaults to 1800. */
+  confirmationHoldMs?: number
 }
 
 type MomentStatus = "upcoming" | "open" | "confirming" | "completed"
@@ -132,7 +134,7 @@ function cleanLabel(v: string): string {
 
 const CONFIRMATION_MS = 1800
 
-export function GuidedMoments({ moments, summaryTitle, summaryLeadIn, summaryConfirmation, copy }: GuidedMomentsProps) {
+export function GuidedMoments({ moments, summaryTitle, summaryLeadIn, summaryConfirmation, copy, confirmationHoldMs = CONFIRMATION_MS }: GuidedMomentsProps) {
   const [activeIndex, setActiveIndex] = useState(0)
   const [completedThrough, setCompletedThrough] = useState(-1)
   const [confirmingIndex, setConfirmingIndex] = useState<number | null>(null)
@@ -207,7 +209,7 @@ export function GuidedMoments({ moments, summaryTitle, summaryLeadIn, summaryCon
       setCompletedThrough((prev) => Math.max(prev, index))
       setActiveIndex(index + 1)
       moment.onContinue?.(chosen.map(cleanLabel))
-    }, CONFIRMATION_MS)
+    }, confirmationHoldMs)
   }
 
   function handlePrevious(index: number) {
@@ -254,7 +256,7 @@ export function GuidedMoments({ moments, summaryTitle, summaryLeadIn, summaryCon
           resolution: "complete",
           resolutionChoice: null,
         })
-      }, CONFIRMATION_MS)
+      }, confirmationHoldMs)
       return
     }
 
@@ -286,7 +288,7 @@ export function GuidedMoments({ moments, summaryTitle, summaryLeadIn, summaryCon
         resolution: choice.kind === "borrow" ? "borrowed" : "deferred",
         resolutionChoice: choice,
       })
-    }, CONFIRMATION_MS)
+    }, confirmationHoldMs)
   }
 
   async function handleCopy() {
