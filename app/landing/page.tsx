@@ -42,16 +42,16 @@ export default function LandingPage() {
         experiencesHref="#offer"
         links={[
           { label: "The Parallel Lane", href: "#parallel-lane" },
-          { label: "The Business Day", href: "#business-day" },
           { label: "Why Monday", href: "#monday" },
+          { label: "The Business Day", href: "#business-day" },
           { label: "The Destination", href: "#destination" },
           { label: "The Experience", href: "#offer" },
         ]}
       />
       <MondayHeroSection />
       <ParallelLaneSection />
-      <BusinessDayFlow />
       <MondayJourney />
+      <BusinessDayFlow />
       <DestinationSection />
       <MondayOffer />
       <CherryBlossomSection />
