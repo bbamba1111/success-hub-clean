@@ -11,10 +11,9 @@ const PUBLIC_ROUTES = [
   "/images",
   "/marketing",
   "/landing",
-  "/monday",
-  // "/1day" — the new $1,997 live group "Make Time For More on Mondays™"
-  // offer landing page. Public for the same reason /monday is: it's a
-  // pre-purchase marketing/checkout page, not gated app content.
+  // "/1day" — the $1,997 live group "Make Time For More on Mondays™"
+  // offer landing page. Public because it's a pre-purchase
+  // marketing/checkout page, not gated app content.
   "/1day",
   "/sunday-shift",
   "/garden",

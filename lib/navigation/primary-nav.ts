@@ -206,7 +206,7 @@ export const PRIMARY_NAV: PrimarySection[] = [
     workspaces: [
       {
         label: "Make Time For More™ on Mondays",
-        href: "/monday",
+        href: "/landing",
         description: "The confirmed front-door Work-Life Balance Business Day™ experience.",
       },
       {

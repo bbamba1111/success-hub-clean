@@ -123,7 +123,7 @@ export default function LoginPage() {
                       form. New visitors belong on the checkout page. */}
                   <div className="mt-2 text-center text-sm text-gray-600">
                     Don't have an account yet?{" "}
-                    <Link href="/monday" className="text-[#7FB069] hover:text-[#6FA055] font-semibold underline">
+                    <Link href="/landing" className="text-[#7FB069] hover:text-[#6FA055] font-semibold underline">
                       Get started
                     </Link>
                   </div>

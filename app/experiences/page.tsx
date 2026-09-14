@@ -59,7 +59,7 @@ export default async function ExperiencesPage({
             than folded into the same card grid, since it's a different kind
             of offer (one-time day vs. ongoing membership). */}
         <Link
-          href="/monday"
+          href="/landing"
           className="font-poppins mt-8 inline-flex items-center gap-2 rounded-full border border-[#5D9D61]/40 bg-white px-5 py-2.5 text-sm font-semibold text-[#5A7F46] transition-colors hover:bg-[#5D9D61]/5"
         >
           Start with Make Time For More™ on Mondays

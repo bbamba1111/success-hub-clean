@@ -44,7 +44,7 @@ export default function SignupPage() {
                 asChild
                 className="w-full bg-gradient-to-r from-[#7FB069] to-[#E26C73] hover:from-[#6FA055] hover:to-[#D55A60] text-white font-semibold"
               >
-                <Link href="/monday">Go to Checkout</Link>
+                <Link href="/landing">Go to Checkout</Link>
               </Button>
               <p className="text-xs text-center text-gray-500">
                 Already purchased and just need to log in?{" "}
