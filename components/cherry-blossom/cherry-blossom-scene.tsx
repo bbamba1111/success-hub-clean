@@ -28,9 +28,9 @@ const SCENE_CONFIG = {
     ariaLabel: "Cherry blossom garden at golden hour with bridge and reflection",
   },
   pond: {
-    src: "/images/reality-check-zen-bg.png",
+    src: "/images/reality-check-workspace.png",
     overlay: "bg-gradient-to-b from-[#FAD4DC]/35 via-white/5 to-[#FFF0F2]/40",
-    ariaLabel: "Zen stones and cherry blossom branch with golden light",
+    ariaLabel: "Founder reflecting at a laptop in a sunlit home office with cherry blossoms",
   },
   executive: {
     src: "/images/entrepreneur-success-assessment-bg.png",
