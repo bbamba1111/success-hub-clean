@@ -357,6 +357,24 @@ export async function getPostLoginDestination(): Promise<string> {
       if (!hasSeenCherryBlossomThankYou()) {
         return "/welcome/cherry-blossom/complete"
       }
+
+      // Founder Destination™ gate — sits AFTER the on-ramp and BEFORE the first
+      // Monday Reality Check™. A founder should declare where they intend the
+      // business, their role, their life, and their future workplace to end up
+      // *before* measuring where they are today. This fires only until they
+      // save (or meaningfully begin) their destination; once persisted it
+      // never gates them again, and it stays revisitable from My Blueprint™.
+      const { hasCompletedFounderDestination } = await import(
+        "@/lib/founder-destination/founder-destination-store"
+      )
+      const { hasCompletedFounderDestinationInDb } = await import(
+        "@/utils/founder-destination-storage"
+      )
+      const founderDestinationDone =
+        hasCompletedFounderDestination() || (await hasCompletedFounderDestinationInDb())
+      if (!founderDestinationDone) {
+        return "/founder-destination?onboarding=1"
+      }
     } catch {
       // Unexpected localStorage/DB failure on the client — fall through to
       // reality-check logic rather than hard-failing at the front door.

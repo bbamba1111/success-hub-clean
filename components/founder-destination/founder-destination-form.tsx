@@ -277,6 +277,16 @@ export function FounderDestinationForm() {
   const [sectionIndex, setSectionIndex] = useState(0)
   const [showSaved, setShowSaved] = useState(false)
   const [form, setForm] = useState<FounderDestinationProfile>({})
+  // True when reached as the pre-Monday onboarding milestone (via
+  // ?onboarding=1 from getPostLoginDestination). In that context, finishing
+  // continues forward into the first Work-Life Balance Reality Check™ rather
+  // than returning to My Blueprint™. Read from the URL directly to avoid a
+  // useSearchParams Suspense boundary on this otherwise-static route.
+  const [isOnboarding, setIsOnboarding] = useState(false)
+
+  useEffect(() => {
+    setIsOnboarding(new URLSearchParams(window.location.search).get("onboarding") === "1")
+  }, [])
 
   // Hints pulled from Business Context™ — never copied into the destination
   // fields automatically, since "where I'm going" is a distinct question
@@ -394,15 +404,16 @@ export function FounderDestinationForm() {
             Your destination is set.
           </h1>
           <p className="font-sans text-[16px] leading-relaxed text-brand-ink/60 mb-8">
-            Cherry Blossom™ will use your Founder Destination™ alongside your Business Context™ and
-            Work-Life Balance data to help determine what matters next.
+            {isOnboarding
+              ? "Cherry Blossom™ will hold your Founder Destination™ as your true north. Next, you'll step into your first Work-Life Balance Reality Check™ — where you'll see where you are today, measured against where you intend to go."
+              : "Cherry Blossom™ will use your Founder Destination™ alongside your Business Context™ and Work-Life Balance data to help determine what matters next."}
           </p>
           <button
             type="button"
-            onClick={() => router.push("/my-blueprint")}
+            onClick={() => router.push(isOnboarding ? "/begin" : "/my-blueprint")}
             className="inline-flex items-center gap-2 rounded-xl bg-brand-green px-7 py-3 font-sans text-sm font-bold text-white shadow-sm hover:bg-brand-green/90 active:scale-[0.98] transition-all"
           >
-            Go to My Blueprint™
+            {isOnboarding ? "Continue to Ready for Monday" : "Go to My Blueprint™"}
             <ChevronRight className="h-4 w-4" aria-hidden />
           </button>
         </div>

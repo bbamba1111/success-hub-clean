@@ -2,11 +2,9 @@ import type { Metadata } from "next"
 import { LandingNav } from "@/components/landing/landing-nav"
 import { MondayHeroSection } from "@/components/landing/monday-hero-section"
 import { HustleProblemSection } from "@/components/landing/hustle-problem-section"
-import { HarmonyParallelSection } from "@/components/landing/harmony-parallel-section"
-import { IntentionSection } from "@/components/landing/intention-section"
+import { MissingQuestionSection } from "@/components/landing/missing-question-section"
 import { FounderDestinationSection } from "@/components/landing/founder-destination-section"
 import { AiAgeSection } from "@/components/landing/ai-age-section"
-import { CherryBlossomSection } from "@/components/landing/cherry-blossom-section"
 import { JourneySection } from "@/components/landing/journey-section"
 import { ExperienceSection } from "@/components/landing/experience-section"
 import { MondayOffer } from "@/components/landing/monday-offer"
@@ -50,7 +48,7 @@ export default function LandingPage() {
       <LandingNav
         experiencesHref="#offer"
         links={[
-          { label: "The Parallel Lane", href: "#parallel" },
+          { label: "The Question", href: "#missing" },
           { label: "Founder Destination", href: "#destination" },
           { label: "The Experience", href: "#experience" },
           { label: "Depth of Entry", href: "#offer" },
@@ -59,17 +57,15 @@ export default function LandingPage() {
       />
       <MondayHeroSection />
       <HustleProblemSection />
-      <HarmonyParallelSection />
-      <IntentionSection />
+      <MissingQuestionSection />
       <FounderDestinationSection />
       <AiAgeSection />
-      <CherryBlossomSection />
       <JourneySection />
       <ExperienceSection />
       <MondayOffer />
       <HroiSection />
-      <FounderAuthoritySection />
       <BiggerPurposeSection />
+      <FounderAuthoritySection />
       <FinalCtaSection />
       <LandingFooter />
     </main>
