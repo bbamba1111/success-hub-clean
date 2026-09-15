@@ -8,13 +8,15 @@
 import { motion } from "framer-motion"
 
 const RETHINK = [
-  "Founder capacity",
-  "Work design",
+  "Founder Capacity™",
+  "Workday Design™",
+  "Workweek Design™",
+  "How We Enter the Workweek™",
   "Leadership",
-  "Workplace culture",
-  "Human + AI collaboration",
-  "Workforce sustainability",
-  "Sustainable business success",
+  "Workplace Culture™",
+  "Human + AI Collaboration",
+  "HROI™",
+  "Sustainable Business Success",
 ]
 
 export function AiAgeSection() {
@@ -56,6 +58,17 @@ export function AiAgeSection() {
             </li>
           ))}
         </motion.ul>
+
+        <motion.p
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6, delay: 0.15 }}
+          className="font-playfair mx-auto mt-12 max-w-2xl text-balance text-2xl font-bold leading-snug text-white sm:text-3xl"
+        >
+          AI changes what work can do.
+          <span className="mt-1 block text-[#E8A0AC]">Harmony Lane™ asks us to reconsider what work should be.</span>
+        </motion.p>
       </div>
     </section>
   )

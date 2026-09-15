@@ -7,33 +7,38 @@
  * think about.
  */
 import { motion } from "framer-motion"
-import { Scale, Gauge, Users, Cpu, Sprout } from "lucide-react"
+import { Briefcase, Gauge, Heart, Users, Cpu, LineChart } from "lucide-react"
 
 const DIMENSIONS = [
   {
-    icon: Scale,
-    name: "Work-Life Balance Destination™",
-    question: "What do I want my relationship with work and life to look like?",
+    icon: Briefcase,
+    name: "Business",
+    question: "What do I want the business to be — and what do I want it to make possible?",
   },
   {
     icon: Gauge,
-    name: "Founder Capacity Destination™",
+    name: "Founder Capacity",
     question: "How do I want to use my time, energy, attention, and leadership capacity?",
   },
   {
+    icon: Heart,
+    name: "Life",
+    question: "What do I want my life to look like alongside the business I'm building?",
+  },
+  {
     icon: Users,
-    name: "Workplace Culture Destination™",
+    name: "Workplace Culture",
     question: "What kind of environment do I want to create for the people who work with me?",
   },
   {
     icon: Cpu,
-    name: "Future Workplace Destination™",
+    name: "Future Workplace",
     question: "What should work look like as AI, technology, and human expectations evolve?",
   },
   {
-    icon: Sprout,
-    name: "Workforce Sustainable Success™",
-    question: "What conditions let both the workforce and the business succeed without permanent urgency?",
+    icon: LineChart,
+    name: "HROI™",
+    question: "What is the whole system of success actually returning — beyond the financial line?",
   },
 ]
 

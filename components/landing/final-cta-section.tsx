@@ -47,6 +47,10 @@ export function FinalCtaSection() {
           >
             Enter Harmony Lane™
           </a>
+
+          <p className="font-poppins mt-6 text-xs font-semibold uppercase tracking-[0.2em] text-white/55">
+            Come for the Day. Stay for the Week. Repeat it to install it.
+          </p>
         </motion.div>
       </div>
     </section>

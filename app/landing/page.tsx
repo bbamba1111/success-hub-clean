@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { LandingNav } from "@/components/landing/landing-nav"
 import { MondayHeroSection } from "@/components/landing/monday-hero-section"
 import { HustleProblemSection } from "@/components/landing/hustle-problem-section"
+import { HarmonyParallelSection } from "@/components/landing/harmony-parallel-section"
 import { IntentionSection } from "@/components/landing/intention-section"
 import { FounderDestinationSection } from "@/components/landing/founder-destination-section"
 import { AiAgeSection } from "@/components/landing/ai-age-section"
@@ -9,6 +10,8 @@ import { CherryBlossomSection } from "@/components/landing/cherry-blossom-sectio
 import { JourneySection } from "@/components/landing/journey-section"
 import { ExperienceSection } from "@/components/landing/experience-section"
 import { MondayOffer } from "@/components/landing/monday-offer"
+import { HroiSection } from "@/components/landing/hroi-section"
+import { FounderAuthoritySection } from "@/components/landing/founder-authority-section"
 import { BiggerPurposeSection } from "@/components/landing/bigger-purpose-section"
 import { FinalCtaSection } from "@/components/landing/final-cta-section"
 import { LandingFooter } from "@/components/landing/landing-footer"
@@ -33,9 +36,10 @@ export const viewport = {
  * Public marketing site at /landing — Harmony Lane™ category positioning.
  *
  * Hierarchy (positioning first, proof of experience second, offer third):
- *   Hero → The Problem → Original Intention → Founder Destination → The AI Age
- *   → Cherry Blossom™ → The Journey → The Experience → Depth of Entry
- *   → Bigger Purpose → Final CTA
+ *   Hero → The Problem (did you leave the lane) → The Parallel Lane
+ *   → Original Intention → Founder Destination → The AI Age → Cherry Blossom™
+ *   → The Journey → The Experience → Depth of Entry → HROI™
+ *   → Founder Authority → Bigger Purpose → Final CTA
  *
  * Kept separate from the Hub (/) so app functionality, auth, payments, and
  * routes are untouched. Paperbell links and $297/$497 pricing are spec-locked.
@@ -46,15 +50,16 @@ export default function LandingPage() {
       <LandingNav
         experiencesHref="#offer"
         links={[
-          { label: "The Invitation", href: "#problem" },
+          { label: "The Parallel Lane", href: "#parallel" },
           { label: "Founder Destination", href: "#destination" },
-          { label: "The Journey", href: "#journey" },
           { label: "The Experience", href: "#experience" },
-          { label: "Enter", href: "#offer" },
+          { label: "Depth of Entry", href: "#offer" },
+          { label: "The Founder", href: "#founder" },
         ]}
       />
       <MondayHeroSection />
       <HustleProblemSection />
+      <HarmonyParallelSection />
       <IntentionSection />
       <FounderDestinationSection />
       <AiAgeSection />
@@ -62,6 +67,8 @@ export default function LandingPage() {
       <JourneySection />
       <ExperienceSection />
       <MondayOffer />
+      <HroiSection />
+      <FounderAuthoritySection />
       <BiggerPurposeSection />
       <FinalCtaSection />
       <LandingFooter />

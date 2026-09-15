@@ -68,9 +68,13 @@ export function MondayHeroSection() {
             <span className="mt-2 block text-[#C13B6B]">Now decide what you want it to make possible.</span>
           </h1>
 
-          <p className="font-poppins mt-6 max-w-xl text-pretty text-base leading-relaxed text-[#5A4A52] sm:text-lg">
-            A premium destination for successful entrepreneurs who have left hustle behind, quietly rebuilt it
-            inside their own business, or want to avoid building it in the first place.
+          <p className="font-poppins mt-5 text-sm font-semibold uppercase tracking-[0.16em] text-[#5A7F46]">
+            The Parallel Lane to Hustle Entrepreneurship™
+          </p>
+
+          <p className="font-poppins mt-4 max-w-xl text-pretty text-base leading-relaxed text-[#5A4A52] sm:text-lg">
+            For successful entrepreneurs who have left hustle behind, rebuilt it inside their business, or want to
+            avoid building it in the first place.
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -89,7 +93,7 @@ export function MondayHeroSection() {
           </div>
 
           <p className="font-poppins mt-6 text-xs font-semibold uppercase tracking-[0.2em] text-[#8A7A82]">
-            Come for the Day. Stay for the Week. Stay longer to install it.
+            Come for the Day. Stay for the Week. Repeat it to install it.
           </p>
         </motion.div>
       </div>

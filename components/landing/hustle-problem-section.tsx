@@ -34,12 +34,13 @@ export function HustleProblemSection() {
             The Invitation
           </span>
           <h2 className="font-playfair mt-5 text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">
-            You can leave hustle culture
-            <span className="block text-[#C13B6B]">and still rebuild it.</span>
+            You left hustle entrepreneurship for freedom.
+            <span className="block text-[#C13B6B]">But did you actually leave the lane?</span>
           </h2>
           <p className="font-poppins mt-5 text-pretty text-lg leading-relaxed text-[#6B5860]">
-            Success doesn&apos;t always end hustle. Often it just relocates it — from a job you left into the
-            business you own. It rarely arrives as a decision. It accumulates quietly.
+            You chose entrepreneurship for autonomy, flexibility, time, freedom, creativity, family, and more
+            life. But entrepreneurship can quietly reproduce the very operating conditions of hustle you set out
+            to leave.
           </p>
         </motion.div>
 
@@ -69,12 +70,12 @@ export function HustleProblemSection() {
           className="mx-auto mt-10 max-w-3xl rounded-3xl border border-[#7FB069]/25 bg-[#7FB069]/8 p-8 text-center sm:p-10"
         >
           <p className="font-playfair text-2xl font-bold leading-snug text-[#4A3A42] sm:text-3xl">
-            You don&apos;t have to learn this through burnout.
+            You did not fail at freedom.
           </p>
           <p className="font-poppins mx-auto mt-4 max-w-2xl text-pretty text-base leading-relaxed text-[#5A7F46]">
-            Some entrepreneurs feel the trap closing and want out. Others see it coming and want to build
-            differently from day one. Harmony Lane™ is for both — a place to question whether the operating
-            model you&apos;re using is the one you actually want.
+            You may simply have been building without another entrepreneurial operating lane. You changed the
+            company, the title, and became your own boss — but not necessarily the operating model. Harmony Lane™
+            is that other lane.
           </p>
         </motion.div>
       </div>
