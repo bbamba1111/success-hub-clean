@@ -61,7 +61,7 @@ export function ExperienceSection() {
           <h2 className="font-playfair mt-5 text-balance text-4xl font-bold leading-tight text-[#4A3A42] sm:text-6xl">
             Make Time For More™
           </h2>
-          <p className="font-playfair mt-3 text-pretty text-xl italic text-[#5A7F46] sm:text-2xl">
+          <p className="font-playfair mt-3 text-pretty text-3xl font-bold italic text-[#5A7F46] sm:text-5xl">
             The Work-Life Balance Business Day™
           </p>
           <p className="font-poppins mx-auto mt-5 max-w-2xl text-pretty text-lg leading-relaxed text-[#6B5860]">
@@ -129,9 +129,9 @@ export function ExperienceSection() {
           transition={{ duration: 0.6 }}
           className="mx-auto mt-14 max-w-3xl rounded-[2rem] bg-[#C13B6B] p-10 text-center sm:p-14"
         >
-          <p className="font-playfair text-balance text-2xl font-bold leading-snug text-white sm:text-4xl">
+          <p className="font-playfair text-balance text-3xl font-bold leading-snug text-white sm:text-5xl">
             This isn&apos;t a day you follow.
-            <span className="mt-1 block text-[#FBE0E6]">It&apos;s a day you design — and then live.</span>
+            <span className="mt-2 block text-[#FBE0E6]">It&apos;s a day you design — and then live — in real time.</span>
           </p>
         </motion.div>
       </div>

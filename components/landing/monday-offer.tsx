@@ -20,6 +20,19 @@ import { motion } from "framer-motion"
 const PAPERBELL_DAY = "https://app.paperbell.com/checkout/packages/234456"
 const PAPERBELL_WEEK = "https://app.paperbell.com/checkout/packages/234458"
 
+const DAY_INCLUDES = [
+  "Harmony Lane™ On-Ramp",
+  "Morning GIV•EN™",
+  "Weekly Work-Life Balance Reality Check™",
+  "Decide & Redesign™ your entry into the day",
+  "Communicate My Boundary™",
+  "4-Hour Focused CEO Workday™",
+  "Movement Window™ & Extended Healthy Hybrid Lunch™",
+  "Flex Time™ & Time Freedom™",
+  "Power Down & Unplug™",
+  "Fully facilitated in real time by Thought Leader Barbara",
+]
+
 const WEEK_GUIDED = [
   "4-Hour Focused CEO Workdays™",
   "Morning GIV•EN™",
@@ -70,6 +83,19 @@ export function MondayOffer() {
             <p className="font-poppins mt-4 text-pretty text-sm leading-relaxed text-[#6B5860]">
               A single, fully guided Work-Life Balance Business Day™ — designed around you and lived in real time.
             </p>
+
+            <p className="font-poppins mt-5 text-xs font-bold uppercase tracking-[0.16em] text-[#5A7F46]">
+              What&apos;s included
+            </p>
+            <ul className="mt-3 space-y-1.5">
+              {DAY_INCLUDES.map((item) => (
+                <li key={item} className="font-poppins flex items-start gap-2 text-sm leading-snug text-[#5A4A52]">
+                  <span className="mt-1 h-1 w-1 flex-none rounded-full bg-[#7FB069]" aria-hidden />
+                  {item}
+                </li>
+              ))}
+            </ul>
+
             <a
               href={PAPERBELL_DAY}
               target="_blank"

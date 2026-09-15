@@ -57,8 +57,8 @@ export function HroiSection() {
             className="rounded-3xl border border-[#7FB069]/30 bg-[#7FB069]/8 p-8"
           >
             <p className="font-poppins text-xs font-bold uppercase tracking-[0.18em] text-[#5A7F46]">HROI™ asks</p>
-            <p className="font-playfair mt-4 text-pretty text-2xl font-bold leading-snug text-[#4A3A42]">
-              What is the whole system of success returning?
+            <p className="font-playfair mt-4 text-pretty text-3xl font-bold leading-snug text-[#4A3A42] sm:text-4xl">
+              What is the holistic system of success actually returning — beyond the financial ROI?
             </p>
           </motion.div>
         </div>
