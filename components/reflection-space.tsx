@@ -174,7 +174,7 @@ export function ReflectionSpace() {
   const period = isBaseline ? "30 days" : "7 days"
 
   const cherryBlossomMessage = allDone
-    ? "Reflection Complete\n\nYou have just created something many founders never do.\n\nYou created a protected time and space to reflect on your life before reacting to the week ahead.\n\nMost founders begin Monday by opening their inbox. You began by creating awareness.\n\nThat single decision changes how the rest of your week unfolds."
+    ? "Your Work-Life Balance Audit is complete.\n\nNow use what you discovered to decide where your attention belongs this week."
     : isBaseline
     ? "There\u2019s nowhere to rush to.\n\nBefore you redesign your entry into the workweek, let\u2019s begin with a short reflection \u2014 your Work-Life Balance Audit\u2122.\n\nThe audit helps me understand how your life has been operating so I can guide you throughout your Work-Life Balance Business Day\u2122.\n\nComplete it once. We\u2019ll use it as the foundation for your Monday reflections and your experience inside Harmony Lane\u2122."
     : "There\u2019s nowhere to rush to.\n\nBefore you redesign your entry into the workweek, let\u2019s take a few moments to reflect on the past 7 days.\n\nEach Monday is an opportunity to celebrate your progress, learn from the previous week, and intentionally create the week ahead."
@@ -195,7 +195,10 @@ export function ReflectionSpace() {
           Take My Work-Life Balance Reality Check™
         </h2>
         <p className="font-sans text-sm text-[#6B5860] max-w-xl mx-auto leading-relaxed">
-          There&apos;s nowhere to rush to. A protected time and space to reflect on your life before you redesign your entry into the workweek.
+          Before you manage your business, pause long enough to see what your current reality is telling you.
+        </p>
+        <p className="font-sans text-sm text-[#6B5860] max-w-xl mx-auto leading-relaxed">
+          Your Work-Life Balance Audit&trade; gives you the starting point. Your Reality Check helps you decide what deserves your attention this week.
         </p>
       </div>
 
@@ -208,7 +211,7 @@ export function ReflectionSpace() {
           </p>
         </div>
         <p className="font-serif text-2xl font-semibold text-[#2E1F27] leading-snug">
-          Take My Work-Life Balance Reality Check™
+          Use what you discovered in your Audit to decide where your attention belongs this week.
         </p>
 
         {/* ── Permission-giving intro ──────────────────────────────────────── */}
@@ -324,25 +327,6 @@ export function ReflectionSpace() {
           />
         </div>
 
-        {!auditDone && (
-          <>
-        <div className="flex items-center gap-3 pt-2">
-          <div className="h-px flex-1 bg-[#E8DFE2]" aria-hidden />
-          <span className="font-sans text-xs font-semibold uppercase tracking-[0.15em] text-[#6B5860]">or</span>
-          <div className="h-px flex-1 bg-[#E8DFE2]" aria-hidden />
-        </div>
-
-        <div className="flex flex-col gap-3">
-          <button
-            onClick={() => markAuditDone(getAuditResults() ?? ({} as AuditData), {})}
-            className="inline-flex items-center justify-center gap-2 rounded-xl border px-6 py-3 font-sans text-sm font-semibold transition-colors border-[#7FB069]/40 bg-white text-[#5B835F] hover:bg-[#7FB069]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7FB069]"
-          >
-            <CheckCircle2 className="h-4 w-4 text-[#7FB069]/50" />
-            Mark Audit Complete
-          </button>
-        </div>
-          </>
-        )}
             </div>
           </div>
         )}
@@ -365,7 +349,7 @@ export function ReflectionSpace() {
                   Step 2 — Your Work-Life Balance Reality Check™
                 </p>
                 <p className="font-serif text-xl font-semibold text-[#2E1F27]">
-                  Your life reflection has now been brought together into your personalized Work-Life Balance Reality Check™.
+                  Here&apos;s what your reflection is telling you this week.
                 </p>
               </div>
 
@@ -409,20 +393,14 @@ export function ReflectionSpace() {
                 </div>
               )}
 
-              {/* Cherry Blossom Reality Check response */}
+              {/* This week's reflection */}
               <div className="rounded-2xl border border-[#E26C73]/20 bg-white px-6 py-6 space-y-4">
-                <div className="flex items-center gap-2">
-                  <span className="text-xl select-none" role="img" aria-label="Cherry blossom">🌸</span>
-                  <p className="font-sans text-xs font-semibold uppercase tracking-[0.2em] text-[#E26C73]">Cherry Blossom™</p>
-                </div>
-                <p className="font-serif text-base font-semibold text-[#2E1F27] leading-snug">Take a few moments to review your insights and consider where you&apos;d like to focus your attention this week.</p>
+                <p className="font-sans text-xs font-semibold uppercase tracking-[0.2em] text-[#C0545A]">This Week&apos;s Reflection</p>
+                <p className="font-serif text-base font-semibold text-[#2E1F27] leading-snug">Notice what stands out from your Audit — and choose the one area that deserves your attention this week.</p>
                 <p className="font-sans text-sm text-[#5A4A52] leading-relaxed">
-                  Rather than reacting to whatever the week brings, you now have the clarity to intentionally redesign your entry into the workweek.
-                </p>
-                <p className="font-sans text-sm text-[#5A4A52] leading-relaxed">
-                  These scores are now saved to your{" "}
-                  <Link href="/harmony-blueprint" className="font-semibold text-[#C0545A] underline underline-offset-2 hover:text-[#A8305A]">
-                    My Work-Life Harmony Blueprint™
+                  Your reflections are saved to your{" "}
+                  <Link href="/my-blueprint" className="font-semibold text-[#C0545A] underline underline-offset-2 hover:text-[#A8305A]">
+                    My Blueprint™
                   </Link>
                   , and this space resets fresh next Monday.
                 </p>
@@ -442,9 +420,6 @@ export function ReflectionSpace() {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <CompletionBadge label="Life Reflection Complete" />
-              </div>
             </div>
           </motion.div>
         )}
@@ -474,15 +449,6 @@ function CherryBlossomCoach({ message }: { message: string }) {
           <p key={i} className="font-sans text-sm text-[#3A2E33] leading-relaxed">{para}</p>
         ))}
       </div>
-    </div>
-  )
-}
-
-function CompletionBadge({ label }: { label: string }) {
-  return (
-    <div className="flex items-center gap-3 rounded-2xl border border-[#7FB069]/25 bg-white px-5 py-3.5">
-      <CheckCircle2 className="h-5 w-5 shrink-0 text-[#7FB069]" aria-hidden />
-      <span className="font-sans text-sm font-semibold text-[#3A2E33]">{label}</span>
     </div>
   )
 }
