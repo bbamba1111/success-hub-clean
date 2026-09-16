@@ -187,12 +187,7 @@ export function ReflectionSpace() {
     <section className="w-full space-y-6">
 
       {/* ── Header ─────────────────────────────────────────────────────────── */}
-      <div
-        className="relative overflow-hidden rounded-3xl border border-[#E8DFE2] bg-cover bg-center shadow-sm"
-        style={{ backgroundImage: "url('/images/reality-check-workspace.png')" }}
-      >
-        {/* Soft light wash keeps the dark heading + body copy readable over the photo */}
-        <div className="absolute inset-0 bg-white/72" aria-hidden />
+      <div className="relative overflow-hidden rounded-3xl border border-[#E8DFE2] bg-[#FDF8F5] shadow-sm">
         <div className="relative text-center space-y-3 px-6 py-10 sm:px-10 sm:py-12">
           <p className="font-sans text-xs font-semibold uppercase tracking-[0.25em] text-[#C0545A]">
             Reflection Space™

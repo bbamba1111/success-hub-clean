@@ -28,9 +28,9 @@ const SCENE_CONFIG = {
     ariaLabel: "Cherry blossom garden at golden hour with bridge and reflection",
   },
   pond: {
-    src: "/images/reality-check-workspace.png",
+    src: "/images/reality-check-desk-survey.png",
     overlay: "bg-gradient-to-b from-[#FAD4DC]/35 via-white/5 to-[#FFF0F2]/40",
-    ariaLabel: "Founder reflecting at a laptop in a sunlit home office with cherry blossoms",
+    ariaLabel: "Sunlit desk with a laptop showing the Work-Life Balance Reality Check survey, surrounded by cherry blossoms",
   },
   executive: {
     src: "/images/entrepreneur-success-assessment-bg.png",
