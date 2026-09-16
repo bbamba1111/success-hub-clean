@@ -187,19 +187,26 @@ export function ReflectionSpace() {
     <section className="w-full space-y-6">
 
       {/* ── Header ─────────────────────────────────────────────────────────── */}
-      <div className="text-center space-y-3 pb-2">
-        <p className="font-sans text-xs font-semibold uppercase tracking-[0.25em] text-[#C0545A]">
-          Reflection Space™
-        </p>
-        <h2 className="font-serif text-3xl font-semibold text-[#2E1F27] text-balance leading-tight">
-          Take My Work-Life Balance Reality Check™
-        </h2>
-        <p className="font-sans text-sm text-[#6B5860] max-w-xl mx-auto leading-relaxed">
-          Before you manage your business, pause long enough to see what your current reality is telling you.
-        </p>
-        <p className="font-sans text-sm text-[#6B5860] max-w-xl mx-auto leading-relaxed">
-          Your Work-Life Balance Audit&trade; gives you the starting point. Your Reality Check helps you decide what deserves your attention this week.
-        </p>
+      <div
+        className="relative overflow-hidden rounded-3xl border border-[#E8DFE2] bg-cover bg-center shadow-sm"
+        style={{ backgroundImage: "url('/images/reality-check-workspace.png')" }}
+      >
+        {/* Soft light wash keeps the dark heading + body copy readable over the photo */}
+        <div className="absolute inset-0 bg-white/72" aria-hidden />
+        <div className="relative text-center space-y-3 px-6 py-10 sm:px-10 sm:py-12">
+          <p className="font-sans text-xs font-semibold uppercase tracking-[0.25em] text-[#C0545A]">
+            Reflection Space™
+          </p>
+          <h2 className="font-serif text-3xl font-semibold text-[#2E1F27] text-balance leading-tight">
+            Take My Work-Life Balance Reality Check™
+          </h2>
+          <p className="font-sans text-sm text-[#4A3B41] max-w-xl mx-auto leading-relaxed">
+            Before you manage your business, pause long enough to see what your current reality is telling you.
+          </p>
+          <p className="font-sans text-sm text-[#4A3B41] max-w-xl mx-auto leading-relaxed">
+            Your Work-Life Balance Audit&trade; gives you the starting point. Your Reality Check helps you decide what deserves your attention this week.
+          </p>
+        </div>
       </div>
 
       {/* ── Full card wrapper ─────────────────────────────────────────────── */}
