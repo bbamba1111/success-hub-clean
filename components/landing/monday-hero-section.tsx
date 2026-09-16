@@ -73,8 +73,10 @@ export function MondayHeroSection() {
           </p>
 
           <p className="font-poppins mt-4 max-w-xl text-pretty text-base leading-relaxed text-[#5A4A52] sm:text-lg">
-            For successful entrepreneurs who have left hustle behind, rebuilt it inside their business, or want to
-            avoid building it in the first place.
+            You became an entrepreneur for a reason. Harmony Lane™ is where successful entrepreneurs — starting,
+            growing, scaling, or reinventing — intentionally design what success should make possible for the
+            business, the founder, their life, their people, and the workplace they&apos;re creating in the age of
+            AI.
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -85,10 +87,10 @@ export function MondayHeroSection() {
               Enter Harmony Lane™
             </a>
             <a
-              href="#journey"
+              href="#experience"
               className="font-poppins inline-flex items-center justify-center rounded-full border border-[#7FB069]/40 bg-white/60 px-8 py-3.5 text-base font-semibold text-[#5A7F46] backdrop-blur-sm transition-colors hover:bg-white/80"
             >
-              See the journey
+              See the experience
             </a>
           </div>
 

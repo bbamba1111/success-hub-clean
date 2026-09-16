@@ -59,14 +59,15 @@ export function ExperienceSection() {
             The Experience
           </span>
           <h2 className="font-playfair mt-5 text-balance text-4xl font-bold leading-tight text-[#4A3A42] sm:text-6xl">
-            Make Time For More™
+            Make Time For More on Mondays™
           </h2>
           <p className="font-playfair mt-3 text-pretty text-3xl font-bold italic text-[#5A7F46] sm:text-5xl">
             The Work-Life Balance Business Day™
           </p>
           <p className="font-poppins mx-auto mt-5 max-w-2xl text-pretty text-lg leading-relaxed text-[#6B5860]">
-            Don&apos;t just learn about Work-Life Balance™. Experience it in real time — personalized, facilitated,
-            and designed around you, inside the Harmony Lane™ environment.
+            This is where you experience the alternative — not as theory, not as another productivity system, and
+            not as something you simply learn about. You actually live a redesigned business day, in real time,
+            inside the Harmony Lane™ environment.
           </p>
         </motion.div>
 

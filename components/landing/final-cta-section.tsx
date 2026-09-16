@@ -6,10 +6,13 @@
  */
 import { motion } from "framer-motion"
 
-const EARNED = [
-  "You've already learned how to build.",
-  "You've already learned how to lead.",
-  "You've already learned how to make money.",
+const MORE = [
+  "More life",
+  "More freedom",
+  "More capacity",
+  "More meaningful work",
+  "More time with the people you love",
+  "More human possibility",
 ]
 
 export function FinalCtaSection() {
@@ -23,22 +26,26 @@ export function FinalCtaSection() {
           transition={{ duration: 0.6 }}
         >
           <h2 className="font-playfair text-balance text-4xl font-bold leading-tight text-white sm:text-6xl">
-            Where are you going?
+            You built this business for more.
           </h2>
 
-          <ul className="mx-auto mt-8 space-y-1.5">
-            {EARNED.map((line) => (
-              <li key={line} className="font-poppins text-pretty text-base text-white/70 sm:text-lg">
+          <ul className="mx-auto mt-8 flex max-w-xl flex-wrap justify-center gap-2.5">
+            {MORE.map((line) => (
+              <li
+                key={line}
+                className="font-poppins rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white/80"
+              >
                 {line}
               </li>
             ))}
           </ul>
 
-          <p className="font-playfair mt-8 text-balance text-2xl font-bold italic leading-snug text-[#E8A0AC] sm:text-3xl">
-            What do you want your success to make possible?
+          <p className="font-poppins mx-auto mt-8 max-w-xl text-pretty text-base leading-relaxed text-white/75">
+            Not less ambition. Not less success. But the business has to be designed to make that possible.
           </p>
-          <p className="font-poppins mx-auto mt-4 max-w-xl text-pretty text-base leading-relaxed text-white/75">
-            And is the way you&apos;re building your business actually taking you there?
+
+          <p className="font-playfair mt-10 text-balance text-2xl font-bold italic leading-snug text-[#E8A0AC] sm:text-3xl">
+            Where are you going — and is the way you&apos;re building actually taking you there?
           </p>
 
           <a
@@ -49,7 +56,7 @@ export function FinalCtaSection() {
           </a>
 
           <p className="font-poppins mt-6 text-xs font-semibold uppercase tracking-[0.2em] text-white/55">
-            Come for the Day. Stay for the Week. Repeat it to install it.
+            Contain work. Let life have space to expand™.
           </p>
         </motion.div>
       </div>

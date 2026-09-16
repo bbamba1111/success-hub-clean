@@ -2,15 +2,17 @@ import type { Metadata } from "next"
 import { LandingNav } from "@/components/landing/landing-nav"
 import { MondayHeroSection } from "@/components/landing/monday-hero-section"
 import { HustleProblemSection } from "@/components/landing/hustle-problem-section"
-import { MissingQuestionSection } from "@/components/landing/missing-question-section"
+import { OriginalIntentionSection } from "@/components/landing/original-intention-section"
+import { SuccessAlignmentSection } from "@/components/landing/success-alignment-section"
 import { FounderDestinationSection } from "@/components/landing/founder-destination-section"
 import { AiAgeSection } from "@/components/landing/ai-age-section"
-import { JourneySection } from "@/components/landing/journey-section"
 import { ExperienceSection } from "@/components/landing/experience-section"
+import { FourHourWorkdaySection } from "@/components/landing/four-hour-workday-section"
+import { WeeklyLoopSection } from "@/components/landing/weekly-loop-section"
 import { MondayOffer } from "@/components/landing/monday-offer"
+import { WhoItsForSection } from "@/components/landing/who-its-for-section"
 import { HroiSection } from "@/components/landing/hroi-section"
 import { FounderAuthoritySection } from "@/components/landing/founder-authority-section"
-import { BiggerPurposeSection } from "@/components/landing/bigger-purpose-section"
 import { FinalCtaSection } from "@/components/landing/final-cta-section"
 import { LandingFooter } from "@/components/landing/landing-footer"
 
@@ -33,14 +35,14 @@ export const viewport = {
 /**
  * Public marketing site at /landing — Harmony Lane™ category positioning.
  *
- * Hierarchy (positioning first, proof of experience second, offer third):
- *   Hero → The Problem (did you leave the lane) → The Parallel Lane
- *   → Original Intention → Founder Destination → The AI Age → Cherry Blossom™
- *   → The Journey → The Experience → Depth of Entry → HROI™
- *   → Founder Authority → Bigger Purpose → Final CTA
+ * Narrative hierarchy (recognition → destination → experience → offer → proof):
+ *   Hero → The Recognition → Original Intention → Success Alignment
+ *   → Founder Destination™ → The AI Age → The Experience (Business Day)
+ *   → The 4-Hour Workday → The Weekly Loop → Depth of Entry → Who It's For
+ *   → HROI™ → The Founder → Final CTA
  *
  * Kept separate from the Hub (/) so app functionality, auth, payments, and
- * routes are untouched. Paperbell links and $297/$497 pricing are spec-locked.
+ * routes are untouched. Paperbell links and pricing are spec-locked.
  */
 export default function LandingPage() {
   return (
@@ -48,8 +50,9 @@ export default function LandingPage() {
       <LandingNav
         experiencesHref="#offer"
         links={[
-          { label: "The Question", href: "#missing" },
+          { label: "The Question", href: "#problem" },
           { label: "Founder Destination", href: "#destination" },
+          { label: "The Future of Work", href: "#ai-age" },
           { label: "The Experience", href: "#experience" },
           { label: "Depth of Entry", href: "#offer" },
           { label: "The Founder", href: "#founder" },
@@ -57,14 +60,16 @@ export default function LandingPage() {
       />
       <MondayHeroSection />
       <HustleProblemSection />
-      <MissingQuestionSection />
+      <OriginalIntentionSection />
+      <SuccessAlignmentSection />
       <FounderDestinationSection />
       <AiAgeSection />
-      <JourneySection />
       <ExperienceSection />
+      <FourHourWorkdaySection />
+      <WeeklyLoopSection />
       <MondayOffer />
+      <WhoItsForSection />
       <HroiSection />
-      <BiggerPurposeSection />
       <FounderAuthoritySection />
       <FinalCtaSection />
       <LandingFooter />

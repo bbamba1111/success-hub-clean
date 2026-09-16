@@ -7,38 +7,43 @@
  * think about.
  */
 import { motion } from "framer-motion"
-import { Briefcase, Gauge, Heart, Users, Cpu, LineChart } from "lucide-react"
+import { Compass, Heart, Layers, GitCompareArrows, MapPin, Cpu, LineChart } from "lucide-react"
 
 const DIMENSIONS = [
   {
-    icon: Briefcase,
-    name: "Business",
-    question: "What do I want the business to be — and what do I want it to make possible?",
-  },
-  {
-    icon: Gauge,
-    name: "Founder Capacity",
-    question: "How do I want to use my time, energy, attention, and leadership capacity?",
+    icon: Compass,
+    name: "Original Entrepreneurial Intention™",
+    question: "Why did I choose entrepreneurship, and what did I want it to make possible?",
   },
   {
     icon: Heart,
-    name: "Life",
-    question: "What do I want my life to look like alongside the business I'm building?",
+    name: "Values",
+    question: "What matters enough to build around?",
   },
   {
-    icon: Users,
-    name: "Workplace Culture",
-    question: "What kind of environment do I want to create for the people who work with me?",
+    icon: Layers,
+    name: "What I've Created",
+    question: "What have I actually created across the business, my role, my time, my life, and my workplace?",
+  },
+  {
+    icon: GitCompareArrows,
+    name: "Intention vs. Reality",
+    question: "Where are they aligned? Where are the gaps? What have I learned?",
+  },
+  {
+    icon: MapPin,
+    name: "Future Destination",
+    question: "What do I want success to make possible now?",
   },
   {
     icon: Cpu,
-    name: "Future Workplace",
-    question: "What should work look like as AI, technology, and human expectations evolve?",
+    name: "Future Workplace / AI Age",
+    question: "What should work become? What should humans do, and what should AI do?",
   },
   {
     icon: LineChart,
     name: "HROI™",
-    question: "What is the whole system of success actually returning — beyond the financial line?",
+    question: "What should success return beyond financial performance?",
   },
 ]
 

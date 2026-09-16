@@ -70,12 +70,12 @@ export function HustleProblemSection() {
           className="mx-auto mt-10 max-w-3xl rounded-3xl border border-[#7FB069]/25 bg-[#7FB069]/8 p-8 text-center sm:p-10"
         >
           <p className="font-playfair text-2xl font-bold leading-snug text-[#4A3A42] sm:text-3xl">
-            You did not fail at freedom.
+            You did not fail at entrepreneurship.
           </p>
           <p className="font-poppins mx-auto mt-4 max-w-2xl text-pretty text-base leading-relaxed text-[#5A7F46]">
-            You may simply have been building without another entrepreneurial operating lane. You changed the
-            company, the title, and became your own boss — but not necessarily the operating model. Harmony Lane™
-            is that other lane.
+            You may simply have been building without another operating lane. Harmony Lane™ is that lane — not
+            anti-hustle, and not less ambition. It supports growth, achievement, and scale while redesigning the
+            conditions under which they happen.
           </p>
         </motion.div>
       </div>

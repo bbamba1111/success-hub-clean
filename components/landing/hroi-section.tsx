@@ -7,13 +7,15 @@
 import { motion } from "framer-motion"
 
 const LENS = [
-  "Business performance",
-  "Founder capacity",
-  "Human capability",
   "Time",
-  "Wellbeing",
-  "Culture",
-  "Sustainable success",
+  "Capacity",
+  "Freedom",
+  "Meaning",
+  "Human capability",
+  "Leadership capacity",
+  "Quality of life",
+  "Workplace quality",
+  "Sustainable business performance",
 ]
 
 export function HroiSection() {
