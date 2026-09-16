@@ -228,8 +228,10 @@ export function BusinessDayBlock({
         // fires as soon as any pixel of the card is visible, regardless of height.
         viewport={{ once: true, amount: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        whileHover={{ boxShadow: "0 24px 50px -12px rgba(28,22,26,0.35)" }}
-        className={`relative w-full overflow-hidden rounded-3xl shadow-lg transition-shadow duration-700 ${
+        whileHover={isSage ? undefined : { boxShadow: "0 24px 50px -12px rgba(28,22,26,0.35)" }}
+        className={`relative w-full overflow-hidden rounded-3xl transition-shadow duration-700 ${
+          isSage ? "" : "shadow-lg"
+        } ${
           isHighlighted
             ? "ring-4 ring-[#C13B6B]/40 ring-offset-2 ring-offset-[#F5F1E8]"
             : isCurrent
