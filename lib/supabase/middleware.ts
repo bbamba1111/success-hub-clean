@@ -31,6 +31,9 @@ const PUBLIC_ROUTES = [
   // /api/auth/send-confirmation (see that route for details), not by
   // Supabase session auth.
   "/welcome",
+  // /linkedin-header is a public, shareable preview of Barbara's LinkedIn
+  // banner — no gated app content, so it stays reachable without a session.
+  "/linkedin-header",
 ]
 
 // Routes that require authentication but NOT paid membership (free access after login)
