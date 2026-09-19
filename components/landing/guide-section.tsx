@@ -68,10 +68,10 @@ export function GuideSection() {
             </p>
 
             <p className="font-playfair mt-6 text-pretty text-lg font-bold italic leading-snug text-[#4A3A42]">
-              Barbara Bamba created Harmony Lane™ to explore what becomes possible when founders redesign how they
-              enter, live, work, and lead their workweek — and Build Work-Life Balance Boundaries in Business — and
-              Workplaces — as They Start, Grow &amp; Scale to Make Time For More Life &amp; Human Sustainability in the
-              AI Age.
+              Barbara Bamba created Harmony Lane™ &amp; the Work-Life Balance Business Day to explore what becomes
+              possible for human sustainability when founders redesign how they enter the workweek — and build
+              Work-Life Balance Boundaries in their businesses — and workplaces — as they start, grow and scale — in
+              the AI Age.
             </p>
 
             <a
