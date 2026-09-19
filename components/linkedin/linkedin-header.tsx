@@ -81,24 +81,14 @@ export function LinkedInHeader({
             transition={{ duration: 0.9, ease: "easeOut" }}
             className="max-w-[60%] px-[4%] py-[3%] text-right sm:max-w-[56%]"
           >
-            <p className="font-poppins text-[clamp(0.45rem,1vw,0.8rem)] font-semibold uppercase tracking-[0.28em] text-white/85">
-              Thought Leader Barbara
-            </p>
-            <h2 className="font-playfair mt-[0.35em] text-pretty text-[clamp(0.85rem,2.35vw,2rem)] font-bold leading-[1.08] text-white drop-shadow-sm">
-              You became an entrepreneur for freedom.{" "}
-              <span className="text-[#F4B8C6]">So why are you working like this?</span>
-            </h2>
-            <p className="font-poppins mt-[0.7em] text-[clamp(0.42rem,0.95vw,0.72rem)] font-semibold uppercase tracking-[0.2em] text-white/90">
-              The Work-Life Balance Business Day&trade;
-            </p>
-            <p className="font-poppins mt-[0.35em] text-pretty text-[clamp(0.48rem,1.02vw,0.86rem)] font-medium leading-snug text-white/80">
-              The Destination for Founders Ready to Create Boundaries in Their Businesses So Life Has Space to Expand.
-            </p>
-            <p className="font-playfair mt-[0.6em] text-[clamp(0.55rem,1.25vw,1.05rem)] font-bold italic text-[#F4B8C6]">
+            <p className="font-playfair text-[clamp(0.6rem,1.35vw,1.15rem)] font-bold italic text-[#F4B8C6]">
               Make Time For More&trade; On Mondays
             </p>
-            <p className="font-poppins mt-[0.3em] text-[clamp(0.45rem,1vw,0.8rem)] font-semibold text-white">
-              Enter the experience &rarr;
+            <h2 className="font-playfair mt-[0.35em] text-pretty text-[clamp(0.85rem,2.35vw,2rem)] font-bold leading-[1.08] text-white drop-shadow-sm">
+              Join The Work-Life Balance Business Day&trade;
+            </h2>
+            <p className="font-poppins mt-[0.55em] text-pretty text-[clamp(0.48rem,1.02vw,0.86rem)] font-medium leading-snug text-white/85">
+              The Destination for Founders Ready to Create Boundaries in Their Businesses So Life Has Space to Expand.
             </p>
           </motion.div>
         </div>
