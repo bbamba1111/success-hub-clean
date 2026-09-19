@@ -69,7 +69,7 @@ export function LinkedInHeader({
             className="absolute inset-0"
             style={{
               background:
-                "linear-gradient(90deg, rgba(233,224,206,0.94) 0%, rgba(233,224,206,0.6) 16%, rgba(233,224,206,0) 33%, rgba(233,224,206,0) 45%, rgba(233,224,206,0.5) 62%, rgba(233,224,206,0.85) 82%, rgba(233,224,206,0.95) 100%)",
+                "linear-gradient(90deg, rgba(233,224,206,0.94) 0%, rgba(233,224,206,0.6) 16%, rgba(233,224,206,0) 33%, rgba(163,177,138,0) 45%, rgba(163,177,138,0.55) 62%, rgba(163,177,138,0.85) 82%, rgba(163,177,138,0.95) 100%)",
             }}
           />
         </div>
@@ -91,10 +91,10 @@ export function LinkedInHeader({
             transition={{ duration: 0.9, ease: "easeOut" }}
           >
             <p className="font-playfair whitespace-nowrap text-[clamp(1.1rem,2.7vw,2.2rem)] font-bold text-white drop-shadow-sm">
-              Make Time For More&trade;
+              Make Time For More<sup className="text-[0.4em] align-super">&trade;</sup>
             </p>
-            <p className="font-poppins mt-[0.35em] whitespace-nowrap text-[clamp(0.5rem,1.25vw,1rem)] font-medium tracking-wide text-white/90">
-              Thought Leader Barbara
+            <p className="font-poppins mt-[0.15em] whitespace-nowrap text-[clamp(0.5rem,1.25vw,1rem)] font-medium italic tracking-wide text-white/90">
+              with Thought Leader Barbara
             </p>
           </motion.div>
         </div>
