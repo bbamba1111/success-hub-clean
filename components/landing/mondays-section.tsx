@@ -1,32 +1,25 @@
 "use client"
 
 /**
- * 11 — Make Time For More On Mondays™. Monday is reframed as the entry point to
- * the workweek. The morning is resequenced: check in with life first, decide &
- * design the day, take a brief transition, THEN align and move.
+ * 11 — Make Time For More On Mondays™. Monday is the entry point to the
+ * workweek. On the landing page this is reduced to the mechanism — the six
+ * moves — not the full time-blocked schedule (that lives inside the experience).
  */
 import { motion } from "framer-motion"
 
-const MONDAY_FLOW = [
-  { time: "7:00–9:00 AM", label: "Flex Time™", body: "Enter the week on your terms, before the business asks." },
-  {
-    time: "9:00–9:30 AM",
-    label: "Work-Life Balance Reality Check™",
-    body: "Check in with your life first — honestly.",
-  },
-  {
-    time: "9:30–10:00 AM",
-    label: "Redesign Your Entry Into The Workweek™",
-    body: "Decide and design how you'll enter — instead of defaulting to the old rhythm.",
-  },
-  { time: "10:00–10:15 AM", label: "Transition Space™", body: "A brief, deliberate pause between deciding and doing." },
-  { time: "10:15–11:00 AM", label: "Morning GIV•EN™", body: "Only now do you align — and then move." },
+const MONDAY_MOVES = [
+  "Reality Check™",
+  "Decide & Redesign™",
+  "Life Priority",
+  "Delegation Priority",
+  "Operating Rule™",
+  "Morning GIV•EN™",
 ]
 
 export function MondaysSection() {
   return (
     <section id="mondays" className="w-full bg-[#FFF1F5] py-20 sm:py-28">
-      <div className="mx-auto max-w-5xl px-5 sm:px-8">
+      <div className="mx-auto max-w-4xl px-5 sm:px-8">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -41,33 +34,26 @@ export function MondaysSection() {
             Make Time For More On Mondays™
           </h2>
           <p className="font-poppins mt-5 text-pretty text-base leading-relaxed text-[#6B5860]">
-            How you enter the week shapes the entire week. Most founders enter Monday through urgency — inheriting
-            last week&apos;s momentum and this week&apos;s pressure before they&apos;ve decided anything. Harmony
-            Lane™ resequences the Monday morning so you check in with your life first, decide and design your day,
-            take a brief transition — and only then align and move.
+            Monday is the entry point. How you enter the week shapes the entire week — so instead of inheriting last
+            week&apos;s momentum and this week&apos;s pressure, you enter through a deliberate sequence.
           </p>
         </motion.div>
 
-        <ol className="mx-auto mt-12 max-w-3xl space-y-3">
-          {MONDAY_FLOW.map((step, i) => (
+        <ul className="mx-auto mt-10 grid max-w-2xl gap-3 sm:grid-cols-2">
+          {MONDAY_MOVES.map((move, i) => (
             <motion.li
-              key={step.label}
+              key={move}
               initial={{ opacity: 0, x: -14 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.4, delay: i * 0.06 }}
-              className="flex flex-col gap-1 rounded-2xl border border-[#C13B6B]/15 bg-white p-5 sm:flex-row sm:items-center sm:gap-6"
+              className="font-poppins flex items-center gap-3 rounded-2xl border border-[#C13B6B]/15 bg-white px-5 py-4 text-base font-semibold text-[#4A3A42]"
             >
-              <span className="font-poppins w-32 flex-none text-sm font-bold uppercase tracking-[0.08em] text-[#C13B6B]">
-                {step.time}
-              </span>
-              <div>
-                <h3 className="font-playfair text-lg font-bold leading-snug text-[#4A3A42]">{step.label}</h3>
-                <p className="font-poppins mt-0.5 text-pretty text-sm leading-relaxed text-[#6B5860]">{step.body}</p>
-              </div>
+              <span className="h-1.5 w-1.5 flex-none rounded-full bg-[#C13B6B]" aria-hidden />
+              {move}
             </motion.li>
           ))}
-        </ol>
+        </ul>
 
         <motion.p
           initial={{ opacity: 0, y: 24 }}

@@ -5,6 +5,7 @@ import { GuideSection } from "@/components/landing/guide-section"
 import { PatternSection } from "@/components/landing/pattern-section"
 import { TwoLanesSection } from "@/components/landing/two-lanes-section"
 import { OriginalIntentionSection } from "@/components/landing/original-intention-section"
+import { WhatCreatedSection } from "@/components/landing/what-created-section"
 import { MethodSection } from "@/components/landing/method-section"
 import { AiAgeSection } from "@/components/landing/ai-age-section"
 import { EnterHarmonySection } from "@/components/landing/enter-harmony-section"
@@ -12,12 +13,9 @@ import { BusinessDaySection } from "@/components/landing/business-day-section"
 import { DayToWeekSection } from "@/components/landing/day-to-week-section"
 import { BuildInstallSection } from "@/components/landing/build-install-section"
 import { MondaysSection } from "@/components/landing/mondays-section"
-import { BeforeYouEnterSection } from "@/components/landing/before-you-enter-section"
 import { WhoItsForSection } from "@/components/landing/who-its-for-section"
-import { VirtualDestinationSection } from "@/components/landing/virtual-destination-section"
 import { MondayOffer } from "@/components/landing/monday-offer"
 import { GuidedTourSection } from "@/components/landing/guided-tour-section"
-import { DestinationProgressionSection } from "@/components/landing/destination-progression-section"
 import { BiggerQuestionSection } from "@/components/landing/bigger-question-section"
 import { FinalCtaSection } from "@/components/landing/final-cta-section"
 import { LandingFooter } from "@/components/landing/landing-footer"
@@ -73,6 +71,7 @@ export default function LandingPage() {
       <PatternSection />
       <TwoLanesSection />
       <OriginalIntentionSection />
+      <WhatCreatedSection />
       <MethodSection />
       <AiAgeSection />
       <EnterHarmonySection />
@@ -80,12 +79,9 @@ export default function LandingPage() {
       <DayToWeekSection />
       <BuildInstallSection />
       <MondaysSection />
-      <BeforeYouEnterSection />
       <WhoItsForSection />
-      <VirtualDestinationSection />
       <MondayOffer />
       <GuidedTourSection />
-      <DestinationProgressionSection />
       <BiggerQuestionSection />
       <FinalCtaSection />
       <LandingFooter />
