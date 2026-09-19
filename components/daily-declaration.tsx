@@ -105,9 +105,9 @@ export function DailyDeclaration() {
             transition={{ duration: 0.6 }}
             className="relative mx-auto max-w-[1320px] overflow-hidden rounded-[1.75rem]"
             style={{
-              backgroundImage: "url('/images/cherry-blossom-intention-bg.png')",
+              backgroundImage: "url('/images/backgrounds/journaling-sunset.png')",
               backgroundSize: "cover",
-              backgroundPosition: "center 60%",
+              backgroundPosition: "center 55%",
               boxShadow: "0 24px 60px rgba(193,59,107,0.14), 0 6px 20px rgba(0,0,0,0.06)",
             }}
           >

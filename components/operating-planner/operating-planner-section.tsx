@@ -31,10 +31,18 @@ export function OperatingPlannerSection() {
   if (!segmentHasPlanner(blockId)) return null
 
   return (
-    // Wall-to-wall white band behind the planner, so the ultra-light soft sage
-    // planner card reads as a calm, distinct surface resting on white.
-    <div id="operating-planner" className="w-full scroll-mt-24 bg-white">
-      <OperatingPlanner blockId={blockId} />
+    // Airy sage/blush watercolor band behind the planner — its own section
+    // color. A soft white veil keeps the ultra-light planner card legible
+    // while the watercolor edges show through.
+    <div
+      id="operating-planner"
+      className="relative w-full scroll-mt-24 overflow-hidden bg-cover bg-center"
+      style={{ backgroundImage: "url('/images/backgrounds/watercolor-sage.png')" }}
+    >
+      <div className="absolute inset-0 bg-white/72" aria-hidden />
+      <div className="relative">
+        <OperatingPlanner blockId={blockId} />
+      </div>
     </div>
   )
 }

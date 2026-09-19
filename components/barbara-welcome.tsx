@@ -102,10 +102,23 @@ export function BarbaraWelcome() {
   const greeting = experience?.member.greeting ?? "Good Morning, Friend"
 
   return (
-    <section className="w-full bg-[#FDFAF5]">
+    <section
+      className="relative w-full overflow-hidden bg-cover bg-center"
+      style={{ backgroundImage: "url('/images/backgrounds/founder-office.png')" }}
+    >
+      {/* Section color — warm sage-green wash over the founder-office vista,
+          weighted left where the coaching copy sits. */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(115deg, rgba(52,92,62,0.80) 0%, rgba(90,140,98,0.55) 42%, rgba(253,250,245,0.30) 78%, rgba(253,250,245,0.10) 100%)",
+        }}
+        aria-hidden
+      />
 
       {/* ── Two-column intro ── */}
-      <div className="mx-auto max-w-[1320px] px-6 pb-12 pt-16 sm:px-10 sm:pb-14 sm:pt-20 lg:px-16 lg:pb-16 lg:pt-24">
+      <div className="relative mx-auto max-w-[1320px] px-6 pb-12 pt-16 sm:px-10 sm:pb-14 sm:pt-20 lg:px-16 lg:pb-16 lg:pt-24">
         <div className="flex flex-col items-start gap-12 lg:flex-row lg:items-center lg:gap-16">
 
           {/* Left column — 60% — coaching front and center */}
@@ -114,7 +127,7 @@ export function BarbaraWelcome() {
             initial={{ opacity: 0, y: 22 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65, ease: "easeOut" }}
-            className="flex min-w-0 flex-1 flex-col"
+            className="flex min-w-0 flex-1 flex-col rounded-[1.75rem] border border-white/55 bg-white/72 p-7 shadow-[0_16px_48px_rgba(52,92,62,0.22)] backdrop-blur-xl sm:p-9"
           >
             {/* Personalized greeting — the strongest typographic element in the hero */}
             <p className="font-playfair text-[30px] font-semibold italic leading-tight tracking-tight text-[#78AD7D] sm:text-[36px] lg:text-[40px]">
