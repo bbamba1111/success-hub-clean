@@ -69,7 +69,7 @@ export function LinkedInHeader({
             className="absolute inset-0"
             style={{
               background:
-                "linear-gradient(90deg, rgba(233,224,206,0.94) 0%, rgba(233,224,206,0.6) 16%, rgba(233,224,206,0) 33%, rgba(183,166,97,0) 45%, rgba(183,166,97,0.55) 62%, rgba(183,166,97,0.85) 82%, rgba(183,166,97,0.95) 100%)",
+                "linear-gradient(90deg, rgba(233,224,206,0.94) 0%, rgba(233,224,206,0.6) 16%, rgba(233,224,206,0) 33%, rgba(171,169,110,0) 45%, rgba(171,169,110,0.55) 62%, rgba(171,169,110,0.85) 82%, rgba(171,169,110,0.95) 100%)",
             }}
           />
         </div>
