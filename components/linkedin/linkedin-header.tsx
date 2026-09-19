@@ -74,20 +74,20 @@ export function LinkedInHeader({
         </div>
 
         {/* Fixed editorial message, anchored upper-right, away from the safe area */}
-        <div className="relative z-10 flex h-full items-center justify-end">
+        <div className="relative z-10 flex h-full items-end justify-end">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, ease: "easeOut" }}
-            className="max-w-[60%] px-[4%] py-[3%] text-right sm:max-w-[56%]"
+            className="max-w-[94%] px-[4%] pb-6 text-right"
           >
-            <p className="font-playfair text-[clamp(0.6rem,1.35vw,1.15rem)] font-bold italic text-[#F4B8C6]">
+            <p className="font-playfair text-[clamp(0.6rem,1.35vw,1.15rem)] font-medium italic text-[#A3B18A]">
               Make Time For More&trade; On Mondays
             </p>
-            <h2 className="font-playfair mt-[0.35em] text-pretty text-[clamp(0.85rem,2.35vw,2rem)] font-bold leading-[1.08] text-white drop-shadow-sm">
+            <h2 className="font-playfair mt-[0.35em] whitespace-nowrap text-[clamp(0.72rem,2vw,1.6rem)] font-bold leading-[1.08] text-white drop-shadow-sm">
               Join The Work-Life Balance Business Day&trade;
             </h2>
-            <p className="font-poppins mt-[0.55em] text-pretty text-[clamp(0.48rem,1.02vw,0.86rem)] font-medium leading-snug text-white/85">
+            <p className="font-poppins mt-[0.55em] whitespace-nowrap text-[clamp(0.42rem,0.95vw,0.8rem)] font-medium leading-snug text-white/85">
               The Destination for Founders Ready to Create Boundaries in Their Businesses So Life Has Space to Expand.
             </p>
           </motion.div>
