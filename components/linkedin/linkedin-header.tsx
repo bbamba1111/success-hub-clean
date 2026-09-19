@@ -17,21 +17,32 @@ import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { SCHEDULE } from "@/operating-engine/config/schedule"
 
-export function LinkedInHeader({ showSafeArea = false }: { showSafeArea?: boolean }) {
-  const [index, setIndex] = useState(0)
+export function LinkedInHeader({
+  showSafeArea = false,
+  capture = false,
+  captureIndex = 0,
+}: {
+  showSafeArea?: boolean
+  /** Freeze on a single image with no animation/rounding — for exporting a static PNG. */
+  capture?: boolean
+  /** Which SCHEDULE phase image to freeze on when capturing. */
+  captureIndex?: number
+}) {
+  const [index, setIndex] = useState(capture ? captureIndex % SCHEDULE.length : 0)
 
   useEffect(() => {
+    if (capture) return
     const timer = setInterval(() => {
       setIndex((i) => (i + 1) % SCHEDULE.length)
     }, 5200)
     return () => clearInterval(timer)
-  }, [])
+  }, [capture])
 
   const block = SCHEDULE[index]
   const image = (Array.isArray(block.backgroundImage) ? block.backgroundImage[0] : block.backgroundImage) || "/placeholder.svg"
 
   return (
-    <div className="relative w-full overflow-hidden rounded-xl bg-[#FFF1F5]">
+    <div className={`relative w-full overflow-hidden bg-[#FFF1F5] ${capture ? "" : "rounded-xl"}`}>
       {/* LinkedIn banner ratio: 1584 × 396 = 4:1 */}
       <div className="relative aspect-[4/1] w-full">
         {/* Panoramic Work-Life Balance Business Day™ imagery, in motion */}
