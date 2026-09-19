@@ -57,8 +57,8 @@ export function LinkedInHeader({
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
               transition={{ opacity: { duration: 1.8, ease: "easeInOut" }, scale: { duration: 7, ease: "easeOut" } }}
-              className="absolute inset-0 h-full w-full object-cover"
-              style={{ objectPosition: "center 42%" }}
+              className="absolute inset-0 h-full w-full object-contain"
+              style={{ objectPosition: "center" }}
             />
           </AnimatePresence>
 
