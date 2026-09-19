@@ -7,7 +7,27 @@
  * real product.
  */
 import { motion } from "framer-motion"
-import { SCHEDULE } from "@/operating-engine/config/schedule"
+import { SCHEDULE_BY_ID } from "@/operating-engine/config/schedule"
+
+/**
+ * The 10 experiences shown on the landing showcase, in intentional story order:
+ * Flex → Reality → Decide → Align → Move → Break → Focus → Freedom → Power Down
+ * → Unplug. Each entry maps an engine block id to the short, branded name shown
+ * on its card. This is a display-only concern — the canonical SCHEDULE (and its
+ * longer titles used elsewhere in the app) is intentionally left untouched.
+ */
+const SHOWCASE_EXPERIENCES: { id: string; name: string }[] = [
+  { id: "early-access", name: "Flex Time™" },
+  { id: "monday-reality-check", name: "Reality Check™" },
+  { id: "monday-debrief", name: "Decide & Redesign™" },
+  { id: "morning-given", name: "Align™" },
+  { id: "movement-window", name: "Move™" },
+  { id: "lunch-break", name: "Lunch Break™" },
+  { id: "ceo-workday", name: "4-Hour Workday™" },
+  { id: "time-freedom", name: "Time Freedom™" },
+  { id: "power-down", name: "Power Down™" },
+  { id: "digital-detox", name: "Unplug™" },
+]
 
 export function BusinessDayShowcase() {
   return (
@@ -21,17 +41,21 @@ export function BusinessDayShowcase() {
             One intentional day, designed end to end
           </h2>
           <p className="font-poppins mt-4 text-pretty text-base leading-relaxed text-[#6B5860] sm:text-lg">
-            Most tools help you work more. This one helps you live well while you lead. Eight guided
+            Most tools help you work more. This one helps you live well while you lead. Ten guided
             phases carry you from your first quiet moment to restorative sleep.
           </p>
         </div>
 
         <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {SCHEDULE.filter(
-            (block) => block.id !== "daily-planning-gps" && block.id !== "movement-window",
-          ).map((block, i) => (
+          {SHOWCASE_EXPERIENCES.map(({ id, name }, i) => {
+            const block = SCHEDULE_BY_ID[id]
+            if (!block) return null
+            const imageSrc = Array.isArray(block.backgroundImage)
+              ? block.backgroundImage[0]
+              : block.backgroundImage
+            return (
             <motion.article
-              key={block.id}
+              key={id}
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
@@ -40,8 +64,8 @@ export function BusinessDayShowcase() {
             >
               <div className="relative aspect-[4/3] overflow-hidden">
                 <img
-                  src={block.backgroundImage || "/placeholder.svg"}
-                  alt={block.title}
+                  src={imageSrc || "/placeholder.svg"}
+                  alt={name}
                   className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
@@ -52,14 +76,15 @@ export function BusinessDayShowcase() {
               </div>
               <div className="p-5">
                 <h3 className="font-playfair text-lg font-bold leading-snug text-[#C13B6B]">
-                  {block.shortTitle}
+                  {name}
                 </h3>
                 <p className="font-poppins mt-2 text-sm leading-relaxed text-[#6B5860]">
                   {block.description}
                 </p>
               </div>
             </motion.article>
-          ))}
+            )
+          })}
         </div>
       </div>
     </section>
