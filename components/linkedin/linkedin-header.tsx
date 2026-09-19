@@ -63,13 +63,13 @@ export function LinkedInHeader({
           </AnimatePresence>
 
           {/* Readability wash drawn from the Harmony logo palette — warm tan on
-              the left (behind the logo), the logo's medium sage green on the
-              right (behind the text). */}
+              the left (behind the logo) and again on the right (behind the
+              text). */}
           <div
             className="absolute inset-0"
             style={{
               background:
-                "linear-gradient(90deg, rgba(233,224,206,0.94) 0%, rgba(233,224,206,0.6) 16%, rgba(233,224,206,0) 33%, rgba(138,154,91,0) 45%, rgba(138,154,91,0.42) 62%, rgba(138,154,91,0.82) 82%, rgba(138,154,91,0.92) 100%)",
+                "linear-gradient(90deg, rgba(233,224,206,0.94) 0%, rgba(233,224,206,0.6) 16%, rgba(233,224,206,0) 33%, rgba(233,224,206,0) 45%, rgba(233,224,206,0.5) 62%, rgba(233,224,206,0.85) 82%, rgba(233,224,206,0.95) 100%)",
             }}
           />
         </div>
@@ -84,13 +84,13 @@ export function LinkedInHeader({
         </div>
 
         {/* Top-right lockup: tagline + name, ~1/4in from the top */}
-        <div className="absolute right-0 top-0 z-10 flex w-[66%] justify-end pr-[1.5%] pt-[4%] text-right">
+        <div className="absolute right-0 top-0 z-10 flex w-[66%] justify-end pr-[1.5%] pt-[2%] text-right">
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, ease: "easeOut" }}
           >
-            <p className="font-playfair whitespace-nowrap text-[clamp(1.2rem,3vw,2.5rem)] font-bold text-white drop-shadow-sm">
+            <p className="font-playfair whitespace-nowrap text-[clamp(1.1rem,2.7vw,2.2rem)] font-bold text-white drop-shadow-sm">
               Make Time For More&trade;
             </p>
             <p className="font-poppins mt-[0.35em] whitespace-nowrap text-[clamp(0.5rem,1.25vw,1rem)] font-medium tracking-wide text-white/90">
@@ -100,7 +100,7 @@ export function LinkedInHeader({
         </div>
 
         {/* Bottom lockup: headline + full-width subtitle, ~1/4in from the bottom */}
-        <div className="absolute inset-x-0 bottom-0 z-10 px-[1.5%] pb-[4%] text-right">
+        <div className="absolute inset-y-0 right-0 left-[24%] bottom-0 z-10 flex flex-col justify-end px-[1.5%] pb-[4%] text-right">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -109,7 +109,7 @@ export function LinkedInHeader({
             <h2 className="font-playfair whitespace-nowrap text-[clamp(0.82rem,2.35vw,1.9rem)] font-bold leading-[1.05] text-white drop-shadow-sm">
               Join The Work-Life Balance Business Day&trade;
             </h2>
-            <p className="font-poppins mt-[0.5em] whitespace-nowrap text-[clamp(0.5rem,1.3vw,1.05rem)] font-medium leading-snug text-white/90">
+            <p className="font-poppins mt-[0.5em] whitespace-nowrap text-[clamp(0.42rem,1.15vw,0.9rem)] font-medium leading-snug text-white/90">
               For Founders Ready to Build Boundaries In Business&mdash;and Workplaces&mdash;that Make Room for Life in the AI Age.
             </p>
           </motion.div>
