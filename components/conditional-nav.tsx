@@ -11,6 +11,7 @@ export function ConditionalNav() {
   if (
     pathname?.startsWith("/sunday-shift") ||
     pathname?.startsWith("/landing") ||
+    pathname?.startsWith("/linkedin-header/capture") ||
     pathname?.startsWith("/installation")
   ) {
     return null

@@ -21,12 +21,15 @@ export function LinkedInHeader({
   showSafeArea = false,
   capture = false,
   captureIndex = 0,
+  chromeless = false,
 }: {
   showSafeArea?: boolean
   /** Freeze on a single image with no animation/rounding — for exporting a static PNG. */
   capture?: boolean
   /** Which SCHEDULE phase image to freeze on when capturing. */
   captureIndex?: number
+  /** Remove rounded corners but keep the animation — for recording a motion (WebM) export. */
+  chromeless?: boolean
 }) {
   const [index, setIndex] = useState(capture ? captureIndex % SCHEDULE.length : 0)
 
@@ -42,7 +45,7 @@ export function LinkedInHeader({
   const image = (Array.isArray(block.backgroundImage) ? block.backgroundImage[0] : block.backgroundImage) || "/placeholder.svg"
 
   return (
-    <div className={`relative w-full overflow-hidden bg-[#FFF1F5] ${capture ? "" : "rounded-xl"}`}>
+    <div className={`relative w-full overflow-hidden bg-[#FFF1F5] ${capture || chromeless ? "" : "rounded-xl"}`}>
       {/* LinkedIn banner ratio: 1584 × 396 = 4:1 */}
       <div className="relative aspect-[4/1] w-full">
         {/* Panoramic Work-Life Balance Business Day™ imagery, in motion */}
