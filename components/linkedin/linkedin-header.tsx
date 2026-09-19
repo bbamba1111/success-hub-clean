@@ -69,7 +69,7 @@ export function LinkedInHeader({
             className="absolute inset-0"
             style={{
               background:
-                "linear-gradient(90deg, rgba(233,224,206,0.94) 0%, rgba(233,224,206,0.6) 16%, rgba(233,224,206,0) 33%, rgba(163,177,138,0) 45%, rgba(163,177,138,0.55) 62%, rgba(163,177,138,0.85) 82%, rgba(163,177,138,0.95) 100%)",
+                "linear-gradient(90deg, rgba(233,224,206,0.94) 0%, rgba(233,224,206,0.6) 16%, rgba(233,224,206,0) 33%, rgba(201,162,75,0) 45%, rgba(201,162,75,0.55) 62%, rgba(201,162,75,0.85) 82%, rgba(201,162,75,0.95) 100%)",
             }}
           />
         </div>
@@ -93,21 +93,21 @@ export function LinkedInHeader({
             <p className="font-playfair whitespace-nowrap text-[clamp(1.1rem,2.7vw,2.2rem)] font-bold text-white drop-shadow-sm">
               Make Time For More<sup className="text-[0.4em] align-super">&trade;</sup>
             </p>
-            <p className="font-poppins mt-[0.15em] whitespace-nowrap text-[clamp(0.5rem,1.25vw,1rem)] font-medium italic tracking-wide text-white/90">
+            <p className="font-poppins mt-[0.15em] whitespace-nowrap pr-[0.85em] text-[clamp(0.5rem,1.25vw,1rem)] font-medium italic tracking-wide text-white/90">
               with Thought Leader Barbara
             </p>
           </motion.div>
         </div>
 
         {/* Bottom lockup: headline + full-width subtitle, ~1/4in from the bottom */}
-        <div className="absolute inset-y-0 right-0 left-[24%] bottom-0 z-10 flex flex-col justify-end px-[1.5%] pb-[4%] text-right">
+        <div className="absolute inset-y-0 right-0 left-[24%] bottom-0 z-10 flex flex-col justify-end px-[1.5%] pb-[2.5%] text-right">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, ease: "easeOut" }}
           >
             <h2 className="font-playfair whitespace-nowrap text-[clamp(0.82rem,2.35vw,1.9rem)] font-bold leading-[1.05] text-white drop-shadow-sm">
-              Join The Work-Life Balance Business Day&trade;
+              Join The Work-Life Balance Business Day<sup className="text-[0.4em] align-super">&trade;</sup>
             </h2>
             <p className="font-poppins mt-[0.5em] whitespace-nowrap text-[clamp(0.42rem,1.15vw,0.9rem)] font-medium leading-snug text-white/90">
               For Founders Ready to Build Boundaries In Business&mdash;and Workplaces&mdash;that Make Room for Life in the AI Age.
