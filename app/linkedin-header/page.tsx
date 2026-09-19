@@ -27,9 +27,18 @@ export default function LinkedInHeaderPreviewPage() {
 
         {/* Full-bleed banner exactly as it renders on a profile */}
         <section className="mt-12">
-          <h2 className="font-poppins mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-[#8A7A82]">
-            Banner (4:1 &mdash; 1584 &times; 396)
-          </h2>
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+            <h2 className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#8A7A82]">
+              Banner (4:1 &mdash; 1584 &times; 396)
+            </h2>
+            <a
+              href="/images/linkedin-banner-1584x396.png"
+              download="thought-leader-barbara-linkedin-banner.png"
+              className="font-poppins inline-flex items-center gap-2 rounded-full bg-[#C13B6B] px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-colors hover:bg-[#A82F59]"
+            >
+              Download LinkedIn Header
+            </a>
+          </div>
           <div className="overflow-hidden rounded-xl shadow-xl ring-1 ring-black/5">
             <LinkedInHeader />
           </div>
@@ -49,7 +58,7 @@ export default function LinkedInHeaderPreviewPage() {
             <div className="px-6 pb-6 pt-14">
               <p className="font-playfair text-2xl font-bold text-[#4A3A42]">Barbara Bamba</p>
               <p className="font-poppins mt-1 text-sm text-[#6B5860]">
-                Human Sustainability&trade; in the AI Age &middot; Founder, Harmony Lane&trade;
+                The Work-Life Balance Business Day&trade; &middot; Founder, Harmony Lane&trade;
               </p>
             </div>
           </div>
@@ -74,8 +83,9 @@ export default function LinkedInHeaderPreviewPage() {
               places your profile photo and name.
             </li>
             <li>
-              &bull; The imagery cycles through the Business Day&trade; phases here for review; to
-              publish, screenshot the phase you like best at full width.
+              &bull; The imagery moves continuously through the Business Day&trade; phases with slow
+              crossfades. Use the Download LinkedIn Header button above to grab the ready-made
+              1584&nbsp;&times;&nbsp;396 PNG for upload.
             </li>
           </ul>
         </section>

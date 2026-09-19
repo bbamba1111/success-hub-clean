@@ -34,7 +34,7 @@ export function LinkedInHeader({
     if (capture) return
     const timer = setInterval(() => {
       setIndex((i) => (i + 1) % SCHEDULE.length)
-    }, 5200)
+    }, 6400)
     return () => clearInterval(timer)
   }, [capture])
 
@@ -53,10 +53,10 @@ export function LinkedInHeader({
               src={image}
               alt=""
               aria-hidden="true"
-              initial={{ opacity: 0, scale: 1.06 }}
+              initial={{ opacity: 0, scale: 1.05 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ opacity: { duration: 1.8, ease: "easeInOut" }, scale: { duration: 7, ease: "easeOut" } }}
+              transition={{ opacity: { duration: 2.6, ease: "easeInOut" }, scale: { duration: 8.5, ease: "easeOut" } }}
               className="absolute inset-0 h-full w-full object-contain"
               style={{ objectPosition: "center" }}
             />
@@ -68,27 +68,37 @@ export function LinkedInHeader({
             className="absolute inset-0"
             style={{
               background:
-                "linear-gradient(90deg, rgba(74,58,66,0) 0%, rgba(74,58,66,0) 40%, rgba(74,58,66,0.28) 68%, rgba(74,58,66,0.62) 100%)",
+                "linear-gradient(90deg, rgba(58,44,52,0) 0%, rgba(58,44,52,0) 30%, rgba(58,44,52,0.34) 55%, rgba(58,44,52,0.7) 80%, rgba(58,44,52,0.82) 100%)",
             }}
           />
         </div>
 
-        {/* Minimal editorial text, anchored upper-right, away from the safe area */}
-        <div className="relative z-10 flex h-full items-start justify-end">
+        {/* Fixed editorial message, anchored upper-right, away from the safe area */}
+        <div className="relative z-10 flex h-full items-center justify-end">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, ease: "easeOut" }}
-            className="max-w-[56%] px-[4%] pt-[6%] text-right sm:max-w-[52%]"
+            className="max-w-[60%] px-[4%] py-[3%] text-right sm:max-w-[56%]"
           >
-            <p className="font-poppins text-[clamp(0.5rem,1.1vw,0.85rem)] font-semibold uppercase tracking-[0.28em] text-white/85">
+            <p className="font-poppins text-[clamp(0.45rem,1vw,0.8rem)] font-semibold uppercase tracking-[0.28em] text-white/85">
               Thought Leader Barbara
             </p>
-            <h2 className="font-playfair mt-[0.4em] text-pretty text-[clamp(1rem,3vw,2.6rem)] font-bold leading-[1.05] text-white drop-shadow-sm">
-              Human Sustainability&trade; <span className="text-[#F4B8C6]">in the AI Age</span>
+            <h2 className="font-playfair mt-[0.35em] text-pretty text-[clamp(0.85rem,2.35vw,2rem)] font-bold leading-[1.08] text-white drop-shadow-sm">
+              You became an entrepreneur for freedom.{" "}
+              <span className="text-[#F4B8C6]">So why are you working like this?</span>
             </h2>
-            <p className="font-poppins mt-[0.5em] text-[clamp(0.55rem,1.15vw,1rem)] font-medium leading-snug text-white/80">
-              Build the business. Make room for the human.
+            <p className="font-poppins mt-[0.7em] text-[clamp(0.42rem,0.95vw,0.72rem)] font-semibold uppercase tracking-[0.2em] text-white/90">
+              The Work-Life Balance Business Day&trade;
+            </p>
+            <p className="font-poppins mt-[0.35em] text-pretty text-[clamp(0.48rem,1.02vw,0.86rem)] font-medium leading-snug text-white/80">
+              The Destination for Founders Ready to Create Boundaries in Their Businesses So Life Has Space to Expand.
+            </p>
+            <p className="font-playfair mt-[0.6em] text-[clamp(0.55rem,1.25vw,1.05rem)] font-bold italic text-[#F4B8C6]">
+              Make Time For More&trade; On Mondays
+            </p>
+            <p className="font-poppins mt-[0.3em] text-[clamp(0.45rem,1vw,0.8rem)] font-semibold text-white">
+              Enter the experience &rarr;
             </p>
           </motion.div>
         </div>
