@@ -81,14 +81,14 @@ export function LinkedInHeader({
             transition={{ duration: 0.9, ease: "easeOut" }}
             className="max-w-[94%] px-[4%] pb-6 text-right"
           >
-            <p className="font-playfair text-[clamp(0.6rem,1.35vw,1.15rem)] font-medium italic text-[#A3B18A]">
-              Make Time For More&trade; On Mondays
+            <p className="font-playfair translate-x-[2.5%] whitespace-nowrap text-[clamp(0.85rem,1.9vw,1.5rem)] font-medium italic text-[#A3B18A]">
+              Make Time For More&trade; &mdash; In Real Time
             </p>
             <h2 className="font-playfair mt-[0.35em] whitespace-nowrap text-[clamp(0.72rem,2vw,1.6rem)] font-bold leading-[1.08] text-white drop-shadow-sm">
               Join The Work-Life Balance Business Day&trade;
             </h2>
             <p className="font-poppins mt-[0.55em] whitespace-nowrap text-[clamp(0.42rem,0.95vw,0.8rem)] font-medium leading-snug text-white/85">
-              The Destination for Founders Ready to Create Boundaries in Their Businesses So Life Has Space to Expand.
+              For Founders Ready to Build Businesses&mdash;and Workplaces&mdash;that Make Room for Life in the AI Age.
             </p>
           </motion.div>
         </div>
