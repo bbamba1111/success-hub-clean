@@ -3,11 +3,11 @@
 /**
  * MondayHeroSection — the /landing hero.
  *
- * Leads with the CATEGORY (Harmony Lane™ — The Work-Life Balance Destination™)
- * and the central brand idea: "You built the business. Now decide what you want
- * it to make possible." The living background slowly cross-fades through the
- * phases of the day so the visitor feels they are looking into a real
- * destination. No clock times, no pricing, no sales urgency.
+ * Destination-first. Leads with the CATEGORY (Harmony Lane™ — The Desired
+ * Work-Lifestyle Destination™) and the full positioning hierarchy. The living
+ * background slowly cross-fades through the phases of the day so the visitor
+ * feels they are looking into a real destination. Barbara is introduced
+ * immediately AFTER the hero, never inside it. No clock times, no pricing.
  */
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
@@ -47,7 +47,7 @@ export function MondayHeroSection() {
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(90deg, rgba(255,241,245,0.9) 0%, rgba(255,241,245,0.52) 48%, rgba(255,241,245,0.08) 76%)",
+              "linear-gradient(90deg, rgba(255,241,245,0.92) 0%, rgba(255,241,245,0.55) 48%, rgba(255,241,245,0.08) 78%)",
           }}
         />
       </div>
@@ -60,23 +60,27 @@ export function MondayHeroSection() {
           className="w-full max-w-2xl rounded-[2rem] border border-white/50 bg-white/30 p-8 shadow-2xl backdrop-blur-xl sm:p-12"
         >
           <span className="font-poppins inline-flex items-center gap-2 rounded-full bg-white/70 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-[#5A7F46]">
-            Harmony Lane™ · The Work-Life Balance Destination™
+            Harmony Lane™
           </span>
 
-          <h1 className="font-playfair mt-6 text-balance text-4xl font-bold leading-[1.08] text-[#4A3A42] sm:text-[3.3rem]">
-            You built the business.
-            <span className="mt-2 block text-[#C13B6B]">Now decide what you want it to make possible.</span>
+          <h1 className="font-playfair mt-6 text-balance text-4xl font-bold leading-[1.06] text-[#4A3A42] sm:text-[3.4rem]">
+            The Desired Work-Lifestyle
+            <span className="mt-1 block text-[#C13B6B]">Destination™</span>
           </h1>
 
-          <p className="font-poppins mt-5 text-sm font-semibold uppercase tracking-[0.16em] text-[#5A7F46]">
-            The Parallel Lane to Hustle Entrepreneurship™
-          </p>
+          <div className="mt-6 space-y-2.5">
+            <p className="font-playfair text-lg font-bold leading-snug text-[#4A3A42] sm:text-xl">
+              Experience Work-Life Balance — In Real Time.
+            </p>
+            <p className="font-poppins text-pretty text-sm leading-relaxed text-[#5A4A52] sm:text-base">
+              Redesign how you enter, live, work &amp; lead your workweek. Build work-life balance boundaries into
+              your day. Install them into your business — and build a workplace of the future.
+            </p>
+          </div>
 
-          <p className="font-poppins mt-4 max-w-xl text-pretty text-base leading-relaxed text-[#5A4A52] sm:text-lg">
-            You became an entrepreneur for a reason. Harmony Lane™ is where successful entrepreneurs — starting,
-            growing, scaling, or reinventing — intentionally design what success should make possible for the
-            business, the founder, their life, their people, and the workplace they&apos;re creating in the age of
-            AI.
+          <p className="font-poppins mt-6 max-w-xl text-pretty text-sm italic leading-relaxed text-[#6B5860] sm:text-base">
+            A virtual immersive experience for founders who want to experience a different way of working before
+            redesigning the business around it.
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -87,16 +91,12 @@ export function MondayHeroSection() {
               Enter Harmony Lane™
             </a>
             <a
-              href="#experience"
+              href="#guide"
               className="font-poppins inline-flex items-center justify-center rounded-full border border-[#7FB069]/40 bg-white/60 px-8 py-3.5 text-base font-semibold text-[#5A7F46] backdrop-blur-sm transition-colors hover:bg-white/80"
             >
-              See the experience
+              Meet Thought Leader Barbara
             </a>
           </div>
-
-          <p className="font-poppins mt-6 text-xs font-semibold uppercase tracking-[0.2em] text-[#8A7A82]">
-            Come for the Day. Stay for the Week. Repeat it to install it.
-          </p>
         </motion.div>
       </div>
     </section>

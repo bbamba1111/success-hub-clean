@@ -1,29 +1,35 @@
 import type { Metadata } from "next"
 import { LandingNav } from "@/components/landing/landing-nav"
 import { MondayHeroSection } from "@/components/landing/monday-hero-section"
-import { HustleProblemSection } from "@/components/landing/hustle-problem-section"
+import { GuideSection } from "@/components/landing/guide-section"
+import { PatternSection } from "@/components/landing/pattern-section"
+import { TwoLanesSection } from "@/components/landing/two-lanes-section"
 import { OriginalIntentionSection } from "@/components/landing/original-intention-section"
-import { SuccessAlignmentSection } from "@/components/landing/success-alignment-section"
-import { FounderDestinationSection } from "@/components/landing/founder-destination-section"
+import { MethodSection } from "@/components/landing/method-section"
 import { AiAgeSection } from "@/components/landing/ai-age-section"
-import { ExperienceSection } from "@/components/landing/experience-section"
-import { FourHourWorkdaySection } from "@/components/landing/four-hour-workday-section"
-import { WeeklyLoopSection } from "@/components/landing/weekly-loop-section"
-import { MondayOffer } from "@/components/landing/monday-offer"
+import { EnterHarmonySection } from "@/components/landing/enter-harmony-section"
+import { BusinessDaySection } from "@/components/landing/business-day-section"
+import { DayToWeekSection } from "@/components/landing/day-to-week-section"
+import { BuildInstallSection } from "@/components/landing/build-install-section"
+import { MondaysSection } from "@/components/landing/mondays-section"
+import { BeforeYouEnterSection } from "@/components/landing/before-you-enter-section"
 import { WhoItsForSection } from "@/components/landing/who-its-for-section"
-import { HroiSection } from "@/components/landing/hroi-section"
-import { FounderAuthoritySection } from "@/components/landing/founder-authority-section"
+import { VirtualDestinationSection } from "@/components/landing/virtual-destination-section"
+import { MondayOffer } from "@/components/landing/monday-offer"
+import { GuidedTourSection } from "@/components/landing/guided-tour-section"
+import { DestinationProgressionSection } from "@/components/landing/destination-progression-section"
+import { BiggerQuestionSection } from "@/components/landing/bigger-question-section"
 import { FinalCtaSection } from "@/components/landing/final-cta-section"
 import { LandingFooter } from "@/components/landing/landing-footer"
 
 export const metadata: Metadata = {
-  title: "Harmony Lane™ — The Work-Life Balance Destination™",
+  title: "Harmony Lane™ — The Desired Work-Lifestyle Destination™",
   description:
-    "You built the business. Now decide what you want it to make possible. Harmony Lane™ is a premium destination for successful entrepreneurs who want to redesign how they live, work, and lead — and experience the Work-Life Balance Business Day™ in real time.",
+    "A virtual immersive destination for founders who want to experience work-life balance in real time — then redesign how they enter, live, work, and lead their workweek, build the boundaries into the day, and install them into the business.",
   openGraph: {
-    title: "Harmony Lane™ — The Work-Life Balance Destination™",
+    title: "Harmony Lane™ — The Desired Work-Lifestyle Destination™",
     description:
-      "A premium destination for successful entrepreneurs. Reconnect with your original intention, define your Founder Destination™, and experience Work-Life Balance in real time.",
+      "Experience Work-Life Balance in real time. Redesign your workweek. Build the boundaries into your day. Install them into your business — and build a workplace of the future.",
     type: "website",
   },
 }
@@ -33,16 +39,20 @@ export const viewport = {
 }
 
 /**
- * Public marketing site at /landing — Harmony Lane™ category positioning.
+ * Public marketing site at /landing — Harmony Lane™ destination positioning.
  *
- * Narrative hierarchy (recognition → destination → experience → offer → proof):
- *   Hero → The Recognition → Original Intention → Success Alignment
- *   → Founder Destination™ → The AI Age → The Experience (Business Day)
- *   → The 4-Hour Workday → The Weekly Loop → Depth of Entry → Who It's For
- *   → HROI™ → The Founder → Final CTA
+ * One continuous narrative (destination → guide → pattern → the way out →
+ * experience → build → install → offer → close):
+ *   Hero (destination) → Meet the Guide (Barbara) → 01 The Pattern →
+ *   02 The Two Lanes → 03 Original Intention → 04 The Method → 05 The AI Age →
+ *   06 Enter Harmony Lane → 07 The Business Day → 08 From Day to Week →
+ *   09/10 Build It & Install It → 11 Mondays → 12 Before You Enter →
+ *   13 Who It's For → 14 The Virtual Destination → 15 The Offers →
+ *   16 The Sunday Guided Tour → 17 The Destination → 18 The Bigger Question →
+ *   Final CTA → Footer
  *
- * Kept separate from the Hub (/) so app functionality, auth, payments, and
- * routes are untouched. Paperbell links and pricing are spec-locked.
+ * Kept separate from the Hub (/). Paperbell links and pricing are spec-locked
+ * inside <MondayOffer /> — never change or replace the checkout URLs.
  */
 export default function LandingPage() {
   return (
@@ -50,27 +60,33 @@ export default function LandingPage() {
       <LandingNav
         experiencesHref="#offer"
         links={[
-          { label: "The Question", href: "#problem" },
-          { label: "Founder Destination", href: "#destination" },
-          { label: "The Future of Work", href: "#ai-age" },
+          { label: "The Pattern", href: "#pattern" },
+          { label: "The Two Lanes", href: "#two-lanes" },
+          { label: "The Method", href: "#method" },
           { label: "The Experience", href: "#experience" },
-          { label: "Depth of Entry", href: "#offer" },
-          { label: "The Founder", href: "#founder" },
+          { label: "The Installation", href: "#install" },
+          { label: "Meet Barbara", href: "#guide" },
         ]}
       />
       <MondayHeroSection />
-      <HustleProblemSection />
+      <GuideSection />
+      <PatternSection />
+      <TwoLanesSection />
       <OriginalIntentionSection />
-      <SuccessAlignmentSection />
-      <FounderDestinationSection />
+      <MethodSection />
       <AiAgeSection />
-      <ExperienceSection />
-      <FourHourWorkdaySection />
-      <WeeklyLoopSection />
-      <MondayOffer />
+      <EnterHarmonySection />
+      <BusinessDaySection />
+      <DayToWeekSection />
+      <BuildInstallSection />
+      <MondaysSection />
+      <BeforeYouEnterSection />
       <WhoItsForSection />
-      <HroiSection />
-      <FounderAuthoritySection />
+      <VirtualDestinationSection />
+      <MondayOffer />
+      <GuidedTourSection />
+      <DestinationProgressionSection />
+      <BiggerQuestionSection />
       <FinalCtaSection />
       <LandingFooter />
     </main>

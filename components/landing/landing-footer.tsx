@@ -18,10 +18,11 @@ export function LandingFooter() {
           <p className="font-great-vibes text-2xl text-[#7FB069]">Live Intentionally. Work Smarter. Lead Successfully.</p>
 
           <div className="font-poppins flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-[#5A4A52]">
-            <a href="#problem" className="hover:text-[#C13B6B]">The Invitation</a>
-            <a href="#destination" className="hover:text-[#C13B6B]">Founder Destination</a>
-            <a href="#journey" className="hover:text-[#C13B6B]">The Journey</a>
+            <a href="#pattern" className="hover:text-[#C13B6B]">The Pattern</a>
+            <a href="#method" className="hover:text-[#C13B6B]">The Method</a>
             <a href="#experience" className="hover:text-[#C13B6B]">The Experience</a>
+            <a href="#install" className="hover:text-[#C13B6B]">The Installation</a>
+            <a href="#guide" className="hover:text-[#C13B6B]">Meet Barbara</a>
             <a href="#offer" className="hover:text-[#C13B6B]">Depth of Entry</a>
             <Link href="/auth/login" className="hover:text-[#C13B6B]">Log In</Link>
           </div>
