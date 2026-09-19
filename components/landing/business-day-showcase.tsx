@@ -27,7 +27,9 @@ export function BusinessDayShowcase() {
         </div>
 
         <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {SCHEDULE.map((block, i) => (
+          {SCHEDULE.filter(
+            (block) => block.id !== "daily-planning-gps" && block.id !== "movement-window",
+          ).map((block, i) => (
             <motion.article
               key={block.id}
               initial={{ opacity: 0, y: 24 }}
