@@ -67,24 +67,27 @@ export function MondayHeroSection() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="max-w-3xl"
         >
-          {/* Headlines live directly over the background */}
-          <p className="font-poppins text-xs font-semibold uppercase tracking-[0.22em] text-[#5A7F46] sm:text-sm">
-            Harmony Lane™ Presents&hellip;
-          </p>
-          <h1 className="font-playfair mt-3 text-balance text-4xl font-bold leading-[1.04] text-[#4A3A42] drop-shadow-sm sm:text-6xl">
-            The Work-Life Balance
-            <span className="mt-1 block text-[#C13B6B]">Business Day™</span>
-          </h1>
-          <p className="font-playfair mt-4 text-pretty text-xl font-semibold italic leading-snug text-[#4A3A42] sm:text-2xl">
-            The Desired Work-Lifestyle Destination™
+          {/* Brand line lives directly over the background, top-left */}
+          <p className="font-poppins text-sm font-semibold uppercase leading-tight tracking-[0.24em] text-[#5A7F46] sm:text-base">
+            Harmony Lane™
+            <span className="mt-1 block text-xs font-medium normal-case tracking-[0.14em] text-[#5A7F46]/80 sm:text-sm">
+              presents&hellip;
+            </span>
           </p>
 
-          {/* Small translucent glass — invitation + CTAs only */}
-          <div className="mt-7 inline-flex max-w-xl flex-col gap-4 rounded-2xl border border-white/40 bg-white/15 p-5 shadow-lg backdrop-blur-sm sm:p-6">
-            <p className="font-playfair text-lg font-bold leading-snug text-[#4A3A42] sm:text-xl">
-              Experience Work-Life Balance — In Real Time.
+          {/* One unified glass panel — lowered ~1in, starting at Make Time For More */}
+          <div className="mt-24 inline-flex max-w-2xl flex-col gap-4 rounded-2xl border border-white/30 bg-white/10 px-6 py-5 shadow-sm backdrop-blur-sm sm:px-8">
+            <p className="font-poppins text-xs font-semibold uppercase tracking-[0.22em] text-[#C13B6B] sm:text-sm">
+              Make Time For More™
             </p>
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <h1 className="font-playfair text-balance text-3xl font-bold leading-[1.05] text-[#4A3A42] drop-shadow-sm sm:text-5xl">
+              The Work-Life Balance
+              <span className="mt-1 block text-[#C13B6B]">Business Day™</span>
+            </h1>
+            <p className="font-playfair text-pretty text-lg font-semibold italic leading-snug text-[#4A3A42] sm:text-xl">
+              Where Founders Experience Work-Life Balance — In Real Time.
+            </p>
+            <div className="mt-1 flex flex-col gap-3 sm:flex-row sm:items-center">
               <a
                 href="#offer"
                 className="font-poppins inline-flex items-center justify-center rounded-full bg-[#E26C73] px-8 py-3.5 text-base font-semibold text-white shadow-xl shadow-[#E26C73]/30 transition-transform hover:scale-[1.03] hover:bg-[#d65a62]"
@@ -95,7 +98,7 @@ export function MondayHeroSection() {
                 href="#guide"
                 className="font-poppins inline-flex items-center justify-center rounded-full border border-[#7FB069]/50 bg-white/70 px-8 py-3.5 text-base font-semibold text-[#5A7F46] backdrop-blur-sm transition-colors hover:bg-white/90"
               >
-                Meet Thought Leader Barbara
+                Meet Thought Leader Barbara →
               </a>
             </div>
           </div>
