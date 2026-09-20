@@ -17,6 +17,15 @@ const WEEK = [
   { day: "Sun", label: "Restore", tone: "life" },
 ]
 
+const MONDAY_MOVES = [
+  "Reality Check™",
+  "Decide & Redesign™",
+  "Life Priority",
+  "Delegation Priority",
+  "Operating Rule™",
+  "Morning GIV•EN™",
+]
+
 export function DayToWeekSection() {
   return (
     <section id="week" className="w-full bg-white py-20 sm:py-28">
@@ -75,6 +84,33 @@ export function DayToWeekSection() {
           </span>
         </div>
 
+        {/* Monday — the entry point, as a compact callout */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6 }}
+          className="mx-auto mt-12 max-w-3xl rounded-3xl border border-[#C13B6B]/15 bg-[#FFF1F5] p-6 sm:p-8"
+        >
+          <p className="font-poppins text-xs font-bold uppercase tracking-[0.18em] text-[#C13B6B]">
+            It starts with Monday
+          </p>
+          <p className="font-poppins mt-3 text-pretty text-base leading-relaxed text-[#5A4A52]">
+            Monday is the entry point — how you enter the week shapes the whole week. Instead of inheriting last
+            week&apos;s momentum, you enter through a deliberate sequence:
+          </p>
+          <ul className="mt-5 flex flex-wrap gap-2.5">
+            {MONDAY_MOVES.map((move) => (
+              <li
+                key={move}
+                className="font-poppins rounded-full border border-[#C13B6B]/20 bg-white px-3.5 py-1.5 text-sm font-semibold text-[#C13B6B]"
+              >
+                {move}
+              </li>
+            ))}
+          </ul>
+        </motion.div>
+
         <motion.p
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -82,7 +118,7 @@ export function DayToWeekSection() {
           transition={{ duration: 0.6 }}
           className="font-playfair mx-auto mt-12 max-w-2xl text-balance text-center text-xl font-bold leading-snug text-[#4A3A42] sm:text-2xl"
         >
-          A business that runs on rhythm instead of urgency doesn&apos;t need you every hour of every day.
+          Change how you enter the week, and you change the week itself.
         </motion.p>
       </div>
     </section>

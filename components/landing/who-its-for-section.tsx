@@ -30,13 +30,6 @@ const ENTRY_POINTS = [
   },
 ]
 
-const NOT_FOR = [
-  "You are looking only for productivity hacks.",
-  "You want someone else to tell you what your ideal business should look like.",
-  "You are looking for passive content rather than a lived experience.",
-  "You want to maximize work without reconsidering the conditions under which work happens.",
-]
-
 export function WhoItsForSection() {
   return (
     <section id="who" className="w-full bg-white py-20 sm:py-28">

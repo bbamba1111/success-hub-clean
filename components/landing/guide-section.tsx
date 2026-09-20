@@ -46,12 +46,20 @@ export function GuideSection() {
             transition={{ duration: 0.6, delay: 0.08 }}
           >
             <p className="font-poppins text-pretty text-base leading-relaxed text-[#5A4A52]">
-              You didn&apos;t leave a high-stress way of working just to recreate it. You became an entrepreneur
-              because you wanted something different:
+              You didn&apos;t leave a high-stress way of working just to recreate it. But somewhere between starting,
+              growing, and scaling, the business can quietly begin demanding the very things you thought you were
+              leaving behind:
             </p>
 
             <ul className="mt-5 space-y-2.5">
-              {["More freedom", "More time", "More autonomy", "More meaningful work", "More life"].map((item) => (
+              {[
+                "Your business depends on you for every decision.",
+                "Your workday expands whenever the business asks.",
+                "Availability has become the default.",
+                "Growth creates more responsibility instead of more freedom.",
+                "Work follows you into evenings and weekends.",
+                "AI can accelerate the work without changing how the business operates.",
+              ].map((item) => (
                 <li
                   key={item}
                   className="font-poppins flex items-start gap-3 text-pretty text-base leading-relaxed text-[#5A4A52]"
@@ -62,16 +70,20 @@ export function GuideSection() {
               ))}
             </ul>
 
-            <p className="font-poppins mt-6 text-pretty text-base leading-relaxed text-[#5A4A52]">
-              But somewhere between starting, growing, and scaling, the business can begin demanding the very things
-              you thought you were leaving behind.
+            <p className="font-playfair mt-6 text-pretty text-lg font-bold leading-snug text-[#4A3A42]">
+              The problem isn&apos;t that you need another productivity hack.
+              <span className="mt-1 block text-[#C13B6B]">The business needs boundaries.</span>
             </p>
 
-            <p className="font-playfair mt-6 text-pretty text-lg font-bold italic leading-snug text-[#4A3A42]">
+            <p className="font-poppins mt-6 text-pretty text-base leading-relaxed text-[#5A4A52]">
               Barbara Bamba created Harmony Lane™ &amp; the Work-Life Balance Business Day to explore what becomes
               possible for human sustainability when founders redesign how they enter the workweek — and build
               Work-Life Balance Boundaries in their businesses — and workplaces — as they start, grow and scale — in
               the AI Age.
+            </p>
+
+            <p className="font-playfair mt-6 text-pretty text-lg font-bold italic leading-snug text-[#5A7F46]">
+              That&apos;s where Harmony Lane™ begins.
             </p>
 
             <a

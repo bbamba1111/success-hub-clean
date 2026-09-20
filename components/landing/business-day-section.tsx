@@ -86,10 +86,14 @@ export function BusinessDaySection() {
             The Work-Life Balance Business Day™
           </h2>
           <p className="font-great-vibes mt-3 text-3xl text-[#7FB069]">Make Time For More™ — In Real Time</p>
-          <p className="font-poppins mt-5 text-pretty text-base leading-relaxed text-[#6B5860]">
-            Live. Work. Lead — through a redesigned business day. This is a virtual immersive experience, not a
-            schedule you simply follow. The day unfolds through a sequence of time-and-space boundaries. As the
-            rhythm changes, you decide how you&apos;ll enter, live, work, lead, pause, focus, release, and rest.
+          <p className="font-playfair mt-5 text-balance text-xl font-bold leading-snug text-[#4A3A42] sm:text-2xl">
+            The destination is virtual. The experience is real.
+          </p>
+          <p className="font-poppins mt-4 text-pretty text-base leading-relaxed text-[#6B5860]">
+            Enter from your laptop. Bring your actual business, actual time, and actual boundaries. This isn&apos;t a
+            schedule to follow — it&apos;s a lived experience designed around time, space, boundaries, focus, freedom,
+            and recovery. As the rhythm changes, you decide how you&apos;ll enter, live, work, lead, pause, focus,
+            release, and rest.
           </p>
         </motion.div>
 
