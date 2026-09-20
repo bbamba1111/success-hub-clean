@@ -70,14 +70,11 @@ export function MondayHeroSection() {
           {/* Brand line lives directly over the background, top-left */}
           <p className="font-poppins text-sm font-semibold uppercase leading-tight tracking-[0.24em] text-[#5A7F46] sm:text-base">
             Harmony Lane™
-            <span className="mt-1 block text-xs font-medium normal-case tracking-[0.14em] text-[#5A7F46]/80 sm:text-sm">
-              presents&hellip;
-            </span>
           </p>
 
           {/* One unified glass panel — lowered ~1in, starting at Make Time For More */}
           <div className="mt-24 inline-flex max-w-2xl flex-col gap-4 rounded-2xl border border-white/30 bg-white/10 px-6 py-5 shadow-sm backdrop-blur-sm sm:px-8">
-            <p className="font-poppins text-xs font-semibold uppercase tracking-[0.22em] text-[#C13B6B] sm:text-sm">
+            <p className="font-poppins text-xs font-semibold uppercase tracking-[0.22em] text-[#5A7F46] sm:text-sm">
               Make Time For More™
             </p>
             <h1 className="font-playfair text-balance text-3xl font-bold leading-[1.05] text-[#4A3A42] drop-shadow-sm sm:text-5xl">
@@ -85,7 +82,10 @@ export function MondayHeroSection() {
               <span className="mt-1 block text-[#C13B6B]">Business Day™</span>
             </h1>
             <p className="font-playfair text-pretty text-lg font-semibold italic leading-snug text-[#4A3A42] sm:text-xl">
-              Where Founders Experience Work-Life Balance — In Real Time.
+              The Full-Day Virtual Desired Work-LifeStyle Destination
+              <span className="font-poppins mt-1 block text-sm font-medium not-italic tracking-[0.14em] text-[#5A7F46]/80">
+                presents&hellip;
+              </span>
             </p>
             <div className="mt-1 flex flex-col gap-3 sm:flex-row sm:items-center">
               <a
