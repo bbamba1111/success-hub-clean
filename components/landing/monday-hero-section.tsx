@@ -60,7 +60,7 @@ export function MondayHeroSection() {
         />
       </div>
 
-      <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-end px-5 pb-16 pt-28 sm:px-8 sm:pb-20">
+      <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-end px-5 pb-6 pt-40 sm:px-8 sm:pb-8">
         <motion.div
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
@@ -78,14 +78,9 @@ export function MondayHeroSection() {
           <p className="font-playfair mt-4 text-pretty text-xl font-semibold italic leading-snug text-[#4A3A42] sm:text-2xl">
             The Desired Work-Lifestyle Destination™
           </p>
-          <p className="font-poppins mt-5 max-w-xl text-pretty text-sm leading-relaxed text-[#5A4A52] sm:text-base">
-            Experience what your desired work-lifestyle destination could look and feel like when you redesign how
-            you enter the workweek, build Work-Life Balance boundaries into your day, and begin installing them into
-            your business and workplace.
-          </p>
 
           {/* Small translucent glass — invitation + CTAs only */}
-          <div className="mt-8 inline-flex max-w-xl flex-col gap-4 rounded-2xl border border-white/40 bg-white/15 p-5 shadow-lg backdrop-blur-sm sm:p-6">
+          <div className="mt-7 inline-flex max-w-xl flex-col gap-4 rounded-2xl border border-white/40 bg-white/15 p-5 shadow-lg backdrop-blur-sm sm:p-6">
             <p className="font-playfair text-lg font-bold leading-snug text-[#4A3A42] sm:text-xl">
               Experience Work-Life Balance — In Real Time.
             </p>
