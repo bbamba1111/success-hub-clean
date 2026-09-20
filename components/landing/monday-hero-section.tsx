@@ -57,7 +57,7 @@ export function MondayHeroSection() {
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="w-full max-w-2xl rounded-[2rem] border border-white/50 bg-white/30 p-8 shadow-2xl backdrop-blur-xl sm:p-12"
+          className="w-full max-w-2xl rounded-[2rem] border border-white/40 bg-white/10 p-8 shadow-2xl backdrop-blur-md sm:p-12"
         >
           <span className="font-poppins inline-flex items-center gap-2 rounded-full bg-white/70 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-[#5A7F46]">
             Harmony Lane™
