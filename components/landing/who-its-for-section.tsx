@@ -64,26 +64,6 @@ export function WhoItsForSection() {
             </motion.li>
           ))}
         </ul>
-
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.6 }}
-          className="mx-auto mt-12 max-w-3xl rounded-3xl border border-[#4A3A42]/12 bg-[#FDF6F3] p-8 sm:p-10"
-        >
-          <p className="font-poppins text-xs font-bold uppercase tracking-[0.18em] text-[#8A7A82]">
-            This may not be for you if&hellip;
-          </p>
-          <ul className="mt-5 space-y-3">
-            {NOT_FOR.map((item) => (
-              <li key={item} className="font-poppins flex items-start gap-3 text-pretty text-base leading-relaxed text-[#6B5860]">
-                <span className="mt-2 h-1.5 w-1.5 flex-none rounded-full bg-[#8A7A82]" aria-hidden />
-                {item}
-              </li>
-            ))}
-          </ul>
-        </motion.div>
       </div>
     </section>
   )
