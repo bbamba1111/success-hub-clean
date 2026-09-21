@@ -94,6 +94,10 @@ export function AiAgeSection() {
           <p className="font-poppins mt-4 text-sm font-semibold uppercase tracking-[0.16em] text-[#F7C6CE]">
             Business performance · Human sustainability · Human life
           </p>
+          <p className="font-poppins mx-auto mt-8 max-w-xl text-pretty text-base leading-relaxed text-white/75">
+            AI can increase capacity. The question the Operations Week answers is whether that increased capacity
+            creates more human life — or simply creates more human demand.
+          </p>
         </motion.div>
       </div>
     </section>

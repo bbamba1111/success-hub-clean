@@ -40,11 +40,51 @@ export function MondayOffer() {
             Enter the Operations Week™
           </h2>
           <p className="font-poppins mt-4 text-pretty text-lg leading-relaxed text-[#6B5860]">
-            One primary experience: a full 7-day real-business operating week where you find the boundaries, operate
-            by them, and turn them into Human Sustainability™ Operating Standards — guided in real time by Thought
-            Leader Barbara.
+            One primary experience: a 7-Day Virtual Real-Business Operating Intensive where you find the boundaries,
+            operate by them, and turn them into Human Sustainability™ Operating Standards — guided in real time by
+            Thought Leader Barbara.
           </p>
         </div>
+
+        {/* The week at a glance */}
+        <motion.ul
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.5 }}
+          className="mx-auto mt-10 grid max-w-3xl gap-3 sm:grid-cols-2"
+        >
+          {[
+            {
+              day: "Monday — Set",
+              lines: ["Set the operating boundaries.", "Choose 3 Life Boundaries.", "Determine what the business must change."],
+            },
+            {
+              day: "Tuesday–Thursday — Live + Work",
+              lines: ["Live the complete Business Day rhythm.", "Bring actual work.", "Contain the work inside 1–5 PM.", "Protect the rest."],
+            },
+            {
+              day: "Thursday 5 PM–Sunday 10 PM — Freedom + Proof",
+              lines: ["Live Extended Time Freedom™.", "Live the 3-Day Weekend™.", "Observe what holds."],
+            },
+            {
+              day: "Next Monday — Reality Check",
+              lines: ["Return with evidence.", "Redesign."],
+            },
+          ].map((b) => (
+            <li key={b.day} className="rounded-2xl border border-[#4A3A42]/10 bg-white p-5">
+              <p className="font-poppins text-xs font-bold uppercase tracking-[0.14em] text-[#C13B6B]">{b.day}</p>
+              <ul className="mt-3 space-y-1.5">
+                {b.lines.map((l) => (
+                  <li key={l} className="font-poppins flex items-start gap-2 text-sm leading-snug text-[#5A4A52]">
+                    <span className="mt-1.5 h-1 w-1 flex-none rounded-full bg-[#7FB069]" aria-hidden />
+                    {l}
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))}
+        </motion.ul>
 
         {/* Primary offer — the Operations Week */}
         <motion.div

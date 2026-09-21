@@ -24,9 +24,14 @@ export function BoundaryMapSection() {
           className="mx-auto max-w-3xl text-center"
         >
           <h2 className="font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-4xl">
-            Not six more projects.
-            <span className="mt-2 block text-[#C13B6B]">Your six boundaries are your weekly boundary map.</span>
+            Your 3 Life Boundaries.
+            <span className="mt-2 block text-[#C13B6B]">The business requirements that support them.</span>
           </h2>
+          <p className="font-poppins mx-auto mt-6 max-w-2xl text-pretty text-base leading-relaxed text-[#6B5860]">
+            Your 3 Life Boundaries define what Time Freedom&trade; needs to make possible. The Business Day provides
+            the operating rhythm. Your actual business reveals what must change — and those changes become Human
+            Sustainability&trade; Operating Standards. You are not managing six independent projects.
+          </p>
         </motion.div>
 
         <div className="mt-12 grid gap-6 sm:grid-cols-2">
@@ -83,8 +88,8 @@ export function BoundaryMapSection() {
           transition={{ duration: 0.6 }}
           className="font-poppins mx-auto mt-12 max-w-2xl text-pretty text-center text-base leading-relaxed text-[#6B5860]"
         >
-          The six boundaries are not six separate business projects. They are the boundary map. The priorities are
-          the action lenses that translate the map into the week.
+          Your 3 Life Boundaries and the business requirements that support them are not six separate projects.
+          The priorities below are the action lenses that translate them into the week.
         </motion.p>
       </div>
     </section>

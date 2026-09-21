@@ -82,18 +82,21 @@ export function MondayHeroSection() {
             <p className="font-poppins text-xs font-semibold uppercase tracking-[0.22em] text-[#5A7F46] sm:text-sm">
               Make Time For More™
             </p>
-            <h1 className="font-playfair text-balance text-3xl font-bold leading-[1.05] text-[#4A3A42] drop-shadow-sm sm:text-5xl">
+            <p className="font-poppins text-[0.7rem] font-medium uppercase tracking-[0.2em] text-[#5A7F46]/80">
+              As You Start, Grow &amp; Scale
+            </p>
+            <h1 className="font-playfair mt-1 text-balance text-3xl font-bold leading-[1.05] text-[#4A3A42] drop-shadow-sm sm:text-5xl">
               The Work-Life Balance
               <span className="mt-1 block whitespace-nowrap text-[#C13B6B]">
                 Business Operations Week<sup className="text-[0.5em] align-super">™</sup>
               </span>
             </h1>
             <p className="font-playfair text-pretty text-base font-semibold italic leading-snug text-[#4A3A42] sm:text-lg">
-              Where Founders Experience Work-Life Balance Boundaries &amp; Turn Them Into Non-Negotiable Human
-              Sustainability™ Operating Standards for the AI Age — In Real Time.
+              Where Founders Experience Work-Life Balance Boundaries In Real Time &amp; Turn Them Into
+              Non-Negotiable Human Sustainability™ Operating Standards.
             </p>
             <p className="font-poppins text-sm font-semibold uppercase tracking-[0.16em] text-[#5A7F46]">
-              A 7-day real-business operating experience.
+              A 7-Day Virtual Real-Business Operating Intensive.
             </p>
             <div className="mt-1 flex flex-col gap-3 sm:flex-row sm:items-center">
               <a

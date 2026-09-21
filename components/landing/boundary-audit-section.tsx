@@ -152,6 +152,29 @@ export function BoundaryAuditSection() {
           </p>
         </motion.div>
 
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6, delay: 0.14 }}
+          className="mt-6 rounded-[2rem] border border-[#7FB069]/30 bg-[#7FB069]/8 p-8 sm:p-10"
+        >
+          <p className="font-poppins text-xs font-bold uppercase tracking-[0.18em] text-[#5A7F46]">Choose Three</p>
+          <h3 className="font-playfair mt-3 text-balance text-2xl font-bold leading-snug text-[#4A3A42] sm:text-3xl">
+            Your 3 Life Boundaries
+          </h3>
+          <p className="font-playfair mt-2 text-pretty text-lg font-semibold italic text-[#5A7F46]">
+            What does your Time Freedom&trade; need to make possible?
+          </p>
+          <p className="font-poppins mt-4 text-pretty text-base leading-relaxed text-[#6B5860]">
+            From the larger Boundary Library, you choose <span className="font-semibold text-[#4A3A42]">three</span>
+            &nbsp;Life Boundaries — the three things you most want your protected Time Freedom&trade; to make
+            possible. No one prescribes the same three to everyone. These are not three separate projects, and not
+            three activities assigned to three hours. They define what the protected time is <em>for</em>. You
+            decide how life inhabits that space.
+          </p>
+        </motion.div>
+
         <div className="mt-12 text-center">
           <Link
             href="/audit"

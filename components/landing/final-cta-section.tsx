@@ -9,10 +9,11 @@ import { motion } from "framer-motion"
 const MORE = [
   "More life",
   "More freedom",
-  "More capacity",
-  "More meaningful work",
-  "More time with the people you love",
-  "More human possibility",
+  "More presence",
+  "More time",
+  "More connection",
+  "More experiences",
+  "More room to be human",
 ]
 
 export function FinalCtaSection() {
