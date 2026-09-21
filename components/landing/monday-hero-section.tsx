@@ -78,13 +78,15 @@ export function MondayHeroSection() {
           </p>
 
           {/* One unified glass panel — lowered ~1in, starting at Make Time For More */}
-          <div className="mt-24 inline-flex max-w-2xl flex-col gap-4 rounded-2xl border border-white/30 bg-white/10 px-6 py-5 shadow-sm backdrop-blur-sm sm:px-8">
+          <div className="mt-24 inline-flex max-w-3xl flex-col gap-4 rounded-2xl border border-white/30 bg-white/10 px-6 py-5 shadow-sm backdrop-blur-sm sm:px-8">
             <p className="font-poppins text-xs font-semibold uppercase tracking-[0.22em] text-[#5A7F46] sm:text-sm">
               Make Time For More™
             </p>
             <h1 className="font-playfair text-balance text-3xl font-bold leading-[1.05] text-[#4A3A42] drop-shadow-sm sm:text-5xl">
               The Work-Life Balance
-              <span className="mt-1 block text-[#C13B6B]">Business Operations Week™</span>
+              <span className="mt-1 block whitespace-nowrap text-[#C13B6B]">
+                Business Operations Week<sup className="text-[0.5em] align-super">™</sup>
+              </span>
             </h1>
             <p className="font-playfair text-pretty text-base font-semibold italic leading-snug text-[#4A3A42] sm:text-lg">
               Where Founders Experience Work-Life Balance Boundaries &amp; Turn Them Into Non-Negotiable Human
