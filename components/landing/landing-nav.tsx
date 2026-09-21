@@ -20,10 +20,10 @@ export function LandingNav({
   const [scrolled, setScrolled] = useState(false)
 
   const navLinks = links ?? [
-    { label: "The Business Day", href: "#business-day" },
-    { label: "The Ritual", href: "#ritual" },
-    { label: "Cherry Blossom AI", href: "#cherry-blossom" },
-    { label: "Experiences", href: experiencesHref },
+    { label: "The Boundary", href: "#boundary-first" },
+    { label: "The Audit", href: "#boundary-audit" },
+    { label: "The Week", href: "#week" },
+    { label: "The Experience", href: experiencesHref },
   ]
 
   useEffect(() => {
@@ -76,7 +76,7 @@ export function LandingNav({
             href={experiencesHref}
             className="font-poppins rounded-full bg-[#E26C73] px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-[#E26C73]/25 transition-transform hover:scale-[1.03] hover:bg-[#d65a62]"
           >
-            Enter Harmony Lane™
+            Experience the Week
           </a>
         </div>
       </nav>

@@ -48,12 +48,20 @@ export function FinalCtaSection() {
             Where are you going — and is the way you&apos;re building actually taking you there?
           </p>
 
-          <a
-            href="#offer"
-            className="font-poppins mt-10 inline-flex items-center justify-center rounded-full bg-[#E26C73] px-9 py-4 text-base font-semibold text-white shadow-xl shadow-[#E26C73]/25 transition-transform hover:scale-[1.03] hover:bg-[#d65a62]"
-          >
-            Enter Harmony Lane™
-          </a>
+          <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <a
+              href="#offer"
+              className="font-poppins inline-flex items-center justify-center rounded-full bg-[#E26C73] px-9 py-4 text-base font-semibold text-white shadow-xl shadow-[#E26C73]/25 transition-transform hover:scale-[1.03] hover:bg-[#d65a62]"
+            >
+              Experience the Operations Week
+            </a>
+            <a
+              href="/audit"
+              className="font-poppins inline-flex items-center justify-center rounded-full border border-white/25 px-9 py-4 text-base font-semibold text-white/90 transition-colors hover:bg-white/10"
+            >
+              Take the Boundary Audit™
+            </a>
+          </div>
 
           <p className="font-poppins mt-6 text-xs font-semibold uppercase tracking-[0.2em] text-white/55">
             Contain work. Let life have space to expand™.

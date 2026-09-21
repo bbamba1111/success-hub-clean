@@ -72,6 +72,11 @@ export function MondayHeroSection() {
             Harmony Lane™
           </p>
 
+          {/* "presents…" sits directly under Harmony Lane™, small and quiet */}
+          <p className="font-poppins mt-1 text-sm font-medium italic tracking-[0.1em] text-[#5A7F46]/80">
+            presents&hellip;
+          </p>
+
           {/* One unified glass panel — lowered ~1in, starting at Make Time For More */}
           <div className="mt-24 inline-flex max-w-2xl flex-col gap-4 rounded-2xl border border-white/30 bg-white/10 px-6 py-5 shadow-sm backdrop-blur-sm sm:px-8">
             <p className="font-poppins text-xs font-semibold uppercase tracking-[0.22em] text-[#5A7F46] sm:text-sm">
@@ -79,26 +84,27 @@ export function MondayHeroSection() {
             </p>
             <h1 className="font-playfair text-balance text-3xl font-bold leading-[1.05] text-[#4A3A42] drop-shadow-sm sm:text-5xl">
               The Work-Life Balance
-              <span className="mt-1 block text-[#C13B6B]">Business Day™</span>
+              <span className="mt-1 block text-[#C13B6B]">Business Operations Week™</span>
             </h1>
-            <p className="font-playfair text-pretty text-lg font-semibold italic leading-snug text-[#4A3A42] sm:text-xl">
-              The Full-Day Virtual Desired Work-LifeStyle Destination
-              <span className="font-poppins mt-1 block text-sm font-medium not-italic tracking-[0.14em] text-[#5A7F46]/80">
-                presents&hellip;
-              </span>
+            <p className="font-playfair text-pretty text-base font-semibold italic leading-snug text-[#4A3A42] sm:text-lg">
+              Where Founders Experience Work-Life Balance Boundaries &amp; Turn Them Into Non-Negotiable Human
+              Sustainability™ Operating Standards for the AI Age — In Real Time.
+            </p>
+            <p className="font-poppins text-sm font-semibold uppercase tracking-[0.16em] text-[#5A7F46]">
+              A 7-day real-business operating experience.
             </p>
             <div className="mt-1 flex flex-col gap-3 sm:flex-row sm:items-center">
               <a
                 href="#offer"
                 className="font-poppins inline-flex items-center justify-center rounded-full bg-[#E26C73] px-8 py-3.5 text-base font-semibold text-white shadow-xl shadow-[#E26C73]/30 transition-transform hover:scale-[1.03] hover:bg-[#d65a62]"
               >
-                Enter Harmony Lane™
+                Experience the Operations Week
               </a>
               <a
-                href="#guide"
+                href="/audit"
                 className="font-poppins inline-flex items-center justify-center rounded-full border border-[#7FB069]/50 bg-white/70 px-8 py-3.5 text-base font-semibold text-[#5A7F46] backdrop-blur-sm transition-colors hover:bg-white/90"
               >
-                Meet Thought Leader Barbara →
+                Take the Boundary Audit™
               </a>
             </div>
           </div>
