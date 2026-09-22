@@ -1,45 +1,36 @@
 "use client"
 
 /**
- * DECIDE MY THREE WEEKLY PRIORITIES™
+ * MY WEEKLY LIFE PRIORITIES™ + ONE WEEKLY BOUNDARY FOCUS™
  * ---------------------------------------------------------------------------
- * The lightweight heart of Decide & Design™. The founder chooses exactly three
- * changes to carry into the week — what to protect, what to hand off, and what
- * to change about how work operates — and each becomes a first-person intention.
+ * The redesigned heart of Decide & Design™. Two distinct concepts:
  *
- * This is NOT a task planner. Nothing here generates work, cadence, treatment
- * modes, or hourly blocks; the CEO Workday™ (FounderGpsWorkspace) remains the
- * protected container for real business work and is untouched.
+ *   LIFE PRIORITIES™        — a COLLECTION. What the founder wants to make room
+ *                             for this week. No 1–3 limit. Presented one
+ *                             category at a time, never as a wall of pills.
+ *
+ *   BOUNDARY FOCUS™         — EXACTLY ONE boundary to build into the business
+ *                             and live this week. Recommended from the Reality
+ *                             Check™; the founder accepts it or chooses another.
+ *
+ * The old three-part model (Life / Delegation / Operating Rule) is gone.
+ * Delegation and operating rules become the Boundary Builder™ in a later
+ * milestone — nothing here generates business tasks.
  */
 
 import { useEffect, useMemo, useState, type ReactNode } from "react"
-  import { Check, Pencil, RefreshCw } from "lucide-react"
-import { useWeeklyCommitments } from "@/lib/weekly-commitments/use-weekly-commitments"
+import { Check, ChevronLeft, Plus, Sparkles } from "lucide-react"
+import { useWeeklyLifePriorities } from "@/lib/weekly-life-priorities/use-weekly-life-priorities"
 import {
-  DELEGATION_OPTIONS,
-  LIFE_PRIORITY_OPTIONS,
-  OPERATING_RULE_OPTIONS,
-  suggestDelegationFromBba,
-  toPhrase,
-  type PriorityOption,
-} from "@/lib/weekly-commitments/catalog"
-import {
-  buildBoundaryDraft,
-  buildDelegationIntention,
-  buildLifeIntention,
-  buildOperatingRuleIntention,
-  seedVariant,
-} from "@/lib/weekly-commitments/intention-builder"
-import {
-  BOUNDARY_AUDIENCE_LABEL,
-  LIFE_WINDOW_LABEL,
-  type BoundaryAudience,
-  type LifeWindow,
-  type WeeklyCommitments,
-} from "@/lib/weekly-commitments/types"
-import { getCurrentBbaBaseline } from "@/lib/business-bottleneck-audit/bba-storage"
-import type { BbaBaselineRecord } from "@/lib/business-bottleneck-audit/types"
-import { getPreviousWeekCarryover } from "@/lib/weekly-commitments/server"
+  LIFE_PRIORITY_CATEGORIES,
+  suggestLifeCategoriesFromFocus,
+  type LifePriorityCategory,
+} from "@/lib/weekly-life-priorities/catalog"
+import type { LifePrioritySelection } from "@/lib/weekly-life-priorities/types"
+import { useWeeklyBoundaryFocus } from "@/lib/weekly-boundary-focus/use-weekly-boundary-focus"
+import { BOUNDARY_OPTIONS, recommendBoundary } from "@/lib/weekly-boundary-focus/catalog"
+import { getLatestBoundaryReport } from "@/lib/boundary-report/actions"
+import type { BoundaryReportData } from "@/lib/boundary-report/types"
 
 /* ── shared visual atoms (match Decide & Design™ language exactly) ─────────── */
 
@@ -59,494 +50,498 @@ function Eyebrow({ children }: { children: ReactNode }) {
   )
 }
 
-function Chip({
-  selected,
-  onClick,
-  children,
-  accent = "green",
+/* ── Life Priorities™ — guided, one category at a time ────────────────────── */
+
+function LifePrioritiesSection({
+  report,
 }: {
-  selected: boolean
-  onClick: () => void
-  children: ReactNode
-  accent?: "green" | "pink"
+  report: BoundaryReportData | null
 }) {
-  const on = accent === "green" ? "border-[#5B835F] bg-[#5B835F] text-white" : "border-[#C0545A] bg-[#C0545A] text-white"
-  const off =
-    accent === "green"
-      ? "border-[#7FB069]/30 bg-[#F7FBF4] text-[#3A2E33] hover:bg-[#7FB069]/15"
-      : "border-[#C0545A]/25 bg-[#FDF8F5] text-[#3A2E33] hover:bg-[#C0545A]/10"
+  const { priorities, save } = useWeeklyLifePriorities()
+
+  // Selection working set (label-keyed), seeded from persisted rows.
+  const [selected, setSelected] = useState<LifePrioritySelection[]>([])
+  const [seeded, setSeeded] = useState(false)
+  useEffect(() => {
+    if (!seeded && priorities.length > 0) {
+      setSelected(priorities.map((p) => ({ optionId: p.optionId, label: p.label })))
+      setSeeded(true)
+    }
+  }, [priorities, seeded])
+
+  const focusLabels = useMemo(() => (report?.priorityAreas ?? []).map((a) => a.label), [report])
+  const suggestedIds = useMemo(
+    () => new Set(suggestLifeCategoriesFromFocus(focusLabels).map((c) => c.id)),
+    [focusLabels],
+  )
+
+  // Order categories so Reality-Check-suggested ones come first.
+  const orderedCategories = useMemo(() => {
+    const suggested = LIFE_PRIORITY_CATEGORIES.filter((c) => suggestedIds.has(c.id))
+    const rest = LIFE_PRIORITY_CATEGORIES.filter((c) => !suggestedIds.has(c.id))
+    return [...suggested, ...rest]
+  }, [suggestedIds])
+
+  const [step, setStep] = useState(0)
+  const [customMode, setCustomMode] = useState(false)
+  const [customDraft, setCustomDraft] = useState("")
+
+  const isSelected = (label: string) => selected.some((s) => s.label.toLowerCase() === label.toLowerCase())
+
+  function persist(next: LifePrioritySelection[]) {
+    setSelected(next)
+    void save(next)
+  }
+
+  function toggle(cat: LifePriorityCategory) {
+    const next = isSelected(cat.label)
+      ? selected.filter((s) => s.label.toLowerCase() !== cat.label.toLowerCase())
+      : [...selected, { optionId: cat.id, label: cat.label }]
+    persist(next)
+  }
+
+  function addCustom() {
+    const label = customDraft.trim()
+    if (!label || isSelected(label)) {
+      setCustomDraft("")
+      return
+    }
+    persist([...selected, { optionId: "custom", label }])
+    setCustomDraft("")
+  }
+
+  function removeSelected(label: string) {
+    persist(selected.filter((s) => s.label.toLowerCase() !== label.toLowerCase()))
+  }
+
+  const total = orderedCategories.length
+  const atCustomStep = step >= total
+  const current = orderedCategories[step]
+
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={selected}
-      className={`inline-flex items-center rounded-full border px-4 py-2 text-left font-sans text-sm transition-colors ${selected ? on : off}`}
-    >
-      {children}
-    </button>
+    <Card tone="pink">
+      <div>
+        <p className="font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#C0545A]">
+          My Weekly Life Priorities™
+        </p>
+        <p className="mt-2 font-serif text-lg text-[#2E1F27] text-pretty">
+          What do you want to make more room for this week?
+        </p>
+        <p className="mt-1 font-sans text-sm text-[#6B5860] leading-relaxed">
+          Choose as many as you like — there is no limit. These are the parts of life you want to protect, enjoy, or
+          plan for during your Time Freedom™.
+        </p>
+      </div>
+
+      {/* From your Reality Check — context, not a re-selection */}
+      {focusLabels.length > 0 && (
+        <div className="rounded-2xl border border-[#C0545A]/20 bg-white px-5 py-4 space-y-2">
+          <Eyebrow>From your Reality Check™</Eyebrow>
+          <ul className="flex flex-wrap gap-2">
+            {focusLabels.map((l) => (
+              <li
+                key={l}
+                className="inline-flex items-center rounded-full border border-[#C0545A]/25 bg-[#FDF8F5] px-3 py-1 font-sans text-xs font-semibold text-[#3A2E33]"
+              >
+                {l}
+              </li>
+            ))}
+          </ul>
+          <p className="font-sans text-xs text-[#6B5860]">
+            These are your Priority Focus Areas™. Let them guide what you choose below — but you&apos;re free to pick
+            anything that matters to you this week.
+          </p>
+        </div>
+      )}
+
+      {/* Running selection summary */}
+      {selected.length > 0 && (
+        <div className="space-y-2">
+          <Eyebrow>Chosen this week ({selected.length})</Eyebrow>
+          <ul className="flex flex-wrap gap-2">
+            {selected.map((s) => (
+              <li key={s.label}>
+                <button
+                  type="button"
+                  onClick={() => removeSelected(s.label)}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-[#C0545A] bg-[#C0545A] px-3.5 py-1.5 font-sans text-sm text-white hover:opacity-90"
+                >
+                  {s.label}
+                  <span aria-hidden className="text-white/80">
+                    ×
+                  </span>
+                  <span className="sr-only">Remove</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Guided one-at-a-time chooser */}
+      <div className="rounded-2xl border border-[#E8DFE2] bg-white px-5 py-5 space-y-4">
+        <div className="flex items-center justify-between gap-3">
+          <Eyebrow>
+            {atCustomStep ? "Anything else?" : `Category ${step + 1} of ${total}`}
+          </Eyebrow>
+          <div className="flex items-center gap-2">
+            {step > 0 && (
+              <button
+                type="button"
+                onClick={() => {
+                  setCustomMode(false)
+                  setStep((s) => Math.max(0, s - 1))
+                }}
+                className="inline-flex items-center gap-1 rounded-full border border-[#E8DFE2] bg-white px-3 py-1.5 font-sans text-xs font-semibold text-[#3A2E33] hover:bg-black/[0.03]"
+              >
+                <ChevronLeft className="h-3 w-3" aria-hidden /> Back
+              </button>
+            )}
+          </div>
+        </div>
+
+        {!atCustomStep && current ? (
+          <div className="space-y-4">
+            <p className="font-serif text-2xl font-semibold text-[#2E1F27]">
+              {current.label}
+              {suggestedIds.has(current.id) && (
+                <span className="ml-2 inline-flex items-center gap-1 align-middle font-montserrat text-[10px] font-bold uppercase tracking-[0.14em] text-[#C0545A]">
+                  <Sparkles className="h-3 w-3" aria-hidden /> From your Reality Check
+                </span>
+              )}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  toggle(current)
+                  if (step < total) setStep((s) => s + 1)
+                }}
+                className={`inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 font-sans text-sm font-semibold transition-colors ${
+                  isSelected(current.label)
+                    ? "border border-[#C0545A] bg-[#C0545A] text-white"
+                    : "border border-[#C0545A]/30 bg-[#FDF8F5] text-[#3A2E33] hover:bg-[#C0545A]/10"
+                }`}
+              >
+                {isSelected(current.label) ? (
+                  <>
+                    <Check className="h-4 w-4" aria-hidden /> Added to my week
+                  </>
+                ) : (
+                  <>
+                    <Plus className="h-4 w-4" aria-hidden /> Make room for this
+                  </>
+                )}
+              </button>
+              <button
+                type="button"
+                onClick={() => setStep((s) => s + 1)}
+                className="inline-flex items-center rounded-full border border-[#E8DFE2] bg-white px-5 py-2.5 font-sans text-sm font-semibold text-[#6B5860] hover:bg-black/[0.03]"
+              >
+                {step + 1 < total ? "Not this week →" : "Not this week →"}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <p className="font-serif text-xl font-semibold text-[#2E1F27] text-pretty">
+              Is there anything else you want to make room for?
+            </p>
+            {customMode ? (
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                <input
+                  type="text"
+                  value={customDraft}
+                  onChange={(e) => setCustomDraft(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.nativeEvent.isComposing && e.keyCode !== 229) addCustom()
+                  }}
+                  placeholder="In a few words…"
+                  aria-label="Create my own life priority"
+                  className="flex-1 rounded-xl border border-[#E8DFE2] bg-white px-3.5 py-2.5 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/60 focus:outline-none focus:ring-2 focus:ring-[#C0545A]/25"
+                />
+                <button
+                  type="button"
+                  onClick={addCustom}
+                  disabled={!customDraft.trim()}
+                  className="rounded-full bg-[#C0545A] px-5 py-2.5 font-sans text-sm font-semibold text-white hover:opacity-90 disabled:opacity-40"
+                >
+                  Add
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setCustomMode(true)}
+                className="inline-flex items-center gap-1.5 rounded-full border border-[#C0545A]/30 bg-[#FDF8F5] px-5 py-2.5 font-sans text-sm font-semibold text-[#3A2E33] hover:bg-[#C0545A]/10"
+              >
+                <Plus className="h-4 w-4" aria-hidden /> Create my own
+              </button>
+            )}
+            <p className="font-sans text-xs text-[#6B5860]">
+              {selected.length > 0
+                ? "Your life priorities are saved as you choose. Continue to your boundary focus below."
+                : "Add at least one thing you want to make room for, then continue to your boundary focus below."}
+            </p>
+          </div>
+        )}
+      </div>
+    </Card>
   )
 }
 
-/* ── one priority: choose / create my own ─────────────────────────────────── */
+/* ── Boundary Focus™ — exactly one boundary for the week ──────────────────── */
 
-function PriorityChooser({
-  options,
-  suggested,
-  suggestedLead,
-  selectedOptionId,
-  selectedLabel,
-  onChoose,
-  accent,
+function BoundaryFocusSection({
+  report,
 }: {
-  options: PriorityOption[]
-  suggested?: PriorityOption[]
-  suggestedLead?: string
-  selectedOptionId: string | null
-  selectedLabel: string | null
-  onChoose: (optionId: string, label: string, phrase: string) => void
-  accent: "green" | "pink"
+  report: BoundaryReportData | null
 }) {
-  const [creating, setCreating] = useState(selectedOptionId === "custom")
-  const [draft, setDraft] = useState(selectedOptionId === "custom" ? (selectedLabel ?? "") : "")
-  useEffect(() => {
-    if (selectedOptionId === "custom") {
-      setCreating(true)
-      setDraft(selectedLabel ?? "")
-    }
-  }, [selectedOptionId, selectedLabel])
+  const { priorities } = useWeeklyLifePriorities()
+  const { focus, save } = useWeeklyBoundaryFocus()
 
-  const suggestedIds = new Set((suggested ?? []).map((s) => s.id))
-  const rest = options.filter((o) => !suggestedIds.has(o.id))
+  const selectedLifeLabels = useMemo(() => priorities.map((p) => p.label), [priorities])
+  const recommendation = useMemo(
+    () => recommendBoundary(report, selectedLifeLabels),
+    [report, selectedLifeLabels],
+  )
 
-  function commitCustom() {
-    const label = draft.trim()
-    if (!label) return
-    onChoose("custom", label, toPhrase(label))
+  const [choosingOther, setChoosingOther] = useState(false)
+  const [customMode, setCustomMode] = useState(false)
+  const [customDraft, setCustomDraft] = useState("")
+
+  const chosen = focus.boundaryText
+
+  function chooseBoundary(text: string, optionId: string, sourceContext: string | null) {
+    void save({ boundaryText: text, optionId, sourceContext, status: "chosen" })
+    setChoosingOther(false)
+    setCustomMode(false)
+  }
+
+  function addCustom() {
+    const text = customDraft.trim()
+    if (!text) return
+    chooseBoundary(text, "custom", "Created by the founder")
+    setCustomDraft("")
   }
 
   return (
-    <div className="space-y-3">
-      {suggested && suggested.length > 0 && (
-        <div className="space-y-2">
-          <p className="font-sans text-xs text-[#6B5860]">{suggestedLead}</p>
-          <div className="flex flex-wrap gap-2">
-            {suggested.map((o) => (
-              <Chip key={o.id} accent={accent} selected={!creating && selectedOptionId === o.id} onClick={() => { setCreating(false); onChoose(o.id, o.label, o.phrase) }}>
-                {o.label}
-              </Chip>
-            ))}
-          </div>
-          <p className="font-sans text-xs text-[#6B5860] pt-1">Or choose from these</p>
-        </div>
-      )}
-      <div className="flex flex-wrap gap-2">
-        {rest.map((o) => (
-          <Chip key={o.id} accent={accent} selected={!creating && selectedOptionId === o.id} onClick={() => { setCreating(false); onChoose(o.id, o.label, o.phrase) }}>
-            {o.label}
-          </Chip>
-        ))}
-        <Chip accent={accent} selected={creating} onClick={() => setCreating(true)}>
-          Create my own
-        </Chip>
+    <Card tone="green">
+      <div>
+        <p className="font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#5B835F]">
+          My Weekly Work-Life Balance Boundary Focus™
+        </p>
+        <p className="mt-2 font-serif text-lg text-[#2E1F27] text-pretty">
+          Choose one boundary to build into the business and live this week.
+        </p>
+        <p className="mt-1 font-sans text-sm text-[#6B5860] leading-relaxed">
+          Just one. This is the single boundary you&apos;ll focus on making real this week.
+        </p>
       </div>
-      {creating && (
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-          <input
-            type="text"
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.nativeEvent.isComposing && e.keyCode !== 229) commitCustom()
-            }}
-            placeholder="In a few words…"
-            aria-label="Create my own priority"
-            className="flex-1 rounded-xl border border-[#E8DFE2] bg-white px-3.5 py-2.5 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/60 focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
-          />
+
+      {/* Chosen state */}
+      {chosen && !choosingOther ? (
+        <div className="rounded-2xl border border-[#7FB069]/40 bg-white px-5 py-5 space-y-3">
+          <Eyebrow>This week&apos;s boundary</Eyebrow>
+          <p className="font-serif text-2xl font-semibold text-[#2E1F27] text-pretty">{chosen}</p>
+          {focus.sourceContext && (
+            <p className="font-sans text-sm text-[#6B5860] leading-relaxed text-pretty">{focus.sourceContext}</p>
+          )}
           <button
             type="button"
-            onClick={commitCustom}
-            disabled={!draft.trim()}
-            className="rounded-full bg-[#5B835F] px-5 py-2.5 font-sans text-sm font-semibold text-white hover:opacity-90 disabled:opacity-40"
+            onClick={() => setChoosingOther(true)}
+            className="inline-flex items-center rounded-full border border-[#7FB069]/40 bg-white px-5 py-2.5 font-sans text-sm font-semibold text-[#3A2E33] hover:bg-black/[0.03]"
           >
-            Use this
+            Choose a different boundary
           </button>
         </div>
+      ) : (
+        <div className="space-y-4">
+          {/* Recommendation */}
+          {recommendation && !choosingOther && (
+            <div className="rounded-2xl border border-[#7FB069]/40 bg-white px-5 py-5 space-y-3">
+              <p className="font-sans text-sm text-[#3A2E33] leading-relaxed text-pretty">{recommendation.context}</p>
+              <div>
+                <Eyebrow>Recommended boundary</Eyebrow>
+                <p className="mt-1 font-serif text-2xl font-semibold text-[#2E1F27] text-pretty">
+                  {recommendation.option.label}
+                </p>
+                <p className="mt-1 font-sans text-xs text-[#6B5860]">{recommendation.option.helper}</p>
+              </div>
+              <div className="flex flex-wrap gap-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() =>
+                    chooseBoundary(recommendation.option.label, recommendation.option.id, recommendation.context)
+                  }
+                  className="inline-flex items-center gap-1.5 rounded-full bg-[#5B835F] px-6 py-3 font-sans text-sm font-bold text-white hover:opacity-90"
+                >
+                  <Check className="h-4 w-4" aria-hidden /> Use this boundary
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setChoosingOther(true)}
+                  className="inline-flex items-center rounded-full border border-[#7FB069]/40 bg-white px-6 py-3 font-sans text-sm font-semibold text-[#3A2E33] hover:bg-black/[0.03]"
+                >
+                  Choose a different boundary
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Structured choices (shown when choosing another, or when no recommendation) */}
+          {(choosingOther || !recommendation) && (
+            <div className="rounded-2xl border border-[#E8DFE2] bg-white px-5 py-5 space-y-3">
+              <Eyebrow>Choose a boundary</Eyebrow>
+              <div className="space-y-2">
+                {BOUNDARY_OPTIONS.map((o) => {
+                  const active = focus.optionId === o.id && focus.boundaryText === o.label
+                  return (
+                    <button
+                      key={o.id}
+                      type="button"
+                      onClick={() =>
+                        chooseBoundary(
+                          o.label,
+                          o.id,
+                          recommendation?.option.id === o.id ? recommendation.context : null,
+                        )
+                      }
+                      className={`flex w-full flex-col items-start rounded-2xl border px-4 py-3 text-left transition-colors ${
+                        active
+                          ? "border-[#5B835F] bg-[#F3F8ED]"
+                          : "border-[#E8DFE2] bg-white hover:bg-black/[0.02]"
+                      }`}
+                    >
+                      <span className="font-sans text-sm font-semibold text-[#2E1F27]">{o.label}</span>
+                      <span className="font-sans text-xs text-[#6B5860]">{o.helper}</span>
+                    </button>
+                  )
+                })}
+              </div>
+
+              {/* Create my own — intentional path */}
+              {customMode ? (
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center pt-1">
+                  <input
+                    type="text"
+                    value={customDraft}
+                    onChange={(e) => setCustomDraft(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.nativeEvent.isComposing && e.keyCode !== 229) addCustom()
+                    }}
+                    placeholder="Name the boundary in your own words…"
+                    aria-label="Create my own boundary"
+                    className="flex-1 rounded-xl border border-[#E8DFE2] bg-white px-3.5 py-2.5 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/60 focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
+                  />
+                  <button
+                    type="button"
+                    onClick={addCustom}
+                    disabled={!customDraft.trim()}
+                    className="rounded-full bg-[#5B835F] px-5 py-2.5 font-sans text-sm font-semibold text-white hover:opacity-90 disabled:opacity-40"
+                  >
+                    Use this
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setCustomMode(true)}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-[#E8DFE2] bg-white px-5 py-2.5 font-sans text-sm font-semibold text-[#3A2E33] hover:bg-black/[0.03]"
+                >
+                  <Plus className="h-4 w-4" aria-hidden /> Create my own
+                </button>
+              )}
+
+              {choosingOther && recommendation && (
+                <button
+                  type="button"
+                  onClick={() => setChoosingOther(false)}
+                  className="inline-flex items-center gap-1 pt-1 font-sans text-xs font-semibold text-[#6B5860] hover:text-[#3A2E33]"
+                >
+                  <ChevronLeft className="h-3 w-3" aria-hidden /> Back to the recommendation
+                </button>
+              )}
+            </div>
+          )}
+        </div>
       )}
-    </div>
+    </Card>
   )
 }
 
-/* ── intention block: generated first-person, editable, re-buildable ──────── */
+/* ── Summary — makes the distinction obvious ──────────────────────────────── */
 
-function IntentionBlock({
-  priorityLabel,
-  priorityValue,
-  intentionLabel,
-  intention,
-  edited,
-  onEdit,
-  onRebuild,
-}: {
-  priorityLabel: string
-  priorityValue: string
-  intentionLabel: string
-  intention: string
-  edited: boolean
-  onEdit: (text: string) => void
-  onRebuild: () => void
-}) {
-  const [editing, setEditing] = useState(false)
-  const [draft, setDraft] = useState(intention)
-  useEffect(() => {
-    if (!editing) setDraft(intention)
-  }, [intention, editing])
+function WeekSummary() {
+  const { priorities } = useWeeklyLifePriorities()
+  const { focus } = useWeeklyBoundaryFocus()
+
+  if (priorities.length === 0 && !focus.boundaryText) return null
 
   return (
-    <div className="rounded-2xl border border-[#E8DFE2] bg-[#FAF8F5] px-5 py-4 space-y-3">
-      <div>
-        <Eyebrow>{priorityLabel}</Eyebrow>
-        <p className="mt-1 font-sans text-sm font-semibold text-[#2E1F27]">{priorityValue}</p>
+    <Card>
+      <div className="space-y-6">
+        <div className="space-y-3">
+          <p className="font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#C0545A]">
+            My Weekly Life Priorities™
+          </p>
+          <p className="font-sans text-xs text-[#6B5860]">What I want to make room for.</p>
+          {priorities.length > 0 ? (
+            <ul className="flex flex-wrap gap-2">
+              {priorities.map((p) => (
+                <li
+                  key={p.id}
+                  className="inline-flex items-center rounded-full border border-[#C0545A]/25 bg-[#FDF8F5] px-4 py-2 font-sans text-sm font-semibold text-[#3A2E33]"
+                >
+                  {p.label}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="font-sans text-sm text-[#6B5860]">None chosen yet.</p>
+          )}
+        </div>
+
+        <div className="space-y-3">
+          <p className="font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#5B835F]">
+            My Weekly Work-Life Balance Boundary Focus™
+          </p>
+          <p className="font-sans text-xs text-[#6B5860]">The one boundary I will build into the business this week.</p>
+          {focus.boundaryText ? (
+            <p className="font-serif text-xl font-semibold text-[#2E1F27] text-pretty">{focus.boundaryText}</p>
+          ) : (
+            <p className="font-sans text-sm text-[#6B5860]">Not chosen yet.</p>
+          )}
+        </div>
       </div>
-      <div>
-        <Eyebrow>{intentionLabel}</Eyebrow>
-        {editing ? (
-          <textarea
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            rows={3}
-            aria-label={intentionLabel}
-            className="mt-1 w-full rounded-xl border border-[#E8DFE2] bg-white px-3.5 py-2.5 font-serif text-base leading-relaxed text-[#2E1F27] focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
-          />
-        ) : (
-          <p className="mt-1 font-serif text-base leading-relaxed text-[#2E1F27] text-pretty">{intention}</p>
-        )}
-      </div>
-      <div className="flex flex-wrap items-center gap-2">
-        {editing ? (
-          <button
-            type="button"
-            onClick={() => {
-              onEdit(draft.trim() || intention)
-              setEditing(false)
-            }}
-            className="inline-flex items-center gap-1.5 rounded-full bg-[#5B835F] px-4 py-1.5 font-sans text-xs font-bold text-white hover:opacity-90"
-          >
-            <Check className="h-3 w-3" aria-hidden /> Done
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={() => setEditing(true)}
-            className="inline-flex items-center gap-1.5 rounded-full border border-[#E8DFE2] bg-white px-4 py-1.5 font-sans text-xs font-semibold text-[#3A2E33] hover:bg-black/[0.03]"
-          >
-            <Pencil className="h-3 w-3" aria-hidden /> Edit
-          </button>
-        )}
-        <button
-          type="button"
-          onClick={onRebuild}
-          className="inline-flex items-center gap-1.5 rounded-full border border-[#E8DFE2] bg-white px-4 py-1.5 font-sans text-xs font-semibold text-[#3A2E33] hover:bg-black/[0.03]"
-        >
-          <RefreshCw className="h-3 w-3" aria-hidden /> Build a Different Intention
-        </button>
-        {edited && <span className="font-sans text-[11px] text-[#6B5860]">In your own words</span>}
-      </div>
-    </div>
+    </Card>
   )
 }
 
 /* ── main ──────────────────────────────────────────────────────────────────── */
 
 export function WeeklyPrioritiesDesigner() {
-  const { commitments: c, update, saveWeek } = useWeeklyCommitments()
-  const [bba, setBba] = useState<BbaBaselineRecord | null>(null)
-  const [carry, setCarry] = useState<Awaited<ReturnType<typeof getPreviousWeekCarryover>>>(null)
-  const [saving, setSaving] = useState(false)
-  const [saveError, setSaveError] = useState<string | null>(null)
-  const [saved, setSaved] = useState(false)
+  const [report, setReport] = useState<BoundaryReportData | null>(null)
 
   useEffect(() => {
-    getCurrentBbaBaseline().then(setBba).catch(() => setBba(null))
-    getPreviousWeekCarryover(c.weekKey).then(setCarry).catch(() => setCarry(null))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    let active = true
+    getLatestBoundaryReport()
+      .then((res) => {
+        if (active) setReport(res?.data ?? null)
+      })
+      .catch(() => {
+        if (active) setReport(null)
+      })
+    return () => {
+      active = false
+    }
   }, [])
-
-  const delegationSuggestions = useMemo(() => suggestDelegationFromBba(bba), [bba])
-
-  /* phrase for each priority — catalog phrase or softened custom text */
-  const lifePhrase = useMemo(
-    () => LIFE_PRIORITY_OPTIONS.find((o) => o.id === c.lifePriorityOptionId)?.phrase ?? (c.lifePriority ? toPhrase(c.lifePriority) : ""),
-    [c.lifePriorityOptionId, c.lifePriority],
-  )
-  const delegationPhrase = useMemo(
-    () =>
-      [...DELEGATION_OPTIONS, ...delegationSuggestions].find((o) => o.id === c.delegationOptionId)?.phrase ??
-      (c.delegationPriority ? toPhrase(c.delegationPriority) : ""),
-    [c.delegationOptionId, c.delegationPriority, delegationSuggestions],
-  )
-  const rulePhrase = useMemo(
-    () => OPERATING_RULE_OPTIONS.find((o) => o.id === c.operatingRuleOptionId)?.phrase ?? (c.operatingRule ? toPhrase(c.operatingRule) : ""),
-    [c.operatingRuleOptionId, c.operatingRule],
-  )
-
-  /* choose handlers — set priority, seed a fresh intention unless founder hand-edited */
-  function chooseLife(optionId: string, label: string, phrase: string) {
-    const variant = seedVariant(phrase)
-    update((prev) => ({
-      lifePriorityOptionId: optionId,
-      lifePriority: label,
-      lifeIntentionVariant: variant,
-      lifeIntention: prev.lifeIntentionEdited && prev.lifePriority === label ? prev.lifeIntention : buildLifeIntention(phrase, variant),
-      lifeIntentionEdited: prev.lifeIntentionEdited && prev.lifePriority === label,
-      lifeStatus: prev.lifeStatus === "not-planned" && prev.lifeWindows.length > 0 ? "planned" : prev.lifeStatus,
-      boundaryDraft: prev.boundaryDraftEdited ? prev.boundaryDraft : prev.boundaryAudiences.length ? buildBoundaryDraft(phrase, prev.lifeWindows, prev.boundaryAudiences) : prev.boundaryDraft,
-    }))
-  }
-  function chooseDelegation(optionId: string, label: string, phrase: string) {
-    const variant = seedVariant(phrase)
-    update((prev) => ({
-      delegationOptionId: optionId,
-      delegationPriority: label,
-      delegationIntentionVariant: variant,
-      delegationIntention: prev.delegationIntentionEdited && prev.delegationPriority === label ? prev.delegationIntention : buildDelegationIntention(phrase, variant),
-      delegationIntentionEdited: prev.delegationIntentionEdited && prev.delegationPriority === label,
-    }))
-  }
-  function chooseRule(optionId: string, label: string, phrase: string) {
-    const variant = seedVariant(phrase)
-    update((prev) => ({
-      operatingRuleOptionId: optionId,
-      operatingRule: label,
-      operatingRuleIntentionVariant: variant,
-      operatingRuleIntention: prev.operatingRuleIntentionEdited && prev.operatingRule === label ? prev.operatingRuleIntention : buildOperatingRuleIntention(phrase, variant),
-      operatingRuleIntentionEdited: prev.operatingRuleIntentionEdited && prev.operatingRule === label,
-    }))
-  }
-
-  function toggleWindow(w: LifeWindow) {
-    update((prev) => {
-      const windows = prev.lifeWindows.includes(w) ? prev.lifeWindows.filter((x) => x !== w) : [...prev.lifeWindows, w]
-      return {
-        lifeWindows: windows,
-        lifeStatus: prev.lifeStatus === "not-planned" && windows.length > 0 ? "planned" : prev.lifeStatus,
-        boundaryDraft: prev.boundaryDraftEdited || prev.boundaryAudiences.length === 0 ? prev.boundaryDraft : buildBoundaryDraft(lifePhrase, windows, prev.boundaryAudiences),
-      }
-    })
-  }
-  function toggleAudience(a: BoundaryAudience) {
-    update((prev) => {
-      const audiences = prev.boundaryAudiences.includes(a) ? prev.boundaryAudiences.filter((x) => x !== a) : [...prev.boundaryAudiences, a]
-      return {
-        boundaryAudiences: audiences,
-        boundaryDraft: prev.boundaryDraftEdited ? prev.boundaryDraft : audiences.length ? buildBoundaryDraft(lifePhrase, prev.lifeWindows, audiences) : null,
-      }
-    })
-  }
-
-  const ready = !!c.lifePriority && !!c.delegationPriority && !!c.operatingRule
-  const missing = [
-    !c.lifePriority && "a Life Priority",
-    !c.delegationPriority && "a Delegation Priority",
-    !c.operatingRule && "an Operating Rule",
-  ].filter(Boolean) as string[]
-
-  async function handleSave() {
-    setSaving(true)
-    setSaveError(null)
-    const res = await saveWeek()
-    setSaving(false)
-    if (!res.ok) setSaveError(res.error ?? "Could not save your week.")
-    else setSaved(true)
-  }
-
-  const windows: LifeWindow[] = ["after-5", "friday", "saturday", "sunday", "time-freedom"]
-  const audiences: BoundaryAudience[] = ["family", "partner", "team", "clients", "partners", "stakeholders", "other"]
 
   return (
     <div className="space-y-6">
-      {/* ── Heading ─────────────────────────────────────────────────────────── */}
-      <Card>
-        <div>
-          <p className="font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#5B835F]">
-            Decide My Three Weekly Priorities™
-          </p>
-          <p className="mt-2 font-sans text-sm text-[#3A2E33] leading-relaxed text-pretty">
-            Choose three simple changes that will help you make more room for life and contain the work that competes
-            for it.
-          </p>
-        </div>
-
-        {carry && (
-          <div className="rounded-2xl border border-[#E8DFE2] bg-[#FAF8F5] px-5 py-4 space-y-2">
-            <Eyebrow>Still in progress from last week</Eyebrow>
-            <ul className="font-sans text-sm text-[#3A2E33] space-y-1">
-              {carry.open.life && carry.commitments.lifePriority && <li>Life — {carry.commitments.lifePriority}</li>}
-              {carry.open.delegation && carry.commitments.delegationPriority && <li>Delegation — {carry.commitments.delegationPriority}</li>}
-              {carry.open.operatingRule && carry.commitments.operatingRule && <li>Operating rule — {carry.commitments.operatingRule}</li>}
-            </ul>
-            <p className="font-sans text-xs text-[#6B5860]">
-              Nothing carries over on its own. Choose again below — continue it, change it, or let it go.
-            </p>
-            <div className="flex flex-wrap gap-2 pt-1">
-              {carry.open.life && carry.commitments.lifePriority && (
-                <Chip selected={false} onClick={() => chooseLife(carry.commitments.lifePriorityOptionId ?? "custom", carry.commitments.lifePriority!, LIFE_PRIORITY_OPTIONS.find((o) => o.id === carry.commitments.lifePriorityOptionId)?.phrase ?? toPhrase(carry.commitments.lifePriority!))}>
-                  Continue Life Priority
-                </Chip>
-              )}
-              {carry.open.delegation && carry.commitments.delegationPriority && (
-                <Chip selected={false} onClick={() => chooseDelegation(carry.commitments.delegationOptionId ?? "custom", carry.commitments.delegationPriority!, DELEGATION_OPTIONS.find((o) => o.id === carry.commitments.delegationOptionId)?.phrase ?? toPhrase(carry.commitments.delegationPriority!))}>
-                  Continue Delegation
-                </Chip>
-              )}
-              {carry.open.operatingRule && carry.commitments.operatingRule && (
-                <Chip selected={false} onClick={() => chooseRule(carry.commitments.operatingRuleOptionId ?? "custom", carry.commitments.operatingRule!, OPERATING_RULE_OPTIONS.find((o) => o.id === carry.commitments.operatingRuleOptionId)?.phrase ?? toPhrase(carry.commitments.operatingRule!))}>
-                  Continue Operating Rule
-                </Chip>
-              )}
-            </div>
-          </div>
-        )}
-      </Card>
-
-      {/* ── Priority 1 · Life ───────────────────────────────────────────────── */}
-      <Card>
-        <div>
-          <Eyebrow>Priority 1</Eyebrow>
-          <h3 className="mt-1 font-serif text-2xl font-semibold text-[#2E1F27]">Weekly Life Priority™</h3>
-          <p className="mt-2 font-serif text-lg text-[#2E1F27]">What do I want to make more room for this week?</p>
-          <p className="mt-1 font-sans text-sm text-[#6B5860] leading-relaxed">
-            Choose one thing you want to protect, enjoy, experience, or make time for outside the business.
-          </p>
-        </div>
-        <PriorityChooser options={LIFE_PRIORITY_OPTIONS} selectedOptionId={c.lifePriorityOptionId} selectedLabel={c.lifePriority} onChoose={chooseLife} accent="pink" />
-      </Card>
-
-      {/* ── Priority 2 · Delegation ─────────────────────────────────────────── */}
-      <Card>
-        <div>
-          <Eyebrow>Priority 2</Eyebrow>
-          <h3 className="mt-1 font-serif text-2xl font-semibold text-[#2E1F27]">Weekly Delegation Priority™</h3>
-          <p className="mt-2 font-serif text-lg text-[#2E1F27]">What do I need to stop carrying myself?</p>
-          <p className="mt-1 font-sans text-sm text-[#6B5860] leading-relaxed">
-            Choose one responsibility, task, or area you are ready to move to someone else.
-          </p>
-        </div>
-        <PriorityChooser
-          options={DELEGATION_OPTIONS}
-          suggested={delegationSuggestions}
-          suggestedLead="We noticed a few opportunities. Which one would make the biggest difference?"
-          selectedOptionId={c.delegationOptionId}
-          selectedLabel={c.delegationPriority}
-          onChoose={chooseDelegation}
-          accent="green"
-        />
-      </Card>
-
-      {/* ── Priority 3 · Operating Rule ─────────────────────────────────────── */}
-      <Card>
-        <div>
-          <Eyebrow>Priority 3</Eyebrow>
-          <h3 className="mt-1 font-serif text-2xl font-semibold text-[#2E1F27]">Weekly Operating Rule Priority™</h3>
-          <p className="mt-2 font-serif text-lg text-[#2E1F27]">What rule would make work easier to contain this week?</p>
-          <p className="mt-1 font-sans text-sm text-[#6B5860] leading-relaxed">
-            Choose one simple rule that protects time, reduces interruptions, clarifies ownership, or changes how work
-            gets done.
-          </p>
-        </div>
-        <PriorityChooser options={OPERATING_RULE_OPTIONS} selectedOptionId={c.operatingRuleOptionId} selectedLabel={c.operatingRule} onChoose={chooseRule} accent="green" />
-      </Card>
-
-      {/* ── My Three Weekly Intentions™ ─────────────────────────────────────── */}
-      {(c.lifeIntention || c.delegationIntention || c.operatingRuleIntention) && (
-        <Card tone="green">
-          <div>
-            <p className="font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#5B835F]">
-              My Three Weekly Intentions™
-            </p>
-            <p className="mt-2 font-sans text-sm text-[#3A2E33] leading-relaxed">
-              Spoken in your voice. Edit any line until it sounds like you.
-            </p>
-          </div>
-          <div className="space-y-3">
-            {c.lifePriority && c.lifeIntention && (
-              <IntentionBlock
-                priorityLabel="Your Life Priority™"
-                priorityValue={c.lifePriority}
-                intentionLabel="Your Life Intention™"
-                intention={c.lifeIntention}
-                edited={c.lifeIntentionEdited}
-                onEdit={(t) => update({ lifeIntention: t, lifeIntentionEdited: true })}
-                onRebuild={() => {
-                  const v = c.lifeIntentionVariant + 1
-                  update({ lifeIntentionVariant: v, lifeIntention: buildLifeIntention(lifePhrase, v), lifeIntentionEdited: false })
-                }}
-              />
-            )}
-            {c.delegationPriority && c.delegationIntention && (
-              <IntentionBlock
-                priorityLabel="Your Delegation Priority™"
-                priorityValue={c.delegationPriority}
-                intentionLabel="Your Delegation Intention™"
-                intention={c.delegationIntention}
-                edited={c.delegationIntentionEdited}
-                onEdit={(t) => update({ delegationIntention: t, delegationIntentionEdited: true })}
-                onRebuild={() => {
-                  const v = c.delegationIntentionVariant + 1
-                  update({ delegationIntentionVariant: v, delegationIntention: buildDelegationIntention(delegationPhrase, v), delegationIntentionEdited: false })
-                }}
-              />
-            )}
-            {c.operatingRule && c.operatingRuleIntention && (
-              <IntentionBlock
-                priorityLabel="Your Operating Rule Priority™"
-                priorityValue={c.operatingRule}
-                intentionLabel="Your Operating Rule Intention™"
-                intention={c.operatingRuleIntention}
-                edited={c.operatingRuleIntentionEdited}
-                onEdit={(t) => update({ operatingRuleIntention: t, operatingRuleIntentionEdited: true })}
-                onRebuild={() => {
-                  const v = c.operatingRuleIntentionVariant + 1
-                  update({ operatingRuleIntentionVariant: v, operatingRuleIntention: buildOperatingRuleIntention(rulePhrase, v), operatingRuleIntentionEdited: false })
-                }}
-              />
-            )}
-          </div>
-        </Card>
-      )}
-
-      {/* ── Save My Week ────────────────────────────────────────────────────── */}
-      <Card>
-        {saved || c.designedAt ? (
-          <div className="space-y-2">
-            <p className="font-serif text-2xl font-semibold text-[#2E1F27]">Your week is designed.</p>
-            <p className="font-sans text-sm text-[#3A2E33] leading-relaxed text-pretty">
-              You&apos;ve chosen what to protect, what to hand off, and what to change about the way work gets done.
-            </p>
-            <p className="font-sans text-sm text-[#3A2E33]">Now step into your Work-Life Balance Business Day™.</p>
-            <p className="font-sans text-xs text-[#6B5860] pt-1">Any change you make above is saved to this week automatically.</p>
-          </div>
-        ) : (
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="font-serif text-xl font-semibold text-[#2E1F27]">Save My Week</p>
-              <p className="mt-1 font-sans text-sm text-[#6B5860]">
-                {ready ? "Three changes, chosen on purpose." : `Still to choose: ${missing.join(", ")}.`}
-              </p>
-              {saveError && <p className="mt-1 font-sans text-xs text-[#C0545A]">{saveError}</p>}
-            </div>
-            <button
-              type="button"
-              onClick={handleSave}
-              disabled={!ready || saving}
-              className="inline-flex items-center justify-center rounded-full bg-[#5B835F] px-7 py-3 font-sans text-sm font-bold text-white hover:opacity-90 disabled:opacity-40 disabled:cursor-default"
-            >
-              {saving ? "Saving…" : "Save My Week"}
-            </button>
-          </div>
-        )}
-      </Card>
+      <LifePrioritiesSection report={report} />
+      <BoundaryFocusSection report={report} />
+      <WeekSummary />
     </div>
   )
 }
-
-export type { WeeklyCommitments }
