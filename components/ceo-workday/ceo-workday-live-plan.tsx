@@ -28,6 +28,7 @@ import {
   type CeoWorkdayDeclaration,
 } from "@/lib/daily-plan/ceo-workday-declaration"
 import { WeeklyPrioritiesPanel } from "@/components/ceo-workday/weekly-priorities-panel"
+import { BoundaryFocusPanel } from "@/components/ceo-workday/boundary-focus-panel"
 import { WhatMustHappenToday } from "@/components/ceo-workday/what-must-happen-today"
 import { useWeeklyCommitments } from "@/lib/weekly-commitments/use-weekly-commitments"
 import {
@@ -406,6 +407,11 @@ export function CeoWorkdayLivePlan() {
       {/* This Week's Three Priorities™ — now directly UNDER the declaration
           (the two were reversed), collapsible with inline intention editing. */}
       <WeeklyPrioritiesPanel />
+
+      {/* This Week's Boundary Focus™ — the single Work-Life Balance Boundary™ the
+          founder operationalizes into a Human SOS™ via the Boundary Builder™.
+          A separate section; it does not replace the three CEO priority boxes. */}
+      <BoundaryFocusPanel />
 
       {/* What Must Happen Today™ — the founder's own four protected hours. This is
           the "WHAT": the founder decides, hour by hour, what must happen and creates
