@@ -4,6 +4,16 @@ export type BusinessStage = "start" | "grow" | "scale"
 
 export type SelectedPath = "JOINED_WEEK" | "GO_IT_ALONE"
 
+export type AlignmentChoice = "willing" | "unsure"
+
+/** One stored answer to a Work-Life Balance Alignment™ willingness question. */
+export interface AlignmentResponse {
+  id: string
+  title: string
+  question: string
+  choice: AlignmentChoice
+}
+
 /** One of the 15 Core Value Areas as scored in the 30-Day Baseline. */
 export interface BaselineArea {
   key: string
@@ -47,7 +57,14 @@ export interface BoundaryReportData {
     areas: BaselineArea[]
   }
   priorityFocusAreas: string[]
-  lifeBoundaries: LifeBoundary[]
+  /** Labels for the selected priority areas, kept for report rendering. */
+  priorityAreas: { key: string; label: string; score: number }[]
+  /** Work-Life Balance Alignment™ willingness answers (replaces Life Boundary Discovery). */
+  alignmentResponses: AlignmentResponse[]
+  /** Answer to the final "ready to experience it?" question. */
+  finalAlignment?: AlignmentChoice
+  /** Deprecated: free-text Life Boundary Discovery, no longer collected. */
+  lifeBoundaries?: LifeBoundary[]
   boundaryCollisions: string[]
   businessRequirements: BusinessRequirement[]
   stage: BusinessStage

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react"
 import Link from "next/link"
-import { ArrowRight, ArrowLeft, Check, Loader2, ShieldCheck, Sparkles } from "lucide-react"
+import { ArrowRight, ArrowLeft, Check, Loader2, Lock, ShieldCheck, Sparkles } from "lucide-react"
 import { getAuditResults } from "@/utils/audit-storage"
 import { CATEGORY_LABELS } from "@/utils/life-value-categories"
 import { INTENTION_GROUPS, composeIntentionSummary } from "@/lib/boundary-report/intention-inventory"
@@ -12,12 +12,19 @@ import {
   STAGE_LABELS,
   requirementById,
 } from "@/lib/boundary-report/business-intelligence"
+import {
+  ALIGNMENT_CHOICES,
+  ALIGNMENT_FINAL,
+  ALIGNMENT_QUESTIONS,
+  TOUR_MODULES,
+} from "@/lib/boundary-report/alignment"
 import { saveBoundaryReport, setBoundaryReportPath } from "@/lib/boundary-report/actions"
 import type {
+  AlignmentChoice,
+  AlignmentResponse,
   BaselineArea,
   BoundaryReportData,
   BusinessStage,
-  LifeBoundary,
   SelectedPath,
 } from "@/lib/boundary-report/types"
 
@@ -29,9 +36,10 @@ type Stage =
   | "intention"
   | "baseline"
   | "priority"
-  | "boundaries"
   | "requirements"
   | "stage"
+  | "alignment"
+  | "tour"
   | "generating"
   | "report"
 
@@ -40,9 +48,10 @@ const STAGE_ORDER: Stage[] = [
   "intention",
   "baseline",
   "priority",
-  "boundaries",
   "requirements",
   "stage",
+  "alignment",
+  "tour",
   "report",
 ]
 
@@ -169,12 +178,16 @@ export function BoundaryReportJourney() {
   // Priority focus areas (keys)
   const [priority, setPriority] = useState<string[]>([])
 
-  // Life boundaries keyed by area
-  const [boundaries, setBoundaries] = useState<Record<string, LifeBoundary>>({})
-
   // Business requirements (ids) + stage
   const [requirements, setRequirements] = useState<string[]>([])
   const [stageChoice, setStageChoice] = useState<BusinessStage | null>(null)
+
+  // Work-Life Balance Alignment™ willingness answers, keyed by question id
+  const [alignment, setAlignment] = useState<Record<string, AlignmentChoice>>({})
+  const [alignmentIndex, setAlignmentIndex] = useState(0)
+
+  // Tour reveal progress
+  const [tourRevealed, setTourRevealed] = useState(1)
 
   // Persistence
   const [saving, setSaving] = useState(false)
@@ -226,24 +239,24 @@ export function BoundaryReportJourney() {
     })
   }
 
-  function updateBoundary(areaKey: string, areaLabel: string, field: keyof LifeBoundary, value: string) {
-    setBoundaries((prev) => ({
-      ...prev,
-      [areaKey]: {
-        areaKey,
-        areaLabel,
-        protect: prev[areaKey]?.protect ?? "",
-        looksLike: prev[areaKey]?.looksLike ?? "",
-        belongsToLife: prev[areaKey]?.belongsToLife ?? "",
-        honoredSignal: prev[areaKey]?.honoredSignal ?? "",
-        [field]: value,
-      },
-    }))
-  }
-
   function toggleRequirement(id: string) {
     setRequirements((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]))
   }
+
+  function setAlignmentChoice(id: string, choice: AlignmentChoice) {
+    setAlignment((prev) => ({ ...prev, [id]: choice }))
+  }
+
+  const alignmentResponses: AlignmentResponse[] = useMemo(
+    () =>
+      ALIGNMENT_QUESTIONS.filter((q) => alignment[q.id]).map((q) => ({
+        id: q.id,
+        title: q.title,
+        question: q.question,
+        choice: alignment[q.id],
+      })),
+    [alignment],
+  )
 
   function buildReport(path?: SelectedPath): BoundaryReportData {
     const stage = stageChoice ?? "start"
@@ -251,17 +264,9 @@ export function BoundaryReportJourney() {
       originalIntention: { selections, somethingElse: somethingElse.trim() || undefined, summary: intentionSummary },
       baseline: baseline ?? { overall: 0, date: new Date().toISOString(), areas: [] },
       priorityFocusAreas: priority,
-      lifeBoundaries: priorityAreas.map(
-        (a) =>
-          boundaries[a.key] ?? {
-            areaKey: a.key,
-            areaLabel: a.label,
-            protect: "",
-            looksLike: "",
-            belongsToLife: "",
-            honoredSignal: "",
-          },
-      ),
+      priorityAreas: priorityAreas.map((a) => ({ key: a.key, label: a.label, score: a.score })),
+      alignmentResponses,
+      finalAlignment: alignment[ALIGNMENT_FINAL.id],
       boundaryCollisions: requirements.map((id) => requirementById(id)?.label ?? id),
       businessRequirements: requirements.map((id) => {
         const opt = requirementById(id)
@@ -510,53 +515,15 @@ export function BoundaryReportJourney() {
               )
             })}
           </div>
-          <NavRow onBack={goBack} onNext={() => setStage("boundaries")} nextDisabled={priority.length === 0} />
-        </StageShell>
-      )}
-
-      {stage === "boundaries" && (
-        <StageShell
-          eyebrow="Life Boundary™ Discovery"
-          title="What do you need to protect?"
-          intro="For each area you chose, name the boundary underneath it. Short answers are fine — this is about clarity, not perfect wording."
-        >
-          <div className="space-y-8">
-            {priorityAreas.map((a) => {
-              const b = boundaries[a.key]
-              return (
-                <div key={a.key} className="rounded-3xl border border-brand-blush bg-white px-6 py-6">
-                  <p className="font-playfair text-xl font-bold text-brand-ink mb-5">{a.label}</p>
-                  <div className="space-y-5">
-                    <div>
-                      <FieldLabel>What am I trying to protect?</FieldLabel>
-                      <TextArea value={b?.protect ?? ""} onChange={(v) => updateBoundary(a.key, a.label, "protect", v)} placeholder="The time, energy, or presence this area needs from you." />
-                    </div>
-                    <div>
-                      <FieldLabel>What would protected time or space look like?</FieldLabel>
-                      <TextArea value={b?.looksLike ?? ""} onChange={(v) => updateBoundary(a.key, a.label, "looksLike", v)} placeholder="Describe it concretely — when, where, how long." />
-                    </div>
-                    <div>
-                      <FieldLabel>When does that time belong to life rather than the business?</FieldLabel>
-                      <TextArea value={b?.belongsToLife ?? ""} onChange={(v) => updateBoundary(a.key, a.label, "belongsToLife", v)} placeholder="The hours or days this belongs to you, not the work." />
-                    </div>
-                    <div>
-                      <FieldLabel>What would tell you the boundary is being honored?</FieldLabel>
-                      <TextArea value={b?.honoredSignal ?? ""} onChange={(v) => updateBoundary(a.key, a.label, "honoredSignal", v)} placeholder="The signal you'd notice when it's actually working." />
-                    </div>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-          <NavRow onBack={goBack} onNext={() => setStage("requirements")} nextLabel="What the business may need" />
+          <NavRow onBack={goBack} onNext={() => setStage("requirements")} nextDisabled={priority.length === 0} />
         </StageShell>
       )}
 
       {stage === "requirements" && (
         <StageShell
-          eyebrow="Business Requirement Discovery"
-          title="What might need to be in place for these boundaries to hold?"
-          intro="Select whatever your diagnostic suggests may need attention. This isn't a verdict — it's what the Week™ would help you determine and design."
+          eyebrow="Business & Workplace Reality™"
+          title="What in your operating environment collides with the life you just described?"
+          intro="Select whatever your diagnostic suggests may need attention. This isn't another scored assessment or a verdict — it's what the Week™ would help you determine and design."
         >
           <div className="grid gap-2.5 sm:grid-cols-2">
             {REQUIREMENT_OPTIONS.map((opt) => {
@@ -624,8 +591,37 @@ export function BoundaryReportJourney() {
               </ul>
             </div>
           )}
-          <NavRow onBack={goBack} onNext={generateReport} nextLabel="Generate my Boundary Report™" nextDisabled={!stageChoice} />
+          <NavRow onBack={goBack} onNext={() => setStage("alignment")} nextLabel="Continue to Alignment" nextDisabled={!stageChoice} />
         </StageShell>
+      )}
+
+      {stage === "alignment" && (
+        <AlignmentStep
+          index={alignmentIndex}
+          choices={alignment}
+          onChoose={setAlignmentChoice}
+          onBack={() => {
+            if (alignmentIndex === 0) goBack()
+            else setAlignmentIndex((i) => i - 1)
+          }}
+          onNext={() => {
+            const total = ALIGNMENT_QUESTIONS.length + 1
+            if (alignmentIndex < total - 1) setAlignmentIndex((i) => i + 1)
+            else setStage("tour")
+          }}
+        />
+      )}
+
+      {stage === "tour" && (
+        <TourStep
+          revealed={tourRevealed}
+          onReveal={() => setTourRevealed((n) => Math.min(n + 1, TOUR_MODULES.length))}
+          onBack={() => {
+            setStage("alignment")
+            setAlignmentIndex(ALIGNMENT_QUESTIONS.length)
+          }}
+          onDone={generateReport}
+        />
       )}
 
       {stage === "generating" && (
@@ -649,6 +645,154 @@ export function BoundaryReportJourney() {
         />
       )}
     </div>
+  )
+}
+
+// ── Step 5: Work-Life Balance Alignment™ (one question at a time) ─────────────
+
+function AlignmentStep({
+  index,
+  choices,
+  onChoose,
+  onBack,
+  onNext,
+}: {
+  index: number
+  choices: Record<string, AlignmentChoice>
+  onChoose: (id: string, choice: AlignmentChoice) => void
+  onBack: () => void
+  onNext: () => void
+}) {
+  const total = ALIGNMENT_QUESTIONS.length + 1
+  const isFinal = index >= ALIGNMENT_QUESTIONS.length
+  const q = isFinal ? ALIGNMENT_FINAL : ALIGNMENT_QUESTIONS[index]
+  const current = choices[q.id]
+
+  return (
+    <div className="mx-auto w-full max-w-2xl px-4 py-10 sm:py-16">
+      <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.22em] text-brand-green mb-2">
+        Work-Life Balance Alignment™ · {Math.min(index + 1, total)} of {total}
+      </p>
+      {index === 0 && (
+        <p className="font-sans text-sm text-brand-ink-soft leading-relaxed text-pretty mb-6">
+          You built this business for more. This week, we&apos;re asking you to experience a different way of operating.
+          There are no wrong answers — only honesty about what you&apos;re willing to try.
+        </p>
+      )}
+
+      <div className="rounded-3xl border border-brand-green/30 bg-white px-6 py-8 sm:px-8 sm:py-10 shadow-sm">
+        <p className="font-montserrat text-[11px] font-bold uppercase tracking-[0.16em] text-brand-green mb-3">
+          {q.title}
+        </p>
+        <h1
+          className={`font-playfair font-bold text-brand-ink text-balance ${isFinal ? "text-3xl sm:text-4xl" : "text-2xl sm:text-[28px] leading-snug"}`}
+        >
+          {q.question}
+        </h1>
+
+        <div className="mt-8 grid gap-3">
+          {ALIGNMENT_CHOICES.map((c) => {
+            const active = current === c.value
+            return (
+              <button
+                key={c.value}
+                type="button"
+                onClick={() => onChoose(q.id, c.value)}
+                className={`flex items-center justify-between gap-3 rounded-2xl border px-5 py-4 text-left transition-colors ${
+                  active
+                    ? c.value === "willing"
+                      ? "border-brand-green bg-brand-green/10"
+                      : "border-brand-coral bg-brand-coral/5"
+                    : "border-brand-blush bg-white hover:border-brand-green/50"
+                }`}
+              >
+                <span className="font-sans text-base font-semibold text-brand-ink">{c.label}</span>
+                <span
+                  className={`flex h-5 w-5 items-center justify-center rounded-full border-2 ${
+                    active
+                      ? c.value === "willing"
+                        ? "border-brand-green bg-brand-green"
+                        : "border-brand-coral bg-brand-coral"
+                      : "border-brand-blush"
+                  }`}
+                >
+                  {active && <Check className="h-3 w-3 text-white" aria-hidden />}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      <NavRow
+        onBack={onBack}
+        onNext={onNext}
+        nextDisabled={!current}
+        nextLabel={isFinal ? "See the Business Day™" : "Continue"}
+      />
+    </div>
+  )
+}
+
+// ── Tour of the actual Work-Life Balance Business Day™ ────────────────────────
+
+function TourStep({
+  revealed,
+  onReveal,
+  onBack,
+  onDone,
+}: {
+  revealed: number
+  onReveal: () => void
+  onBack: () => void
+  onDone: () => void
+}) {
+  const allRevealed = revealed >= TOUR_MODULES.length
+  return (
+    <StageShell
+      eyebrow="Tour · The Work-Life Balance Business Day™"
+      title="This is the operating architecture you'd be stepping into."
+      intro="Before you decide, experience the actual Business Day™ — the same environment you'd operate inside, revealed one boundary at a time. You're not completing the Week here; you're seeing how it's built."
+    >
+      <div className="space-y-3">
+        {TOUR_MODULES.map((m, i) => {
+          const isRevealed = i < revealed
+          return (
+            <div
+              key={m.name}
+              className={`rounded-2xl border px-5 py-4 transition-all ${
+                isRevealed ? "border-brand-blush bg-white" : "border-dashed border-brand-blush/60 bg-brand-cream/40"
+              }`}
+            >
+              {isRevealed ? (
+                <div className="flex items-baseline justify-between gap-3">
+                  <div>
+                    <p className="font-playfair text-lg font-bold text-brand-ink">{m.name}</p>
+                    <p className="font-sans text-sm text-brand-ink-soft text-pretty mt-0.5">{m.description}</p>
+                  </div>
+                  <span className="shrink-0 font-montserrat text-[10px] font-bold uppercase tracking-wider text-brand-green">
+                    {m.window}
+                  </span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-3 py-1">
+                  <Lock className="h-4 w-4 text-brand-ink-soft/50" aria-hidden />
+                  <span className="font-sans text-sm font-medium text-brand-ink-soft/60 blur-[1.5px] select-none">
+                    {m.name}
+                  </span>
+                </div>
+              )}
+            </div>
+          )
+        })}
+      </div>
+
+      {allRevealed ? (
+        <NavRow onBack={onBack} onNext={onDone} nextLabel="Generate my Boundary Report™" />
+      ) : (
+        <NavRow onBack={onBack} onNext={onReveal} nextLabel="Reveal the next boundary" />
+      )}
+    </StageShell>
   )
 }
 
@@ -711,27 +855,39 @@ function BoundaryReport({
 
         <ReportBlock label="Priority Focus Areas™">
           <div className="flex flex-wrap gap-2">
-            {data.lifeBoundaries.map((b) => (
-              <span key={b.areaKey} className="rounded-full bg-brand-coral/10 px-3 py-1 font-sans text-xs font-semibold text-brand-coral">
-                {b.areaLabel}
+            {(data.priorityAreas ?? []).map((a) => (
+              <span key={a.key} className="rounded-full bg-brand-coral/10 px-3 py-1 font-sans text-xs font-semibold text-brand-coral">
+                {a.label}
               </span>
             ))}
           </div>
         </ReportBlock>
 
-        <ReportBlock label="Life Boundaries">
-          <div className="space-y-4">
-            {data.lifeBoundaries.map((b) => (
-              <div key={b.areaKey} className="rounded-2xl bg-brand-cream/60 px-4 py-4">
-                <p className="font-sans text-sm font-bold text-brand-ink mb-1">{b.areaLabel}</p>
-                {b.protect && <p className="font-sans text-sm text-brand-ink-soft"><span className="font-semibold text-brand-ink">Protecting:</span> {b.protect}</p>}
-                {b.looksLike && <p className="font-sans text-sm text-brand-ink-soft"><span className="font-semibold text-brand-ink">Looks like:</span> {b.looksLike}</p>}
-                {b.belongsToLife && <p className="font-sans text-sm text-brand-ink-soft"><span className="font-semibold text-brand-ink">Belongs to life:</span> {b.belongsToLife}</p>}
-                {b.honoredSignal && <p className="font-sans text-sm text-brand-ink-soft"><span className="font-semibold text-brand-ink">Honored when:</span> {b.honoredSignal}</p>}
-              </div>
-            ))}
-          </div>
-        </ReportBlock>
+        {(data.alignmentResponses?.length ?? 0) > 0 && (
+          <ReportBlock label="Work-Life Balance Alignment™">
+            <p className="font-sans text-sm text-brand-ink mb-3">
+              You told us you&apos;re willing to operate differently in{" "}
+              <span className="font-bold text-brand-green">
+                {data.alignmentResponses.filter((r) => r.choice === "willing").length}
+              </span>{" "}
+              of {data.alignmentResponses.length} areas this week.
+            </p>
+            <div className="space-y-1.5">
+              {data.alignmentResponses.map((r) => (
+                <div key={r.id} className="flex items-center justify-between gap-3 rounded-xl bg-brand-cream/60 px-4 py-2.5">
+                  <span className="font-sans text-sm font-medium text-brand-ink">{r.title}</span>
+                  <span
+                    className={`shrink-0 rounded-full px-2.5 py-0.5 font-montserrat text-[9px] font-bold uppercase tracking-wider ${
+                      r.choice === "willing" ? "bg-brand-green/15 text-brand-green" : "bg-brand-coral/10 text-brand-coral"
+                    }`}
+                  >
+                    {r.choice === "willing" ? "Willing" : "Not sure yet"}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </ReportBlock>
+        )}
 
         {data.businessRequirements.length > 0 && (
           <ReportBlock label="Current Boundary Collisions & Business Requirements">
@@ -761,23 +917,48 @@ function BoundaryReport({
         </ReportBlock>
       </div>
 
-      {/* Two paths */}
+      {/* Final decision */}
+      <div className="mt-12 text-center">
+        <h2 className="font-playfair text-3xl sm:text-4xl font-bold text-brand-ink leading-tight text-balance">
+          Your reality.
+          <br />
+          Your Harmony Blueprint™.
+          <br />
+          Your next step.
+        </h2>
+      </div>
+
       {chosenPath === "GO_IT_ALONE" ? (
         <div className="mt-8 rounded-3xl border border-brand-green/30 bg-brand-green/5 px-7 py-8 text-center">
           <ShieldCheck className="mx-auto mb-3 h-7 w-7 text-brand-green" aria-hidden />
           <p className="font-playfair text-2xl font-bold text-brand-ink mb-2">Your Boundary Report™ is saved.</p>
-          <p className="font-sans text-sm text-brand-ink-soft max-w-md mx-auto text-pretty">
-            It's yours to keep. Your diagnostic data stays stored — if you ever decide to join the Work-Life Balance
-            Business Week™, you won't have to repeat any of this.
+          <p className="font-sans text-sm text-brand-ink-soft max-w-md mx-auto text-pretty mb-5">
+            It&apos;s yours to keep. Your diagnostic data stays stored — if you ever decide to join the Work-Life
+            Balance Business Week™, you won&apos;t have to repeat any of this.
           </p>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href="/my-report"
+              className="inline-flex items-center gap-1.5 rounded-full bg-brand-ink px-5 py-2.5 font-sans text-sm font-bold text-white transition-all hover:brightness-110"
+            >
+              Get My Report
+              <ArrowRight className="h-4 w-4" aria-hidden />
+            </Link>
+            <Link
+              href="/harmony-blueprint"
+              className="inline-flex items-center gap-1.5 rounded-full border border-brand-green/40 px-5 py-2.5 font-sans text-sm font-bold text-brand-green transition-colors hover:bg-brand-green/5"
+            >
+              Harmony Blueprint™
+            </Link>
+          </div>
         </div>
       ) : (
         <div className="mt-8 grid gap-4 sm:grid-cols-2">
           <div className="rounded-3xl border-2 border-brand-coral bg-white px-6 py-7 flex flex-col">
             <p className="font-playfair text-xl font-bold text-brand-ink mb-2">Join the Work-Life Balance Business Week™</p>
             <p className="font-sans text-sm text-brand-ink-soft leading-relaxed flex-1 text-pretty">
-              Take everything you just discovered into the full 7-day operating experience. Your diagnostic flows
-              directly into Monday — no repeating anything.
+              Take everything you just discovered into the full operating experience. Your diagnostic flows directly
+              into Monday — no repeating anything.
             </p>
             <button
               type="button"
@@ -785,24 +966,31 @@ function BoundaryReport({
               disabled={saving}
               className="mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-brand-coral px-6 py-3 font-sans text-sm font-bold text-white shadow-md transition-all hover:brightness-105 disabled:opacity-50"
             >
-              Join the Week™
+              Join the Work-Life Balance Business Week™
               <ArrowRight className="h-4 w-4" aria-hidden />
             </button>
           </div>
           <div className="rounded-3xl border border-brand-blush bg-white px-6 py-7 flex flex-col">
-            <p className="font-playfair text-xl font-bold text-brand-ink mb-2">Go it alone</p>
+            <p className="font-playfair text-xl font-bold text-brand-ink mb-2">Get my report</p>
             <p className="font-sans text-sm text-brand-ink-soft leading-relaxed flex-1 text-pretty">
-              Keep your Boundary Report™ and work from it on your own. Your data stays saved, and the Week™ is here
-              whenever you're ready.
+              Your report is yours whether or not you join — no purchase required. Keep it and work from it on your
+              own, and revisit your Harmony Blueprint™ anytime.
             </p>
-            <button
-              type="button"
-              onClick={() => onChoosePath("GO_IT_ALONE")}
-              disabled={saving}
-              className="mt-5 inline-flex items-center justify-center gap-2 rounded-full border border-brand-ink/15 px-6 py-3 font-sans text-sm font-bold text-brand-ink transition-colors hover:bg-brand-cream disabled:opacity-50"
-            >
-              {saving ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : "Keep my report"}
-            </button>
+            <div className="mt-5 flex flex-col gap-2.5">
+              <Link
+                href="/my-report"
+                onClick={() => onChoosePath("GO_IT_ALONE")}
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-brand-ink/15 px-6 py-3 font-sans text-sm font-bold text-brand-ink transition-colors hover:bg-brand-cream"
+              >
+                {saving ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : "Get My Report"}
+              </Link>
+              <Link
+                href="/harmony-blueprint"
+                className="inline-flex items-center justify-center gap-1.5 rounded-full px-6 py-2 font-sans text-sm font-semibold text-brand-green transition-colors hover:underline"
+              >
+                View Harmony Blueprint™
+              </Link>
+            </div>
           </div>
         </div>
       )}
