@@ -75,11 +75,6 @@ export const SCHEDULE: BlockConfig[] = [
     timeLabel: "9:00–9:45 AM",
     startMinutes: h(9),
     endMinutes: h(9, 45),
-    // Mondays: runs LAST in the morning sequence (after Reality Check™ and
-    // Decide & Design™) from 10:15–11:00 AM.
-    mondayTimeLabel: "10:15–11:00 AM",
-    mondayStartMinutes: h(10, 15),
-    mondayEndMinutes: h(11),
     description:
       "Align mind, body, spirit, and priorities before work—Gratitude, Invitation, Vision, Emotional Embodiment, and Nurture Non-Negotiables™.",
     emoji: "🌸",
@@ -122,6 +117,10 @@ export const SCHEDULE: BlockConfig[] = [
     themePeriod: "morning",
     communityOpen: true,
     mondayOnly: true,
+    // Retired from the Business Day timeline: the Weekly Work-Life Balance
+    // Reality Check™ is now a Thursday/Sunday experience, not a Monday
+    // Business Day segment. Definition retained for label/anchor references.
+    hidden: true,
     messages: [
       "Before you manage your business, manage your life. Redesign your entry into the workweek.",
     ],
@@ -152,6 +151,10 @@ export const SCHEDULE: BlockConfig[] = [
     themePeriod: "morning",
     communityOpen: true,
     mondayOnly: true,
+    // Retired from the Business Day timeline: Monday now opens directly into
+    // Morning GIV•EN™ → Decide & Design™ (the standard weekday sequence). The
+    // "Review My Reality Check™" step lives inside Decide & Design™ instead.
+    hidden: true,
     messages: [
       "Sit with what surfaced. Awareness without a pause to process it rarely becomes lasting change.",
     ],
@@ -182,7 +185,6 @@ export const SCHEDULE: BlockConfig[] = [
     greetingEmoji: "🌸",
     themePeriod: "morning",
     communityOpen: true,
-    excludeMonday: true,
     messages: [
       "This week's data is already yours. Let it guide today's focus instead of starting from zero.",
       "Your Founder GPS™ turns this week's numbers into today's next right step.",
@@ -196,10 +198,6 @@ export const SCHEDULE: BlockConfig[] = [
     timeLabel: "10:30–11:00 AM",
     startMinutes: h(10, 30),
     endMinutes: h(11),
-    // Mondays: shifts 30 minutes later to make room for the Reality Check™ + Debrief™.
-    mondayTimeLabel: "11:00–11:30 AM",
-    mondayStartMinutes: h(11),
-    mondayEndMinutes: h(11, 30),
     description:
       "Increase energy, improve circulation, and support cognitive performance—preparing your body for focused work.",
     emoji: "💪",
@@ -226,10 +224,6 @@ export const SCHEDULE: BlockConfig[] = [
     timeLabel: "11:00 AM–1:00 PM",
     startMinutes: h(11),
     endMinutes: h(13),
-    // Mondays: shifts 30 minutes later to follow the resequenced morning.
-    mondayTimeLabel: "11:30 AM–1:00 PM",
-    mondayStartMinutes: h(11, 30),
-    mondayEndMinutes: h(13),
     description:
       "Nourish your body, spend time in nature, and connect with the people who matter—restoring your energy for the afternoon.",
     emoji: "🥗",
@@ -392,6 +386,7 @@ export function resolveEffectiveBlock(block: BlockConfig, dayOfWeek: number): Bl
 /** True if `block` doesn't exist on `dayOfWeek` (0=Sun … 6=Sat). */
 function isHiddenOnDay(block: BlockConfig, dayOfWeek: number): boolean {
   const isMonday = dayOfWeek === 1
+  if (block.hidden) return true
   if (block.mondayOnly && !isMonday) return true
   if (block.excludeMonday && isMonday) return true
   return false

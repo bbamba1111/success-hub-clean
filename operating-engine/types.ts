@@ -133,6 +133,13 @@ export interface BlockConfig {
   /** If true, this block only appears on Mondays (dayOfWeek === 1). */
   mondayOnly?: boolean
   /**
+   * If true, this block never renders on any Business Day timeline. The
+   * definition is retained (its labels/anchors are still referenced by other
+   * surfaces), but the block is not part of the daily schedule. Used to retire
+   * a block from the timeline without deleting it.
+   */
+  hidden?: boolean
+  /**
    * If true, this block is hidden on Mondays (dayOfWeek === 1). Used for
    * the Tuesday–Thursday "Daily Planning + GPS™" block (9:45–10:30 AM),
    * whose Monday equivalent is the resequenced Reality Check™ → Decide &

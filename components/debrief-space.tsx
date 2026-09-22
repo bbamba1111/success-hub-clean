@@ -28,6 +28,7 @@ import { PowerDownIntentionForm } from "@/components/planners/power-down-intenti
 import { CherryBlossomWorkstation } from "@/components/cherry-blossom-workstation"
 import { TimeFreedomSocial } from "@/components/time-freedom-social"
 import { UpcomingLifeEvents } from "@/components/cherry-blossom/upcoming-life-events"
+import { ReviewRealityCheck } from "@/components/decide-design/review-reality-check"
 import { WeeklyPrioritiesDesigner } from "@/components/decide-design/weekly-priorities-designer"
 import { WorkdayDeclaration } from "@/components/decide-design/workday-declaration"
 import { DecideIdentitySpace } from "@/components/daily-identity/decide-identity-space"
@@ -59,6 +60,9 @@ export function DebriefSpace() {
           {isMonday ? "Monday Ritual™" : "Daily Ritual™"} · {debriefSchedule?.timeLabel ?? "10:30–11:00 AM"}
         </p>
       </div>
+
+      {/* ── Review My Reality Check™ — the first step of the redesign ───────── */}
+      <ReviewRealityCheck />
 
       {/* Identity box — moved under the heading so the two are reversed. */}
       <DecideIdentitySpace />
