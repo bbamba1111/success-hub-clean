@@ -32,7 +32,6 @@ import type { MemberExperience } from "@/operating-engine/types"
 export const GATED_SEGMENT_IDS: ReadonlySet<string> = new Set([
   "monday-reality-check",
   "monday-debrief",
-  "monday-transition-break",
   "daily-planning-gps",
   "morning-given",
   "movement-window",

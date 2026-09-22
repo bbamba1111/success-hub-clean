@@ -16,7 +16,6 @@ export type BlockId =
   | "monday-flex"
   | "monday-reality-check"
   | "monday-debrief"
-  | "monday-transition-break"
   | "early-access"
   | "morning-given"
   | "daily-planning-gps"

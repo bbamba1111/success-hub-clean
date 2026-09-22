@@ -75,8 +75,8 @@ export const SCHEDULE: BlockConfig[] = [
     timeLabel: "9:00–9:45 AM",
     startMinutes: h(9),
     endMinutes: h(9, 45),
-    // Mondays: runs LAST in the morning sequence (after Reality Check™,
-    // Decide & Design™, and the Transition Break™) from 10:15–11:00 AM.
+    // Mondays: runs LAST in the morning sequence (after Reality Check™ and
+    // Decide & Design™) from 10:15–11:00 AM.
     mondayTimeLabel: "10:15–11:00 AM",
     mondayStartMinutes: h(10, 15),
     mondayEndMinutes: h(11),
@@ -136,9 +136,9 @@ export const SCHEDULE: BlockConfig[] = [
     // is Part One of the Monday Business Day.
     title: "Decide & Redesign Your Entry Into The Workweek™",
     shortTitle: "Decide & Redesign™",
-    timeLabel: "9:30–10:00 AM",
+    timeLabel: "9:30–10:15 AM",
     startMinutes: h(9, 30),
-    endMinutes: h(10),
+    endMinutes: h(10, 15),
     description:
       "Inside Decide & Design™: review what surfaced in your Reality Check™, tour the Work-Life Balance Business Day/Week™, decide what matters for the new week, and design your entry into the established rhythm. This is Part One of the Monday Business Day.",
     emoji: "🌸",
@@ -154,37 +154,6 @@ export const SCHEDULE: BlockConfig[] = [
     mondayOnly: true,
     messages: [
       "Sit with what surfaced. Awareness without a pause to process it rarely becomes lasting change.",
-    ],
-  },
-  // ── Monday-only block ─────────────────────────────────────────────────────
-  // A genuine ~15-minute preparation boundary (10:00–10:15 AM) between Redesign
-  // Your Entry Into The Workweek™ and Morning GIV•EN™. This is NOT a sales
-  // moment or a decision point — no pricing, no upgrade, no "join us now." It is
-  // simply protected space to let the redesign settle before the live rhythm
-  // continues with Morning GIV•EN™.
-  {
-    id: "monday-transition-break",
-    sectionId: "block-monday-transition-break",
-    title: "Transition Space™",
-    shortTitle: "Transition Space™",
-    timeLabel: "10:00–10:15 AM",
-    startMinutes: h(10),
-    endMinutes: h(10, 15),
-    description:
-      "A short, protected pause between redesigning your entry into the workweek and Morning GIV•EN™ — step away from the screen, breathe, and let what surfaced settle so you arrive present for the rhythm of the day.",
-    emoji: "🌿",
-    tint: "240 245 236",
-    backgroundImage: "/images/block-movement-window.png",
-    cta: "Take My Transition Space™",
-    engagement: "self-guided",
-    part: "morning",
-    greetingPeriod: "Morning",
-    greetingEmoji: "🌿",
-    themePeriod: "morning",
-    communityOpen: true,
-    mondayOnly: true,
-    messages: [
-      "A short pause lets what you just decided settle before you move into Morning GIV•EN™.",
     ],
   },
   // ── Tuesday–Thursday-only block ───────────────────────────────────────────

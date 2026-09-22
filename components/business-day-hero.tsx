@@ -10,6 +10,7 @@
  * experience right now?" and renders it.
  */
 
+import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
 import type { PartOfDay } from "@/operating-engine"
@@ -24,7 +25,6 @@ const BLOCK_SENTENCE: Record<string, { plain: string; italic: string }> = {
   // Monday-only blocks
   "monday-reality-check":  { plain: "Making Time For More On", italic: "Mondays™" },
   "monday-debrief":        { plain: "Designing My Work-Life Balance",  italic: "Business Week™" },
-  "monday-transition-break": { plain: "Invited To Join Us In The",  italic: "Transition Space™" },
   // Standard blocks
   "early-access":    { plain: "In Flex Time or Preparing For",            italic: "The Work-Life Balance Business Day™" },
   "morning-given":   { plain: "Aligning Our Energy In The",               italic: "Morning GIV\u2022EN™ Routine" },
@@ -161,8 +161,63 @@ function getDayIntention(part: PartOfDay): string {
   }
 }
 
+/**
+ * Weekly Work-Life Balance Reality Check™ live-session windows, expressed in
+ * America/New_York so they hold regardless of the member's local timezone or
+ * DST. Two live rooms each week: Thursday 6:00–7:30 PM ET and Sunday
+ * 11:00 AM–12:30 PM ET, each with a 30-minute "starting soon" lead-in.
+ */
+type RealityCheckSession = {
+  state: "live" | "soon" | "none"
+  windowLabel: string
+}
+
+function etDayAndMinutes(now: Date): { day: number; minutes: number } {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/New_York",
+    weekday: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).formatToParts(now)
+  const weekday = parts.find((p) => p.type === "weekday")?.value ?? "Sun"
+  // hour12:false renders midnight as "24" in some engines — normalize to 0.
+  const rawHour = Number(parts.find((p) => p.type === "hour")?.value ?? "0")
+  const hour = rawHour === 24 ? 0 : rawHour
+  const minute = Number(parts.find((p) => p.type === "minute")?.value ?? "0")
+  const dayMap: Record<string, number> = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 }
+  return { day: dayMap[weekday] ?? 0, minutes: hour * 60 + minute }
+}
+
+function getRealityCheckSession(now: Date): RealityCheckSession {
+  const { day, minutes } = etDayAndMinutes(now)
+  const sessions = [
+    { day: 4, start: 18 * 60, end: 18 * 60 + 90, windowLabel: "Thursdays 6:00–7:30 PM ET" },
+    { day: 0, start: 11 * 60, end: 11 * 60 + 90, windowLabel: "Sundays 11:00 AM–12:30 PM ET" },
+  ]
+  for (const s of sessions) {
+    if (day !== s.day) continue
+    if (minutes >= s.start && minutes < s.end) return { state: "live", windowLabel: s.windowLabel }
+    if (minutes >= s.start - 30 && minutes < s.start) return { state: "soon", windowLabel: s.windowLabel }
+  }
+  return { state: "none", windowLabel: "" }
+}
+
 export function BusinessDayHero() {
   const experience = useOperatingEngine()
+
+  // Compute the live-session state only after mount so server and client agree
+  // on first paint (the ET window depends on the current instant), then tick
+  // every 30s so the band flips into/out of the live window on its own.
+  const [now, setNow] = useState<Date | null>(null)
+  useEffect(() => {
+    setNow(new Date())
+    const id = setInterval(() => setNow(new Date()), 30_000)
+    return () => clearInterval(id)
+  }, [])
+  const session: RealityCheckSession = now
+    ? getRealityCheckSession(now)
+    : { state: "none", windowLabel: "" }
 
   // Use the business-day engine's current block image so weekend overrides
   // (Time Freedom all-day on Fri/Sat/Sun) are reflected correctly.
@@ -180,6 +235,42 @@ export function BusinessDayHero() {
 
   return (
     <section className="relative w-full overflow-hidden">
+      {/* Weekly Work-Life Balance Reality Check™ live-session band — appears
+          only inside the Thursday/Sunday ET windows (and 30 min before). */}
+      {session.state !== "none" && (
+        <motion.a
+          href="/boundary-report"
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="group flex w-full items-center justify-center gap-x-3 gap-y-1.5 px-6 py-2.5 text-center transition-opacity hover:opacity-95"
+          style={{
+            background:
+              session.state === "live"
+                ? "linear-gradient(90deg, #C13B6B 0%, #A8305C 100%)"
+                : "linear-gradient(90deg, #4A7C59 0%, #3E6B4C 100%)",
+          }}
+        >
+          <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-white/90">
+            <span className="relative flex h-2 w-2 shrink-0">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/70" style={{ animationDuration: "1.6s" }} />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
+            </span>
+            {session.state === "live" ? "Live Now" : "Starting Soon"}
+          </span>
+          <span className="font-montserrat text-[13px] font-medium text-white sm:text-[14px]">
+            {session.state === "live"
+              ? "The Weekly Work-Life Balance Reality Check\u2122 room is open"
+              : "The Weekly Work-Life Balance Reality Check\u2122 begins shortly"}
+          </span>
+          <span className="hidden text-[12px] font-medium text-white/70 sm:inline">{session.windowLabel}</span>
+          <span className="inline-flex items-center gap-1 rounded-full bg-white/20 px-3 py-1 text-[12px] font-semibold text-white transition-transform group-hover:translate-x-0.5">
+            {session.state === "live" ? "Join the Live Session" : "Get Ready"}
+            <span aria-hidden="true">{"\u2192"}</span>
+          </span>
+        </motion.a>
+      )}
+
       {/* Above-hero copy band — centered, no portrait */}
       <div
         className="w-full"
