@@ -15,6 +15,7 @@ import { AnimatePresence } from "framer-motion"
 import useSWR from "swr"
 import { DailyTransition } from "@/components/cherry-blossom/daily-transition"
 import { BusinessDayBlock } from "@/components/business-day-block"
+import { WeeklyRealityCheckSection } from "@/components/weekly-reality-check-section"
 import type { SegmentInnerTone } from "@/lib/segment-theme"
 
 /**
@@ -163,8 +164,8 @@ export function BusinessDaySchedule() {
             const nextBlock = nextBlockById[block.id]
             const sageInnerTone = SAGE_SEGMENT_INNER_TONE[block.id]
             return (
+              <div key={block.id}>
               <BusinessDayBlock
-                key={block.id}
                 sectionId={block.sectionId}
                 backgroundImage={block.backgroundImage}
                 tint={block.tint}
@@ -211,6 +212,12 @@ export function BusinessDaySchedule() {
                     : undefined
                 }
               />
+              {/* Weekly Work-Life Balance Reality Check™ — a guided experience
+                  that takes place *inside* the Time Freedom™ window. Rendered
+                  directly beneath the Time Freedom™ card; it is NOT a Business
+                  Day boundary and NOT part of the schedule. */}
+              {block.id === "time-freedom" && <WeeklyRealityCheckSection />}
+              </div>
             )
           })}
         </div>
