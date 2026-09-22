@@ -32,6 +32,7 @@ export const LIFE_PRIORITY_CATEGORIES: LifePriorityCategory[] = [
   { id: "creativity", label: "Creativity", phrase: "my creativity" },
   { id: "learning", label: "Learning", phrase: "learning" },
   { id: "celebration", label: "Celebration", phrase: "celebration" },
+  { id: "charity", label: "Charity / Volunteering / Philanthropy", phrase: "charity and volunteering" },
 ]
 
 /** Turn free text into a phrase that sits naturally inside a sentence. */
@@ -66,6 +67,7 @@ export function suggestLifeCategoriesFromFocus(
     if (/(creative|creativity|art|expression)/.test(l)) push("creativity")
     if (/(learning|growth|develop)/.test(l)) push("learning")
     if (/(celebrat|joy|reward)/.test(l)) push("celebration")
+    if (/(charity|volunteer|philanthrop|giving|donat|service to others)/.test(l)) push("charity")
   }
   return out
 }
