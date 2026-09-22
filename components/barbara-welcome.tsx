@@ -102,21 +102,7 @@ export function BarbaraWelcome() {
   const greeting = experience?.member.greeting ?? "Good Morning, Friend"
 
   return (
-    <section
-      className="relative w-full overflow-hidden bg-cover bg-center"
-      style={{ backgroundImage: "url('/images/backgrounds/founder-office.png')" }}
-    >
-      {/* Section color — warm sage-green wash over the founder-office vista,
-          weighted left where the coaching copy sits. */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(115deg, rgba(52,92,62,0.80) 0%, rgba(90,140,98,0.55) 42%, rgba(253,250,245,0.30) 78%, rgba(253,250,245,0.10) 100%)",
-        }}
-        aria-hidden
-      />
-
+    <section className="relative w-full overflow-hidden">
       {/* ── Two-column intro ── */}
       <div className="relative mx-auto max-w-[1320px] px-6 pb-12 pt-16 sm:px-10 sm:pb-14 sm:pt-20 lg:px-16 lg:pb-16 lg:pt-24">
         <div className="flex flex-col items-start gap-12 lg:flex-row lg:items-center lg:gap-16">
