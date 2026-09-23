@@ -498,6 +498,15 @@ export function CeoWorkdayLivePlan() {
             <RotateCcw className="h-3 w-3" aria-hidden /> Recall to today
           </button>
         )}
+        {!closed && !gone && item.status === "completed" && (
+          <button
+            type="button"
+            onClick={() => recallItem(item)}
+            className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-[#5A7A45] px-3.5 py-1.5 font-sans text-xs font-bold text-[#5A7A45] hover:bg-[#5A7A45]/5"
+          >
+            <RotateCcw className="h-3 w-3" aria-hidden /> Review / edit
+          </button>
+        )}
         {!adjusting && !closed && !gone && (
           <div className="mt-2 flex flex-wrap items-center gap-2">
             {openItemId !== item.id ? (
