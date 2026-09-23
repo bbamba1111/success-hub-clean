@@ -22,6 +22,7 @@ import { useEffect, useState } from "react"
 import { Clock } from "lucide-react"
 import { SCHEDULE_BY_ID } from "@/operating-engine/config/schedule"
 import { CollapsibleSubSection } from "@/components/collapsible-sub-section"
+import { CeoWorkdayDesignForm } from "@/components/planners/ceo-workday-design-form"
 import { MovementIntentionForm } from "@/components/planners/movement-intention-form"
 import { LunchIntentionForm } from "@/components/planners/lunch-intention-form"
 import { PowerDownIntentionForm } from "@/components/planners/power-down-intention-form"
@@ -91,11 +92,11 @@ export function DebriefSpace() {
           </p>
         </div>
 
-        {/* ── Design My Business Day™ — the protected windows, Movement first ─── */}
+        {/* ── The protected windows of the day, CEO Workday first ───────────── */}
         <div className="space-y-4 pt-2">
-          <p className="font-montserrat text-sm font-bold uppercase tracking-[0.18em] text-[#5B835F]">
-            Design My Business Day™
-          </p>
+          <CollapsibleSubSection title="4-Hour Focused CEO Workday">
+            <CeoWorkdayDesignForm />
+          </CollapsibleSubSection>
 
           <CollapsibleSubSection title="30-Minute Movement Window">
             <MovementIntentionForm />
