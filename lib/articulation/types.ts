@@ -115,6 +115,12 @@ export const ARTICULATION_DURATION_PRESETS: DurationPreset[] = [
   { id: "1m", label: "1 minute", seconds: 60 },
   { id: "2m", label: "2 minutes", seconds: 120 },
   { id: "5m", label: "5 minutes", seconds: 300 },
+  { id: "7m", label: "7 minutes", seconds: 420 },
+  { id: "10m", label: "10 minutes", seconds: 600 },
+  { id: "20m", label: "20 minutes", seconds: 1200 },
+  { id: "30m", label: "30 minutes", seconds: 1800 },
+  { id: "45m", label: "45 minutes", seconds: 2700 },
+  { id: "60m", label: "1 hour", seconds: 3600 },
 ]
 
 export interface RehearsalLock {

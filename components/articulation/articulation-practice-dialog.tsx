@@ -25,11 +25,14 @@ import {
   ChevronDown,
   ChevronUp,
   Loader2,
+  Maximize2,
+  Minimize2,
   Mic,
   MicOff,
   Pause,
   Play,
   Printer,
+  RotateCcw,
   Sparkles,
   Square,
   Volume2,
@@ -114,7 +117,7 @@ export function ArticulationPracticeDialog({ open, onClose, source }: Articulati
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   // Practice
-  const [practiceMode, setPracticeMode] = useState<"speak" | "type">("type")
+  const [practiceMode, setPracticeMode] = useState<"speak" | "type">("speak")
   const [practiceAttempt, setPracticeAttempt] = useState("")
   const [isRecognizing, setIsRecognizing] = useState(false)
   const recognitionRef = useRef<any>(null)
@@ -1045,6 +1048,179 @@ function RehearsalStep({
   onEndRehearsal: () => void
 }) {
   const overTarget = timerSeconds > lock.durationSeconds
+  const scrollRef = useRef<HTMLDivElement | null>(null)
+  const [autoScroll, setAutoScroll] = useState(false)
+  const [scrollSpeed, setScrollSpeed] = useState(3) // 1..10
+  const [fontSize, setFontSize] = useState(20) // px
+  const [fullscreen, setFullscreen] = useState(false)
+
+  // Teleprompter auto-scroll: nudge scrollTop on a fixed tick, scaled by speed.
+  useEffect(() => {
+    if (!autoScroll) return
+    const el = scrollRef.current
+    if (!el) return
+    const interval = setInterval(() => {
+      el.scrollTop += scrollSpeed * 0.7
+      if (el.scrollTop + el.clientHeight >= el.scrollHeight - 1) {
+        setAutoScroll(false)
+      }
+    }, 40)
+    return () => clearInterval(interval)
+  }, [autoScroll, scrollSpeed])
+
+  function restartScroll() {
+    if (scrollRef.current) scrollRef.current.scrollTop = 0
+    setAutoScroll(true)
+  }
+
+  const timerBar = (
+    <div className="mb-4 flex items-center justify-between rounded-xl border border-[#E7DCE0] bg-white px-4 py-3">
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={onToggleTimer}
+          aria-label={timerRunning ? "Pause timer" : "Start timer"}
+          className="flex items-center gap-1.5 rounded-full bg-[#5A7A45] px-3 py-1.5 text-white"
+        >
+          {timerRunning ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
+        </button>
+        <p className={cn("font-mono text-lg font-bold", overTarget ? "text-[#C4707B]" : "text-[#2B1B22]")}>
+          {formatTimer(timerSeconds)}
+        </p>
+        <p className="font-sans text-xs text-[#B7A6AE]">/ target {formatTimer(lock.durationSeconds)}</p>
+      </div>
+      <div className="flex items-center gap-2">
+        <button type="button" onClick={onResetTimer} className="font-sans text-xs font-bold text-[#6B5860] hover:underline">
+          Reset
+        </button>
+        <button
+          type="button"
+          onClick={onSpeakAloud}
+          className="flex items-center gap-1 font-sans text-xs font-bold text-[#5A7A45] hover:underline"
+        >
+          <Volume2 className="h-3.5 w-3.5" /> Listen
+        </button>
+      </div>
+    </div>
+  )
+
+  const teleprompterControls = (
+    <div className="mb-4 flex flex-wrap items-center gap-x-5 gap-y-3 rounded-xl border border-[#E7DCE0] bg-white px-4 py-3">
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => setAutoScroll((s) => !s)}
+          className="flex items-center gap-1.5 rounded-full bg-[#5A7A45] px-3 py-1.5 font-sans text-xs font-bold text-white"
+        >
+          {autoScroll ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
+          {autoScroll ? "Pause scroll" : "Auto-scroll"}
+        </button>
+        <button
+          type="button"
+          onClick={restartScroll}
+          aria-label="Restart from top"
+          className="flex items-center gap-1 font-sans text-xs font-bold text-[#6B5860] hover:underline"
+        >
+          <RotateCcw className="h-3.5 w-3.5" /> Restart
+        </button>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <span className="font-sans text-xs font-bold uppercase tracking-wide text-[#6B5860]">Speed</span>
+        <input
+          type="range"
+          min={1}
+          max={10}
+          step={1}
+          value={scrollSpeed}
+          onChange={(e) => setScrollSpeed(Number(e.target.value))}
+          aria-label="Teleprompter scroll speed"
+          className="h-1.5 w-28 cursor-pointer accent-[#5A7A45]"
+        />
+        <span className="w-5 font-mono text-xs font-bold text-[#2B1B22]">{scrollSpeed}</span>
+      </div>
+
+      <div className="flex items-center gap-1.5">
+        <span className="font-sans text-xs font-bold uppercase tracking-wide text-[#6B5860]">Font</span>
+        <button
+          type="button"
+          onClick={() => setFontSize((f) => Math.max(14, f - 2))}
+          aria-label="Decrease font size"
+          className="rounded-md border border-[#E7DCE0] px-2 py-1 font-sans text-xs font-bold text-[#6B5860] hover:border-[#5A7A45]"
+        >
+          A-
+        </button>
+        <span className="w-8 text-center font-mono text-xs font-bold text-[#2B1B22]">{fontSize}</span>
+        <button
+          type="button"
+          onClick={() => setFontSize((f) => Math.min(56, f + 2))}
+          aria-label="Increase font size"
+          className="rounded-md border border-[#E7DCE0] px-2 py-1 font-sans text-sm font-bold text-[#6B5860] hover:border-[#5A7A45]"
+        >
+          A+
+        </button>
+      </div>
+
+      <button
+        type="button"
+        onClick={() => setFullscreen((f) => !f)}
+        className="flex items-center gap-1.5 rounded-full border border-[#E7DCE0] px-3 py-1.5 font-sans text-xs font-bold text-[#6B5860] hover:border-[#5A7A45]"
+      >
+        {fullscreen ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+        {fullscreen ? "Exit full screen" : "Full screen"}
+      </button>
+    </div>
+  )
+
+  const teleprompter = (
+    <div
+      ref={scrollRef}
+      className={cn(
+        "overflow-y-auto rounded-xl border border-[#E7DCE0] bg-white p-6",
+        fullscreen ? "flex-1" : "max-h-[50vh]",
+      )}
+    >
+      {version.blocks.map((block) => (
+        <p
+          key={block.id}
+          style={{ fontSize: `${fontSize}px` }}
+          className={cn(
+            "mb-5 font-sans leading-relaxed text-[#2B1B22]",
+            block.type === "pause" && "italic text-[#B7A6AE]",
+            block.type === "emphasis" && "font-bold",
+          )}
+        >
+          {block.content}
+        </p>
+      ))}
+      {/* Trailing whitespace so the final lines can scroll clear of the fold. */}
+      <div style={{ height: fullscreen ? "45vh" : "8rem" }} aria-hidden />
+    </div>
+  )
+
+  if (fullscreen) {
+    return (
+      <div className="fixed inset-0 z-[70] flex flex-col bg-[#FBF8F6] p-4">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="font-montserrat text-base font-bold text-[#2B1B22]">Teleprompter — {version.name}</h2>
+          <p className={cn("font-mono text-lg font-bold", overTarget ? "text-[#C4707B]" : "text-[#2B1B22]")}>
+            {formatTimer(timerSeconds)} <span className="font-sans text-xs text-[#B7A6AE]">/ {formatTimer(lock.durationSeconds)}</span>
+          </p>
+        </div>
+        {teleprompterControls}
+        {teleprompter}
+        <div className="mt-4 flex items-center justify-between">
+          <Button variant="ghost" onClick={() => setFullscreen(false)} className="text-[#6B5860]">
+            <Minimize2 className="mr-1.5 h-4 w-4" /> Exit full screen
+          </Button>
+          <Button onClick={onEndRehearsal} className="bg-[#5A7A45] hover:bg-[#4A6838]">
+            Ready to speak or type <ArrowRight className="ml-1.5 h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div>
       <div className="mb-4 flex items-center justify-between">
@@ -1054,48 +1230,9 @@ function RehearsalStep({
         </Badge>
       </div>
 
-      <div className="mb-4 flex items-center justify-between rounded-xl border border-[#E7DCE0] bg-white px-4 py-3">
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={onToggleTimer}
-            className="flex items-center gap-1.5 rounded-full bg-[#5A7A45] px-3 py-1.5 text-white"
-          >
-            {timerRunning ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
-          </button>
-          <p className={cn("font-mono text-lg font-bold", overTarget ? "text-[#C4707B]" : "text-[#2B1B22]")}>
-            {formatTimer(timerSeconds)}
-          </p>
-          <p className="font-sans text-xs text-[#B7A6AE]">/ target {formatTimer(lock.durationSeconds)}</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <button type="button" onClick={onResetTimer} className="font-sans text-xs font-bold text-[#6B5860] hover:underline">
-            Reset
-          </button>
-          <button
-            type="button"
-            onClick={onSpeakAloud}
-            className="flex items-center gap-1 font-sans text-xs font-bold text-[#5A7A45] hover:underline"
-          >
-            <Volume2 className="h-3.5 w-3.5" /> Listen
-          </button>
-        </div>
-      </div>
-
-      <div className="rounded-xl border border-[#E7DCE0] bg-white p-6 max-h-[50vh] overflow-y-auto">
-        {version.blocks.map((block) => (
-          <p
-            key={block.id}
-            className={cn(
-              "mb-4 font-sans text-lg leading-relaxed text-[#2B1B22]",
-              block.type === "pause" && "italic text-[#B7A6AE] text-sm",
-              block.type === "emphasis" && "font-bold",
-            )}
-          >
-            {block.content}
-          </p>
-        ))}
-      </div>
+      {timerBar}
+      {teleprompterControls}
+      {teleprompter}
 
       <StepNav onNext={onEndRehearsal} nextLabel="Ready to speak or type" />
     </div>
