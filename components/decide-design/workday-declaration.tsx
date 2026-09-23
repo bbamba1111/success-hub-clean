@@ -159,10 +159,6 @@ export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read"
         <p className="font-montserrat text-base font-bold uppercase tracking-[0.18em] text-brand-green">
           My 4-Hour CEO Workday Declaration™
         </p>
-        <p className="mt-2 font-sans text-sm leading-relaxed text-muted-foreground text-pretty">
-          Who you&apos;re being, your Priority Focus Areas™, and your boundary focus become one declaration — what these
-          four hours are for, and what they are protected from. It opens your CEO Workday™ every day this week.
-        </p>
       </div>
 
       <ul className="grid gap-2 sm:grid-cols-3">

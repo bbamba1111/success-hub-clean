@@ -54,8 +54,7 @@ export function PriorityFocusAreas() {
       ) : areas.length > 0 ? (
         <>
           <p className="font-sans text-sm text-[#3A2E33] leading-relaxed text-pretty">
-            Carried over from your last Work-Life Balance Reality Check™. Let these anchor the week you redesign below —
-            they also feed your CEO Workday Declaration™.
+            Carried over from your last Work-Life Balance Reality Check™.
           </p>
           <ul className="flex flex-wrap gap-2">
             {areas.map((a) => (

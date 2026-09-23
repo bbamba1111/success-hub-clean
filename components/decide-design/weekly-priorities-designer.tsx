@@ -310,11 +310,8 @@ function BoundaryFocusSection({
         <p className="font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#5B835F]">
           My Weekly Work-Life Balance Boundary Focus™
         </p>
-        <p className="mt-2 font-serif text-lg text-[#2E1F27] text-pretty">
+        <p className="mt-2 font-sans text-lg text-[#2E1F27] text-pretty">
           Choose one boundary to build into the business and live this week.
-        </p>
-        <p className="mt-1 font-sans text-sm text-[#6B5860] leading-relaxed">
-          Just one. This is the single boundary you&apos;ll focus on making real this week.
         </p>
       </div>
 
@@ -323,9 +320,6 @@ function BoundaryFocusSection({
         <div className="rounded-2xl border border-[#7FB069]/40 bg-white px-5 py-5 space-y-3">
           <Eyebrow>This week&apos;s boundary</Eyebrow>
           <p className="font-serif text-2xl font-semibold text-[#2E1F27] text-pretty">{chosen}</p>
-          {focus.sourceContext && (
-            <p className="font-sans text-sm text-[#6B5860] leading-relaxed text-pretty">{focus.sourceContext}</p>
-          )}
           <button
             type="button"
             onClick={() => setChoosingOther(true)}
@@ -339,7 +333,6 @@ function BoundaryFocusSection({
           {/* Recommendation */}
           {recommendation && !choosingOther && (
             <div className="rounded-2xl border border-[#7FB069]/40 bg-white px-5 py-5 space-y-3">
-              <p className="font-sans text-sm text-[#3A2E33] leading-relaxed text-pretty">{recommendation.context}</p>
               <div>
                 <Eyebrow>Recommended boundary</Eyebrow>
                 <p className="mt-1 font-serif text-2xl font-semibold text-[#2E1F27] text-pretty">

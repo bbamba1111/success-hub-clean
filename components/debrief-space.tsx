@@ -88,8 +88,7 @@ export function DebriefSpace() {
             Design My Work-Life Balance Business Day™
           </p>
           <p className="mt-2 font-sans text-sm text-[#3A2E33] leading-relaxed">
-            Design the protected time already built into your day. Your Weekly Life Priorities™ live in Time Freedom.
-            What must happen today lives in your CEO Workday™.
+            Design the protected time already built into your day.
           </p>
         </div>
 
