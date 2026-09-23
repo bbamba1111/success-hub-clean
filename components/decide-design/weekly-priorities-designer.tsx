@@ -133,27 +133,6 @@ function LifePrioritiesSection({
         </p>
       </div>
 
-      {/* From your Reality Check — context, not a re-selection */}
-      {focusLabels.length > 0 && (
-        <div className="rounded-2xl border border-[#C0545A]/20 bg-white px-5 py-4 space-y-2">
-          <Eyebrow>From your Reality Check™</Eyebrow>
-          <ul className="flex flex-wrap gap-2">
-            {focusLabels.map((l) => (
-              <li
-                key={l}
-                className="inline-flex items-center rounded-full border border-[#C0545A]/25 bg-[#FDF8F5] px-3 py-1 font-sans text-xs font-semibold text-[#3A2E33]"
-              >
-                {l}
-              </li>
-            ))}
-          </ul>
-          <p className="font-sans text-xs text-[#6B5860]">
-            These are your Priority Focus Areas™. Let them guide what you choose below — but you&apos;re free to pick
-            anything that matters to you this week.
-          </p>
-        </div>
-      )}
-
       {/* Running selection summary */}
       {selected.length > 0 && (
         <div className="space-y-2">

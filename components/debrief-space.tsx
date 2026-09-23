@@ -32,6 +32,7 @@ import { UpcomingLifeEvents } from "@/components/cherry-blossom/upcoming-life-ev
 import { PriorityFocusAreas } from "@/components/decide-design/priority-focus-areas"
 import { WeeklyPrioritiesDesigner, WeeklyLifePrioritiesCard } from "@/components/decide-design/weekly-priorities-designer"
 import { WorkdayDeclaration } from "@/components/decide-design/workday-declaration"
+import { TimeFreedomDeclaration } from "@/components/decide-design/time-freedom-declaration"
 import { DecideIdentitySpace } from "@/components/daily-identity/decide-identity-space"
 
 export function DebriefSpace() {
@@ -109,8 +110,9 @@ export function DebriefSpace() {
           <CollapsibleSubSection title="Time Freedom" keepMounted={false}>
             {(open) => (
               <div className="space-y-5">
-                <WeeklyLifePrioritiesCard />
-                <UpcomingLifeEvents onPlan={setTimeFreedomPrompt} />
+<WeeklyLifePrioritiesCard />
+<TimeFreedomDeclaration />
+<UpcomingLifeEvents onPlan={setTimeFreedomPrompt} />
                 <CherryBlossomWorkstation
                   context="lifestyle-experiences"
                   active={open}

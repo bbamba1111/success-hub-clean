@@ -156,7 +156,7 @@ export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read"
   return (
     <div className="flex flex-col gap-5">
       <div>
-        <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-brand-green">
+        <p className="font-montserrat text-base font-bold uppercase tracking-[0.18em] text-brand-green">
           My 4-Hour CEO Workday Declaration™
         </p>
         <p className="mt-2 font-sans text-sm leading-relaxed text-muted-foreground text-pretty">
