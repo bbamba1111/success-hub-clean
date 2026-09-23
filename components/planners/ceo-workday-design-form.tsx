@@ -29,8 +29,8 @@ import { Button } from "@/components/ui/button"
 import { CheckCircle2, ChevronRight, Sparkles, Plus, RefreshCw, Pencil, Check, AlertCircle } from "lucide-react"
 
 import { getWeekKey, loadWeek, WLBB_WEEK_CHANGED_EVENT } from "@/lib/wlbb-week/storage"
-import { getAreaById } from "@/lib/wlbb-week/catalog"
 import type { WlbbWeekState } from "@/lib/wlbb-week/types"
+import { BoundaryFocusPanel } from "@/components/ceo-workday/boundary-focus-panel"
 import { getEgaEntriesByStatus } from "@/lib/ega/ega-storage"
 import type { EgaEntry } from "@/lib/ega/types"
 import { getInstalledStatusByAssetId } from "@/lib/business-asset-inventory/business-asset-inventory-store"
@@ -510,17 +510,12 @@ export function CeoWorkdayDesignForm() {
     )
   }
 
-  const area = week?.business.businessAreaId ? getAreaById(week.business.businessAreaId) : undefined
-
   return (
     <div className="space-y-6">
       <div>
-        <p className="mb-1 font-montserrat text-xs font-semibold uppercase tracking-widest text-[#7FB069]">
-          GPS proposes. You decide.
-        </p>
         <h4 className="mb-1 font-sans text-xl font-bold text-[#2E1F27]">Design My 4-Hour CEO Workday™</h4>
         <p className="font-sans text-sm text-[#6B5860]">
-          Shape the work that will move this week&apos;s business priority forward inside your protected 4-hour CEO
+          Shape the work that will move this week&apos;s boundary focus forward inside your protected 4-hour CEO
           Workday™.
         </p>
         <p className="mt-2 font-sans text-xs leading-relaxed text-[#6B5860]/80">
@@ -528,31 +523,24 @@ export function CeoWorkdayDesignForm() {
         </p>
       </div>
 
-      {/* Source decisions */}
-      <div className="grid gap-3 rounded-2xl border border-[#E8DFE2] bg-[#FAF8F5] p-4 sm:grid-cols-2">
-        <SourceCell label="This week's business priority" value={area?.name ?? "Not selected yet"} muted={!area} />
-        <SourceCell
-          label="Primary bottleneck"
-          value={
-            bottlenecks.length
-              ? bottlenecks.map((b) => b.gap ?? b.signal).slice(0, 2).join(" · ")
-              : bba?.hasWidespreadOwnershipGap
-                ? "No clear owner across several functions (BBA)"
-                : "None selected"
-          }
-          muted={!bottlenecks.length && !bba?.hasWidespreadOwnershipGap}
-        />
-        {design?.relatedAssetName && <SourceCell label="Related Business Asset™" value={design.relatedAssetName} />}
-        {design?.constraintSummary && (
-          <div className="sm:col-span-2">
-            <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60">
-              GPS reading
-            </p>
-            <p className="mt-1 font-sans text-sm leading-relaxed text-[#2E1F27]">{design.constraintSummary}</p>
-            <p className="mt-1 font-sans text-xs leading-relaxed text-[#6B5860]">{design.interventionSummary}</p>
-          </div>
-        )}
-      </div>
+      {/* This week's Boundary Focus™ — the tool that builds it into the business */}
+      <BoundaryFocusPanel />
+
+      {/* Supporting context from this week's decisions */}
+      {(design?.relatedAssetName || design?.constraintSummary) && (
+        <div className="grid gap-3 rounded-2xl border border-[#E8DFE2] bg-[#FAF8F5] p-4 sm:grid-cols-2">
+          {design?.relatedAssetName && <SourceCell label="Related Business Asset™" value={design.relatedAssetName} />}
+          {design?.constraintSummary && (
+            <div className="sm:col-span-2">
+              <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60">
+                GPS reading
+              </p>
+              <p className="mt-1 font-sans text-sm leading-relaxed text-[#2E1F27]">{design.constraintSummary}</p>
+              <p className="mt-1 font-sans text-xs leading-relaxed text-[#6B5860]">{design.interventionSummary}</p>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* WHAT MUST HAPPEN TODAY? → function → work → outcome */}
       <div ref={composerRef} className="space-y-4 rounded-2xl border border-[#E8DFE2] bg-white p-5 scroll-mt-24">
