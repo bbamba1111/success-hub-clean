@@ -17,11 +17,13 @@
  */
 
 import { useEffect, useRef, useState, type ReactNode } from "react"
-import { Check, Copy, Sparkles } from "lucide-react"
+import { Check, Copy, PenLine, Search, Sparkles } from "lucide-react"
 import { CollapsibleSubSection } from "@/components/collapsible-sub-section"
 import { HOUR_BLOCKS, type HourBlockIndex } from "@/lib/ceo-workday/hour-blocks"
 import { useHourlyWork } from "@/lib/ceo-workday/use-hourly-work"
 import type { CeoPlanItem } from "@/lib/ceo-workday/plan-types"
+import { WriteWithAiStudio } from "@/components/thought-leadership/write-with-ai-studio"
+import type { ThoughtLeadershipMode } from "@/lib/thought-leadership/format-registry"
 
 type PerHour<T> = Record<HourBlockIndex, T>
 
@@ -59,6 +61,8 @@ export function WhatMustHappenToday({
   const [busy, setBusy] = useState<PerHour<boolean>>(emptyBools)
   const [errors, setErrors] = useState<PerHour<string | null>>({ 1: null, 2: null, 3: null, 4: null })
   const [copied, setCopied] = useState<HourBlockIndex | null>(null)
+  // The Write / Research with AI Studio™, launched from a specific hour's builder.
+  const [studio, setStudio] = useState<{ mode: ThoughtLeadershipMode; hour: HourBlockIndex } | null>(null)
 
   function onWorkChange(index: HourBlockIndex, value: string) {
     setDrafts((d) => ({ ...d, [index]: value }))
@@ -208,6 +212,34 @@ export function WhatMustHappenToday({
                     </div>
                   </div>
                 )}
+
+                <div className="rounded-2xl border border-dashed border-[#7FB069]/45 bg-white/70 px-4 py-3">
+                  <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
+                    Create a new work piece
+                  </p>
+                  <p className="mt-1 font-sans text-xs leading-relaxed text-[#6B5860]">
+                    Need to write or research something this hour — a keynote, press release, Op-Ed, PSA, or any thought
+                    leadership piece? The right AI executive will build it with you from a template.
+                  </p>
+                  <div className="mt-2.5 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setStudio({ mode: "write-with-ai", hour: index })}
+                      className="inline-flex items-center gap-1.5 rounded-full bg-[#5F8F47] px-4 py-2 font-sans text-xs font-bold text-white transition-colors hover:bg-[#548039]"
+                    >
+                      <PenLine className="h-3.5 w-3.5" aria-hidden />
+                      Write with AI
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setStudio({ mode: "research-with-ai", hour: index })}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-[#7FB069]/50 bg-[#F3F8ED] px-4 py-2 font-sans text-xs font-bold text-[#3A6B2E] transition-colors hover:bg-[#E7F1DD]"
+                    >
+                      <Search className="h-3.5 w-3.5" aria-hidden />
+                      Research with AI
+                    </button>
+                  </div>
+                </div>
               </div>
             </CollapsibleSubSection>
           )
@@ -217,6 +249,15 @@ export function WhatMustHappenToday({
       <p className="mt-4 font-sans text-xs italic leading-relaxed text-[#6B5860]">
         Each hour connects to its own 5-Minute Check-In™ below, where you&apos;ll capture what actually happened.
       </p>
+
+      {studio && (
+        <WriteWithAiStudio
+          mode={studio.mode}
+          open
+          onClose={() => setStudio(null)}
+          hourLabel={`Hour ${studio.hour}`}
+        />
+      )}
     </section>
   )
 }

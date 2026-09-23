@@ -26,6 +26,7 @@
 import { useEffect, useRef, useState } from "react"
 import { ArrowLeft, CheckCircle2, Loader2, Send, Sparkles, Share2 } from "lucide-react"
 import { CommunicateDelegateDialog } from "@/components/communications/communicate-delegate-dialog"
+import { PolishedDraft } from "@/components/thought-leadership/polished-draft"
 import type { BusinessAsset } from "@/lib/business-asset-library/business-asset-registry"
 import type { BuildModeDefinition } from "@/lib/business-asset-library/build-modes"
 import type { CommunicationStyle } from "@/lib/business-comprehension/business-comprehension"
@@ -252,9 +253,9 @@ export function LiveAiBuildChat({
         <p className="mx-auto mt-2 max-w-md text-pretty text-sm leading-relaxed text-brand-ink-soft">
           {executiveName} drafted this with you, live. It has been saved — you can come back and refine it anytime.
         </p>
-        <div className="mt-5 rounded-xl border border-black/[0.06] bg-brand-cream/60 p-5 text-left">
-          <p className="whitespace-pre-wrap text-pretty text-sm leading-relaxed text-brand-ink">{finalDraft}</p>
-        </div>
+                <div className="mt-5 rounded-xl border border-black/[0.06] bg-brand-cream/60 p-5 text-left">
+                  <PolishedDraft text={finalDraft} />
+                </div>
 
         {/* Now that the document exists, offer the hand-off tool. */}
         <div className="mx-auto mt-6 max-w-md rounded-xl border border-brand-green/25 bg-brand-green/[0.05] px-5 py-4 text-left">
@@ -323,9 +324,9 @@ export function LiveAiBuildChat({
         <div className="mt-4 space-y-4">
           {guidedSteps.map((step, i) => (
             <div key={i}>
-              <p className="text-[0.65rem] font-bold uppercase tracking-wide text-brand-green">
-                Builder Step {i + 1}
-              </p>
+                  <p className="text-[0.65rem] font-bold uppercase tracking-wide text-brand-green">
+                    Step {i + 1}
+                  </p>
               <label htmlFor={`field-${i}`} className="mt-0.5 block text-xs font-semibold leading-snug text-brand-ink">
                 {step}
               </label>
