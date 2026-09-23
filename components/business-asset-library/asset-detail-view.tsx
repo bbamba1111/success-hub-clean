@@ -278,15 +278,14 @@ export function AssetDetailView({
         <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-brand-green" aria-hidden />
         <p className="text-pretty text-xs leading-relaxed text-brand-ink-soft">
           This is the same {asset.name} every founder in Harmony Lane™ builds — only the explanation changes to fit
-          how you like things communicated. Change your Communication Style™{" "}
+          how you like things communicated.{" "}
           <button
             type="button"
             onClick={() => setShowStyleModal(true)}
-            className="font-semibold text-brand-ink underline-offset-4 hover:underline"
+            className="font-bold text-brand-ink underline-offset-4 hover:underline"
           >
-            anytime
+            Click Here to Change Your Communication Style Anytime
           </button>
-          .
         </p>
       </div>
 
