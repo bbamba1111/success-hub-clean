@@ -31,6 +31,7 @@ import { CheckCircle2, ChevronRight, Sparkles, Plus, RefreshCw, Pencil, Check, A
 import { getWeekKey, loadWeek, WLBB_WEEK_CHANGED_EVENT } from "@/lib/wlbb-week/storage"
 import type { WlbbWeekState } from "@/lib/wlbb-week/types"
 import { BoundaryFocusPanel } from "@/components/ceo-workday/boundary-focus-panel"
+import { useWeeklyBoundaryFocus } from "@/lib/weekly-boundary-focus/use-weekly-boundary-focus"
 import { getEgaEntriesByStatus } from "@/lib/ega/ega-storage"
 import type { EgaEntry } from "@/lib/ega/types"
 import { getInstalledStatusByAssetId } from "@/lib/business-asset-inventory/business-asset-inventory-store"
@@ -124,6 +125,7 @@ function approvedSignature(items: CeoPlanItem[]) {
 
 export function CeoWorkdayDesignForm() {
   const [week, setWeek] = useState<WlbbWeekState | null>(null)
+  const { focus: weeklyBoundaryFocus } = useWeeklyBoundaryFocus()
   const [bottlenecks, setBottlenecks] = useState<EgaEntry[]>([])
   const [bba, setBba] = useState<BbaSignalSummary | null>(null)
   const [prior, setPrior] = useState<Awaited<ReturnType<typeof getCeoWorkdayEvidence>>>(null)
@@ -358,7 +360,8 @@ export function CeoWorkdayDesignForm() {
   const missingOutcome = approved.filter((i) => !i.expectedEvidence.trim())
   const missingTitle = approved.filter((i) => !i.title.trim())
   const readiness: string[] = []
-  if (!week?.business.businessAreaId) readiness.push("choose this week's Business Building Priority above")
+  if (!weeklyBoundaryFocus.boundaryText?.trim())
+    readiness.push("choose this week's Work-Life Balance Boundary Focus™ above")
   if (approved.length === 0) readiness.push("keep or add at least one piece of work")
   if (missingTitle.length) readiness.push("give every kept piece of work a title")
   if (missingOutcome.length) readiness.push("add an expected outcome to every kept piece of work")

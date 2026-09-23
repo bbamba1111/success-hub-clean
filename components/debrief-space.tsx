@@ -29,7 +29,7 @@ import { PowerDownIntentionForm } from "@/components/planners/power-down-intenti
 import { CherryBlossomWorkstation } from "@/components/cherry-blossom-workstation"
 import { TimeFreedomSocial } from "@/components/time-freedom-social"
 import { UpcomingLifeEvents } from "@/components/cherry-blossom/upcoming-life-events"
-import { ReviewRealityCheck } from "@/components/decide-design/review-reality-check"
+import { PriorityFocusAreas } from "@/components/decide-design/priority-focus-areas"
 import { WeeklyPrioritiesDesigner, WeeklyLifePrioritiesCard } from "@/components/decide-design/weekly-priorities-designer"
 import { WorkdayDeclaration } from "@/components/decide-design/workday-declaration"
 import { DecideIdentitySpace } from "@/components/daily-identity/decide-identity-space"
@@ -62,8 +62,8 @@ export function DebriefSpace() {
         </p>
       </div>
 
-      {/* ── Review My Reality Check™ — the first step of the redesign ───────── */}
-      <ReviewRealityCheck />
+      {/* ── My 3 Priority Focus Areas™ — carried over from the Reality Check™ ── */}
+      <PriorityFocusAreas />
 
       {/* Identity box — moved under the heading so the two are reversed. */}
       <DecideIdentitySpace />

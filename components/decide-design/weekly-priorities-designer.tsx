@@ -472,33 +472,33 @@ function BoundaryFocusSection({
 
 /* ── Summary — makes the distinction obvious ──────────────────────────────── */
 
-function WeekSummary() {
-  const { priorities } = useWeeklyLifePriorities()
+function WeekSummary({ report }: { report: BoundaryReportData | null }) {
   const { focus } = useWeeklyBoundaryFocus()
+  const focusAreas = report?.priorityAreas ?? []
 
-  if (priorities.length === 0 && !focus.boundaryText) return null
+  if (focusAreas.length === 0 && !focus.boundaryText) return null
 
   return (
     <Card>
       <div className="space-y-6">
         <div className="space-y-3">
           <p className="font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#C0545A]">
-            My Weekly Life Priorities™
+            My 3 Priority Focus Areas™
           </p>
-          <p className="font-sans text-xs text-[#6B5860]">What I want to make room for.</p>
-          {priorities.length > 0 ? (
+          <p className="font-sans text-xs text-[#6B5860]">Carried over from my Reality Check™.</p>
+          {focusAreas.length > 0 ? (
             <ul className="flex flex-wrap gap-2">
-              {priorities.map((p) => (
+              {focusAreas.map((a) => (
                 <li
-                  key={p.id}
+                  key={a.key}
                   className="inline-flex items-center rounded-full border border-[#C0545A]/25 bg-[#FDF8F5] px-4 py-2 font-sans text-sm font-semibold text-[#3A2E33]"
                 >
-                  {p.label}
+                  {a.label}
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="font-sans text-sm text-[#6B5860]">None chosen yet.</p>
+            <p className="font-sans text-sm text-[#6B5860]">None flagged yet.</p>
           )}
         </div>
 
@@ -557,7 +557,7 @@ export function WeeklyPrioritiesDesigner() {
   return (
     <div className="space-y-6">
       <BoundaryFocusSection report={report} />
-      <WeekSummary />
+      <WeekSummary report={report} />
     </div>
   )
 }

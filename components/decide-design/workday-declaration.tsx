@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react"
 import { RefreshCw, Sparkles } from "lucide-react"
 import { useWeeklyCommitments } from "@/lib/weekly-commitments/use-weekly-commitments"
-import { useWeeklyLifePriorities } from "@/lib/weekly-life-priorities/use-weekly-life-priorities"
+import { getLatestBoundaryReport } from "@/lib/boundary-report/actions"
+import type { BoundaryReportData } from "@/lib/boundary-report/types"
 import { useWeeklyBoundaryFocus } from "@/lib/weekly-boundary-focus/use-weekly-boundary-focus"
 import { getDateKey, loadDailyIdentity } from "@/lib/daily-identity/storage"
 
@@ -49,7 +50,7 @@ function buildDeclaration(
   switch (variant % VARIANT_COUNT) {
     case 0: {
       if (who) sentences.push(`This week I am being ${who}.`)
-      if (prio) sentences.push(`I am making more room for ${prio}.`)
+      if (prio) sentences.push(`I am focused on ${prio}.`)
       if (bound) sentences.push(`The one boundary I am building into my business and living this week: ${bound}.`)
       break
     }
@@ -76,8 +77,25 @@ function buildDeclaration(
 
 export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read" }) {
   const { commitments: c, update, saveWeek, isLoading } = useWeeklyCommitments()
-  const { priorities } = useWeeklyLifePriorities()
   const { focus } = useWeeklyBoundaryFocus()
+
+  // Priority Focus Areas™ are carried over from the most recent Work-Life
+  // Balance Reality Check™ (Thursday/Sunday) — they replace the old freeform
+  // "life priorities" as the middle strand of the declaration.
+  const [report, setReport] = useState<BoundaryReportData | null>(null)
+  useEffect(() => {
+    let active = true
+    getLatestBoundaryReport()
+      .then((res) => {
+        if (active) setReport(res?.data ?? null)
+      })
+      .catch(() => {
+        if (active) setReport(null)
+      })
+    return () => {
+      active = false
+    }
+  }, [])
 
   const [saving, setSaving] = useState(false)
   const [savedAt, setSavedAt] = useState<string | null>(null)
@@ -88,7 +106,7 @@ export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read"
   const [identity, setIdentity] = useState("")
   useEffect(() => {
     setIdentity(loadDailyIdentity(getDateKey())?.identityStatement?.trim() ?? "")
-  }, [priorities, focus.boundaryText])
+  }, [report, focus.boundaryText])
 
   if (mode === "read") {
     if (!c.workdayDeclaration) return null
@@ -104,7 +122,7 @@ export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read"
     )
   }
 
-  const priorityLabels = priorities.map((p) => p.label)
+  const priorityLabels = (report?.priorityAreas ?? []).map((a) => a.label)
   const boundary = focus.boundaryText ?? ""
   const ready = Boolean(identity.trim() || priorityLabels.length > 0 || boundary.trim())
 
@@ -131,7 +149,7 @@ export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read"
 
   const rows: Array<{ label: string; value: string | null }> = [
     { label: "Who I'm being", value: identity.trim() || null },
-    { label: "Life priorities", value: priorityLabels.length > 0 ? priorityLabels.join(", ") : null },
+    { label: "Priority Focus Areas", value: priorityLabels.length > 0 ? priorityLabels.join(", ") : null },
     { label: "Boundary focus", value: boundary.trim() || null },
   ]
 
@@ -142,8 +160,8 @@ export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read"
           My 4-Hour CEO Workday Declaration™
         </p>
         <p className="mt-2 font-sans text-sm leading-relaxed text-muted-foreground text-pretty">
-          Who you&apos;re being, your life priorities, and your boundary focus become one declaration — what these four
-          hours are for, and what they are protected from. It opens your CEO Workday™ every day this week.
+          Who you&apos;re being, your Priority Focus Areas™, and your boundary focus become one declaration — what these
+          four hours are for, and what they are protected from. It opens your CEO Workday™ every day this week.
         </p>
       </div>
 
@@ -162,8 +180,8 @@ export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read"
 
       {!ready ? (
         <p className="font-sans text-sm italic text-muted-foreground">
-          Decide who you&apos;re being, choose a life priority, or set your boundary focus, and your declaration can be
-          built.
+          Decide who you&apos;re being or set your boundary focus, and your declaration can be built. Your Priority Focus
+          Areas™ carry over from your Reality Check™.
         </p>
       ) : !c.workdayDeclaration ? (
         <button
