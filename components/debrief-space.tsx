@@ -29,7 +29,7 @@ import { CherryBlossomWorkstation } from "@/components/cherry-blossom-workstatio
 import { TimeFreedomSocial } from "@/components/time-freedom-social"
 import { UpcomingLifeEvents } from "@/components/cherry-blossom/upcoming-life-events"
 import { ReviewRealityCheck } from "@/components/decide-design/review-reality-check"
-import { WeeklyPrioritiesDesigner } from "@/components/decide-design/weekly-priorities-designer"
+import { WeeklyPrioritiesDesigner, WeeklyLifePrioritiesCard } from "@/components/decide-design/weekly-priorities-designer"
 import { WorkdayDeclaration } from "@/components/decide-design/workday-declaration"
 import { DecideIdentitySpace } from "@/components/daily-identity/decide-identity-space"
 
@@ -67,10 +67,16 @@ export function DebriefSpace() {
       {/* Identity box — moved under the heading so the two are reversed. */}
       <DecideIdentitySpace />
 
-      {/* ── Decide My Three Weekly Priorities™ (ends with Save My Week) ──────── */}
+      {/* ── My Weekly Work-Life Balance Boundary Focus™ (ends with Save My Week) ── */}
       <WeeklyPrioritiesDesigner />
 
-      {/* Half-inch of breathing room after Save My Week, before designing the day. */}
+      {/* ── My 4-Hour CEO Workday Declaration™ — woven from who you're being,
+           your weekly life priorities, and your boundary focus. */}
+      <div className="rounded-3xl border border-[#7FB069]/30 bg-white shadow-sm px-6 py-6 sm:px-8 sm:py-7">
+        <WorkdayDeclaration mode="build" />
+      </div>
+
+      {/* Half-inch of breathing room before designing the day. */}
       <div aria-hidden className="h-12" />
 
       {/* ── Design My Work-Life Balance Business Day™ ────────────────────────── */}
@@ -80,14 +86,9 @@ export function DebriefSpace() {
             Design My Work-Life Balance Business Day™
           </p>
           <p className="mt-2 font-sans text-sm text-[#3A2E33] leading-relaxed">
-            Weave your three priorities into one declaration, then design the protected time already built into your
-            day. What must happen today lives in your CEO Workday™.
+            Design the protected time already built into your day. Your Weekly Life Priorities™ live in Time Freedom.
+            What must happen today lives in your CEO Workday™.
           </p>
-        </div>
-
-        {/* My 4-Hour CEO Workday Declaration™ — woven from this week's three priorities. */}
-        <div className="rounded-2xl border border-[#E8DFE2] bg-white px-6 py-6 sm:px-7">
-          <WorkdayDeclaration mode="build" />
         </div>
 
         {/* ── Design My Business Day™ — the protected windows, Movement first ─── */}

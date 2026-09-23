@@ -1,32 +1,94 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { RefreshCw, Sparkles } from "lucide-react"
 import { useWeeklyCommitments } from "@/lib/weekly-commitments/use-weekly-commitments"
-import {
-  buildWorkdayDeclaration,
-  hasEnoughForDeclaration,
-  WORKDAY_DECLARATION_VARIANT_COUNT,
-} from "@/lib/weekly-commitments/workday-declaration"
+import { useWeeklyLifePriorities } from "@/lib/weekly-life-priorities/use-weekly-life-priorities"
+import { useWeeklyBoundaryFocus } from "@/lib/weekly-boundary-focus/use-weekly-boundary-focus"
+import { getDateKey, loadDailyIdentity } from "@/lib/daily-identity/storage"
 
 /**
  * My 4-Hour CEO Workday Declaration™
  *
- * Builder mode (Decide & Design™ → 4-Hour Focused CEO Workday accordion):
- * shows the three chosen priorities as the raw material, then "Build My
- * Declaration" weaves them into one first-person statement the founder can
- * cycle, edit, and save. It persists on the weekly commitments record.
+ * Builder mode (Decide & Design™): woven from this week's THREE decisions —
+ *   1. Decide Who You're Being This Week (daily identity statement)
+ *   2. My Weekly Life Priorities™ (what I'm making room for)
+ *   3. My Weekly Work-Life Balance Boundary Focus™ (the one boundary)
+ * "Build My Declaration" weaves them into one first-person statement the
+ * founder can cycle, edit, and save. It persists on the weekly commitments
+ * record (workdayDeclaration) so the live CEO Workday™ can read it all week.
  *
- * Read mode (live CEO Workday™ Mon–Thu): the saved declaration only, to be
- * read before the first hour block. Nothing else.
+ * Read mode (live CEO Workday™): the saved declaration only, to be read
+ * before the first hour block. Nothing else.
  */
+
+const VARIANT_COUNT = 3
+
+function lowerFirst(s: string): string {
+  return s ? s.charAt(0).toLowerCase() + s.slice(1) : s
+}
+
+function joinList(items: string[]): string {
+  if (items.length === 0) return ""
+  if (items.length === 1) return items[0]
+  if (items.length === 2) return `${items[0]} and ${items[1]}`
+  return `${items.slice(0, -1).join(", ")}, and ${items[items.length - 1]}`
+}
+
+function buildDeclaration(
+  identity: string,
+  priorityLabels: string[],
+  boundary: string,
+  variant: number,
+): string {
+  const who = lowerFirst(identity.trim())
+  const prio = joinList(priorityLabels)
+  const bound = boundary.trim()
+  const sentences: string[] = []
+
+  switch (variant % VARIANT_COUNT) {
+    case 0: {
+      if (who) sentences.push(`This week I am being ${who}.`)
+      if (prio) sentences.push(`I am making more room for ${prio}.`)
+      if (bound) sentences.push(`The one boundary I am building into my business and living this week: ${bound}.`)
+      break
+    }
+    case 1: {
+      if (who) sentences.push(`I am ${who} this week.`)
+      if (prio && bound)
+        sentences.push(`I'm protecting time for ${prio}, and I'm holding one boundary that makes it real: ${bound}.`)
+      else if (prio) sentences.push(`I'm protecting time for ${prio}.`)
+      else if (bound) sentences.push(`I'm holding one boundary that makes it real: ${bound}.`)
+      break
+    }
+    default: {
+      if (who) sentences.push(`This week I lead as ${who}.`)
+      if (prio && bound)
+        sentences.push(`My life comes first — ${prio} — and I protect it with one boundary: ${bound}.`)
+      else if (prio) sentences.push(`My life comes first: ${prio}.`)
+      else if (bound) sentences.push(`I protect my life with one boundary: ${bound}.`)
+      break
+    }
+  }
+
+  return sentences.join(" ")
+}
+
 export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read" }) {
   const { commitments: c, update, saveWeek, isLoading } = useWeeklyCommitments()
+  const { priorities } = useWeeklyLifePriorities()
+  const { focus } = useWeeklyBoundaryFocus()
+
   const [saving, setSaving] = useState(false)
   const [savedAt, setSavedAt] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  const ready = hasEnoughForDeclaration(c)
+  // Identity is stored per-day in localStorage. Re-read it whenever the other
+  // two inputs change so the preview stays fresh; build() also reads it live.
+  const [identity, setIdentity] = useState("")
+  useEffect(() => {
+    setIdentity(loadDailyIdentity(getDateKey())?.identityStatement?.trim() ?? "")
+  }, [priorities, focus.boundaryText])
 
   if (mode === "read") {
     if (!c.workdayDeclaration) return null
@@ -35,13 +97,21 @@ export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read"
         <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-brand-green">
           My 4-Hour CEO Workday Declaration™ · read this first
         </p>
-        <p className="mt-3 font-serif text-lg leading-relaxed text-foreground text-pretty sm:text-xl">{c.workdayDeclaration}</p>
+        <p className="mt-3 font-serif text-lg leading-relaxed text-foreground text-pretty sm:text-xl">
+          {c.workdayDeclaration}
+        </p>
       </blockquote>
     )
   }
 
+  const priorityLabels = priorities.map((p) => p.label)
+  const boundary = focus.boundaryText ?? ""
+  const ready = Boolean(identity.trim() || priorityLabels.length > 0 || boundary.trim())
+
   function build(variant = c.workdayDeclarationVariant) {
-    const text = buildWorkdayDeclaration(c, variant)
+    // Read identity live at build time so the saved declaration is always current.
+    const liveIdentity = loadDailyIdentity(getDateKey())?.identityStatement?.trim() ?? identity
+    const text = buildDeclaration(liveIdentity, priorityLabels, boundary, variant)
     update({
       workdayDeclaration: text,
       workdayDeclarationVariant: variant,
@@ -60,9 +130,9 @@ export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read"
   }
 
   const rows: Array<{ label: string; value: string | null }> = [
-    { label: "Life", value: c.lifePriority },
-    { label: "Delegation", value: c.delegationPriority },
-    { label: "Operating rule", value: c.operatingRule },
+    { label: "Who I'm being", value: identity.trim() || null },
+    { label: "Life priorities", value: priorityLabels.length > 0 ? priorityLabels.join(", ") : null },
+    { label: "Boundary focus", value: boundary.trim() || null },
   ]
 
   return (
@@ -72,15 +142,17 @@ export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read"
           My 4-Hour CEO Workday Declaration™
         </p>
         <p className="mt-2 font-sans text-sm leading-relaxed text-muted-foreground text-pretty">
-          Your three Weekly Priorities™ become one declaration — what these four hours are for, and what they are
-          protected from. It opens your CEO Workday™ every day this week.
+          Who you&apos;re being, your life priorities, and your boundary focus become one declaration — what these four
+          hours are for, and what they are protected from. It opens your CEO Workday™ every day this week.
         </p>
       </div>
 
       <ul className="grid gap-2 sm:grid-cols-3">
         {rows.map((r) => (
           <li key={r.label} className="rounded-xl border border-border bg-card px-4 py-3">
-            <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">{r.label}</p>
+            <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+              {r.label}
+            </p>
             <p className={`mt-1 font-sans text-sm ${r.value ? "text-foreground" : "italic text-muted-foreground"}`}>
               {r.value ?? "Still to choose"}
             </p>
@@ -90,7 +162,8 @@ export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read"
 
       {!ready ? (
         <p className="font-sans text-sm italic text-muted-foreground">
-          Choose at least one priority above and your declaration can be built.
+          Decide who you&apos;re being, choose a life priority, or set your boundary focus, and your declaration can be
+          built.
         </p>
       ) : !c.workdayDeclaration ? (
         <button
@@ -115,7 +188,7 @@ export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read"
           <div className="flex flex-wrap items-center gap-3">
             <button
               type="button"
-              onClick={() => build((c.workdayDeclarationVariant + 1) % WORKDAY_DECLARATION_VARIANT_COUNT)}
+              onClick={() => build((c.workdayDeclarationVariant + 1) % VARIANT_COUNT)}
               className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3.5 py-1.5 font-sans text-xs font-semibold text-foreground hover:bg-muted"
             >
               <RefreshCw className="h-3 w-3" aria-hidden /> Say it differently
@@ -139,7 +212,9 @@ export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read"
             </button>
           </div>
           {savedAt && !error && (
-            <p className="font-sans text-xs text-brand-green">Saved {savedAt}. It will open your CEO Workday™ this week.</p>
+            <p className="font-sans text-xs text-brand-green">
+              Saved {savedAt}. It will open your CEO Workday™ this week.
+            </p>
           )}
           {error && <p className="font-sans text-xs text-destructive">{error}</p>}
         </div>

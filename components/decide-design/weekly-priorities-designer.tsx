@@ -280,8 +280,8 @@ function LifePrioritiesSection({
             )}
             <p className="font-sans text-xs text-[#6B5860]">
               {selected.length > 0
-                ? "Your life priorities are saved as you choose. Continue to your boundary focus below."
-                : "Add at least one thing you want to make room for, then continue to your boundary focus below."}
+                ? "Your life priorities are saved as you choose."
+                : "Add at least one thing you want to make room for this week."}
             </p>
           </div>
         )}
@@ -518,11 +518,10 @@ function WeekSummary() {
   )
 }
 
-/* ── main ──────────────────────────────────────────────────────────────────── */
+/* ── report fetch shared by both entry points ─────────────────────────────── */
 
-export function WeeklyPrioritiesDesigner() {
+function useLatestBoundaryReport() {
   const [report, setReport] = useState<BoundaryReportData | null>(null)
-
   useEffect(() => {
     let active = true
     getLatestBoundaryReport()
@@ -536,10 +535,27 @@ export function WeeklyPrioritiesDesigner() {
       active = false
     }
   }, [])
+  return report
+}
+
+/* ── entry points ────────────────────────────────────────────────────────── */
+
+/**
+ * My Weekly Life Priorities™ — now lives inside the Time Freedom™ collapsible
+ * of Design My Business Day™, since these are the parts of life the founder is
+ * protecting, enjoying, or planning for during Time Freedom. Fully editable in
+ * place; selections persist the moment they're made.
+ */
+export function WeeklyLifePrioritiesCard() {
+  const report = useLatestBoundaryReport()
+  return <LifePrioritiesSection report={report} />
+}
+
+export function WeeklyPrioritiesDesigner() {
+  const report = useLatestBoundaryReport()
 
   return (
     <div className="space-y-6">
-      <LifePrioritiesSection report={report} />
       <BoundaryFocusSection report={report} />
       <WeekSummary />
     </div>
