@@ -442,54 +442,6 @@ function BoundaryFocusSection({
   )
 }
 
-/* ── Summary — makes the distinction obvious ──────────────────────────────── */
-
-function WeekSummary({ report }: { report: BoundaryReportData | null }) {
-  const { focus } = useWeeklyBoundaryFocus()
-  const focusAreas = report?.priorityAreas ?? []
-
-  if (focusAreas.length === 0 && !focus.boundaryText) return null
-
-  return (
-    <Card>
-      <div className="space-y-6">
-        <div className="space-y-3">
-          <p className="font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#C0545A]">
-            My 3 Priority Focus Areas™
-          </p>
-          <p className="font-sans text-xs text-[#6B5860]">Carried over from my Reality Check™.</p>
-          {focusAreas.length > 0 ? (
-            <ul className="flex flex-wrap gap-2">
-              {focusAreas.map((a) => (
-                <li
-                  key={a.key}
-                  className="inline-flex items-center rounded-full border border-[#C0545A]/25 bg-[#FDF8F5] px-4 py-2 font-sans text-sm font-semibold text-[#3A2E33]"
-                >
-                  {a.label}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="font-sans text-sm text-[#6B5860]">None flagged yet.</p>
-          )}
-        </div>
-
-        <div className="space-y-3">
-          <p className="font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#5B835F]">
-            My Weekly Work-Life Balance Boundary Focus™
-          </p>
-          <p className="font-sans text-xs text-[#6B5860]">The one boundary I will build into the business this week.</p>
-          {focus.boundaryText ? (
-            <p className="font-serif text-xl font-semibold text-[#2E1F27] text-pretty">{focus.boundaryText}</p>
-          ) : (
-            <p className="font-sans text-sm text-[#6B5860]">Not chosen yet.</p>
-          )}
-        </div>
-      </div>
-    </Card>
-  )
-}
-
 /* ── report fetch shared by both entry points ─────────────────────────────── */
 
 function useLatestBoundaryReport() {
@@ -529,7 +481,7 @@ export function WeeklyPrioritiesDesigner() {
   return (
     <div className="space-y-6">
       <BoundaryFocusSection report={report} />
-      <WeekSummary report={report} />
+
     </div>
   )
 }
