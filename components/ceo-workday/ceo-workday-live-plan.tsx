@@ -529,8 +529,17 @@ export function CeoWorkdayLivePlan() {
                 Close work surface
               </button>
             )}
+            {editTitleId !== item.id && (
+              <button
+                type="button"
+                onClick={() => setEditTitleId(item.id)}
+                className="inline-flex items-center gap-1.5 rounded-full border border-[#E8DFE2] bg-white px-3.5 py-1.5 font-sans text-xs font-semibold text-[#6B5860] hover:bg-black/[0.03]"
+              >
+                <Pencil className="h-3 w-3" aria-hidden /> Edit
+              </button>
+            )}
             <label className="inline-flex items-center gap-1 rounded-full border border-[#E8DFE2] bg-white px-2.5 py-1">
-              <span className="font-sans text-[11px] font-semibold text-[#6B5860]">Hour</span>
+              <span className="font-sans text-[11px] font-semibold text-[#6B5860]">Move to hour</span>
               <span className="sr-only">Move this work to another hour</span>
               <select
                 value={resolveHour(item.id, autoHours, overrides)}
