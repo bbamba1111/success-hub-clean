@@ -27,7 +27,7 @@ import {
   loadCeoWorkdayDeclaration,
   type CeoWorkdayDeclaration,
 } from "@/lib/daily-plan/ceo-workday-declaration"
-import { WeeklyPrioritiesPanel } from "@/components/ceo-workday/weekly-priorities-panel"
+import { BoundaryFocusPanel } from "@/components/ceo-workday/boundary-focus-panel"
 import { WhatMustHappenToday } from "@/components/ceo-workday/what-must-happen-today"
 import { useWeeklyCommitments } from "@/lib/weekly-commitments/use-weekly-commitments"
 import {
@@ -572,7 +572,7 @@ export function CeoWorkdayLivePlan() {
     )
   }
 
-  // ── render ───────────────────────────────────────────────────────────────
+  // ── render ──────────────────────────────────────────────────────────────��
   return (
     <div className="space-y-5">
       {/* My Workday Declaration™ — always first in the space, like Movement/Lunch */}
@@ -610,9 +610,9 @@ export function CeoWorkdayLivePlan() {
         </motion.div>
       )}
 
-      {/* This Week's Three Priorities™ — now directly UNDER the declaration
-          (the two were reversed), collapsible with inline intention editing. */}
-      <WeeklyPrioritiesPanel />
+      {/* This Week's Boundary Focus™ — the founder can select, change or edit the
+          boundary and its builder right here inside the CEO Workday™. */}
+      <BoundaryFocusPanel />
 
       {/* What Must Happen Today™ + CEO Workday Execution™ — combined. The work the
           founder designed with the Business Function tool populates each of the four
