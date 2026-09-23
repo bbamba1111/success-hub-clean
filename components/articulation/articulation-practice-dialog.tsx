@@ -476,7 +476,7 @@ export function ArticulationPracticeDialog({ open, onClose, source }: Articulati
             </button>
           </header>
 
-          <div className="flex-1 overflow-y-auto px-6 py-8">
+          <div className="flex-1 overflow-y-auto px-6 pt-8 pb-40">
             <div className="mx-auto max-w-2xl">
               <p className="mb-6 font-sans text-sm text-[#6B5860]">
                 Practicing: <span className="font-bold text-[#2B1B22]">{source.sourceTitle}</span>
