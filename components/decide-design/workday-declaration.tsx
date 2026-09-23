@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { RefreshCw, Sparkles } from "lucide-react"
+import { CheckCircle2, RefreshCw, Sparkles } from "lucide-react"
 import { useWeeklyCommitments } from "@/lib/weekly-commitments/use-weekly-commitments"
 import { getLatestBoundaryReport } from "@/lib/boundary-report/actions"
 import type { BoundaryReportData } from "@/lib/boundary-report/types"
@@ -159,12 +159,26 @@ export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read"
         <p className="font-montserrat text-base font-bold uppercase tracking-[0.18em] text-brand-green">
           My 4-Hour CEO Workday Declaration™
         </p>
+        <p className="mt-1 font-sans text-sm text-muted-foreground leading-relaxed text-pretty">
+          One statement of what these four hours are for — and what they protect.
+        </p>
       </div>
 
       <ul className="grid gap-2 sm:grid-cols-3">
         {rows.map((r) => (
-          <li key={r.label} className="rounded-xl border border-border bg-card px-4 py-3">
-            <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+          <li
+            key={r.label}
+            className={`relative rounded-xl border px-4 py-3 ${
+              r.value ? "border-brand-green/40 bg-brand-green/[0.05]" : "border-border bg-card"
+            }`}
+          >
+            {r.value && (
+              <CheckCircle2
+                className="absolute right-2 top-2 h-4 w-4 text-brand-green"
+                aria-label="Confirmed"
+              />
+            )}
+            <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground pr-6">
               {r.label}
             </p>
             <p className={`mt-1 font-sans text-sm ${r.value ? "text-foreground" : "italic text-muted-foreground"}`}>

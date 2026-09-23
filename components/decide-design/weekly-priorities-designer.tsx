@@ -310,7 +310,7 @@ function BoundaryFocusSection({
         <p className="font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#5B835F]">
           My Weekly Work-Life Balance Boundary Focus™
         </p>
-        <p className="mt-2 font-sans text-lg text-[#2E1F27] text-pretty">
+        <p className="mt-1 font-sans text-sm text-[#6B5860] leading-relaxed text-pretty">
           Choose one boundary to build into the business and live this week.
         </p>
       </div>
