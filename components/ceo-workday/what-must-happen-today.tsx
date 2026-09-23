@@ -4,80 +4,98 @@
  * WHAT MUST HAPPEN TODAY™ — the founder's own four-hour work plan for the
  * protected CEO Workday™.
  *
- * This is NOT a weekly priority system, NOT an assignment system, and NOT
- * GPS-owned. The founder decides what must happen during each of their four
- * protected hours. There is no item cap, no requirement that the work come
- * from the weekly priorities / BBA / GPS, and an hourly statement never
- * automatically becomes a Business Building Assignment.
+ * Each hour is a collapsible container (reusing CollapsibleSubSection). Inside
+ * an hour the founder sees, top to bottom:
+ *   My Work Affirmation™ (auto-created from the hour's work, shown at the top)
+ *   → the executable CEO assignments designed for that hour (editable /
+ *     deferrable / delegable / removable) → the What Must Happen Today Business
+ *     Function Builder™ that creates a new executable CEO assignment right in
+ *     the hour → Write / Research with AI.
  *
- * Each hour is a collapsible container (reusing CollapsibleSubSection):
- *   what must happen this hour? → Create My Work Affirmation™ → Copy.
- * Each hour maps to its existing 5-Minute Check-In™, which reads the same
- * statement from the shared hourly-work store.
+ * Adding or adjusting a piece of work in an hour automatically (re)creates that
+ * hour's Work Affirmation™. Each hour maps to its existing 5-Minute Check-In™,
+ * which reads the same statement from the shared hourly-work store.
  */
 
-import { useEffect, useRef, useState, type ReactNode } from "react"
-import { Check, Copy, PenLine, Search, Sparkles } from "lucide-react"
+import { useState, type ReactNode } from "react"
+import { Check, Copy, PenLine, Plus, Search, Sparkles } from "lucide-react"
 import { CollapsibleSubSection } from "@/components/collapsible-sub-section"
 import { HOUR_BLOCKS, type HourBlockIndex } from "@/lib/ceo-workday/hour-blocks"
 import { useHourlyWork } from "@/lib/ceo-workday/use-hourly-work"
-import type { CeoPlanItem } from "@/lib/ceo-workday/plan-types"
+import { CEO_FUNCTION_LABEL, type CeoBusinessFunction, type CeoPlanItem } from "@/lib/ceo-workday/plan-types"
 import { WriteWithAiStudio } from "@/components/thought-leadership/write-with-ai-studio"
 import type { ThoughtLeadershipMode } from "@/lib/thought-leadership/format-registry"
 
 type PerHour<T> = Record<HourBlockIndex, T>
 
-function emptyStrings(): PerHour<string> {
-  return { 1: "", 2: "", 3: "", 4: "" }
+/** The executable-assignment input the Business Function Builder™ produces. */
+export type HourWorkInput = {
+  businessFunction: CeoBusinessFunction
+  work: string
+  outcome: string
+  minutes: number
 }
+
+const FUNCTION_ORDER: CeoBusinessFunction[] = [
+  "build",
+  "decide",
+  "own",
+  "delegate",
+  "systemize",
+  "augment-automate-ai",
+  "connect",
+  "communicate",
+  "sell",
+  "market",
+  "deliver",
+  "solve",
+]
+
 function emptyBools(): PerHour<boolean> {
   return { 1: false, 2: false, 3: false, 4: false }
+}
+
+type BuilderState = {
+  fn: CeoBusinessFunction | null
+  work: string
+  outcome: string
+  minutes: number
+}
+
+function emptyBuilder(): BuilderState {
+  return { fn: null, work: "", outcome: "", minutes: 30 }
 }
 
 export function WhatMustHappenToday({
   itemsByHour,
   renderItem,
   plannedMinutes,
+  onAddWork,
 }: {
   /** Designed CEO work grouped into each protected hour. */
   itemsByHour?: Partial<Record<HourBlockIndex, CeoPlanItem[]>>
   /** Renders a single work piece with its execution controls (owned by the live plan). */
   renderItem?: (item: CeoPlanItem) => ReactNode
   plannedMinutes?: number
+  /** Creates a new executable CEO assignment inside a specific hour. Returns success. */
+  onAddWork?: (hour: HourBlockIndex, input: HourWorkInput) => Promise<boolean>
 } = {}) {
-  const { hours, hydrated, setWork, setAffirmation } = useHourlyWork()
-
-  // Local controlled drafts so typing never jumps the caret when the store
-  // broadcasts a change. Seeded once from the persisted plan after hydration.
-  const [drafts, setDrafts] = useState<PerHour<string>>(emptyStrings)
-  const seeded = useRef(false)
-  useEffect(() => {
-    if (hydrated && !seeded.current) {
-      setDrafts({ 1: hours[1].work, 2: hours[2].work, 3: hours[3].work, 4: hours[4].work })
-      seeded.current = true
-    }
-  }, [hydrated, hours])
+  const { hours, setWork, setAffirmation } = useHourlyWork()
 
   const [busy, setBusy] = useState<PerHour<boolean>>(emptyBools)
   const [errors, setErrors] = useState<PerHour<string | null>>({ 1: null, 2: null, 3: null, 4: null })
   const [copied, setCopied] = useState<HourBlockIndex | null>(null)
+  // The Business Function Builder™ is open for at most one hour at a time.
+  const [builderHour, setBuilderHour] = useState<HourBlockIndex | null>(null)
+  const [builder, setBuilder] = useState<BuilderState>(emptyBuilder)
   // The Write / Research with AI Studio™, launched from a specific hour's builder.
   const [studio, setStudio] = useState<{ mode: ThoughtLeadershipMode; hour: HourBlockIndex } | null>(null)
 
-  function onWorkChange(index: HourBlockIndex, value: string) {
-    setDrafts((d) => ({ ...d, [index]: value }))
-    setWork(index, value)
-  }
-
-  async function createAffirmation(index: HourBlockIndex) {
-    const work = drafts[index].trim()
-    if (!work) {
-      setErrors((e) => ({ ...e, [index]: "Write what must happen this hour first." }))
-      return
-    }
-    setErrors((e) => ({ ...e, [index]: null }))
+  /** Turn a piece of work into that hour's Work Affirmation™ and persist it. */
+  async function generateAffirmation(index: HourBlockIndex, workText: string) {
+    const work = workText.trim()
+    if (!work) return
     setBusy((b) => ({ ...b, [index]: true }))
-    // Make sure the latest text is persisted before we transform it.
     setWork(index, work)
     try {
       const res = await fetch("/api/ceo-workday/work-affirmation", {
@@ -86,14 +104,45 @@ export function WhatMustHappenToday({
         body: JSON.stringify({ work }),
       })
       const data = (await res.json()) as { affirmation?: string; error?: string }
-      if (!res.ok || !data.affirmation) {
-        setErrors((e) => ({ ...e, [index]: data.error ?? "Could not create your affirmation." }))
-        return
-      }
-      setAffirmation(index, data.affirmation)
+      if (res.ok && data.affirmation) setAffirmation(index, data.affirmation)
     } catch {
-      setErrors((e) => ({ ...e, [index]: "Could not create your affirmation. Please try again." }))
+      // Fail quietly — the assignment is still saved; the affirmation can be recreated.
     } finally {
+      setBusy((b) => ({ ...b, [index]: false }))
+    }
+  }
+
+  function openBuilder(index: HourBlockIndex) {
+    setBuilderHour(index)
+    setBuilder({ ...emptyBuilder(), fn: "build" })
+    setErrors((e) => ({ ...e, [index]: null }))
+  }
+
+  function closeBuilder() {
+    setBuilderHour(null)
+    setBuilder(emptyBuilder())
+  }
+
+  async function submitBuilder(index: HourBlockIndex) {
+    if (!onAddWork) return
+    if (!builder.fn || !builder.work.trim() || !builder.outcome.trim()) {
+      setErrors((e) => ({ ...e, [index]: "Choose a function, then say what must happen and its outcome." }))
+      return
+    }
+    setErrors((e) => ({ ...e, [index]: null }))
+    setBusy((b) => ({ ...b, [index]: true }))
+    const ok = await onAddWork(index, {
+      businessFunction: builder.fn,
+      work: builder.work.trim(),
+      outcome: builder.outcome.trim(),
+      minutes: Math.max(5, builder.minutes),
+    })
+    if (ok) {
+      const workText = builder.work.trim()
+      closeBuilder()
+      await generateAffirmation(index, workText)
+    } else {
+      setErrors((e) => ({ ...e, [index]: "That work could not be saved. Please try again." }))
       setBusy((b) => ({ ...b, [index]: false }))
     }
   }
@@ -118,9 +167,10 @@ export function WhatMustHappenToday({
             What Must Happen Today™
           </p>
           <p className="mt-2 font-sans text-sm leading-relaxed text-[#3A2E33]">
-            The work you designed with the Business Function tool fills each of your four protected hours — arranged by
-            order and time, and yours to reassign. Open an hour to edit, defer, delegate or remove that work, then
-            create the hour&apos;s Work Affirmation™ and copy it into the live session chat.
+            Each protected hour holds the executable CEO work you designed. Open an hour to edit, defer, delegate or
+            remove that work — or use the Business Function Builder™ to add a new piece of work right here. The work you
+            choose automatically writes the hour&apos;s Work Affirmation™ at the top, ready to copy into the live session
+            chat.
           </p>
         </div>
         {typeof plannedMinutes === "number" && (
@@ -135,55 +185,12 @@ export function WhatMustHappenToday({
           const index = block.index
           const entry = hours[index]
           const affirmation = entry.affirmation
-          const inputId = `wmht-hour-${index}`
+          const hourItems = itemsByHour?.[index] ?? []
+          const builderOpen = builderHour === index
           return (
             <CollapsibleSubSection key={index} title={`Hour ${index} · ${block.label}`}>
               <div className="flex flex-col gap-4">
-                {renderItem && (itemsByHour?.[index]?.length ?? 0) > 0 && (
-                  <div className="flex flex-col gap-2">
-                    <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
-                      Your CEO work this hour
-                    </p>
-                    <ol className="space-y-2">
-                      {itemsByHour![index]!.map((item) => (
-                        <li key={item.id}>{renderItem(item)}</li>
-                      ))}
-                    </ol>
-                  </div>
-                )}
-
-                <div className="flex flex-col gap-2">
-                  <label htmlFor={inputId} className="font-sans text-sm font-semibold text-[#2E1F27]">
-                    What must happen during this hour?
-                  </label>
-                  <textarea
-                    id={inputId}
-                    value={drafts[index]}
-                    onChange={(e) => onWorkChange(index, e.target.value)}
-                    rows={3}
-                    placeholder="e.g. Finish the client proposal."
-                    className="w-full resize-y rounded-2xl border border-[#CBB7BE]/60 bg-white px-4 py-3 font-sans text-sm leading-relaxed text-[#2E1F27] placeholder:text-[#9C8A91] focus:outline-none focus:ring-2 focus:ring-[#7FB069]/40"
-                  />
-                </div>
-
-                <div className="flex flex-wrap items-center gap-3">
-                  <button
-                    type="button"
-                    onClick={() => createAffirmation(index)}
-                    disabled={busy[index]}
-                    className="inline-flex items-center gap-2 rounded-full bg-[#5F8F47] px-5 py-2.5 font-sans text-sm font-bold text-white transition-colors hover:bg-[#548039] disabled:opacity-50"
-                  >
-                    <Sparkles className="h-4 w-4" aria-hidden />
-                    {busy[index]
-                      ? "Creating…"
-                      : affirmation
-                        ? "Recreate My Work Affirmation"
-                        : "Create My Work Affirmation"}
-                  </button>
-                </div>
-
-                {errors[index] && <p className="font-sans text-xs text-[#C0545A]">{errors[index]}</p>}
-
+                {/* My Work Affirmation™ — always at the top of the hour block. */}
                 {affirmation && (
                   <div className="rounded-2xl border border-[#7FB069]/40 bg-white px-5 py-4">
                     <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
@@ -192,7 +199,7 @@ export function WhatMustHappenToday({
                     <p className="mt-2 font-serif text-base italic leading-relaxed text-[#2E1F27] text-pretty">
                       {affirmation}
                     </p>
-                    <div className="mt-3 flex items-center gap-3">
+                    <div className="mt-3 flex flex-wrap items-center gap-3">
                       <button
                         type="button"
                         onClick={() => copyAffirmation(index)}
@@ -213,9 +220,148 @@ export function WhatMustHappenToday({
                   </div>
                 )}
 
+                {/* The executable CEO assignments designed for this hour. */}
+                {renderItem && hourItems.length > 0 && (
+                  <div className="flex flex-col gap-2">
+                    <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
+                      Your CEO work this hour
+                    </p>
+                    <ol className="space-y-2">
+                      {hourItems.map((item) => (
+                        <li key={item.id}>{renderItem(item)}</li>
+                      ))}
+                    </ol>
+                  </div>
+                )}
+
+                {/* What Must Happen Today Business Function Builder™ — creates an
+                    executable CEO assignment inside this hour. */}
+                {onAddWork && (
+                  <div className="rounded-2xl border border-dashed border-[#7FB069]/45 bg-white/70 px-4 py-4">
+                    <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
+                      What must happen this hour?
+                    </p>
+                    {!builderOpen ? (
+                      <>
+                        <p className="mt-1 font-sans text-xs leading-relaxed text-[#6B5860]">
+                          Add or adjust a piece of work for this hour. Choosing it creates an executable CEO assignment
+                          and writes this hour&apos;s Work Affirmation™.
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => openBuilder(index)}
+                          className="mt-2.5 inline-flex items-center gap-1.5 rounded-full bg-[#5F8F47] px-4 py-2 font-sans text-xs font-bold text-white transition-colors hover:bg-[#548039]"
+                        >
+                          <Plus className="h-3.5 w-3.5" aria-hidden />
+                          Add a piece of work
+                        </button>
+                      </>
+                    ) : (
+                      <div className="mt-3 flex flex-col gap-3">
+                        <div>
+                          <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/70">
+                            Business Function
+                          </p>
+                          <div className="mt-1.5 flex flex-wrap gap-1.5">
+                            {FUNCTION_ORDER.map((fn) => (
+                              <button
+                                key={fn}
+                                type="button"
+                                aria-pressed={builder.fn === fn}
+                                onClick={() => setBuilder((b) => ({ ...b, fn }))}
+                                className={`rounded-full border px-2.5 py-1 font-montserrat text-[10px] font-bold uppercase tracking-wider transition-colors ${
+                                  builder.fn === fn
+                                    ? "border-[#3A2E33] bg-[#3A2E33] text-white"
+                                    : "border-[#E8DFE2] bg-white text-[#6B5860] hover:bg-black/[0.03]"
+                                }`}
+                              >
+                                {CEO_FUNCTION_LABEL[fn]}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div>
+                          <label
+                            htmlFor={`wmht-work-${index}`}
+                            className="font-montserrat text-[10px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/70"
+                          >
+                            What needs to happen?
+                          </label>
+                          <textarea
+                            id={`wmht-work-${index}`}
+                            value={builder.work}
+                            onChange={(e) => setBuilder((b) => ({ ...b, work: e.target.value }))}
+                            rows={2}
+                            placeholder="e.g. Finish and send the client proposal."
+                            className="mt-1 w-full resize-y rounded-lg border border-[#E8DFE2] bg-white px-3 py-2 font-sans text-sm leading-relaxed text-[#2E1F27] placeholder:text-[#9C8A91] focus:outline-none focus:ring-2 focus:ring-[#7FB069]/40"
+                          />
+                        </div>
+
+                        <div>
+                          <label
+                            htmlFor={`wmht-outcome-${index}`}
+                            className="font-montserrat text-[10px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/70"
+                          >
+                            Expected outcome
+                          </label>
+                          <textarea
+                            id={`wmht-outcome-${index}`}
+                            value={builder.outcome}
+                            onChange={(e) => setBuilder((b) => ({ ...b, outcome: e.target.value }))}
+                            rows={2}
+                            placeholder="e.g. The proposal is in the client's inbox awaiting a decision."
+                            className="mt-1 w-full resize-y rounded-lg border border-[#E8DFE2] bg-white px-3 py-2 font-sans text-sm leading-relaxed text-[#2E1F27] placeholder:text-[#9C8A91] focus:outline-none focus:ring-2 focus:ring-[#7FB069]/40"
+                          />
+                        </div>
+
+                        <div className="flex flex-wrap items-center gap-3">
+                          <div className="flex items-center gap-2">
+                            <label className="font-sans text-xs text-[#6B5860]" htmlFor={`wmht-min-${index}`}>
+                              Estimated time
+                            </label>
+                            <input
+                              id={`wmht-min-${index}`}
+                              type="number"
+                              min={5}
+                              max={240}
+                              value={builder.minutes}
+                              onChange={(e) =>
+                                setBuilder((b) => ({ ...b, minutes: Math.max(5, Number(e.target.value) || 0) }))
+                              }
+                              className="w-20 rounded-lg border border-[#E8DFE2] bg-white px-2 py-1.5 font-sans text-sm text-[#2E1F27] focus:outline-none focus:ring-2 focus:ring-[#7FB069]/40"
+                            />
+                            <span className="font-sans text-xs text-[#6B5860]">min</span>
+                          </div>
+                          <div className="ml-auto flex items-center gap-3">
+                            <button
+                              type="button"
+                              onClick={closeBuilder}
+                              className="font-sans text-sm text-[#6B5860] hover:text-[#2E1F27]"
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => submitBuilder(index)}
+                              disabled={busy[index]}
+                              className="inline-flex items-center gap-1.5 rounded-full bg-[#5F8F47] px-4 py-2 font-sans text-sm font-bold text-white transition-colors hover:bg-[#548039] disabled:opacity-50"
+                            >
+                              <Sparkles className="h-4 w-4" aria-hidden />
+                              {busy[index] ? "Creating…" : "Add work + create affirmation"}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    {errors[index] && <p className="mt-2 font-sans text-xs text-[#C0545A]">{errors[index]}</p>}
+                  </div>
+                )}
+
+                {/* Write / Research with AI — for keynotes, press releases, Op-Eds, PSAs, etc. */}
                 <div className="rounded-2xl border border-dashed border-[#7FB069]/45 bg-white/70 px-4 py-3">
                   <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
-                    Create a new work piece
+                    Write or research with AI
                   </p>
                   <p className="mt-1 font-sans text-xs leading-relaxed text-[#6B5860]">
                     Need to write or research something this hour — a keynote, press release, Op-Ed, PSA, or any thought

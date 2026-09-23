@@ -28,7 +28,6 @@ import {
   type CeoWorkdayDeclaration,
 } from "@/lib/daily-plan/ceo-workday-declaration"
 import { WeeklyPrioritiesPanel } from "@/components/ceo-workday/weekly-priorities-panel"
-import { BoundaryFocusPanel } from "@/components/ceo-workday/boundary-focus-panel"
 import { WhatMustHappenToday } from "@/components/ceo-workday/what-must-happen-today"
 import { useWeeklyCommitments } from "@/lib/weekly-commitments/use-weekly-commitments"
 import {
@@ -48,6 +47,7 @@ import {
   CEO_FUNCTION_LABEL,
   CEO_ITEM_STATUS_LABEL,
   CEO_TREATMENT_LABEL,
+  type CeoBusinessFunction,
   type CeoNextAction,
   type CeoPlanItem,
   type CeoWorkdayPlan,
@@ -72,6 +72,21 @@ import type { BusinessAssetBuildRecord } from "@/utils/business-asset-build-stor
 import { CeoHourCheckin } from "./ceo-hour-checkin"
 
 type AdjustAction = "change" | "defer" | "delegate" | "remove" | "help" | "other"
+
+const CEO_FUNCTION_TO_CATEGORY: Record<CeoBusinessFunction, NonNullable<CeoPlanItem["ceoWorkCategory"]>> = {
+  build: "BUILD",
+  decide: "DECIDE",
+  own: "DECIDE",
+  delegate: "DELEGATE",
+  systemize: "SYSTEMIZE",
+  "augment-automate-ai": "AUGMENT",
+  connect: "CONNECT",
+  communicate: "COMMUNICATE",
+  sell: "SELL",
+  market: "MARKET",
+  deliver: "DELIVER",
+  solve: "SOLVE",
+}
 
 export function CeoWorkdayLivePlan() {
   const dateKey = getDateKey()
@@ -279,6 +294,61 @@ export function CeoWorkdayLivePlan() {
     setAddDraft("")
     setAddingOpen(false)
     setAddingBusy(false)
+  }
+
+  /**
+   * Founder creates a new executable CEO assignment inside a specific hour using
+   * the What Must Happen Today Business Function Builder™. Mirrors into the
+   * Today's Work™ queue and pins the new work to the chosen hour.
+   */
+  async function addWorkToHour(
+    hour: HourBlockIndex,
+    input: { businessFunction: CeoBusinessFunction; work: string; outcome: string; minutes: number },
+  ): Promise<boolean> {
+    if (!plan) return false
+    const title = input.work.trim()
+    if (!title) return false
+    const category = CEO_FUNCTION_TO_CATEGORY[input.businessFunction]
+    const wf = getWorkflowEntry(category)
+    const purpose = "Added by me inside my CEO Workday™ as something that must happen this hour."
+    const estimatedMinutes = Math.max(5, input.minutes)
+    const created = await addCeoPlanItem(plan.id, {
+      title,
+      purpose,
+      expectedEvidence: input.outcome.trim(),
+      treatment: "implement-operate",
+      businessFunction: input.businessFunction,
+      role: "founder-added",
+      estimatedMinutes,
+      relatedAssetId: null,
+      relatedAssetTitle: null,
+      ceoWorkCategory: category,
+      founderDecision: "added",
+      status: "planned",
+      nextAction: null,
+      localWorkItemId: null,
+    })
+    if (!created) return false
+    const local = addWorkItem({
+      category,
+      selectedOptionLabel: title,
+      workflowId: wf.workflowId,
+      availability: wf.availability,
+      source: "founder",
+      sourceDetail: "What Must Happen Today™ · CEO Workday",
+      status: "not-started",
+      planItemId: created.id,
+      estimatedMinutes: created.estimatedMinutes,
+      purpose,
+      expectedEvidence: input.outcome.trim(),
+      tangibleOutcome: input.outcome.trim(),
+    })
+    void linkPlanItemsToLocalQueue([{ itemId: created.id, localWorkItemId: local.id }])
+    setPlan((p) => p && { ...p, items: [...p.items, { ...created, localWorkItemId: local.id }], plannedMinutes: p.plannedMinutes + created.estimatedMinutes })
+    // Pin the new assignment to the hour the founder built it in.
+    setHour(created.id, hour)
+    await updateCeoPlanStatus(plan.id, "adjusted")
+    return true
   }
 
   async function commitTitle(item: CeoPlanItem, title: string) {
@@ -544,11 +614,6 @@ export function CeoWorkdayLivePlan() {
           (the two were reversed), collapsible with inline intention editing. */}
       <WeeklyPrioritiesPanel />
 
-      {/* This Week's Boundary Focus™ — the single Work-Life Balance Boundary™ the
-          founder operationalizes into a Human SOS™ via the Boundary Builder™.
-          A separate section; it does not replace the three CEO priority boxes. */}
-      <BoundaryFocusPanel />
-
       {/* What Must Happen Today™ + CEO Workday Execution™ — combined. The work the
           founder designed with the Business Function tool populates each of the four
           protected hours (auto-filled by order + time, and reassignable). Opening an
@@ -570,7 +635,12 @@ export function CeoWorkdayLivePlan() {
             </div>
           )}
 
-          <WhatMustHappenToday itemsByHour={itemsByHour} renderItem={renderPlanItem} plannedMinutes={plan.plannedMinutes} />
+          <WhatMustHappenToday
+            itemsByHour={itemsByHour}
+            renderItem={renderPlanItem}
+            plannedMinutes={plan.plannedMinutes}
+            onAddWork={addWorkToHour}
+          />
 
           {/* Add work — the founder's words, mirrored into the plan and queue. New
               work auto-fills into an hour and is reassignable like everything else. */}
