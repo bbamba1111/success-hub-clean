@@ -30,7 +30,6 @@ import { CheckCircle2, ChevronRight, Sparkles, Plus, RefreshCw, Pencil, Check, A
 
 import { getWeekKey, loadWeek, WLBB_WEEK_CHANGED_EVENT } from "@/lib/wlbb-week/storage"
 import type { WlbbWeekState } from "@/lib/wlbb-week/types"
-import { BoundaryFocusPanel } from "@/components/ceo-workday/boundary-focus-panel"
 import { useWeeklyBoundaryFocus } from "@/lib/weekly-boundary-focus/use-weekly-boundary-focus"
 import { getEgaEntriesByStatus } from "@/lib/ega/ega-storage"
 import type { EgaEntry } from "@/lib/ega/types"
@@ -526,10 +525,7 @@ export function CeoWorkdayDesignForm() {
         </p>
       </div>
 
-      {/* This week's Boundary Focus™ — the tool that builds it into the business */}
-      <BoundaryFocusPanel />
-
-      {/* Supporting context from this week's decisions */}
+        {/* Supporting context from this week's decisions */}
       {(design?.relatedAssetName || design?.constraintSummary) && (
         <div className="grid gap-3 rounded-2xl border border-[#E8DFE2] bg-[#FAF8F5] p-4 sm:grid-cols-2">
           {design?.relatedAssetName && <SourceCell label="Related Business Asset™" value={design.relatedAssetName} />}
