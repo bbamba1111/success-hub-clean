@@ -18,7 +18,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Check, Clock, Copy, Mic, Pencil, Play, Plus, RotateCcw } from "lucide-react"
+import { Check, Clock, Copy, Mic, Pencil, Play, RotateCcw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 import { getDateKey } from "@/lib/daily-plan/storage"
@@ -108,9 +108,6 @@ export function CeoWorkdayLivePlan() {
   /** Which plan item's work surface (builder / template picker) is open. */
   const [openItemId, setOpenItemId] = useState<string | null>(null)
   /** Founder adding a piece of work in her own words. */
-  const [addingOpen, setAddingOpen] = useState(false)
-  const [addDraft, setAddDraft] = useState("")
-  const [addingBusy, setAddingBusy] = useState(false)
 
   // Platform clock, ticked every 15s — deterministic, no random timers.
   const [nowMin, setNowMin] = useState(() => platformMinutes())
@@ -245,55 +242,6 @@ export function CeoWorkdayLivePlan() {
     await updateCeoPlanItem(item.id, { status: "planned", nextAction: null, founderDecision: "edit" })
     if (item.localWorkItemId) updateWorkItemStatus(item.localWorkItemId, "not-started")
     await updateCeoPlanStatus(plan.id, "adjusted")
-  }
-
-  /** Founder adds a piece of work to What Must Happen Today™ in her own words. */
-  async function addWork() {
-    if (!plan) return
-    const title = addDraft.trim()
-    if (!title) return
-    setAddingBusy(true)
-    const wf = getWorkflowEntry("BUILD")
-    const purpose = "Added by me inside my CEO Workday™ as something that must happen today."
-    const created = await addCeoPlanItem(plan.id, {
-      title,
-      purpose,
-      expectedEvidence: "",
-      treatment: "build-change",
-      businessFunction: "build",
-      role: "founder-added",
-      estimatedMinutes: 60,
-      relatedAssetId: null,
-      relatedAssetTitle: null,
-      ceoWorkCategory: "BUILD",
-      founderDecision: "added",
-      status: "planned",
-      nextAction: null,
-      localWorkItemId: null,
-    })
-    if (created) {
-      // Mirror into the Today's Work™ queue so the plan stays the single source.
-      const local = addWorkItem({
-        category: "BUILD",
-        selectedOptionLabel: title,
-        workflowId: wf.workflowId,
-        availability: wf.availability,
-        source: "founder",
-        sourceDetail: "What Must Happen Today™ · CEO Workday",
-        status: "not-started",
-        planItemId: created.id,
-        estimatedMinutes: created.estimatedMinutes,
-        purpose,
-        expectedEvidence: "",
-        tangibleOutcome: "",
-      })
-      void linkPlanItemsToLocalQueue([{ itemId: created.id, localWorkItemId: local.id }])
-      setPlan((p) => p && { ...p, items: [...p.items, { ...created, localWorkItemId: local.id }], plannedMinutes: p.plannedMinutes + created.estimatedMinutes })
-      await updateCeoPlanStatus(plan.id, "adjusted")
-    }
-    setAddDraft("")
-    setAddingOpen(false)
-    setAddingBusy(false)
   }
 
   /**
@@ -660,53 +608,6 @@ export function CeoWorkdayLivePlan() {
             onAddWork={addWorkToHour}
           />
 
-          {/* Add work — the founder's words, mirrored into the plan and queue. New
-              work auto-fills into an hour and is reassignable like everything else. */}
-          {plan.status !== "closed" && (
-            addingOpen ? (
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault()
-                  void addWork()
-                }}
-                className="flex flex-col gap-2 rounded-2xl border border-dashed border-[#8DAE72]/50 bg-white px-4 py-3 sm:flex-row sm:items-center"
-              >
-                <input
-                  autoFocus
-                  value={addDraft}
-                  onChange={(e) => setAddDraft(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Escape") setAddingOpen(false)
-                  }}
-                  placeholder="What else must happen today?"
-                  aria-label="Add work to today"
-                  className="flex-1 rounded-lg border border-[#E8DFE2] px-3 py-2 font-sans text-sm text-[#2E1F27] focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
-                />
-                <div className="flex gap-2">
-                  <button type="submit" disabled={addingBusy || !addDraft.trim()} className="rounded-full bg-[#5A7A45] px-4 py-2 font-sans text-xs font-bold text-white hover:opacity-90 disabled:opacity-50">
-                    {addingBusy ? "Adding…" : "Add to today"}
-                  </button>
-                  <button type="button" onClick={() => setAddingOpen(false)} className="rounded-full border border-[#E8DFE2] bg-white px-4 py-2 font-sans text-xs font-semibold text-[#6B5860] hover:bg-black/[0.03]">
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            ) : (
-              <button
-                type="button"
-                onClick={() => setAddingOpen(true)}
-                className="inline-flex items-center gap-1.5 rounded-full border border-dashed border-[#8DAE72]/60 bg-white px-3.5 py-1.5 font-sans text-xs font-bold text-[#5A7A45] hover:bg-[#5A7A45]/5"
-              >
-                <Plus className="h-3 w-3" aria-hidden /> Add work to today
-              </button>
-            )
-          )}
-
-          {adjusting && (
-            <button type="button" onClick={() => setAdjusting(false)} className="font-sans text-xs font-semibold text-[#5A7A45] underline underline-offset-2">
-              Done adjusting
-            </button>
-          )}
           {needsArticulation && (
             <p className="inline-flex items-center gap-1.5 font-sans text-xs text-[#5A7A45]">
               <Mic className="h-3.5 w-3.5" aria-hidden /> This work involves communicating or selling — Business Articulation Training™ is available below.

@@ -18,13 +18,17 @@
  */
 
 import { useState, type ReactNode } from "react"
-import { Check, Copy, PenLine, Plus, Search, Sparkles } from "lucide-react"
+import { Check, Copy, Mic, PenLine, Plus, Search, Sparkles } from "lucide-react"
 import { CollapsibleSubSection } from "@/components/collapsible-sub-section"
 import { HOUR_BLOCKS, type HourBlockIndex } from "@/lib/ceo-workday/hour-blocks"
 import { useHourlyWork } from "@/lib/ceo-workday/use-hourly-work"
 import { CEO_FUNCTION_LABEL, type CeoBusinessFunction, type CeoPlanItem } from "@/lib/ceo-workday/plan-types"
 import { WriteWithAiStudio } from "@/components/thought-leadership/write-with-ai-studio"
 import type { ThoughtLeadershipMode } from "@/lib/thought-leadership/format-registry"
+import {
+  ArticulationPracticeDialog,
+  type ArticulationSourceContext,
+} from "@/components/articulation/articulation-practice-dialog"
 
 type PerHour<T> = Record<HourBlockIndex, T>
 
@@ -66,6 +70,21 @@ function emptyBuilder(): BuilderState {
   return { fn: null, work: "", outcome: "", minutes: 30 }
 }
 
+/**
+ * A fresh Business Articulation Training™ source for practicing a spoken business
+ * piece inside a protected hour. The founder shapes the actual words in the
+ * dialog's flow — this seeds the session with the practice intent.
+ */
+function hourArticulationSource(hour: HourBlockIndex): ArticulationSourceContext {
+  return {
+    sourceTitle: `Hour ${hour} · speaking practice`,
+    sourceKind: "Speaking practice",
+    sourceContent:
+      "I want to write, rehearse, and deliver a spoken business piece — such as a keynote speech, pitch, presentation, or webinar — with clarity, confidence, and impact.",
+    purpose: "Explain",
+  }
+}
+
 export function WhatMustHappenToday({
   itemsByHour,
   renderItem,
@@ -90,6 +109,9 @@ export function WhatMustHappenToday({
   const [builder, setBuilder] = useState<BuilderState>(emptyBuilder)
   // The Write / Research with AI Studio™, launched from a specific hour's builder.
   const [studio, setStudio] = useState<{ mode: ThoughtLeadershipMode; hour: HourBlockIndex } | null>(null)
+  // Business Articulation Training™, launched from a specific hour to rehearse a
+  // keynote, pitch, presentation, webinar, or any spoken business piece.
+  const [articulationHour, setArticulationHour] = useState<HourBlockIndex | null>(null)
 
   /** Turn a piece of work into that hour's Work Affirmation™ and persist it. */
   async function generateAffirmation(index: HourBlockIndex, workText: string) {
@@ -364,8 +386,9 @@ export function WhatMustHappenToday({
                     Write or research with AI
                   </p>
                   <p className="mt-1 font-sans text-xs leading-relaxed text-[#6B5860]">
-                    Need to write or research something this hour — a keynote, press release, Op-Ed, PSA, or any thought
-                    leadership piece? The right AI executive will build it with you from a template.
+                    Need to write, research, or practice something this hour — a keynote, pitch, presentation, webinar,
+                    press release, Op-Ed, PSA, or any thought leadership piece? The right AI executive will build it with
+                    you from a template, or rehearse it with you in Business Articulation Training™.
                   </p>
                   <div className="mt-2.5 flex flex-wrap gap-2">
                     <button
@@ -383,6 +406,14 @@ export function WhatMustHappenToday({
                     >
                       <Search className="h-3.5 w-3.5" aria-hidden />
                       Research with AI
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setArticulationHour(index)}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-[#7FB069]/50 bg-[#F3F8ED] px-4 py-2 font-sans text-xs font-bold text-[#3A6B2E] transition-colors hover:bg-[#E7F1DD]"
+                    >
+                      <Mic className="h-3.5 w-3.5" aria-hidden />
+                      Business Articulation Training
                     </button>
                   </div>
                 </div>
@@ -402,6 +433,14 @@ export function WhatMustHappenToday({
           open
           onClose={() => setStudio(null)}
           hourLabel={`Hour ${studio.hour}`}
+        />
+      )}
+
+      {articulationHour !== null && (
+        <ArticulationPracticeDialog
+          open
+          onClose={() => setArticulationHour(null)}
+          source={hourArticulationSource(articulationHour)}
         />
       )}
     </section>
