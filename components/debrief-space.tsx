@@ -92,18 +92,18 @@ export function DebriefSpace() {
           </p>
         </div>
 
-        {/* ── The protected windows of the day, CEO Workday first ───────────── */}
+        {/* ── The protected windows of the day, in daily rhythm order ───────── */}
         <div className="space-y-4 pt-2">
-          <CollapsibleSubSection title="4-Hour Focused CEO Workday">
-            <CeoWorkdayDesignForm />
-          </CollapsibleSubSection>
-
           <CollapsibleSubSection title="30-Minute Movement Window">
             <MovementIntentionForm />
           </CollapsibleSubSection>
 
           <CollapsibleSubSection title="Extended Healthy Hybrid Lunch Break">
             <LunchIntentionForm />
+          </CollapsibleSubSection>
+
+          <CollapsibleSubSection title="4-Hour Focused CEO Workday">
+            <CeoWorkdayDesignForm />
           </CollapsibleSubSection>
 
           <CollapsibleSubSection title="Time Freedom" keepMounted={false}>
