@@ -108,6 +108,7 @@ export function DebriefSpace() {
           <CollapsibleSubSection title="Time Freedom" keepMounted={false}>
             {(open) => (
               <div className="space-y-5">
+                <WeeklyLifePrioritiesCard />
                 <UpcomingLifeEvents onPlan={setTimeFreedomPrompt} />
                 <CherryBlossomWorkstation
                   context="lifestyle-experiences"
