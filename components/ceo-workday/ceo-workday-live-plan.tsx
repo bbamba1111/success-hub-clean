@@ -40,7 +40,9 @@ import {
   platformMinutes,
   scheduledCheckinIso,
   type HourBlock,
+  type HourBlockIndex,
 } from "@/lib/ceo-workday/hour-blocks"
+import { autoAssignHours, resolveHour, useHourOverrides } from "@/lib/ceo-workday/hour-assignment"
 import {
   ARTICULATION_FUNCTIONS,
   CEO_FUNCTION_LABEL,
@@ -147,6 +149,17 @@ export function CeoWorkdayLivePlan() {
   }, [loaded, plan, weeklyDeclaration, dateKey, weekly.weekKey])
 
   const activeItems = useMemo(() => plan?.items.filter((i) => i.founderDecision !== "remove") ?? [], [plan])
+
+  // The designed work populates the four hours: auto-filled by order + time,
+  // and reassignable by the founder (override persisted per plan date).
+  const autoHours = useMemo(() => autoAssignHours(plan?.items ?? []), [plan])
+  const { overrides, setHour } = useHourOverrides(dateKey)
+  const itemsByHour = useMemo(() => {
+    const groups: Record<HourBlockIndex, CeoPlanItem[]> = { 1: [], 2: [], 3: [], 4: [] }
+    for (const item of activeItems) groups[resolveHour(item.id, autoHours, overrides)].push(item)
+    return groups
+  }, [activeItems, autoHours, overrides])
+
   const block = currentHourBlock(nowMin)
   const due = blockNeedingCheckin(nowMin, savedBlocks)
   const allSaved = savedBlocks.size >= HOUR_BLOCKS.length || plan?.status === "closed"
@@ -366,6 +379,129 @@ export function CeoWorkdayLivePlan() {
     }
   }
 
+  // A single designed work piece, rendered inside its hour workspace with the
+  // full execution controls: edit title, start/continue/complete, the work
+  // surface (asset builder / template picker), move-to-hour, and adjust
+  // (defer / delegate / remove / help). Same identity through the lifecycle.
+  const renderPlanItem = (item: CeoPlanItem) => {
+    const gone = item.founderDecision === "remove" || item.status === "eliminated"
+    const closed = plan?.status === "closed"
+    return (
+      <div className={`rounded-2xl border border-[#E8DFE2] bg-white px-4 py-3 ${gone ? "opacity-50" : ""}`}>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="font-montserrat text-[9px] font-bold uppercase tracking-[0.16em] text-[#5B835F]">{CEO_FUNCTION_LABEL[item.businessFunction]}</span>
+          <span className="font-montserrat text-[9px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/60">{CEO_TREATMENT_LABEL[item.treatment]}</span>
+          <span className="ml-auto rounded-full bg-[#F4F1EC] px-2 py-0.5 font-montserrat text-[9px] font-bold uppercase tracking-[0.1em] text-[#6B5860]">
+            {CEO_ITEM_STATUS_LABEL[item.status]}
+          </span>
+        </div>
+        {editTitleId === item.id ? (
+          <input
+            autoFocus
+            defaultValue={item.title}
+            onBlur={(e) => commitTitle(item, e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.nativeEvent.isComposing) (e.target as HTMLInputElement).blur()
+              if (e.key === "Escape") setEditTitleId(null)
+            }}
+            className="mt-1 w-full rounded-lg border border-[#E8DFE2] px-2 py-1 font-sans text-sm font-bold text-[#2E1F27] focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
+            aria-label="Edit work title"
+          />
+        ) : (
+          <p className={`mt-1 font-sans text-sm font-bold text-[#2E1F27] ${item.status === "eliminated" ? "line-through" : ""}`}>{item.title}</p>
+        )}
+        <p className="mt-0.5 font-sans text-xs text-[#6B5860]">
+          {item.estimatedMinutes} min{item.relatedAssetTitle ? ` · ${item.relatedAssetTitle}` : ""}
+          {item.nextAction && item.status !== "completed" ? ` · next: ${item.nextAction.replace(/-/g, " ")}` : ""}
+        </p>
+        {item.expectedEvidence && (
+          <p className="mt-1 font-sans text-xs text-[#3A2E33]">
+            <span className="font-semibold text-[#5A7A45]">Expected outcome:</span> {item.expectedEvidence}
+          </p>
+        )}
+        {!closed && gone && (
+          <button
+            type="button"
+            onClick={() => recallItem(item)}
+            className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-[#5A7A45] px-3.5 py-1.5 font-sans text-xs font-bold text-[#5A7A45] hover:bg-[#5A7A45]/5"
+          >
+            <RotateCcw className="h-3 w-3" aria-hidden /> Recall to today
+          </button>
+        )}
+        {!adjusting && !closed && !gone && (
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+            {openItemId !== item.id ? (
+              <button
+                type="button"
+                onClick={() => openWork(item)}
+                className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 font-sans text-xs font-bold ${
+                  item.status === "completed"
+                    ? "border border-[#E8DFE2] bg-white text-[#6B5860] hover:bg-black/[0.03]"
+                    : item.status === "planned"
+                      ? "bg-[#5A7A45] text-white hover:opacity-90"
+                      : "border border-[#5A7A45] text-[#5A7A45] hover:bg-[#5A7A45]/5"
+                }`}
+              >
+                <Play className="h-3 w-3" aria-hidden />
+                {item.status === "planned" ? "Start" : item.status === "completed" ? "Open" : "Continue"}
+              </button>
+            ) : (
+              <button type="button" onClick={() => setOpenItemId(null)} className="inline-flex items-center gap-1.5 rounded-full border border-[#E8DFE2] bg-white px-3.5 py-1.5 font-sans text-xs font-semibold text-[#6B5860] hover:bg-black/[0.03]">
+                Close work surface
+              </button>
+            )}
+            <label className="inline-flex items-center gap-1 rounded-full border border-[#E8DFE2] bg-white px-2.5 py-1">
+              <span className="font-sans text-[11px] font-semibold text-[#6B5860]">Hour</span>
+              <span className="sr-only">Move this work to another hour</span>
+              <select
+                value={resolveHour(item.id, autoHours, overrides)}
+                onChange={(e) => setHour(item.id, Number(e.target.value) as HourBlockIndex)}
+                className="cursor-pointer bg-transparent font-sans text-[11px] font-bold text-[#2E1F27] focus:outline-none"
+              >
+                {[1, 2, 3, 4].map((h) => (
+                  <option key={h} value={h}>
+                    {h}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+        )}
+
+        {openItemId === item.id && !closed && (
+          <CeoPlanItemWorkSurface
+            item={item}
+            onLinkAsset={(assetId) => linkAsset(item, assetId)}
+            onBuildChange={(build) => {
+              if (build && item.status !== "completed") void completeItem(item)
+              if (!build && item.status === "completed") void startItem(item)
+            }}
+            onManualComplete={() => completeItem(item)}
+          />
+        )}
+        {adjusting && !["completed", "eliminated"].includes(item.status) && (
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {(
+              [
+                ["change", "Change"],
+                ["defer", "Defer"],
+                ["delegate", "Delegate"],
+                ["remove", "Remove"],
+                ["help", "Ask for help"],
+                ["other", "Other"],
+              ] as Array<[AdjustAction, string]>
+            ).map(([a, label]) => (
+              <button key={a} type="button" onClick={() => adjust(item, a)} className="inline-flex items-center gap-1 rounded-full border border-[#E8DFE2] bg-white px-2.5 py-1 font-sans text-xs text-[#6B5860] hover:bg-black/[0.03]">
+                {a === "change" && <Pencil className="h-3 w-3" aria-hidden />}
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    )
+  }
+
   // ── render ───────────────────────────────────────────────────────────────
   return (
     <div className="space-y-5">
@@ -413,27 +549,14 @@ export function CeoWorkdayLivePlan() {
           A separate section; it does not replace the three CEO priority boxes. */}
       <BoundaryFocusPanel />
 
-      {/* What Must Happen Today™ — the founder's own four protected hours. This is
-          the "WHAT": the founder decides, hour by hour, what must happen and creates
-          a work affirmation. The GPS execution layer below is the "HOW". */}
-      <WhatMustHappenToday />
-
-      {/* CEO Workday execution — the GPS "how" layer (Start/Continue/Complete,
-          Business Asset builders). Kept fully intact, but only shown once the plan
-          actually holds work items. What Must Happen Today™ (the four-hour panel
-          above) is now where the founder declares today's work, so the old empty
-          planning card no longer appears. */}
-      {plan && plan.items.length > 0 && (
-        <div className="rounded-3xl border border-[#8DAE72]/30 bg-[#F4F7F0] px-6 py-6 sm:px-7 space-y-5">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <p className="font-montserrat text-xs font-bold uppercase tracking-[0.18em] text-[#5A7A45]">CEO Workday Execution™</p>
-              {plan.constraintSummary && <p className="mt-1 font-sans text-xs text-[#6B5860]">{plan.constraintSummary}</p>}
-            </div>
-            <span className="font-sans text-xs font-semibold text-[#6B5860]">{plan.plannedMinutes} / 240 min planned</span>
-          </div>
-
-          {entered && !adjusting && plan.status !== "closed" && (
+      {/* What Must Happen Today™ + CEO Workday Execution™ — combined. The work the
+          founder designed with the Business Function tool populates each of the four
+          protected hours (auto-filled by order + time, and reassignable). Opening an
+          hour reveals that work, editable / deferrable / delegable / removable right
+          there, followed by the hour's Work Affirmation™ and Copy. */}
+      {plan && (
+        <div className="space-y-4">
+          {activeItems.length > 0 && entered && !adjusting && plan.status !== "closed" && (
             <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#E8DFE2] bg-white px-4 py-3">
               <p className="font-sans text-sm font-semibold text-[#2E1F27]">Is this still what you need to work on?</p>
               <div className="flex gap-2">
@@ -447,118 +570,10 @@ export function CeoWorkdayLivePlan() {
             </div>
           )}
 
-          <ol className="space-y-2">
-            {plan.items.map((item, idx) => (
-              <li key={item.id} className={`rounded-2xl border border-[#E8DFE2] bg-white px-4 py-3 ${item.founderDecision === "remove" || item.status === "eliminated" ? "opacity-50" : ""}`}>
-                <div className="flex items-start gap-3">
-                  <span className="mt-0.5 shrink-0 font-montserrat text-xs font-bold text-[#B7A6AE]">{idx + 1}</span>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-montserrat text-[9px] font-bold uppercase tracking-[0.16em] text-[#5B835F]">{CEO_FUNCTION_LABEL[item.businessFunction]}</span>
-                      <span className="font-montserrat text-[9px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/60">{CEO_TREATMENT_LABEL[item.treatment]}</span>
-                      <span className="ml-auto rounded-full bg-[#F4F1EC] px-2 py-0.5 font-montserrat text-[9px] font-bold uppercase tracking-[0.1em] text-[#6B5860]">
-                        {CEO_ITEM_STATUS_LABEL[item.status]}
-                      </span>
-                    </div>
-                    {editTitleId === item.id ? (
-                      <input
-                        autoFocus
-                        defaultValue={item.title}
-                        onBlur={(e) => commitTitle(item, e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter" && !e.nativeEvent.isComposing) (e.target as HTMLInputElement).blur()
-                          if (e.key === "Escape") setEditTitleId(null)
-                        }}
-                        className="mt-1 w-full rounded-lg border border-[#E8DFE2] px-2 py-1 font-sans text-sm font-bold text-[#2E1F27] focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
-                        aria-label="Edit work title"
-                      />
-                    ) : (
-                      <p className={`mt-1 font-sans text-sm font-bold text-[#2E1F27] ${item.status === "eliminated" ? "line-through" : ""}`}>{item.title}</p>
-                    )}
-                    <p className="mt-0.5 font-sans text-xs text-[#6B5860]">
-                      {item.estimatedMinutes} min{item.relatedAssetTitle ? ` · ${item.relatedAssetTitle}` : ""}
-                      {item.nextAction && item.status !== "completed" ? ` · next: ${item.nextAction.replace(/-/g, " ")}` : ""}
-                    </p>
-                    {item.expectedEvidence && (
-                      <p className="mt-1 font-sans text-xs text-[#3A2E33]">
-                        <span className="font-semibold text-[#5A7A45]">Expected outcome:</span> {item.expectedEvidence}
-                      </p>
-                    )}
-                    {plan.status !== "closed" && (item.founderDecision === "remove" || item.status === "eliminated") && (
-                      <button
-                        type="button"
-                        onClick={() => recallItem(item)}
-                        className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-[#5A7A45] px-3.5 py-1.5 font-sans text-xs font-bold text-[#5A7A45] hover:bg-[#5A7A45]/5"
-                      >
-                        <RotateCcw className="h-3 w-3" aria-hidden /> Recall to today
-                      </button>
-                    )}
-                    {!adjusting && plan.status !== "closed" && item.founderDecision !== "remove" && item.status !== "eliminated" && (
-                      <div className="mt-2 flex flex-wrap gap-2">
-                        {openItemId !== item.id ? (
-                          <button
-                            type="button"
-                            onClick={() => openWork(item)}
-                            className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 font-sans text-xs font-bold ${
-                              item.status === "completed"
-                                ? "border border-[#E8DFE2] bg-white text-[#6B5860] hover:bg-black/[0.03]"
-                                : item.status === "planned"
-                                  ? "bg-[#5A7A45] text-white hover:opacity-90"
-                                  : "border border-[#5A7A45] text-[#5A7A45] hover:bg-[#5A7A45]/5"
-                            }`}
-                          >
-                            <Play className="h-3 w-3" aria-hidden />
-                            {item.status === "planned" ? "Start" : item.status === "completed" ? "Open" : "Continue"}
-                          </button>
-                        ) : (
-                          <button type="button" onClick={() => setOpenItemId(null)} className="inline-flex items-center gap-1.5 rounded-full border border-[#E8DFE2] bg-white px-3.5 py-1.5 font-sans text-xs font-semibold text-[#6B5860] hover:bg-black/[0.03]">
-                            Close work surface
-                          </button>
-                        )}
-                      </div>
-                    )}
+          <WhatMustHappenToday itemsByHour={itemsByHour} renderItem={renderPlanItem} plannedMinutes={plan.plannedMinutes} />
 
-                    {/* The work surface — the founder never leaves the CEO Workday.
-                        With a linked Business Asset™, this is the REAL step-by-step
-                        builder (AssetDetailView, unmodified); completion is driven by
-                        the saved build record, never by a bare button. */}
-                    {openItemId === item.id && plan.status !== "closed" && (
-                      <CeoPlanItemWorkSurface
-                        item={item}
-                        onLinkAsset={(assetId) => linkAsset(item, assetId)}
-                        onBuildChange={(build) => {
-                          if (build && item.status !== "completed") void completeItem(item)
-                          if (!build && item.status === "completed") void startItem(item)
-                        }}
-                        onManualComplete={() => completeItem(item)}
-                      />
-                    )}
-                    {adjusting && !["completed", "eliminated"].includes(item.status) && (
-                      <div className="mt-2 flex flex-wrap gap-1.5">
-                        {(
-                          [
-                            ["change", "Change"],
-                            ["defer", "Defer"],
-                            ["delegate", "Delegate"],
-                            ["remove", "Remove"],
-                            ["help", "Ask for help"],
-                            ["other", "Other"],
-                          ] as Array<[AdjustAction, string]>
-                        ).map(([a, label]) => (
-                          <button key={a} type="button" onClick={() => adjust(item, a)} className="inline-flex items-center gap-1 rounded-full border border-[#E8DFE2] bg-white px-2.5 py-1 font-sans text-xs text-[#6B5860] hover:bg-black/[0.03]">
-                            {a === "change" && <Pencil className="h-3 w-3" aria-hidden />}
-                            {label}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ol>
-
-          {/* Add work — the founder's words, mirrored into the plan and queue */}
+          {/* Add work — the founder's words, mirrored into the plan and queue. New
+              work auto-fills into an hour and is reassignable like everything else. */}
           {plan.status !== "closed" && (
             addingOpen ? (
               <form

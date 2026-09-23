@@ -16,11 +16,12 @@
  * statement from the shared hourly-work store.
  */
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, type ReactNode } from "react"
 import { Check, Copy, Sparkles } from "lucide-react"
 import { CollapsibleSubSection } from "@/components/collapsible-sub-section"
 import { HOUR_BLOCKS, type HourBlockIndex } from "@/lib/ceo-workday/hour-blocks"
 import { useHourlyWork } from "@/lib/ceo-workday/use-hourly-work"
+import type { CeoPlanItem } from "@/lib/ceo-workday/plan-types"
 
 type PerHour<T> = Record<HourBlockIndex, T>
 
@@ -31,7 +32,17 @@ function emptyBools(): PerHour<boolean> {
   return { 1: false, 2: false, 3: false, 4: false }
 }
 
-export function WhatMustHappenToday() {
+export function WhatMustHappenToday({
+  itemsByHour,
+  renderItem,
+  plannedMinutes,
+}: {
+  /** Designed CEO work grouped into each protected hour. */
+  itemsByHour?: Partial<Record<HourBlockIndex, CeoPlanItem[]>>
+  /** Renders a single work piece with its execution controls (owned by the live plan). */
+  renderItem?: (item: CeoPlanItem) => ReactNode
+  plannedMinutes?: number
+} = {}) {
   const { hours, hydrated, setWork, setAffirmation } = useHourlyWork()
 
   // Local controlled drafts so typing never jumps the caret when the store
@@ -97,15 +108,22 @@ export function WhatMustHappenToday() {
 
   return (
     <section className="rounded-3xl border border-[#7FB069]/30 bg-[#F3F8ED] px-6 py-6 shadow-sm sm:px-8 sm:py-7">
-      <header className="mb-5">
-        <p className="font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#5B835F]">
-          What Must Happen Today™
-        </p>
-        <p className="mt-2 font-sans text-sm leading-relaxed text-[#3A2E33]">
-          You decide what must happen during each of your four protected CEO hours. Bring your real business work — one
-          focus can span several hours, and nothing here becomes an assignment. Create a short affirmation for each
-          hour and copy it into the live session chat.
-        </p>
+      <header className="mb-5 flex flex-wrap items-start justify-between gap-2">
+        <div className="min-w-0">
+          <p className="font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#5B835F]">
+            What Must Happen Today™
+          </p>
+          <p className="mt-2 font-sans text-sm leading-relaxed text-[#3A2E33]">
+            The work you designed with the Business Function tool fills each of your four protected hours — arranged by
+            order and time, and yours to reassign. Open an hour to edit, defer, delegate or remove that work, then
+            create the hour&apos;s Work Affirmation™ and copy it into the live session chat.
+          </p>
+        </div>
+        {typeof plannedMinutes === "number" && (
+          <span className="shrink-0 rounded-full bg-white px-3 py-1 font-sans text-xs font-semibold text-[#5B835F]">
+            {plannedMinutes} / 240 min planned
+          </span>
+        )}
       </header>
 
       <div className="flex flex-col gap-3">
@@ -117,6 +135,19 @@ export function WhatMustHappenToday() {
           return (
             <CollapsibleSubSection key={index} title={`Hour ${index} · ${block.label}`}>
               <div className="flex flex-col gap-4">
+                {renderItem && (itemsByHour?.[index]?.length ?? 0) > 0 && (
+                  <div className="flex flex-col gap-2">
+                    <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
+                      Your CEO work this hour
+                    </p>
+                    <ol className="space-y-2">
+                      {itemsByHour![index]!.map((item) => (
+                        <li key={item.id}>{renderItem(item)}</li>
+                      ))}
+                    </ol>
+                  </div>
+                )}
+
                 <div className="flex flex-col gap-2">
                   <label htmlFor={inputId} className="font-sans text-sm font-semibold text-[#2E1F27]">
                     What must happen during this hour?
