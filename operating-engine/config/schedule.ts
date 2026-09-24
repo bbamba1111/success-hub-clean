@@ -51,7 +51,7 @@ export const SCHEDULE: BlockConfig[] = [
     startMinutes: h(7),
     endMinutes: h(9),
     description:
-      "Open before the official day begins—flexible time to prepare, collaborate, manage life, and enter your workday with clarity instead of chaos.",
+      "Flex Time™ is where life gets accommodated without letting the unexpected become the operating system.",
     emoji: "🌅",
     tint: "253 246 234",
     backgroundImage: "/images/block-early-access.png",
@@ -76,7 +76,7 @@ export const SCHEDULE: BlockConfig[] = [
     startMinutes: h(9),
     endMinutes: h(9, 45),
     description:
-      "Align mind, body, spirit, and priorities before work—Gratitude, Invitation, Vision, Emotional Embodiment, and Nurture Non-Negotiables™.",
+      "Morning GIV•EN™ is where you align mind, body, spirit, and priorities before work begins.",
     emoji: "🌸",
     tint: "252 240 238",
     backgroundImage: "/images/block-morning-given.png",
@@ -174,7 +174,7 @@ export const SCHEDULE: BlockConfig[] = [
     startMinutes: h(9, 45),
     endMinutes: h(10, 30),
     description:
-      "Review this week's data, consult your Founder GPS™, and design today's workday — built on Monday's Reality Check™, without retaking the Audit or ESA.",
+      "Decide & Design™ is where you choose how you'll live, work & lead in your workday.",
     emoji: "🧭",
     tint: "237 242 247",
     backgroundImage: "/images/block-decide-design-cherry-blossom.png",
@@ -199,7 +199,7 @@ export const SCHEDULE: BlockConfig[] = [
     startMinutes: h(10, 30),
     endMinutes: h(11),
     description:
-      "Increase energy, improve circulation, and support cognitive performance—preparing your body for focused work.",
+      "Movement Window™ is where your body gets protected space inside the workday.",
     emoji: "💪",
     tint: "240 245 236",
     backgroundImage: "/images/block-movement-window.png",
@@ -225,7 +225,7 @@ export const SCHEDULE: BlockConfig[] = [
     startMinutes: h(11),
     endMinutes: h(13),
     description:
-      "Nourish your body, spend time in nature, and connect with the people who matter—restoring your energy for the afternoon.",
+      "Extended Healthy Hybrid Lunch™ is where nourishment, connection, and real recovery have a protected place.",
     emoji: "🥗",
     tint: "238 244 234",
     backgroundImage: "/images/block-lunch-break.png",
@@ -309,7 +309,7 @@ export const SCHEDULE: BlockConfig[] = [
     startMinutes: h(22),
     endMinutes: h(23),
     description:
-      "Transition intentionally from productivity to restoration—reflect, prepare tomorrow, slow your mind, and reduce stimulation.",
+      "Power Down™ is where you release the day and recovery begins.",
     emoji: "🌙",
     tint: "238 240 247",
     backgroundImage: "/images/block-power-down.png",
@@ -335,7 +335,7 @@ export const SCHEDULE: BlockConfig[] = [
     startMinutes: h(23),
     endMinutes: h(7), // wraps past midnight
     description:
-      "Devices off. Community closes. Prioritize restorative sleep—tomorrow's success begins tonight.",
+      "Unplug™ is where we close our day and you unplug to get some sleep.",
     emoji: "🌙",
     tint: "239 240 244",
     backgroundImage: "/images/block-digital-detox.png",

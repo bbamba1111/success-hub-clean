@@ -134,6 +134,9 @@ export function WeeklyRealityCheckSection() {
               Weekly Work-Life Balance Reality Check™
             </h2>
             <p className="mt-1.5 font-sans text-sm leading-relaxed text-[#5C4F55]">
+              The Reality Check™ is where you see what your business is actually making possible in your life.
+            </p>
+            <p className="mt-1.5 font-sans text-sm leading-relaxed text-[#5C4F55]">
               A guided 90-minute experience with Thought Leader Barbara.
             </p>
 
