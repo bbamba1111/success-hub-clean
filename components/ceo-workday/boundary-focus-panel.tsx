@@ -21,7 +21,7 @@ import { BOUNDARY_OPTIONS } from "@/lib/weekly-boundary-focus/catalog"
 import { BoundaryBuilderDialog } from "@/components/boundary-builder/boundary-builder-dialog"
 
 export function BoundaryFocusPanel() {
-  const { focus, save } = useWeeklyBoundaryFocus()
+  const { focus, save, isLoading } = useWeeklyBoundaryFocus()
   const boundaryText = focus.boundaryText?.trim() || ""
   const { sos } = useHumanSos(focus.weekKey, boundaryText)
   const [open, setOpen] = useState(false)
@@ -126,6 +126,21 @@ export function BoundaryFocusPanel() {
       )}
     </div>
   )
+
+  // Loading the persisted weekly record — don't flash the chooser as if
+  // nothing was selected before we know whether a boundary exists.
+  if (isLoading && !boundaryText && !choosing) {
+    return (
+      <section
+        aria-labelledby="boundary-focus-heading"
+        className="rounded-3xl border border-[#8DAE72]/30 bg-[#F4F7F0] px-6 py-7 sm:px-8 space-y-4"
+      >
+        {headingRow}
+        <div className="h-5 w-2/3 animate-pulse rounded-full bg-[#8DAE72]/20" />
+        <div className="h-5 w-1/3 animate-pulse rounded-full bg-[#8DAE72]/20" />
+      </section>
+    )
+  }
 
   // No boundary chosen yet, or the founder is actively choosing a different one.
   if (!boundaryText || choosing) {

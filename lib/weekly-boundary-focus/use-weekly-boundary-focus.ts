@@ -14,11 +14,18 @@ import { emptyBoundaryFocus, type WeeklyBoundaryFocus } from "./types"
 export function useWeeklyBoundaryFocus(weekKey: string = getWeekKey()) {
   const key = ["weekly-boundary-focus", weekKey] as const
 
+  // The boundary is a persisted weekly commitment — it must reload from the
+  // server on every mount (reopening the CEO Workspace, navigating back, or a
+  // full refresh), never from a transient fallback. `keepPreviousData` keeps
+  // the already-chosen boundary on screen while a revalidation runs, so it
+  // never flashes back to an empty "choose" state.
   const { data, mutate, isLoading } = useSWR(key, () => getWeeklyBoundaryFocus(weekKey), {
     fallbackData: emptyBoundaryFocus(weekKey),
+    revalidateOnMount: true,
+    revalidateIfStale: true,
     revalidateOnFocus: false,
-    revalidateIfStale: false,
-    dedupingInterval: 10_000,
+    keepPreviousData: true,
+    dedupingInterval: 5_000,
   })
 
   const focus = data ?? emptyBoundaryFocus(weekKey)

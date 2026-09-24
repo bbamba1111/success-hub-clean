@@ -277,7 +277,7 @@ function BoundaryFocusSection({
   report: BoundaryReportData | null
 }) {
   const { priorities } = useWeeklyLifePriorities()
-  const { focus, save } = useWeeklyBoundaryFocus()
+  const { focus, save, isLoading } = useWeeklyBoundaryFocus()
 
   const selectedLifeLabels = useMemo(() => priorities.map((p) => p.label), [priorities])
   const recommendation = useMemo(
@@ -315,8 +315,14 @@ function BoundaryFocusSection({
         </p>
       </div>
 
-      {/* Chosen state */}
-      {chosen && !choosingOther ? (
+      {/* Loading the persisted weekly record — hold the space instead of
+          flashing the recommendation/chooser as if nothing was chosen. */}
+      {isLoading && !chosen && !choosingOther ? (
+        <div className="rounded-2xl border border-[#7FB069]/30 bg-white px-5 py-5 space-y-3">
+          <div className="h-4 w-1/2 animate-pulse rounded-full bg-[#7FB069]/20" />
+          <div className="h-6 w-2/3 animate-pulse rounded-full bg-[#7FB069]/20" />
+        </div>
+      ) : chosen && !choosingOther ? (
         <div className="rounded-2xl border border-[#7FB069]/30 bg-white px-5 py-5 space-y-3">
           <Eyebrow>This week&apos;s boundary</Eyebrow>
           <p className="font-serif text-2xl font-semibold text-[#2E1F27] text-pretty">{chosen}</p>
