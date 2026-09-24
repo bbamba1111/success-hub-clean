@@ -18,7 +18,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Check, Clock, Copy, Mic, Pencil, Play, RotateCcw } from "lucide-react"
+import { Check, Clock, Copy, Pencil, Play, RotateCcw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 import { getDateKey } from "@/lib/daily-plan/storage"
@@ -175,9 +175,6 @@ export function CeoWorkdayLivePlan() {
   const block = currentHourBlock(nowMin)
   const due = blockNeedingCheckin(nowMin, savedBlocks)
   const allSaved = savedBlocks.size >= HOUR_BLOCKS.length || plan?.status === "closed"
-  const needsArticulation = activeItems.some(
-    (i) => i.status !== "completed" && ARTICULATION_FUNCTIONS.has(i.businessFunction),
-  )
 
   // Auto-surface the check-in exactly when due (or overdue) and unsaved.
   useEffect(() => {
@@ -587,32 +584,12 @@ export function CeoWorkdayLivePlan() {
           there, followed by the hour's Work Affirmation™ and Copy. */}
       {plan && (
         <div className="space-y-4">
-          {activeItems.length > 0 && entered && !adjusting && plan.status !== "closed" && (
-            <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#E8DFE2] bg-white px-4 py-3">
-              <p className="font-sans text-sm font-semibold text-[#2E1F27]">Is this still what you need to work on?</p>
-              <div className="flex gap-2">
-                <button type="button" onClick={() => setAdjusting(false)} className="rounded-full bg-[#5A7A45] px-4 py-2 font-sans text-xs font-bold text-white hover:opacity-90">
-                  Continue as designed
-                </button>
-                <button type="button" onClick={() => setAdjusting(true)} className="rounded-full border border-[#E8DFE2] bg-white px-4 py-2 font-sans text-xs font-semibold text-[#6B5860] hover:bg-black/[0.03]">
-                  Adjust
-                </button>
-              </div>
-            </div>
-          )}
-
           <WhatMustHappenToday
             itemsByHour={itemsByHour}
             renderItem={renderPlanItem}
             plannedMinutes={plan.plannedMinutes}
             onAddWork={addWorkToHour}
           />
-
-          {needsArticulation && (
-            <p className="inline-flex items-center gap-1.5 font-sans text-xs text-[#5A7A45]">
-              <Mic className="h-3.5 w-3.5" aria-hidden /> This work involves communicating or selling — Business Articulation Training™ is available below.
-            </p>
-          )}
         </div>
       )}
 
