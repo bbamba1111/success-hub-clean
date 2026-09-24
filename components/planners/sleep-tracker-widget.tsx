@@ -224,8 +224,8 @@ export function SleepTrackerWidget() {
         <div className="w-14 h-14 bg-gradient-to-br from-[#2F5233] to-[#7FB069] rounded-full flex items-center justify-center mx-auto mb-3">
           <Moon className="h-7 w-7 text-white" />
         </div>
-        <h3 className="text-2xl font-bold text-[#2F5233] mb-1">Sleep Intention™</h3>
-        <p className="text-[#2F5233]/70 text-sm">Set your intention, then honour it.</p>
+        <h3 className="text-2xl font-bold text-[#6B786B] mb-1">Sleep Intention™</h3>
+        <p className="text-[#6B786B]/80 text-sm">Set your intention, then honour it.</p>
       </div>
 
       {/* Weekly stats */}
@@ -271,8 +271,8 @@ export function SleepTrackerWidget() {
                     onClick={() => handleTargetSelect(h)}
                     className={`px-4 py-2 rounded-full text-sm border transition-all ${
                       state.targetHours === h
-                        ? "bg-[#2F5233] border-[#2F5233] text-white font-semibold"
-                        : "bg-white border-[#2F5233]/20 text-[#2F5233] hover:border-[#2F5233] hover:text-[#2F5233]"
+                        ? "bg-[#6B786B] border-[#6B786B] text-white font-semibold"
+                        : "bg-white border-[#6B786B]/25 text-[#6B786B] hover:border-[#6B786B] hover:text-[#6B786B]"
                     }`}
                   >
                     {formatHours(h)}
