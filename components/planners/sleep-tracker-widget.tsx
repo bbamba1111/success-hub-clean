@@ -367,13 +367,13 @@ export function SleepTrackerWidget() {
 
       {/* ── DEFERRED: intention set, actual sleep logged next morning ── */}
       {state.step === "deferred" && (
-        <Card className="border-2 border-[#E26C73]/30 bg-[#E26C73]/[0.04]">
+        <Card className="border border-gray-200 bg-white">
           <CardContent className="pt-6 pb-6 space-y-5 text-center">
-            <div className="w-12 h-12 bg-[#E26C73]/10 rounded-full flex items-center justify-center mx-auto">
-              <Moon className="h-6 w-6 text-[#E26C73]" />
+            <div className="w-12 h-12 bg-[#5B6EA8]/10 rounded-full flex items-center justify-center mx-auto">
+              <Moon className="h-6 w-6 text-[#5B6EA8]" />
             </div>
             <div>
-              <p className="text-xs font-semibold text-[#E26C73] uppercase tracking-widest mb-1">Sleep Intention™ Set</p>
+              <p className="text-xs font-semibold text-[#5B6EA8] uppercase tracking-widest mb-1">Sleep Intention™ Set</p>
               <h4 className="text-xl font-bold text-gray-800 mb-1">Rest well — the rest is for the morning.</h4>
               <p className="text-sm text-gray-500 max-w-sm mx-auto">
                 You committed to{" "}
@@ -382,12 +382,12 @@ export function SleepTrackerWidget() {
               </p>
             </div>
 
-            <div className="bg-white border border-[#E26C73]/20 rounded-xl px-4 py-3 text-sm text-gray-600 text-left">
-              <p className="text-xs font-semibold text-[#E26C73] uppercase tracking-widest mb-1">Your Declaration</p>
+            <div className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-600 text-left">
+              <p className="text-xs font-semibold text-[#5B6EA8] uppercase tracking-widest mb-1">Your Declaration</p>
               <p className="italic leading-relaxed">{state.declaration}</p>
             </div>
 
-            <div className="flex items-center justify-center gap-2 text-sm text-[#7FB069] font-semibold">
+            <div className="flex items-center justify-center gap-2 text-sm text-[#6B7599] font-semibold">
               <Sunrise className="h-4 w-4" />
               Continues tomorrow morning
             </div>
