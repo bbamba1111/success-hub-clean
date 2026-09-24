@@ -404,7 +404,7 @@ function BoundaryFocusSection({
                     }}
                     placeholder="Name the boundary in your own words…"
                     aria-label="Create my own boundary"
-                    className="flex-1 rounded-xl border border-[#E8DFE2] bg-white px-3.5 py-2.5 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/60 focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
+                    className="flex-1 rounded-xl border border-[#E8DFE2] bg-white px-3.5 py-2.5 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/60 focus:outline-none focus:ring-2 focus:ring-[#7FB069]/30"
                   />
                   <button
                     type="button"

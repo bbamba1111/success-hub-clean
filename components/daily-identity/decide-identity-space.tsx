@@ -73,7 +73,7 @@ export function DecideIdentitySpace() {
                 className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-2 font-sans text-sm transition-colors ${
                   selected
                     ? "border-[#5B835F] bg-[#5B835F] text-white"
-                    : "border-[#E5E5E5] bg-white text-[#2E1F27] hover:bg-[#F4F7F0]"
+                    : "border-[#E8DFE2] bg-white text-[#2E1F27] hover:bg-[#F3F8ED]"
                 }`}
               >
                 {label}
