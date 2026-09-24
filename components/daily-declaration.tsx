@@ -103,7 +103,7 @@ export function DailyDeclaration() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.6 }}
-            className="relative mx-auto max-w-7xl overflow-hidden rounded-[1.75rem]"
+            className="relative mx-auto max-w-[1208px] overflow-hidden rounded-[1.75rem]"
             style={{
               backgroundImage: "url('/images/backgrounds/journaling-sunset.png')",
               backgroundSize: "cover",
@@ -122,7 +122,7 @@ export function DailyDeclaration() {
               }}
               aria-hidden
             />
-            <div className="relative flex flex-col items-center gap-5 px-6 py-12 text-center sm:px-16 sm:py-14">
+            <div className="relative flex flex-col items-center gap-4 px-6 py-6 text-center sm:px-16 sm:py-7">
               <div className="flex flex-wrap items-center justify-center gap-2.5">
                 <span className="inline-flex items-center gap-2 rounded-full border border-[#C9A227]/50 bg-white/85 px-4 py-1.5 font-montserrat text-[11px] font-bold uppercase tracking-[0.2em] text-[#8A6D2F] shadow-sm backdrop-blur-sm">
                   {"My Intention Today"}
@@ -144,8 +144,8 @@ export function DailyDeclaration() {
                   background stays visible through it, while the sage-green
                   declaration text stays fully readable on top. Opacity is tuned
                   just high enough for text contrast without going opaque. */}
-              <div className="max-w-[820px] rounded-[1.5rem] border border-white/60 bg-white/55 px-8 py-8 shadow-[0_8px_32px_rgba(0,0,0,0.14)] backdrop-blur-xl sm:px-12 sm:py-10">
-                <p className="font-playfair text-xl italic leading-relaxed text-[#3D6B44] sm:text-2xl lg:text-[27px]">
+              <div className="max-w-[660px] rounded-[1.5rem] border border-white/60 bg-white/45 px-6 py-6 shadow-[0_8px_32px_rgba(0,0,0,0.14)] backdrop-blur-xl sm:px-9 sm:py-8">
+                <p className="font-playfair text-base italic leading-relaxed text-[#3D6B44] sm:text-lg lg:text-[22px]">
                   {data.declaration}
                 </p>
 
