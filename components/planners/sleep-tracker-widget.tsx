@@ -221,11 +221,11 @@ export function SleepTrackerWidget() {
     <div className="space-y-8">
       {/* Header */}
       <div className="text-center">
-        <div className="w-14 h-14 bg-gradient-to-br from-[#E26C73] to-[#7FB069] rounded-full flex items-center justify-center mx-auto mb-3">
+        <div className="w-14 h-14 bg-gradient-to-br from-[#2F5233] to-[#7FB069] rounded-full flex items-center justify-center mx-auto mb-3">
           <Moon className="h-7 w-7 text-white" />
         </div>
-        <h3 className="text-2xl font-bold text-[#E26C73] mb-1">Sleep Intention™</h3>
-        <p className="text-gray-500 text-sm">Set your intention, then honour it.</p>
+        <h3 className="text-2xl font-bold text-[#2F5233] mb-1">Sleep Intention™</h3>
+        <p className="text-[#2F5233]/70 text-sm">Set your intention, then honour it.</p>
       </div>
 
       {/* Weekly stats */}
@@ -239,11 +239,11 @@ export function SleepTrackerWidget() {
             value: weeklySessions.filter((e) => e.completionStatus === "yes").length + " / " + weeklySessions.length,
           },
         ].map(({ icon: Icon, label, value }) => (
-          <Card key={label} className="border-2 border-[#E26C73]/20">
+          <Card key={label} className="border-2 border-[#2F5233]/20">
             <CardContent className="pt-4 pb-3">
-              <Icon className="h-4 w-4 text-[#E26C73] mb-2" />
-              <div className="text-2xl font-bold text-[#E26C73]">{value}</div>
-              <p className="text-xs text-gray-500 mt-1">{label}</p>
+              <Icon className="h-4 w-4 text-[#2F5233] mb-2" />
+              <div className="text-2xl font-bold text-[#2F5233]">{value}</div>
+              <p className="text-xs text-[#2F5233]/70 mt-1">{label}</p>
             </CardContent>
           </Card>
         ))}
@@ -251,18 +251,17 @@ export function SleepTrackerWidget() {
 
       {/* ── STEP 1: Intention ── */}
       {state.step === "intention" && (
-        <Card className="border-2 border-[#E26C73]/30">
+        <Card className="border-2 border-[#2F5233]/30">
           <CardContent className="pt-6 pb-6 space-y-6">
             <div>
-              <p className="text-xs font-semibold text-[#E26C73] uppercase tracking-widest mb-1">Step 1 of 3</p>
-              <h4 className="text-xl font-bold text-gray-800 mb-1">Set My Sleep Intention™</h4>
-              <p className="text-sm text-gray-500">
+              <h4 className="text-xl font-bold text-[#5E8C63] mb-1">Set My Sleep Intention™</h4>
+              <p className="text-sm text-[#2F5233]/70">
                 I will transform your intention into an Intention Declaration™ you will live from, tonight.
               </p>
             </div>
 
             <div>
-              <p className="text-sm font-semibold text-gray-700 mb-3">
+              <p className="text-sm font-semibold text-[#2F5233] mb-3">
                 Choose a sleep target below … or set your own
               </p>
               <div className="flex flex-wrap gap-2">
@@ -272,8 +271,8 @@ export function SleepTrackerWidget() {
                     onClick={() => handleTargetSelect(h)}
                     className={`px-4 py-2 rounded-full text-sm border transition-all ${
                       state.targetHours === h
-                        ? "bg-[#E26C73] border-[#E26C73] text-white font-semibold"
-                        : "bg-white border-gray-200 text-gray-700 hover:border-[#E26C73] hover:text-[#E26C73]"
+                        ? "bg-[#2F5233] border-[#2F5233] text-white font-semibold"
+                        : "bg-white border-[#2F5233]/20 text-[#2F5233] hover:border-[#2F5233] hover:text-[#2F5233]"
                     }`}
                   >
                     {formatHours(h)}
@@ -284,28 +283,28 @@ export function SleepTrackerWidget() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
-                <p className="text-sm font-semibold text-gray-700">Bedtime</p>
+                <p className="text-sm font-semibold text-[#2F5233]">Bedtime</p>
                 <input
                   type="time"
                   value={state.bedtime}
                   onChange={(e) => handleTimeChange("bedtime", e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#E26C73]/40"
+                  className="w-full px-3 py-2 border border-[#2F5233]/20 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2F5233]/40"
                 />
               </div>
               <div className="space-y-1">
-                <p className="text-sm font-semibold text-gray-700">Wake time</p>
+                <p className="text-sm font-semibold text-[#2F5233]">Wake time</p>
                 <input
                   type="time"
                   value={state.wakeTime}
                   onChange={(e) => handleTimeChange("wakeTime", e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#E26C73]/40"
+                  className="w-full px-3 py-2 border border-[#2F5233]/20 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2F5233]/40"
                 />
               </div>
             </div>
 
-            <div className="bg-[#E26C73]/5 border border-[#E26C73]/20 rounded-xl px-4 py-3 text-sm text-gray-600">
+            <div className="bg-[#2F5233]/5 border border-[#2F5233]/20 rounded-xl px-4 py-3 text-sm text-[#2F5233]">
               Estimated sleep duration:{" "}
-              <span className="font-bold text-[#E26C73]">
+              <span className="font-bold text-[#2F5233]">
                 {estimated.hours}h{estimated.mins > 0 ? ` ${estimated.mins}m` : ""}
               </span>
             </div>
@@ -313,7 +312,7 @@ export function SleepTrackerWidget() {
             <Button
               onClick={handleGoToDeclare}
               disabled={!state.targetHours}
-              className="w-full bg-[#E26C73] hover:bg-[#D05A60] text-white py-6 text-base font-semibold disabled:opacity-40"
+              className="w-full bg-[#2F5233] hover:bg-[#24401E] text-white py-6 text-base font-semibold disabled:opacity-40"
             >
               Build My Declaration <ChevronRight className="ml-2 h-4 w-4" />
             </Button>
@@ -323,33 +322,32 @@ export function SleepTrackerWidget() {
 
       {/* ── STEP 2: Declaration ── */}
       {state.step === "declare" && (
-        <Card className="border-2 border-[#E26C73]/30">
+        <Card className="border-2 border-[#2F5233]/30">
           <CardContent className="pt-6 pb-6 space-y-5">
             <div>
-              <p className="text-xs font-semibold text-[#E26C73] uppercase tracking-widest mb-1">Step 2 of 3</p>
-              <h4 className="text-xl font-bold text-gray-800 mb-1">My Intention Declaration™</h4>
-              <p className="text-sm text-gray-500">Read this aloud before bed. Edit it until it feels true.</p>
+              <h4 className="text-xl font-bold text-[#5E8C63] mb-1">My Intention Declaration™</h4>
+              <p className="text-sm text-[#2F5233]/70">Read this aloud before bed. Edit it until it feels true.</p>
             </div>
 
             <Textarea
               value={state.declaration}
               onChange={(e) => setState((p) => ({ ...p, declaration: e.target.value }))}
               rows={5}
-              className="text-base leading-relaxed border-[#E26C73]/40 focus:ring-[#E26C73]/30 resize-none"
+              className="text-base leading-relaxed border-[#2F5233]/40 focus:ring-[#2F5233]/30 resize-none"
             />
 
             <div className="flex gap-3">
               <Button
                 variant="outline"
                 onClick={handleCopy}
-                className="flex-1 border-[#E26C73]/40 text-[#E26C73] hover:bg-[#E26C73]/5"
+                className="flex-1 border-[#2F5233]/40 text-[#2F5233] hover:bg-[#2F5233]/5"
               >
                 {copied ? <Check className="mr-2 h-4 w-4" /> : <Copy className="mr-2 h-4 w-4" />}
                 {copied ? "Copied!" : "Copy to Zoom Chat"}
               </Button>
               <Button
                 onClick={handleSetIntention}
-                className="flex-1 bg-[#E26C73] hover:bg-[#D05A60] text-white font-semibold"
+                className="flex-1 bg-[#2F5233] hover:bg-[#24401E] text-white font-semibold"
               >
                 Set My Sleep Intention™ <ChevronRight className="ml-2 h-4 w-4" />
               </Button>
@@ -357,7 +355,7 @@ export function SleepTrackerWidget() {
 
             <button
               onClick={() => setState((p) => ({ ...p, step: "intention" }))}
-              className="text-xs text-gray-400 hover:text-gray-600 underline w-full text-center"
+              className="text-xs text-[#2F5233]/50 hover:text-[#2F5233] underline w-full text-center"
             >
               Go back
             </button>
@@ -367,34 +365,34 @@ export function SleepTrackerWidget() {
 
       {/* ── DEFERRED: intention set, actual sleep logged next morning ── */}
       {state.step === "deferred" && (
-        <Card className="border border-gray-200 bg-white">
+        <Card className="border border-[#2F5233]/20 bg-white">
           <CardContent className="pt-6 pb-6 space-y-5 text-center">
-            <div className="w-12 h-12 bg-[#5B6EA8]/10 rounded-full flex items-center justify-center mx-auto">
-              <Moon className="h-6 w-6 text-[#5B6EA8]" />
+            <div className="w-12 h-12 bg-[#2F5233]/10 rounded-full flex items-center justify-center mx-auto">
+              <Moon className="h-6 w-6 text-[#2F5233]" />
             </div>
             <div>
-              <p className="text-xs font-semibold text-[#5B6EA8] uppercase tracking-widest mb-1">Sleep Intention™ Set</p>
-              <h4 className="text-xl font-bold text-gray-800 mb-1">Rest well — the rest is for the morning.</h4>
-              <p className="text-sm text-gray-500 max-w-sm mx-auto">
+              <p className="text-xs font-semibold text-[#2F5233] uppercase tracking-widest mb-1">Sleep Intention™ Set</p>
+              <h4 className="text-xl font-bold text-[#5E8C63] mb-1">Rest well — the rest is for the morning.</h4>
+              <p className="text-sm text-[#2F5233]/70 max-w-sm mx-auto">
                 You committed to{" "}
-                <span className="font-semibold text-gray-700">{formatHours(state.targetHours)} of sleep</span>. You will
+                <span className="font-semibold text-[#2F5233]">{formatHours(state.targetHours)} of sleep</span>. You will
                 log how you <em>actually</em> slept tomorrow morning during Flex Time™, before Morning GIV•EN™ begins.
               </p>
             </div>
 
-            <div className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-600 text-left">
-              <p className="text-xs font-semibold text-[#5B6EA8] uppercase tracking-widest mb-1">Your Declaration</p>
+            <div className="bg-[#F5F8F5] border border-[#2F5233]/20 rounded-xl px-4 py-3 text-sm text-[#2F5233] text-left">
+              <p className="text-xs font-semibold text-[#2F5233] uppercase tracking-widest mb-1">Your Declaration</p>
               <p className="italic leading-relaxed">{state.declaration}</p>
             </div>
 
-            <div className="flex items-center justify-center gap-2 text-sm text-[#6B7599] font-semibold">
+            <div className="flex items-center justify-center gap-2 text-sm text-[#2F5233] font-semibold">
               <Sunrise className="h-4 w-4" />
               Continues tomorrow morning
             </div>
 
             <button
               onClick={() => setState((p) => ({ ...p, step: "intention" }))}
-              className="text-xs text-gray-400 hover:text-gray-600 underline"
+              className="text-xs text-[#2F5233]/50 hover:text-[#2F5233] underline"
             >
               Edit my intention
             </button>
@@ -404,23 +402,22 @@ export function SleepTrackerWidget() {
 
       {/* ── STEP 3: Completion ── */}
       {state.step === "complete" && (
-        <Card className="border-2 border-[#E26C73]/30">
+        <Card className="border-2 border-[#2F5233]/30">
           <CardContent className="pt-6 pb-6 space-y-5">
             {state.fromLastNight && (
               <div className="flex items-start gap-2 rounded-xl border border-[#7FB069]/40 bg-[#7FB069]/10 px-4 py-3">
                 <Sunrise className="h-4 w-4 mt-0.5 shrink-0 text-[#7FB069]" />
-                <p className="text-sm text-gray-700">
+                <p className="text-sm text-[#2F5233]">
                   <span className="font-semibold text-[#5c8a45]">From last night.</span> Complete your Sleep Tracker™ now
                   that you know how the night actually went.
                 </p>
               </div>
             )}
             <div>
-              <p className="text-xs font-semibold text-[#E26C73] uppercase tracking-widest mb-1">Step 3 of 3</p>
-              <h4 className="text-xl font-bold text-gray-800 mb-1">How did you sleep?</h4>
-              <p className="text-sm text-gray-500">
+              <h4 className="text-xl font-bold text-[#5E8C63] mb-1">How did you sleep?</h4>
+              <p className="text-sm text-[#2F5233]/70">
                 Your intention was{" "}
-                <span className="font-semibold text-gray-700">{formatHours(state.targetHours)} of sleep</span>.
+                <span className="font-semibold text-[#2F5233]">{formatHours(state.targetHours)} of sleep</span>.
               </p>
             </div>
 
@@ -430,7 +427,7 @@ export function SleepTrackerWidget() {
                 const active = {
                   yes: "border-[#7FB069] bg-[#7FB069]/10 text-[#7FB069]",
                   partially: "border-amber-400 bg-amber-50 text-amber-700",
-                  no: "border-[#E26C73] bg-[#E26C73]/10 text-[#E26C73]",
+                  no: "border-[#2F5233] bg-[#2F5233]/10 text-[#2F5233]",
                 }
                 return (
                   <button
@@ -439,7 +436,7 @@ export function SleepTrackerWidget() {
                     className={`py-3 rounded-xl border-2 text-sm font-semibold transition-all ${
                       state.completionStatus === status
                         ? active[status]
-                        : "border-gray-200 text-gray-500 hover:border-gray-300"
+                        : "border-[#2F5233]/20 text-[#2F5233]/70 hover:border-[#2F5233]/30"
                     }`}
                   >
                     {labels[status]}
@@ -450,7 +447,7 @@ export function SleepTrackerWidget() {
 
             {state.completionStatus === "partially" && (
               <div className="space-y-2">
-                <p className="text-sm font-semibold text-gray-700">How many hours did you actually get?</p>
+                <p className="text-sm font-semibold text-[#2F5233]">How many hours did you actually get?</p>
                 <div className="flex items-center gap-4">
                   <input
                     type="range"
@@ -459,9 +456,9 @@ export function SleepTrackerWidget() {
                     step={0.5}
                     value={state.actualHours}
                     onChange={(e) => setState((p) => ({ ...p, actualHours: Number(e.target.value) }))}
-                    className="flex-1 accent-[#E26C73]"
+                    className="flex-1 accent-[#2F5233]"
                   />
-                  <span className="text-lg font-bold text-[#E26C73] w-16 text-right">
+                  <span className="text-lg font-bold text-[#2F5233] w-16 text-right">
                     {formatHours(state.actualHours)}
                   </span>
                 </div>
@@ -469,27 +466,27 @@ export function SleepTrackerWidget() {
             )}
 
             <div className="space-y-2">
-              <p className="text-sm font-semibold text-gray-700">Reflection (optional)</p>
+              <p className="text-sm font-semibold text-[#2F5233]">Reflection (optional)</p>
               <Textarea
                 placeholder="How did you feel this morning? What helped or hindered your sleep?"
                 value={state.reflection}
                 onChange={(e) => setState((p) => ({ ...p, reflection: e.target.value }))}
                 rows={3}
-                className="resize-none border-gray-200 text-sm"
+                className="resize-none border-[#2F5233]/20 text-sm"
               />
             </div>
 
             <Button
               onClick={handleSave}
               disabled={!state.completionStatus}
-              className="w-full bg-[#E26C73] hover:bg-[#D05A60] text-white py-6 text-base font-semibold disabled:opacity-40"
+              className="w-full bg-[#2F5233] hover:bg-[#24401E] text-white py-6 text-base font-semibold disabled:opacity-40"
             >
               Save &amp; Celebrate
             </Button>
 
             <button
               onClick={() => setState((p) => ({ ...p, step: "declare" }))}
-              className="text-xs text-gray-400 hover:text-gray-600 underline w-full text-center"
+              className="text-xs text-[#2F5233]/50 hover:text-[#2F5233] underline w-full text-center"
             >
               Go back
             </button>
@@ -499,17 +496,17 @@ export function SleepTrackerWidget() {
 
       {/* ── CELEBRATE ── */}
       {state.step === "celebrate" && (
-        <Card className="border-2 border-[#E26C73]/30 text-center">
+        <Card className="border-2 border-[#2F5233]/30 text-center">
           <CardContent className="pt-10 pb-10 space-y-4">
             <div className="text-5xl mb-2">🌙</div>
-            <h4 className="text-xl font-bold text-[#E26C73]">
+            <h4 className="text-xl font-bold text-[#2F5233]">
               {state.completionStatus === "yes"
                 ? "You honoured your rest. Beautiful."
                 : state.completionStatus === "partially"
                 ? "Some rest is better than none. You showed up."
                 : "Naming it is the first step. Tonight is a new chance."}
             </h4>
-            <p className="text-gray-500 text-sm max-w-xs mx-auto">
+            <p className="text-[#2F5233]/70 text-sm max-w-xs mx-auto">
               {state.completionStatus === "yes"
                 ? `${formatHours(state.targetHours)} of sleep — logged and celebrated.`
                 : state.completionStatus === "partially"
@@ -518,7 +515,7 @@ export function SleepTrackerWidget() {
             </p>
             <Button
               onClick={handleReset}
-              className="mt-4 bg-[#E26C73] hover:bg-[#D05A60] text-white px-8 py-5 font-semibold"
+              className="mt-4 bg-[#2F5233] hover:bg-[#24401E] text-white px-8 py-5 font-semibold"
             >
               Set a New Intention
             </Button>
@@ -528,25 +525,25 @@ export function SleepTrackerWidget() {
 
       {/* ── History ── */}
       {history.length > 0 && (
-        <Card className="border-2 border-[#E26C73]/20">
+        <Card className="border-2 border-[#2F5233]/20">
           <CardContent className="pt-5 pb-5">
             <div className="flex items-center gap-2 mb-4">
-              <Calendar className="h-4 w-4 text-[#E26C73]" />
-              <h4 className="font-semibold text-gray-700">Sleep History</h4>
+              <Calendar className="h-4 w-4 text-[#2F5233]" />
+              <h4 className="font-semibold text-[#2F5233]">Sleep History</h4>
             </div>
             <div className="space-y-3">
               {history.map((e) => (
                 <div
                   key={e.id}
-                  className="flex items-start justify-between p-3 rounded-lg bg-[#E26C73]/5 border border-[#E26C73]/15"
+                  className="flex items-start justify-between p-3 rounded-lg bg-[#2F5233]/5 border border-[#2F5233]/15"
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <Badge className="bg-[#E26C73] text-white text-xs">{formatHours(e.targetHours)}</Badge>
-                      <span className="text-xs text-gray-500">
+                      <Badge className="bg-[#2F5233] text-white text-xs">{formatHours(e.targetHours)}</Badge>
+                      <span className="text-xs text-[#2F5233]/70">
                         {e.bedtime} → {e.wakeTime}
                       </span>
-                      <span className="text-xs text-gray-400" suppressHydrationWarning>
+                      <span className="text-xs text-[#2F5233]/50" suppressHydrationWarning>
                         {new Date(e.date).toLocaleDateString()}
                       </span>
                       <span
@@ -555,7 +552,7 @@ export function SleepTrackerWidget() {
                             ? "bg-green-100 text-green-700"
                             : e.completionStatus === "partially"
                             ? "bg-amber-100 text-amber-700"
-                            : "bg-red-50 text-red-500"
+                            : "bg-[#2F5233]/10 text-[#2F5233]"
                         }`}
                       >
                         {e.completionStatus === "yes"
@@ -565,11 +562,11 @@ export function SleepTrackerWidget() {
                           : "Missed"}
                       </span>
                     </div>
-                    {e.reflection && <p className="text-xs text-gray-500 mt-1 truncate">{e.reflection}</p>}
+                    {e.reflection && <p className="text-xs text-[#2F5233]/70 mt-1 truncate">{e.reflection}</p>}
                   </div>
                   <button
                     onClick={() => deleteEntry(e.id)}
-                    className="ml-3 text-gray-300 hover:text-red-400 transition-colors flex-shrink-0"
+                    className="ml-3 text-[#2F5233]/30 hover:text-[#2F5233] transition-colors flex-shrink-0"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
