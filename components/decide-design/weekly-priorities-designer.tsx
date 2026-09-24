@@ -39,7 +39,7 @@ function Card({ children, tone = "white" }: { children: ReactNode; tone?: "white
     tone === "green"
       ? "border-[#7FB069]/30 bg-[#F3F8ED]"
       : tone === "pink"
-        ? "border-[#E26C73]/20 bg-[#FDF8F5]"
+        ? "border-[#C0545A]/20 bg-[#FDF8F5]"
         : "border-[#E8DFE2] bg-white"
   return <div className={`rounded-3xl border shadow-sm px-6 py-6 sm:px-8 sm:py-7 space-y-5 ${cls}`}>{children}</div>
 }

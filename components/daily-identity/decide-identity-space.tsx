@@ -72,7 +72,7 @@ export function DecideIdentitySpace() {
                 onClick={() => setIdentity(label)}
                 className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-2 font-sans text-sm transition-colors ${
                   selected
-                    ? "border-[#8DAE72] bg-[#8DAE72] text-white"
+                    ? "border-[#5B835F] bg-[#5B835F] text-white"
                     : "border-[#E5E5E5] bg-white text-[#2E1F27] hover:bg-[#F4F7F0]"
                 }`}
               >
@@ -90,7 +90,7 @@ export function DecideIdentitySpace() {
             onChange={(e) => setCustomIdentity(e.target.value)}
             onBlur={() => customIdentity.trim() && setIdentity(customIdentity.trim())}
             placeholder="Or write your own identity statement…"
-            className="min-w-[10rem] flex-1 rounded-full border border-[#E8DFE2] bg-white px-4 py-2 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
+            className="min-w-[10rem] flex-1 rounded-full border border-[#E8DFE2] bg-white px-4 py-2 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#5B835F]/30"
           />
         </div>
       </div>
