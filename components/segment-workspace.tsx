@@ -21,11 +21,11 @@
 
 import { useState } from "react"
 import { AnimatePresence, motion } from "framer-motion"
-import { Briefcase, ChevronDown, Dumbbell, ExternalLink, Moon, Users } from "lucide-react"
+import { Briefcase, ChevronDown, Dumbbell, ExternalLink, Moon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { CherryBlossomWorkstation } from "@/components/cherry-blossom-workstation"
 import { ReflectionSpace } from "@/components/reflection-space"
-import { TimeFreedomSocial } from "@/components/time-freedom-social"
+import { TimeFreedomWorkspace } from "@/components/time-freedom-workspace"
 import type { BlockId } from "@/operating-engine"
 
 /** Chat context understood by Cherry Blossom's planning workstation. */
@@ -77,7 +77,7 @@ export function segmentHasWorkspace(blockId: BlockId): boolean {
   )
 }
 
-type PanelId = "planner" | "tool" | "social"
+type PanelId = "planner" | "tool"
 
 interface SegmentWorkspaceProps {
   blockId: BlockId
@@ -95,17 +95,28 @@ export function SegmentWorkspace({ blockId, isCurrent, tint = "255 255 255" }: S
 
   const chatContext = BLOCK_CHAT_CONTEXT[blockId]
   const tool = SEGMENT_TOOLS[blockId]
-  const hasSocial = blockId === "time-freedom"
+  const isTimeFreedom = blockId === "time-freedom"
   const isReflection = blockId === "monday-reality-check"
 
   // Nothing to offer for this segment (e.g. early-access), or not in session.
-  if (!isCurrent || (!chatContext && !tool && !hasSocial && !isReflection)) return null
+  if (!isCurrent || (!chatContext && !tool && !isTimeFreedom && !isReflection)) return null
 
   // Reflection Space™ renders its own full UI — no tab toggles needed.
   if (isReflection) {
     return (
       <div className="mt-5">
         <ReflectionSpace />
+      </div>
+    )
+  }
+
+  // Time Freedom™ hosts the full design-space stack inline (My Weekly Life
+  // Priorities™, My Time Freedom Declaration™, Life Events™, Cherry Blossom
+  // planning, and Time Freedom Moments™) — no tab toggles needed.
+  if (isTimeFreedom) {
+    return (
+      <div className="mt-5">
+        <TimeFreedomWorkspace active />
       </div>
     )
   }
@@ -150,21 +161,6 @@ export function SegmentWorkspace({ blockId, isCurrent, tint = "255 255 255" }: S
           </Button>
         )}
 
-        {hasSocial && (
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => toggle("social")}
-            aria-expanded={openPanel === "social"}
-            className={TOGGLE_CLASS}
-          >
-            <Users className="mr-1.5 h-4 w-4" aria-hidden />
-                {openPanel === "social" ? "Close Moments" : "Time Freedom Moments"}
-            <ChevronDown
-              className={`ml-1.5 h-4 w-4 transition-transform duration-300 ${openPanel === "social" ? "rotate-180" : ""}`}
-            />
-          </Button>
-        )}
       </div>
 
       {/* Collapsible panels — one open at a time */}
@@ -226,20 +222,6 @@ export function SegmentWorkspace({ blockId, isCurrent, tint = "255 255 255" }: S
           </motion.div>
         )}
 
-        {openPanel === "social" && hasSocial && (
-          <motion.div
-            key="social"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.35, ease: "easeInOut" }}
-            className="overflow-hidden"
-          >
-            <div className="pt-4">
-              <TimeFreedomSocial active={openPanel === "social"} />
-            </div>
-          </motion.div>
-        )}
       </AnimatePresence>
     </div>
   )

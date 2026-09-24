@@ -27,8 +27,6 @@ import { MovementIntentionForm } from "@/components/planners/movement-intention-
 import { LunchIntentionForm } from "@/components/planners/lunch-intention-form"
 import { PowerDownIntentionForm } from "@/components/planners/power-down-intention-form"
 import { CherryBlossomWorkstation } from "@/components/cherry-blossom-workstation"
-import { TimeFreedomSocial } from "@/components/time-freedom-social"
-import { UpcomingLifeEvents } from "@/components/cherry-blossom/upcoming-life-events"
 import { PriorityFocusAreas } from "@/components/decide-design/priority-focus-areas"
 import { WeeklyPrioritiesDesigner, WeeklyLifePrioritiesCard } from "@/components/decide-design/weekly-priorities-designer"
 import { WorkdayDeclaration } from "@/components/decide-design/workday-declaration"
@@ -44,10 +42,6 @@ export function DebriefSpace() {
     setIsMonday(new Date().getDay() === 1)
   }, [])
   const debriefSchedule = SCHEDULE_BY_ID[isMonday ? "monday-debrief" : "daily-planning-gps"]
-
-  // Seeded from the Time Freedom collapsible's Life Events™ list — bumping this
-  // with a new prompt string auto-sends it into the adjacent Cherry Blossom chat.
-  const [timeFreedomPrompt, setTimeFreedomPrompt] = useState<string | undefined>(undefined)
 
   return (
     <section className="mx-auto w-full max-w-5xl space-y-6">
@@ -109,15 +103,12 @@ export function DebriefSpace() {
           <CollapsibleSubSection title="Time Freedom" keepMounted={false}>
             {(open) => (
               <div className="space-y-5">
-<WeeklyLifePrioritiesCard />
-<TimeFreedomDeclaration />
-<UpcomingLifeEvents onPlan={setTimeFreedomPrompt} />
+                <WeeklyLifePrioritiesCard />
+                <TimeFreedomDeclaration />
                 <CherryBlossomWorkstation
                   context="lifestyle-experiences"
                   active={open}
-                  pendingPrompt={timeFreedomPrompt}
                 />
-                <TimeFreedomSocial active={open} />
               </div>
             )}
           </CollapsibleSubSection>
