@@ -50,12 +50,12 @@ export function DebriefSpace() {
   const [timeFreedomPrompt, setTimeFreedomPrompt] = useState<string | undefined>(undefined)
 
   return (
-    <section className="w-full space-y-6">
+    <section className="mx-auto w-full max-w-5xl space-y-6">
       {/* ── Header ─── heading sits ABOVE the identity box ───────────────────── */}
       <div className="text-center space-y-3 pb-2">
         <p className="font-sans text-xs font-semibold uppercase tracking-[0.25em] text-[#C0545A]">Decide &amp; Design</p>
         <h2 className="font-serif text-3xl font-semibold text-[#2E1F27] text-balance leading-tight">
-          This is where I redesign my workweek and choose how I live, work and lead in it.
+          This Is Where I Choose How I Live, Work &amp; Lead.
         </h2>
         <p className="inline-flex items-center justify-center gap-2 font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
           <Clock className="h-3.5 w-3.5" aria-hidden />
@@ -82,7 +82,7 @@ export function DebriefSpace() {
       <div aria-hidden className="h-12" />
 
       {/* ── Design My Work-Life Balance Business Day™ ────────────────────────── */}
-      <div className="rounded-3xl border border-[#7FB069]/30 bg-[#F3F8ED] shadow-sm px-8 py-7 space-y-6">
+      <div className="rounded-3xl border border-[#7FB069]/30 bg-[#F3F8ED] shadow-sm px-6 py-6 sm:px-8 sm:py-7 space-y-6">
         <div>
           <p className="font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#5B835F]">
             Design My Work-Life Balance Business Day™
