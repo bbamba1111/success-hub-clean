@@ -175,7 +175,7 @@ export function PowerDownReleaseCard() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-            className="rounded-3xl border-2 border-[#5B6EA8]/20 bg-[#5B6EA8]/[0.025] px-6 py-6 sm:px-7 space-y-4"
+            className="rounded-3xl border-2 border-[#5B6EA8]/20 bg-white px-6 py-6 sm:px-7 space-y-4"
           >
             <div className="flex items-center justify-between gap-3 flex-wrap">
               <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B7599]">
@@ -192,10 +192,10 @@ export function PowerDownReleaseCard() {
                 )}
               </div>
             </div>
-            <p className="font-serif text-lg italic leading-relaxed text-[#5C5865] sm:text-xl">
+            <p className="font-serif text-lg italic leading-relaxed text-gray-600 sm:text-xl">
               {declaration.declaration}
             </p>
-            <p className="font-sans text-sm text-[#8A8090]">Read it aloud. Let the day release for real.</p>
+            <p className="font-sans text-sm text-gray-400">Read it aloud. Let the day release for real.</p>
             <Button
               variant="outline"
               onClick={handleCopy}
