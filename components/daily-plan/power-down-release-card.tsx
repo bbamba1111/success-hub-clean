@@ -332,7 +332,8 @@ export function PowerDownReleaseCard() {
       {/* ── Power Down History™ — always present ── */}
       <PowerDownHistoryList history={history} onDelete={deleteEntry} />
 
-      {/* ── Sleep Tracker™ + Sleep History™ — track tonight's actual rest without leaving Power Down ── */}
+      {/* ── Sleep Tracker™ + Sleep History™ — set tonight's sleep intention here;
+             the actual sleep is logged next morning in Flex Time™ ── */}
       <SleepTrackerWidget />
 
       {/* Static closure banner — no new planning, just the day's honest end. */}

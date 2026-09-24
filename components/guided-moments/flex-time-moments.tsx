@@ -14,6 +14,16 @@
 import type { CheckInMomentConfig, MomentConfig, ResolutionOption } from "@/components/guided-moments/guided-moments"
 import { GuidedMoments } from "@/components/guided-moments/guided-moments"
 import { getDayKey, saveLocalDay, syncFlexTimeDay } from "@/utils/flex-time-storage"
+import { isSegmentCheckInOpen, segmentCheckinLabel } from "@/lib/daily-plan/segment-checkin-timing"
+import { SleepTrackerMorningCard } from "@/components/guided-moments/sleep-tracker-morning-card"
+
+/**
+ * Flex Time™ is the "early-access" segment (7:00–9:00 AM). Its check-in time
+ * is derived from that segment's actual end — end − 5 min — via the shared
+ * timing rule, NOT a hard-coded 8:55. If the segment's end ever changes, the
+ * check-in follows automatically.
+ */
+const FLEX_TIME_CHECKIN_LABEL = segmentCheckinLabel("early-access")
 
 /**
  * Borrowing rule for anything left outstanding at the 8:55 check-in.
@@ -32,9 +42,9 @@ function getResolutionOptions(_now: Date): ResolutionOption[] {
   ]
 }
 
-/** True at/after 8:55 AM local time (5 minutes before Flex Time's 9:00 AM end). */
+/** Open once the local clock reaches Flex Time's end − 5 min, derived from the schedule. */
 function isCheckInAvailable(now: Date): boolean {
-  return now.getHours() > 8 || (now.getHours() === 8 && now.getMinutes() >= 55)
+  return isSegmentCheckInOpen("early-access", now)
 }
 
 const FLEX_TIME_MOMENTS: MomentConfig[] = [
@@ -73,10 +83,10 @@ const FLEX_TIME_MOMENTS: MomentConfig[] = [
     sourceMomentId: "making-time-for",
     question: "Which of these did you make time for?",
     helperText: "Select everything you completed — Cherry Blossom will help with the rest.",
-    summaryLabel: "8:55 Check-In",
+    summaryLabel: `${FLEX_TIME_CHECKIN_LABEL} Check-In`,
     standoutTitle: "What You Completed",
     availableAt: isCheckInAvailable,
-    lockedNote: "Check-in opens at 8:55 AM — five minutes before Flex Time™ wraps up.",
+    lockedNote: `Check-in opens at ${FLEX_TIME_CHECKIN_LABEL} — five minutes before Flex Time™ wraps up.`,
     confirmationComplete:
       "Wonderful — you made time for everything you set out to this morning. That's exactly what Flex Time™ is for.",
     confirmationOutstanding:
@@ -118,14 +128,20 @@ function buildCopyText(selectionsByMoment: Record<string, string[]>): string {
 
 export function FlexTimeGuidedMoments() {
   return (
-    <GuidedMoments
-      moments={FLEX_TIME_MOMENTS}
-      summaryTitle="Today's Flex Time™"
-      summaryLeadIn="You're making time for:"
-      summaryConfirmation="Beautiful. You've intentionally created room for the responsibilities and experiences that matter this morning while keeping your CEO Workday™ protected."
-      copy={{ label: "Copy My Morning Plan", buildText: buildCopyText }}
-      confirmationHoldMs={8000}
-    />
+    <>
+      {/* Outstanding "From last night" Sleep Tracker™ completion — renders only
+          when there's a pending intention whose morning has arrived. Sits above
+          the morning Moments without interrupting Morning GIV•EN™. */}
+      <SleepTrackerMorningCard />
+      <GuidedMoments
+        moments={FLEX_TIME_MOMENTS}
+        summaryTitle="Today's Flex Time™"
+        summaryLeadIn="You're making time for:"
+        summaryConfirmation="Beautiful. You've intentionally created room for the responsibilities and experiences that matter this morning while keeping your CEO Workday™ protected."
+        copy={{ label: "Copy My Morning Plan", buildText: buildCopyText }}
+        confirmationHoldMs={8000}
+      />
+    </>
   )
 }
 

@@ -5,7 +5,15 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
-import { Calendar, Moon, Clock, TrendingUp, Target, Trash2, Copy, Check, ChevronRight } from "lucide-react"
+import { Calendar, Moon, Clock, TrendingUp, Target, Trash2, Copy, Check, ChevronRight, Sunrise } from "lucide-react"
+import {
+  clearPendingSleepIntention,
+  computeSleepNightKey,
+  getPendingSleepIntention,
+  isSleepIntentionActionable,
+  localDateKey,
+  saveSleepIntention,
+} from "@/lib/daily-plan/sleep-tracker-storage"
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -21,7 +29,7 @@ interface SleepEntry {
   reflection: string
 }
 
-type Step = "intention" | "declare" | "complete" | "celebrate"
+type Step = "intention" | "declare" | "deferred" | "complete" | "celebrate"
 
 interface PageState {
   targetHours: number
@@ -32,6 +40,10 @@ interface PageState {
   actualHours: number
   reflection: string
   step: Step
+  /** YYYY-MM-DD of the morning this sleep belongs to (set when the intention defers overnight). */
+  nightKey: string | null
+  /** True when completing a sleep intention that was set the previous evening. */
+  fromLastNight: boolean
 }
 
 // ─── Constants ───────────────────────────────────────────────────────────────
@@ -59,6 +71,8 @@ function freshState(): PageState {
     actualHours: 7,
     reflection: "",
     step: "intention",
+    nightKey: null,
+    fromLastNight: false,
   }
 }
 
@@ -89,6 +103,25 @@ export function SleepTrackerWidget() {
     const saved = localStorage.getItem("sleepEntries_v2")
     if (saved) setHistory(JSON.parse(saved))
     localStorage.setItem("dashboardVisited", "true")
+
+    // If an intention was set the previous evening, resume it: open directly at
+    // the completion step once its morning has arrived, or show the deferred
+    // "complete tomorrow morning" state until then. Never re-ask the intention.
+    const pending = getPendingSleepIntention()
+    if (pending) {
+      const actionable = isSleepIntentionActionable(pending)
+      setState((p) => ({
+        ...p,
+        targetHours: pending.targetHours,
+        actualHours: pending.targetHours,
+        bedtime: pending.bedtime,
+        wakeTime: pending.wakeTime,
+        declaration: pending.declaration,
+        nightKey: pending.nightKey,
+        fromLastNight: actionable,
+        step: actionable ? "complete" : "deferred",
+      }))
+    }
     setMounted(true)
   }, [])
 
@@ -106,13 +139,33 @@ export function SleepTrackerWidget() {
     setState((p) => ({ ...p, step: "declare" }))
   }
 
-  const handleGoToComplete = () => setState((p) => ({ ...p, step: "complete" }))
+  // Setting the intention does NOT collect actual sleep — that is deferred to
+  // the next morning during Flex Time™. Persist the intention against the
+  // correct wake date, then either defer (evening) or, if the morning has
+  // already arrived, go straight to completion.
+  const handleSetIntention = () => {
+    const nightKey = computeSleepNightKey()
+    saveSleepIntention({
+      nightKey,
+      targetHours: state.targetHours,
+      bedtime: state.bedtime,
+      wakeTime: state.wakeTime,
+      declaration: state.declaration,
+    })
+    const actionable = localDateKey() >= nightKey
+    setState((p) => ({
+      ...p,
+      nightKey,
+      fromLastNight: actionable,
+      step: actionable ? "complete" : "deferred",
+    }))
+  }
 
   const handleSave = () => {
-    const now = new Date().toISOString()
+    const nightKey = state.nightKey ?? localDateKey()
     const record: SleepEntry = {
       id: Date.now().toString(),
-      date: now.split("T")[0],
+      date: nightKey,
       targetHours: state.targetHours,
       bedtime: state.bedtime,
       wakeTime: state.wakeTime,
@@ -121,9 +174,12 @@ export function SleepTrackerWidget() {
       actualHours: state.completionStatus === "partially" ? state.actualHours : undefined,
       reflection: state.reflection,
     }
-    const updated = [record, ...history]
+    // Replace any existing record for this night so re-completing never duplicates it.
+    const deduped = history.filter((e) => e.date !== nightKey)
+    const updated = [record, ...deduped]
     setHistory(updated)
     localStorage.setItem("sleepEntries_v2", JSON.stringify(updated))
+    clearPendingSleepIntention()
     setState((p) => ({ ...p, step: "celebrate" }))
   }
 
@@ -292,10 +348,10 @@ export function SleepTrackerWidget() {
                 {copied ? "Copied!" : "Copy to Zoom Chat"}
               </Button>
               <Button
-                onClick={handleGoToComplete}
+                onClick={handleSetIntention}
                 className="flex-1 bg-[#E26C73] hover:bg-[#D05A60] text-white font-semibold"
               >
-                {"I've read it — let's go"} <ChevronRight className="ml-2 h-4 w-4" />
+                Set My Sleep Intention™ <ChevronRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
 
@@ -309,10 +365,56 @@ export function SleepTrackerWidget() {
         </Card>
       )}
 
+      {/* ── DEFERRED: intention set, actual sleep logged next morning ── */}
+      {state.step === "deferred" && (
+        <Card className="border-2 border-[#E26C73]/30 bg-[#E26C73]/[0.04]">
+          <CardContent className="pt-6 pb-6 space-y-5 text-center">
+            <div className="w-12 h-12 bg-[#E26C73]/10 rounded-full flex items-center justify-center mx-auto">
+              <Moon className="h-6 w-6 text-[#E26C73]" />
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-[#E26C73] uppercase tracking-widest mb-1">Sleep Intention™ Set</p>
+              <h4 className="text-xl font-bold text-gray-800 mb-1">Rest well — the rest is for the morning.</h4>
+              <p className="text-sm text-gray-500 max-w-sm mx-auto">
+                You committed to{" "}
+                <span className="font-semibold text-gray-700">{formatHours(state.targetHours)} of sleep</span>. You will
+                log how you <em>actually</em> slept tomorrow morning during Flex Time™, before Morning GIV•EN™ begins.
+              </p>
+            </div>
+
+            <div className="bg-white border border-[#E26C73]/20 rounded-xl px-4 py-3 text-sm text-gray-600 text-left">
+              <p className="text-xs font-semibold text-[#E26C73] uppercase tracking-widest mb-1">Your Declaration</p>
+              <p className="italic leading-relaxed">{state.declaration}</p>
+            </div>
+
+            <div className="flex items-center justify-center gap-2 text-sm text-[#7FB069] font-semibold">
+              <Sunrise className="h-4 w-4" />
+              Continues tomorrow morning
+            </div>
+
+            <button
+              onClick={() => setState((p) => ({ ...p, step: "intention" }))}
+              className="text-xs text-gray-400 hover:text-gray-600 underline"
+            >
+              Edit my intention
+            </button>
+          </CardContent>
+        </Card>
+      )}
+
       {/* ── STEP 3: Completion ── */}
       {state.step === "complete" && (
         <Card className="border-2 border-[#E26C73]/30">
           <CardContent className="pt-6 pb-6 space-y-5">
+            {state.fromLastNight && (
+              <div className="flex items-start gap-2 rounded-xl border border-[#7FB069]/40 bg-[#7FB069]/10 px-4 py-3">
+                <Sunrise className="h-4 w-4 mt-0.5 shrink-0 text-[#7FB069]" />
+                <p className="text-sm text-gray-700">
+                  <span className="font-semibold text-[#5c8a45]">From last night.</span> Complete your Sleep Tracker™ now
+                  that you know how the night actually went.
+                </p>
+              </div>
+            )}
             <div>
               <p className="text-xs font-semibold text-[#E26C73] uppercase tracking-widest mb-1">Step 3 of 3</p>
               <h4 className="text-xl font-bold text-gray-800 mb-1">How did you sleep?</h4>
