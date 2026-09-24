@@ -171,19 +171,19 @@ export function DailyDeclaration() {
             className="relative mx-auto max-w-7xl overflow-hidden rounded-[1.75rem] border border-[#EADFCB] bg-white/70"
             style={{ boxShadow: "0 24px 60px rgba(193,59,107,0.08), 0 6px 20px rgba(0,0,0,0.04)" }}
           >
-            <div className="flex flex-col items-center gap-4 px-6 py-12 text-center sm:px-16 sm:py-14">
-              <span className="inline-flex items-center gap-2 rounded-full border border-[#C9A227]/40 bg-white px-4 py-1.5 font-montserrat text-[11px] font-bold uppercase tracking-[0.2em] text-[#8A6D2F] shadow-sm">
+            <div className="flex flex-col items-center gap-2.5 px-6 py-6 text-center sm:px-12 sm:py-7">
+              <span className="inline-flex items-center gap-2 rounded-full border border-[#C9A227]/40 bg-white px-3 py-1 font-montserrat text-[10px] font-bold uppercase tracking-[0.2em] text-[#8A6D2F] shadow-sm">
                 {"My Intention Today"}
               </span>
-              <p className="max-w-[520px] font-playfair text-lg italic leading-relaxed text-[#5A4A52] sm:text-xl">
+              <p className="max-w-[520px] font-playfair text-base italic leading-snug text-[#5A4A52] sm:text-lg">
                 {"You haven\u2019t set today\u2019s intention yet."}
               </p>
-              <p className="max-w-[480px] font-montserrat text-[13px] leading-relaxed text-[#4A3A42]/80">
+              <p className="max-w-[460px] font-montserrat text-xs leading-relaxed text-[#4A3A42]/80">
                 {"Set it during Morning GIV\u2022EN\u2122 and it will stay right here, all day, until you change it."}
               </p>
               <a
                 href="/?openSpace=morning-given"
-                className="mt-1 inline-flex items-center gap-2 rounded-full bg-[#78AD7D] px-6 py-2.5 font-montserrat text-sm font-bold text-white shadow-sm transition-colors hover:bg-[#5F9165]"
+                className="mt-0.5 inline-flex items-center gap-2 rounded-full bg-[#78AD7D] px-5 py-2 font-montserrat text-[13px] font-bold text-white shadow-sm transition-colors hover:bg-[#5F9165]"
               >
                 {"Set Today\u2019s Intention"}
               </a>
