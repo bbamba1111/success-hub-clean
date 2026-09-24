@@ -51,7 +51,7 @@ export const SCHEDULE: BlockConfig[] = [
     startMinutes: h(7),
     endMinutes: h(9),
     description:
-      "Flex Time™ is where life gets accommodated without letting the unexpected become the operating system.",
+      "This is where life gets accommodated without letting the unexpected become the operating system.",
     emoji: "🌅",
     tint: "253 246 234",
     backgroundImage: "/images/block-early-access.png",
@@ -76,7 +76,7 @@ export const SCHEDULE: BlockConfig[] = [
     startMinutes: h(9),
     endMinutes: h(9, 45),
     description:
-      "Morning GIV•EN™ is where you align mind, body, spirit, and priorities before work begins.",
+      "This is where you align mind, body, spirit, and priorities before work begins.",
     emoji: "🌸",
     tint: "252 240 238",
     backgroundImage: "/images/block-morning-given.png",
@@ -174,7 +174,7 @@ export const SCHEDULE: BlockConfig[] = [
     startMinutes: h(9, 45),
     endMinutes: h(10, 30),
     description:
-      "Decide & Design™ is where you choose how you'll live, work & lead in your workday.",
+      "This is where you choose how you'll live, work & lead in your workday.",
     emoji: "🧭",
     tint: "237 242 247",
     backgroundImage: "/images/block-decide-design-cherry-blossom.png",
@@ -199,7 +199,7 @@ export const SCHEDULE: BlockConfig[] = [
     startMinutes: h(10, 30),
     endMinutes: h(11),
     description:
-      "Movement Window™ is where your body gets protected space inside the workday.",
+      "This is where your body gets protected space inside the workday.",
     emoji: "💪",
     tint: "240 245 236",
     backgroundImage: "/images/block-movement-window.png",
@@ -225,7 +225,7 @@ export const SCHEDULE: BlockConfig[] = [
     startMinutes: h(11),
     endMinutes: h(13),
     description:
-      "Extended Healthy Hybrid Lunch™ is where nourishment, connection, and real recovery have a protected place.",
+      "This is where nourishment, connection, and real recovery have a protected place.",
     emoji: "🥗",
     tint: "238 244 234",
     backgroundImage: "/images/block-lunch-break.png",
@@ -251,7 +251,7 @@ export const SCHEDULE: BlockConfig[] = [
     startMinutes: h(13),
     endMinutes: h(17),
     description:
-      "Your protected execution period for AI Augmentation™, Deep Work™, strategic thinking, decisions, and delivery.",
+      "This is where you do the deep work only you can do—AI Augmentation™, strategic thinking, decisions, and delivery.",
     emoji: "💼",
     tint: "237 242 247",
     backgroundImage: "/images/block-ceo-workday.png",
@@ -283,7 +283,7 @@ export const SCHEDULE: BlockConfig[] = [
     weekendStartMinutes: h(7),
     endMinutes: h(22),
     description:
-      "Enjoy the life you built your business to support—family, health, relationships, recreation, creativity, faith, and growth.",
+      "This is where you enjoy the life you built your business to support—family, health, relationships, recreation, creativity, faith, and growth.",
     emoji: "🌸",
     tint: "252 241 239",
     backgroundImage: "/images/block-time-freedom.png",
@@ -309,7 +309,7 @@ export const SCHEDULE: BlockConfig[] = [
     startMinutes: h(22),
     endMinutes: h(23),
     description:
-      "Power Down™ is where you release the day and recovery begins.",
+      "This is where you release the day and recovery begins.",
     emoji: "🌙",
     tint: "238 240 247",
     backgroundImage: "/images/block-power-down.png",
@@ -335,7 +335,7 @@ export const SCHEDULE: BlockConfig[] = [
     startMinutes: h(23),
     endMinutes: h(7), // wraps past midnight
     description:
-      "Unplug™ is where we close our day and you unplug to get some sleep.",
+      "This is where we close our day and you unplug to get some sleep.",
     emoji: "🌙",
     tint: "239 240 244",
     backgroundImage: "/images/block-digital-detox.png",
