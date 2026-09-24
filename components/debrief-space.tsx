@@ -74,7 +74,7 @@ export function DebriefSpace() {
 
       {/* ── My 4-Hour CEO Workday Declaration™ — woven from who you're being,
            your weekly life priorities, and your boundary focus. */}
-      <div className="rounded-3xl border border-[#7FB069]/30 bg-white shadow-sm px-6 py-6 sm:px-8 sm:py-7">
+      <div className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm px-6 py-6 sm:px-8 sm:py-7">
         <WorkdayDeclaration mode="build" />
       </div>
 

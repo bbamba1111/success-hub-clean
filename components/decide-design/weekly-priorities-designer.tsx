@@ -317,13 +317,13 @@ function BoundaryFocusSection({
 
       {/* Chosen state */}
       {chosen && !choosingOther ? (
-        <div className="rounded-2xl border border-[#7FB069]/40 bg-white px-5 py-5 space-y-3">
+        <div className="rounded-2xl border border-[#7FB069]/30 bg-white px-5 py-5 space-y-3">
           <Eyebrow>This week&apos;s boundary</Eyebrow>
           <p className="font-serif text-2xl font-semibold text-[#2E1F27] text-pretty">{chosen}</p>
           <button
             type="button"
             onClick={() => setChoosingOther(true)}
-            className="inline-flex items-center rounded-full border border-[#7FB069]/40 bg-white px-5 py-2.5 font-sans text-sm font-semibold text-[#3A2E33] hover:bg-black/[0.03]"
+            className="inline-flex items-center rounded-full border border-[#7FB069]/30 bg-white px-5 py-2.5 font-sans text-sm font-semibold text-[#3A2E33] hover:bg-black/[0.03]"
           >
             Choose a different boundary
           </button>
@@ -332,7 +332,7 @@ function BoundaryFocusSection({
         <div className="space-y-4">
           {/* Recommendation */}
           {recommendation && !choosingOther && (
-            <div className="rounded-2xl border border-[#7FB069]/40 bg-white px-5 py-5 space-y-3">
+            <div className="rounded-2xl border border-[#7FB069]/30 bg-white px-5 py-5 space-y-3">
               <div>
                 <Eyebrow>Recommended boundary</Eyebrow>
                 <p className="mt-1 font-serif text-2xl font-semibold text-[#2E1F27] text-pretty">
@@ -353,7 +353,7 @@ function BoundaryFocusSection({
                 <button
                   type="button"
                   onClick={() => setChoosingOther(true)}
-                  className="inline-flex items-center rounded-full border border-[#7FB069]/40 bg-white px-6 py-3 font-sans text-sm font-semibold text-[#3A2E33] hover:bg-black/[0.03]"
+                  className="inline-flex items-center rounded-full border border-[#7FB069]/30 bg-white px-6 py-3 font-sans text-sm font-semibold text-[#3A2E33] hover:bg-black/[0.03]"
                 >
                   Choose a different boundary
                 </button>
