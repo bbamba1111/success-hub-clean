@@ -183,8 +183,8 @@ export function PowerDownIntentionForm() {
               onClick={() => toggleActivity(t)}
               className={`rounded-full border px-3 py-1.5 font-sans text-sm transition-all ${
                 activities.includes(t)
-                  ? "border-[#5B6EA8] bg-[#5B6EA8] font-semibold text-white"
-                  : "border-[#E5E5E5] bg-white text-[#3A2E33] hover:border-[#5B6EA8] hover:text-[#5B6EA8]"
+                  ? "border-[#6B786B] bg-[#6B786B] font-semibold text-white"
+                  : "border-[#E5E5E5] bg-white text-[#3A2E33] hover:border-[#6B786B] hover:text-[#6B786B]"
               }`}
             >
               {t}
@@ -251,8 +251,8 @@ export function PowerDownIntentionForm() {
               onClick={() => setSleepHours(h)}
               className={`rounded-full border px-3 py-1.5 font-sans text-sm transition-all ${
                 sleepHours === h
-                  ? "border-[#5B6EA8] bg-[#5B6EA8] font-semibold text-white"
-                  : "border-[#E5E5E5] bg-white text-[#3A2E33] hover:border-[#5B6EA8] hover:text-[#5B6EA8]"
+                  ? "border-[#6B786B] bg-[#6B786B] font-semibold text-white"
+                  : "border-[#E5E5E5] bg-white text-[#3A2E33] hover:border-[#6B786B] hover:text-[#6B786B]"
               }`}
             >
               {formatHours(h)}
@@ -264,7 +264,7 @@ export function PowerDownIntentionForm() {
       <Button
         onClick={handleBuild}
         disabled={activities.length === 0 || !sleepHours}
-        className="w-full bg-[#5B6EA8] py-6 text-base font-semibold text-white hover:bg-[#4A5D97] disabled:opacity-40"
+        className="w-full bg-[#2F5233] py-6 text-base font-semibold text-white hover:bg-[#264227] disabled:opacity-40"
       >
         <Sparkles className="mr-2 h-4 w-4" />
         Build My Declaration <ChevronRight className="ml-2 h-4 w-4" />
