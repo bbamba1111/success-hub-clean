@@ -687,12 +687,6 @@ export function CeoWorkdayDesignForm() {
           </span>
         </div>
 
-        {design && !design.ok && items.length === 0 && (
-          <div className="rounded-2xl border border-dashed border-[#E8DFE2] bg-white p-4 font-sans text-sm text-[#6B5860]">
-            {design.reason} You can still add the work that must happen today above.
-          </div>
-        )}
-
         {items.map((item) => (
           <WorkCard
             key={item.id}
