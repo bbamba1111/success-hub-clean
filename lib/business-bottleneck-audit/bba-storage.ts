@@ -9,6 +9,7 @@
  * record of truth and is cleared once a save succeeds.
  */
 
+import { BBA_QUESTIONS } from "./bba-registry"
 import type { BbaBaselineRecord, BbaBaselineResponses, BbaWeeklyCheckinRecord } from "./types"
 
 const DRAFT_BASELINE_KEY = "bbaBaselineDraft"
@@ -281,6 +282,54 @@ export async function hasCompletedThisWeeksBbaCheckin(): Promise<boolean> {
 export interface BbaRealityCheckSnapshot {
   overallScore: number
   pillarScores: { pillarName: string; percentage: number }[]
+}
+
+/* ===========================================================================
+ * Business & Workplace Reality™ aggregation — BBA remains the canonical
+ * source. This distills the two founder-reality signals (founder
+ * involvement / decision dependency, and the founder's own emergency
+ * definition) out of the baseline into human-readable labels the Reality
+ * Check™ synthesis layer — and later the Boundary Builder™ — can read. It
+ * does NOT diagnose, score, or label the founder; it surfaces their actual
+ * answers faithfully. Returns empty arrays when the questions are unanswered
+ * (existing baselines predating these questions stay fully readable).
+ * ======================================================================== */
+
+export const BBA_FOUNDER_INVOLVEMENT_QUESTION_ID = "founder.involvementRequired"
+export const BBA_EMERGENCY_DEFINITION_QUESTION_ID = "founder.emergencyDefinition"
+
+export interface BbaBusinessRealitySignals {
+  /** Situations that currently require the founder's direct involvement, approval, or decision. */
+  founderInvolvement: string[]
+  /** Situations the founder considers legitimate emergencies that may interrupt protected time. */
+  emergencyDefinition: string[]
+}
+
+/** Resolves a multi-select (or single-select) answer into its human-readable labels, honoring "Other" free text. */
+function resolveAnswerLabels(record: BbaBaselineRecord, questionId: string): string[] {
+  const question = BBA_QUESTIONS.find((q) => q.id === questionId)
+  const raw = record.responses[questionId]
+  const ids = Array.isArray(raw) ? raw : typeof raw === "string" && raw ? [raw] : []
+  return ids.map((id) => {
+    const option = question?.options?.find((o) => o.id === id)
+    if (option?.allowOtherText && record.otherText[questionId]) return record.otherText[questionId]
+    return option?.label ?? id
+  })
+}
+
+/** Pure: derives the Business & Workplace Reality™ signals from a BBA baseline record. */
+export function deriveBbaBusinessRealitySignals(record: BbaBaselineRecord): BbaBusinessRealitySignals {
+  return {
+    founderInvolvement: resolveAnswerLabels(record, BBA_FOUNDER_INVOLVEMENT_QUESTION_ID),
+    emergencyDefinition: resolveAnswerLabels(record, BBA_EMERGENCY_DEFINITION_QUESTION_ID),
+  }
+}
+
+/** Client accessor: reads the current baseline and returns its Business & Workplace Reality™ signals, or null if no baseline exists. */
+export async function getBbaBusinessRealitySignals(): Promise<BbaBusinessRealitySignals | null> {
+  const record = await getCurrentBbaBaseline()
+  if (!record) return null
+  return deriveBbaBusinessRealitySignals(record)
 }
 
 const NON_SIGNAL_BUSINESS_IMPROVEMENT_IDS = new Set(["no-meaningful-improvement", "other"])

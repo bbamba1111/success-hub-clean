@@ -17,6 +17,10 @@ import { useEffect, useState, type ReactNode } from "react"
 import { ChevronDown, ClipboardCheck } from "lucide-react"
 import { getLatestBoundaryReport } from "@/lib/boundary-report/actions"
 import type { BoundaryReportData } from "@/lib/boundary-report/types"
+import {
+  getBbaBusinessRealitySignals,
+  type BbaBusinessRealitySignals,
+} from "@/lib/business-bottleneck-audit/bba-storage"
 
 function Eyebrow({ children }: { children: ReactNode }) {
   return (
@@ -41,6 +45,7 @@ const STAGE_LABEL: Record<string, string> = {
 
 export function ReviewRealityCheck() {
   const [report, setReport] = useState<BoundaryReportData | null>(null)
+  const [realitySignals, setRealitySignals] = useState<BbaBusinessRealitySignals | null>(null)
   const [loading, setLoading] = useState(true)
   const [collapsed, setCollapsed] = useState(false)
 
@@ -55,6 +60,23 @@ export function ReviewRealityCheck() {
       })
       .finally(() => {
         if (active) setLoading(false)
+      })
+    return () => {
+      active = false
+    }
+  }, [])
+
+  // BBA™ is the canonical source for Business & Workplace Reality™. Read the two
+  // founder-reality signals live so they surface here as soon as they're answered,
+  // independent of when the Boundary Report snapshot was generated.
+  useEffect(() => {
+    let active = true
+    getBbaBusinessRealitySignals()
+      .then((signals) => {
+        if (active) setRealitySignals(signals)
+      })
+      .catch(() => {
+        if (active) setRealitySignals(null)
       })
     return () => {
       active = false
@@ -160,6 +182,26 @@ export function ReviewRealityCheck() {
                   <li key={r.id}>{r.label}</li>
                 ))}
               </ul>
+            )}
+            {realitySignals && realitySignals.founderInvolvement.length > 0 && (
+              <div className="mt-2.5">
+                <p className="font-semibold text-[#2E1F27]">Currently requires your involvement:</p>
+                <ul className="list-disc space-y-0.5 pl-5">
+                  {realitySignals.founderInvolvement.map((item, i) => (
+                    <li key={i}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {realitySignals && realitySignals.emergencyDefinition.length > 0 && (
+              <div className="mt-2.5">
+                <p className="font-semibold text-[#2E1F27]">You defined these as emergencies:</p>
+                <ul className="list-disc space-y-0.5 pl-5">
+                  {realitySignals.emergencyDefinition.map((item, i) => (
+                    <li key={i}>{item}</li>
+                  ))}
+                </ul>
+              </div>
             )}
           </ReviewRow>
 

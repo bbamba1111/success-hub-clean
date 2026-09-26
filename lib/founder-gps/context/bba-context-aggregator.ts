@@ -29,6 +29,7 @@ import {
   getThisWeeksBbaCheckinServer,
 } from "@/lib/business-bottleneck-audit/bba-server"
 import { BBA_CATEGORIES } from "@/lib/business-bottleneck-audit/bba-registry"
+import { deriveBbaBusinessRealitySignals } from "@/lib/business-bottleneck-audit/bba-storage"
 import type { BbaCategoryId } from "@/lib/business-bottleneck-audit/types"
 
 export interface BbaSignalSummary {
@@ -59,6 +60,22 @@ export interface BbaSignalSummary {
   reportedBusinessAssetActivity: boolean
   /** Stakeholder/investor/reporting deadlines the founder flagged as upcoming, across the current week's check-in. */
   upcomingStakeholderDeadlineCount: number
+
+  /**
+   * Business & Workplace Reality™ — situations that currently require the
+   * founder's direct involvement, approval, or decision (from the BBA
+   * baseline). Faithful founder answers, not a diagnosis. Empty when
+   * unanswered. Exposed for the Reality Check™ synthesis and the later
+   * Boundary Builder™ flow; no consuming ranking rule yet.
+   */
+  founderInvolvementSituations: string[]
+  /**
+   * Business & Workplace Reality™ — situations the founder considers
+   * legitimate emergencies that may interrupt protected time (from the BBA
+   * baseline). Faithful founder answers, not a diagnosis. Empty when
+   * unanswered. Reserved for the later Boundary Builder™ escalation-rule flow.
+   */
+  founderEmergencyDefinitions: string[]
 }
 
 const BLOCKED_ASSIGNMENT_STATUSES = new Set(["not-started", "started-not-completed"])
@@ -90,6 +107,10 @@ export async function getBbaSignalSummary(userId: string): Promise<BbaSignalSumm
     (week) => week.assignmentStatus && BLOCKED_ASSIGNMENT_STATUSES.has(week.assignmentStatus),
   ).length
 
+  const realitySignals = baseline
+    ? deriveBbaBusinessRealitySignals(baseline)
+    : { founderInvolvement: [], emergencyDefinition: [] }
+
   return {
     hasBaseline: baseline !== null,
     baselineCompletedAt: baseline?.completedAt ?? null,
@@ -104,5 +125,8 @@ export async function getBbaSignalSummary(userId: string): Promise<BbaSignalSumm
     reportedBusinessAssetActivity: (thisWeek?.businessAssets.length ?? 0) > 0,
     upcomingStakeholderDeadlineCount:
       thisWeek?.stakeholderDeadlines.filter((d) => d.status === "upcoming").length ?? 0,
+
+    founderInvolvementSituations: realitySignals.founderInvolvement,
+    founderEmergencyDefinitions: realitySignals.emergencyDefinition,
   }
 }

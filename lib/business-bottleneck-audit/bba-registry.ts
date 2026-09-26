@@ -523,6 +523,54 @@ export const BBA_QUESTIONS: BbaQuestion[] = [
     order: 3,
     status: "active",
   },
+  {
+    // Business & Workplace Reality signal — founder involvement / decision dependency.
+    // Faithfully captures where the founder is still a required point of
+    // involvement; NOT scored or auto-diagnosed here (see bba-storage.ts
+    // deriveBbaBusinessRealitySignals for the read path).
+    id: "founder.involvementRequired",
+    categoryId: "founder-role-hats",
+    kind: "multi-select",
+    prompt: "What situations currently require your direct involvement, approval, or decision?",
+    helperText: "Select all that apply. Add anything else under “Other.”",
+    options: [
+      { id: "client-approvals", label: "Client approvals or sign-offs" },
+      { id: "pricing-proposals", label: "Pricing, quotes, or proposals" },
+      { id: "spending-financial", label: "Spending or financial approvals" },
+      { id: "hiring-team", label: "Hiring or team decisions" },
+      { id: "final-review", label: "Final review of work before it goes out" },
+      { id: "client-escalations", label: "Client issues or escalations" },
+      { id: "strategic-decisions", label: "Strategic or big-picture decisions" },
+      { id: "daily-operations", label: "Day-to-day operational decisions" },
+      { id: "vendor-partner", label: "Vendor or partner decisions" },
+      { id: "other", label: "Other", allowOtherText: true },
+    ],
+    order: 4,
+    status: "active",
+  },
+  {
+    // Business & Workplace Reality signal — the founder's own definition of a
+    // legitimate emergency/escalation allowed to interrupt protected time.
+    // Stored faithfully; interpretation happens later (Boundary Builder™).
+    id: "founder.emergencyDefinition",
+    categoryId: "founder-role-hats",
+    kind: "multi-select",
+    prompt: "What would you consider an emergency that should interrupt your protected time?",
+    helperText: "Select all that apply. Add anything else under “Other.”",
+    options: [
+      { id: "major-client-issue", label: "A major client issue or complaint" },
+      { id: "revenue-threatening", label: "Something that threatens revenue or a deal" },
+      { id: "team-blocked", label: "The team is blocked and cannot proceed without me" },
+      { id: "financial-legal", label: "A financial, legal, or compliance problem" },
+      { id: "technology-outage", label: "A technology outage or security issue" },
+      { id: "health-safety", label: "A health, safety, or personal emergency" },
+      { id: "reputation-public", label: "A reputation or public-facing issue" },
+      { id: "nothing-should", label: "Nothing should interrupt my protected time" },
+      { id: "other", label: "Other", allowOtherText: true },
+    ],
+    order: 5,
+    status: "active",
+  },
 
   // ── 7. Systems / Processes ──────────────────────────────────────────────
   {
