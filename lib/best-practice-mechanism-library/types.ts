@@ -43,6 +43,7 @@ import type { BusinessStage } from "@/lib/business-stage/business-stage"
 import type { LeverageClassId } from "@/lib/executive-decision-engine/types"
 import type { EgaObstacleType, EgaActionType } from "@/lib/ega/types"
 import type { BuildPathId } from "@/lib/build-strategy/types"
+import type { Lever as CaioLever } from "@/lib/founder-os/ai-transformation"
 
 /* ===========================================================================
  * 1. STAGE — Start / Grow / Scale
@@ -102,6 +103,19 @@ export type CapabilityMode =
   | "systemize"
   | "augment"
 
+/**
+ * Which side of the competency question a requirement answers. Lets a
+ * mechanism carry the "what must the founder KNOW / DO / PRACTICE, what must
+ * the TEAM do, and what does the founder NO LONGER do" metadata as structured
+ * data — without a competency assessment engine.
+ */
+export type CompetencyDimension =
+  | "know" // knowledge the founder must have
+  | "do" // an action the founder must be able to perform
+  | "practice" // a behavior the founder must repeat until reliable
+  | "team" // a capability the team must hold
+  | "founder-retires" // work the founder no longer personally performs once the mechanism works
+
 export interface MechanismCompetency {
   /** Plain-language capability the mechanism requires. */
   capability: string
@@ -109,6 +123,8 @@ export interface MechanismCompetency {
   obstacleType?: EgaObstacleType
   /** The founder's realistic response — learn it, practice it, build it, delegate it, systemize it, or augment it. */
   mode: CapabilityMode
+  /** Which competency question this requirement answers (know / do / practice / team / founder-retires). */
+  dimension?: CompetencyDimension
 }
 
 /* ===========================================================================
@@ -199,6 +215,14 @@ export interface MechanismHroiMeasures {
 export type MechanismStatus =
   /** The single demonstration record proving the schema compiles — never production. */
   | "schema-example"
+  /**
+   * A real, fully-populated mechanism authored to validate that the schema can
+   * carry a mechanism end-to-end (Gap → Mechanism → Competency → Asset →
+   * Blueprint → Work → Intervention → AI → Human Sustainability → HROI).
+   * NOT production data and NOT part of a corpus — excluded from
+   * getProductionMechanisms(), surfaced only via getValidationMechanisms().
+   */
+  | "validation"
   /** Authored but not yet approved for production surfacing. */
   | "draft"
   /** Approved for production surfacing (none exist in this pass). */
@@ -226,6 +250,12 @@ export interface BestPracticeMechanism {
    * so the two can be reconciled later without a data migration. Optional.
    */
   stageMapping?: BusinessStage[]
+  /**
+   * How the mechanism actually behaves in each Start / Grow / Scale environment.
+   * Only the stages where the behavior is genuinely different need entries — a
+   * mechanism is never forced to describe a stage the evidence does not support.
+   */
+  stageBehavior?: Partial<Record<MechanismStage, string>>
   /** Business domain/area (e.g. "sales", "client-delivery", "operations"). Free-form this pass. */
   businessDomain?: string
 
@@ -299,6 +329,41 @@ export function leverageClassEquivalent(intervention: WorkInterventionType): Lev
     case "simplified":
     case "standardized":
       return "keep" // still founder/team-owned work, just made repeatable — not yet automated
+    default: {
+      const _exhaustive: never = intervention
+      return _exhaustive
+    }
+  }
+}
+
+/**
+ * Reconciles the mechanism `WorkInterventionType` vocabulary with the existing
+ * CAIO `Lever` vocabulary (lib/founder-os/ai-transformation:
+ * "Eliminate" | "Systemize" | "Automate" | "Augment" | "Delegate").
+ *
+ * This is a NARROW reconciliation for the validation pass only — it lets a
+ * mechanism's interventions be expressed in the CAIO dashboard's terms without
+ * refactoring the CAIO system or collapsing either enum. `kept-human` has no
+ * CAIO lever (every CAIO lever is an active intervention) and returns null.
+ * The two vocabularies are intentionally NOT merged yet; that is a later
+ * decision informed by more than two examples.
+ */
+export function caioLeverEquivalent(intervention: WorkInterventionType): CaioLever | null {
+  switch (intervention) {
+    case "eliminated":
+      return "Eliminate"
+    case "simplified":
+    case "standardized":
+      return "Systemize"
+    case "delegated":
+      return "Delegate"
+    case "automated":
+    case "ai-agent-assisted":
+      return "Automate"
+    case "augmented-with-ai":
+      return "Augment"
+    case "kept-human":
+      return null
     default: {
       const _exhaustive: never = intervention
       return _exhaustive
