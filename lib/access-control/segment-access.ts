@@ -42,18 +42,40 @@ export const GATED_SEGMENT_IDS: ReadonlySet<string> = new Set([
 ])
 
 /**
- * The 5:00 PM workspace close — deliberately NARROW. At 5 PM ONLY these two
- * segments lock for the rest of the day: the 4-Hour Focused CEO Workday™ and
- * Decide & Design My Business Day™ (`monday-debrief`). 5 PM is the end of
- * *work* access, NOT a blanket "lock every workspace" — Flex Time™, Movement™,
- * the Extended Healthy Hybrid Lunch™, Time Freedom™, Power Down & Unplug™, and
- * every other segment stay available on their own schedule. Barbara's manual
- * unlock (and admin) still override this close, same as any other lock.
+ * The Business Day runs as TWO cumulative operating blocks, not a chain of
+ * per-segment windows. Within a block, each segment opens at its own start
+ * time and then STAYS open — the founder accumulates open spaces as the block
+ * progresses — until the whole block closes at once.
+ *
+ * WORK BLOCK (7 AM–5 PM): every one of these segments opens at its scheduled
+ * start, stays open, and they ALL close together at 5 PM for the rest of the
+ * day. (Flex Time™ — `early-access` — is always-open and not gated, so it is
+ * not listed here.)
  */
-export const CLOSES_AT_5PM: ReadonlySet<string> = new Set(["ceo-workday", "monday-debrief"])
+export const WORK_BLOCK_SEGMENT_IDS: ReadonlySet<string> = new Set([
+  "monday-reality-check",
+  "monday-debrief",
+  "daily-planning-gps",
+  "morning-given",
+  "movement-window",
+  "lunch-break",
+  "ceo-workday",
+])
 
-/** Minutes-since-midnight of the 5:00 PM work-access close. */
+/**
+ * LIFE / RECOVERY BLOCK (5 PM–11 PM): Time Freedom™ opens at 5 PM, Power Down™
+ * opens at 10 PM, and both stay open until the whole block closes at 11 PM —
+ * when the overnight Unplug Digital Detox™ takes over.
+ */
+export const LIFE_BLOCK_SEGMENT_IDS: ReadonlySet<string> = new Set([
+  "time-freedom",
+  "power-down",
+])
+
+/** Minutes-since-midnight of the 5:00 PM WORK-block close. */
 export const WORK_CLOSE_MINUTES = 17 * 60
+/** Minutes-since-midnight of the 11:00 PM LIFE/RECOVERY-block close. */
+export const LIFE_CLOSE_MINUTES = 23 * 60
 
 /**
  * A manual override from Barbara's Tour Control™ panel.
@@ -159,10 +181,17 @@ function resolveClockAccess(
     }
   }
 
-  // The narrow 5:00 PM work-access close: CEO Workday™ and Decide & Design™
-  // lock for the rest of the day at 5 PM. Every other segment stays open once
-  // its start has passed. Does not reopen today (no countdown).
-  if (CLOSES_AT_5PM.has(segmentId) && minutesSinceMidnight >= WORK_CLOSE_MINUTES) {
+  // Cumulative block close. A segment stays open from its start until its
+  // whole operating block closes as a unit: WORK segments all close at 5 PM,
+  // LIFE/RECOVERY segments (Time Freedom™, Power Down™) at 11 PM. Once closed
+  // it does not reopen today (no countdown).
+  const closeMinutes = WORK_BLOCK_SEGMENT_IDS.has(segmentId)
+    ? WORK_CLOSE_MINUTES
+    : LIFE_BLOCK_SEGMENT_IDS.has(segmentId)
+      ? LIFE_CLOSE_MINUTES
+      : null
+
+  if (closeMinutes !== null && minutesSinceMidnight >= closeMinutes) {
     return {
       locked: true,
       mode: "locked",
@@ -173,7 +202,7 @@ function resolveClockAccess(
     }
   }
 
-  // Live: start has passed and it hasn't hit a same-day close.
+  // Live: start has passed and its block hasn't closed yet.
   return UNLOCKED
 }
 
