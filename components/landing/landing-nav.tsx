@@ -12,10 +12,13 @@ import Link from "next/link"
 export function LandingNav({
   experiencesHref = "#experiences",
   links,
+  ctaLabel = "Experience the Week",
 }: {
   experiencesHref?: string
   /** Optional override for the primary nav links (pages compose different sections). */
   links?: { label: string; href: string }[]
+  /** Label for the primary nav CTA button. */
+  ctaLabel?: string
 }) {
   const [scrolled, setScrolled] = useState(false)
 
@@ -76,7 +79,7 @@ export function LandingNav({
             href={experiencesHref}
             className="font-poppins rounded-full bg-[#E26C73] px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-[#E26C73]/25 transition-transform hover:scale-[1.03] hover:bg-[#d65a62]"
           >
-            Experience the Week
+            {ctaLabel}
           </a>
         </div>
       </nav>

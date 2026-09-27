@@ -54,13 +54,13 @@ export function FinalCtaSection() {
               href="#offer"
               className="font-poppins inline-flex items-center justify-center rounded-full bg-[#E26C73] px-9 py-4 text-base font-semibold text-white shadow-xl shadow-[#E26C73]/25 transition-transform hover:scale-[1.03] hover:bg-[#d65a62]"
             >
-              Experience the Operations Week
+              Join Monday — $1,997
             </a>
             <a
-              href="/audit"
+              href="#how-it-works"
               className="font-poppins inline-flex items-center justify-center rounded-full border border-white/25 px-9 py-4 text-base font-semibold text-white/90 transition-colors hover:bg-white/10"
             >
-              Take the Boundary Audit™
+              See how Monday works
             </a>
           </div>
 

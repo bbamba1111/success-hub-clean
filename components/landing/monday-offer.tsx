@@ -21,13 +21,13 @@ const MONDAY_CHECKOUT = "https://app.paperbell.com/checkout/packages/234458"
 
 const MONDAY_INCLUDED = [
   "Weekly Work-Life Balance Reality Check™",
+  "Your Reality Check Report™",
+  "Guided Tour of the Business Day",
   "Decide & Redesign™ — choose your 3 Life + 3 Business Boundaries",
   "Communicate My Boundary™",
   "4-Hour Focused CEO Workday™",
-  "Morning GIV•EN™ & Workday Design™",
-  "Movement Window™ & Extended Healthy Hybrid Lunch™",
+  "Morning GIV•EN™, Movement Window™ & Extended Lunch™",
   "The Work-Life Balance Business Day™ (the signature live experience)",
-  "Power Down & Unplug™",
 ]
 
 const WEEK_AT_A_GLANCE = [
@@ -55,15 +55,14 @@ export function MondayOffer() {
       <div className="mx-auto max-w-5xl px-5 sm:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <span className="font-poppins inline-flex items-center rounded-full bg-[#C13B6B]/12 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-[#C13B6B]">
-            The Experience
+            The Offer
           </span>
           <h2 className="font-playfair mt-5 text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">
-            Start with Monday
+            Make Time For More On Mondays™
           </h2>
           <p className="font-poppins mt-4 text-pretty text-lg leading-relaxed text-[#6B5860]">
-            One guided day: the complete Work-Life Balance Business Day™, lived in real time. You find your boundaries,
-            operate by them, and feel what a sustainable day actually holds — guided in real time by Thought Leader
-            Barbara. It is your entry point into Harmony Lane™.
+            Experience Work-Life Balance — in real time. Your complete entry into the Work-Life Balance Business
+            Experience, guided in real time by Thought Leader Barbara.
           </p>
         </div>
 
