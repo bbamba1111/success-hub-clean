@@ -37,24 +37,37 @@ export function LockedSegment({
   /** Power Down™'s dusk panel needs light-on-dark text. */
   isEvening?: boolean
 }) {
+  const isTour = access.mode === "tour"
   const notToday = access.reason === "not-today"
   const closedForDay = access.reason === "closed-for-day"
 
-  const eyebrow = closedForDay ? "Complete For Today" : notToday ? "Not Available Today" : "Opens Soon"
+  const eyebrow = isTour
+    ? "Tour Preview"
+    : closedForDay
+      ? "Complete For Today"
+      : notToday
+        ? "Not Available Today"
+        : "Opens Soon"
 
-  const headline = closedForDay
-    ? "This space is complete for today"
-    : notToday
-      ? "This space opens on its scheduled day"
-      : `This space unlocks at ${access.unlockAtLabel ?? "its scheduled time"}`
+  const headline = isTour
+    ? "You're previewing this space on a guided tour"
+    : closedForDay
+      ? "This space is complete for today"
+      : notToday
+        ? "This space opens on its scheduled day"
+        : `This space unlocks at ${access.unlockAtLabel ?? "its scheduled time"}`
 
-  const subline = closedForDay
-    ? "Your work window has closed at 5:00 PM. Step fully into the rest of your day — this space returns tomorrow."
-    : notToday
-      ? "It isn't part of today's Work-Life Balance Business Day™ — it'll be here when its day comes around."
-      : `Honoring the rhythm of the day keeps you present. You'll be able to enter ${formatCountdown(
-          access.minutesUntilUnlock,
-        )}.`
+  const subline = isTour
+    ? `This is a look inside — see what happens here and what you'll receive. The live space opens for real on its schedule${
+        access.unlockAtLabel ? `, at ${access.unlockAtLabel}` : ""
+      }.`
+    : closedForDay
+      ? "Your work window has closed at 5:00 PM. Step fully into the rest of your day — this space returns tomorrow."
+      : notToday
+        ? "It isn't part of today's Work-Life Balance Business Day™ — it'll be here when its day comes around."
+        : `Honoring the rhythm of the day keeps you present. You'll be able to enter ${formatCountdown(
+            access.minutesUntilUnlock,
+          )}.`
 
   return (
     <div className="px-7 py-8 space-y-6">

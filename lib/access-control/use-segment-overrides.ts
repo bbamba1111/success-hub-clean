@@ -8,26 +8,31 @@
  */
 
 import useSWR, { mutate } from "swr"
-import { getUnlockedSegmentIds } from "@/lib/access-control/actions"
+import { getSegmentOverrideMap, type OverrideState } from "@/lib/access-control/actions"
 import type { SegmentOverride } from "@/lib/access-control/segment-access"
 
 export const OVERRIDES_KEY = "segment-access-overrides"
 
 export function useSegmentOverrides() {
-  const { data } = useSWR(OVERRIDES_KEY, () => getUnlockedSegmentIds(), {
+  const { data } = useSWR(OVERRIDES_KEY, () => getSegmentOverrideMap(), {
     revalidateOnFocus: true,
     // Overrides are rare admin actions; a gentle poll keeps members' gates in
     // sync without hammering the DB.
     refreshInterval: 60_000,
-    fallbackData: [] as string[],
+    fallbackData: {} as Record<string, OverrideState>,
   })
 
-  const unlocked = new Set(data ?? [])
+  const overrides = data ?? {}
+  /** Ids with ANY override (tour or unlocked) — kept for callers that only
+      need "is this segment overridden at all". */
+  const overriddenIds = new Set(Object.keys(overrides))
+  const tourIds = new Set(Object.keys(overrides).filter((id) => overrides[id] === "tour"))
+  const unlockedIds = new Set(Object.keys(overrides).filter((id) => overrides[id] === "unlocked"))
 
   /** The override value for a single segment, ready for `resolveSegmentAccess`. */
-  const overrideFor = (segmentId: string): SegmentOverride => (unlocked.has(segmentId) ? "unlocked" : null)
+  const overrideFor = (segmentId: string): SegmentOverride => overrides[segmentId] ?? null
 
-  return { unlockedIds: unlocked, overrideFor }
+  return { overrides, overriddenIds, tourIds, unlockedIds, overrideFor }
 }
 
 /** Refresh every subscribed gate after an admin mutation. */

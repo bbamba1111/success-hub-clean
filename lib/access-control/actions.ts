@@ -14,7 +14,10 @@
 import { createClient } from "@/lib/supabase/server"
 import { GATED_SEGMENT_IDS } from "@/lib/access-control/segment-access"
 
-type AuditAction = "unlock" | "lock" | "unlock_all" | "return_to_automatic"
+type AuditAction = "unlock" | "lock" | "unlock_all" | "return_to_automatic" | "tour" | "tour_all" | "end_tour"
+
+/** Persisted override state for a segment. */
+export type OverrideState = "tour" | "unlocked"
 
 /** Resolve the caller and confirm they are a Platform Administrator. */
 async function requireAdmin() {
@@ -69,6 +72,29 @@ export async function getUnlockedSegmentIds(): Promise<string[]> {
   }
 }
 
+/**
+ * The full override map — segment id → its persisted state (`"tour"` |
+ * `"unlocked"`). This is what the gate needs to tell a read-only Tour preview
+ * apart from a legacy full unlock. Rows written before the `state` column was
+ * meaningful default to `"unlocked"` so behaviour is unchanged. Fails safe to
+ * an empty map (everything follows the clock).
+ */
+export async function getSegmentOverrideMap(): Promise<Record<string, OverrideState>> {
+  try {
+    const supabase = await createClient()
+    const { data, error } = await supabase.from("segment_access_overrides").select("segment_id, state")
+    if (error || !data) return {}
+    const map: Record<string, OverrideState> = {}
+    for (const row of data) {
+      const state = row.state === "tour" ? "tour" : "unlocked"
+      map[row.segment_id as string] = state
+    }
+    return map
+  } catch {
+    return {}
+  }
+}
+
 export interface AccessControlResult {
   ok: boolean
   error?: string
@@ -88,6 +114,46 @@ export async function unlockSegment(segmentId: string): Promise<AccessControlRes
   if (error) return { ok: false, error: error.message, unlocked: await getUnlockedSegmentIds() }
 
   await writeAudit(supabase, user.id, "unlock", segmentId)
+  return { ok: true, unlocked: await getUnlockedSegmentIds() }
+}
+
+/**
+ * Open a single segment as a READ-ONLY Tour preview for the founder. This is
+ * Barbara's demo lever: the founder can view the segment (About + "what
+ * happens here") but the live workspace stays withheld. It never grants live
+ * execution — only the automatic schedule can do that.
+ */
+export async function tourSegment(segmentId: string): Promise<AccessControlResult> {
+  const { supabase, user, isAdmin } = await requireAdmin()
+  if (!user || !isAdmin) return { ok: false, error: "Not authorized", unlocked: await getUnlockedSegmentIds() }
+  if (!GATED_SEGMENT_IDS.has(segmentId))
+    return { ok: false, error: "Segment is not time-gated", unlocked: await getUnlockedSegmentIds() }
+
+  const { error } = await supabase
+    .from("segment_access_overrides")
+    .upsert({ segment_id: segmentId, state: "tour", set_by: user.id, updated_at: new Date().toISOString() })
+  if (error) return { ok: false, error: error.message, unlocked: await getUnlockedSegmentIds() }
+
+  await writeAudit(supabase, user.id, "tour", segmentId)
+  return { ok: true, unlocked: await getUnlockedSegmentIds() }
+}
+
+/** Open every time-gated segment as a read-only Tour preview at once. */
+export async function tourAllSegments(): Promise<AccessControlResult> {
+  const { supabase, user, isAdmin } = await requireAdmin()
+  if (!user || !isAdmin) return { ok: false, error: "Not authorized", unlocked: await getUnlockedSegmentIds() }
+
+  const now = new Date().toISOString()
+  const rows = Array.from(GATED_SEGMENT_IDS).map((segment_id) => ({
+    segment_id,
+    state: "tour" as const,
+    set_by: user.id,
+    updated_at: now,
+  }))
+  const { error } = await supabase.from("segment_access_overrides").upsert(rows)
+  if (error) return { ok: false, error: error.message, unlocked: await getUnlockedSegmentIds() }
+
+  await writeAudit(supabase, user.id, "tour_all", null, { count: rows.length })
   return { ok: true, unlocked: await getUnlockedSegmentIds() }
 }
 

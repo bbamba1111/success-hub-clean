@@ -56,18 +56,44 @@ export const CLOSES_AT_5PM: ReadonlySet<string> = new Set(["ceo-workday", "monda
 export const WORK_CLOSE_MINUTES = 17 * 60
 
 /**
- * A manual override from Barbara's Work-Life Balance Access Control™ panel.
- * `"unlocked"` forces a segment open ahead of its time; `null` means "no
- * override — follow the clock". (Phase D supplies the live value; Phase C
- * accepts it so the signature is already correct.)
+ * A manual override from Barbara's Tour Control™ panel.
+ *
+ * The two states are deliberately NOT the same power:
+ *  - `"tour"`     — opens a READ-ONLY guided preview for the founder (About +
+ *                   "what happens here"), for Barbara's Thursday/Sunday demo.
+ *                   It NEVER grants live execution. This is Barbara's lever.
+ *  - `"unlocked"` — a developer/legacy full unlock that forces true live
+ *                   execution ahead of schedule. Kept for Developer Mode and
+ *                   backwards-compatibility; it is not exposed as a founder
+ *                   Tour action.
+ *  - `null`       — no override; follow the clock (automatic).
+ *
+ * Governing principle (Tour Control note):
+ *   AUTOMATION controls LIVE access. BARBARA controls TOUR access.
+ *   Neither one overrides the other.
  */
-export type SegmentOverride = "unlocked" | null
+export type SegmentOverride = "tour" | "unlocked" | null
+
+/**
+ * What kind of access the founder currently has to a segment:
+ *  - `"live"`   — the interactive workspace is open for real execution.
+ *  - `"tour"`   — a read-only guided preview (workspace withheld, About shown).
+ *  - `"locked"` — closed; About + countdown only.
+ */
+export type SegmentMode = "live" | "tour" | "locked"
 
 export interface SegmentAccess {
-  /** True when the workspace must stay closed and show About + countdown. */
+  /**
+   * True when the LIVE interactive workspace must stay closed. This stays
+   * `true` for BOTH `"locked"` and `"tour"` — tour is a preview, never
+   * execution — so the existing gate (`if (locked) <LockedSegment/>`) keeps
+   * withholding the workspace during a tour without any change.
+   */
   locked: boolean
-  /** Why it's locked, for copy/telemetry. `null` when unlocked. */
-  reason: "before-unlock" | "not-today" | "closed-for-day" | null
+  /** The access kind, so the UI can frame tour previews vs hard locks. */
+  mode: SegmentMode
+  /** Why it's locked, for copy/telemetry. `null` when live. */
+  reason: "before-unlock" | "not-today" | "closed-for-day" | "tour-preview" | null
   /** Human label of the unlock moment, e.g. "9:00 AM". `null` when N/A. */
   unlockAtLabel: string | null
   /** Minutes-since-midnight of the unlock moment today. `null` when N/A. */
@@ -78,6 +104,7 @@ export interface SegmentAccess {
 
 const UNLOCKED: SegmentAccess = {
   locked: false,
+  mode: "live",
   reason: null,
   unlockAtLabel: null,
   unlockAtMinutes: null,
@@ -103,29 +130,28 @@ export interface ResolveSegmentAccessParams {
 }
 
 /**
- * Core resolver. Given the platform clock, a segment id, and the caller's
- * privileges, decide whether the segment workspace is open.
+ * What the CLOCK alone grants for a gated segment — the automatic LIVE window,
+ * ignoring admin bypass and any Tour override. This is the single source of
+ * truth for live execution access; AUTOMATION owns it. Returns `mode: "live"`
+ * when the segment is within its window, else a `mode: "locked"` result.
  */
-export function resolveSegmentAccess(params: ResolveSegmentAccessParams): SegmentAccess {
-  const { segmentId, dayOfWeek, minutesSinceMidnight, isAdmin = false, override = null } = params
-
-  // Non-gated segments are always open.
-  if (!GATED_SEGMENT_IDS.has(segmentId)) return UNLOCKED
-
-  // Barbara (admin) and any active manual unlock bypass the clock entirely.
-  if (isAdmin || override === "unlocked") return UNLOCKED
-
+function resolveClockAccess(
+  segmentId: string,
+  dayOfWeek: number,
+  minutesSinceMidnight: number,
+): SegmentAccess {
   // Find the segment as it exists *today* (respects mondayOnly / excludeMonday
   // and applies the day's effective times).
   const todaysBlock = orderedBlocksForDay(dayOfWeek).find((b) => b.id === segmentId)
   if (!todaysBlock) {
-    return { locked: true, reason: "not-today", unlockAtLabel: null, unlockAtMinutes: null, minutesUntilUnlock: 0 }
+    return { locked: true, mode: "locked", reason: "not-today", unlockAtLabel: null, unlockAtMinutes: null, minutesUntilUnlock: 0 }
   }
 
   // Before the segment's start time — locked until it opens.
   if (minutesSinceMidnight < todaysBlock.startMinutes) {
     return {
       locked: true,
+      mode: "locked",
       reason: "before-unlock",
       unlockAtLabel: formatClockLabel(todaysBlock.startMinutes),
       unlockAtMinutes: todaysBlock.startMinutes,
@@ -139,6 +165,7 @@ export function resolveSegmentAccess(params: ResolveSegmentAccessParams): Segmen
   if (CLOSES_AT_5PM.has(segmentId) && minutesSinceMidnight >= WORK_CLOSE_MINUTES) {
     return {
       locked: true,
+      mode: "locked",
       reason: "closed-for-day",
       unlockAtLabel: null,
       unlockAtMinutes: null,
@@ -146,8 +173,49 @@ export function resolveSegmentAccess(params: ResolveSegmentAccessParams): Segmen
     }
   }
 
-  // Open: start has passed and it hasn't hit a same-day close.
+  // Live: start has passed and it hasn't hit a same-day close.
   return UNLOCKED
+}
+
+/**
+ * Core resolver. Given the platform clock, a segment id, and the caller's
+ * privileges, decide whether the segment workspace is open — and in what mode.
+ *
+ * Order of precedence encodes the Tour Control principle:
+ *   1. Developer/admin bypass and the legacy `"unlocked"` override → LIVE.
+ *   2. Otherwise the CLOCK decides LIVE execution (automation owns live).
+ *   3. When the clock has NOT opened it live, a `"tour"` override opens a
+ *      read-only PREVIEW only — the interactive workspace stays withheld.
+ *   4. Otherwise the clock's locked result stands.
+ */
+export function resolveSegmentAccess(params: ResolveSegmentAccessParams): SegmentAccess {
+  const { segmentId, dayOfWeek, minutesSinceMidnight, isAdmin = false, override = null } = params
+
+  // Non-gated segments are always open.
+  if (!GATED_SEGMENT_IDS.has(segmentId)) return UNLOCKED
+
+  // Admin (Developer Mode) and the legacy full unlock bypass the clock into
+  // real live execution. Tour does NOT — it is handled below.
+  if (isAdmin || override === "unlocked") return UNLOCKED
+
+  // Automation owns live access.
+  const clock = resolveClockAccess(segmentId, dayOfWeek, minutesSinceMidnight)
+  if (!clock.locked) return clock
+
+  // Clock has it closed. Barbara's Tour override opens a READ-ONLY preview,
+  // never live execution — the workspace stays withheld (`locked: true`).
+  if (override === "tour") {
+    return {
+      locked: true,
+      mode: "tour",
+      reason: "tour-preview",
+      unlockAtLabel: clock.unlockAtLabel,
+      unlockAtMinutes: clock.unlockAtMinutes,
+      minutesUntilUnlock: clock.minutesUntilUnlock,
+    }
+  }
+
+  return clock
 }
 
 /**
