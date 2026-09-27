@@ -88,7 +88,7 @@ export function MondayHeroSection() {
             <h1 className="font-playfair mt-1 text-balance text-3xl font-bold leading-[1.05] text-[#4A3A42] drop-shadow-sm sm:text-5xl">
               The Work-Life Balance
               <span className="mt-1 block whitespace-nowrap text-[#C13B6B]">
-                Business Operations Week<sup className="text-[0.5em] align-super">™</sup>
+                Business Day<sup className="text-[0.5em] align-super">™</sup>
               </span>
             </h1>
             <p className="font-playfair text-pretty text-base font-semibold italic leading-snug text-[#4A3A42] sm:text-lg">
@@ -96,14 +96,14 @@ export function MondayHeroSection() {
               Non-Negotiable Human Sustainability™ Operating Standards.
             </p>
             <p className="font-poppins text-sm font-semibold uppercase tracking-[0.16em] text-[#5A7F46]">
-              A 7-Day Virtual Real-Business Operating Intensive.
+              One guided day, lived in real time — your entry into Harmony Lane™.
             </p>
             <div className="mt-1 flex flex-col gap-3 sm:flex-row sm:items-center">
               <a
                 href="#offer"
                 className="font-poppins inline-flex items-center justify-center rounded-full bg-[#E26C73] px-8 py-3.5 text-base font-semibold text-white shadow-xl shadow-[#E26C73]/30 transition-transform hover:scale-[1.03] hover:bg-[#d65a62]"
               >
-                Experience the Operations Week
+                Join Monday
               </a>
               <a
                 href="/audit"
