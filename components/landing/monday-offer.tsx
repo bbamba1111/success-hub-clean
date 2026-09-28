@@ -3,6 +3,8 @@
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { motion } from "framer-motion"
+import { getPlanByLevel } from "@/lib/payments/config"
+import { getUpgradeCredit, formatCredit } from "@/lib/payments/upgrade-credits"
 
 /**
  * The Offer — the Work-Life Balance Business Day™ (Monday) is the single
@@ -12,12 +14,10 @@ import { motion } from "framer-motion"
  * Installation are the deeper tiers and route to the internal /pricing page
  * (no public checkout).
  *
- * Checkout URL is spec-locked — at the site owner's direction this single
- * live checkout is the Monday $1,997 entry. Displayed pricing is copy set by
- * the site owner.
+ * Price and checkout URL are read from the single product ladder in
+ * `lib/payments/config.ts` (the Business Day level) so this page never
+ * hardcodes pricing or Paperbell links.
  */
-
-const MONDAY_CHECKOUT = "https://app.paperbell.com/checkout/packages/234458"
 
 const MONDAY_INCLUDED = [
   "Weekly Work-Life Balance Reality Check™",
@@ -50,6 +50,8 @@ const WEEK_AT_A_GLANCE = [
 ]
 
 export function MondayOffer() {
+  const day = getPlanByLevel("business-day")
+  const dayToWeek = getUpgradeCredit("business-day", "business-week")
   return (
     <section id="offer" className="w-full bg-[#FDF6F3] py-20 md:py-28">
       <div className="mx-auto max-w-5xl px-5 sm:px-8">
@@ -83,14 +85,14 @@ export function MondayOffer() {
                 Work-Life Balance Business Day™
               </h3>
               <div className="mt-6 flex items-baseline gap-1">
-                <span className="font-playfair text-5xl font-bold text-[#C13B6B]">$1,997</span>
+                <span className="font-playfair text-5xl font-bold text-[#C13B6B]">{day?.priceLabel ?? "$1,997"}</span>
               </div>
               <p className="font-poppins mt-3 text-sm leading-relaxed text-[#8A7A82]">
                 The complete Business Day rhythm, lived once and guided in real time. Includes your Harmony Lane™
                 On-Ramp.
               </p>
               <a
-                href={MONDAY_CHECKOUT}
+                href={day?.checkoutUrl || "#offer"}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-poppins mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#C13B6B] px-6 py-3.5 text-base font-semibold text-white shadow-sm transition-colors hover:bg-[#a52f59]"
@@ -155,6 +157,13 @@ export function MondayOffer() {
                 </li>
               ))}
             </ul>
+            {dayToWeek && (
+              <p className="font-poppins mt-5 rounded-xl border border-[#7FB069]/25 bg-[#7FB069]/8 p-3 text-xs leading-relaxed text-[#5A7F46]">
+                <span className="font-semibold">Your investment follows you.</span> Your{" "}
+                {formatCredit(dayToWeek.creditAmount)} Business Day™ investment counts toward the Week — you add just{" "}
+                {formatCredit(dayToWeek.additionalAmount)}.
+              </p>
+            )}
             <Link
               href="/pricing"
               className="font-poppins mt-6 inline-flex items-center justify-center gap-2 rounded-full border border-[#C13B6B]/40 px-6 py-3 text-sm font-semibold text-[#C13B6B] transition-colors hover:bg-[#C13B6B]/8"

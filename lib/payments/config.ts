@@ -38,6 +38,7 @@ export const PLANS: Plan[] = [
     name: "The Redesign™",
     tagline: "See your real day clearly, then redesign it — your entry into Harmony Lane™.",
     priceLabel: "$497",
+    priceAmount: 497,
     billingLabel: "one-time",
     tier: "essentials",
     features: [
@@ -55,6 +56,7 @@ export const PLANS: Plan[] = [
     name: "Work-Life Balance Business Day™",
     tagline: "Live one fully guided, redesigned business day — in real time.",
     priceLabel: "$1,997",
+    priceAmount: 1997,
     billingLabel: "one-time",
     tier: "premium",
     highlighted: true,
@@ -73,6 +75,7 @@ export const PLANS: Plan[] = [
     name: "Work-Life Balance Business Week™",
     tagline: "Extend the immersion beyond one day into a full weekly rhythm.",
     priceLabel: "$3,997",
+    priceAmount: 3997,
     billingLabel: "one-time",
     tier: "vip",
     badge: "Go Deeper",

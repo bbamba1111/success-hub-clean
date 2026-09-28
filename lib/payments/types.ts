@@ -31,6 +31,8 @@ export interface Plan {
   tagline: string
   /** Display price copy (e.g. "$497", "$1,997"). */
   priceLabel: string
+  /** Numeric price in whole dollars, used for upgrade-credit math. Omit for by-application levels. */
+  priceAmount?: number
   /** e.g. "one-time", "per month". */
   billingLabel: string
   tier: Exclude<MembershipTier, "free">
@@ -45,6 +47,21 @@ export interface Plan {
   checkoutUrl?: string
   /** Internal / by-application step — hidden from the public marketing site. */
   internal?: boolean
+}
+
+/**
+ * The result of applying an upgrade credit when a founder moves up the ladder.
+ * `creditAmount` is their prior investment (never lost); `additionalAmount` is
+ * what they pay to reach the next level. This is NOT a discount — the ladder
+ * price never changes; the prior investment simply follows them.
+ */
+export interface UpgradeCredit {
+  from: ProductLevel
+  to: ProductLevel
+  /** Prior investment credited toward the next level, in whole dollars. */
+  creditAmount: number
+  /** Additional amount paid to reach the next level, in whole dollars. */
+  additionalAmount: number
 }
 
 /** What the app asks a provider to do. */

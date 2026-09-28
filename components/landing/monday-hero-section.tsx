@@ -14,9 +14,11 @@
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { SCHEDULE } from "@/operating-engine/config/schedule"
+import { getPlanByLevel } from "@/lib/payments/config"
 
 export function MondayHeroSection() {
   const [index, setIndex] = useState(0)
+  const dayPlan = getPlanByLevel("business-day")
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -98,7 +100,7 @@ export function MondayHeroSection() {
                 href="#offer"
                 className="font-poppins inline-flex items-center justify-center rounded-full bg-[#E26C73] px-8 py-3.5 text-base font-semibold text-white shadow-xl shadow-[#E26C73]/30 transition-transform hover:scale-[1.03] hover:bg-[#d65a62]"
               >
-                Join Monday — $1,997
+                Join Monday{dayPlan?.priceLabel ? ` — ${dayPlan.priceLabel}` : ""}
               </a>
               <a
                 href="#how-it-works"
