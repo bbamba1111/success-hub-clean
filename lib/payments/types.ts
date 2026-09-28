@@ -12,22 +12,39 @@
 /** Membership levels. Kept intentionally simple for Phase 1. */
 export type MembershipTier = "free" | "essentials" | "premium" | "vip"
 
+/**
+ * The public product ladder. These are the ONLY things a member can buy.
+ * `installation` is an internal / by-application step, not shown on the
+ * public marketing site.
+ */
+export type ProductLevel = "redesign" | "business-day" | "business-week" | "installation"
+
 /** Subscription lifecycle, normalized across providers. */
 export type SubscriptionStatus = "none" | "active" | "trialing" | "past_due" | "canceled"
 
 /** A purchasable plan / experience shown on the marketing site. */
 export interface Plan {
   id: string
+  /** Stable business identifier for this rung of the product ladder. */
+  level: ProductLevel
   name: string
   tagline: string
-  /** Placeholder price copy for Phase 1 (e.g. "$97"). */
+  /** Display price copy (e.g. "$497", "$1,997"). */
   priceLabel: string
-  /** e.g. "per month", "per year". */
+  /** e.g. "one-time", "per month". */
   billingLabel: string
   tier: Exclude<MembershipTier, "free">
   features: string[]
   highlighted?: boolean
   badge?: string
+  /**
+   * Live Paperbell checkout URL for this level. Paperbell is the confirmed
+   * checkout provider; these links are spec-locked and must never be
+   * replaced. An empty string means the checkout URL is not configured yet.
+   */
+  checkoutUrl?: string
+  /** Internal / by-application step — hidden from the public marketing site. */
+  internal?: boolean
 }
 
 /** What the app asks a provider to do. */
