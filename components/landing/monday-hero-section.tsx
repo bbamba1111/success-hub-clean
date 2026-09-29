@@ -94,8 +94,8 @@ export function MondayHeroSection() {
             </p>
 
             <p className="font-poppins max-w-xl text-pretty text-[12px] leading-[1.3] text-[#5A4A52] sm:text-[14px]">
-              Where founders set work-life balance boundaries in the Accelerated AI Age —
-              <span className="mt-1 block">start, grow &amp; scale = Human Sustainability&trade;</span>
+              Where founders set boundaries as they &mdash;
+              <span className="mt-1 block">start, grow &amp; scale to protect Human Sustainability&trade; In The Accelerated AI Age</span>
             </p>
 
             <div className="mt-2 flex flex-col gap-2">
