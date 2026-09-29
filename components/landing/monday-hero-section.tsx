@@ -74,12 +74,12 @@ export function MondayHeroSection() {
           className="max-w-3xl"
         >
           {/* Eyebrow lives directly over the background, top-left */}
-          <p className="font-poppins text-[10px] font-semibold uppercase leading-tight tracking-[0.28em] text-[#5A7F46] sm:text-[12px]">
+          <p className="font-poppins text-[10px] font-semibold uppercase leading-tight tracking-[0.28em] text-[#8AA06A] sm:text-[12px]">
             Harmony Lane&trade; Presents
           </p>
 
           {/* One unified glass panel */}
-          <div className="mt-14 inline-flex max-w-3xl flex-col gap-4 rounded-2xl border border-white/30 bg-white/10 px-6 py-7 shadow-sm backdrop-blur-sm sm:px-9 sm:py-9">
+          <div className="mt-[6.5rem] inline-flex max-w-3xl flex-col gap-4 rounded-2xl border border-white/30 bg-white/10 pl-6 pr-[1.35rem] pt-[1.575rem] pb-[1.575rem] shadow-sm backdrop-blur-sm sm:pl-9 sm:pr-[2.025rem] sm:pt-[2.025rem] sm:pb-[2.025rem]">
             <h1 className="font-playfair text-balance text-[28px] font-bold leading-[0.82] tracking-tight text-[#4A3A42] drop-shadow-sm sm:text-[46px]">
               <span className="whitespace-nowrap">Make Time For More&trade;</span>
               <span className="mt-1 block text-[#C13B6B]">On Mondays</span>
@@ -101,12 +101,12 @@ export function MondayHeroSection() {
             <div className="mt-2 flex flex-col gap-2">
               <a
                 href="#offer"
-                className="font-poppins inline-flex w-fit items-center justify-center rounded-full bg-[#5A7F46] px-9 py-4 text-[14px] font-semibold uppercase tracking-wide text-white shadow-xl shadow-[#5A7F46]/30 transition-transform hover:scale-[1.03] hover:bg-[#4e6f3c]"
+                className="font-poppins inline-flex w-fit items-center justify-center rounded-full bg-[#8AA06A] px-9 py-4 text-[14px] font-semibold uppercase tracking-wide text-white shadow-xl shadow-[#8AA06A]/30 transition-transform hover:scale-[1.03] hover:bg-[#788e5a]"
               >
                 Reserve Monday Now&trade; &mdash; {price}
               </a>
-              <span className="font-playfair text-[13px] italic text-[#5A7F46] sm:text-[14px]">
-                Sync Into The Work-Life Balance Circadian Rhythm Today&trade;
+              <span className="font-playfair text-[13px] italic text-white sm:text-[14px]">
+                Sync Into The Human Sustainability Circadian Rhythm Today&trade;
               </span>
             </div>
           </div>
