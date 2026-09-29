@@ -22,7 +22,7 @@ export function CapacityQuestionSection() {
       <div className="mx-auto max-w-3xl px-5 sm:px-8">
         <motion.h2
           {...reveal()}
-          className="font-playfair text-balance text-3xl font-bold uppercase leading-tight text-[#4A3A42] sm:text-5xl"
+          className="font-playfair text-balance text-3xl font-bold capitalize leading-tight text-[#4A3A42] sm:text-5xl"
         >
           What happens when
           <span className="mt-1 block text-[#C13B6B]">capacity isn&apos;t the problem?</span>
@@ -45,7 +45,7 @@ export function CapacityQuestionSection() {
           {STANCE.map((line) => (
             <li
               key={line}
-              className="font-playfair rounded-2xl border border-[#5A7F46]/20 bg-white px-6 py-4 text-xl font-bold uppercase tracking-wide text-[#5A7F46]"
+              className="font-playfair rounded-2xl border border-[#5A7F46]/20 bg-white px-6 py-4 text-xl font-bold capitalize tracking-wide text-[#5A7F46]"
             >
               {line}
             </li>

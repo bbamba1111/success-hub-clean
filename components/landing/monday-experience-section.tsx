@@ -52,7 +52,7 @@ export function MondayExperienceSection() {
     <section id="monday" className="relative w-full overflow-hidden bg-[#FDF6F3] py-24 sm:py-32">
       <div className="relative z-10 mx-auto max-w-4xl px-5 sm:px-8">
         <motion.div {...reveal} className="mx-auto max-w-3xl text-center">
-          <h2 className="font-playfair text-balance text-3xl font-bold uppercase leading-tight text-[#4A3A42] sm:text-5xl">
+          <h2 className="font-playfair text-balance text-3xl font-bold capitalize leading-tight text-[#4A3A42] sm:text-5xl">
             One Business Day.
             <span className="mt-1 block text-[#C13B6B]">Designed Differently.</span>
           </h2>

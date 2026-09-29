@@ -4,8 +4,10 @@ import { MondayHeroSection } from "@/components/landing/monday-hero-section"
 import { MondayRecognitionSection } from "@/components/landing/monday-recognition-section"
 import { CapacityQuestionSection } from "@/components/landing/capacity-question-section"
 import { WhyMondaySection } from "@/components/landing/why-monday-section"
+import { ExperienceBoundariesSection } from "@/components/landing/experience-boundaries-section"
 import { MondayExperienceSection } from "@/components/landing/monday-experience-section"
 import { BeforeMondaySection } from "@/components/landing/before-monday-section"
+import { FounderAuthoritySection } from "@/components/landing/founder-authority-section"
 import { WhatsIncludedSection } from "@/components/landing/whats-included-section"
 import { HumanSustainabilitySection } from "@/components/landing/human-sustainability-section"
 import { MondayOffer } from "@/components/landing/monday-offer"
@@ -69,8 +71,10 @@ export default function LandingPage() {
       <MondayRecognitionSection />
       <CapacityQuestionSection />
       <WhyMondaySection />
+      <ExperienceBoundariesSection />
       <MondayExperienceSection />
       <BeforeMondaySection />
+      <FounderAuthoritySection />
       <WhatsIncludedSection />
       <HumanSustainabilitySection />
       <MondayOffer />

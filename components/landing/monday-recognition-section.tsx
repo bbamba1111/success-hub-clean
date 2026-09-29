@@ -20,7 +20,7 @@ export function MondayRecognitionSection() {
       <div className="mx-auto max-w-3xl px-5 sm:px-8">
         <motion.h2
           {...reveal()}
-          className="font-playfair text-balance text-3xl font-bold uppercase leading-tight text-[#4A3A42] sm:text-5xl"
+          className="font-playfair text-balance text-3xl font-bold capitalize leading-tight text-[#4A3A42] sm:text-5xl"
         >
           You didn&apos;t start your business
           <span className="mt-1 block text-[#C13B6B]">to recreate the life you left.</span>

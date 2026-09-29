@@ -29,7 +29,7 @@ export function HumanSustainabilitySection() {
       <div className="relative z-10 mx-auto max-w-3xl px-5 sm:px-8">
         <motion.h2
           {...reveal()}
-          className="font-playfair text-balance text-3xl font-bold uppercase leading-tight text-[#4A3A42] sm:text-5xl"
+          className="font-playfair text-balance text-3xl font-bold capitalize leading-tight text-[#4A3A42] sm:text-5xl"
         >
           Build the business.
           <span className="mt-1 block text-[#C13B6B]">Don&apos;t consume the human.</span>
@@ -52,7 +52,7 @@ export function HumanSustainabilitySection() {
           {ROLES.map((role) => (
             <li
               key={role}
-              className="font-playfair rounded-full border border-[#5A7F46]/25 bg-white px-6 py-3 text-lg font-bold uppercase tracking-wide text-[#5A7F46]"
+              className="font-playfair rounded-full border border-[#5A7F46]/25 bg-white px-6 py-3 text-lg font-bold capitalize tracking-wide text-[#5A7F46]"
             >
               {role}
             </li>

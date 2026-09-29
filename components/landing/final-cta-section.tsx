@@ -20,7 +20,7 @@ export function FinalCtaSection() {
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="font-playfair text-balance text-4xl font-bold uppercase leading-tight text-white sm:text-6xl">
+          <h2 className="font-playfair text-balance text-4xl font-bold capitalize leading-tight text-white sm:text-6xl">
             What if Monday
             <span className="mt-1 block text-[#E8A0AC]">didn&apos;t have to take your life with it?</span>
           </h2>

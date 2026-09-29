@@ -1,27 +1,31 @@
 "use client"
 
 /**
- * Meet Your Founder Guide — Barbara Bamba / Thought Leader Barbara. Lives at the
- * END of the page, immediately before the final CTA. Positions Barbara as the
- * guide & facilitator of the experience, not a lecturer. Uses the existing
- * project portrait (/images/barbara-portrait.png). No fabricated speaking
- * history, client results, or outcomes.
+ * Meet Your Guide — Barbara Bamba / Thought Leader Barbara. Placed AFTER "Your
+ * Monday Starts Before Monday" and BEFORE the final offer. Establishes Barbara
+ * as the person who created and guides the Harmony Lane™ experience — a guide,
+ * not a lecturer.
+ *
+ * Premium editorial layout with the portrait flush LEFT and the copy RIGHT.
+ * Uses the existing project portrait (/images/barbara-portrait.png). No
+ * fabricated credentials, awards, media, statistics, or long biography.
  */
 import Image from "next/image"
 import { motion } from "framer-motion"
 
 const CREDENTIALS = [
-  "Founder Guide & Facilitator",
-  "Architect & Founder of Harmony Lane™",
-  "Creator & Facilitator of Make Time For More™",
-  "Creator of the Work-Life Balance Business Day™ & Business Week™",
-  "International Bestselling Co-Author of The Voyage to Your Vision — Chapter 9: “Learn Before You Launch”",
+  "Thought Leader Barbara",
+  "Architect, Harmony Lane\u2122; Founder, Startup & Thrive, LLC",
+  "Creator, Make Time For More\u2122; Guide of The Work-Life Balance Business Day\u2122, Business Week\u2122, and 30/60/90 Installation",
+  "International Bestselling Co-Author, The Voyage to Your Vision",
+  "Former Owner, Philadelphia Speakers Bureau",
 ]
 
 export function FounderAuthoritySection() {
   return (
-    <section id="founder" className="w-full bg-white py-20 sm:py-28">
-      <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 sm:px-8 lg:grid-cols-[0.85fr_1.15fr]">
+    <section id="guide" className="w-full bg-white py-20 sm:py-28">
+      <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 sm:px-8 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
+        {/* Portrait — flush left */}
         <motion.div
           initial={{ opacity: 0, x: -24 }}
           whileInView={{ opacity: 1, x: 0 }}
@@ -32,7 +36,7 @@ export function FounderAuthoritySection() {
           <div className="relative overflow-hidden rounded-[2rem] border border-[#F2E4E8] bg-[#FDF6F3]">
             <Image
               src="/images/barbara-portrait.png"
-              alt="Barbara Bamba, Founder Guide & Facilitator of Harmony Lane, in front of a cherry blossom window"
+              alt="Barbara Bamba, Architect of Harmony Lane, in front of a cherry blossom window"
               width={720}
               height={880}
               className="h-full w-full object-cover"
@@ -41,41 +45,26 @@ export function FounderAuthoritySection() {
           </div>
         </motion.div>
 
+        {/* Copy — right */}
         <motion.div
           initial={{ opacity: 0, x: 24 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6 }}
         >
-          <span className="font-poppins text-xs font-bold uppercase tracking-[0.22em] text-[#C13B6B]">
-            Meet Your Founder Guide
-          </span>
+          <span className="font-poppins text-sm font-semibold tracking-[0.14em] text-[#C13B6B]">Meet Your Guide</span>
           <p className="font-playfair mt-4 text-4xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">
             Barbara Bamba
           </p>
-          <p className="font-poppins mt-2 text-sm font-semibold uppercase tracking-[0.14em] text-[#5A7F46]">
-            Founder Guide &amp; Facilitator
+          <p className="font-playfair mt-2 text-lg italic text-[#7FB069]">Thought Leader Barbara</p>
+          <p className="font-poppins mt-2 text-sm font-semibold tracking-[0.02em] text-[#5A7F46]">
+            Architect, Harmony Lane&trade;; Founder, Startup &amp; Thrive, LLC
           </p>
-          <p className="font-playfair mt-1 text-lg italic text-[#7FB069]">Thought Leader Barbara</p>
 
           <p className="font-poppins mt-6 text-pretty text-base leading-relaxed text-[#4A3A42]">
-            You won&apos;t be handed another formula to follow. Barbara guides and facilitates the experience as you
-            define your destination, examine your reality, make intentional decisions, and experience a redesigned
-            relationship with work and time.
+            Creator, Make Time For More&trade; and Guide of The Work-Life Balance Business Day&trade;, Business
+            Week&trade;, and 30/60/90 Installation.
           </p>
-
-          <div className="font-poppins mt-5 space-y-4 text-pretty text-sm leading-relaxed text-[#6B5860]">
-            <p>
-              Barbara is a lifelong entrepreneur and Work-Life Balance Thought Leader. She witnessed overwork up
-              close, then carried that grind mentality into her own entrepreneurship — and experienced the
-              consequences of building success on permanent urgency.
-            </p>
-            <p>
-              So she began examining the operating conditions behind sustainable entrepreneurial success — evolving
-              beyond productivity into founder capacity, workday design, workweek design, leadership, workplace
-              culture, and the future of work. That work became Make Time For More™, and ultimately Harmony Lane™.
-            </p>
-          </div>
 
           <ul className="mt-8 grid gap-3 border-t border-[#F2E4E8] pt-6 sm:grid-cols-2">
             {CREDENTIALS.map((item) => (
@@ -85,6 +74,11 @@ export function FounderAuthoritySection() {
               </li>
             ))}
           </ul>
+
+          <div className="font-playfair mt-8 border-l-2 border-[#7FB069]/40 pl-6 text-pretty text-lg font-semibold leading-snug text-[#4A3A42]">
+            <p>On Monday, Barbara isn&apos;t simply teaching the concept.</p>
+            <p className="mt-1 text-[#5A7F46]">She&apos;s guiding you through the experience.</p>
+          </div>
         </motion.div>
       </div>
     </section>
