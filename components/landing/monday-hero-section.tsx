@@ -80,8 +80,8 @@ export function MondayHeroSection() {
 
           {/* One unified glass panel */}
           <div className="mt-8 inline-flex max-w-3xl flex-col gap-5 rounded-2xl border border-white/30 bg-white/10 px-6 py-7 shadow-sm backdrop-blur-sm sm:px-9 sm:py-9">
-            <h1 className="font-playfair text-balance text-4xl font-bold uppercase leading-[1.02] tracking-tight text-[#4A3A42] drop-shadow-sm sm:text-6xl">
-              Make Time For More&trade;
+            <h1 className="font-playfair text-balance text-3xl font-bold leading-[1.02] tracking-tight text-[#4A3A42] drop-shadow-sm sm:text-5xl">
+              <span className="whitespace-nowrap">Make Time For More&trade;</span>
               <span className="mt-1 block text-[#C13B6B]">On Mondays</span>
             </h1>
 

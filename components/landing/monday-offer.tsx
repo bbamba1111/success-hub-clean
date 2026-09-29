@@ -38,8 +38,8 @@ export function MondayOffer() {
           className="overflow-hidden rounded-[2.5rem] border border-[#C13B6B]/25 bg-[#FDF6F3] shadow-xl"
         >
           <div className="p-9 text-center sm:p-14">
-            <h2 className="font-playfair text-balance text-3xl font-bold uppercase leading-tight text-[#4A3A42] sm:text-5xl">
-              Make Time For More&trade;
+            <h2 className="font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">
+              <span className="whitespace-nowrap">Make Time For More&trade;</span>
               <span className="mt-1 block text-[#C13B6B]">On Mondays</span>
             </h2>
             <p className="font-poppins mt-4 text-sm font-semibold uppercase tracking-[0.2em] text-[#5A7F46]">
