@@ -1,0 +1,88 @@
+/**
+ * CEO Workday™ — Generic Work Item Model
+ * ---------------------------------------------------------------------------
+ * One reusable shape for anything a founder is working on inside the
+ * protected 4-Hour Focused CEO Workday™, across all 12 categories. This is
+ * the plug-in contract for GPS-recommended, Barbara-assigned, and
+ * founder-selected work to eventually share one queue and one authority
+ * model:
+ *
+ *   GPS     → RECOMMENDS
+ *   Barbara → CONTROLS
+ *   Founder → EXECUTES
+ *
+ * This phase only implements founder-selected and GPS-recommended items.
+ * Barbara-assigned items and the full permission console are NOT built now
+ * — the `source` field and `FounderSelfSelectionState` exist so that later
+ * work slots into this same model without a data migration.
+ */
+
+import type { CeoWorkCategoryId } from "./categories"
+import type { WorkflowAvailability } from "./workflow-registry"
+
+export type CeoWorkItemSource = "gps" | "barbara" | "founder"
+
+export type CeoWorkItemStatus = "not-started" | "in-progress" | "completed" | "blocked" | "deferred"
+
+/**
+ * Placeholder for the future permission model. Hardcoded to "enabled" this
+ * phase — no permissions UI exists yet, per the CEO Workday™ phased spec.
+ */
+export type FounderSelfSelectionState = "enabled" | "disabled"
+export const FOUNDER_SELF_SELECTION_STATE: FounderSelfSelectionState = "enabled"
+
+export interface CeoWorkItem {
+  id: string
+  founderId?: string
+  /** ISO date (YYYY-MM-DD) of the CEO Workday this item belongs to. */
+  workdayDate: string
+  category: CeoWorkCategoryId
+  /** Human-readable label for the selected option, e.g. "Client Onboarding Asset™". */
+  selectedOptionLabel: string
+  workflowId: string
+  availability: WorkflowAvailability
+  source: CeoWorkItemSource
+  /** Optional finer-grained source description, e.g. "Founder GPS™ Next Best Move". */
+  sourceDetail?: string
+  priority?: "high" | "medium" | "low"
+  status: CeoWorkItemStatus
+  relatedGapId?: string
+  relatedSolutionId?: string
+  /** Business Asset™ id, when this item's workflow is the Business Asset Builder. */
+  relatedAssetId?: string
+  /**
+   * Phase 3: identifies which specific instance of a multi-instance asset
+   * (e.g. Delegation Brief™) this work item is. Omitted for singleton
+   * assets — every existing item is unaffected. Generated once when the
+   * founder names the instance in category-selector-row.tsx and threaded
+   * through to business-asset-build-storage.ts so distinct delegations
+   * (e.g. "Client Onboarding" vs. "Invoicing") never collide.
+   */
+  instanceKey?: string
+  timeHorizon?: string
+  businessStage?: string
+  ceoWorkdayAction?: string
+  tangibleOutcome?: string
+  /** Reference to the produced outcome once the item is completed (asset id, rule id, etc). */
+  outcomeRef?: string
+  /**
+   * When this queue item is the local mirror of a designed CEO Workday™ plan
+   * item (Supabase `ceo_workday_plan_items.id`). The plan is the source of
+   * truth; this id lets the live workspace update the SAME item's state
+   * during the hourly 5-Minute Check-In™ rather than creating a copy.
+   */
+  planItemId?: string
+  /** Estimated minutes carried from the designed plan, when present. */
+  estimatedMinutes?: number
+  /** WHY THIS WORK, carried from the designed plan. */
+  purpose?: string
+  /** EXPECTED OUTCOME / EVIDENCE, carried from the designed plan. */
+  expectedEvidence?: string
+  createdAt: string
+  updatedAt: string
+}
+
+export type NewCeoWorkItem = Omit<CeoWorkItem, "id" | "createdAt" | "updatedAt" | "status" | "workdayDate"> & {
+  status?: CeoWorkItemStatus
+  workdayDate?: string
+}

@@ -13,10 +13,47 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
+        // Visual Design System™ (Phase 5.4.2) — three families only:
+        //   sans  (body / UI / labels / nav)          → Montserrat
+        //   display (H1: hero + primary page titles)   → Playfair Display
+        //   serif  (editorial quotes / affirmations)   → Playfair Display
+        // Lora has been fully removed; `serif`/`lora` now resolve to Playfair so
+        // any remaining editorial-italic usage stays elegant and on-system.
+        sans: ['var(--font-montserrat)', 'sans-serif'],
+        display: ['var(--font-playfair)', 'Georgia', 'serif'],
         playfair: ['var(--font-playfair)', 'serif'],
+        montserrat: ['var(--font-montserrat)', 'sans-serif'],
+        serif: ['var(--font-playfair)', 'Georgia', 'serif'],
+        lora: ['var(--font-playfair)', 'Georgia', 'serif'],
+        // Legacy fonts — retained for marketing/landing until the page-migration pass.
         poppins: ['var(--font-poppins)', 'sans-serif'],
+        'great-vibes': ['var(--font-great-vibes)', 'cursive'],
       },
       colors: {
+        // Brand palette — the single source of truth for on-brand color.
+        // Use `brand-*` utilities (e.g. text-brand-green, bg-brand-blush) in
+        // place of scattered inline hex values.
+        brand: {
+          green: "#5D9D61",
+          "green-dark": "#4A7D4E",
+          "green-soft": "#8AC28E",
+          // Soft sage green — used for the Daily Operating Segment™ dropdown
+          // boxes (Learn More, Business Context Assessment, chip pickers,
+          // commitment CTAs) on every segment except Time Freedom™ and
+          // Power Down™, which keep the original brand-green treatment.
+          sage: "#7FB069",
+          "sage-dark": "#5A7A45",
+          coral: "#E26C73",
+          "coral-dark": "#C9545B",
+          blush: "#F6E4E7",
+          // Visual Design System™ (Phase 5.4.2): near-black text for readability.
+          // ink = primary body/headings, ink-soft = secondary (still high-contrast).
+          ink: "#1A1A1A",
+          "ink-soft": "#3A3A3A",
+          // "cream" is now WHITE — the platform canvas is white everywhere.
+          // Kept as a token so existing bg-brand-cream markup stays valid.
+          cream: "#FFFFFF",
+        },
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
@@ -68,10 +105,21 @@ const config: Config = {
           ring: "hsl(var(--sidebar-ring))",
         },
       },
+      // Harmony Lane™ shape hierarchy: forms → buttons → cards → panels → hero.
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        lg: "var(--radius)" /* 10px — standard cards */,
+        md: "calc(var(--radius) - 2px)" /* 8px — buttons / inputs */,
+        sm: "calc(var(--radius) - 4px)" /* 6px — form controls */,
+        xl: "calc(var(--radius) + 4px)" /* 14px — workspace panels */,
+        "2xl": "calc(var(--radius) + 8px)" /* 18px — hero / major surfaces */,
+      },
+      // Standardized elevation scale — warm, soft shadows tuned to the brand ink.
+      boxShadow: {
+        "ds-sm": "0 1px 2px rgba(58, 46, 51, 0.06)",
+        "ds": "0 4px 16px rgba(58, 46, 51, 0.08)",
+        "ds-md": "0 10px 30px rgba(58, 46, 51, 0.10)",
+        "ds-lg": "0 20px 50px rgba(58, 46, 51, 0.12)",
+        "ds-glow": "0 10px 30px rgba(93, 157, 97, 0.22)",
       },
       keyframes: {
         "accordion-down": {

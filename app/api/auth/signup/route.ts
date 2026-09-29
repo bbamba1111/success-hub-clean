@@ -59,11 +59,14 @@ export async function POST(request: Request) {
 
     console.log("[v0] Auth user created successfully:", authData.user.id)
 
+    // SECURITY: membership_tier is intentionally omitted so the database
+    // default ('free') applies. This endpoint performs no payment
+    // verification and must never grant paid access — paid tiers are set
+    // exclusively by the SamCart webhook after a verified payment.
     const profileData = {
       id: authData.user.id,
       email: email,
       name: firstName || email.split("@")[0],
-      membership_tier: "monday_only",
       password_set: true,
       joined_date: new Date().toISOString(),
       created_at: new Date().toISOString(),
