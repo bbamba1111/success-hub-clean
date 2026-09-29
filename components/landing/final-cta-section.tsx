@@ -31,16 +31,18 @@ export function FinalCtaSection() {
             <p>See what changes when the business makes room for the human.</p>
           </div>
 
-          <div className="mt-12 flex flex-col items-center justify-center gap-4">
+          <div className="mt-12 flex flex-col items-center justify-center gap-3">
             <a
               href={day?.checkoutUrl || "#offer"}
               target="_blank"
               rel="noopener noreferrer"
               className="font-poppins inline-flex items-center justify-center rounded-full bg-[#E26C73] px-10 py-4 text-base font-semibold uppercase tracking-wide text-white shadow-xl shadow-[#E26C73]/25 transition-transform hover:scale-[1.03] hover:bg-[#d65a62]"
             >
-              Reserve Your Day Now&trade;
+              Reserve Monday Now&trade; &mdash; {price}
             </a>
-            <span className="font-playfair text-3xl font-bold text-white">{price}</span>
+            <span className="font-poppins text-pretty text-base italic text-white/80">
+              Sync Into The Human Sustainability Circadian Rhythm Today&trade;
+            </span>
           </div>
         </motion.div>
       </div>

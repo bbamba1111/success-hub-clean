@@ -53,7 +53,7 @@ export function CapacityQuestionSection() {
         </motion.ul>
 
         <motion.p {...reveal(0.24)} className="font-poppins mt-8 text-pretty text-base leading-relaxed text-[#6B5860]">
-          This is the beginning of a different way to build.
+          This is how we begin designing for Human Sustainability&trade;.
         </motion.p>
       </div>
     </section>

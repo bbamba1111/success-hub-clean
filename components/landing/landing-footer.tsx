@@ -15,15 +15,12 @@ export function LandingFooter() {
             />
             <span className="font-playfair text-lg font-bold text-[#4A3A42]">Harmony Lane™</span>
           </Link>
-          <p className="font-great-vibes text-2xl text-[#7FB069]">Live Intentionally. Work Smarter. Lead Successfully.</p>
-
           <div className="font-poppins flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-[#5A4A52]">
-            <a href="#pattern" className="hover:text-[#C13B6B]">The Pattern</a>
-            <a href="#method" className="hover:text-[#C13B6B]">The Method</a>
-            <a href="#experience" className="hover:text-[#C13B6B]">The Experience</a>
-            <a href="#install" className="hover:text-[#C13B6B]">The Installation</a>
+            <a href="#monday" className="hover:text-[#C13B6B]">The Day</a>
+            <a href="#why-monday-exists" className="hover:text-[#C13B6B]">How It Works</a>
+            <a href="#why-now" className="hover:text-[#C13B6B]">Why Now</a>
             <a href="#guide" className="hover:text-[#C13B6B]">Meet Barbara</a>
-            <a href="#offer" className="hover:text-[#C13B6B]">Depth of Entry</a>
+            <a href="#offer" className="hover:text-[#C13B6B]">Reserve Monday</a>
             <Link href="/auth/login" className="hover:text-[#C13B6B]">Log In</Link>
           </div>
 

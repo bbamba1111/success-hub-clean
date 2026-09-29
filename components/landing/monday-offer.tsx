@@ -1,6 +1,5 @@
 "use client"
 
-import { ArrowRight } from "lucide-react"
 import { motion } from "framer-motion"
 import { getPlanByLevel } from "@/lib/payments/config"
 
@@ -63,15 +62,19 @@ export function MondayOffer() {
               ))}
             </ul>
 
-            <a
-              href={day?.checkoutUrl || "#offer"}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-poppins mt-10 inline-flex items-center justify-center gap-2 rounded-full bg-[#E26C73] px-10 py-4 text-base font-semibold uppercase tracking-wide text-white shadow-xl shadow-[#E26C73]/25 transition-transform hover:scale-[1.03] hover:bg-[#d65a62]"
-            >
-              Reserve Your Day Now&trade;
-              <ArrowRight className="h-4 w-4" aria-hidden />
-            </a>
+            <div className="mt-10 flex flex-col items-center gap-3">
+              <a
+                href={day?.checkoutUrl || "#offer"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-poppins inline-flex items-center justify-center rounded-full bg-[#E26C73] px-10 py-4 text-base font-semibold uppercase tracking-wide text-white shadow-xl shadow-[#E26C73]/25 transition-transform hover:scale-[1.03] hover:bg-[#d65a62]"
+              >
+                Reserve Monday Now&trade; &mdash; {price}
+              </a>
+              <span className="font-poppins text-pretty text-sm italic text-[#6B5860]">
+                Sync Into The Human Sustainability Circadian Rhythm Today&trade;
+              </span>
+            </div>
           </div>
         </motion.div>
       </div>

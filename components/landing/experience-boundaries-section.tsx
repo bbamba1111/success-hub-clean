@@ -66,7 +66,7 @@ export function ExperienceBoundariesSection() {
           <p className="font-playfair text-balance text-2xl font-bold leading-snug text-[#4A3A42] sm:text-3xl">
             Monday Is Not Where We Tell You What Your Boundaries Should Be.
           </p>
-          <p className="font-playfair mt-4 text-balance text-2xl font-bold leading-snug text-[#C13B6B] sm:text-3xl">
+          <p className="font-playfair mt-4 text-balance text-3xl font-bold leading-snug text-[#C13B6B] sm:text-4xl">
             Monday Is Where You Experience What It Feels Like To Operate Inside Them.
           </p>
         </motion.div>

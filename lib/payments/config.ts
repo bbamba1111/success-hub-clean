@@ -10,9 +10,9 @@
  *   —  30/60/90 Installation™       — by application (installation, internal)
  *
  * Checkout runs on Paperbell. Each level carries its own spec-locked Paperbell
- * checkout URL — these links must never be replaced or regenerated. The
- * Business Day (package 234456) and Business Week (package 234458) links are
- * live today; the Redesign link is not configured yet (empty string).
+ * checkout URL. The current Monday / Business Day checkout is package 234458
+ * (the live Monday package); the Redesign link is not configured yet (empty
+ * string).
  */
 import type { Plan, PaymentProviderId } from "./types"
 
@@ -27,7 +27,7 @@ export function getActiveProviderId(): PaymentProviderId {
 }
 
 /** Spec-locked Paperbell checkout links. Never replace or regenerate these. */
-const PAPERBELL_BUSINESS_DAY = "https://app.paperbell.com/checkout/packages/234456"
+const PAPERBELL_BUSINESS_DAY = "https://app.paperbell.com/checkout/packages/234458"
 const PAPERBELL_BUSINESS_WEEK = "https://app.paperbell.com/checkout/packages/234458"
 
 /** The full product ladder, ordered from entry point to deepest immersion. */

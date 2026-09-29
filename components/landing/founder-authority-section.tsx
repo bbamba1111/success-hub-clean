@@ -14,9 +14,12 @@ import Image from "next/image"
 import { motion } from "framer-motion"
 
 const CREDENTIALS = [
-  "Thought Leader Barbara",
-  "Architect, Harmony Lane\u2122; Founder, Startup & Thrive, LLC",
-  "Creator, Make Time For More\u2122; Guide of The Work-Life Balance Business Day\u2122, Business Week\u2122, and 30/60/90 Installation",
+  "Architect, Harmony Lane\u2122",
+  "Founder, Startup & Thrive, LLC",
+  "Creator, Make Time For More\u2122",
+  "Guide of The Work-Life Balance Business Day\u2122",
+  "Guide of Work-Life Balance Business Week\u2122",
+  "Guide of 30/60/90 Installation",
   "International Bestselling Co-Author, The Voyage to Your Vision",
   "Former Owner, Philadelphia Speakers Bureau",
 ]
@@ -57,19 +60,11 @@ export function FounderAuthoritySection() {
             Barbara Bamba
           </p>
           <p className="font-playfair mt-2 text-lg italic text-[#7FB069]">Thought Leader Barbara</p>
-          <p className="font-poppins mt-2 text-sm font-semibold tracking-[0.02em] text-[#5A7F46]">
-            Architect, Harmony Lane&trade;; Founder, Startup &amp; Thrive, LLC
-          </p>
 
-          <p className="font-poppins mt-6 text-pretty text-base leading-relaxed text-[#4A3A42]">
-            Creator, Make Time For More&trade; and Guide of The Work-Life Balance Business Day&trade;, Business
-            Week&trade;, and 30/60/90 Installation.
-          </p>
-
-          <ul className="mt-8 grid gap-3 border-t border-[#F2E4E8] pt-6 sm:grid-cols-2">
+          <ul className="mt-8 grid gap-3 border-t border-[#F2E4E8] pt-6">
             {CREDENTIALS.map((item) => (
-              <li key={item} className="font-poppins flex items-start gap-3 text-sm leading-relaxed text-[#5A4A52]">
-                <span className="mt-1.5 h-1.5 w-1.5 flex-none rounded-full bg-[#C13B6B]" aria-hidden />
+              <li key={item} className="font-poppins flex items-start gap-3 text-base leading-relaxed text-[#5A4A52]">
+                <span className="mt-2 h-1.5 w-1.5 flex-none rounded-full bg-[#C13B6B]" aria-hidden />
                 {item}
               </li>
             ))}

@@ -3,6 +3,7 @@ import { LandingNav } from "@/components/landing/landing-nav"
 import { MondayHeroSection } from "@/components/landing/monday-hero-section"
 import { MondayRecognitionSection } from "@/components/landing/monday-recognition-section"
 import { CapacityQuestionSection } from "@/components/landing/capacity-question-section"
+import { ProactiveSustainabilitySection } from "@/components/landing/proactive-sustainability-section"
 import { WhyMondaySection } from "@/components/landing/why-monday-section"
 import { ExperienceBoundariesSection } from "@/components/landing/experience-boundaries-section"
 import { MondayExperienceSection } from "@/components/landing/monday-experience-section"
@@ -60,7 +61,7 @@ export default function LandingPage() {
     <main className="min-h-screen bg-white">
       <LandingNav
         experiencesHref="#offer"
-        ctaLabel="Reserve Your Day™"
+        ctaLabel="Reserve Monday"
         links={[
           { label: "The Day", href: "#monday" },
           { label: "How It Works", href: "#how-it-works" },
@@ -70,6 +71,7 @@ export default function LandingPage() {
       <MondayHeroSection />
       <MondayRecognitionSection />
       <CapacityQuestionSection />
+      <ProactiveSustainabilitySection />
       <WhyMondaySection />
       <ExperienceBoundariesSection />
       <MondayExperienceSection />
