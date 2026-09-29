@@ -2,21 +2,24 @@ import type { Metadata } from "next"
 import { LandingNav } from "@/components/landing/landing-nav"
 import { MondayHeroSection } from "@/components/landing/monday-hero-section"
 import { MondayRecognitionSection } from "@/components/landing/monday-recognition-section"
+import { CapacityQuestionSection } from "@/components/landing/capacity-question-section"
+import { WhyMondaySection } from "@/components/landing/why-monday-section"
 import { MondayExperienceSection } from "@/components/landing/monday-experience-section"
 import { BeforeMondaySection } from "@/components/landing/before-monday-section"
-import { MondayOffer } from "@/components/landing/monday-offer"
+import { WhatsIncludedSection } from "@/components/landing/whats-included-section"
 import { HumanSustainabilitySection } from "@/components/landing/human-sustainability-section"
+import { MondayOffer } from "@/components/landing/monday-offer"
 import { FinalCtaSection } from "@/components/landing/final-cta-section"
 import { LandingFooter } from "@/components/landing/landing-footer"
 
 export const metadata: Metadata = {
   title: "Harmony Lane™ — Make Time For More™ On Mondays",
   description:
-    "You built your business for more life. The Work-Life Balance Business Day™ is a live operating environment where you experience protected work and protected life in real time. Join Monday — $1,997.",
+    "Reserve one Monday to experience a different way to enter the workweek. The Work-Life Balance Business Day™ is a live operating experience for founders building for Human Sustainability™ in the Accelerated AI Age. $1,997.",
   openGraph: {
     title: "Harmony Lane™ — Make Time For More™ On Mondays",
     description:
-      "Experience Work-Life Balance in real time. Contain the work, protect the rest, and let life have space to expand™. Your entry into Harmony Lane™ begins on Monday.",
+      "The Work-Life Balance Business Day™ — one guided Monday, lived in real time. Reserve your day. $1,997.",
     type: "website",
   },
 }
@@ -26,45 +29,51 @@ export const viewport = {
 }
 
 /**
- * Public marketing site at /landing — Harmony Lane™, repositioned Monday-first.
+ * Public marketing site at /landing — Harmony Lane™, Monday-first.
  *
- * The page's job is NOT to explain the entire Harmony Lane™ operating model
- * before the visitor has bought Monday. It is to make the right founder
- * recognize herself, understand what Monday is, want to experience it, see what
- * she receives, and join ($1,997). The deeper methodology (Boundary Audit,
- * Operations Week detail, Founder OS, Human Sustainability™ methodology) lives
- * post-purchase and on deeper pages — not on this front door.
+ * The page has ONE job: sell the $1,997 Make Time For More On Mondays™
+ * experience (The Work-Life Balance Business Day™). It does NOT publicly
+ * explain or sell the broader Harmony Lane™ ecosystem — Business Week,
+ * Installation, and the full methodology are discovered AFTER entering the
+ * experience, through internal navigation. The page answers five questions:
+ * why this matters, why Monday, what the Business Day is, what happens when you
+ * reserve, and what you receive for $1,997.
  *
- *   01 ENTER      → Hero: Make Time For More™ On Mondays (Join Monday — $1,997)
- *   02 RECOGNIZE  → You built your business for freedom / the boundaries didn't
- *   03 MONDAY     → The Work-Life Balance Business Day™ + the schedule
- *   04 JOURNEY    → Before Monday: Reality Check → Report → Tour → Monday
- *   05 OFFER      → Make Time For More On Mondays™ — $1,997 (+ Week / Install tiers)
- *   06 SUSTAIN    → Short Human Sustainability™ / AI Age framing
- *   07 CLOSE      → Final CTA
+ *   HERO       → Make Time For More™ On Mondays (Reserve Your Day Now™ · $1,997)
+ *   PROBLEM    → You didn't start your business to recreate the life you left
+ *   WHY NOW    → What happens when capacity isn't the problem?
+ *   WHY MONDAY → Start with the day you actually have to live
+ *   THE DAY    → One business day. Designed differently. (the schedule)
+ *   RESERVE    → Your Monday starts before Monday (5-step journey)
+ *   INCLUDED   → Your $1,997 reservation includes
+ *   BIGGER     → Build the business. Don't consume the human.
+ *   OFFER      → Make Time For More™ On Mondays — $1,997
+ *   CLOSE      → What if Monday didn't have to take your life with it?
  *
- * The free Sunday Guided Tour has been removed as a competing front door — the
- * Tour is now part of the paid experience. Paperbell links and pricing are
- * spec-locked inside <MondayOffer /> — never change the checkout URLs.
+ * The single conversion is Reserve Your Day Now™. Pricing/checkout are read
+ * from the product ladder in lib/payments/config.ts (business-day level).
  */
 export default function LandingPage() {
   return (
     <main className="min-h-screen bg-white">
       <LandingNav
         experiencesHref="#offer"
-        ctaLabel="Join Monday"
+        ctaLabel="Reserve Your Day™"
         links={[
+          { label: "The Day", href: "#monday" },
           { label: "How It Works", href: "#how-it-works" },
-          { label: "Monday", href: "#monday" },
-          { label: "Business Week", href: "#offer" },
+          { label: "Why Now", href: "#why-now" },
         ]}
       />
       <MondayHeroSection />
       <MondayRecognitionSection />
+      <CapacityQuestionSection />
+      <WhyMondaySection />
       <MondayExperienceSection />
       <BeforeMondaySection />
-      <MondayOffer />
+      <WhatsIncludedSection />
       <HumanSustainabilitySection />
+      <MondayOffer />
       <FinalCtaSection />
       <LandingFooter />
     </main>

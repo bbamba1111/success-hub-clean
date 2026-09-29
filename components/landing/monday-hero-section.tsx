@@ -3,13 +3,16 @@
 /**
  * MondayHeroSection — the /landing hero.
  *
- * The photograph/environment is the hero. The typography identifies the
- * experience and sits directly OVER the living background (which slowly
- * cross-fades through the phases of the day). Only a small, very translucent
- * glass panel floats within the scene — carrying the invitation line and the
- * CTAs. Hierarchy: Harmony Lane™ (the world) → The Work-Life Balance Business
- * Day™ (the signature experience) → The Desired Work-Lifestyle Destination™
- * (the descriptor). No clock times, no pricing.
+ * The living environment (cross-fading through the phases of the day) is the
+ * hero. Typography sits over it inside one quiet glass panel and follows the
+ * spec hierarchy exactly:
+ *   HARMONY LANE™ PRESENTS
+ *   MAKE TIME FOR MORE™ ON MONDAYS
+ *   Redesign Your Entry Into The Workweek™
+ *   THE WORK-LIFE BALANCE BUSINESS DAY™
+ *   supporting statement → one CTA (Reserve Your Day Now™) → $1,997
+ *
+ * There is exactly ONE call to action in the hero. No secondary button.
  */
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
@@ -19,6 +22,7 @@ import { getPlanByLevel } from "@/lib/payments/config"
 export function MondayHeroSection() {
   const [index, setIndex] = useState(0)
   const dayPlan = getPlanByLevel("business-day")
+  const price = dayPlan?.priceLabel ?? "$1,997"
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -52,7 +56,7 @@ export function MondayHeroSection() {
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(90deg, rgba(255,241,245,0.60) 0%, rgba(255,241,245,0.30) 46%, rgba(255,241,245,0.02) 80%)",
+              "linear-gradient(90deg, rgba(255,241,245,0.62) 0%, rgba(255,241,245,0.32) 46%, rgba(255,241,245,0.04) 80%)",
           }}
         />
         <div
@@ -62,52 +66,46 @@ export function MondayHeroSection() {
         />
       </div>
 
-      <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-end px-5 pb-6 pt-40 sm:px-8 sm:pb-8">
+      <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-end px-5 pb-8 pt-40 sm:px-8 sm:pb-12">
         <motion.div
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="max-w-3xl"
         >
-          {/* Brand line lives directly over the background, top-left */}
-          <p className="font-poppins text-sm font-semibold uppercase leading-tight tracking-[0.24em] text-[#5A7F46] sm:text-base">
-            Harmony Lane™
+          {/* Eyebrow lives directly over the background, top-left */}
+          <p className="font-poppins text-xs font-semibold uppercase leading-tight tracking-[0.28em] text-[#5A7F46] sm:text-sm">
+            Harmony Lane&trade; Presents
           </p>
 
-          {/* "presents…" sits directly under Harmony Lane™, small and quiet */}
-          <p className="font-poppins mt-1 text-sm font-medium italic tracking-[0.1em] text-[#5A7F46]/80">
-            presents&hellip;
-          </p>
-
-          {/* One unified glass panel — lowered ~1in, starting at Make Time For More */}
-          <div className="mt-24 inline-flex max-w-3xl flex-col gap-4 rounded-2xl border border-white/30 bg-white/10 px-6 py-5 shadow-sm backdrop-blur-sm sm:px-8">
-            <h1 className="font-playfair text-balance text-4xl font-bold leading-[1.02] text-[#4A3A42] drop-shadow-sm sm:text-6xl">
-              Make Time For More™
+          {/* One unified glass panel */}
+          <div className="mt-8 inline-flex max-w-3xl flex-col gap-5 rounded-2xl border border-white/30 bg-white/10 px-6 py-7 shadow-sm backdrop-blur-sm sm:px-9 sm:py-9">
+            <h1 className="font-playfair text-balance text-4xl font-bold uppercase leading-[1.02] tracking-tight text-[#4A3A42] drop-shadow-sm sm:text-6xl">
+              Make Time For More&trade;
               <span className="mt-1 block text-[#C13B6B]">On Mondays</span>
             </h1>
+
             <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#5A7F46] sm:text-base">
-              Redesign Your Entry Into The Workweek™
+              Redesign Your Entry Into The Workweek&trade;
             </p>
-            <p className="font-playfair text-pretty text-lg font-semibold italic leading-snug text-[#4A3A42] sm:text-xl">
-              Experience Work-Life Balance — in real time.
+
+            <p className="font-playfair text-pretty text-lg font-semibold uppercase tracking-wide text-[#4A3A42] sm:text-xl">
+              The Work-Life Balance Business Day&trade;
             </p>
+
             <p className="font-poppins max-w-xl text-pretty text-sm leading-relaxed text-[#5A4A52] sm:text-base">
-              You built your business for more life. Now experience what it feels like when the work has a
-              container — and the rest of your life has room to exist.
+              Where founders set work-life balance boundaries — as they start, grow &amp; scale for Human
+              Sustainability&trade; in the Accelerated AI Age.
             </p>
-            <div className="mt-1 flex flex-col gap-3 sm:flex-row sm:items-center">
+
+            <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-center">
               <a
                 href="#offer"
-                className="font-poppins inline-flex items-center justify-center rounded-full bg-[#E26C73] px-8 py-3.5 text-base font-semibold text-white shadow-xl shadow-[#E26C73]/30 transition-transform hover:scale-[1.03] hover:bg-[#d65a62]"
+                className="font-poppins inline-flex items-center justify-center rounded-full bg-[#E26C73] px-9 py-4 text-base font-semibold uppercase tracking-wide text-white shadow-xl shadow-[#E26C73]/30 transition-transform hover:scale-[1.03] hover:bg-[#d65a62]"
               >
-                Join Monday{dayPlan?.priceLabel ? ` — ${dayPlan.priceLabel}` : ""}
+                Reserve Your Day Now&trade;
               </a>
-              <a
-                href="#how-it-works"
-                className="font-poppins inline-flex items-center justify-center rounded-full border border-[#7FB069]/50 bg-white/70 px-8 py-3.5 text-base font-semibold text-[#5A7F46] backdrop-blur-sm transition-colors hover:bg-white/90"
-              >
-                See how it works
-              </a>
+              <span className="font-playfair text-2xl font-bold text-[#4A3A42] sm:text-3xl">{price}</span>
             </div>
           </div>
         </motion.div>

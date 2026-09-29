@@ -1,24 +1,18 @@
 "use client"
 
 /**
- * Final CTA — "Where are you going?" The confident, peer-level close that turns
- * the founder's own success into the reason to enter Harmony Lane™.
+ * Final CTA — "What if Monday didn't have to take your life with it?" The
+ * confident, spacious close. One call to action: Reserve Your Day Now™.
  */
 import { motion } from "framer-motion"
-
-const MORE = [
-  "More life",
-  "More freedom",
-  "More presence",
-  "More time",
-  "More connection",
-  "More experiences",
-  "More room to be human",
-]
+import { getPlanByLevel } from "@/lib/payments/config"
 
 export function FinalCtaSection() {
+  const day = getPlanByLevel("business-day")
+  const price = day?.priceLabel ?? "$1,997"
+
   return (
-    <section id="enter" className="w-full bg-[#2E2A3A] py-24 sm:py-32">
+    <section id="enter" className="w-full bg-[#2E2A3A] py-28 sm:py-36">
       <div className="mx-auto max-w-3xl px-5 sm:px-8 text-center">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -26,47 +20,28 @@ export function FinalCtaSection() {
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="font-playfair text-balance text-4xl font-bold leading-tight text-white sm:text-6xl">
-            You built this business for more.
+          <h2 className="font-playfair text-balance text-4xl font-bold uppercase leading-tight text-white sm:text-6xl">
+            What if Monday
+            <span className="mt-1 block text-[#E8A0AC]">didn&apos;t have to take your life with it?</span>
           </h2>
 
-          <ul className="mx-auto mt-8 flex max-w-xl flex-wrap justify-center gap-2.5">
-            {MORE.map((line) => (
-              <li
-                key={line}
-                className="font-poppins rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white/80"
-              >
-                {line}
-              </li>
-            ))}
-          </ul>
-
-          <p className="font-poppins mx-auto mt-8 max-w-xl text-pretty text-base leading-relaxed text-white/75">
-            Not less ambition. Not less success. But the business has to be designed to make that possible.
-          </p>
-
-          <p className="font-playfair mt-10 text-balance text-2xl font-bold italic leading-snug text-[#E8A0AC] sm:text-3xl">
-            Where are you going — and is the way you&apos;re building actually taking you there?
-          </p>
-
-          <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <a
-              href="#offer"
-              className="font-poppins inline-flex items-center justify-center rounded-full bg-[#E26C73] px-9 py-4 text-base font-semibold text-white shadow-xl shadow-[#E26C73]/25 transition-transform hover:scale-[1.03] hover:bg-[#d65a62]"
-            >
-              Join Monday — $1,997
-            </a>
-            <a
-              href="#how-it-works"
-              className="font-poppins inline-flex items-center justify-center rounded-full border border-white/25 px-9 py-4 text-base font-semibold text-white/90 transition-colors hover:bg-white/10"
-            >
-              See how Monday works
-            </a>
+          <div className="font-poppins mx-auto mt-10 space-y-2 text-pretty text-lg leading-relaxed text-white/80">
+            <p>Start with one day.</p>
+            <p>Experience the boundary.</p>
+            <p>See what changes when the business makes room for the human.</p>
           </div>
 
-          <p className="font-poppins mt-6 text-xs font-semibold uppercase tracking-[0.2em] text-white/55">
-            Contain work. Let life have space to expand™.
-          </p>
+          <div className="mt-12 flex flex-col items-center justify-center gap-4">
+            <a
+              href={day?.checkoutUrl || "#offer"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-poppins inline-flex items-center justify-center rounded-full bg-[#E26C73] px-10 py-4 text-base font-semibold uppercase tracking-wide text-white shadow-xl shadow-[#E26C73]/25 transition-transform hover:scale-[1.03] hover:bg-[#d65a62]"
+            >
+              Reserve Your Day Now&trade;
+            </a>
+            <span className="font-playfair text-3xl font-bold text-white">{price}</span>
+          </div>
         </motion.div>
       </div>
     </section>
