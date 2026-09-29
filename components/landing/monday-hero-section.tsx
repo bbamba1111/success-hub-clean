@@ -79,7 +79,7 @@ export function MondayHeroSection() {
           </p>
 
           {/* One unified glass panel */}
-          <div className="mt-[6.5rem] inline-flex max-w-3xl flex-col gap-4 rounded-2xl border border-white/30 bg-white/10 pl-6 pr-[1.35rem] pt-[1.575rem] pb-[1.575rem] shadow-sm backdrop-blur-sm sm:pl-9 sm:pr-[2.025rem] sm:pt-[2.025rem] sm:pb-[2.025rem]">
+          <div className="mt-[6.5rem] inline-flex max-w-[45rem] flex-col gap-4 rounded-2xl border border-white/30 bg-white/10 pl-6 pr-[1.35rem] pt-[1.575rem] pb-[1.575rem] shadow-sm backdrop-blur-sm sm:pl-9 sm:pr-[2.025rem] sm:pt-[2.025rem] sm:pb-[2.025rem]">
             <h1 className="font-playfair text-balance text-[28px] font-bold leading-[0.82] tracking-tight text-[#4A3A42] drop-shadow-sm sm:text-[46px]">
               <span className="whitespace-nowrap">Make Time For More&trade;</span>
               <span className="mt-1 block text-[#C13B6B]">On Mondays</span>
@@ -94,8 +94,8 @@ export function MondayHeroSection() {
             </p>
 
             <p className="font-poppins max-w-xl text-pretty text-[12px] leading-[1.3] text-[#5A4A52] sm:text-[14px]">
-              Where founders set work-life balance boundaries — as they start, grow &amp; scale for Human
-              Sustainability&trade; in the Accelerated AI Age.
+              Where founders set work-life balance boundaries in the Accelerated AI Age —
+              <span className="mt-1 block">start, grow &amp; scale = Human Sustainability&trade;</span>
             </p>
 
             <div className="mt-2 flex flex-col gap-2">
@@ -105,7 +105,7 @@ export function MondayHeroSection() {
               >
                 Reserve Monday Now&trade; &mdash; {price}
               </a>
-              <span className="font-playfair text-[13px] italic text-white sm:text-[14px]">
+              <span className="font-poppins text-[13px] italic text-[#4A3A42] sm:text-[14px]">
                 Sync Into The Human Sustainability Circadian Rhythm Today&trade;
               </span>
             </div>
