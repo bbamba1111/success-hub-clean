@@ -49,8 +49,15 @@ const reveal = {
 
 export function MondayExperienceSection() {
   return (
-    <section id="monday" className="w-full bg-[#FDF6F3] py-24 sm:py-32">
-      <div className="mx-auto max-w-4xl px-5 sm:px-8">
+    <section id="monday" className="relative w-full overflow-hidden bg-[#FDF6F3] py-24 sm:py-32">
+      {/* Panoramic backdrop — soft, tinted so the timeline stays readable */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-25"
+        style={{ backgroundImage: "url('/images/panoramic-design-weekly.png')" }}
+      />
+      <div aria-hidden className="pointer-events-none absolute inset-0 bg-[#FDF6F3]/60" />
+      <div className="relative z-10 mx-auto max-w-4xl px-5 sm:px-8">
         <motion.div {...reveal} className="mx-auto max-w-3xl text-center">
           <h2 className="font-playfair text-balance text-3xl font-bold uppercase leading-tight text-[#4A3A42] sm:text-5xl">
             One Business Day.

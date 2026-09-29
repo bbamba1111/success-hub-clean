@@ -19,8 +19,15 @@ const ROLES = ["Regulator.", "Boundary Setter.", "Decision Maker."]
 
 export function HumanSustainabilitySection() {
   return (
-    <section id="bigger-idea" className="w-full bg-[#F1F6EC] py-24 sm:py-32">
-      <div className="mx-auto max-w-3xl px-5 sm:px-8">
+    <section id="bigger-idea" className="relative w-full overflow-hidden bg-[#F1F6EC] py-24 sm:py-32">
+      {/* Panoramic backdrop — zen stones, tinted for legibility */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-25"
+        style={{ backgroundImage: "url('/images/panoramic-zen-stones.png')" }}
+      />
+      <div aria-hidden className="pointer-events-none absolute inset-0 bg-[#F1F6EC]/65" />
+      <div className="relative z-10 mx-auto max-w-3xl px-5 sm:px-8">
         <motion.h2
           {...reveal()}
           className="font-playfair text-balance text-3xl font-bold uppercase leading-tight text-[#4A3A42] sm:text-5xl"
