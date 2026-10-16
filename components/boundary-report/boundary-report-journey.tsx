@@ -3,7 +3,8 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import Link from "next/link"
 import { ArrowRight, ArrowLeft, Check, Loader2, Lock, ShieldCheck, Sparkles } from "lucide-react"
-import { getAuditResults } from "@/utils/audit-storage"
+import { getAuditResults, type AuditData } from "@/utils/audit-storage"
+import WorkLifeBalanceAudit from "@/components/work-life-balance-audit"
 import { CATEGORY_LABELS } from "@/utils/life-value-categories"
 import { INTENTION_GROUPS, composeIntentionSummary } from "@/lib/boundary-report/intention-inventory"
 import {
@@ -34,6 +35,7 @@ const WEEK_CHECKOUT = "/pricing"
 type Stage =
   | "intro"
   | "intention"
+  | "audit"
   | "baseline"
   | "priority"
   | "requirements"
@@ -46,6 +48,7 @@ type Stage =
 const STAGE_ORDER: Stage[] = [
   "intro",
   "intention",
+  "audit",
   "baseline",
   "priority",
   "requirements",
@@ -55,10 +58,34 @@ const STAGE_ORDER: Stage[] = [
   "report",
 ]
 
+const SCORE_RED_PINK = "#D9505E"
+const SCORE_PINK = "#E58A9A"
+const SCORE_GREEN = "#5B835F"
+
 function scoreColor(score: number): string {
-  if (score > 60) return "#5B835F"
-  if (score >= 40) return "#E8A84E"
-  return "#E26C73"
+  if (score > FOCUS_THRESHOLD) return SCORE_GREEN
+  if (score >= 40) return SCORE_PINK
+  return SCORE_RED_PINK
+}
+
+function scoreBarFill(score: number): string {
+  return score > FOCUS_THRESHOLD
+    ? `linear-gradient(90deg, ${SCORE_PINK}, ${SCORE_GREEN})`
+    : `linear-gradient(90deg, ${SCORE_RED_PINK}, ${SCORE_PINK})`
+}
+
+function toBaseline(data: AuditData) {
+  const areas: BaselineArea[] = data.results.map((r) => ({
+    key: r.category,
+    label: r.label ?? CATEGORY_LABELS[r.category] ?? r.category,
+    score: r.percentage,
+    isCandidate: r.percentage <= FOCUS_THRESHOLD,
+  }))
+  return {
+    overall: data.overallScore,
+    date: new Date(data.timestamp ?? Date.now()).toISOString(),
+    areas,
+  }
 }
 
 // ── Shared shells ───────────────────────────────────────────────────────────
@@ -130,7 +157,7 @@ function ProgressBar({ stage }: { stage: Stage }) {
     <div className="sticky top-0 z-10 bg-brand-cream/90 backdrop-blur-sm">
       <div className="h-1 w-full bg-brand-green/10">
         <div
-          className="h-full bg-gradient-to-r from-brand-coral via-[#E8A84E] to-brand-green transition-all duration-500"
+          className="h-full bg-gradient-to-r from-brand-coral via-[#E58A9A] to-brand-green transition-all duration-500"
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -203,19 +230,7 @@ export function BoundaryReportJourney() {
 
   useEffect(() => {
     const data = getAuditResults()
-    if (data) {
-      const areas: BaselineArea[] = data.results.map((r) => ({
-        key: r.category,
-        label: r.label ?? CATEGORY_LABELS[r.category] ?? r.category,
-        score: r.percentage,
-        isCandidate: r.percentage <= FOCUS_THRESHOLD,
-      }))
-      setBaseline({
-        overall: data.overallScore,
-        date: new Date(data.timestamp ?? Date.now()).toISOString(),
-        areas,
-      })
-    }
+    if (data) setBaseline(toBaseline(data))
     setBaselineLoaded(true)
   }, [])
 
@@ -238,6 +253,12 @@ export function BoundaryReportJourney() {
       else next[groupId] = item
       return next
     })
+  }
+
+  function completeAudit(results: AuditData) {
+    setBaseline(toBaseline(results))
+    setPriority([])
+    setStage("baseline")
   }
 
   function togglePriority(key: string) {
@@ -418,9 +439,45 @@ export function BoundaryReportJourney() {
           </div>
           <NavRow
             onBack={goBack}
-            onNext={() => setStage("baseline")}
+            onNext={() => setStage("audit")}
             nextDisabled={selections.length === 0 && !somethingElse.trim()}
           />
+        </StageShell>
+      )}
+
+      {stage === "audit" && (
+        <StageShell
+          eyebrow="Work-Life Balance Audit™"
+          title="How have the past 30 days really felt?"
+          intro="Answer 15 quick questions about the last 30 days across your Core Value Areas. Your answers become your 30-Day Work-Life Balance Baseline™."
+        >
+          <div className="overflow-hidden rounded-2xl border border-brand-blush bg-white">
+            <WorkLifeBalanceAudit
+              assessmentWindow="30-day"
+              assessmentType="baseline_30_day"
+              onComplete={completeAudit}
+            />
+          </div>
+          <div className="mt-10 flex items-center justify-between gap-4">
+            <button
+              type="button"
+              onClick={goBack}
+              className="inline-flex items-center gap-1.5 rounded-full px-4 py-2.5 font-sans text-sm font-semibold text-brand-ink-soft transition-colors hover:text-brand-ink"
+            >
+              <ArrowLeft className="h-4 w-4" aria-hidden />
+              Back
+            </button>
+            {baseline && (
+              <button
+                type="button"
+                onClick={() => setStage("baseline")}
+                className="inline-flex items-center gap-1.5 rounded-full px-4 py-2.5 font-sans text-sm font-semibold text-brand-green transition-colors hover:brightness-90"
+              >
+                Use my saved baseline
+                <ArrowRight className="h-4 w-4" aria-hidden />
+              </button>
+            )}
+          </div>
         </StageShell>
       )}
 
@@ -444,13 +501,14 @@ export function BoundaryReportJourney() {
                 Your 30-Day Baseline comes from the Work-Life Balance Audit™. Complete it once and your baseline will
                 appear here — it becomes your persistent starting point.
               </p>
-              <Link
-                href="/audit"
+              <button
+                type="button"
+                onClick={() => setStage("audit")}
                 className="inline-flex items-center gap-1.5 rounded-full bg-brand-coral px-5 py-2.5 font-sans text-sm font-bold text-white hover:brightness-105"
               >
                 Take the Audit™
                 <ArrowRight className="h-4 w-4" aria-hidden />
-              </Link>
+              </button>
             </div>
           ) : (
             <div className="space-y-6">
@@ -488,7 +546,7 @@ export function BoundaryReportJourney() {
                       </div>
                     </div>
                     <div className="h-1.5 w-full overflow-hidden rounded-full bg-brand-cream">
-                      <div className="h-full rounded-full" style={{ width: `${a.score}%`, backgroundColor: scoreColor(a.score) }} />
+                      <div className="h-full rounded-full" style={{ width: `${a.score}%`, backgroundImage: scoreBarFill(a.score) }} />
                     </div>
                   </div>
                 ))}
