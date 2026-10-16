@@ -168,8 +168,12 @@ export function BoundaryReportJourney() {
   const [stage, setStage] = useState<Stage>("intro")
 
   // Intention
-  const [selections, setSelections] = useState<string[]>([])
+  const [intentionChoices, setIntentionChoices] = useState<Record<string, string>>({})
   const [somethingElse, setSomethingElse] = useState("")
+  const selections = useMemo(
+    () => INTENTION_GROUPS.map((g) => intentionChoices[g.id]).filter((v): v is string => Boolean(v)),
+    [intentionChoices],
+  )
 
   // Baseline (from the existing 15-area audit)
   const [baseline, setBaseline] = useState<{ overall: number; date: string; areas: BaselineArea[] } | null>(null)
@@ -220,15 +224,20 @@ export function BoundaryReportJourney() {
   }, [stage])
 
   const intentionSummary = useMemo(
-    () => composeIntentionSummary(selections, somethingElse),
-    [selections, somethingElse],
+    () => composeIntentionSummary(intentionChoices, somethingElse),
+    [intentionChoices, somethingElse],
   )
 
   const candidateAreas = baseline?.areas.filter((a) => a.isCandidate) ?? []
   const priorityAreas = baseline?.areas.filter((a) => priority.includes(a.key)) ?? []
 
-  function toggleSelection(item: string) {
-    setSelections((prev) => (prev.includes(item) ? prev.filter((x) => x !== item) : [...prev, item]))
+  function chooseIntention(groupId: string, item: string) {
+    setIntentionChoices((prev) => {
+      const next = { ...prev }
+      if (next[groupId] === item) delete next[groupId]
+      else next[groupId] = item
+      return next
+    })
   }
 
   function togglePriority(key: string) {
@@ -343,35 +352,51 @@ export function BoundaryReportJourney() {
         <StageShell
           eyebrow="Original Entrepreneurial Intention™"
           title="What did you originally want this business to make possible in your life?"
-          intro="This isn't a quiz. Choose whatever you recognize — the things you hoped for when you started. Pick as many as feel true."
+          intro="This isn't a quiz. In each category, choose the one that feels most true — the thing you hoped for most when you started."
         >
-          <div className="space-y-6">
-            {INTENTION_GROUPS.map((group) => (
-              <div key={group.id}>
-                <p className="font-montserrat text-[11px] font-bold uppercase tracking-[0.14em] text-brand-ink-soft mb-2.5">
-                  {group.label}
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {group.items.map((item) => {
-                    const active = selections.includes(item)
-                    return (
-                      <button
-                        key={item}
-                        type="button"
-                        onClick={() => toggleSelection(item)}
-                        className={`rounded-full border px-3.5 py-1.5 font-sans text-xs font-medium transition-colors ${
-                          active
-                            ? "border-brand-coral bg-brand-coral text-white"
-                            : "border-brand-blush bg-white text-brand-ink hover:border-brand-coral/50"
-                        }`}
-                      >
-                        {item}
-                      </button>
-                    )
-                  })}
+          <div className="flex flex-col gap-7">
+            {INTENTION_GROUPS.map((group) => {
+              const headingId = `intention-${group.id}`
+              return (
+                <div key={group.id} role="radiogroup" aria-labelledby={headingId}>
+                  <p
+                    id={headingId}
+                    className="font-montserrat text-[11px] font-bold uppercase tracking-[0.14em] text-brand-ink-soft mb-2.5"
+                  >
+                    {group.label} <span className="font-normal normal-case tracking-normal">· choose 1</span>
+                  </p>
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                    {group.items.map((item) => {
+                      const active = intentionChoices[group.id] === item
+                      return (
+                        <button
+                          key={item}
+                          type="button"
+                          role="radio"
+                          aria-checked={active}
+                          onClick={() => chooseIntention(group.id, item)}
+                          className={`flex items-center gap-3 rounded-xl border px-4 py-2.5 text-left font-sans text-sm transition-colors ${
+                            active
+                              ? "border-brand-coral bg-brand-coral/10 text-brand-ink"
+                              : "border-brand-blush bg-white text-brand-ink hover:border-brand-coral/50"
+                          }`}
+                        >
+                          <span
+                            className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border ${
+                              active ? "border-brand-coral bg-brand-coral" : "border-brand-ink-soft/40 bg-white"
+                            }`}
+                            aria-hidden
+                          >
+                            {active && <Check className="h-2.5 w-2.5 text-white" />}
+                          </span>
+                          {item}
+                        </button>
+                      )
+                    })}
+                  </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
 
             <div>
               <FieldLabel>Something else</FieldLabel>
