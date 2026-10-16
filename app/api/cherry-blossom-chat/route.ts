@@ -1,5 +1,155 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { isWithinBusinessHours } from "@/lib/utils/business-hours"
+import { createClient } from "@/lib/supabase/server"
+import {
+  loadMemories,
+  formatMemoryVault,
+  formatUpcomingReminders,
+  formatSeasonalHolidays,
+  shouldAskMonthlyCheckin,
+  savePlanningPreference,
+} from "@/lib/cherry-blossom/memory"
+
+/** Maps a planning-choice marker id to a coaching-style label + model instruction. */
+const PLANNING_CHOICE_MAP: Record<string, { style: string; instruction: string }> = {
+  "lets-plan-together": {
+    style: "Let's Plan Together",
+    instruction:
+      "The member chose LET'S PLAN TOGETHER for this experience. Begin a warm, collaborative planning conversation. Ask ONE thoughtful question at a time to help them plan and to learn about them naturally. Do not interrogate or list many questions.",
+  },
+  "give-me-ideas": {
+    style: "Give Me a Few Ideas",
+    instruction:
+      "The member chose GIVE ME A FEW IDEAS for this experience. Do NOT interview them. Immediately offer 3-5 thoughtful, specific ideas tailored to this activity and anything you remember about them. Keep it brief and warm.",
+  },
+  "im-all-set": {
+    style: "I'm All Set",
+    instruction:
+      "The member chose I'M ALL SET for this experience. Respond briefly and warmly (e.g. wish them a wonderful experience and say you're here if they need anything). Do NOT ask any planning questions or offer ideas.",
+  },
+}
+
+/**
+ * Loads the authenticated member's memory (their latest Reality Check snapshot)
+ * and formats it as a system-prompt block so Cherry Blossom opens already
+ * knowing their current state — no copy/paste required. RLS scopes the read to
+ * the signed-in user; anonymous visitors return an empty string (no memory).
+ */
+async function buildMemoryContext(): Promise<string> {
+  try {
+    const supabase = await createClient()
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+    if (!user) return ""
+
+    // Load the two most recent weekly records so Cherry Blossom can speak to
+    // trends and progress (this week + last week).
+    const { data: rows } = await supabase
+      .from("reality_checks")
+      .select(
+        "week_key, overall_score, life_value_scores, selected_priority_areas, operating_declaration, weekly_reflection, completed_at",
+      )
+      .eq("user_id", user.id)
+      .order("week_key", { ascending: false })
+      .limit(2)
+
+    // The three layers of Cherry Blossom's understanding are assembled here:
+    //   Layer 1 — Weekly context (reality_checks, below)
+    //   Layer 2 — Long-term Memory Vault (member_memory)
+    //   Layer 3 — Conversation context (handled by the message history)
+    const sections: string[] = []
+
+    // ----- Layer 1: Weekly context (this week + last week) -----
+    if (rows && rows.length > 0) {
+      const current = rows[0]
+      const previous = rows[1]
+
+      const lines: string[] = [
+        "THIS WEEK — THE MEMBER'S CURRENT REALITY CHECK.",
+        "Use it naturally like a coach who remembers them. Do not ask them to repeat it.",
+        `Current week: ${current.week_key}`,
+      ]
+
+      if (typeof current.overall_score === "number") {
+        lines.push(`Overall Work-Life Balance score: ${current.overall_score}%.`)
+      }
+
+      if (Array.isArray(current.life_value_scores) && current.life_value_scores.length > 0) {
+        const scored = current.life_value_scores
+          .map((r: { label?: string; category?: string; percentage?: number }) => `${r.label ?? r.category}: ${r.percentage}%`)
+          .join(", ")
+        lines.push(`Life value scores — ${scored}.`)
+      }
+
+      if (Array.isArray(current.selected_priority_areas) && current.selected_priority_areas.length > 0) {
+        lines.push(`Chosen Priority Focus Areas this week: ${current.selected_priority_areas.join(", ")}.`)
+      }
+
+      if (current.operating_declaration) {
+        lines.push(`Weekly Operating Declaration: "${current.operating_declaration}"`)
+      }
+
+      if (current.weekly_reflection) {
+        lines.push(`This week's Weekly Reflection: "${current.weekly_reflection}"`)
+      }
+
+      // Previous-week context enables natural trend/progress coaching.
+      if (previous) {
+        lines.push("")
+        lines.push(`Previous week: ${previous.week_key}`)
+        if (typeof previous.overall_score === "number") {
+          lines.push(`Previous overall score: ${previous.overall_score}%.`)
+          if (typeof current.overall_score === "number") {
+            const delta = current.overall_score - previous.overall_score
+            const direction = delta > 0 ? `up ${delta}` : delta < 0 ? `down ${Math.abs(delta)}` : "unchanged"
+            lines.push(`Change since last week: ${direction} point(s). Reference this progress naturally when relevant.`)
+          }
+        }
+        if (Array.isArray(previous.life_value_scores) && previous.life_value_scores.length > 0) {
+          const prevScored = previous.life_value_scores
+            .map((r: { label?: string; category?: string; percentage?: number }) => `${r.label ?? r.category}: ${r.percentage}%`)
+            .join(", ")
+          lines.push(`Previous life value scores — ${prevScored}.`)
+        }
+        if (previous.operating_declaration) {
+          lines.push(`Last week's Weekly Operating Declaration: "${previous.operating_declaration}"`)
+        }
+      }
+
+      sections.push(lines.join("\n"))
+    }
+
+    // ----- Layer 2: Long-term Memory Vault + reminders + monthly check-in -----
+    const memories = await loadMemories(supabase, user.id)
+
+    const vault = formatMemoryVault(memories)
+    if (vault) sections.push(vault)
+
+    const reminders = formatUpcomingReminders(memories)
+    if (reminders) sections.push(reminders)
+
+    const seasonalDays = formatSeasonalHolidays()
+    if (seasonalDays) sections.push(seasonalDays)
+
+    if (shouldAskMonthlyCheckin(memories)) {
+      sections.push(
+        [
+          "MONTHLY CHECK-IN — it has been a new month since you last asked.",
+          "At a natural moment (not mid-planning), warmly ask ONCE this month: \"Are there any birthdays, anniversaries, vacations, holidays, family events, speaking engagements, or special occasions coming up this month that you'd like me to remember?\"",
+          "Ask this at most once. Do not repeat it in later messages this month.",
+        ].join("\n"),
+      )
+    }
+
+    if (sections.length === 0) return ""
+
+    return `\n\n---\n${sections.join("\n\n")}\n---\n`
+  } catch (error) {
+    console.log("[v0] buildMemoryContext skipped:", (error as Error)?.message)
+    return ""
+  }
+}
 
 const SYSTEM_PROMPT = `You are Cherry Blossom, a warm, empathetic AI work-life balance companion. Your purpose is to help people create more harmony, intention, and joy in their daily lives through the Harmony System.
 
@@ -1996,6 +2146,29 @@ YOUR APPROACH ACROSS ALL CHATS:
 - Guide them to live, love, and lead with balance
 - Use flowing, ease-filled language
 - Be warm, personal, and genuinely caring like a close friend
+
+---
+
+PLANNING ASSISTANT & MEMORY VAULT™ (very important):
+
+You help members plan their Work-Life Balance Business Day™ experiences (Morning GIV•EN™, the Healthy Hybrid Lunch Break™, CEO Workday™, Time Freedom™, Power Down™, Digital Detox, and more). Planning is always OFFERED, never forced.
+
+THREE LEVELS OF COACHING — the member chooses their level of support:
+1. "Let's Plan Together" — a warm, collaborative conversation. Ask ONE thoughtful question at a time and gradually help them plan. Never interrogate. Examples: "Who are you having lunch with today?", "Would you like something relaxing or adventurous?", "What sounds most meaningful today?". This is your primary mode for learning about them.
+2. "Give Me a Few Ideas" — NO interview and NO back-and-forth. Immediately offer 3-5 thoughtful, specific suggestions based on today's activity and anything you remember about them. Keep it brief.
+3. "I'm All Set" — no coaching and no planning. Respond briefly and warmly, e.g. "Wonderful. Enjoy today's experience. I'll be here if you need anything." Then STOP. Do not ask more questions.
+
+When a member's message begins with a planning-choice marker like "[PLANNING_CHOICE: ...]", follow that chosen level of support for this experience.
+
+NEVER REMOVE CHOICE: even if you remember a member usually prefers a certain style, they may choose any level on any given day. You may gently reference what you remember ("I remember you usually enjoy planning your own Time Freedom — I'll simply be here if you need me"), but always honor their current choice.
+
+PLANNING IDEAS ARE IDEAS ONLY (for now): you can suggest healthy lunch ideas, nature locations, conversation starters, café or picnic ideas, recreation, self-care, family activities, date ideas, and reading ideas. Do NOT claim to make reservations, open maps, book travel, add calendar events, purchase gifts, or use any external service. You are offering thoughtful ideas, not automation.
+
+MEMORY VAULT™ — how you remember:
+- As members share meaningful details (who they spend time with and the relationship, important dates, favorite places, how they like to live and work), you naturally remember them for future conversations. These are stored for you automatically — you do NOT need to output any special format, JSON, or "saving..." text. Just converse naturally.
+- Quality over quantity: only meaningful details worth remembering (a child's name, an anniversary, "loves botanical gardens", "reads during lunch"). Ignore trivia like what they ate or wore.
+- Never turn planning into a questionnaire or data-entry. It should always feel like thoughtful coaching. Every question should serve the member's current experience.
+- When you already know something (from THIS WEEK, the MEMORY VAULT™, or UPCOMING DATES provided above), use it naturally and warmly. Never read memories back as a list and never ask them to repeat what you already know.
 `
 
 export async function POST(req: NextRequest) {
@@ -2031,8 +2204,12 @@ export async function POST(req: NextRequest) {
     console.log("[v0] Calling OpenAI API directly with message:", message)
     console.log("[v0] Context:", context)
 
+    // Load the signed-in member's persisted Reality Check so Cherry Blossom
+    // opens already knowing them. Empty for anonymous visitors (no change).
+    const memoryContext = await buildMemoryContext()
+
     const conversationMessages = [
-      { role: "system", content: SYSTEM_PROMPT },
+      { role: "system", content: SYSTEM_PROMPT + memoryContext },
       ...messages.map((m: { role: string; content: string }) => ({
         role: m.role,
         content: m.content,
@@ -2060,6 +2237,29 @@ export async function POST(req: NextRequest) {
 
       userPrompt =
         welcomePrompts[context] || "Please introduce yourself as Cherry Blossom and ask how you can help today."
+    } else if (typeof message === "string" && message.startsWith("[PLANNING_CHOICE:")) {
+      // Universal planning-choice buttons. Persist the member's preferred coaching
+      // style for this activity (best-effort) and steer the model accordingly.
+      const match = message.match(/^\[PLANNING_CHOICE:\s*([a-z-]+)\]/i)
+      const choiceId = match?.[1]?.toLowerCase() ?? ""
+      const choice = PLANNING_CHOICE_MAP[choiceId]
+
+      if (choice && context) {
+        try {
+          const supabase = await createClient()
+          const {
+            data: { user },
+          } = await supabase.auth.getUser()
+          if (user) {
+            await savePlanningPreference(supabase, user.id, context, choice.style)
+          }
+        } catch (err) {
+          console.log("[v0] savePlanningPreference skipped:", (err as Error)?.message)
+        }
+      }
+
+      const instruction = choice?.instruction ?? "Help the member plan today's experience warmly."
+      userPrompt = `[Context: ${context ?? "general"}]\n[Formatting: Do NOT use markdown headers (***, **, *, ###, ##, #) in your response. Use bold text (**text**) for emphasis instead.]\n\n${instruction}`
     } else if (context) {
       userPrompt = `[Context: ${context}]\n[Formatting: Do NOT use markdown headers (***, **, *, ###, ##, #) in your response. Use bold text (**text**) for emphasis instead.]\n\n${message}`
     }
