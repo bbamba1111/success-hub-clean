@@ -5,8 +5,8 @@
  * (by-application) step:
  *
  *   1. The Redesign™               — $497    (redesign)
- *   2. Work-Life Balance Business Day™  — $1,997  (business-day)   ← start here
- *   3. Work-Life Balance Business Week™ — $3,997  (business-week)
+ *   2. Make Time For More™ On Mondays   — $997    (business-day)   ← start here
+ *   3. Work-Life Balance Business Week™ — $1,997  (business-week, includes Monday)
  *   —  30/60/90 Installation™       — by application (installation, internal)
  *
  * Checkout runs on Paperbell. Each level carries its own spec-locked Paperbell
@@ -28,7 +28,9 @@ export function getActiveProviderId(): PaymentProviderId {
 
 /** Spec-locked Paperbell checkout links. Never replace or regenerate these. */
 const PAPERBELL_BUSINESS_DAY = "https://app.paperbell.com/checkout/packages/234458"
-const PAPERBELL_BUSINESS_WEEK = "https://app.paperbell.com/checkout/packages/234458"
+// TODO: add the live Paperbell package URL for the $1,997 full Week. It must NOT
+// reuse the Monday package (234458) or buyers would be charged the Monday price.
+const PAPERBELL_BUSINESS_WEEK = ""
 
 /** The full product ladder, ordered from entry point to deepest immersion. */
 export const PLANS: Plan[] = [
@@ -55,8 +57,8 @@ export const PLANS: Plan[] = [
     level: "business-day",
     name: "Work-Life Balance Business Day™",
     tagline: "Live one fully guided, redesigned business day — in real time.",
-    priceLabel: "$1,997",
-    priceAmount: 1997,
+    priceLabel: "$997",
+    priceAmount: 997,
     billingLabel: "one-time",
     tier: "premium",
     highlighted: true,
@@ -74,8 +76,8 @@ export const PLANS: Plan[] = [
     level: "business-week",
     name: "Work-Life Balance Business Week™",
     tagline: "Extend the immersion beyond one day into a full weekly rhythm.",
-    priceLabel: "$3,997",
-    priceAmount: 3997,
+    priceLabel: "$1,997",
+    priceAmount: 1997,
     billingLabel: "one-time",
     tier: "vip",
     badge: "Go Deeper",

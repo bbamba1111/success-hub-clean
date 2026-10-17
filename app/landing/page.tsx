@@ -1,28 +1,23 @@
 import type { Metadata } from "next"
 import { LandingNav } from "@/components/landing/landing-nav"
 import { MondayHeroSection } from "@/components/landing/monday-hero-section"
-import { MondayRecognitionSection } from "@/components/landing/monday-recognition-section"
-import { CapacityQuestionSection } from "@/components/landing/capacity-question-section"
-import { ProactiveSustainabilitySection } from "@/components/landing/proactive-sustainability-section"
-import { WhyMondaySection } from "@/components/landing/why-monday-section"
-import { ExperienceBoundariesSection } from "@/components/landing/experience-boundaries-section"
-import { MondayExperienceSection } from "@/components/landing/monday-experience-section"
-import { BeforeMondaySection } from "@/components/landing/before-monday-section"
+import { FreedomGapSection } from "@/components/landing/freedom-gap-section"
+import { WhyHarmonyLaneSection } from "@/components/landing/why-harmony-lane-section"
+import { MondayOfferSection } from "@/components/landing/monday-offer-section"
+import { BusinessWeekSection } from "@/components/landing/business-week-section"
+import { WhyNowSection } from "@/components/landing/why-now-section"
 import { FounderAuthoritySection } from "@/components/landing/founder-authority-section"
-import { WhatsIncludedSection } from "@/components/landing/whats-included-section"
-import { HumanSustainabilitySection } from "@/components/landing/human-sustainability-section"
-import { MondayOffer } from "@/components/landing/monday-offer"
-import { FinalCtaSection } from "@/components/landing/final-cta-section"
+import { FinalOffersSection } from "@/components/landing/final-offers-section"
 import { LandingFooter } from "@/components/landing/landing-footer"
 
 export const metadata: Metadata = {
-  title: "Harmony Lane™ — Make Time For More™ On Mondays",
+  title: "Harmony Lane™ — Human Sustainability™ in the Agentic AI Age",
   description:
-    "Reserve one Monday to experience a different way to enter the workweek. The Work-Life Balance Business Day™ is a live operating experience for founders building for Human Sustainability™ in the Accelerated AI Age. $1,997.",
+    "Make Time For More™ On Mondays ($997) and The Work-Life Balance Business Week™ ($1,997, includes Monday). Reconnect with your entrepreneurial intention and personalize your human boundaries before AI accelerates the way you work.",
   openGraph: {
     title: "Harmony Lane™ — Make Time For More™ On Mondays",
     description:
-      "The Work-Life Balance Business Day™ — one guided Monday, lived in real time. Reserve your day. $1,997.",
+      "Redesign your entry into the workweek, then live The Work-Life Balance Business Week™ in real time. Human Sustainability™ in the Agentic AI Age.",
     type: "website",
   },
 }
@@ -32,55 +27,33 @@ export const viewport = {
 }
 
 /**
- * Public marketing site at /landing — Harmony Lane™, Monday-first.
- *
- * The page has ONE job: sell the $1,997 Make Time For More On Mondays™
- * experience (The Work-Life Balance Business Day™). It does NOT publicly
- * explain or sell the broader Harmony Lane™ ecosystem — Business Week,
- * Installation, and the full methodology are discovered AFTER entering the
- * experience, through internal navigation. The page answers five questions:
- * why this matters, why Monday, what the Business Day is, what happens when you
- * reserve, and what you receive for $1,997.
- *
- *   HERO       → Make Time For More™ On Mondays (Reserve Your Day Now™ · $1,997)
- *   PROBLEM    → You didn't start your business to recreate the life you left
- *   WHY NOW    → What happens when capacity isn't the problem?
- *   WHY MONDAY → Start with the day you actually have to live
- *   THE DAY    → One business day. Designed differently. (the schedule)
- *   RESERVE    → Your Monday starts before Monday (5-step journey)
- *   INCLUDED   → Your $1,997 reservation includes
- *   BIGGER     → Build the business. Don't consume the human.
- *   OFFER      → Make Time For More™ On Mondays — $1,997
- *   CLOSE      → What if Monday didn't have to take your life with it?
- *
- * The single conversion is Reserve Your Day Now™. Pricing/checkout are read
- * from the product ladder in lib/payments/config.ts (business-day level).
+ * Public marketing site at /landing — two public offers:
+ *   Make Time For More™ On Mondays (business-day, $997) — the entry experience
+ *   The Work-Life Balance Business Week™ (business-week, $1,997, includes Monday)
+ * The Monthly Business Boundary Builder™ is member-only and intentionally absent.
+ * Prices and checkout URLs come from lib/payments/config.ts.
  */
 export default function LandingPage() {
   return (
     <main className="min-h-screen bg-white">
       <LandingNav
-        experiencesHref="#offer"
+        experiencesHref="#monday"
         ctaLabel="Reserve Monday"
         links={[
-          { label: "The Day", href: "#monday" },
-          { label: "How It Works", href: "#how-it-works" },
-          { label: "Why Now", href: "#why-now" },
+          { label: "The Monday Experience", href: "#monday" },
+          { label: "The Business Week", href: "#business-week" },
+          { label: "Why Harmony Lane", href: "#why-harmony-lane" },
+          { label: "Meet Barbara", href: "#meet-barbara" },
         ]}
       />
       <MondayHeroSection />
-      <MondayRecognitionSection />
-      <CapacityQuestionSection />
-      <ProactiveSustainabilitySection />
-      <WhyMondaySection />
-      <ExperienceBoundariesSection />
-      <MondayExperienceSection />
-      <BeforeMondaySection />
+      <FreedomGapSection />
+      <WhyHarmonyLaneSection />
+      <MondayOfferSection />
+      <BusinessWeekSection />
+      <WhyNowSection />
       <FounderAuthoritySection />
-      <WhatsIncludedSection />
-      <HumanSustainabilitySection />
-      <MondayOffer />
-      <FinalCtaSection />
+      <FinalOffersSection />
       <LandingFooter />
     </main>
   )

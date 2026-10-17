@@ -26,7 +26,7 @@ const CREDENTIALS = [
 
 export function FounderAuthoritySection() {
   return (
-    <section id="guide" className="w-full bg-white py-20 sm:py-28">
+    <section id="meet-barbara" className="w-full scroll-mt-20 bg-white py-20 sm:py-28">
       <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 sm:px-8 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
         {/* Portrait — flush left */}
         <motion.div
@@ -55,11 +55,32 @@ export function FounderAuthoritySection() {
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6 }}
         >
-          <span className="font-poppins text-sm font-semibold tracking-[0.14em] text-[#C13B6B]">Meet Your Guide</span>
-          <p className="font-playfair mt-4 text-4xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">
-            Barbara Bamba
+          <span className="font-poppins text-sm font-semibold tracking-[0.14em] text-[#C13B6B]">Meet Barbara</span>
+          <h2 className="font-playfair mt-4 text-4xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">
+            Thought Leader Barbara
+          </h2>
+          <p className="font-playfair mt-2 text-lg italic text-[#5A7F46]">
+            Founder of Harmony Lane&trade; and the Make Time For More&trade; Work-Life Balance Experience.
           </p>
-          <p className="font-playfair mt-2 text-lg italic text-[#7FB069]">Thought Leader Barbara</p>
+
+          <div className="font-poppins mt-6 flex flex-col gap-4 text-pretty text-base leading-relaxed text-[#5A4A52]">
+            <p>
+              Barbara Bamba helps founders redefine success beyond constant work, reconnect with their original
+              entrepreneurial intentions, and build work-life balance boundaries into the way they start, grow, and
+              scale their businesses.
+            </p>
+            <p>
+              Her Human Sustainability&trade; work addresses a defining challenge of the accelerated AI age:
+            </p>
+            <p className="font-playfair text-lg font-semibold leading-snug text-[#4A3A42]">
+              How do we make sure the businesses we&apos;re building&mdash;and the technologies we&apos;re
+              adopting&mdash;create more room for human life rather than simply more work?
+            </p>
+            <p>
+              Through Harmony Lane&trade;, Barbara invites founders to experience another way to live, work, lead, and
+              operate.
+            </p>
+          </div>
 
           <ul className="mt-8 grid gap-3 border-t border-[#F2E4E8] pt-6">
             {CREDENTIALS.map((item) => (

@@ -36,7 +36,7 @@ const questionBodies = [
   { id: 8,  category: "intellectual",        body: "how often have you engaged in learning something new or a skill-building activity?" },
   { id: 9,  category: "professional",        body: "how often have you shared your expertise through partnerships, collaboration, public speaking or publishing and/or expanded your professional visibility through media, podcast interviews or publicity?" },
   { id: 10, category: "financial",          body: "how often have you focused intentionally on income/revenue generation, financial planning, retirement planning, business valuation and/or exit planning?" },
-  { id: 11, category: "environmental",      body: "how often have you made effort to create beauty, balance, or order in your home or office environment?" },
+  { id: 11, category: "environmental",      body: "how often have you made an effort to enhance your well-being by creating beauty, balance, or order in your home or office environment and/or spending time in nature?" },
   { id: 12, category: "relational",         body: "how often have you been attentive and present with your loved ones and in your closest relationships?" },
   { id: 13, category: "social",             body: "how often have you engaged with your friends or supportive, like-minded individuals?" },
   { id: 14, category: "recreational",       body: "how often have you created space for joy, creativity, vacation, travel or play?" },

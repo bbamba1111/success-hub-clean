@@ -21,8 +21,8 @@ import { getPlanByLevel } from "@/lib/payments/config"
 
 export function MondayHeroSection() {
   const [index, setIndex] = useState(0)
-  const dayPlan = getPlanByLevel("business-day")
-  const price = dayPlan?.priceLabel ?? "$1,997"
+  const mondayPrice = getPlanByLevel("business-day")?.priceLabel ?? "$997"
+  const weekPrice = getPlanByLevel("business-week")?.priceLabel ?? "$1,997"
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -79,36 +79,57 @@ export function MondayHeroSection() {
           </p>
 
           {/* One unified glass panel */}
-          <div className="mt-[6.5rem] inline-flex max-w-[45rem] flex-col gap-4 rounded-2xl border border-white/30 bg-white/10 pl-6 pr-[1.35rem] pt-[1.575rem] pb-[1.575rem] shadow-sm backdrop-blur-sm sm:pl-9 sm:pr-[2.025rem] sm:pt-[2.025rem] sm:pb-[2.025rem]">
+          <div className="mt-8 inline-flex max-w-[45rem] flex-col gap-3 rounded-2xl border border-white/30 bg-white/10 pl-6 pr-[1.35rem] pt-[1.575rem] pb-[1.575rem] shadow-sm backdrop-blur-sm sm:pl-9 sm:pr-[2.025rem] sm:pt-[2.025rem] sm:pb-[2.025rem]">
             <h1 className="font-playfair text-balance text-[28px] font-bold leading-[0.82] tracking-tight text-[#4A3A42] drop-shadow-sm sm:text-[46px]">
               <span className="whitespace-nowrap">Make Time For More&trade;</span>
               <span className="mt-1 block text-[#C13B6B]">On Mondays</span>
             </h1>
 
-            <p className="font-poppins text-[12px] font-semibold uppercase tracking-[0.2em] text-[#5A7F46] sm:text-[14px]">
-              Redesign Your Entry Into The Workweek&trade;
+            <p className="font-poppins text-[12px] font-semibold tracking-[0.08em] text-[#5A7F46] sm:text-[14px]">
+              Redesign Your Entry Into the Workweek.
             </p>
 
-            <p className="font-playfair text-pretty text-[16px] font-semibold uppercase tracking-wide text-[#4A3A42] sm:text-[18px]">
-              The Work-Life Balance Business Day&trade;
+            <p className="font-playfair text-pretty text-[16px] font-semibold text-[#4A3A42] sm:text-[18px]">
+              Live The Work-Life Balance Business Week&trade; &mdash; In Real Time.
             </p>
 
-            <p className="font-poppins max-w-xl text-pretty text-[12px] leading-[1.3] text-[#5A4A52] sm:text-[14px]">
-              Where Founders Set Work-Life Balance Boundaries &mdash;
-              <span className="mt-1 block">As They Start, Grow &amp; Scale For Human Sustainability&trade; In The Accelerated AI Age.</span>
-            </p>
-
-            <div className="mt-2 flex flex-col gap-2">
-              <a
-                href="#offer"
-                className="font-poppins inline-flex w-fit items-center justify-center rounded-full bg-[#8AA06A] px-9 py-4 text-[14px] font-semibold uppercase tracking-wide text-white shadow-xl shadow-[#8AA06A]/30 transition-transform hover:scale-[1.03] hover:bg-[#788e5a]"
-              >
-                Reserve Monday Now&trade; &mdash; {price}
-              </a>
-              <span className="font-poppins text-[13px] italic text-[#4A3A42] sm:text-[14px]">
-                Sync Into The Human Sustainability Circadian Rhythm Today&trade;
-              </span>
+            <div className="font-poppins max-w-xl text-pretty text-[12px] leading-relaxed text-[#5A4A52] sm:text-[14px]">
+              <p className="font-semibold text-[#4A3A42]">You became an entrepreneur for freedom.</p>
+              <p className="mt-1">
+                Reconnect with the life you intended to create, personalize your human boundaries, and experience a
+                different way to live, work, lead, and operate your business.
+              </p>
             </div>
+
+            <div className="mt-1 flex flex-wrap items-center gap-3">
+              <a
+                href="#monday"
+                className="font-poppins inline-flex items-center justify-center rounded-full bg-[#8AA06A] px-7 py-3.5 text-[13px] font-semibold tracking-wide text-white shadow-xl shadow-[#8AA06A]/30 transition-transform hover:scale-[1.03] hover:bg-[#788e5a]"
+              >
+                Redesign My Monday
+              </a>
+              <a
+                href="#business-week"
+                className="font-poppins inline-flex items-center justify-center rounded-full border border-[#4A3A42]/25 bg-white/60 px-7 py-3.5 text-[13px] font-semibold tracking-wide text-[#4A3A42] transition-colors hover:bg-white/90"
+              >
+                Experience the Full Week
+              </a>
+            </div>
+
+            <dl className="font-poppins flex flex-col gap-1 text-[12px] text-[#4A3A42] sm:text-[13px]">
+              <div className="flex gap-2">
+                <dt>Monday experience</dt>
+                <dd className="font-semibold">&mdash; {mondayPrice}</dd>
+              </div>
+              <div className="flex gap-2">
+                <dt>Full Monday&ndash;Sunday Week</dt>
+                <dd className="font-semibold">&mdash; {weekPrice}, including Monday</dd>
+              </div>
+            </dl>
+
+            <p className="font-playfair text-[14px] italic text-[#C13B6B] sm:text-[15px]">
+              We don&apos;t hustle &mdash; we harmonize.&trade;
+            </p>
           </div>
         </motion.div>
       </div>

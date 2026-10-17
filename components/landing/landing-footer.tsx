@@ -16,11 +16,12 @@ export function LandingFooter() {
             <span className="font-playfair text-lg font-bold text-[#4A3A42]">Harmony Lane™</span>
           </Link>
           <div className="font-poppins flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-[#5A4A52]">
-            <a href="#monday" className="hover:text-[#C13B6B]">The Day</a>
-            <a href="#why-monday-exists" className="hover:text-[#C13B6B]">How It Works</a>
+            <a href="#monday" className="hover:text-[#C13B6B]">The Monday Experience</a>
+            <a href="#business-week" className="hover:text-[#C13B6B]">The Business Week</a>
+            <a href="#why-harmony-lane" className="hover:text-[#C13B6B]">Why Harmony Lane</a>
             <a href="#why-now" className="hover:text-[#C13B6B]">Why Now</a>
-            <a href="#guide" className="hover:text-[#C13B6B]">Meet Barbara</a>
-            <a href="#offer" className="hover:text-[#C13B6B]">Reserve Monday</a>
+            <a href="#meet-barbara" className="hover:text-[#C13B6B]">Meet Barbara</a>
+            <a href="#reserve" className="hover:text-[#C13B6B]">Reserve Monday</a>
             <Link href="/auth/login" className="hover:text-[#C13B6B]">Log In</Link>
           </div>
 
