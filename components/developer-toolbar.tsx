@@ -28,7 +28,6 @@ const WEEK_PRESETS: { label: string; weeksAgo: number }[] = [
   { label: "Week 2", weeksAgo: 1 },
   { label: "Week 3", weeksAgo: 2 },
   { label: "Week 4", weeksAgo: 3 },
-  { label: "Integration", weeksAgo: 5 },
 ]
 
 interface MemberPreset {

@@ -90,7 +90,7 @@ export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | 
             Monthly Business Boundary Focus™
           </h3>
           <p className="mt-1 font-sans text-sm leading-relaxed text-[#6B5860] text-pretty">
-            Choose the one boundary you&apos;ll build a rule around this month.
+            Choose the one boundary you&apos;ll build a rule around this membership cycle.
           </p>
         </div>
         <ChevronDown
@@ -112,8 +112,8 @@ export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | 
             </p>
             <p className="font-sans text-sm leading-relaxed text-[#3A2E33] text-pretty">
               {signedIn
-                ? "Monthly Business Boundary Focus™ opens once your Monthly Cycle Membership is active. Each month you'll choose one boundary and build a Business Operating Rule™ around it."
-                : "Sign in with your member account to choose this month's boundary."}
+                ? "Monthly Business Boundary Focus™ opens once your Monthly Cycle Membership is active. Each 30-day membership cycle you'll choose one boundary and build a Business Operating Rule™ around it."
+                : "Sign in with your member account to choose this cycle's boundary."}
             </p>
             {chosen && (
               <p className="font-sans text-xs text-[#6B5860]">
@@ -123,7 +123,7 @@ export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | 
           </div>
         ) : chosen && !choosing ? (
           <div className="flex flex-col gap-3 rounded-2xl border border-[#7FB069]/30 bg-white px-5 py-5">
-            <p className={microLabel}>This month&apos;s Business Operating Rule™</p>
+            <p className={microLabel}>This cycle&apos;s Business Operating Rule™</p>
             <p className="font-serif text-2xl font-semibold text-[#2E1F27] text-pretty">{chosen}</p>
             {focus?.ruleDescription && (
               <p className="font-sans text-sm leading-relaxed text-[#3A2E33]">{focus.ruleDescription}</p>
@@ -137,7 +137,7 @@ export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | 
               onClick={() => setChoosing(true)}
               className="self-start rounded-full border border-[#7FB069]/30 bg-white px-5 py-2.5 font-sans text-sm font-semibold text-[#3A2E33] hover:bg-black/[0.03]"
             >
-              Change this month&apos;s boundary
+              Change this cycle&apos;s boundary
             </button>
           </div>
         ) : null}
