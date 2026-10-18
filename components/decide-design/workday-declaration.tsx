@@ -6,7 +6,7 @@ import { useWeeklyCommitments } from "@/lib/weekly-commitments/use-weekly-commit
 import { getLatestBoundaryReport } from "@/lib/boundary-report/actions"
 import type { BoundaryReportData } from "@/lib/boundary-report/types"
 import { useMonthlyBoundaryFocus } from "@/lib/monthly-boundary-focus/use-monthly-boundary-focus"
-import { getDateKey, loadDailyIdentity } from "@/lib/daily-identity/storage"
+import { DAILY_IDENTITY_CHANGED_EVENT, getDateKey, loadDailyIdentity } from "@/lib/daily-identity/storage"
 
 /**
  * My 4-Hour CEO Workday Declaration™
@@ -104,12 +104,19 @@ export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read"
   const [savedAt, setSavedAt] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  // Identity is stored per-day in localStorage. Re-read it whenever the other
-  // two inputs change so the preview stays fresh; build() also reads it live.
+  // Identity is stored per-day in localStorage by the "Who I'm Being" picker,
+  // which fires a same-tab event on save — subscribe so box 1 fills instantly.
   const [identity, setIdentity] = useState("")
   useEffect(() => {
-    setIdentity(loadDailyIdentity(getDateKey())?.identityStatement?.trim() ?? "")
-  }, [report, boundary])
+    const read = () => setIdentity(loadDailyIdentity(getDateKey())?.identityStatement?.trim() ?? "")
+    read()
+    window.addEventListener(DAILY_IDENTITY_CHANGED_EVENT, read)
+    window.addEventListener("storage", read)
+    return () => {
+      window.removeEventListener(DAILY_IDENTITY_CHANGED_EVENT, read)
+      window.removeEventListener("storage", read)
+    }
+  }, [])
 
   if (mode === "read") {
     if (!c.workdayDeclaration) return null
@@ -126,7 +133,15 @@ export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read"
   }
 
   const priorityLabels = (report?.priorityAreas ?? []).map((a) => a.label)
-  const ready = Boolean(identity.trim() || priorityLabels.length > 0 || boundary.trim())
+
+  const rows: Array<{ label: string; value: string | null }> = [
+    { label: "Who I'm being", value: identity.trim() || null },
+    { label: "Priority Focus Areas", value: priorityLabels.length > 0 ? priorityLabels.join(", ") : null },
+    ...(isMonthlyMember ? [{ label: "Monthly Business Boundary", value: boundary.trim() || null }] : []),
+  ]
+  // Monday-only / Business Week: both boxes required. Monthly members: all three.
+  const missing = rows.filter((r) => !r.value).map((r) => r.label)
+  const ready = missing.length === 0
 
   function build(variant = c.workdayDeclarationVariant) {
     // Read identity live at build time so the saved declaration is always current.
@@ -148,12 +163,6 @@ export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read"
     if (res.ok) setSavedAt(new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }))
     else setError(res.error ?? "Could not save.")
   }
-
-  const rows: Array<{ label: string; value: string | null }> = [
-    { label: "Who I'm being", value: identity.trim() || null },
-    { label: "Priority Focus Areas", value: priorityLabels.length > 0 ? priorityLabels.join(", ") : null },
-    ...(isMonthlyMember ? [{ label: "Monthly Business Boundary", value: boundary.trim() || null }] : []),
-  ]
 
   return (
     <div className="flex flex-col gap-5">
@@ -191,10 +200,10 @@ export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read"
       </ul>
 
       {!ready ? (
-        <p className="font-sans text-sm italic text-muted-foreground">
-          {isMonthlyMember
-            ? "Decide who you're being or choose this cycle's boundary, and your declaration can be built. Your Priority Focus Areas™ carry over from your Reality Check™."
-            : "Decide who you're being, and your declaration can be built. Your Priority Focus Areas™ carry over from your Reality Check™."}
+        <p className="font-sans text-sm italic text-muted-foreground text-pretty">
+          {`Your declaration unlocks when all ${rows.length} boxes are filled. Still to complete: ${missing.join(", ")}.`}
+          {missing.includes("Priority Focus Areas") &&
+            " Your Priority Focus Areas™ carry over from your Reality Check™."}
         </p>
       ) : !c.workdayDeclaration ? (
         <button
