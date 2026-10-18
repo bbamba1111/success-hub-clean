@@ -32,6 +32,17 @@ const PAPERBELL_BUSINESS_DAY = "https://app.paperbell.com/checkout/packages/2344
 // reuse the Monday package (234458) or buyers would be charged the Monday price.
 const PAPERBELL_BUSINESS_WEEK = ""
 
+/**
+ * Founding pricing window for the two public offers. Planned prices take
+ * effect January 1, 2027; checkout amounts are controlled in Paperbell.
+ */
+export const FOUNDING_PRICE_DEADLINE_LABEL = "December 31, 2026"
+export const FUTURE_PRICE_EFFECTIVE_LABEL = "January 1, 2027"
+export const FUTURE_PRICE_LABELS = {
+  "business-day": "$1,497",
+  "business-week": "$2,997",
+} as const
+
 /** The full product ladder, ordered from entry point to deepest immersion. */
 export const PLANS: Plan[] = [
   {

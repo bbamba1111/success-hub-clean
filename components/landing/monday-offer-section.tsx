@@ -1,5 +1,6 @@
 import { getPlanByLevel } from "@/lib/payments/config"
 import { OfferCta } from "./offer-cta"
+import { FoundingPriceNote } from "./founding-price-note"
 
 const STEPS = [
   {
@@ -55,6 +56,11 @@ export function MondayOfferSection() {
             Make Time For More&trade; On Mondays gives you a deliberate opportunity to assess your current reality,
             reconnect with what matters, personalize your boundaries, and experience a different way to begin the week.
           </p>
+          <p>
+            Whether you&apos;re designing your first business or redesigning an established one, Monday gives you a
+            place to reconnect with your intention, assess your current reality, personalize your boundaries, and design
+            your next working rhythm.
+          </p>
         </div>
 
         <ol className="mt-12 flex flex-col gap-3">
@@ -80,6 +86,7 @@ export function MondayOfferSection() {
             Entrepreneurial Freedom Gap&trade;, your personal priorities, the boundaries you want to practice, and the
             work-life balance rhythm you want to create.
           </p>
+          <FoundingPriceNote level="business-day" />
           <OfferCta href={plan?.checkoutUrl} label={`Reserve My Monday \u2014 ${price}`} />
         </div>
       </div>

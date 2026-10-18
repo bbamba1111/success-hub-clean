@@ -1,5 +1,6 @@
 import { getPlanByLevel } from "@/lib/payments/config"
 import { OfferCta } from "./offer-cta"
+import { FoundingPriceNote } from "./founding-price-note"
 
 export function FinalOffersSection() {
   const monday = getPlanByLevel("business-day")
@@ -28,6 +29,7 @@ export function FinalOffersSection() {
             </h3>
             <p className="font-poppins text-base font-semibold text-[#5A7F46]">Redesign Your Entry Into the Workweek.</p>
             <p className="font-playfair text-4xl font-bold text-[#4A3A42]">{monday?.priceLabel ?? "$997"}</p>
+            <FoundingPriceNote level="business-day" />
             <div className="mt-auto pt-2">
               <OfferCta href={monday?.checkoutUrl} label="Reserve Monday" />
             </div>
@@ -44,6 +46,7 @@ export function FinalOffersSection() {
               {week?.priceLabel ?? "$1,997"}
               <span className="font-poppins ml-2 text-sm font-semibold text-[#5A7F46]">includes Monday</span>
             </p>
+            <FoundingPriceNote level="business-week" />
             <div className="mt-auto pt-2">
               <OfferCta href={week?.checkoutUrl} label="Experience the Full Week" variant="secondary" />
             </div>

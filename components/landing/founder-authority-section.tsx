@@ -70,6 +70,11 @@ export function FounderAuthoritySection() {
               scale their businesses.
             </p>
             <p>
+              Barbara&apos;s work welcomes both entrepreneurs building a business for the first time and established
+              founders who want to redesign how their businesses operate&mdash;so work-life balance can become an
+              intentional part of how they start, grow, and scale.
+            </p>
+            <p>
               Her Human Sustainability&trade; work addresses a defining challenge of the accelerated AI age:
             </p>
             <p className="font-playfair text-lg font-semibold leading-snug text-[#4A3A42]">

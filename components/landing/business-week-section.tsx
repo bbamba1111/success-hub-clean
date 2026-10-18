@@ -1,5 +1,6 @@
 import { getPlanByLevel } from "@/lib/payments/config"
 import { OfferCta } from "./offer-cta"
+import { FoundingPriceNote } from "./founding-price-note"
 
 const JOURNEY = [
   {
@@ -74,6 +75,11 @@ export function BusinessWeekSection() {
             practice your personal boundaries while bringing your actual business responsibilities and personal
             priorities into the experience.
           </p>
+          <p>
+            Practice your intended rhythm in real conditions. New founders can explore how they want their business to
+            operate; established founders can notice where current business demands collide with the boundaries they
+            want to protect.
+          </p>
         </div>
 
         <ol className="mt-12 grid gap-4 md:grid-cols-4">
@@ -134,6 +140,7 @@ export function BusinessWeekSection() {
             Monday, so you never pay for it twice. Your {mondayPrice} Monday payment is intended to be credited toward
             the full Week, leaving a $1,000 balance, within the upgrade window communicated at enrollment.
           </p>
+          <FoundingPriceNote level="business-week" />
           <OfferCta href={plan?.checkoutUrl} label={`Live the Full Week \u2014 ${price}`} variant="secondary" />
         </div>
       </div>

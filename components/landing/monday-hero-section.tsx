@@ -19,6 +19,17 @@ import { motion, AnimatePresence } from "framer-motion"
 import { SCHEDULE } from "@/operating-engine/config/schedule"
 import { getPlanByLevel } from "@/lib/payments/config"
 
+const HERO_PATHWAYS = [
+  {
+    label: "Starting or Building a Business",
+    body: "Design work-life balance into your business from the beginning. Establish your boundaries, intended work rhythm, and operating principles before unsustainable expectations become the norm.",
+  },
+  {
+    label: "Already Running a Business",
+    body: "Recognize where business demands have crowded out the freedom you intended to create. Redesign your working rhythm and identify the business practices that need to change.",
+  },
+]
+
 export function MondayHeroSection() {
   const [index, setIndex] = useState(0)
   const mondayPrice = getPlanByLevel("business-day")?.priceLabel ?? "$997"
@@ -99,7 +110,25 @@ export function MondayHeroSection() {
                 Reconnect with the life you intended to create, personalize your human boundaries, and experience a
                 different way to live, work, lead, and operate your business.
               </p>
+              <p className="mt-2">
+                Whether you&apos;re starting a business or redesigning one you&apos;ve already built, Harmony
+                Lane&trade; helps you make work-life balance an intentional part of how you work, lead, and operate.
+              </p>
             </div>
+
+            <ul className="grid gap-2 sm:grid-cols-2">
+              {HERO_PATHWAYS.map((path) => (
+                <li key={path.label}>
+                  <a
+                    href="#monday"
+                    className="font-poppins flex h-full flex-col gap-1 rounded-xl border border-white/50 bg-white/55 p-3 transition-colors hover:bg-white/80"
+                  >
+                    <span className="text-[11px] font-semibold tracking-[0.12em] text-[#C13B6B]">{path.label}</span>
+                    <span className="text-pretty text-[12px] leading-relaxed text-[#4A3A42]">{path.body}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
 
             <div className="mt-1 flex flex-wrap items-center gap-3">
               <a

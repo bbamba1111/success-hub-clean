@@ -2,6 +2,8 @@ import type { Metadata } from "next"
 import { LandingNav } from "@/components/landing/landing-nav"
 import { MondayHeroSection } from "@/components/landing/monday-hero-section"
 import { FreedomGapSection } from "@/components/landing/freedom-gap-section"
+import { FounderPathwaysSection } from "@/components/landing/founder-pathways-section"
+import { WorkplaceDesignSection } from "@/components/landing/workplace-design-section"
 import { WhyHarmonyLaneSection } from "@/components/landing/why-harmony-lane-section"
 import { MondayOfferSection } from "@/components/landing/monday-offer-section"
 import { BusinessWeekSection } from "@/components/landing/business-week-section"
@@ -48,10 +50,12 @@ export default function LandingPage() {
       />
       <MondayHeroSection />
       <FreedomGapSection />
+      <FounderPathwaysSection />
       <WhyHarmonyLaneSection />
       <MondayOfferSection />
       <BusinessWeekSection />
       <WhyNowSection />
+      <WorkplaceDesignSection />
       <FounderAuthoritySection />
       <FinalOffersSection />
       <LandingFooter />
