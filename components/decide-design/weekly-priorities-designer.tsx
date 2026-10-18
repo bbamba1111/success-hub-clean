@@ -27,8 +27,7 @@ import {
   type LifePriorityCategory,
 } from "@/lib/weekly-life-priorities/catalog"
 import type { LifePrioritySelection } from "@/lib/weekly-life-priorities/types"
-import { useWeeklyBoundaryFocus } from "@/lib/weekly-boundary-focus/use-weekly-boundary-focus"
-import { BOUNDARY_OPTIONS, recommendBoundary } from "@/lib/weekly-boundary-focus/catalog"
+import { MonthlyBoundaryFocus } from "@/components/decide-design/monthly-boundary-focus"
 import { getLatestBoundaryReport } from "@/lib/boundary-report/actions"
 import type { BoundaryReportData } from "@/lib/boundary-report/types"
 
@@ -269,185 +268,6 @@ function LifePrioritiesSection({
   )
 }
 
-/* ── Boundary Focus™ — exactly one boundary for the week ──────────────────── */
-
-function BoundaryFocusSection({
-  report,
-}: {
-  report: BoundaryReportData | null
-}) {
-  const { priorities } = useWeeklyLifePriorities()
-  const { focus, save, isLoading } = useWeeklyBoundaryFocus()
-
-  const selectedLifeLabels = useMemo(() => priorities.map((p) => p.label), [priorities])
-  const recommendation = useMemo(
-    () => recommendBoundary(report, selectedLifeLabels),
-    [report, selectedLifeLabels],
-  )
-
-  const [choosingOther, setChoosingOther] = useState(false)
-  const [customMode, setCustomMode] = useState(false)
-  const [customDraft, setCustomDraft] = useState("")
-
-  const chosen = focus.boundaryText
-
-  function chooseBoundary(text: string, optionId: string, sourceContext: string | null) {
-    void save({ boundaryText: text, optionId, sourceContext, status: "chosen" })
-    setChoosingOther(false)
-    setCustomMode(false)
-  }
-
-  function addCustom() {
-    const text = customDraft.trim()
-    if (!text) return
-    chooseBoundary(text, "custom", "Created by the founder")
-    setCustomDraft("")
-  }
-
-  return (
-    <Card tone="green">
-      <div>
-        <p className="font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#5B835F]">
-          My Weekly Work-Life Balance Boundary Focus™
-        </p>
-        <p className="mt-1 font-sans text-sm text-[#6B5860] leading-relaxed text-pretty">
-          Choose one boundary to build into the business and live this week.
-        </p>
-      </div>
-
-      {/* Loading the persisted weekly record — hold the space instead of
-          flashing the recommendation/chooser as if nothing was chosen. */}
-      {isLoading && !chosen && !choosingOther ? (
-        <div className="rounded-2xl border border-[#7FB069]/30 bg-white px-5 py-5 space-y-3">
-          <div className="h-4 w-1/2 animate-pulse rounded-full bg-[#7FB069]/20" />
-          <div className="h-6 w-2/3 animate-pulse rounded-full bg-[#7FB069]/20" />
-        </div>
-      ) : chosen && !choosingOther ? (
-        <div className="rounded-2xl border border-[#7FB069]/30 bg-white px-5 py-5 space-y-3">
-          <Eyebrow>This week&apos;s boundary</Eyebrow>
-          <p className="font-serif text-2xl font-semibold text-[#2E1F27] text-pretty">{chosen}</p>
-          <button
-            type="button"
-            onClick={() => setChoosingOther(true)}
-            className="inline-flex items-center rounded-full border border-[#7FB069]/30 bg-white px-5 py-2.5 font-sans text-sm font-semibold text-[#3A2E33] hover:bg-black/[0.03]"
-          >
-            Choose a different boundary
-          </button>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {/* Recommendation */}
-          {recommendation && !choosingOther && (
-            <div className="rounded-2xl border border-[#7FB069]/30 bg-white px-5 py-5 space-y-3">
-              <div>
-                <Eyebrow>Recommended boundary</Eyebrow>
-                <p className="mt-1 font-serif text-2xl font-semibold text-[#2E1F27] text-pretty">
-                  {recommendation.option.label}
-                </p>
-                <p className="mt-1 font-sans text-xs text-[#6B5860]">{recommendation.option.helper}</p>
-              </div>
-              <div className="flex flex-wrap gap-2 pt-1">
-                <button
-                  type="button"
-                  onClick={() =>
-                    chooseBoundary(recommendation.option.label, recommendation.option.id, recommendation.context)
-                  }
-                  className="inline-flex items-center gap-1.5 rounded-full bg-[#5B835F] px-6 py-3 font-sans text-sm font-bold text-white hover:opacity-90"
-                >
-                  <Check className="h-4 w-4" aria-hidden /> Use this boundary
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setChoosingOther(true)}
-                  className="inline-flex items-center rounded-full border border-[#7FB069]/30 bg-white px-6 py-3 font-sans text-sm font-semibold text-[#3A2E33] hover:bg-black/[0.03]"
-                >
-                  Choose a different boundary
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Structured choices (shown when choosing another, or when no recommendation) */}
-          {(choosingOther || !recommendation) && (
-            <div className="rounded-2xl border border-[#E8DFE2] bg-white px-5 py-5 space-y-3">
-              <Eyebrow>Choose a boundary</Eyebrow>
-              <div className="space-y-2">
-                {BOUNDARY_OPTIONS.map((o) => {
-                  const active = focus.optionId === o.id && focus.boundaryText === o.label
-                  return (
-                    <button
-                      key={o.id}
-                      type="button"
-                      onClick={() =>
-                        chooseBoundary(
-                          o.label,
-                          o.id,
-                          recommendation?.option.id === o.id ? recommendation.context : null,
-                        )
-                      }
-                      className={`flex w-full flex-col items-start rounded-2xl border px-4 py-3 text-left transition-colors ${
-                        active
-                          ? "border-[#5B835F] bg-[#F3F8ED]"
-                          : "border-[#E8DFE2] bg-white hover:bg-black/[0.02]"
-                      }`}
-                    >
-                      <span className="font-sans text-sm font-semibold text-[#2E1F27]">{o.label}</span>
-                      <span className="font-sans text-xs text-[#6B5860]">{o.helper}</span>
-                    </button>
-                  )
-                })}
-              </div>
-
-              {/* Create my own — intentional path */}
-              {customMode ? (
-                <div className="flex flex-col gap-2 sm:flex-row sm:items-center pt-1">
-                  <input
-                    type="text"
-                    value={customDraft}
-                    onChange={(e) => setCustomDraft(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && !e.nativeEvent.isComposing && e.keyCode !== 229) addCustom()
-                    }}
-                    placeholder="Name the boundary in your own words…"
-                    aria-label="Create my own boundary"
-                    className="flex-1 rounded-xl border border-[#E8DFE2] bg-white px-3.5 py-2.5 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/60 focus:outline-none focus:ring-2 focus:ring-[#7FB069]/30"
-                  />
-                  <button
-                    type="button"
-                    onClick={addCustom}
-                    disabled={!customDraft.trim()}
-                    className="rounded-full bg-[#5B835F] px-5 py-2.5 font-sans text-sm font-semibold text-white hover:opacity-90 disabled:opacity-40"
-                  >
-                    Use this
-                  </button>
-                </div>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setCustomMode(true)}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-[#E8DFE2] bg-white px-5 py-2.5 font-sans text-sm font-semibold text-[#3A2E33] hover:bg-black/[0.03]"
-                >
-                  <Plus className="h-4 w-4" aria-hidden /> Create my own
-                </button>
-              )}
-
-              {choosingOther && recommendation && (
-                <button
-                  type="button"
-                  onClick={() => setChoosingOther(false)}
-                  className="inline-flex items-center gap-1 pt-1 font-sans text-xs font-semibold text-[#6B5860] hover:text-[#3A2E33]"
-                >
-                  <ChevronLeft className="h-3 w-3" aria-hidden /> Back to the recommendation
-                </button>
-              )}
-            </div>
-          )}
-        </div>
-      )}
-    </Card>
-  )
-}
-
 /* ── report fetch shared by both entry points ─────────────────────────────── */
 
 function useLatestBoundaryReport() {
@@ -486,7 +306,7 @@ export function WeeklyPrioritiesDesigner() {
 
   return (
     <div className="space-y-6">
-      <BoundaryFocusSection report={report} />
+      <MonthlyBoundaryFocus report={report} />
 
     </div>
   )

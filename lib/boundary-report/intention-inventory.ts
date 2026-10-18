@@ -37,6 +37,7 @@ export const INTENTION_GROUPS: IntentionGroup[] = [
       "restorative sleep",
       "Power Down™ & protected evenings",
       "Unplug™ & digital rest",
+      "self-care",
     ],
   },
   {
@@ -50,6 +51,7 @@ export const INTENTION_GROUPS: IntentionGroup[] = [
       "family dinners & traditions",
       "time with my parents & extended family",
       "birthdays, anniversaries, holidays & milestones",
+      "time with my pets",
     ],
   },
   {
