@@ -53,37 +53,26 @@ function buildDeclaration(
   const bound = normalizeRule(boundary)
   const sentences: string[] = []
 
-  // The monthly boundary is a Business Operating Rule™, so every phrasing
-  // frames it as the rule that protects the identity and priorities above it.
+  // Three independent statements. The parts are deliberately not linked to
+  // each other, because a forced connection between identity, priorities and
+  // the business rule reads as nonsense for many combinations.
   switch (variant % VARIANT_COUNT) {
     case 0: {
-      if (who) sentences.push(`This week I am being ${who}.`)
-      if (prio) sentences.push(`I'm making room for ${prio}.`)
-      if (bound)
-        sentences.push(
-          prio || who
-            ? `To protect that room, my business runs on one rule this cycle: ${bound}.`
-            : `This cycle my business runs on one rule: ${bound}.`,
-        )
+      if (who) sentences.push(`This week, I am being ${who}.`)
+      if (prio) sentences.push(`My priorities this week are ${prio}.`)
+      if (bound) sentences.push(`My business boundary this cycle is: ${bound}.`)
       break
     }
     case 1: {
       if (who) sentences.push(`I am ${who} this week.`)
-      if (prio && bound)
-        sentences.push(
-          `${who ? "To show up that way and keep" : "To keep"} ${prio} protected, my business holds one operating rule this cycle: ${bound}.`,
-        )
-      else if (prio) sentences.push(`I'm protecting time for ${prio}.`)
-      else if (bound) sentences.push(`My business holds one operating rule this cycle: ${bound}.`)
+      if (prio) sentences.push(`I am making time for ${prio}.`)
+      if (bound) sentences.push(`My business operates by one rule this cycle: ${bound}.`)
       break
     }
     default: {
-      if (who) sentences.push(`This week I lead as ${who}.`)
-      if (prio && bound) {
-        sentences.push(`My life comes first — ${prio} — so my business keeps one rule this cycle: ${bound}.`)
-        sentences.push("That rule is how I protect the time that matters most.")
-      } else if (prio) sentences.push(`My life comes first: ${prio}.`)
-      else if (bound) sentences.push(`My business keeps one rule this cycle: ${bound}.`)
+      if (who) sentences.push(`Who I'm being this week: ${who}.`)
+      if (prio) sentences.push(`What I'm prioritizing: ${prio}.`)
+      if (bound) sentences.push(`The rule my business runs on this cycle: ${bound}.`)
       break
     }
   }
