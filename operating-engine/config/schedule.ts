@@ -25,8 +25,8 @@ const h = (hours: number, minutes = 0) => hours * 60 + minutes
  * (Unplug Digital Detox™) wraps past midnight (23:00 → 07:00).
  *
  * Monday resequencing — Make Time For More On Mondays™:
- * On every other weekday, Morning GIV•EN™ runs first (9:00–9:45 AM) and
- * Movement / Lunch follow. On Mondays the morning is resequenced so members
+ * On every weekday, Decide & Design™ runs first (9:00–9:45 AM), then
+ * Morning GIV•EN™ (9:45–10:30 AM), and Movement / Lunch follow. On Mondays the morning is resequenced so members
  * check in with their life first, decide & design their day, take a brief
  * transition, and only THEN align in Morning GIV•EN™ before moving:
  *   Flex Time (7:00–9:00) → Work-Life Balance Reality Check™ (9:00–9:30) →
@@ -65,32 +65,6 @@ export const SCHEDULE: BlockConfig[] = [
     messages: [
       "Today is a fresh opportunity to intentionally design your day before the world begins making demands on your time.",
       "Before the noise begins, take this quiet space to prepare your mind, your priorities, and your presence.",
-    ],
-  },
-  {
-    id: "morning-given",
-    sectionId: "block-morning-given",
-    title: "Morning GIV•EN™ Routine™",
-    shortTitle: "Morning GIV•EN™",
-    timeLabel: "9:00–9:45 AM",
-    startMinutes: h(9),
-    endMinutes: h(9, 45),
-    description:
-      "This is where you align mind, body, spirit, and priorities before work begins.",
-    emoji: "🌸",
-    tint: "252 240 238",
-    backgroundImage: "/images/block-morning-given.png",
-    cta: "Join Morning GIV•EN™",
-    href: "https://join.butter.us/make-time-for-more/morning-routine",
-    engagement: "live-room",
-    part: "morning",
-    greetingPeriod: "Morning",
-    greetingEmoji: "🌸",
-    themePeriod: "morning",
-    communityOpen: true,
-    messages: [
-      "Today begins with gratitude, purpose, and intention. Before leading your business, lead yourself.",
-      "Align your mind, body, and spirit first. Everything you build today flows from this alignment.",
     ],
   },
   // ── Monday-only block ─────────────────────────────────────────────────────
@@ -160,7 +134,7 @@ export const SCHEDULE: BlockConfig[] = [
     ],
   },
   // ── Tuesday–Thursday-only block ───────────────────────────────────────────
-  // Occupies the same 9:45–10:30 AM slot Monday gives to Reality Check™.
+  // Opens the workday at 9:00–9:45 AM, before Morning GIV•EN™.
   // This is where Monday's measurement becomes daily operating intelligence:
   // Weekly Data Review → Founder GPS™ → Daily Planning → Design Today's
   // Workday. The founder does NOT retake the Audit or ESA here — those stay
@@ -170,9 +144,9 @@ export const SCHEDULE: BlockConfig[] = [
     sectionId: "block-daily-planning-gps",
     title: "Decide & Design My Work-Life Balance Business Day™",
     shortTitle: "Decide & Design My Business Day™",
-    timeLabel: "9:45–10:30 AM",
-    startMinutes: h(9, 45),
-    endMinutes: h(10, 30),
+    timeLabel: "9:00–9:45 AM",
+    startMinutes: h(9),
+    endMinutes: h(9, 45),
     description:
       "This is where you choose how you'll live, work & lead in your workday.",
     emoji: "🧭",
@@ -188,6 +162,32 @@ export const SCHEDULE: BlockConfig[] = [
     messages: [
       "This week's data is already yours. Let it guide today's focus instead of starting from zero.",
       "Your Founder GPS™ turns this week's numbers into today's next right step.",
+    ],
+  },
+  {
+    id: "morning-given",
+    sectionId: "block-morning-given",
+    title: "Morning GIV•EN™ Routine™",
+    shortTitle: "Morning GIV•EN™",
+    timeLabel: "9:45–10:30 AM",
+    startMinutes: h(9, 45),
+    endMinutes: h(10, 30),
+    description:
+      "This is where you align mind, body, spirit, and priorities before work begins.",
+    emoji: "🌸",
+    tint: "252 240 238",
+    backgroundImage: "/images/block-morning-given.png",
+    cta: "Join Morning GIV•EN™",
+    href: "https://join.butter.us/make-time-for-more/morning-routine",
+    engagement: "live-room",
+    part: "morning",
+    greetingPeriod: "Morning",
+    greetingEmoji: "🌸",
+    themePeriod: "morning",
+    communityOpen: true,
+    messages: [
+      "Today begins with gratitude, purpose, and intention. Before leading your business, lead yourself.",
+      "Align your mind, body, and spirit first. Everything you build today flows from this alignment.",
     ],
   },
   {
@@ -284,7 +284,7 @@ export const SCHEDULE: BlockConfig[] = [
     endMinutes: h(22),
     description:
       "This is where you enjoy the life you built your business to support—family, health, relationships, recreation, creativity, faith, and growth.",
-    emoji: "🌸",
+    emoji: "���",
     tint: "252 241 239",
     backgroundImage: "/images/block-time-freedom.png",
     cta: "Enjoy Time Freedom™",

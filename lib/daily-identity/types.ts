@@ -1,7 +1,7 @@
 /**
  * Daily Identity™ — the record of what a founder decided during the
  * Tue–Thu "Decide My Identity & Design My Business Boundaries™" block
- * (9:45–10:30 AM, `daily-planning-gps`).
+ * (9:00–9:45 AM, `daily-planning-gps`).
  *
  * Unlike the Weekly WLBB Menu™ (one record per Monday-start week), this is
  * a per-calendar-day decision — a founder decides who they're being and

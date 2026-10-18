@@ -15,8 +15,8 @@ type Kind = "flex" | "work" | "life" | "care"
 
 const SCHEDULE: { time: string; name: string; kind: Kind }[] = [
   { time: "7:00 – 9:00", name: "Flex Time\u2122", kind: "flex" },
-  { time: "9:00 – 9:45", name: "Morning GIV\u2022EN\u2122", kind: "care" },
-  { time: "9:45 – 10:30", name: "Decide & Design\u2122", kind: "care" },
+  { time: "9:00 – 9:45", name: "Decide & Design\u2122", kind: "care" },
+  { time: "9:45 – 10:30", name: "Morning GIV\u2022EN\u2122", kind: "care" },
   { time: "10:30 – 11:00", name: "Movement Window\u2122", kind: "care" },
   { time: "11:00 – 1:00", name: "Extended Healthy Hybrid Lunch\u2122", kind: "care" },
   { time: "1:00 – 5:00", name: "4-Hour Focused CEO Workday\u2122", kind: "work" },

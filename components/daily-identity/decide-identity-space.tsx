@@ -2,7 +2,7 @@
 
 /**
  * Decide Who You're Being Today™
- * (Tue–Thu, 9:45–10:30 AM — `daily-planning-gps` block).
+ * (Tue–Thu, 9:00–9:45 AM — `daily-planning-gps` block).
  *
  * Flow:
  *  1. Decide who you're being today — a quick-pick + free-text identity

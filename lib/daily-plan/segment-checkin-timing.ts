@@ -10,8 +10,8 @@
  * or "one hour" assumption — the same calculation holds for a 30-minute,
  * 45-minute, 2-hour, or 4-hour segment.
  *
- *   Morning GIV•EN™  9:00–9:45   → 9:40
- *   Decide & Design™ 9:45–10:30  → 10:25
+ *   Decide & Design™ 9:00–9:45   → 9:40
+ *   Morning GIV•EN™  9:45–10:30  → 10:25
  *   Movement™        10:30–11:00 → 10:55
  *   Lunch™           11:00–1:00  → 12:55
  *   CEO Workday™     1:00–5:00   → 4:55 (segment level)
