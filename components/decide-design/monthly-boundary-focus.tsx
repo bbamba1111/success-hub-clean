@@ -84,9 +84,9 @@ export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | 
       <summary className="flex cursor-pointer list-none items-start justify-between gap-4 px-6 py-6 sm:px-8 [&::-webkit-details-marker]:hidden">
         <div>
           <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
-            03 · Monthly Members Only
+            Monthly Members Only
           </p>
-          <h3 className="mt-1 font-serif text-2xl font-semibold text-[#2E1F27] text-balance">
+          <h3 className="mt-2 font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#5B835F] text-balance">
             Monthly Business Boundary Focus™
           </h3>
           <p className="mt-1 font-sans text-sm leading-relaxed text-[#6B5860] text-pretty">
@@ -144,9 +144,14 @@ export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | 
 
         {showPicker && (
           <div className="flex flex-col gap-5 rounded-2xl border border-[#E8DFE2] bg-white px-5 py-5">
-            <p className="font-serif text-lg italic text-[#2E1F27]">
+          <div>
+            <p className="font-serif text-lg text-[#2E1F27] text-pretty">
               Which of these collided with your work most recently?
             </p>
+            <p className="mt-1 font-sans text-sm leading-relaxed text-[#6B5860] text-pretty">
+              Select the boundary or boundaries that reflect what interfered with the way you wanted to work or live.
+            </p>
+          </div>
 
             <div role="radiogroup" aria-label="Monthly business boundary" className="flex flex-col gap-5">
               {BOUNDARY_CATEGORIES.map((cat) => (
