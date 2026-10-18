@@ -118,6 +118,38 @@ export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read"
     }
   }, [])
 
+  const priorityLabels = (report?.priorityAreas ?? []).map((a) => a.label)
+  const priorityKey = priorityLabels.join("|")
+  const inputsReady =
+    identity.trim().length > 0 && priorityLabels.length > 0 && (!isMonthlyMember || boundary.trim().length > 0)
+  const expectedDeclaration = inputsReady
+    ? buildDeclaration(identity, priorityLabels, boundary, c.workdayDeclarationVariant)
+    : ""
+
+  // Keep a generated (un-edited) declaration in step with its three inputs.
+  // When the cycle boundary, identity, or priorities change and are saved, the
+  // statement regenerates and the hook's debounced autosave persists it.
+  const declarationOutOfDate =
+    mode === "build" && !isLoading && inputsReady && !!c.workdayDeclaration && expectedDeclaration !== c.workdayDeclaration
+  useEffect(() => {
+    if (!declarationOutOfDate || c.workdayDeclarationEdited) return
+    update({
+      workdayDeclaration: expectedDeclaration,
+      workdayDeclarationBuiltAt: new Date().toISOString(),
+    })
+    setSavedAt(null)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [declarationOutOfDate, expectedDeclaration, c.workdayDeclarationEdited, priorityKey])
+
+  // A hand-edited declaration is never overwritten; flag it only when the
+  // current boundary or identity no longer appears in the founder's text.
+  const editedNeedsRefresh =
+    c.workdayDeclarationEdited &&
+    !!c.workdayDeclaration &&
+    inputsReady &&
+    ((isMonthlyMember && !c.workdayDeclaration.includes(boundary.trim())) ||
+      !c.workdayDeclaration.toLowerCase().includes(identity.trim().toLowerCase()))
+
   if (mode === "read") {
     if (!c.workdayDeclaration) return null
     return (
@@ -131,8 +163,6 @@ export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read"
       </blockquote>
     )
   }
-
-  const priorityLabels = (report?.priorityAreas ?? []).map((a) => a.label)
 
   const rows: Array<{ label: string; value: string | null }> = [
     { label: "Who I'm being", value: identity.trim() || null },
@@ -216,6 +246,20 @@ export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read"
         </button>
       ) : (
         <div className="flex flex-col gap-3">
+          {editedNeedsRefresh && (
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-brand-green/30 bg-brand-green/[0.05] px-4 py-3">
+              <p className="font-sans text-sm text-foreground text-pretty">
+                Your boxes changed since you edited this declaration.
+              </p>
+              <button
+                type="button"
+                onClick={() => build()}
+                className="rounded-full bg-brand-green px-4 py-1.5 font-sans text-xs font-bold text-white hover:opacity-90"
+              >
+                Update my declaration
+              </button>
+            </div>
+          )}
           <label className="block">
             <span className="sr-only">My 4-Hour CEO Workday Declaration</span>
             <textarea
