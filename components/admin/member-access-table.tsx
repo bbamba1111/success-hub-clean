@@ -2,15 +2,13 @@
 
 import { useMemo, useState, useTransition } from "react"
 import { setMemberEntitlement, setMemberTier } from "@/app/admin/members/actions"
-import { GRANTABLE_ENTITLEMENTS, MEMBERSHIP_TIERS, type MemberAccessRow } from "@/lib/admin/member-access"
-
-const TIER_LABELS: Record<string, string> = {
-  free: "Free",
-  monday_only: "Monday Only",
-  essentials: "Essentials",
-  premium: "Premium",
-  vip: "VIP",
-}
+import {
+  GRANTABLE_ENTITLEMENTS,
+  MEMBERSHIP_TIERS,
+  isMembershipTier,
+  membershipTierLabel,
+  type MemberAccessRow,
+} from "@/lib/admin/member-access"
 
 export function MemberAccessTable({ members }: { members: MemberAccessRow[] }) {
   const [query, setQuery] = useState("")
@@ -112,9 +110,14 @@ export function MemberAccessTable({ members }: { members: MemberAccessRow[] }) {
                   className="h-9 rounded-md border border-border bg-background px-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
                 >
                   {!member.membershipTier && <option value="">Not set</option>}
+                  {member.membershipTier && !isMembershipTier(member.membershipTier) && (
+                    <option value={member.membershipTier} disabled>
+                      {membershipTierLabel(member.membershipTier)}
+                    </option>
+                  )}
                   {MEMBERSHIP_TIERS.map((tier) => (
-                    <option key={tier} value={tier}>
-                      {TIER_LABELS[tier]}
+                    <option key={tier.value} value={tier.value}>
+                      {tier.label}
                     </option>
                   ))}
                 </select>
