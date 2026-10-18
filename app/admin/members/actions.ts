@@ -28,16 +28,20 @@ export async function listMembersForAdmin(): Promise<MemberAccessRow[] | null> {
   if (!adminUser) return null
 
   const admin = createAdminClient()
-  const emails = new Map<string, { email: string; createdAt: string }>()
+  const emails = new Map<string, { email: string; createdAt: string; fullName: string | null }>()
   for (let page = 1; page <= 20; page++) {
     const { data, error } = await admin.auth.admin.listUsers({ page, perPage: 1000 })
     if (error) throw new Error(`Failed to list users: ${error.message}`)
-    for (const u of data.users) emails.set(u.id, { email: u.email ?? "", createdAt: u.created_at })
+    for (const u of data.users) {
+      const meta = u.user_metadata ?? {}
+      const fullName = typeof meta.full_name === "string" ? meta.full_name : typeof meta.name === "string" ? meta.name : null
+      emails.set(u.id, { email: u.email ?? "", createdAt: u.created_at, fullName })
+    }
     if (data.users.length < 1000) break
   }
 
   const [{ data: profiles, error: profileError }, { data: entitlements, error: entitlementError }] = await Promise.all([
-    admin.from("user_profiles").select("id, full_name, role, membership_tier"),
+    admin.from("user_profiles").select("id, role, membership_tier"),
     admin.from("member_entitlements").select("user_id, entitlement, status, source"),
   ])
   if (profileError) throw new Error(`Failed to load profiles: ${profileError.message}`)
@@ -51,13 +55,13 @@ export async function listMembersForAdmin(): Promise<MemberAccessRow[] | null> {
     entitlementsByUser.set(e.user_id, bucket)
   }
 
-  return [...emails.entries()]
+  return Array.from(emails.entries())
     .map(([id, auth]) => {
       const profile = profileById.get(id)
       return {
         id,
         email: auth.email,
-        fullName: (profile?.full_name as string | null) ?? null,
+        fullName: auth.fullName,
         role: (profile?.role as string | null) ?? null,
         membershipTier: (profile?.membership_tier as string | null) ?? null,
         createdAt: auth.createdAt,
