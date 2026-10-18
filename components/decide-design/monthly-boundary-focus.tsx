@@ -1,9 +1,9 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { Check, ChevronDown, ChevronLeft, Plus } from "lucide-react"
+import { Check, ChevronDown, ChevronLeft, Lock, Plus } from "lucide-react"
 import { useWeeklyLifePriorities } from "@/lib/weekly-life-priorities/use-weekly-life-priorities"
-import { useWeeklyBoundaryFocus } from "@/lib/weekly-boundary-focus/use-weekly-boundary-focus"
+import { useMonthlyBoundaryFocus } from "@/lib/monthly-boundary-focus/use-monthly-boundary-focus"
 import {
   BOUNDARY_CATEGORIES,
   BOUNDARY_OPTIONS,
@@ -27,11 +27,11 @@ function CollisionTags({ tags }: { tags: string[] }) {
   )
 }
 
-const AGREEMENT_PREFIX = "Who needs to agree: "
-
 export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | null }) {
   const { priorities } = useWeeklyLifePriorities()
-  const { focus, save, isLoading } = useWeeklyBoundaryFocus()
+  const { focus, save, isLoading, entitled, signedIn } = useMonthlyBoundaryFocus()
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const recommendation = useMemo(
     () => recommendBoundary(report, priorities.map((p) => p.label)),
@@ -44,42 +44,40 @@ export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | 
   const [customMode, setCustomMode] = useState(false)
   const [custom, setCustom] = useState({ name: "", rule: "", collision: "" })
 
-  const chosenOption = BOUNDARY_OPTIONS.find((o) => o.id === focus.optionId) ?? null
-  const chosen = focus.boundaryText
+  const chosenOption = BOUNDARY_OPTIONS.find((o) => o.id === focus?.optionId) ?? null
+  const chosen = focus?.boundaryText ?? ""
 
   function pick(o: BoundaryOption) {
     setPending(o)
     setAgreement("")
+    setError(null)
   }
 
-  function confirm() {
-    if (!pending) return
-    const needsAgreement = boundaryAffectsOthers(pending.collisionTags)
-    const context =
-      needsAgreement && agreement.trim()
-        ? `${AGREEMENT_PREFIX}${agreement.trim()}`
-        : recommendation?.option.id === pending.id
-          ? recommendation.context
-          : null
-    void save({ boundaryText: pending.label, optionId: pending.id, sourceContext: context, status: "chosen" })
+  async function confirm() {
+    if (!pending || saving) return
+    setSaving(true)
+    const result = await save({ kind: "option", optionId: pending.id, agreement })
+    setSaving(false)
+    if (!result.ok) return setError(result.error)
+    setError(null)
     setPending(null)
     setChoosing(false)
   }
 
-  function saveCustom() {
-    const name = custom.name.trim()
-    if (!name) return
-    const parts = [
-      custom.rule.trim() && `Rule: ${custom.rule.trim()}`,
-      custom.collision.trim() && `Collides with: ${custom.collision.trim()}`,
-    ].filter(Boolean)
-    void save({ boundaryText: name, optionId: "custom", sourceContext: parts.join(" — ") || null, status: "chosen" })
+  async function saveCustom() {
+    if (!custom.name.trim() || saving) return
+    setSaving(true)
+    const result = await save({ kind: "custom", ...custom })
+    setSaving(false)
+    if (!result.ok) return setError(result.error)
+    setError(null)
     setCustom({ name: "", rule: "", collision: "" })
     setCustomMode(false)
     setChoosing(false)
   }
 
-  const showPicker = choosing || (!chosen && !isLoading)
+  const locked = !isLoading && !entitled
+  const showPicker = !locked && (choosing || (!chosen && !isLoading))
 
   return (
     <details open className="group rounded-3xl border border-[#7FB069]/30 bg-[#F3F8ED] shadow-sm">
@@ -102,26 +100,37 @@ export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | 
       </summary>
 
       <div className="flex flex-col gap-4 px-6 pb-7 sm:px-8">
-        {isLoading && !chosen ? (
+        {isLoading ? (
           <div className="flex flex-col gap-3 rounded-2xl border border-[#7FB069]/30 bg-white px-5 py-5">
             <div className="h-4 w-1/2 animate-pulse rounded-full bg-[#7FB069]/20" />
             <div className="h-6 w-2/3 animate-pulse rounded-full bg-[#7FB069]/20" />
+          </div>
+        ) : locked ? (
+          <div className="flex flex-col gap-3 rounded-2xl border border-[#7FB069]/30 bg-white px-5 py-5">
+            <p className="inline-flex items-center gap-2 font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
+              <Lock className="h-3.5 w-3.5" aria-hidden /> Monthly Cycle Membership
+            </p>
+            <p className="font-sans text-sm leading-relaxed text-[#3A2E33] text-pretty">
+              {signedIn
+                ? "Monthly Business Boundary Focus™ opens once your Monthly Cycle Membership is active. Each month you'll choose one boundary and build a Business Operating Rule™ around it."
+                : "Sign in with your member account to choose this month's boundary."}
+            </p>
+            {chosen && (
+              <p className="font-sans text-xs text-[#6B5860]">
+                Your saved boundary for this cycle: <span className="font-semibold">{chosen}</span>
+              </p>
+            )}
           </div>
         ) : chosen && !choosing ? (
           <div className="flex flex-col gap-3 rounded-2xl border border-[#7FB069]/30 bg-white px-5 py-5">
             <p className={microLabel}>This month&apos;s Business Operating Rule™</p>
             <p className="font-serif text-2xl font-semibold text-[#2E1F27] text-pretty">{chosen}</p>
-            {chosenOption && (
-              <>
-                <p className="font-sans text-sm leading-relaxed text-[#3A2E33]">{chosenOption.helper}</p>
-                <CollisionTags tags={chosenOption.collisionTags} />
-              </>
+            {focus?.ruleDescription && (
+              <p className="font-sans text-sm leading-relaxed text-[#3A2E33]">{focus.ruleDescription}</p>
             )}
-            {focus.sourceContext && focus.optionId === "custom" && (
-              <p className="font-sans text-sm leading-relaxed text-[#3A2E33]">{focus.sourceContext}</p>
-            )}
-            {focus.sourceContext?.startsWith(AGREEMENT_PREFIX) && (
-              <p className="font-sans text-xs text-[#6B5860]">{focus.sourceContext}</p>
+            <CollisionTags tags={focus?.collisionTags ?? chosenOption?.collisionTags ?? []} />
+            {focus?.agreement && (
+              <p className="font-sans text-xs text-[#6B5860]">Who needs to agree: {focus.agreement}</p>
             )}
             <button
               type="button"
@@ -144,7 +153,7 @@ export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | 
                 <fieldset key={cat.label} className="flex flex-col gap-2">
                   <legend className={`${microLabel} mb-2`}>{cat.label}</legend>
                   {cat.options.map((o) => {
-                    const active = pending ? pending.id === o.id : focus.optionId === o.id
+                    const active = pending ? pending.id === o.id : focus?.optionId === o.id
                     const recommended = recommendation?.option.id === o.id
                     return (
                       <button
@@ -205,9 +214,10 @@ export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | 
                   <button
                     type="button"
                     onClick={confirm}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-[#5B835F] px-6 py-2.5 font-sans text-sm font-bold text-white hover:opacity-90"
+                    disabled={saving}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-[#5B835F] px-6 py-2.5 font-sans text-sm font-bold text-white hover:opacity-90 disabled:opacity-50"
                   >
-                    <Check className="h-4 w-4" aria-hidden /> Confirm this boundary
+                    <Check className="h-4 w-4" aria-hidden /> {saving ? "Saving…" : "Confirm this boundary"}
                   </button>
                   <button
                     type="button"
@@ -218,6 +228,12 @@ export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | 
                   </button>
                 </div>
               </div>
+            )}
+
+            {error && (
+              <p role="alert" className="font-sans text-sm text-[#B23A5B]">
+                {error}
+              </p>
             )}
 
             <div className="flex flex-col gap-3 border-t border-[#E8DFE2] pt-4">
@@ -248,7 +264,7 @@ export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | 
                   <button
                     type="button"
                     onClick={saveCustom}
-                    disabled={!custom.name.trim()}
+                    disabled={!custom.name.trim() || saving}
                     className="self-start rounded-full bg-[#5B835F] px-5 py-2.5 font-sans text-sm font-semibold text-white hover:opacity-90 disabled:opacity-40"
                   >
                     Use my boundary
