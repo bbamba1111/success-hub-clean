@@ -36,38 +36,54 @@ function joinList(items: string[]): string {
   return `${items.slice(0, -1).join(", ")}, and ${items[items.length - 1]}`
 }
 
+/** Operating rules are stored as full sentences ("Mornings Stay Quiet."); drop the
+ *  closing punctuation so they can sit inside a declaration sentence. */
+function normalizeRule(rule: string): string {
+  return rule.trim().replace(/[.!\s]+$/, "")
+}
+
 function buildDeclaration(
   identity: string,
   priorityLabels: string[],
   boundary: string,
   variant: number,
 ): string {
-  const who = lowerFirst(identity.trim())
+  const who = lowerFirst(identity.trim().replace(/[.!\s]+$/, ""))
   const prio = joinList(priorityLabels)
-  const bound = boundary.trim()
+  const bound = normalizeRule(boundary)
   const sentences: string[] = []
 
+  // The monthly boundary is a Business Operating Rule™, so every phrasing
+  // frames it as the rule that protects the identity and priorities above it.
   switch (variant % VARIANT_COUNT) {
     case 0: {
       if (who) sentences.push(`This week I am being ${who}.`)
-      if (prio) sentences.push(`I am focused on ${prio}.`)
-      if (bound) sentences.push(`The one boundary I am building into my business this cycle: ${bound}.`)
+      if (prio) sentences.push(`I'm making room for ${prio}.`)
+      if (bound)
+        sentences.push(
+          prio || who
+            ? `To protect that room, my business runs on one rule this cycle: ${bound}.`
+            : `This cycle my business runs on one rule: ${bound}.`,
+        )
       break
     }
     case 1: {
       if (who) sentences.push(`I am ${who} this week.`)
       if (prio && bound)
-        sentences.push(`I'm protecting time for ${prio}, and I'm holding one boundary that makes it real: ${bound}.`)
+        sentences.push(
+          `${who ? "To show up that way and keep" : "To keep"} ${prio} protected, my business holds one operating rule this cycle: ${bound}.`,
+        )
       else if (prio) sentences.push(`I'm protecting time for ${prio}.`)
-      else if (bound) sentences.push(`I'm holding one boundary that makes it real: ${bound}.`)
+      else if (bound) sentences.push(`My business holds one operating rule this cycle: ${bound}.`)
       break
     }
     default: {
       if (who) sentences.push(`This week I lead as ${who}.`)
-      if (prio && bound)
-        sentences.push(`My life comes first — ${prio} — and I protect it with one boundary: ${bound}.`)
-      else if (prio) sentences.push(`My life comes first: ${prio}.`)
-      else if (bound) sentences.push(`I protect my life with one boundary: ${bound}.`)
+      if (prio && bound) {
+        sentences.push(`My life comes first — ${prio} — so my business keeps one rule this cycle: ${bound}.`)
+        sentences.push("That rule is how I protect the time that matters most.")
+      } else if (prio) sentences.push(`My life comes first: ${prio}.`)
+      else if (bound) sentences.push(`My business keeps one rule this cycle: ${bound}.`)
       break
     }
   }
@@ -147,7 +163,7 @@ export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read"
     c.workdayDeclarationEdited &&
     !!c.workdayDeclaration &&
     inputsReady &&
-    ((isMonthlyMember && !c.workdayDeclaration.includes(boundary.trim())) ||
+    ((isMonthlyMember && !c.workdayDeclaration.includes(normalizeRule(boundary))) ||
       !c.workdayDeclaration.toLowerCase().includes(identity.trim().toLowerCase()))
 
   if (mode === "read") {
