@@ -5,7 +5,7 @@ import { CheckCircle2, RefreshCw, Sparkles } from "lucide-react"
 import { useWeeklyCommitments } from "@/lib/weekly-commitments/use-weekly-commitments"
 import { getLatestBoundaryReport } from "@/lib/boundary-report/actions"
 import type { BoundaryReportData } from "@/lib/boundary-report/types"
-import { useWeeklyBoundaryFocus } from "@/lib/weekly-boundary-focus/use-weekly-boundary-focus"
+import { useMonthlyBoundaryFocus } from "@/lib/monthly-boundary-focus/use-monthly-boundary-focus"
 import { getDateKey, loadDailyIdentity } from "@/lib/daily-identity/storage"
 
 /**
@@ -51,7 +51,7 @@ function buildDeclaration(
     case 0: {
       if (who) sentences.push(`This week I am being ${who}.`)
       if (prio) sentences.push(`I am focused on ${prio}.`)
-      if (bound) sentences.push(`The one boundary I am building into my business and living this week: ${bound}.`)
+      if (bound) sentences.push(`The one boundary I am building into my business this cycle: ${bound}.`)
       break
     }
     case 1: {
@@ -77,7 +77,10 @@ function buildDeclaration(
 
 export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read" }) {
   const { commitments: c, update, saveWeek, isLoading } = useWeeklyCommitments()
-  const { focus } = useWeeklyBoundaryFocus()
+  // Only Monthly Cycle members have a boundary strand. Monday-only and
+  // Business Week participants build their declaration from two boxes.
+  const { focus: monthlyFocus, entitled: isMonthlyMember } = useMonthlyBoundaryFocus()
+  const boundary = isMonthlyMember ? (monthlyFocus?.boundaryText ?? "") : ""
 
   // Priority Focus Areas™ are carried over from the most recent Work-Life
   // Balance Reality Check™ (Thursday/Sunday) — they replace the old freeform
@@ -106,7 +109,7 @@ export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read"
   const [identity, setIdentity] = useState("")
   useEffect(() => {
     setIdentity(loadDailyIdentity(getDateKey())?.identityStatement?.trim() ?? "")
-  }, [report, focus.boundaryText])
+  }, [report, boundary])
 
   if (mode === "read") {
     if (!c.workdayDeclaration) return null
@@ -123,7 +126,6 @@ export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read"
   }
 
   const priorityLabels = (report?.priorityAreas ?? []).map((a) => a.label)
-  const boundary = focus.boundaryText ?? ""
   const ready = Boolean(identity.trim() || priorityLabels.length > 0 || boundary.trim())
 
   function build(variant = c.workdayDeclarationVariant) {
@@ -150,7 +152,7 @@ export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read"
   const rows: Array<{ label: string; value: string | null }> = [
     { label: "Who I'm being", value: identity.trim() || null },
     { label: "Priority Focus Areas", value: priorityLabels.length > 0 ? priorityLabels.join(", ") : null },
-    { label: "Boundary focus", value: boundary.trim() || null },
+    ...(isMonthlyMember ? [{ label: "Monthly Business Boundary", value: boundary.trim() || null }] : []),
   ]
 
   return (
@@ -164,7 +166,7 @@ export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read"
         </p>
       </div>
 
-      <ul className="grid gap-2 sm:grid-cols-3">
+      <ul className={`grid gap-2 ${isMonthlyMember ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}>
         {rows.map((r) => (
           <li
             key={r.label}
@@ -190,8 +192,9 @@ export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read"
 
       {!ready ? (
         <p className="font-sans text-sm italic text-muted-foreground">
-          Decide who you&apos;re being or set your boundary focus, and your declaration can be built. Your Priority Focus
-          Areas™ carry over from your Reality Check™.
+          {isMonthlyMember
+            ? "Decide who you're being or choose this cycle's boundary, and your declaration can be built. Your Priority Focus Areas™ carry over from your Reality Check™."
+            : "Decide who you're being, and your declaration can be built. Your Priority Focus Areas™ carry over from your Reality Check™."}
         </p>
       ) : !c.workdayDeclaration ? (
         <button
