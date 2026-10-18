@@ -130,21 +130,21 @@ const formatList = (arr: string[]) => {
 
 /**
  * Compose the founder's Original Entrepreneurial Intention™ in first person,
- * so they read it back as their own statement. One choice per category, keyed
- * by group id. The Deeper Intent (or the founder's own words) leads; the other
- * category choices describe what that looks like in their life.
+ * so they read it back as their own statement. Multiple choices per category,
+ * keyed by group id. The Deeper Intent (or the founder's own words) leads; the
+ * other category choices describe what that looks like in their life.
  */
 export function composeIntentionSummary(
-  choices: Record<string, string>,
+  choices: Record<string, string[]>,
   somethingElse?: string,
 ): string {
   const ownWords = somethingElse?.trim()
-  const deeper = choices[DEEPER_INTENT_GROUP_ID]
-  const lifeChoices = INTENTION_GROUPS.filter((g) => g.id !== DEEPER_INTENT_GROUP_ID)
-    .map((g) => choices[g.id])
-    .filter((v): v is string => Boolean(v))
+  const deeper = choices[DEEPER_INTENT_GROUP_ID] ?? []
+  const lifeChoices = INTENTION_GROUPS.filter((g) => g.id !== DEEPER_INTENT_GROUP_ID).flatMap(
+    (g) => choices[g.id] ?? [],
+  )
 
-  const leadParts = [deeper, ownWords].filter((v): v is string => Boolean(v))
+  const leadParts = ownWords ? [...deeper, ownWords] : [...deeper]
   if (leadParts.length === 0 && lifeChoices.length === 0) return ""
 
   const lead = leadParts.length > 0 ? leadParts : [lifeChoices.shift() as string]
