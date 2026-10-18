@@ -38,9 +38,13 @@ export async function getEntitlements(): Promise<Entitlements> {
 
     const { data: profile } = await supabase
       .from("user_profiles")
-      .select("membership_tier")
+      .select("membership_tier, role")
       .eq("id", user.id)
       .maybeSingle()
+
+    if (profile?.role === "platform_admin") {
+      return { active: true, tier: "vip", status: "active", provider: null }
+    }
 
     const tier = normalizeTier(profile?.membership_tier)
     const active = tier !== "free"

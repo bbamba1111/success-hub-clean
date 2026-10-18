@@ -143,12 +143,15 @@ export async function updateSession(request: NextRequest) {
   // For all other routes (protected hub routes), check for paid membership
   const { data: profile } = await supabase
     .from("user_profiles")
-    .select("membership_tier")
+    .select("membership_tier, role")
     .eq("id", user.id)
     .single()
 
   const membershipTier = profile?.membership_tier?.toLowerCase() || "free"
+  // Platform admins can open every paid area so they can support and review any member's experience.
+  const isPlatformAdmin = profile?.role === "platform_admin"
   const isPaid =
+    isPlatformAdmin ||
     PAID_TIERS.includes(membershipTier) ||
     (REALITY_CHECK_TIERS.includes(membershipTier) && isRealityCheckRoute(pathname))
 
