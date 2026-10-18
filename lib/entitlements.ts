@@ -14,6 +14,9 @@ const KNOWN_TIERS: MembershipTier[] = ["free", "essentials", "premium", "vip"]
 function normalizeTier(raw: unknown): MembershipTier {
   if (typeof raw === "string") {
     const lower = raw.toLowerCase()
+    // 'premium_member' permissions are not defined yet; it must not inherit the
+    // legacy 'premium' tier through the substring match below.
+    if (lower === "premium_member") return "free"
     const match = KNOWN_TIERS.find((t) => lower.includes(t))
     if (match) return match
     // A non-empty, non-free product name means they bought *something*.

@@ -48,9 +48,23 @@ const AUTH_ONLY_ROUTES = [
   "/experiences",
 ]
 
-// Valid paid membership tiers (from database constraint)
-// 'free' is explicitly NOT in this list - only paying members get access
-const PAID_TIERS = ["monday_only", "7_day", "21_day", "monthly", "annual", "premium"]
+// Tiers with full Success Hub access. 'free' is explicitly NOT in this list.
+// Legacy tiers (7_day, 21_day, monthly, annual, premium) keep their existing
+// access until their mappings are deliberately reviewed.
+// 'monthly_member' and 'premium_member' are intentionally absent: their hub
+// permissions have not been defined yet, and the Monthly Business Boundary
+// Builder™ is gated separately by the 'monthly_boundary_focus' entitlement.
+const PAID_TIERS = ["monday_only", "business_week", "7_day", "21_day", "monthly", "annual", "premium"]
+
+// 'reality_check' buys the standalone Weekly Work-Life Balance Reality Check™:
+// the diagnostic, saved results, the report, and its follow-up blueprint.
+// It must not unlock the Monday–Thursday experience.
+const REALITY_CHECK_TIERS = ["reality_check"]
+const REALITY_CHECK_ROUTES = ["/reality-check", "/boundary-report", "/my-report", "/harmony-blueprint"]
+
+function isRealityCheckRoute(pathname: string): boolean {
+  return REALITY_CHECK_ROUTES.some(route => pathname === route || pathname.startsWith(route + "/"))
+}
 
 function isPublicRoute(pathname: string): boolean {
   return PUBLIC_ROUTES.some(route => 
@@ -134,7 +148,9 @@ export async function updateSession(request: NextRequest) {
     .single()
 
   const membershipTier = profile?.membership_tier?.toLowerCase() || "free"
-  const isPaid = PAID_TIERS.includes(membershipTier)
+  const isPaid =
+    PAID_TIERS.includes(membershipTier) ||
+    (REALITY_CHECK_TIERS.includes(membershipTier) && isRealityCheckRoute(pathname))
 
   if (!isPaid) {
     // Redirect non-paid users to the one canonical upgrade page.
