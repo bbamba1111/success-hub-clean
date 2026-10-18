@@ -26,21 +26,21 @@ export const categoryLabels = {
 }
 
 const questionBodies = [
-  { id: 1,  category: "spiritual",           body: "how often have you connected to your spiritual life through prayer, study, fellowship, praise, music, meditation, nature, etc...?" },
-  { id: 2,  category: "mental",              body: "how often have you effectively managed stress, made clear decisions, and maintained good mental health?" },
-  { id: 3,  category: "physicalMovement",    body: "how often have you engaged in intentional movement or exercise?" },
-  { id: 4,  category: "physicalNourishment", body: "how often have you nourished your body with adequate hydration and healthy meals?" },
-  { id: 5,  category: "physicalSleep",       body: "how often have you gone to bed on time and gotten 8 hours of restorative sleep?" },
-  { id: 6,  category: "emotional",           body: "how often have you felt happy, balanced, peaceful, and joyful emotionally?" },
-  { id: 7,  category: "personal",            body: "how often have you made time for self-care and personal growth activities?" },
-  { id: 8,  category: "intellectual",        body: "how often have you engaged in learning something new or a skill-building activity?" },
-  { id: 9,  category: "professional",        body: "how often have you shared your expertise through partnerships, collaboration, public speaking or publishing and/or expanded your professional visibility through media, podcast interviews or publicity?" },
-  { id: 10, category: "financial",          body: "how often have you focused intentionally on income/revenue generation, financial planning, retirement planning, business valuation and/or exit planning?" },
-  { id: 11, category: "environmental",      body: "how often have you made an effort to enhance your well-being by creating beauty, balance, or order in your home or office environment and/or spending time in nature?" },
-  { id: 12, category: "relational",         body: "how often have you been attentive and present with your loved ones and in your closest relationships?" },
-  { id: 13, category: "social",             body: "how often have you engaged with your friends or supportive, like-minded individuals?" },
-  { id: 14, category: "recreational",       body: "how often have you created space for joy, creativity, vacation, travel or play?" },
-  { id: 15, category: "charitable",         body: "how often have you contributed to supporting or inspiring others through donating, charity, volunteering or other philanthropic endeavors?" },
+  { id: 1,  category: "spiritual",           body: "how often have you had time to nurture your spiritual well-being — through prayer, study, fellowship, praise, music, meditation, or nature — within your busy schedule?" },
+  { id: 2,  category: "mental",              body: "how often have you had time to care for your mental well-being — managing stress, thinking clearly, and making decisions without rushing — within your busy schedule?" },
+  { id: 3,  category: "physicalMovement",    body: "how often have you had time to prioritize intentional movement or exercise within your busy schedule?" },
+  { id: 4,  category: "physicalNourishment", body: "how often have you had time to nourish your body with adequate hydration and healthy meals within your busy schedule?" },
+  { id: 5,  category: "physicalSleep",       body: "how often have you had time to go to bed on time and get 8 hours of restorative sleep within your busy schedule?" },
+  { id: 6,  category: "emotional",           body: "how often have you had time to tend to your emotional well-being — making room for peace, balance, and joy — within your busy schedule?" },
+  { id: 7,  category: "personal",            body: "how often have you had time for self-care and personal growth within your busy schedule?" },
+  { id: 8,  category: "intellectual",        body: "how often have you had time to learn something new or build a new skill within your busy schedule?" },
+  { id: 9,  category: "professional",        body: "how often have you had time to share your expertise and expand your professional visibility — through partnerships, collaboration, speaking, publishing, media, or podcast interviews — within your busy schedule?" },
+  { id: 10, category: "financial",          body: "how often have you had time to focus intentionally on your financial health — revenue generation, financial and retirement planning, business valuation, or exit planning — within your busy schedule?" },
+  { id: 11, category: "environmental",      body: "how often have you had time to create beauty, balance, or order in your home or office environment, or to spend time in nature, within your busy schedule?" },
+  { id: 12, category: "relational",         body: "how often have you had time to nurture your important relationships and be attentive and present with your loved ones within your busy schedule?" },
+  { id: 13, category: "social",             body: "how often have you had time to connect with friends or supportive, like-minded people within your busy schedule?" },
+  { id: 14, category: "recreational",       body: "how often have you had time for joy, creativity, vacation, travel, or play within your busy schedule?" },
+  { id: 15, category: "charitable",         body: "how often have you had time to support or inspire others through giving, charity, volunteering, or other philanthropic endeavors within your busy schedule?" },
 ]
 
 /**
