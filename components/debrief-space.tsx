@@ -28,6 +28,7 @@ import { LunchIntentionForm } from "@/components/planners/lunch-intention-form"
 import { PowerDownIntentionForm } from "@/components/planners/power-down-intention-form"
 import { CherryBlossomWorkstation } from "@/components/cherry-blossom-workstation"
 import { PriorityFocusAreas } from "@/components/decide-design/priority-focus-areas"
+import { WeeklyRealityCheckSection } from "@/components/weekly-reality-check-section"
 import { WeeklyPrioritiesDesigner, WeeklyLifePrioritiesCard } from "@/components/decide-design/weekly-priorities-designer"
 import { WorkdayDeclaration } from "@/components/decide-design/workday-declaration"
 import { TimeFreedomDeclaration } from "@/components/decide-design/time-freedom-declaration"
@@ -56,6 +57,11 @@ export function DebriefSpace() {
           {isMonday ? "Monday Ritual™" : "Daily Ritual™"} · {debriefSchedule?.timeLabel ?? "10:30–11:00 AM"}
         </p>
       </div>
+
+      {/* ── Monday: Redesign Your Entry Into The Workweek — the expandable
+           Weekly 7-Day Work-Life Balance Audit™ retake, directly above the
+           priorities it feeds. ── */}
+      {isMonday && <WeeklyRealityCheckSection />}
 
       {/* ── My 3 Priority Focus Areas™ — carried over from the Reality Check™ ── */}
       <PriorityFocusAreas />

@@ -15,7 +15,6 @@ import { AnimatePresence } from "framer-motion"
 import useSWR from "swr"
 import { DailyTransition } from "@/components/cherry-blossom/daily-transition"
 import { BusinessDayBlock } from "@/components/business-day-block"
-import { WeeklyRealityCheckSection } from "@/components/weekly-reality-check-section"
 import type { SegmentInnerTone } from "@/lib/segment-theme"
 
 /**
@@ -157,7 +156,6 @@ export function BusinessDaySchedule() {
         <div className="mx-auto max-w-7xl">
 
           {timeline.map(({ block, state }) => {
-            const isMonday = timeline.some(({ block: b }) => b.mondayOnly)
             const timing =
               state === "current" && experience
                 ? segmentTiming(block, experience.time.minutesSinceMidnight)
@@ -166,10 +164,6 @@ export function BusinessDaySchedule() {
             const sageInnerTone = SAGE_SEGMENT_INNER_TONE[block.id]
             return (
               <div key={block.id}>
-              {/* Monday: Work-Life Balance Reality Check™ panoramic card sits
-                  immediately above Decide & Design™. `buildTimeline` only adds
-                  Monday-only blocks on Monday, so their presence marks the day. */}
-              {block.id === "daily-planning-gps" && isMonday && <WeeklyRealityCheckSection />}
               <BusinessDayBlock
                 sectionId={block.sectionId}
                 backgroundImage={block.backgroundImage}
