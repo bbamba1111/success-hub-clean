@@ -15,6 +15,7 @@ import { AnimatePresence } from "framer-motion"
 import useSWR from "swr"
 import { DailyTransition } from "@/components/cherry-blossom/daily-transition"
 import { BusinessDayBlock } from "@/components/business-day-block"
+import { RealityCheckPanoramicCard } from "@/components/reality-check-panoramic-card"
 import type { SegmentInnerTone } from "@/lib/segment-theme"
 
 /**
@@ -123,6 +124,9 @@ export function BusinessDaySchedule() {
   const timeline =
     experience?.businessDay.timeline ?? SCHEDULE.map((block) => ({ block, state: "upcoming" as const }))
 
+  // Monday-only blocks are only added to the timeline on Mondays.
+  const isMonday = timeline.some(({ block }) => block.mondayOnly)
+
   // Build a lookup from block id → next block's shortTitle for transition labels
   const nextBlockById = useMemo(() => {
     const map: Record<string, { id: string; shortTitle: string }> = {}
@@ -211,6 +215,7 @@ export function BusinessDaySchedule() {
                     : undefined
                 }
               />
+              {block.id === "early-access" && isMonday && <RealityCheckPanoramicCard />}
               </div>
             )
           })}
