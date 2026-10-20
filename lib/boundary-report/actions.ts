@@ -22,12 +22,16 @@ interface SaveResult {
 
 type ServerClient = Awaited<ReturnType<typeof createClient>>
 
+// Weekly 7-day audits share this table; everything in this file is the full 30-day assessment.
+const FULL_ASSESSMENT = "full_30_day"
+
 async function findDraftId(supabase: ServerClient, userId: string): Promise<string | null> {
   const { data } = await supabase
     .from("boundary_reports")
     .select("id")
     .eq("user_id", userId)
     .eq("status", "draft")
+    .eq("assessment_type", FULL_ASSESSMENT)
     .maybeSingle()
   return data?.id ?? null
 }
@@ -94,12 +98,19 @@ export async function loadBoundaryDraft(): Promise<{
   if (!user) return { draft: null, previousCurrentBusiness: null }
 
   const [{ data: draftRow }, { data: lastCompleted }] = await Promise.all([
-    supabase.from("boundary_reports").select("draft_state").eq("user_id", user.id).eq("status", "draft").maybeSingle(),
+    supabase
+      .from("boundary_reports")
+      .select("draft_state")
+      .eq("user_id", user.id)
+      .eq("status", "draft")
+      .eq("assessment_type", FULL_ASSESSMENT)
+      .maybeSingle(),
     supabase
       .from("boundary_reports")
       .select("current_business")
       .eq("user_id", user.id)
       .eq("status", "completed")
+      .eq("assessment_type", FULL_ASSESSMENT)
       .not("current_business", "is", null)
       .order("created_at", { ascending: false })
       .limit(1)
@@ -198,6 +209,7 @@ export async function getLatestBoundaryReport(): Promise<{ id: string; data: Bou
     .select("id, report")
     .eq("user_id", user.id)
     .eq("status", "completed")
+    .eq("assessment_type", FULL_ASSESSMENT)
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle()
