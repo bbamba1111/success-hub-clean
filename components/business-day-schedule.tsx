@@ -157,6 +157,7 @@ export function BusinessDaySchedule() {
         <div className="mx-auto max-w-7xl">
 
           {timeline.map(({ block, state }) => {
+            const isMonday = timeline.some(({ block: b }) => b.mondayOnly)
             const timing =
               state === "current" && experience
                 ? segmentTiming(block, experience.time.minutesSinceMidnight)
@@ -165,6 +166,10 @@ export function BusinessDaySchedule() {
             const sageInnerTone = SAGE_SEGMENT_INNER_TONE[block.id]
             return (
               <div key={block.id}>
+              {/* Monday: Work-Life Balance Reality Check™ panoramic card sits
+                  immediately above Decide & Design™. `buildTimeline` only adds
+                  Monday-only blocks on Monday, so their presence marks the day. */}
+              {block.id === "daily-planning-gps" && isMonday && <WeeklyRealityCheckSection />}
               <BusinessDayBlock
                 sectionId={block.sectionId}
                 backgroundImage={block.backgroundImage}
@@ -212,11 +217,6 @@ export function BusinessDaySchedule() {
                     : undefined
                 }
               />
-              {/* Weekly Work-Life Balance Reality Check™ — a guided experience
-                  that takes place *inside* the Time Freedom™ window. Rendered
-                  directly beneath the Time Freedom™ card; it is NOT a Business
-                  Day boundary and NOT part of the schedule. */}
-              {block.id === "time-freedom" && <WeeklyRealityCheckSection />}
               </div>
             )
           })}
