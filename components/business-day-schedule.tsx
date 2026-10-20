@@ -124,8 +124,9 @@ export function BusinessDaySchedule() {
   const timeline =
     experience?.businessDay.timeline ?? SCHEDULE.map((block) => ({ block, state: "upcoming" as const }))
 
-  // Monday-only blocks are only added to the timeline on Mondays.
-  const isMonday = timeline.some(({ block }) => block.mondayOnly)
+  // Every `mondayOnly` block in SCHEDULE is also `hidden`, so the timeline can't
+  // be used to detect Monday — read the engine's platform-timezone day instead.
+  const isMonday = experience?.time.dayOfWeek === 1
 
   // Build a lookup from block id → next block's shortTitle for transition labels
   const nextBlockById = useMemo(() => {
