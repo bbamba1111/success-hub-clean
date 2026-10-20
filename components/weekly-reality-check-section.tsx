@@ -5,26 +5,15 @@
  *
  * Sits immediately above Decide & Design™ on Monday. The assessment expands
  * inline (no modal, no navigation). The panel stays mounted while collapsed so
- * in-progress answers survive closing and reopening the card; answers are also
- * autosaved server-side as the member progresses.
- *
- * New members get the full onboarding assessment. Returning members (a
- * completed report exists) get the brief weekly check-in instead.
+ * in-progress answers survive closing and reopening the card.
  */
 
 import { useState } from "react"
-import useSWR from "swr"
 import { ArrowRight, ChevronDown } from "lucide-react"
 import { BoundaryReportJourney } from "@/components/boundary-report/boundary-report-journey"
-import { WeeklyRealityCheckIn } from "@/components/boundary-report/weekly-check-in"
-import { getLatestBoundaryReport } from "@/lib/boundary-report/actions"
 
 export function WeeklyRealityCheckSection() {
   const [open, setOpen] = useState(false)
-  const [forceFull, setForceFull] = useState(false)
-  const { data: latest, isLoading, mutate } = useSWR("boundary-report:latest", () => getLatestBoundaryReport())
-
-  const isReturning = Boolean(latest) && !forceFull
 
   return (
     <section
@@ -79,16 +68,7 @@ export function WeeklyRealityCheckSection() {
           hidden={!open}
           className="border-t border-[#C13B6B]/12 bg-white/40"
         >
-          {isLoading ? (
-            <p className="px-6 py-10 text-center font-sans text-sm text-[#5C4F55]">Loading your Reality Check…</p>
-          ) : isReturning && latest ? (
-            <WeeklyRealityCheckIn
-              report={latest.data}
-              onRetakeFull={() => setForceFull(true)}
-            />
-          ) : (
-            <BoundaryReportJourney onCompleted={() => mutate()} />
-          )}
+          <BoundaryReportJourney />
         </div>
       </div>
     </section>
