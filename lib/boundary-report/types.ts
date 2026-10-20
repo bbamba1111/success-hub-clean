@@ -1,5 +1,7 @@
 /** Work-Life Balance Boundary Report™ — the persisted output of the $97 diagnostic. */
 
+import type { CurrentBusiness } from "@/lib/boundary-report/current-business"
+
 export type BusinessStage = "start" | "grow" | "scale"
 
 export type SelectedPath = "JOINED_WEEK" | "GO_IT_ALONE"
@@ -70,4 +72,19 @@ export interface BoundaryReportData {
   stage: BusinessStage
   stageConsiderations: string[]
   selectedPath?: SelectedPath
+  /** Your Current Business™ responses as they stood when this report was completed. */
+  currentBusiness?: CurrentBusiness
+}
+
+/** In-progress assessment answers, autosaved to the member's single draft row. */
+export interface BoundaryReportDraft {
+  stage: string
+  currentBusinessIndex: number
+  intentionChoices: Record<string, string[]>
+  somethingElse: string
+  currentBusiness: CurrentBusiness
+  requirements: string[]
+  priority: string[]
+  alignment: Record<string, AlignmentChoice>
+  alignmentIndex: number
 }

@@ -19,8 +19,22 @@ import {
   ALIGNMENT_QUESTIONS,
   TOUR_MODULES,
 } from "@/lib/boundary-report/alignment"
-import { saveBoundaryReport, setBoundaryReportPath } from "@/lib/boundary-report/actions"
+import useSWR from "swr"
+import {
+  loadBoundaryDraft,
+  saveBoundaryDraft,
+  saveBoundaryReport,
+  setBoundaryReportPath,
+} from "@/lib/boundary-report/actions"
+import { CurrentBusinessStep } from "@/components/boundary-report/current-business-step"
+import {
+  CURRENT_BUSINESS_QUESTIONS,
+  EMPTY_CURRENT_BUSINESS,
+  isCurrentBusinessQuestionComplete,
+  type CurrentBusiness,
+} from "@/lib/boundary-report/current-business"
 import type {
+  BoundaryReportDraft,
   AlignmentChoice,
   AlignmentResponse,
   BaselineArea,
@@ -35,28 +49,29 @@ const WEEK_CHECKOUT = "/pricing"
 type Stage =
   | "intro"
   | "intention"
+  | "currentBusiness"
+  | "requirements"
   | "audit"
   | "baseline"
   | "priority"
-  | "requirements"
-  | "stage"
   | "alignment"
-  | "tour"
   | "generating"
   | "report"
 
 const STAGE_ORDER: Stage[] = [
   "intro",
   "intention",
+  "currentBusiness",
+  "requirements",
   "audit",
   "baseline",
   "priority",
-  "requirements",
-  "stage",
   "alignment",
-  "tour",
   "report",
 ]
+
+/** Stages a reloaded draft may resume at (never mid-generation or on the finished report). */
+const RESUMABLE = new Set<string>(STAGE_ORDER.filter((s) => s !== "report"))
 
 const SCORE_RED_PINK = "#D9505E"
 const SCORE_PINK = "#E58A9A"
@@ -209,9 +224,13 @@ export function BoundaryReportJourney() {
   // Priority focus areas (keys)
   const [priority, setPriority] = useState<string[]>([])
 
-  // Business requirements (ids) + stage
+  // Your Current Business™ (stage is Question 1)
+  const [currentBusiness, setCurrentBusiness] = useState<CurrentBusiness>(EMPTY_CURRENT_BUSINESS)
+  const [currentBusinessIndex, setCurrentBusinessIndex] = useState(0)
+  const stageChoice: BusinessStage | null = currentBusiness.stage
+
+  // Business & Personal Reality™ (requirement ids)
   const [requirements, setRequirements] = useState<string[]>([])
-  const [stageChoice, setStageChoice] = useState<BusinessStage | null>(null)
 
   // Work-Life Balance Alignment™ willingness answers, keyed by question id
   const [alignment, setAlignment] = useState<Record<string, AlignmentChoice>>({})
@@ -236,7 +255,66 @@ export function BoundaryReportJourney() {
 
   useEffect(() => {
     topRef.current?.scrollIntoView({ behavior: "instant", block: "start" })
-  }, [stage])
+  }, [stage, currentBusinessIndex])
+
+  // Restore saved progress once, then autosave every change.
+  const { data: saved } = useSWR("boundary-report-draft", loadBoundaryDraft, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  })
+  const [hydrated, setHydrated] = useState(false)
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle")
+
+  useEffect(() => {
+    if (!saved || hydrated) return
+    const d = saved.draft
+    if (d) {
+      if (RESUMABLE.has(d.stage)) setStage(d.stage as Stage)
+      setCurrentBusinessIndex(Math.min(d.currentBusinessIndex ?? 0, CURRENT_BUSINESS_QUESTIONS.length - 1))
+      setIntentionChoices(d.intentionChoices ?? {})
+      setSomethingElse(d.somethingElse ?? "")
+      setCurrentBusiness(d.currentBusiness ?? EMPTY_CURRENT_BUSINESS)
+      setRequirements(d.requirements ?? [])
+      setPriority(d.priority ?? [])
+      setAlignment(d.alignment ?? {})
+      setAlignmentIndex(d.alignmentIndex ?? 0)
+    } else if (saved.previousCurrentBusiness) {
+      setCurrentBusiness(saved.previousCurrentBusiness)
+    }
+    setHydrated(true)
+  }, [saved, hydrated])
+
+  useEffect(() => {
+    if (!hydrated || stage === "intro" || stage === "generating" || stage === "report") return
+    const draft: BoundaryReportDraft = {
+      stage,
+      currentBusinessIndex,
+      intentionChoices,
+      somethingElse,
+      currentBusiness,
+      requirements,
+      priority,
+      alignment,
+      alignmentIndex,
+    }
+    const timer = setTimeout(async () => {
+      setSaveStatus("saving")
+      const result = await saveBoundaryDraft(draft)
+      setSaveStatus(result.ok ? "saved" : "error")
+    }, 700)
+    return () => clearTimeout(timer)
+  }, [
+    hydrated,
+    stage,
+    currentBusinessIndex,
+    intentionChoices,
+    somethingElse,
+    currentBusiness,
+    requirements,
+    priority,
+    alignment,
+    alignmentIndex,
+  ])
 
   const intentionSummary = useMemo(
     () => composeIntentionSummary(intentionChoices, somethingElse),
@@ -304,6 +382,7 @@ export function BoundaryReportJourney() {
       stage,
       stageConsiderations: STAGE_CONSIDERATIONS[stage].considerations,
       selectedPath: path,
+      currentBusiness: { ...currentBusiness, updatedAt: new Date().toISOString() },
     }
   }
 
@@ -341,6 +420,11 @@ export function BoundaryReportJourney() {
     <div className="min-h-screen bg-brand-cream">
       <div ref={topRef} />
       <ProgressBar stage={stage} />
+      <p aria-live="polite" className="mx-auto h-5 w-full max-w-2xl px-4 pt-2 text-right font-sans text-xs text-brand-ink-soft">
+        {saveStatus === "saving" && "Saving your progress…"}
+        {saveStatus === "saved" && "Progress saved"}
+        {saveStatus === "error" && "Sign in to keep your progress"}
+      </p>
 
       {stage === "intro" && (
         <StageShell
@@ -439,8 +523,40 @@ export function BoundaryReportJourney() {
           </div>
           <NavRow
             onBack={goBack}
-            onNext={() => setStage("audit")}
+            onNext={() => setStage("currentBusiness")}
             nextDisabled={selections.length === 0 && !somethingElse.trim()}
+          />
+        </StageShell>
+      )}
+
+      {stage === "currentBusiness" && (
+        <StageShell
+          eyebrow="Your Current Business™"
+          title="What your business actually looks like today"
+          intro={
+            saved?.previousCurrentBusiness && !saved.draft
+              ? "We've filled in what you told us last time. Update anything that has changed — your earlier answers stay saved with your previous report."
+              : "Nine quick questions about how your business runs right now. You answer these once and update them when your circumstances change."
+          }
+        >
+          <CurrentBusinessStep
+            index={currentBusinessIndex}
+            value={currentBusiness}
+            onChange={(next) => setCurrentBusiness((prev) => ({ ...prev, ...next }))}
+          />
+          <NavRow
+            onBack={() => {
+              if (currentBusinessIndex === 0) goBack()
+              else setCurrentBusinessIndex((i) => i - 1)
+            }}
+            onNext={() => {
+              if (currentBusinessIndex < CURRENT_BUSINESS_QUESTIONS.length - 1) setCurrentBusinessIndex((i) => i + 1)
+              else setStage("requirements")
+            }}
+            nextLabel={
+              currentBusinessIndex === CURRENT_BUSINESS_QUESTIONS.length - 1 ? "Continue to Business & Personal Reality" : "Continue"
+            }
+            nextDisabled={!isCurrentBusinessQuestionComplete(currentBusinessIndex, currentBusiness)}
           />
         </StageShell>
       )}
@@ -598,13 +714,18 @@ export function BoundaryReportJourney() {
               )
             })}
           </div>
-          <NavRow onBack={goBack} onNext={() => setStage("requirements")} nextDisabled={priority.length === 0} />
+          <NavRow
+            onBack={goBack}
+            onNext={() => setStage("alignment")}
+            nextLabel="Continue to Alignment"
+            nextDisabled={priority.length === 0}
+          />
         </StageShell>
       )}
 
       {stage === "requirements" && (
         <StageShell
-          eyebrow="Business & Workplace Reality™"
+          eyebrow="Business & Personal Reality™"
           title="What in your operating environment collides with the life you just described?"
           intro="Select whatever your diagnostic suggests may need attention. This isn't another scored assessment or a verdict — it's what the Week™ would help you determine and design."
         >
@@ -631,34 +752,6 @@ export function BoundaryReportJourney() {
               )
             })}
           </div>
-          <NavRow onBack={goBack} onNext={() => setStage("stage")} />
-        </StageShell>
-      )}
-
-      {stage === "stage" && (
-        <StageShell
-          eyebrow="Start → Grow → Scale"
-          title="Where is your business right now?"
-          intro="Your stage shapes which considerations are relevant. We'll only show the ones that fit — no overwhelm."
-        >
-          <div className="grid gap-3 sm:grid-cols-3">
-            {(["start", "grow", "scale"] as BusinessStage[]).map((s) => {
-              const active = stageChoice === s
-              return (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={() => setStageChoice(s)}
-                  className={`rounded-2xl border px-5 py-5 text-center transition-colors ${
-                    active ? "border-brand-coral bg-brand-coral/5" : "border-brand-blush bg-white hover:border-brand-coral/50"
-                  }`}
-                >
-                  <span className="block font-playfair text-lg font-bold text-brand-ink">{STAGE_LABELS[s]}</span>
-                </button>
-              )
-            })}
-          </div>
-
           {stageChoice && (
             <div className="mt-6 rounded-2xl border border-brand-green/30 bg-brand-green/5 px-5 py-5">
               <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-brand-green mb-3">
@@ -674,7 +767,7 @@ export function BoundaryReportJourney() {
               </ul>
             </div>
           )}
-          <NavRow onBack={goBack} onNext={() => setStage("alignment")} nextLabel="Continue to Alignment" nextDisabled={!stageChoice} />
+          <NavRow onBack={goBack} onNext={() => setStage("audit")} nextLabel="Continue to the 30-Day Audit" />
         </StageShell>
       )}
 
@@ -690,20 +783,8 @@ export function BoundaryReportJourney() {
           onNext={() => {
             const total = ALIGNMENT_QUESTIONS.length + 1
             if (alignmentIndex < total - 1) setAlignmentIndex((i) => i + 1)
-            else setStage("tour")
+            else generateReport()
           }}
-        />
-      )}
-
-      {stage === "tour" && (
-        <TourStep
-          revealed={tourRevealed}
-          onReveal={() => setTourRevealed((n) => Math.min(n + 1, TOUR_MODULES.length))}
-          onBack={() => {
-            setStage("alignment")
-            setAlignmentIndex(ALIGNMENT_QUESTIONS.length)
-          }}
-          onDone={generateReport}
         />
       )}
 
