@@ -46,7 +46,7 @@ export function DebriefSpace() {
   const debriefSchedule = SCHEDULE_BY_ID[isMonday ? "monday-debrief" : "daily-planning-gps"]
 
   return (
-    <section className="mx-auto w-full max-w-5xl space-y-6">
+    <section className="mx-auto w-full max-w-5xl space-y-9">
       {/* ── Header ─── heading sits ABOVE the identity box ───────────────────── */}
       <div className="text-center space-y-3 pb-2">
         <p className="font-sans text-xs font-semibold uppercase tracking-[0.25em] text-[#C0545A]">Decide &amp; Design</p>
@@ -78,9 +78,6 @@ export function DebriefSpace() {
       <div className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm px-6 py-6 sm:px-8 sm:py-7">
         <WorkdayDeclaration mode="build" />
       </div>
-
-      {/* Half-inch of breathing room before designing the day. */}
-      <div aria-hidden className="h-12" />
 
       {/* ── Design My Work-Life Balance Business Day™ ────────────────────────── */}
       <div className="rounded-3xl border border-[#7FB069]/30 bg-[#F3F8ED] shadow-sm px-6 py-6 sm:px-8 sm:py-7 space-y-6">
