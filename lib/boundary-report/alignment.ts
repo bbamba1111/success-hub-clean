@@ -46,7 +46,7 @@ export const ALIGNMENT_QUESTIONS: AlignmentQuestion[] = [
     id: "contain-work",
     title: "Contain Your Work",
     question:
-      "Would you be willing to bring your actual CEO work into a 4-Hour Focused Workday™ and end your workday at 5:00 PM rather than allowing focused work to expand across the day and into your evening?",
+      "Would you be willing to bring your actual CEO work into a 4-Hour Focused Workday™ that starts at 1:00 PM and ends at 5:00 PM rather than allowing your work to expand across the entire day and into your evening?",
   },
   {
     id: "let-life-have-space",
