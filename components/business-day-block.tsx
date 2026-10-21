@@ -211,6 +211,24 @@ export function BusinessDayBlock({
     }
   }, [activeSpace?.collapseBlockId, blockId])
 
+  // Arriving from /focus-areas via /#priority-focus-areas: that card lives
+  // inside this collapsed accordion, so the browser's native hash jump finds
+  // nothing. Open the Decide & Design™ block, then scroll once it has rendered
+  // and again after the ~800ms open animation settles.
+  useEffect(() => {
+    if (blockId !== "monday-debrief" && blockId !== "daily-planning-gps") return
+    if (window.location.hash !== "#priority-focus-areas") return
+    setOpen(true)
+    const scroll = () =>
+      document.getElementById("priority-focus-areas")?.scrollIntoView({ behavior: "smooth", block: "start" })
+    const first = setTimeout(scroll, 150)
+    const settle = setTimeout(scroll, 950)
+    return () => {
+      clearTimeout(first)
+      clearTimeout(settle)
+    }
+  }, [blockId])
+
   const isHighlighted = Boolean(blockId && activeSpace?.highlightBlockId === blockId)
 
   return (
