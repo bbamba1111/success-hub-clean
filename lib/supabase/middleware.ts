@@ -51,10 +51,20 @@ const AUTH_ONLY_ROUTES = [
 // Tiers with full Success Hub access. 'free' is explicitly NOT in this list.
 // Legacy tiers (7_day, 21_day, monthly, annual, premium) keep their existing
 // access until their mappings are deliberately reviewed.
-// 'monthly_member' and 'premium_member' are intentionally absent: their hub
-// permissions have not been defined yet, and the Monthly Business Boundary
-// Builder™ is gated separately by the 'monthly_boundary_focus' entitlement.
-const PAID_TIERS = ["monday_only", "business_week", "7_day", "21_day", "monthly", "annual", "premium"]
+// Level 1 'premium_member' and Level 2 'monthly_member' both get hub access,
+// including the Monday Weekly 7-Day Work-Life Balance Audit™. Only Level 2
+// unlocks Monthly Business Boundary Focus™, enforced by has_active_entitlement().
+const PAID_TIERS = [
+  "monday_only",
+  "business_week",
+  "premium_member",
+  "monthly_member",
+  "7_day",
+  "21_day",
+  "monthly",
+  "annual",
+  "premium",
+]
 
 // 'reality_check' buys the standalone Weekly Work-Life Balance Reality Check™:
 // the diagnostic, saved results, the report, and its follow-up blueprint.
