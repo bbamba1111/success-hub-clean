@@ -428,17 +428,31 @@ export function BoundaryReportJourney() {
 
       {stage === "intro" && (
         <StageShell
-          eyebrow="Weekly Work-Life Balance Reality Check™"
-          title="Let's find what your business needs to protect."
-          intro="This is a Sunday-afternoon diagnostic — a focused look at what you built this business for, how your life is really operating, and what might need to change. It ends with your Work-Life Balance Boundary Report™. It is not the full Business Week™; it's the clarity that comes first."
+          eyebrow="Work-Life Balance Reality Check™"
+          title="Let’s find what your business needs to protect."
+          intro="This is your Monday diagnostic—a focused look at what you built your business for, how your life is really operating, and what might need to change."
         >
+          <div className="mb-6 flex flex-col gap-3 font-sans text-sm leading-relaxed text-brand-ink-soft text-pretty">
+            <p>
+              We&apos;ll connect the life you intended to create with the reality you&apos;re experiencing today, identify
+              what matters most right now, and uncover what your business may need to protect so you can make time for
+              more life.
+            </p>
+            <p>
+              Your experience ends with your Work-Life Balance Boundary Report™—a clearer picture of where you are, what
+              matters, and where your attention needs to go next.
+            </p>
+            <p className="font-semibold text-brand-ink">
+              This is not the full Work-Life Balance Business Week™. It is the clarity that comes first.
+            </p>
+          </div>
           <ul className="space-y-3">
             {[
               "What did you build this business for?",
               "What is your life experiencing now?",
               "What matters most right now?",
               "What needs to be protected?",
-              "What might the business need to make that possible?",
+              "What might your business need to change to make that possible?",
             ].map((q) => (
               <li key={q} className="flex items-start gap-3 rounded-2xl border border-brand-blush bg-white px-5 py-4">
                 <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-coral/10">

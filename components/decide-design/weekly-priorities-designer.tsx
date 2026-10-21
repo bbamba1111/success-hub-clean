@@ -29,6 +29,7 @@ import {
 import type { LifePrioritySelection } from "@/lib/weekly-life-priorities/types"
 import { MonthlyBoundaryFocus } from "@/components/decide-design/monthly-boundary-focus"
 import { getLatestBoundaryReport } from "@/lib/boundary-report/actions"
+import { useCurrentPriorityFocus } from "@/lib/boundary-report/use-current-priority-focus"
 import type { BoundaryReportData } from "@/lib/boundary-report/types"
 
 /* ── shared visual atoms (match Decide & Design™ language exactly) ─────────── */
@@ -68,7 +69,11 @@ function LifePrioritiesSection({
     }
   }, [priorities, seeded])
 
-  const focusLabels = useMemo(() => (report?.priorityAreas ?? []).map((a) => a.label), [report])
+  const { data: priorityFocus } = useCurrentPriorityFocus()
+  const focusLabels = useMemo(
+    () => (priorityFocus?.priorityAreas ?? report?.priorityAreas ?? []).map((a) => a.label),
+    [priorityFocus, report],
+  )
   const suggestedIds = useMemo(
     () => new Set(suggestLifeCategoriesFromFocus(focusLabels).map((c) => c.id)),
     [focusLabels],

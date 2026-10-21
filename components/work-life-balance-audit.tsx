@@ -6,6 +6,7 @@ import { saveAuditResults, type AuditData } from "@/utils/audit-storage"
 import { saveRealityCheckSnapshot } from "@/utils/reality-check-storage"
 import { useRouter } from "next/navigation"
 import { getTimePhrase, saveAssessmentMeta, type AssessmentWindow, type AssessmentType } from "@/lib/assessment-cadence"
+import { AUDIT_QUESTION_BODIES, scoreAuditAnswers } from "@/lib/work-life-balance-audit/questions"
 
 export const categoryLabels = {
   spiritual: "Spiritual Well-being",
@@ -25,23 +26,7 @@ export const categoryLabels = {
   charitable: "Charitable Giving",
 }
 
-const questionBodies = [
-  { id: 1,  category: "spiritual",           body: "how often have you had time to nurture your spiritual well-being — through prayer, study, fellowship, praise, music, meditation, or nature — within your busy schedule?" },
-  { id: 2,  category: "mental",              body: "how often have you had time to care for your mental well-being — managing stress, thinking clearly, and making decisions without rushing — within your busy schedule?" },
-  { id: 3,  category: "physicalMovement",    body: "how often have you had time to prioritize intentional movement or exercise within your busy schedule?" },
-  { id: 4,  category: "physicalNourishment", body: "how often have you had time to nourish your body with adequate hydration and healthy meals within your busy schedule?" },
-  { id: 5,  category: "physicalSleep",       body: "how often have you had time to go to bed on time and get 8 hours of restorative sleep within your busy schedule?" },
-  { id: 6,  category: "emotional",           body: "how often have you had time to tend to your emotional well-being — making room for peace, balance, and joy — within your busy schedule?" },
-  { id: 7,  category: "personal",            body: "how often have you had time for self-care and personal growth within your busy schedule?" },
-  { id: 8,  category: "intellectual",        body: "how often have you had time to learn something new or build a new skill within your busy schedule?" },
-  { id: 9,  category: "professional",        body: "how often have you had time to share your expertise and expand your professional visibility — through partnerships, collaboration, speaking, publishing, media, or podcast interviews — within your busy schedule?" },
-  { id: 10, category: "financial",          body: "how often have you had time to focus intentionally on your financial health — revenue generation, financial and retirement planning, business valuation, or exit planning — within your busy schedule?" },
-  { id: 11, category: "environmental",      body: "how often have you had time to create beauty, balance, or order in your home or office environment, or to spend time in nature, within your busy schedule?" },
-  { id: 12, category: "relational",         body: "how often have you had time to nurture your important relationships and be attentive and present with your loved ones within your busy schedule?" },
-  { id: 13, category: "social",             body: "how often have you had time to connect with friends or supportive, like-minded people within your busy schedule?" },
-  { id: 14, category: "recreational",       body: "how often have you had time for joy, creativity, vacation, travel, or play within your busy schedule?" },
-  { id: 15, category: "charitable",         body: "how often have you had time to support or inspire others through giving, charity, volunteering, or other philanthropic endeavors within your busy schedule?" },
-]
+const questionBodies = AUDIT_QUESTION_BODIES
 
 /**
  * Descending pink palette: Always (darkest) → Never (lightest).
@@ -69,6 +54,13 @@ interface WorkLifeBalanceAuditProps {
    *  "← Previous" immediately to step backward and change an earlier answer,
    *  rather than re-clicking through all 15 questions from the top. */
   startAtLastQuestion?: boolean
+  /** Resume a saved draft at this question. */
+  initialQuestionIndex?: number
+  /** Fires after every answer so the caller can autosave a draft. */
+  onAnswersChange?: (answers: Record<number, number>, questionIndex: number) => void
+  /** When false, skip the localStorage and weekly-snapshot writes (the weekly
+   *  audit stores its own results and must not overwrite the onboarding baseline). */
+  persistLocally?: boolean
 }
 
 export default function WorkLifeBalanceAudit({
@@ -78,10 +70,14 @@ export default function WorkLifeBalanceAudit({
   onComplete,
   initialAnswers,
   startAtLastQuestion = false,
+  initialQuestionIndex,
+  onAnswersChange,
+  persistLocally = true,
 }: WorkLifeBalanceAuditProps) {
-  const [currentQuestion, setCurrentQuestion] = useState(
-    startAtLastQuestion ? questionBodies.length - 1 : 0,
-  )
+  const [currentQuestion, setCurrentQuestion] = useState(() => {
+    if (startAtLastQuestion) return questionBodies.length - 1
+    return Math.min(Math.max(initialQuestionIndex ?? 0, 0), questionBodies.length - 1)
+  })
   const [answers, setAnswers] = useState<Record<number, number>>(initialAnswers ?? {})
   const [isComplete, setIsComplete] = useState(false)
   const [results, setResults] = useState<any>(null)
@@ -129,7 +125,9 @@ export default function WorkLifeBalanceAudit({
     hasAnsweredRef.current = true
     const newAnswers = { ...answers, [questionId]: score }
     setAnswers(newAnswers)
-    if (currentQuestion < questions.length - 1) {
+    const isLast = currentQuestion >= questions.length - 1
+    onAnswersChange?.(newAnswers, isLast ? currentQuestion : currentQuestion + 1)
+    if (!isLast) {
       setCurrentQuestion(currentQuestion + 1)
     } else {
       calculateResults(newAnswers)
@@ -137,28 +135,14 @@ export default function WorkLifeBalanceAudit({
   }
 
   const calculateResults = (finalAnswers: Record<number, number>) => {
-    const categoryScores: Record<string, number[]> = {}
-    questions.forEach((q) => {
-      const score = finalAnswers[q.id] || 0
-      if (!categoryScores[q.category]) categoryScores[q.category] = []
-      categoryScores[q.category].push(score)
-    })
-    const categoryResults = Object.entries(categoryScores).map(([category, scores]) => {
-      const average = scores.reduce((s, v) => s + v, 0) / scores.length
-      return {
-        category,
-        percentage: Math.round((average / 5) * 100),
-        label: categoryLabels[category as keyof typeof categoryLabels],
-      }
-    })
-    const overallScore = Math.round(
-      categoryResults.reduce((s, r) => s + r.percentage, 0) / categoryResults.length,
-    )
+    const { overallScore, results: categoryResults } = scoreAuditAnswers(finalAnswers)
     const auditResults = { overallScore, results: categoryResults, timestamp: Date.now(), assessmentType }
     setResults(auditResults)
-    saveAssessmentMeta({ assessmentType, assessmentWindow, submittedAt: auditResults.timestamp })
-    saveAuditResults(auditResults)
-    void saveRealityCheckSnapshot({ overallScore, results: categoryResults, assessmentType })
+    if (persistLocally) {
+      saveAssessmentMeta({ assessmentType, assessmentWindow, submittedAt: auditResults.timestamp })
+      saveAuditResults(auditResults)
+      void saveRealityCheckSnapshot({ overallScore, results: categoryResults, assessmentType })
+    }
     if (onComplete) {
       onComplete(auditResults, finalAnswers)
     } else {

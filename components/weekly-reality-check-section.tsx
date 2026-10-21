@@ -10,7 +10,7 @@
 
 import { useState } from "react"
 import { ArrowRight, ChevronDown } from "lucide-react"
-import { BoundaryReportJourney } from "@/components/boundary-report/boundary-report-journey"
+import { WeeklyAuditFlow } from "@/components/weekly-audit/weekly-audit-flow"
 
 export function WeeklyRealityCheckSection() {
   const [open, setOpen] = useState(false)
@@ -33,8 +33,8 @@ export function WeeklyRealityCheckSection() {
             Redesign Your Entry Into The Workweek
           </h3>
           <p className="mt-2 font-sans text-sm leading-relaxed text-[#5C4F55] text-pretty">
-            Measure the last seven days, see your updated results, and choose the one to three priorities you&apos;ll
-            carry into this week.
+            Retake your 7-day Work-Life Balance Audit™ to see how your life has been operating this past week, then
+            choose the one to three Priority Focus Areas™ that will guide your redesign for the week ahead.
           </p>
         </div>
 
@@ -60,7 +60,7 @@ export function WeeklyRealityCheckSection() {
       </div>
 
       <div id="weekly-reality-check-panel" hidden={!open} className="border-t border-[#E8DFE2] bg-[#FDFAF6]">
-        <BoundaryReportJourney />
+        <WeeklyAuditFlow />
       </div>
     </section>
   )

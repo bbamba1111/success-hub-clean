@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { ArrowRight, Check } from "lucide-react"
 import { getLatestBoundaryReport } from "@/lib/boundary-report/actions"
+import { WeeklyHistoryList } from "@/components/weekly-audit/weekly-history-list"
 
 export const metadata = {
   title: "My Report | Harmony Lane",
@@ -152,6 +153,8 @@ export default async function MyReportPage() {
             </Section>
           )}
         </div>
+
+        <WeeklyHistoryList />
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Link

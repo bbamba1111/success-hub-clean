@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react"
 import { CheckCircle2, RefreshCw, Sparkles } from "lucide-react"
 import { useWeeklyCommitments } from "@/lib/weekly-commitments/use-weekly-commitments"
-import { getLatestBoundaryReport } from "@/lib/boundary-report/actions"
-import type { BoundaryReportData } from "@/lib/boundary-report/types"
+import { useCurrentPriorityFocus } from "@/lib/boundary-report/use-current-priority-focus"
 import { useMonthlyBoundaryFocus } from "@/lib/monthly-boundary-focus/use-monthly-boundary-focus"
 import { DAILY_IDENTITY_CHANGED_EVENT, getDateKey, loadDailyIdentity } from "@/lib/daily-identity/storage"
 
@@ -90,20 +89,7 @@ export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read"
   // Priority Focus Areas™ are carried over from the most recent Work-Life
   // Balance Reality Check™ (Thursday/Sunday) — they replace the old freeform
   // "life priorities" as the middle strand of the declaration.
-  const [report, setReport] = useState<BoundaryReportData | null>(null)
-  useEffect(() => {
-    let active = true
-    getLatestBoundaryReport()
-      .then((res) => {
-        if (active) setReport(res?.data ?? null)
-      })
-      .catch(() => {
-        if (active) setReport(null)
-      })
-    return () => {
-      active = false
-    }
-  }, [])
+  const { data: priorityFocus } = useCurrentPriorityFocus()
 
   const [saving, setSaving] = useState(false)
   const [savedAt, setSavedAt] = useState<string | null>(null)
@@ -123,7 +109,7 @@ export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read"
     }
   }, [])
 
-  const priorityLabels = (report?.priorityAreas ?? []).map((a) => a.label)
+  const priorityLabels = (priorityFocus?.priorityAreas ?? []).map((a) => a.label)
   const priorityKey = priorityLabels.join("|")
   const inputsReady =
     identity.trim().length > 0 && priorityLabels.length > 0 && (!isMonthlyMember || boundary.trim().length > 0)
