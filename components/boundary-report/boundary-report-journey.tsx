@@ -879,8 +879,9 @@ function AlignmentStep({
       </p>
       {index === 0 && (
         <p className="font-sans text-sm text-brand-ink-soft leading-relaxed text-pretty mb-6">
-          You built this business for more. This week, we&apos;re asking you to experience a different way of operating.
-          There are no wrong answers — only honesty about what you&apos;re willing to try.
+          Eleven short questions, one for each part of your Work-Life Balance Business Week™ — from how you start
+          your day to how you end it. Answer &ldquo;Yes&rdquo; or &ldquo;Not sure yet.&rdquo; There are no wrong
+          answers.
         </p>
       )}
 

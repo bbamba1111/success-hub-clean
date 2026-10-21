@@ -26,8 +26,9 @@ export const ALIGNMENT_QUESTIONS: AlignmentQuestion[] = [
   },
   {
     id: "start-intentionally",
-    title: "Start Intentionally",
-    question: "Would you be willing to begin your workday with Morning GIV•EN™ before moving into business activity?",
+    title: "Start With Gratitude",
+    question:
+      "Would you be willing to start each day with gratitude, intention, and your vision — before any business activity?",
   },
   {
     id: "protect-body",
