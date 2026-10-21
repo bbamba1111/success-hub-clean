@@ -27,6 +27,10 @@ import {
   setBoundaryReportPath,
 } from "@/lib/boundary-report/actions"
 import { CurrentBusinessStep } from "@/components/boundary-report/current-business-step"
+import { PersonalRealityStep } from "@/components/boundary-report/personal-reality-step"
+import { StartConsiderationsBlock } from "@/components/boundary-report/start-considerations-block"
+import { personalRealityById } from "@/lib/boundary-report/personal-reality"
+import { buildStartConsiderations } from "@/lib/boundary-report/start-considerations"
 import {
   CURRENT_BUSINESS_QUESTIONS,
   EMPTY_CURRENT_BUSINESS,
@@ -51,6 +55,7 @@ type Stage =
   | "intention"
   | "currentBusiness"
   | "requirements"
+  | "personalReality"
   | "audit"
   | "baseline"
   | "priority"
@@ -63,6 +68,7 @@ const STAGE_ORDER: Stage[] = [
   "intention",
   "currentBusiness",
   "requirements",
+  "personalReality",
   "audit",
   "baseline",
   "priority",
@@ -229,8 +235,11 @@ export function BoundaryReportJourney() {
   const [currentBusinessIndex, setCurrentBusinessIndex] = useState(0)
   const stageChoice: BusinessStage | null = currentBusiness.stage
 
-  // Business & Personal Reality™ (requirement ids)
+  // Business Reality™ (requirement ids)
   const [requirements, setRequirements] = useState<string[]>([])
+
+  // Personal & Work-From-Home Reality™ (unscored option ids)
+  const [personalReality, setPersonalReality] = useState<string[]>([])
 
   // Work-Life Balance Alignment™ willingness answers, keyed by question id
   const [alignment, setAlignment] = useState<Record<string, AlignmentChoice>>({})
@@ -275,6 +284,7 @@ export function BoundaryReportJourney() {
       setSomethingElse(d.somethingElse ?? "")
       setCurrentBusiness(d.currentBusiness ?? EMPTY_CURRENT_BUSINESS)
       setRequirements(d.requirements ?? [])
+      setPersonalReality(d.personalReality ?? [])
       setPriority(d.priority ?? [])
       setAlignment(d.alignment ?? {})
       setAlignmentIndex(d.alignmentIndex ?? 0)
@@ -293,6 +303,7 @@ export function BoundaryReportJourney() {
       somethingElse,
       currentBusiness,
       requirements,
+      personalReality,
       priority,
       alignment,
       alignmentIndex,
@@ -311,6 +322,7 @@ export function BoundaryReportJourney() {
     somethingElse,
     currentBusiness,
     requirements,
+    personalReality,
     priority,
     alignment,
     alignmentIndex,
@@ -350,6 +362,10 @@ export function BoundaryReportJourney() {
     setRequirements((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]))
   }
 
+  function togglePersonalReality(id: string) {
+    setPersonalReality((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]))
+  }
+
   function setAlignmentChoice(id: string, choice: AlignmentChoice) {
     setAlignment((prev) => ({ ...prev, [id]: choice }))
   }
@@ -383,6 +399,16 @@ export function BoundaryReportJourney() {
       stageConsiderations: STAGE_CONSIDERATIONS[stage].considerations,
       selectedPath: path,
       currentBusiness: { ...currentBusiness, updatedAt: new Date().toISOString() },
+      personalReality: personalReality.map((id) => ({ id, label: personalRealityById(id)?.label ?? id })),
+      startConsiderations: buildStartConsiderations({
+        intentionChoices,
+        requirements,
+        personalReality,
+        baselineAreas: baseline?.areas ?? [],
+        priorityFocusAreas: priority,
+        alignment,
+        stage: stageChoice,
+      }),
     }
   }
 
@@ -568,7 +594,7 @@ export function BoundaryReportJourney() {
               else setStage("requirements")
             }}
             nextLabel={
-              currentBusinessIndex === CURRENT_BUSINESS_QUESTIONS.length - 1 ? "Continue to Business & Personal Reality" : "Continue"
+              currentBusinessIndex === CURRENT_BUSINESS_QUESTIONS.length - 1 ? "Continue to Business Reality" : "Continue"
             }
             nextDisabled={!isCurrentBusinessQuestionComplete(currentBusinessIndex, currentBusiness)}
           />
@@ -739,7 +765,7 @@ export function BoundaryReportJourney() {
 
       {stage === "requirements" && (
         <StageShell
-          eyebrow="Business & Personal Reality™"
+          eyebrow="Business Reality™"
           title="What in your operating environment collides with the life you just described?"
           intro="Select whatever your diagnostic suggests may need attention. This isn't another scored assessment or a verdict — it's what the Week™ would help you determine and design."
         >
@@ -766,21 +792,21 @@ export function BoundaryReportJourney() {
               )
             })}
           </div>
-          {stageChoice && (
-            <div className="mt-6 rounded-2xl border border-brand-green/30 bg-brand-green/5 px-5 py-5">
-              <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-brand-green mb-3">
-                Relevant considerations for {STAGE_LABELS[stageChoice]}
-              </p>
-              <ul className="space-y-2">
-                {STAGE_CONSIDERATIONS[stageChoice].considerations.map((c) => (
-                  <li key={c} className="flex items-start gap-2 font-sans text-sm text-brand-ink">
-                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-green" aria-hidden />
-                    {c}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          <NavRow
+            onBack={goBack}
+            onNext={() => setStage("personalReality")}
+            nextLabel="Continue to Personal & Work-From-Home Reality"
+          />
+        </StageShell>
+      )}
+
+      {stage === "personalReality" && (
+        <StageShell
+          eyebrow="Personal & Work-From-Home Reality™"
+          title="What does your life require that the business has to make room for?"
+          intro="Select any personal or work-from-home circumstances that apply right now. This isn't scored — it helps your Boundary Report™ separate what the business demands from what your life needs."
+        >
+          <PersonalRealityStep selected={personalReality} onToggle={togglePersonalReality} />
           <NavRow onBack={goBack} onNext={() => setStage("audit")} nextLabel="Continue to the 30-Day Audit" />
         </StageShell>
       )}
@@ -1083,15 +1109,21 @@ function BoundaryReport({
           </ReportBlock>
         )}
 
-        <ReportBlock label={`Start → Grow → Scale Considerations (${STAGE_LABELS[data.stage]})`}>
-          <ul className="space-y-2">
-            {data.stageConsiderations.map((c) => (
-              <li key={c} className="flex items-start gap-2 font-sans text-sm text-brand-ink">
-                <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-green" aria-hidden />
-                {c}
-              </li>
-            ))}
-          </ul>
+        {(data.personalReality?.length ?? 0) > 0 && (
+          <ReportBlock label="Personal & Work-From-Home Reality™">
+            <ul className="space-y-2">
+              {data.personalReality!.map((p) => (
+                <li key={p.id} className="flex items-start gap-2 font-sans text-sm text-brand-ink">
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-green" aria-hidden />
+                  {p.label}
+                </li>
+              ))}
+            </ul>
+          </ReportBlock>
+        )}
+
+        <ReportBlock label={`Relevant Considerations for ${STAGE_LABELS[data.stage]}`}>
+          <StartConsiderationsBlock considerations={data.startConsiderations} fallback={data.stageConsiderations} />
         </ReportBlock>
       </div>
 

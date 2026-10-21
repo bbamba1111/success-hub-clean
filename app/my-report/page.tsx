@@ -1,5 +1,6 @@
 import Link from "next/link"
-import { ArrowRight, Check } from "lucide-react"
+import { ArrowRight } from "lucide-react"
+import { StartConsiderationsBlock } from "@/components/boundary-report/start-considerations-block"
 import { getLatestBoundaryReport } from "@/lib/boundary-report/actions"
 import { WeeklyHistoryList } from "@/components/weekly-audit/weekly-history-list"
 
@@ -140,16 +141,22 @@ export default async function MyReportPage() {
             </Section>
           )}
 
-          {(data.stageConsiderations?.length ?? 0) > 0 && (
-            <Section label="Start → Grow → Scale Considerations">
-              <ul className="space-y-2">
-                {data.stageConsiderations.map((c) => (
-                  <li key={c} className="flex items-start gap-2 font-sans text-sm text-brand-ink">
-                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-green" aria-hidden />
-                    {c}
+          {(data.personalReality?.length ?? 0) > 0 && (
+            <Section label="Personal & Work-From-Home Reality™">
+              <ul className="flex flex-col gap-2">
+                {data.personalReality!.map((p) => (
+                  <li key={p.id} className="flex items-start gap-2 font-sans text-sm text-brand-ink">
+                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-green" aria-hidden />
+                    {p.label}
                   </li>
                 ))}
               </ul>
+            </Section>
+          )}
+
+          {(data.startConsiderations || (data.stageConsiderations?.length ?? 0) > 0) && (
+            <Section label="Relevant Considerations for Start">
+              <StartConsiderationsBlock considerations={data.startConsiderations} fallback={data.stageConsiderations} />
             </Section>
           )}
         </div>
