@@ -3,7 +3,7 @@ import { CherryBlossomThankYouClient } from "@/components/cherry-blossom/cherry-
 
 export const metadata: Metadata = {
   title: "On-Ramp Complete | Harmony Lane™",
-  description: "Cherry Blossom Thank-You™ — your Founder Profile and Business Context on-ramp is complete.",
+  description: "Cherry Blossom Thank-You™ — your Founder Profile, Business Context, and Reality Check on-ramp is complete.",
 }
 
 /**

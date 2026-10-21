@@ -35,18 +35,14 @@ export function BusinessContextOnboardingFlow() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const wasAlreadyComplete = useRef(hasCompletedBusinessContext())
-  const returnTo = searchParams.get("from") || "/my-harmony"
+  const returnTo = searchParams.get("from")
 
   async function handleDone() {
-    // A completed Business Context™ alone doesn't mean onboarding itself is
-    // done — a founder who goes Back to Founder Profile™ mid-onboarding and
-    // then forward again lands back here with `wasAlreadyComplete` true even
-    // though they've never reached the Time-Leak Check™ yet. Only treat this
-    // as a genuine post-onboarding revisit (→ returnTo) once the Time-Leak
-    // Check™ is ALSO on record; otherwise always keep moving forward through
-    // the required sequence.
+    // Without an explicit ?from= this is the on-ramp, so Continue always moves
+    // forward to Step 3 (the Reality Check™). Only a revisit launched from
+    // another page with ?from= returns there.
     const onboardingFullyComplete = wasAlreadyComplete.current && (await hasCompletedBoundaryReport())
-    router.push(onboardingFullyComplete ? returnTo : "/boundary-report?onboarding=1")
+    router.push(returnTo && onboardingFullyComplete ? returnTo : "/boundary-report?onboarding=1")
   }
 
   function handleHydrated(completedInDb: boolean) {

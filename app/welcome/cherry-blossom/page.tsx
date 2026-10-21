@@ -12,7 +12,7 @@ export const metadata: Metadata = {
  * First screen after login for any member who hasn't completed Founder
  * Profile™ yet, shown once per device. Leads into the required on-ramp:
  *   Cherry Blossom Welcome™ → /founder-profile → /business-context
- *     → Cherry Blossom Thank-You™ → current Work-Life Balance Business Day™
+ *     → /boundary-report (Reality Check™) → Cherry Blossom Thank-You™
  */
 export default function CherryBlossomWelcomePage() {
   return <CherryBlossomWelcomeClient />

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react"
 import Link from "next/link"
-import { ArrowRight, ArrowLeft, Check, Loader2, Lock, ShieldCheck, Sparkles } from "lucide-react"
+import { ArrowRight, ArrowLeft, Check, Loader2, Lock, Pencil, ShieldCheck, Sparkles } from "lucide-react"
 import { getAuditResults, type AuditData } from "@/utils/audit-storage"
 import WorkLifeBalanceAudit from "@/components/work-life-balance-audit"
 import { CATEGORY_LABELS } from "@/utils/life-value-categories"
@@ -21,6 +21,7 @@ import {
 } from "@/lib/boundary-report/alignment"
 import useSWR from "swr"
 import {
+  getLatestBoundaryReport,
   loadBoundaryDraft,
   saveBoundaryDraft,
   saveBoundaryReport,
@@ -51,6 +52,7 @@ const FOCUS_THRESHOLD = 60
 const WEEK_CHECKOUT = "/pricing"
 
 type Stage =
+  | "summary"
   | "intro"
   | "intention"
   | "currentBusiness"
@@ -271,13 +273,46 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
     revalidateOnFocus: false,
     revalidateIfStale: false,
   })
+  const { data: latest } = useSWR("boundary-report-latest", getLatestBoundaryReport, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  })
   const [hydrated, setHydrated] = useState(false)
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle")
 
+  function loadFromReport(data: BoundaryReportData) {
+    const picked = new Set(data.originalIntention?.selections ?? [])
+    setIntentionChoices(
+      Object.fromEntries(INTENTION_GROUPS.map((g) => [g.id, g.items.filter((item) => picked.has(item))])),
+    )
+    setSomethingElse(data.originalIntention?.somethingElse ?? "")
+    if (data.currentBusiness) setCurrentBusiness(data.currentBusiness)
+    setRequirements((data.businessRequirements ?? []).map((r) => r.id))
+    setPersonalReality((data.personalReality ?? []).map((p) => p.id))
+    setPriority(data.priorityFocusAreas ?? [])
+    setAlignment(Object.fromEntries((data.alignmentResponses ?? []).map((r) => [r.id, r.choice])))
+    setAlignmentIndex(0)
+    setCurrentBusinessIndex(0)
+    if (!getAuditResults() && data.baseline?.areas?.length) setBaseline(data.baseline)
+    setChosenPath(data.selectedPath ?? null)
+  }
+
+  function editSection(target: Stage) {
+    if (latest) {
+      loadFromReport(latest.data)
+      setReportId(latest.id)
+    }
+    setStage(target)
+  }
+
   useEffect(() => {
-    if (!saved || hydrated) return
+    if (!saved || latest === undefined || hydrated) return
     const d = saved.draft
-    if (d) {
+    if (!d && latest) {
+      loadFromReport(latest.data)
+      setReportId(latest.id)
+      setStage("summary")
+    } else if (d) {
       if (RESUMABLE.has(d.stage)) setStage(d.stage as Stage)
       setCurrentBusinessIndex(Math.min(d.currentBusinessIndex ?? 0, CURRENT_BUSINESS_QUESTIONS.length - 1))
       setIntentionChoices(d.intentionChoices ?? {})
@@ -292,10 +327,11 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
       setCurrentBusiness(saved.previousCurrentBusiness)
     }
     setHydrated(true)
-  }, [saved, hydrated])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [saved, latest, hydrated])
 
   useEffect(() => {
-    if (!hydrated || stage === "intro" || stage === "generating" || stage === "report") return
+    if (!hydrated || stage === "summary" || stage === "intro" || stage === "generating" || stage === "report") return
     const draft: BoundaryReportDraft = {
       stage,
       currentBusinessIndex,
@@ -451,6 +487,16 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
         {saveStatus === "saved" && "Progress saved"}
         {saveStatus === "error" && "Sign in to keep your progress"}
       </p>
+
+      {stage === "summary" && latest && (
+        <RealityCheckSummary
+          data={latest.data}
+          onboarding={onboarding}
+          onEdit={editSection}
+          onViewReport={() => setStage("report")}
+          onRetake={() => editSection("intro")}
+        />
+      )}
 
       {stage === "intro" && (
         <StageShell
@@ -1218,5 +1264,122 @@ function BoundaryReport({
         </div>
       )}
     </div>
+  )
+}
+
+// ── Saved Reality Check™ editor (shown once a report exists) ─────────────────
+
+function SummaryRow({
+  label,
+  onEdit,
+  children,
+}: {
+  label: string
+  onEdit: () => void
+  children: React.ReactNode
+}) {
+  return (
+    <div className="flex items-start justify-between gap-4 border-t border-brand-blush py-5 first:border-t-0 first:pt-0">
+      <div className="flex min-w-0 flex-col gap-1.5">
+        <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.2em] text-brand-coral">{label}</p>
+        <div className="font-sans text-sm leading-relaxed text-brand-ink text-pretty">{children}</div>
+      </div>
+      <button
+        type="button"
+        onClick={onEdit}
+        className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-brand-blush px-3.5 py-1.5 font-sans text-xs font-semibold text-brand-ink-soft transition-colors hover:border-brand-coral hover:text-brand-coral"
+      >
+        <Pencil className="h-3.5 w-3.5" aria-hidden />
+        Edit
+        <span className="sr-only">{label}</span>
+      </button>
+    </div>
+  )
+}
+
+function listOrDash(items: string[]) {
+  return items.length ? items.join(", ") : "—"
+}
+
+function RealityCheckSummary({
+  data,
+  onboarding,
+  onEdit,
+  onViewReport,
+  onRetake,
+}: {
+  data: BoundaryReportData
+  onboarding: boolean
+  onEdit: (stage: Stage) => void
+  onViewReport: () => void
+  onRetake: () => void
+}) {
+  const stage = data.currentBusiness?.stage
+  const willing = (data.alignmentResponses ?? []).filter((r) => r.choice === "willing").length
+  const total = data.alignmentResponses?.length ?? 0
+
+  return (
+    <StageShell
+      eyebrow="Your Work-Life Balance Reality Check™"
+      title="Review or update your Reality Check™"
+      intro="Your answers are saved. Edit any section and continue through to refresh your Boundary Report™ — your first 30-day baseline is kept permanently."
+    >
+      <div className="rounded-2xl border border-brand-blush bg-card p-6 shadow-sm sm:p-8">
+        <SummaryRow label="Original Entrepreneurial Intention™" onEdit={() => onEdit("intention")}>
+          <span className="italic">{data.originalIntention?.summary || "—"}</span>
+        </SummaryRow>
+        <SummaryRow label="Current Business™" onEdit={() => onEdit("currentBusiness")}>
+          {stage ? `${STAGE_LABELS[stage]} stage` : "—"}
+          {data.currentBusiness?.services ? ` · ${data.currentBusiness.services}` : ""}
+        </SummaryRow>
+        <SummaryRow label="Business Reality™" onEdit={() => onEdit("requirements")}>
+          {listOrDash((data.businessRequirements ?? []).map((r) => r.label))}
+        </SummaryRow>
+        <SummaryRow label="Business & Personal Reality™" onEdit={() => onEdit("personalReality")}>
+          {listOrDash((data.personalReality ?? []).map((p) => p.label))}
+        </SummaryRow>
+        <SummaryRow label="30-Day Work-Life Balance Baseline™" onEdit={() => onEdit("audit")}>
+          Overall Work-Life Balance Score™: <span className="font-bold">{data.baseline?.overall ?? 0}</span>
+        </SummaryRow>
+        <SummaryRow label="Priority Focus Areas™" onEdit={() => onEdit("priority")}>
+          {listOrDash(
+            (data.priorityFocusAreas ?? []).map(
+              (key) => data.baseline?.areas?.find((a) => a.key === key)?.label ?? CATEGORY_LABELS[key] ?? key,
+            ),
+          )}
+        </SummaryRow>
+        <SummaryRow label="Work-Life Balance Alignment™" onEdit={() => onEdit("alignment")}>
+          {total ? `Willing on ${willing} of ${total}` : "—"}
+        </SummaryRow>
+      </div>
+
+      <div className="mt-8 flex flex-col-reverse items-center justify-between gap-4 sm:flex-row">
+        <button
+          type="button"
+          onClick={onRetake}
+          className="font-sans text-sm font-semibold text-brand-ink-soft underline-offset-4 hover:text-brand-ink hover:underline"
+        >
+          Retake from the beginning
+        </button>
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          <button
+            type="button"
+            onClick={onViewReport}
+            className="inline-flex items-center gap-2 rounded-full border border-brand-coral px-6 py-3 font-sans text-sm font-bold text-brand-coral transition-colors hover:bg-brand-coral/5"
+          >
+            View My Boundary Report™
+          </button>
+          {onboarding && (
+            <Link
+              href="/welcome/cherry-blossom/complete"
+              className="inline-flex items-center gap-2 rounded-full bg-brand-green px-6 py-3 font-sans text-sm font-bold text-white transition-colors hover:bg-brand-green-dark"
+            >
+              Continue
+              <ArrowRight className="h-4 w-4" aria-hidden />
+            </Link>
+          )}
+        </div>
+      </div>
+    </StageShell>
   )
 }

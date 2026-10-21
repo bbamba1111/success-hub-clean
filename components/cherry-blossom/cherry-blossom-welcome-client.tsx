@@ -28,14 +28,16 @@ export function CherryBlossomWelcomeClient() {
     <CherryBlossomScene variant="garden" minHeight="min-h-screen">
       <CherryBlossomSceneCard title="Welcome to Harmony Lane™" time="2 mins">
         <p>
-          Before you begin your first Work-Life Balance Business Day™, we&apos;d love to
-          get to know you — and the business you&apos;re building.
+          Your first step in Harmony Lane™ is <strong>The Work-Life Balance Reality Check™</strong> —
+          an honest look at what you built your business for and how your life is really
+          operating today.
         </p>
         <p>
-          You&apos;ll complete three short steps: your <strong>Founder Profile™</strong>,
-          your <strong>Business Context Profile™</strong>, and your{" "}
-          <strong>Business Bottleneck Assessment™</strong>. Together, they let Harmony Lane™
-          personalize everything that follows.
+          First, we&apos;d love to get to know you and the business you&apos;re building. You&apos;ll
+          complete your <strong>Founder Profile™</strong> and your{" "}
+          <strong>Business Context Profile™</strong>, then take{" "}
+          <strong>The Reality Check™</strong>. Together, they let Harmony Lane™ personalize
+          everything that follows.
         </p>
       </CherryBlossomSceneCard>
 

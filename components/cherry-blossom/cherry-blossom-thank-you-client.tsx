@@ -35,8 +35,8 @@ export function CherryBlossomThankYouClient() {
         time="Your Monday experience is ready"
       >
         <p>
-          You&apos;ve completed your Founder Profile™, Business Context™, and Work-Life Balance
-          Time-Leak Check™.
+          You&apos;ve completed your Founder Profile™, Business Context™, and The Work-Life Balance
+          Reality Check™.
         </p>
         <p>Your Monday experience is ready.</p>
         <p>

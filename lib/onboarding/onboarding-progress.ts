@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server"
 /**
  * Onboarding Progress™ — server-side snapshot of the three required
  * on-ramp steps (Founder Profile™ → Business Context™ → Work-Life Balance
- * Time-Leak Check™).
+ * Work-Life Balance Reality Check™).
  * ---------------------------------------------------------------------------
  * Reads directly from Supabase (the account's canonical source of truth —
  * see utils/founder-profile-storage.ts, utils/business-context-storage.ts,
@@ -14,7 +14,7 @@ import { createClient } from "@/lib/supabase/server"
  *
  * The Business Bottleneck Audit™ was previously Step 3 here; it is preserved
  * intact at /entrepreneur-success-assessment but no longer part of the
- * onboarding on-ramp. Step 3 is now the Time-Leak Check™.
+ * onboarding on-ramp. Step 3 is now the Reality Check™ (/boundary-report).
  */
 export interface OnboardingProgress {
   founderProfileComplete: boolean
