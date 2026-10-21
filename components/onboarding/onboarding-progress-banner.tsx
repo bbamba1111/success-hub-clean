@@ -31,9 +31,9 @@ const STEPS: OnboardingStepDef[] = [
   { key: "founderProfileComplete", label: "Founder Profile™", href: "/founder-profile" },
   { key: "businessContextComplete", label: "Business Context™", href: "/business-context" },
   {
-    key: "timeLeakComplete",
-    label: "Work-Life Balance Time-Leak Check™",
-    href: "/time-leak-check?onboarding=1",
+    key: "realityCheckComplete",
+    label: "Work-Life Balance Reality Check™",
+    href: "/boundary-report?onboarding=1",
   },
 ]
 

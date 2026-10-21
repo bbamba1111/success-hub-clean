@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useRef } from "react"
 import { BusinessContextProfile } from "@/components/business-context/business-context-profile"
 import { hasCompletedBusinessContext } from "@/lib/business-context/business-context-store"
-import { hasCompletedTimeLeakCheck } from "@/lib/wlb-time-leak/storage"
+import { hasCompletedBoundaryReport } from "@/lib/boundary-report/actions"
 
 /**
  * Wires the required onboarding routing on top of the reusable
@@ -45,8 +45,8 @@ export function BusinessContextOnboardingFlow() {
     // as a genuine post-onboarding revisit (→ returnTo) once the Time-Leak
     // Check™ is ALSO on record; otherwise always keep moving forward through
     // the required sequence.
-    const onboardingFullyComplete = wasAlreadyComplete.current && (await hasCompletedTimeLeakCheck())
-    router.push(onboardingFullyComplete ? returnTo : "/time-leak-check?onboarding=1")
+    const onboardingFullyComplete = wasAlreadyComplete.current && (await hasCompletedBoundaryReport())
+    router.push(onboardingFullyComplete ? returnTo : "/boundary-report?onboarding=1")
   }
 
   function handleHydrated(completedInDb: boolean) {

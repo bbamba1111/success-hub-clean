@@ -98,7 +98,7 @@ export function TimeLeakPageClient({
 
       <div className="bg-white">
         {onboarding && progress && mode === "wizard" && (
-          <OnboardingProgressBanner progress={progress} currentStep="timeLeakComplete" />
+          <OnboardingProgressBanner progress={progress} currentStep="realityCheckComplete" />
         )}
         {mode === "wizard" && <TimeLeakWizard onComplete={handleComplete} />}
         {mode === "results" && responses && (

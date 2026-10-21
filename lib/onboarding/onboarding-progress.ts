@@ -1,5 +1,4 @@
 import { createClient } from "@/lib/supabase/server"
-import { hasCompletedTimeLeakCheckServer } from "@/lib/wlb-time-leak/server"
 
 /**
  * Onboarding Progress™ — server-side snapshot of the three required
@@ -20,13 +19,13 @@ import { hasCompletedTimeLeakCheckServer } from "@/lib/wlb-time-leak/server"
 export interface OnboardingProgress {
   founderProfileComplete: boolean
   businessContextComplete: boolean
-  timeLeakComplete: boolean
+  realityCheckComplete: boolean
 }
 
 const EMPTY_PROGRESS: OnboardingProgress = {
   founderProfileComplete: false,
   businessContextComplete: false,
-  timeLeakComplete: false,
+  realityCheckComplete: false,
 }
 
 /**
@@ -43,16 +42,23 @@ export async function getOnboardingProgressServer(): Promise<OnboardingProgress>
 
     if (!user) return EMPTY_PROGRESS
 
-    const [{ data: founderProfile }, { data: businessContext }, timeLeakComplete] = await Promise.all([
+    const [{ data: founderProfile }, { data: businessContext }, { data: realityCheck }] = await Promise.all([
       supabase.from("founder_profiles").select("completed_at").eq("user_id", user.id).maybeSingle(),
       supabase.from("business_context_profiles").select("completed_at").eq("user_id", user.id).maybeSingle(),
-      hasCompletedTimeLeakCheckServer(user.id),
+      supabase
+        .from("boundary_reports")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("status", "completed")
+        .eq("assessment_type", "full_30_day")
+        .limit(1)
+        .maybeSingle(),
     ])
 
     return {
       founderProfileComplete: Boolean(founderProfile?.completed_at),
       businessContextComplete: Boolean(businessContext?.completed_at),
-      timeLeakComplete,
+      realityCheckComplete: Boolean(realityCheck),
     }
   } catch (error) {
     console.log("[v0] getOnboardingProgressServer skipped:", (error as Error)?.message)

@@ -196,6 +196,25 @@ export async function setBoundaryReportPath(reportId: string, path: SelectedPath
   return { ok: true, id: reportId }
 }
 
+/** Onboarding Step 3 gate: has the founder completed the full 30-day Reality Check™? */
+export async function hasCompletedBoundaryReport(): Promise<boolean> {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return false
+
+  const { data } = await supabase
+    .from("boundary_reports")
+    .select("id")
+    .eq("user_id", user.id)
+    .eq("status", "completed")
+    .eq("assessment_type", FULL_ASSESSMENT)
+    .limit(1)
+    .maybeSingle()
+  return Boolean(data)
+}
+
 /** Latest Boundary Report for the current founder (for the report view / GO IT ALONE access). */
 export async function getLatestBoundaryReport(): Promise<{ id: string; data: BoundaryReportData } | null> {
   const supabase = await createClient()

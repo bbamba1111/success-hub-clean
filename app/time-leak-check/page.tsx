@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { hasCompletedTimeLeakCheckServer } from "@/lib/wlb-time-leak/server"
 import { TimeLeakPageClient } from "@/components/wlb-time-leak/time-leak-page-client"
-import { getOnboardingProgressServer } from "@/lib/onboarding/onboarding-progress"
+import { redirect } from "next/navigation"
 
 export const metadata = {
   title: "Work-Life Balance Time-Leak Check™ | Harmony Lane™",
@@ -21,6 +21,9 @@ export default async function TimeLeakCheckPage({
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
+  // Step 3 of onboarding is now the Reality Check™; keep old ?onboarding=1 links working.
+  if ((await searchParams).onboarding === "1") redirect("/boundary-report?onboarding=1")
+
   const supabase = await createClient()
   const {
     data: { user },
@@ -28,9 +31,5 @@ export default async function TimeLeakCheckPage({
 
   const hasCheck = user ? await hasCompletedTimeLeakCheckServer(user.id) : false
 
-  const params = await searchParams
-  const isOnboarding = params.onboarding === "1"
-  const progress = isOnboarding ? await getOnboardingProgressServer() : undefined
-
-  return <TimeLeakPageClient hasCheck={hasCheck} onboarding={isOnboarding} progress={progress} />
+  return <TimeLeakPageClient hasCheck={hasCheck} />
 }

@@ -212,7 +212,7 @@ function TextArea({
 
 // ── Main journey ─────────────────────────────────────────────────────────────
 
-export function BoundaryReportJourney() {
+export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boolean }) {
   const [stage, setStage] = useState<Stage>("intro")
 
   // Intention
@@ -846,6 +846,7 @@ export function BoundaryReportJourney() {
           chosenPath={chosenPath}
           saving={saving}
           onChoosePath={choosePath}
+          onboarding={onboarding}
         />
       )}
     </div>
@@ -1019,6 +1020,7 @@ function BoundaryReport({
   chosenPath,
   saving,
   onChoosePath,
+  onboarding,
 }: {
   data: BoundaryReportData
   intentionSummary: string
@@ -1026,6 +1028,7 @@ function BoundaryReport({
   chosenPath: SelectedPath | null
   saving: boolean
   onChoosePath: (p: SelectedPath) => void
+  onboarding: boolean
 }) {
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-12">
@@ -1036,6 +1039,15 @@ function BoundaryReport({
         <h1 className="font-playfair text-4xl font-bold text-brand-ink text-balance">
           Your Work-Life Balance Boundary Report™
         </h1>
+        {onboarding && !saveError && (
+          <Link
+            href="/welcome/cherry-blossom/complete"
+            className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-brand-green px-6 py-3 font-sans text-sm font-bold text-white transition-all hover:brightness-110"
+          >
+            Onboarding complete — Continue to Ready for Monday
+            <ArrowRight className="h-4 w-4" aria-hidden />
+          </Link>
+        )}
       </div>
 
       {saveError && (

@@ -20,7 +20,7 @@ import { ArrowRight, Check, ChevronLeft, ChevronRight, Plus, X } from "lucide-re
 import { saveBusinessContext, getBusinessContext, hasCompletedBusinessContext } from "@/lib/business-context/business-context-store"
 import { saveFounderLearning } from "@/lib/founder-learning/founder-learning-store"
 import { saveBusinessContextToDb, getBusinessContextFromDb } from "@/utils/business-context-storage"
-import { hasCompletedTimeLeakCheck } from "@/lib/wlb-time-leak/storage"
+import { hasCompletedBoundaryReport } from "@/lib/boundary-report/actions"
 import {
   COMMUNICATION_LEVELS,
   LEARNING_TOPIC_OPTIONS,
@@ -385,7 +385,7 @@ export function BusinessContextProfile({
   const [commLevel, setCommLevel] = useState<CommunicationLevelOption | null>(null)
   const [learningInterests, setLearningInterests] = useState<string[]>([])
 
-  // Business Reality™ (Phase 1 — EGA Foundation; facts only, no diagnosis)
+  // Business Reality��� (Phase 1 — EGA Foundation; facts only, no diagnosis)
   const [offerStatement, setOfferStatement] = useState("")
   const [idealClientDefinition, setIdealClientDefinition] = useState("")
   const [acquisitionChannel, setAcquisitionChannel] = useState("")
@@ -621,8 +621,8 @@ export function BusinessContextProfile({
   // Continuing always keeps moving forward instead of stalling.
   const handleContinue = onDone
     ? async () => {
-        if (!(await hasCompletedTimeLeakCheck())) {
-          router.push("/time-leak-check?onboarding=1")
+        if (!(await hasCompletedBoundaryReport())) {
+          router.push("/boundary-report?onboarding=1")
           return
         }
         onDone()

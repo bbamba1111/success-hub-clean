@@ -331,7 +331,7 @@ export async function getPostLoginDestination(): Promise<string> {
     try {
       const { hasCompletedFounderProfile } = await import("@/lib/founder-profile/founder-profile-store")
       const { hasCompletedBusinessContext } = await import("@/lib/business-context/business-context-store")
-      const { hasCompletedTimeLeakCheck } = await import("@/lib/wlb-time-leak/storage")
+      const { hasCompletedBoundaryReport } = await import("@/lib/boundary-report/actions")
       const {
         hasSeenCherryBlossomWelcome,
         hasSeenCherryBlossomThankYou,
@@ -349,9 +349,9 @@ export async function getPostLoginDestination(): Promise<string> {
         return "/business-context"
       }
 
-      const timeLeakDone = await hasCompletedTimeLeakCheck()
-      if (!timeLeakDone) {
-        return "/time-leak-check?onboarding=1"
+      const realityCheckDone = await hasCompletedBoundaryReport()
+      if (!realityCheckDone) {
+        return "/boundary-report?onboarding=1"
       }
 
       if (!hasSeenCherryBlossomThankYou()) {
