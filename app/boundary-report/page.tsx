@@ -37,8 +37,10 @@ export default async function BoundaryReportPage({
         </CherryBlossomSceneCard>
       </CherryBlossomScene>
 
-      {progress && <OnboardingProgressBanner progress={progress} currentStep="realityCheckComplete" />}
-      <BoundaryReportJourney onboarding={isOnboarding} />
+      <div className="bg-white">
+        {progress && <OnboardingProgressBanner progress={progress} currentStep="realityCheckComplete" />}
+        <BoundaryReportJourney onboarding={isOnboarding} />
+      </div>
     </div>
   )
 }

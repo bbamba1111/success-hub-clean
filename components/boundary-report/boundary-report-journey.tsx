@@ -188,6 +188,52 @@ function ProgressBar({ stage }: { stage: Stage }) {
   )
 }
 
+const CATEGORIES: { label: string; stages: Stage[] }[] = [
+  { label: "Your Intention™", stages: ["intention"] },
+  { label: "Your Business™", stages: ["currentBusiness", "requirements"] },
+  { label: "Your Life™", stages: ["personalReality", "audit", "baseline", "priority"] },
+  { label: "Your Alignment™", stages: ["alignment"] },
+]
+
+function CategoryStepper({ stage }: { stage: Stage }) {
+  const current = CATEGORIES.findIndex((c) => c.stages.includes(stage))
+  if (current < 0) return null
+  const category = CATEGORIES[current]
+  const stepInCategory = category.stages.indexOf(stage) + 1
+
+  return (
+    <div className="mx-auto w-full max-w-3xl px-4 pt-6">
+      <div className="rounded-3xl border border-[#E8E0D5] bg-white px-6 py-5 shadow-sm sm:px-8">
+        <div className="mb-4 flex items-center justify-between gap-4">
+          <span className="font-montserrat text-xs font-bold uppercase tracking-[0.18em] text-[#5B835F]">
+            {category.label}
+          </span>
+          <span className="font-montserrat text-xs text-[#6B5860]/60">
+            Section {current + 1} of {CATEGORIES.length}
+            {category.stages.length > 1 ? ` · Step ${stepInCategory} of ${category.stages.length}` : ""}
+          </span>
+        </div>
+        <ol className="grid grid-cols-4 gap-2" aria-label="Reality Check™ sections">
+          {CATEGORIES.map((c, i) => (
+            <li key={c.label} className="flex flex-col gap-1.5">
+              <span
+                className={`h-1.5 rounded-full ${i < current ? "bg-[#5B835F]" : i === current ? "bg-[#5B835F]/60" : "bg-[#E8E0D5]"}`}
+                aria-hidden
+              />
+              <span
+                className={`hidden font-montserrat text-[11px] sm:block ${i === current ? "font-bold text-[#3A2E33]" : "text-[#6B5860]/70"}`}
+                aria-current={i === current ? "step" : undefined}
+              >
+                {c.label}
+              </span>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  )
+}
+
 function FieldLabel({ children }: { children: React.ReactNode }) {
   return <label className="block font-sans text-sm font-semibold text-brand-ink mb-2">{children}</label>
 }
@@ -264,10 +310,6 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
     setBaselineLoaded(true)
   }, [])
 
-  useEffect(() => {
-    topRef.current?.scrollIntoView({ behavior: "instant", block: "start" })
-  }, [stage, currentBusinessIndex])
-
   // Restore saved progress once, then autosave every change.
   const { data: saved } = useSWR("boundary-report-draft", loadBoundaryDraft, {
     revalidateOnFocus: false,
@@ -278,6 +320,21 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
     revalidateIfStale: false,
   })
   const [hydrated, setHydrated] = useState(false)
+
+  // Arriving on the page (and restoring a saved draft) must leave the member at
+  // the hero; only stage changes they make afterwards jump to the journey.
+  const wasHydratedLastRun = useRef(false)
+  useEffect(() => {
+    if (!wasHydratedLastRun.current) {
+      wasHydratedLastRun.current = hydrated
+      return
+    }
+    topRef.current?.scrollIntoView({ behavior: "instant", block: "start" })
+  }, [stage, currentBusinessIndex, hydrated])
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" })
+  }, [])
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle")
 
   function loadFromReport(data: BoundaryReportData) {
@@ -479,10 +536,11 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
   // ── Stage renderers ─────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-brand-cream">
+    <div className="min-h-screen bg-card">
       <div ref={topRef} />
       <ProgressBar stage={stage} />
-      <p aria-live="polite" className="mx-auto h-5 w-full max-w-2xl px-4 pt-2 text-right font-sans text-xs text-brand-ink-soft">
+      <CategoryStepper stage={stage} />
+      <p aria-live="polite" className="mx-auto h-5 w-full max-w-3xl px-4 pt-2 text-right font-sans text-xs text-brand-ink-soft">
         {saveStatus === "saving" && "Saving your progress…"}
         {saveStatus === "saved" && "Progress saved"}
         {saveStatus === "error" && "Sign in to keep your progress"}
@@ -1268,37 +1326,51 @@ function BoundaryReport({
 }
 
 // ── Saved Reality Check™ editor (shown once a report exists) ─────────────────
+// Mirrors the Business Context Profile™ completed summary: a "Complete" header
+// with Edit Full / Continue, then one card per section with its own Edit.
 
-function SummaryRow({
-  label,
-  onEdit,
-  children,
-}: {
-  label: string
-  onEdit: () => void
-  children: React.ReactNode
-}) {
+function SummaryField({ label, value }: { label: string; value: string | undefined }) {
+  if (!value) return null
   return (
-    <div className="flex items-start justify-between gap-4 border-t border-brand-blush py-5 first:border-t-0 first:pt-0">
-      <div className="flex min-w-0 flex-col gap-1.5">
-        <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.2em] text-brand-coral">{label}</p>
-        <div className="font-sans text-sm leading-relaxed text-brand-ink text-pretty">{children}</div>
-      </div>
-      <button
-        type="button"
-        onClick={onEdit}
-        className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-brand-blush px-3.5 py-1.5 font-sans text-xs font-semibold text-brand-ink-soft transition-colors hover:border-brand-coral hover:text-brand-coral"
-      >
-        <Pencil className="h-3.5 w-3.5" aria-hidden />
-        Edit
-        <span className="sr-only">{label}</span>
-      </button>
+    <div>
+      <p className="mb-0.5 font-montserrat text-[11px] font-bold uppercase tracking-[0.14em] text-[#5B835F]">{label}</p>
+      <p className="font-montserrat text-sm leading-relaxed text-[#3A2E33] text-pretty">{value}</p>
     </div>
   )
 }
 
-function listOrDash(items: string[]) {
-  return items.length ? items.join(", ") : "—"
+function SummaryCard({
+  title,
+  onEdit,
+  wide,
+  children,
+}: {
+  title: string
+  onEdit: () => void
+  wide?: boolean
+  children: React.ReactNode
+}) {
+  return (
+    <section className="rounded-3xl border border-[#E8E0D5] bg-white px-6 py-6 shadow-sm sm:px-8">
+      <div className="mb-4 flex items-center justify-between gap-4">
+        <h3 className="font-playfair text-base font-semibold text-[#3A2E33]">{title}</h3>
+        <button
+          type="button"
+          onClick={onEdit}
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-[#E8E0D5] bg-white px-3.5 py-1.5 font-montserrat text-xs font-semibold text-[#6B5860] transition-colors hover:border-[#5B835F]/40 hover:text-[#3A2E33]"
+        >
+          <Pencil className="h-3 w-3" aria-hidden />
+          Edit
+          <span className="sr-only">{title}</span>
+        </button>
+      </div>
+      <div className={wide ? "flex flex-col gap-3.5" : "grid gap-3.5 sm:grid-cols-2"}>{children}</div>
+    </section>
+  )
+}
+
+function joinOrUndefined(items: string[]) {
+  return items.length ? items.join(", ") : undefined
 }
 
 function RealityCheckSummary({
@@ -1317,69 +1389,97 @@ function RealityCheckSummary({
   const stage = data.currentBusiness?.stage
   const willing = (data.alignmentResponses ?? []).filter((r) => r.choice === "willing").length
   const total = data.alignmentResponses?.length ?? 0
+  const priorityLabels = (data.priorityFocusAreas ?? []).map(
+    (key) => data.baseline?.areas?.find((a) => a.key === key)?.label ?? CATEGORY_LABELS[key] ?? key,
+  )
+  const continueClass =
+    "inline-flex items-center gap-1.5 rounded-full bg-[#5B835F] px-5 py-2.5 font-montserrat text-sm font-bold text-white transition-colors hover:bg-[#4c6f50]"
 
   return (
-    <StageShell
-      eyebrow="Your Work-Life Balance Reality Check™"
-      title="Review or update your Reality Check™"
-      intro="Your answers are saved. Edit any section and continue through to refresh your Boundary Report™ — your first 30-day baseline is kept permanently."
-    >
-      <div className="rounded-2xl border border-brand-blush bg-card p-6 shadow-sm sm:p-8">
-        <SummaryRow label="Original Entrepreneurial Intention™" onEdit={() => onEdit("intention")}>
-          <span className="italic">{data.originalIntention?.summary || "—"}</span>
-        </SummaryRow>
-        <SummaryRow label="Current Business™" onEdit={() => onEdit("currentBusiness")}>
-          {stage ? `${STAGE_LABELS[stage]} stage` : "—"}
-          {data.currentBusiness?.services ? ` · ${data.currentBusiness.services}` : ""}
-        </SummaryRow>
-        <SummaryRow label="Business Reality™" onEdit={() => onEdit("requirements")}>
-          {listOrDash((data.businessRequirements ?? []).map((r) => r.label))}
-        </SummaryRow>
-        <SummaryRow label="Business & Personal Reality™" onEdit={() => onEdit("personalReality")}>
-          {listOrDash((data.personalReality ?? []).map((p) => p.label))}
-        </SummaryRow>
-        <SummaryRow label="30-Day Work-Life Balance Baseline™" onEdit={() => onEdit("audit")}>
-          Overall Work-Life Balance Score™: <span className="font-bold">{data.baseline?.overall ?? 0}</span>
-        </SummaryRow>
-        <SummaryRow label="Priority Focus Areas™" onEdit={() => onEdit("priority")}>
-          {listOrDash(
-            (data.priorityFocusAreas ?? []).map(
-              (key) => data.baseline?.areas?.find((a) => a.key === key)?.label ?? CATEGORY_LABELS[key] ?? key,
-            ),
-          )}
-        </SummaryRow>
-        <SummaryRow label="Work-Life Balance Alignment™" onEdit={() => onEdit("alignment")}>
-          {total ? `Willing on ${willing} of ${total}` : "—"}
-        </SummaryRow>
-      </div>
-
-      <div className="mt-8 flex flex-col-reverse items-center justify-between gap-4 sm:flex-row">
-        <button
-          type="button"
-          onClick={onRetake}
-          className="font-sans text-sm font-semibold text-brand-ink-soft underline-offset-4 hover:text-brand-ink hover:underline"
-        >
-          Retake from the beginning
-        </button>
-        <div className="flex flex-wrap items-center justify-center gap-3">
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-5 px-4 py-10">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <span className="font-montserrat text-xs font-bold uppercase tracking-[0.18em] text-[#5B835F]">
+            Work-Life Balance Reality Check™
+          </span>
+          <p className="mt-1 font-playfair text-xl font-medium text-[#3A2E33]">Complete</p>
+        </div>
+        <div className="flex flex-wrap items-center gap-2.5">
           <button
             type="button"
-            onClick={onViewReport}
-            className="inline-flex items-center gap-2 rounded-full border border-brand-coral px-6 py-3 font-sans text-sm font-bold text-brand-coral transition-colors hover:bg-brand-coral/5"
+            onClick={() => onEdit("intention")}
+            className="inline-flex items-center gap-1.5 rounded-full border border-[#E8E0D5] bg-white px-4 py-2.5 font-montserrat text-sm font-bold text-[#3A2E33] transition-colors hover:border-[#5B835F]/40"
           >
-            View My Boundary Report™
+            <Pencil className="h-3.5 w-3.5" aria-hidden />
+            Edit Full Reality Check
           </button>
-          {onboarding && (
-            <Link
-              href="/welcome/cherry-blossom/complete"
-              className="inline-flex items-center gap-2 rounded-full bg-brand-green px-6 py-3 font-sans text-sm font-bold text-white transition-colors hover:bg-brand-green-dark"
-            >
+          {onboarding ? (
+            <Link href="/welcome/cherry-blossom/complete" className={continueClass}>
               Continue
-              <ArrowRight className="h-4 w-4" aria-hidden />
+              <ArrowRight className="h-3.5 w-3.5" aria-hidden />
             </Link>
+          ) : (
+            <button type="button" onClick={onViewReport} className={continueClass}>
+              View My Boundary Report™
+              <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+            </button>
           )}
         </div>
       </div>
-    </StageShell>
+
+      <SummaryCard title="Your Intention™" onEdit={() => onEdit("intention")} wide>
+        <SummaryField label="Original Entrepreneurial Intention™" value={data.originalIntention?.summary || undefined} />
+      </SummaryCard>
+
+      <SummaryCard title="Your Current Business™" onEdit={() => onEdit("currentBusiness")}>
+        <SummaryField label="Stage" value={stage ? STAGE_LABELS[stage] : undefined} />
+        <SummaryField label="Services" value={data.currentBusiness?.services || undefined} />
+      </SummaryCard>
+
+      <SummaryCard title="Business Reality™" onEdit={() => onEdit("requirements")} wide>
+        <SummaryField
+          label="What Needs Attention"
+          value={joinOrUndefined((data.businessRequirements ?? []).map((r) => r.label))}
+        />
+      </SummaryCard>
+
+      <SummaryCard title="Business & Personal Reality™" onEdit={() => onEdit("personalReality")} wide>
+        <SummaryField
+          label="What Collides With Your Life"
+          value={joinOrUndefined((data.personalReality ?? []).map((p) => p.label))}
+        />
+      </SummaryCard>
+
+      <SummaryCard title="30-Day Work-Life Balance Baseline™" onEdit={() => onEdit("audit")}>
+        <SummaryField
+          label="Overall Work-Life Balance Score™"
+          value={data.baseline ? `${data.baseline.overall} / 100` : undefined}
+        />
+        <SummaryField label="Priority Focus Areas™" value={joinOrUndefined(priorityLabels)} />
+      </SummaryCard>
+
+      <SummaryCard title="Work-Life Balance Alignment™" onEdit={() => onEdit("alignment")} wide>
+        <SummaryField label="Willingness" value={total ? `Willing on ${willing} of ${total}` : undefined} />
+      </SummaryCard>
+
+      <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
+        <button
+          type="button"
+          onClick={onRetake}
+          className="font-montserrat text-sm font-semibold text-[#6B5860] underline-offset-4 hover:text-[#3A2E33] hover:underline"
+        >
+          Retake from the beginning
+        </button>
+        {onboarding && (
+          <button
+            type="button"
+            onClick={onViewReport}
+            className="font-montserrat text-sm font-semibold text-[#5B835F] underline-offset-4 hover:underline"
+          >
+            View My Boundary Report™
+          </button>
+        )}
+      </div>
+    </div>
   )
 }
