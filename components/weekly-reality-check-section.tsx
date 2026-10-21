@@ -37,18 +37,17 @@ export function WeeklyRealityCheckSection() {
     >
       <div className="flex flex-col gap-5 px-6 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-7">
         <div className="min-w-0 max-w-2xl">
-          <p className="mb-2 font-montserrat text-[10px] font-bold uppercase tracking-[0.2em] text-[#5B835F]">
+          <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
             Monday · Weekly 7-Day Work-Life Balance Audit™
           </p>
           <h3
             id="weekly-reality-check-title"
-            className="font-serif text-2xl font-semibold leading-tight text-[#2E1F27] text-balance"
+            className="mt-2 font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#5B835F] text-balance"
           >
             Redesign Your Entry Into The Workweek
           </h3>
-          <p className="mt-2 font-sans text-sm leading-relaxed text-[#5C4F55] text-pretty">
-            Retake your 7-day Work-Life Balance Audit™ to see how your life has been operating this past week, then
-            choose the one to three Priority Focus Areas™ that will guide your redesign for the week ahead.
+          <p className="mt-1 font-sans text-sm leading-relaxed text-[#6B5860] text-pretty">
+            Retake your 7-day audit, then choose 1–3 Priority Focus Areas™ for the week ahead.
           </p>
         </div>
 
