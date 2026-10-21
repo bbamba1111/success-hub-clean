@@ -17,7 +17,10 @@ export function PriorityFocusAreas() {
   const areas = focus?.priorityAreas ?? []
 
   return (
-    <div className="rounded-3xl border border-[#C0545A]/20 bg-[#FDF8F5] shadow-sm px-6 py-6 sm:px-8 sm:py-7 space-y-4">
+    <div
+      id="priority-focus-areas"
+      className="scroll-mt-24 rounded-3xl border border-[#C0545A]/20 bg-[#FDF8F5] shadow-sm px-6 py-6 sm:px-8 sm:py-7 space-y-4"
+    >
       <div className="flex items-center gap-2">
         <Target className="h-4 w-4 text-[#C0545A]" aria-hidden />
         <p className="font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#C0545A]">
@@ -45,6 +48,14 @@ export function PriorityFocusAreas() {
               </li>
             ))}
           </ul>
+          {focus.source === "weekly_7_day" && (
+            <a
+              href="/focus-areas"
+              className="inline-flex w-fit font-sans text-sm font-semibold text-[#C0545A] underline-offset-4 hover:underline"
+            >
+              Revise My Priority Focus Areas™
+            </a>
+          )}
         </>
       ) : (
         <div className="space-y-3">

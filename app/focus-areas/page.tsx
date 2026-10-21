@@ -1,113 +1,109 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+import useSWR, { mutate as globalMutate } from "swr"
+import Link from "next/link"
+import { CheckCircle2, Circle, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { CheckCircle2, Circle, ArrowLeft } from "lucide-react"
-import Link from "next/link"
-import { getAuditResults } from "@/utils/audit-storage"
 import { updateRealityCheck } from "@/utils/reality-check-storage"
-import { categoryLabels } from "@/components/work-life-balance-audit"
 import { CherryBlossomGuidance } from "@/components/cherry-blossom/cherry-blossom-guidance"
+import { loadWeeklyAudit, setWeeklyPriorities } from "@/lib/boundary-report/weekly-actions"
+import { CURRENT_PRIORITY_FOCUS_KEY } from "@/lib/boundary-report/use-current-priority-focus"
+import { MAX_WEEKLY_PRIORITIES } from "@/lib/boundary-report/weekly-types"
+import { formatAuditDate } from "@/components/weekly-audit/weekly-results"
 
-interface FocusArea {
-  id: string
-  name: string
-  description: string
-  score: number
-  selected: boolean
+const DECIDE_DESIGN_HREF = "/#priority-focus-areas"
+
+const AREA_DESCRIPTIONS: Record<string, string> = {
+  spiritual: "Enhance spiritual connection and mental health",
+  mental: "Improve focus, clarity, decision making and mental wellness",
+  physicalMovement: "Increase physical activity and exercise",
+  physicalNourishment: "Improve nutrition and healthy eating habits",
+  physicalSleep: "Develop better sleep habits and routines",
+  emotional: "Develop emotional awareness and balance",
+  personal: "Focus on personal interests and self-development",
+  intellectual: "Engage in learning and intellectual growth",
+  professional: "Improve work boundaries and satisfaction",
+  financial: "Enhance financial security and planning",
+  environmental: "Create a more supportive living and working environment",
+  relational: "Strengthen family and close relationships",
+  social: "Build and maintain social connections",
+  recreational: "Increase fun and recreational activities",
+  charitable: "Expand charitable giving and community involvement",
+}
+
+function getScoreColor(score: number) {
+  if (score >= 80) return "text-[#5B835F]"
+  if (score >= 60) return "text-yellow-600"
+  if (score >= 40) return "text-orange-600"
+  return "text-red-600"
+}
+
+function getProgressColor(score: number) {
+  if (score >= 80) return "bg-[#7FB069]"
+  if (score >= 60) return "bg-gradient-to-r from-[#E26C73] to-[#7FB069]"
+  if (score >= 40) return "bg-[#E26C73]"
+  return "bg-red-500"
 }
 
 export default function FocusAreasPage() {
-  const [selectedCount, setSelectedCount] = useState(0)
-  const [focusAreas, setFocusAreas] = useState<FocusArea[]>([])
+  const router = useRouter()
+  const { data, isLoading } = useSWR("focus-areas-weekly-audit", () => loadWeeklyAudit(), {
+    revalidateOnFocus: false,
+  })
+  const latest = data?.latest ?? null
+  const areas = latest?.report.areas ?? []
+
+  const [selected, setSelected] = useState<string[]>([])
+  const [initializedFor, setInitializedFor] = useState<string | null>(null)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  // Pre-fill with this week's saved choice so members can revise it.
+  useEffect(() => {
+    if (latest && initializedFor !== latest.id) {
+      setSelected((latest.report.priorityAreas ?? []).map((a) => a.key))
+      setInitializedFor(latest.id)
+    }
+  }, [latest, initializedFor])
 
   useEffect(() => {
-    // Scroll to top when page loads
     window.scrollTo(0, 0)
-
-    // Load audit results and filter for scores below 80%
-    const auditData = getAuditResults()
-    if (auditData) {
-      const lowScoringAreas = auditData.results
-        .filter((result) => result.percentage < 80)
-        .map((result) => ({
-          id: result.category,
-          name: categoryLabels[result.category] || result.category,
-          description: getAreaDescription(result.category),
-          score: Math.round(result.percentage),
-          selected: false,
-        }))
-      setFocusAreas(lowScoringAreas)
-    }
   }, [])
 
-  const getAreaDescription = (categoryId: string): string => {
-    const descriptions: Record<string, string> = {
-      spiritual: "Enhance spiritual connection and mental health",
-      mental: "Improve focus, clarity, decision making and mental wellness",
-      physicalMovement: "Increase physical activity and exercise",
-      physicalNourishment: "Improve nutrition and healthy eating habits",
-      physicalSleep: "Develop better sleep habits and routines",
-      emotional: "Develop emotional awareness and balance",
-      personal: "Focus on personal interests and self-development",
-      intellectual: "Engage in learning and intellectual growth",
-      professional: "Improve work boundaries and satisfaction",
-      financial: "Enhance financial security and planning",
-      environmental: "Create a more supportive living and working environment",
-      relational: "Strengthen family and close relationships",
-      social: "Build and maintain social connections",
-      recreational: "Increase fun and recreational activities",
-      charitable: "Expand charitable giving and community involvement",
+  const atLimit = selected.length >= MAX_WEEKLY_PRIORITIES
+
+  const toggle = (key: string) => {
+    setError(null)
+    setSelected((prev) => {
+      if (prev.includes(key)) return prev.filter((k) => k !== key)
+      if (prev.length >= MAX_WEEKLY_PRIORITIES) return prev
+      return [...prev, key]
+    })
+  }
+
+  const confirm = async () => {
+    if (!latest || selected.length < 1 || selected.length > MAX_WEEKLY_PRIORITIES) return
+    setSaving(true)
+    setError(null)
+    const res = await setWeeklyPriorities(latest.id, selected)
+    if (!res.ok) {
+      setSaving(false)
+      setError(res.error ?? "We couldn't save your priorities. Please try again.")
+      return
     }
-    return descriptions[categoryId] || "Focus on improvement in this area"
-  }
-
-  const handleAreaToggle = (areaId: string) => {
-    setFocusAreas((prev) =>
-      prev.map((area) => {
-        if (area.id === areaId) {
-          const newSelected = !area.selected
-          if (newSelected && selectedCount >= 3) {
-            return area // Don't select if already at limit
-          }
-          return { ...area, selected: newSelected }
-        }
-        return area
-      }),
-    )
-  }
-
-  useEffect(() => {
-    const count = focusAreas.filter((area) => area.selected).length
-    setSelectedCount(count)
-  }, [focusAreas])
-
-  const getScoreColor = (score: number) => {
-    if (score >= 60) return "text-yellow-600"
-    if (score >= 40) return "text-orange-600"
-    return "text-red-600"
-  }
-
-  const getProgressColor = (score: number) => {
-    if (score >= 60) return "bg-gradient-to-r from-[#E26C73] to-[#7FB069]"
-    if (score >= 40) return "bg-[#E26C73]"
-    return "bg-red-500"
-  }
-
-  const saveFocusAreas = () => {
-    const selectedAreas = focusAreas.filter((area) => area.selected).map((area) => area.id)
-    localStorage.setItem("focusAreas", JSON.stringify(selectedAreas))
-
-    // Enrich this week's Reality Check record with the chosen priority areas
-    // (best-effort; no-op for anonymous visitors). Same weekly row, no duplicate.
-    void updateRealityCheck({ selectedPriorityAreas: selectedAreas })
+    // Legacy mirrors kept for existing readers of the weekly Reality Check row.
+    localStorage.setItem("focusAreas", JSON.stringify(selected))
+    void updateRealityCheck({ selectedPriorityAreas: selected })
+    await globalMutate(CURRENT_PRIORITY_FOCUS_KEY)
+    router.push(DECIDE_DESIGN_HREF)
   }
 
   return (
     <div className="min-h-screen bg-gray-50 p-4">
       <div className="max-w-4xl mx-auto">
-        {/* Header with Logo */}
         <div className="text-center mb-8 pt-8">
           <div className="flex justify-center mb-6">
             <img
@@ -118,115 +114,147 @@ export default function FocusAreasPage() {
               className="rounded-full shadow-lg"
             />
           </div>
-          <h1 className="mb-6 font-display text-3xl font-bold tracking-tight text-brand-ink text-balance">
+          <h1 className="mb-3 font-display text-3xl font-bold tracking-tight text-brand-ink text-balance">
             Choose Your Priority Focus Areas&trade;
           </h1>
+          {latest && (
+            <p className="font-sans text-sm text-gray-600">
+              Scores from your Weekly 7-Day Work-Life Balance Audit&trade;, completed{" "}
+              {formatAuditDate(latest.report.completedAt ?? "")}.
+            </p>
+          )}
         </div>
 
-        {/* Cherry Blossom coaches the choice — she already knows the scores. */}
         <div className="mb-8 text-left">
           <CherryBlossomGuidance greeting="I&apos;ve reviewed your Reality Check&trade;.">
             <p>You don&apos;t need to transform every part of your life at once.</p>
             <p>
-              Choose the one to three areas you&apos;re ready to intentionally nurture over the next 28 days. We&apos;ll
-              build your weekly rhythm around these.
+              Choose the one to three areas you&apos;re ready to intentionally nurture this week. They&apos;ll anchor
+              your declaration in Decide &amp; Design&trade;.
             </p>
           </CherryBlossomGuidance>
         </div>
 
-        {/* Selection Counter — live, dynamic; restyled to the brand system. */}
-        <div className="mb-8 rounded-xl border border-brand-green/30 bg-brand-green/10 p-4 text-center">
-          <p className="font-medium text-brand-green-dark">
-            <span className="font-bold">Selected: {selectedCount}/3</span> — you can nurture up to three areas this
-            cycle.
+        {isLoading ? (
+          <p className="mb-8 text-center font-sans text-sm text-gray-600">Loading your latest results…</p>
+        ) : !data?.signedIn ? (
+          <Card className="mb-8 border-2 border-gray-200">
+            <CardContent className="p-8 text-center">
+              <p className="mb-6 text-gray-600">Sign in to choose your Priority Focus Areas&trade;.</p>
+              <Link href="/login">
+                <Button className="bg-[#7FB069] hover:bg-[#5B835F] text-white px-8 py-3">Sign In</Button>
+              </Link>
+            </CardContent>
+          </Card>
+        ) : !latest ? (
+          <Card className="mb-8 border-2 border-gray-200">
+            <CardContent className="p-8 text-center">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">Take your 7-day audit first</h2>
+              <p className="text-gray-600 mb-6">
+                Your Priority Focus Areas&trade; are chosen from your latest Weekly 7-Day Work-Life Balance Audit&trade;.
+                Complete it on Monday in Decide &amp; Design&trade;, then come back here.
+              </p>
+              <Link href="/#weekly-reality-check">
+                <Button className="bg-[#7FB069] hover:bg-[#5B835F] text-white px-8 py-3">Take My 7-Day Audit&trade;</Button>
+              </Link>
+            </CardContent>
+          </Card>
+        ) : (
+          <>
+            <div
+              className="mb-8 rounded-xl border border-brand-green/30 bg-brand-green/10 p-4 text-center"
+              aria-live="polite"
+            >
+              <p className="font-medium text-brand-green-dark">
+                <span className="font-bold">
+                  Selected: {selected.length}/{MAX_WEEKLY_PRIORITIES}
+                </span>{" "}
+                {atLimit
+                  ? "— you've reached the limit. Deselect one to choose another."
+                  : "— choose one to three areas to nurture this week."}
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-4 mb-8" role="group" aria-label="Priority Focus Areas">
+              {areas.map((area) => {
+                const isSelected = selected.includes(area.key)
+                const disabled = !isSelected && atLimit
+                const score = Math.round(area.score)
+                return (
+                  <Card
+                    key={area.key}
+                    role="checkbox"
+                    aria-checked={isSelected}
+                    aria-disabled={disabled}
+                    tabIndex={0}
+                    onClick={() => toggle(area.key)}
+                    onKeyDown={(e) => {
+                      if (e.key === " " || e.key === "Enter") {
+                        e.preventDefault()
+                        toggle(area.key)
+                      }
+                    }}
+                    className={`cursor-pointer transition-all border-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#7FB069] ${
+                      isSelected
+                        ? "border-[#7FB069] bg-[#7FB069]/5 shadow-md"
+                        : disabled
+                          ? "border-gray-200 opacity-60"
+                          : "border-gray-200 hover:border-gray-300 hover:shadow-sm"
+                    }`}
+                  >
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between gap-4 mb-4">
+                        <div className="flex items-center gap-4">
+                          {isSelected ? (
+                            <CheckCircle2 className="w-6 h-6 shrink-0 text-[#7FB069]" aria-hidden />
+                          ) : (
+                            <Circle className="w-6 h-6 shrink-0 text-gray-400" aria-hidden />
+                          )}
+                          <div>
+                            <h3 className="text-xl font-semibold text-gray-900">{area.label}</h3>
+                            <p className="text-gray-600">
+                              {AREA_DESCRIPTIONS[area.key] ?? "Focus on improvement in this area"}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className={`text-3xl font-bold ${getScoreColor(score)}`}>{score}%</div>
+                          <p className="text-sm text-gray-500">This Week</p>
+                        </div>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div className={`h-2 rounded-full ${getProgressColor(score)}`} style={{ width: `${score}%` }} />
+                      </div>
+                    </CardContent>
+                  </Card>
+                )
+              })}
+            </div>
+          </>
+        )}
+
+        {error && (
+          <p role="alert" className="mb-4 text-center font-sans text-sm font-semibold text-red-600">
+            {error}
           </p>
-        </div>
+        )}
 
-        {/* Focus Areas Grid */}
-        <div className="space-y-4 mb-8">
-          {focusAreas.length === 0 ? (
-            <Card className="border-2 border-gray-200">
-              <CardContent className="p-8 text-center">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">Excellent Work!</h3>
-                <p className="text-gray-600 mb-6">
-                  All your life areas scored 80% or above. You have a strong foundation in work-life balance! Consider
-                  reviewing your results or exploring our wellness tracking tools to maintain your success.
-                </p>
-                <Link href="/my-results">
-                  <Button className="bg-[#7FB069] hover:bg-[#E26C73] text-white px-8 py-3">View Your Results</Button>
-                </Link>
-              </CardContent>
-            </Card>
-          ) : (
-            focusAreas.map((area) => (
-              <Card
-                key={area.id}
-                className={`cursor-pointer transition-all border-2 ${
-                  area.selected
-                    ? "border-[#7FB069] bg-[#7FB069]/5 shadow-md"
-                    : "border-gray-200 hover:border-gray-300 hover:shadow-sm"
-                }`}
-                onClick={() => handleAreaToggle(area.id)}
-              >
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-4">
-                      <div className="flex items-center">
-                        {area.selected ? (
-                          <CheckCircle2 className="w-6 h-6 text-[#7FB069]" />
-                        ) : (
-                          <Circle className="w-6 h-6 text-gray-400" />
-                        )}
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-semibold text-gray-900">{area.name}</h3>
-                        <p className="text-gray-600">{area.description}</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className={`text-3xl font-bold ${getScoreColor(area.score)}`}>{area.score}%</div>
-                      <p className="text-sm text-gray-500">Current Score</p>
-                    </div>
-                  </div>
-
-                  {/* Progress Bar */}
-                  <div className="mb-2">
-                    <div className="flex justify-between items-center mb-1">
-                      <span className="text-sm font-medium text-gray-700">Progress</span>
-                      <span className={`text-sm font-medium ${getScoreColor(area.score)}`}>{area.score}%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div
-                        className={`h-2 rounded-full ${getProgressColor(area.score)}`}
-                        style={{ width: `${area.score}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))
-          )}
-        </div>
-
-        {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-          {selectedCount > 0 && (
-            <Link href="/cherry-blossom-intentions" onClick={saveFocusAreas}>
-              <Button size="lg" className="bg-[#7FB069] hover:bg-[#E26C73] text-white px-8 py-3">
-                Continue to Intention Setting
-                <CheckCircle2 className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-          )}
-          <Link href="/my-results">
-            <Button variant="outline" size="lg" className="px-8 py-3 bg-transparent">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Scores
+          {latest && (
+            <Button
+              size="lg"
+              onClick={confirm}
+              disabled={saving || selected.length < 1}
+              className="bg-[#7FB069] hover:bg-[#5B835F] text-white px-8 py-3"
+            >
+              {saving ? "Saving…" : "Continue to Decide & Design™"}
+              <CheckCircle2 className="ml-2 h-5 w-5" aria-hidden />
             </Button>
-          </Link>
-          <Link href="/">
-            <Button variant="outline" size="lg" className="px-8 py-3 bg-transparent">
-              Back to Home
+          )}
+          <Link href="/reality-check">
+            <Button variant="outline" size="lg" className="w-full px-8 py-3 bg-transparent">
+              <ArrowLeft className="mr-2 h-4 w-4" aria-hidden />
+              Back to Reality Check&trade;
             </Button>
           </Link>
         </div>
