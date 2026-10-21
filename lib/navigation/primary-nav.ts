@@ -140,7 +140,7 @@ export const PRIMARY_NAV: PrimarySection[] = [
   },
   {
     id: "my-harmony",
-    navLabel: "My Blueprint™",
+    navLabel: "My Boundary Blueprint™",
     title: "My Work-Life Harmony Blueprint™",
     href: "/my-blueprint",
     icon: Flower2,
@@ -159,7 +159,7 @@ export const PRIMARY_NAV: PrimarySection[] = [
       },
       {
         label: "My Business Boundary Report™",
-        href: "/my-report",
+        href: "/my-blueprint#boundary-report",
         description: "Your saved Work-Life Balance Boundary Report™ and every weekly 7-day audit report.",
       },
       {

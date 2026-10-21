@@ -36,6 +36,7 @@ import {
   MapPin,
   Navigation,
   Hammer,
+  ShieldCheck,
 } from "lucide-react"
 
 import { getAuditResults, type AuditData } from "@/utils/audit-storage"
@@ -259,7 +260,7 @@ function LayerDivider({ label }: { label: string }) {
 
 // ── Main client component ───────────────────────────────────────────────────
 
-export function MyBlueprintClient() {
+export function MyBlueprintClient({ boundaryReport }: { boundaryReport?: React.ReactNode }) {
   // Canonical Founder GPS™ / Next Best Move™ (Phase 7) — read-only, via the
   // Harmony Context Engine™. `snapshot.intelligence.gpsContext` and
   // `founderDestination` are already assembled by <HarmonyProvider>; this
@@ -394,7 +395,7 @@ export function MyBlueprintClient() {
             Harmony Lane™
           </p>
           <h1 className="font-display text-4xl font-semibold text-brand-ink sm:text-5xl text-balance">
-            My Blueprint™
+            My Boundary Blueprint™
           </h1>
           <p className="mt-2 font-serif italic text-xl text-brand-ink-soft sm:text-2xl text-balance">
             Your Work-Life Harmony Blueprint™
@@ -408,9 +409,24 @@ export function MyBlueprintClient() {
       {/* ── Blueprint body ───────────────────────────────────────────────── */}
       <section className="mx-auto w-full max-w-4xl px-4 py-12 sm:py-14 space-y-6">
 
-        {/* 01 — CURRENT REALITY ────────────────────────────────────────── */}
+        {boundaryReport && (
+          <div id="boundary-report" className="scroll-mt-24">
+            <BlueprintSection
+              eyebrow="01 — Boundary Report"
+              icon={ShieldCheck}
+              title="Work-Life Balance Boundary Report™"
+              subtitle="Your saved report and every weekly 7-day audit"
+              accent="#7FA37F"
+              emphasize
+            >
+              {boundaryReport}
+            </BlueprintSection>
+          </div>
+        )}
+
+        {/* 02 — CURRENT REALITY ────────────────────────────────────────── */}
         <BlueprintSection
-          eyebrow="01 — Current Reality"
+          eyebrow="02 — Current Reality"
           icon={Compass}
           title="Weekly Reality Check™"
           subtitle="How You're Operating Right Now"
@@ -473,7 +489,7 @@ export function MyBlueprintClient() {
         {/* 02 + 03 — LIFE & BUSINESS ─────────────────────────���─────────── */}
         <div className="grid gap-6 sm:grid-cols-2">
           <BlueprintSection
-            eyebrow="02 — Life"
+            eyebrow="03 — Life"
             icon={Heart}
             title="Work-Life Balance Audit™"
             subtitle="Your Life"
@@ -522,7 +538,7 @@ export function MyBlueprintClient() {
           </BlueprintSection>
 
           <BlueprintSection
-            eyebrow="03 — Business"
+            eyebrow="04 — Business"
             icon={BarChart2}
             title="Entrepreneur Success Assessment™ (ESA)"
             subtitle="Your Business"
@@ -573,7 +589,7 @@ export function MyBlueprintClient() {
         {/* 04 + 05 — FOUNDER & BUSINESS CONTEXT ────────────────────────── */}
         <div className="grid gap-6 sm:grid-cols-2">
           <BlueprintSection
-            eyebrow="04 — Founder"
+            eyebrow="05 — Founder"
             icon={User}
             title="Founder Profile™"
             subtitle="Who Is Building It"
@@ -609,7 +625,7 @@ export function MyBlueprintClient() {
           </BlueprintSection>
 
           <BlueprintSection
-            eyebrow="05 — Business Context"
+            eyebrow="06 — Business Context"
             icon={Briefcase}
             title="Business Context™"
             subtitle="What You're Building"
@@ -653,7 +669,7 @@ export function MyBlueprintClient() {
 
         {/* 06 — FOUNDER DESTINATION ────────────────���────────────────────── */}
         <BlueprintSection
-          eyebrow="06 — Destination"
+          eyebrow="07 — Destination"
           icon={MapPin}
           title="Founder Destination™"
           subtitle="Where You're Intentionally Going"
@@ -708,7 +724,7 @@ export function MyBlueprintClient() {
 
         {/* 07 — FOUNDER GPS™ NEXT BEST MOVE™ ─────────────────────────────── */}
         <BlueprintSection
-          eyebrow="07 — Founder GPS™"
+          eyebrow="08 — Founder GPS™"
           icon={Navigation}
           title="Your Next Best Move™"
           subtitle="The Single Highest-Leverage Next Step, Right Now"
@@ -751,7 +767,7 @@ export function MyBlueprintClient() {
 
         {/* 08 — MY BLUEPRINT HISTORY™ ──────────────────────────────────── */}
         <BlueprintSection
-          eyebrow="08 — Build History"
+          eyebrow="09 — Build History"
           icon={Hammer}
           title="My Blueprint History™"
           subtitle="Every Business Asset™ You've Actually Finished"

@@ -1,11 +1,12 @@
 import type { Metadata } from "next"
 import { HarmonyProvider } from "@/components/harmony-context/harmony-context-provider"
 import { MyBlueprintClient } from "@/components/my-blueprint/my-blueprint-client"
+import { BoundaryReportSummary } from "@/components/boundary-report/boundary-report-summary"
 
 export const metadata: Metadata = {
-  title: "My Blueprint™ | Harmony Lane™",
+  title: "My Boundary Blueprint™ | Harmony Lane™",
   description:
-    "Your Work-Life Harmony Blueprint™ — the member's personal source of truth inside Harmony Lane™, bringing together the Weekly Reality Check™, Work-Life Balance Audit™, Entrepreneur Success Assessment™, Founder Profile™, Business Context™, and your Founder GPS™ Next Best Move™ in one place.",
+    "Your Boundary Blueprint™ — the member's personal source of truth inside Harmony Lane™, bringing together the Work-Life Balance Boundary Report™, weekly 7-day audits, the Weekly Reality Check™, Work-Life Balance Audit™, Entrepreneur Success Assessment™, Founder Profile™, Business Context™, and your Founder GPS™ Next Best Move™ in one place.",
 }
 
 // `OperatingEngineProvider` is already global via the root `app/layout.tsx`.
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
 export default function MyBlueprintPage() {
   return (
     <HarmonyProvider>
-      <MyBlueprintClient />
+      <MyBlueprintClient boundaryReport={<BoundaryReportSummary />} />
     </HarmonyProvider>
   )
 }
