@@ -28,18 +28,19 @@ export const ALIGNMENT_QUESTIONS: AlignmentQuestion[] = [
     id: "start-intentionally",
     title: "Start With Gratitude",
     question:
-      "Would you be willing to start each day with gratitude, intention, and your vision — before any business activity?",
+      "Would you be willing to begin your day with gratitude, set an intention, visualize the life you want to create, embody the emotions of that vision, and nurture it through your daily choices before moving into business activity?",
   },
   {
     id: "protect-body",
-    title: "Protect Your Body",
-    question: "Would you be willing to protect the 30-Minute Movement Window™ as part of your workday?",
+    title: "Start Your Day with Movement",
+    question:
+      "Would you be willing to move your body before your workday to boost your energy and well-being, with the support and accountability of a co-working community?",
   },
   {
     id: "protect-nourishment",
-    title: "Protect Nourishment",
+    title: "Nourish, Connect & Recharge",
     question:
-      "Would you be willing to protect the Extended Healthy Hybrid Lunch™ rather than allowing work to consume that time?",
+      "Would you be willing to protect time for a real lunch break to nourish your body, connect with others, celebrate personal or business wins, enjoy nature, and recharge before starting your business day?",
   },
   {
     id: "contain-work",
