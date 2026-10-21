@@ -15,6 +15,7 @@ import { FlaskConical, X, RotateCcw, Clock } from "lucide-react"
 import { SCHEDULE, type BlockId, type LiveSessionOverride, type Season } from "@/operating-engine"
 import { useDeveloperMode, useOperatingEngine } from "@/components/operating-engine-provider"
 import { AccessControlPanel } from "@/components/access-control/access-control-panel"
+import { OPEN_WEEKLY_AUDIT_EVENT } from "@/components/weekly-reality-check-section"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
@@ -93,6 +94,21 @@ export function DeveloperToolbar() {
 
   const { enabled, setEnabled, override, setOverride, reset } = dev
   const firstName = experience?.member.firstName
+
+  // Jump to Monday's Decide & Redesign block, then open the audit dropdown once
+  // the Monday-only section has mounted (it only renders after the re-render).
+  const previewWeeklyAudit = () => {
+    setOverride({ dayOfWeek: 1, blockId: "monday-debrief", minutesSinceMidnight: undefined })
+    let attempts = 0
+    const tryOpen = () => {
+      if (document.getElementById("weekly-reality-check")) {
+        window.dispatchEvent(new Event(OPEN_WEEKLY_AUDIT_EVENT))
+      } else if (attempts++ < 40) {
+        window.setTimeout(tryOpen, 100)
+      }
+    }
+    window.setTimeout(tryOpen, 100)
+  }
 
   // Collapsed launcher.
   if (!open) {
@@ -194,6 +210,15 @@ export function DeveloperToolbar() {
                 {b.shortTitle}
               </Pill>
             ))}
+          </Field>
+
+          <Field label="Weekly 7-Day Audit™">
+            <Pill
+              active={override.dayOfWeek === 1 && override.blockId === "monday-debrief"}
+              onClick={previewWeeklyAudit}
+            >
+              Preview Monday Audit
+            </Pill>
           </Field>
 
           <Field label="Simulated Day">

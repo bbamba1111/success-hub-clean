@@ -18,8 +18,8 @@
  * my three priorities, my declaration, and the protected windows of my day.
  */
 
-import { useEffect, useState } from "react"
 import { Clock } from "lucide-react"
+import { useOperatingEngine } from "@/components/operating-engine-provider"
 import { SCHEDULE_BY_ID } from "@/operating-engine/config/schedule"
 import { CollapsibleSubSection } from "@/components/collapsible-sub-section"
 import { CeoWorkdayDesignForm } from "@/components/planners/ceo-workday-design-form"
@@ -38,10 +38,11 @@ export function DebriefSpace() {
   // Renders identically on Monday (`monday-debrief`) and Tue–Sun
   // (`daily-planning-gps`) — only the schedule lookup (and therefore the
   // ritual label + time shown just below) differs by day.
-  const [isMonday, setIsMonday] = useState(true)
-  useEffect(() => {
-    setIsMonday(new Date().getDay() === 1)
-  }, [])
+  // Read the day from the Operating Engine (platform timezone) so Developer
+  // Mode's Time Machine "Simulated Day" is honored — the raw browser clock
+  // ignored it and hid the Monday-only audit on every other real day.
+  const experience = useOperatingEngine()
+  const isMonday = experience?.time.dayOfWeek === 1
   const debriefSchedule = SCHEDULE_BY_ID[isMonday ? "monday-debrief" : "daily-planning-gps"]
 
   return (

@@ -8,15 +8,29 @@
  * in-progress answers survive closing and reopening.
  */
 
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { ArrowRight, ChevronDown } from "lucide-react"
 import { WeeklyAuditFlow } from "@/components/weekly-audit/weekly-audit-flow"
 
+/** Window event the Developer Toolbar's Time Machine fires to open this dropdown. */
+export const OPEN_WEEKLY_AUDIT_EVENT = "weekly-audit:open"
+
 export function WeeklyRealityCheckSection() {
   const [open, setOpen] = useState(false)
+  const sectionRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    const handleOpen = () => {
+      setOpen(true)
+      sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+    }
+    window.addEventListener(OPEN_WEEKLY_AUDIT_EVENT, handleOpen)
+    return () => window.removeEventListener(OPEN_WEEKLY_AUDIT_EVENT, handleOpen)
+  }, [])
 
   return (
     <section
+      ref={sectionRef}
       id="weekly-reality-check"
       aria-labelledby="weekly-reality-check-title"
       className="scroll-mt-24 overflow-hidden rounded-3xl border border-[#E8DFE2] bg-white shadow-sm"
