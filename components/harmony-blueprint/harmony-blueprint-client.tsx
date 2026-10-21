@@ -66,7 +66,7 @@ function ScoreRing({
 
 function harmonyColor(score: number): string {
   if (score >= 70) return "#5B835F"
-  if (score >= 45) return "#E8A84E"
+  if (score >= 45) return "#8FAE8B"
   return "#E26C73"
 }
 
@@ -245,7 +245,7 @@ export function HarmonyBlueprintClient() {
         {/* Harmony Snapshot™ — always shown first */}
         {ready && (
           <div className="rounded-3xl bg-white border border-brand-blush shadow-lg overflow-hidden">
-            <div className="h-1 bg-gradient-to-r from-brand-coral via-[#E8A84E] to-brand-green" aria-hidden />
+            <div className="h-1 bg-gradient-to-r from-brand-coral via-[#8FAE8B] to-brand-green" aria-hidden />
             <div className="px-7 py-9">
               <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.22em] text-brand-coral mb-1">
                 Harmony Snapshot™
@@ -289,30 +289,11 @@ export function HarmonyBlueprintClient() {
           cardNumber="Blueprint Card 1"
           title="Work-Life Balance Reality Check™"
           subtitle="Where you currently stand — a condensed read of your latest measurements."
-          accentColor="#E8A84E"
+          accentColor="#8FAE8B"
           defaultOpen
         >
           {ready && (lifeData || bizData) ? (
             <div className="space-y-5">
-              <div className="flex flex-col items-center gap-8 sm:flex-row sm:justify-around">
-                {lifeScore !== null ? (
-                  <ScoreRing score={lifeScore} color="#E26C73" label="Life Balance Score™" size={100} />
-                ) : (
-                  <div className="flex flex-col items-center gap-2 opacity-40">
-                    <div className="h-[100px] w-[100px] rounded-full border-8 border-dashed border-brand-blush" />
-                    <p className="font-sans text-xs font-semibold uppercase tracking-wider text-brand-ink-soft text-center">Life Balance Score™</p>
-                  </div>
-                )}
-                <ScoreRing score={harmonyScore} color={hColor} label="Overall Harmony Score™" size={120} stroke={9} />
-                {bizScore !== null ? (
-                  <ScoreRing score={bizScore} color="#5B835F" label="Business Score™" size={100} />
-                ) : (
-                  <div className="flex flex-col items-center gap-2 opacity-40">
-                    <div className="h-[100px] w-[100px] rounded-full border-8 border-dashed border-brand-blush" />
-                    <p className="font-sans text-xs font-semibold uppercase tracking-wider text-brand-ink-soft text-center">Business Score™</p>
-                  </div>
-                )}
-              </div>
               {focusAreas.length > 0 && (
                 <div className="rounded-2xl border border-brand-coral/20 bg-brand-coral/[0.04] px-5 py-5">
                   <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-brand-coral mb-3">
@@ -328,7 +309,7 @@ export function HarmonyBlueprintClient() {
                   </ul>
                 </div>
               )}
-              <Link href="/reality-check" className="inline-flex items-center gap-1.5 font-sans text-xs font-semibold text-[#E8A84E] hover:underline">
+              <Link href="/reality-check" className="inline-flex items-center gap-1.5 font-sans text-xs font-semibold text-[#8FAE8B] hover:underline">
                 View Full Reality Check™
                 <ArrowRight className="h-3.5 w-3.5" aria-hidden />
               </Link>
@@ -459,14 +440,14 @@ export function HarmonyBlueprintClient() {
           cardNumber="Blueprint Card 5"
           title="Business Context™"
           subtitle="What you're building — foundational information about your business."
-          accentColor="#C9A96E"
+          accentColor="#8FAE8B"
         >
-          <div className="rounded-2xl border border-[#C9A96E]/25 bg-[#FBF7EE] px-5 py-5">
+          <div className="rounded-2xl border border-[#8FAE8B]/25 bg-[#8FAE8B]/[0.06] px-5 py-5">
             <div className="flex items-center justify-between mb-3">
-              <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#C9A96E]">
+              <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#8FAE8B]">
                 Business Context™
               </p>
-              <Link href="/business-context?from=/harmony-blueprint" className="font-sans text-xs font-semibold text-[#C9A96E] hover:underline">
+              <Link href="/business-context?from=/harmony-blueprint" className="font-sans text-xs font-semibold text-[#8FAE8B] hover:underline">
                 {bcData ? "Edit" : "Complete"}
               </Link>
             </div>
@@ -484,7 +465,7 @@ export function HarmonyBlueprintClient() {
                   bcData.biggestOpportunities?.length ? { label: "Greatest Opportunity™", value: fmt(bcData.biggestOpportunities[0]) } : null,
                 ].filter((item): item is { label: string; value: string } => item !== null && !!item?.value)
                   .map(({ label, value }) => (
-                    <DataCard key={label} label={label} value={value} accent="#C9A96E" />
+                    <DataCard key={label} label={label} value={value} accent="#8FAE8B" />
                   ))}
               </div>
             ) : (

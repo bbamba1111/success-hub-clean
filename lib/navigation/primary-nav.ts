@@ -158,6 +158,11 @@ export const PRIMARY_NAV: PrimarySection[] = [
         description: "Measure how your life has been operating over the past 30 days.",
       },
       {
+        label: "My Business Boundary Report™",
+        href: "/my-report",
+        description: "Your saved Work-Life Balance Boundary Report™ and every weekly 7-day audit report.",
+      },
+      {
         label: "Business Bottleneck Audit™",
         href: "/entrepreneur-success-assessment",
         description: "Establish your business baseline across 15 business areas, then keep it current every Monday.",
