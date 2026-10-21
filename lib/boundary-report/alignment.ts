@@ -62,8 +62,9 @@ export const ALIGNMENT_QUESTIONS: AlignmentQuestion[] = [
   },
   {
     id: "disconnect",
-    title: "Disconnect",
-    question: "Would you be willing to Unplug™ from business communication and digital demands at the designated time?",
+    title: "Unplug & Get Some Sleep",
+    question:
+      "Would you be willing to unplug from blue-light technology and digital demands at your designated time each evening to make room for eight hours of sleep?",
   },
   {
     id: "redesign-workweek",
