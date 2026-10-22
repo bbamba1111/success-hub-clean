@@ -62,7 +62,7 @@ export function SegmentLearnMore({
           isEvening ? "hover:bg-white/10" : "hover:bg-[#7FB069]/[0.08]"
         }`}
       >
-        <span className={`flex items-center gap-2 font-sans text-[15px] font-bold ${labelColor}`}>
+        <span className={`flex items-center gap-2 font-sans text-[14px] font-bold ${labelColor}`}>
           <Info className={`h-5 w-5 ${iconColor}`} aria-hidden />
           Learn More About This Boundary&trade;
           <span className="sr-only">: {title}</span>

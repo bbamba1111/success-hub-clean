@@ -296,7 +296,7 @@ export function BusinessDayBlock({
               <div className="mb-2.5 flex flex-wrap items-center gap-2.5">
                 {locked && (
                   <span
-                    className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-[0.14em] ${
+                    className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[12px] font-semibold uppercase tracking-[0.14em] ${
                       isEvening ? "bg-white/15 text-white/85" : "bg-black/[0.06] text-[#6B5860]"
                     }`}
                   >
@@ -311,14 +311,14 @@ export function BusinessDayBlock({
                     ? "Working Now"
                     : "Living Now"
                   return (
-                    <span className="inline-flex items-center gap-1.5 rounded-[6px] bg-white/70 px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-[#78AD7D] shadow-sm backdrop-blur-sm ring-1 ring-white/60">
+                    <span className="inline-flex items-center gap-1.5 rounded-[6px] bg-white/70 px-2.5 py-1 text-[12px] font-bold uppercase tracking-[0.18em] text-[#78AD7D] shadow-sm backdrop-blur-sm ring-1 ring-white/60">
                       <span className="relative flex h-[12px] w-[12px] shrink-0 items-center justify-center">
                         <span
                           className="absolute inset-[-2px] rounded-full animate-ping"
                           style={{ backgroundColor: "rgba(120,173,125,0.30)", animationDuration: "2s" }}
                         />
                         <span
-                          className="relative text-[11px] leading-none"
+                          className="relative text-[12px] leading-none"
                           style={{ animation: "pulse 2s ease-in-out infinite" }}
                         >
                           🌸
@@ -329,7 +329,7 @@ export function BusinessDayBlock({
                   )
                 })() : (
                   <span
-                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-[0.18em] ${
+                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[12px] font-semibold uppercase tracking-[0.18em] ${
                       isEvening ? STATUS_BADGE_EVENING[status] : STATUS_BADGE[status]
                     }`}
                   >
@@ -341,7 +341,7 @@ export function BusinessDayBlock({
                 </span>
                 {isCurrent && segmentRemaining && (
                   <span
-                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-[0.14em] ${
+                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[12px] font-semibold uppercase tracking-[0.14em] ${
                       isEvening ? "bg-white/15 text-white" : "bg-[#7FB069]/15 text-[#5A7A45]"
                     }`}
                   >
@@ -376,7 +376,7 @@ export function BusinessDayBlock({
                 <div className="mt-4 flex flex-col gap-2.5">
                   {segmentAccess?.unlockAtLabel && (
                     <span
-                      className={`inline-flex w-fit items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold tabular-nums ${
+                      className={`inline-flex w-fit items-center gap-1.5 rounded-full px-2.5 py-1 text-[12px] font-semibold tabular-nums ${
                         isEvening ? "bg-white/10 text-white/85" : "bg-[#7FB069]/12 text-[#5A7A45]"
                       }`}
                     >
@@ -459,7 +459,7 @@ export function BusinessDayBlock({
                 return next
               })
             }
-            className={`flex w-full items-center justify-center gap-1.5 border-t py-3 font-montserrat text-[11px] font-bold uppercase tracking-[0.18em] transition-colors ${
+            className={`flex w-full items-center justify-center gap-1.5 border-t py-3 font-montserrat text-[12px] font-bold uppercase tracking-[0.18em] transition-colors ${
               isEvening
                 ? "border-white/15 text-white/75 hover:bg-white/10"
                 : "border-black/[0.06] text-[#6B5860]/60 hover:bg-black/[0.02]"
@@ -478,7 +478,7 @@ export function BusinessDayBlock({
                   : "Open Segment"}
             {!open && locked && aboutSeen && (
               <span
-                className={`ml-1.5 inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold normal-case tracking-normal ${
+                className={`ml-1.5 inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold normal-case tracking-normal ${
                   isEvening ? "bg-white/15 text-white/70" : "bg-[#7FB069]/15 text-[#5A7A45]"
                 }`}
               >
@@ -587,7 +587,7 @@ export function BusinessDayBlock({
 
             {/* Row 2 — Music */}
             <div className="px-7 py-5">
-              <p className={`font-montserrat text-[11px] font-bold uppercase tracking-[0.18em] mb-3 ${isEvening ? "text-white/60" : "text-[#6B5860]/50"}`}>
+              <p className={`font-montserrat text-[12px] font-bold uppercase tracking-[0.18em] mb-3 ${isEvening ? "text-white/60" : "text-[#6B5860]/50"}`}>
                 Music
               </p>
               <div className="flex flex-col gap-1" role="group" aria-label="Music options">

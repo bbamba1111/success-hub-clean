@@ -52,7 +52,7 @@ export function DebriefSpace() {
         <h2 className="font-serif text-3xl font-semibold text-[#2E1F27] text-balance leading-tight">
           This Is Where I Choose How I Live, Work &amp; Lead.
         </h2>
-        <p className="inline-flex items-center justify-center gap-2 font-montserrat text-[11px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
+        <p className="inline-flex items-center justify-center gap-2 font-montserrat text-[12px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
           <Clock className="h-3.5 w-3.5" aria-hidden />
           {isMonday ? "Monday Ritual™" : "Daily Ritual™"} · {debriefSchedule?.timeLabel ?? "10:30–11:00 AM"}
         </p>

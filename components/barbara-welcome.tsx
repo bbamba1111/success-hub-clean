@@ -127,14 +127,14 @@ export function BarbaraWelcome() {
 
             {/* Today's Reflection */}
             <div className="mt-7 border-l-2 border-[#C13B6B]/30 pl-4">
-              <p className="font-montserrat text-[11px] font-bold uppercase tracking-[0.22em] text-[#C13B6B]">
+              <p className="font-montserrat text-[12px] font-bold uppercase tracking-[0.22em] text-[#C13B6B]">
                 {"Today\u2019s Reflection"}
               </p>
               <p className="mt-2 font-playfair text-[15px] italic leading-relaxed text-[#4A3A42]">
                 &ldquo;{coaching.reflection.text}&rdquo;
               </p>
               {coaching.reflection.author && (
-                <p className="mt-1 font-montserrat text-[11px] font-semibold tracking-wide text-[#7A6A72]">
+                <p className="mt-1 font-montserrat text-[12px] font-semibold tracking-wide text-[#7A6A72]">
                   {"\u2014 "}{coaching.reflection.author}
                 </p>
               )}
