@@ -109,7 +109,7 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
     surface: "#FBF1F3",
     backgroundImage: "/images/block-morning-given.png",
     cherryBlossomMessage:
-      "Welcome to Morning GIV•EN™ — your 90-minute intentional morning operating ritual. GIV•EN™ stands for Gratitude, Invitation to Your Creator, Vision and Visualization, Emotional Embodiment, and Nurture. This is where you lead yourself before you lead your business. When you begin your day aligned in mind, body, and spirit, everything that follows — your decisions, your creativity, your presence — flows from a place of wholeness rather than depletion.",
+      "Welcome to Morning GIV•EN™ — your 45-minute intentional morning operating ritual. GIV•EN™ stands for Gratitude, Invitation to Your Creator, Vision and Visualization, Emotional Embodiment, and Nurture. This is where you lead yourself before you lead your business. When you begin your day aligned in mind, body, and spirit, everything that follows — your decisions, your creativity, your presence — flows from a place of wholeness rather than depletion.",
     guidance:
       "Lead yourself before you lead your business. This is your sanctuary — a few grounded moments of Gratitude, Invitation, Vision, Emotional embodiment, and Nurture — so you meet the day already whole.",
     defaultRuleType: "human",

@@ -97,7 +97,7 @@ const SEGMENTS = [
     time: "9:00 AM – 10:30 AM",
     type: "life" as const,
     description:
-      "Your 90-minute intentional morning operating ritual — grounding your mind, aligning your spirit, and setting the tone for your entire Work-Life Balance Business Day™. GIV\u2022EN\u2122 stands for: Gratitude \u2022 Invitation to Your Creator \u2022 Vision & Visualization \u2022 Emotional Embodiment \u2022 Nurture.",
+      "Your 45-minute intentional morning operating ritual — grounding your mind, aligning your spirit, and setting the tone for your entire Work-Life Balance Business Day™. GIV\u2022EN\u2122 stands for: Gratitude \u2022 Invitation to Your Creator \u2022 Vision & Visualization \u2022 Emotional Embodiment \u2022 Nurture.",
     examples: [
       "opening my heart and mind to gratitude, allowing abundance, possibility, and peace to become today's starting point",
       "inviting my Creator to co-create my day with me",
@@ -106,12 +106,11 @@ const SEGMENTS = [
       "nurturing my Daily Non-Negotiables\u2122 with consistent action",
       "journaling my intentions and setting a clear focus for the day",
     ],
-    borrowNote: "Up to 1 hour of this 90-minute segment may be temporarily reallocated to Flex Time\u2122 when life requires it — preserving at least 30 minutes for Morning GIV\u2022EN\u2122.",
     learnMore: {
-      purpose: "Morning GIV\u2022EN\u2122 is your 90-minute intentional morning operating ritual. GIV\u2022EN\u2122 stands for: Gratitude \u2022 Invitation to Your Creator \u2022 Vision & Visualization \u2022 Emotional Embodiment \u2022 Nurture. It combines spiritual alignment with scientific habit formation to create sustainable transformation from the inside out.",
+      purpose: "Morning GIV\u2022EN\u2122 is your 45-minute intentional morning operating ritual. GIV\u2022EN\u2122 stands for: Gratitude \u2022 Invitation to Your Creator \u2022 Vision & Visualization \u2022 Emotional Embodiment \u2022 Nurture. It combines spiritual alignment with scientific habit formation to create sustainable transformation from the inside out.",
       whyItMatters: "How you begin your morning determines how you execute your day. Harmony Lane\u2122 combines two powerful forces: spiritual alignment — inviting your Creator and planting seeds of intention — and scientific habit formation through neuroscience, identity-based behavior change, and the Reticular Activating System (RAS). Together they align both your beliefs and your behaviors.",
       science: "The Reticular Activating System (RAS) in the brain acts as a filter — when you clearly visualize and emotionally embody your desired outcomes, the RAS begins directing your attention toward opportunities that match. Behavioral science research (Duhigg, Clear, Dispenza) confirms that emotional conditioning and consistent repetition rewire identity at the neurological level. Nervous system regulation through gratitude and visualization also lowers cortisol, improving executive decision-making throughout the day. Harmony Lane\u2122 doesn\u2019t ask you to choose between science and spirituality. It uses both to help you intentionally redesign how you live, lead, and build your business.",
-      businessValue: "Founders who protect Morning GIV\u2022EN\u2122 report higher focus during their CEO Workday\u2122, clearer decision-making, stronger sense of purpose, and reduced entrepreneurial isolation. This is not indulgence — it is operational preparation. The 30-minute borrow buffer ensures you never lose this practice entirely, even on demanding days.",
+      businessValue: "Founders who protect Morning GIV\u2022EN\u2122 report higher focus during their CEO Workday\u2122, clearer decision-making, stronger sense of purpose, and reduced entrepreneurial isolation. This is not indulgence — it is operational preparation. Because it is never borrowed from, this practice stays protected even on demanding days.",
       commonMistakes: [
         "Checking email or social media before completing Morning GIV\u2022EN\u2122.",
         "Skipping the ritual when time is tight — that is exactly when you need it most.",
@@ -122,7 +121,7 @@ const SEGMENTS = [
         "Move through each GIV\u2022EN\u2122 element in sequence: Gratitude \u2192 Invitation \u2192 Vision \u2192 Emotional Embodiment \u2192 Nurture.",
         "Wear comfortable clothing after Flex Time\u2122 so you flow directly into the Movement Window\u2122 at 10:30 AM.",
         "Complete your ritual before opening any device-based communication.",
-        "Depth of engagement matters more than duration. 30 focused minutes outperforms 90 distracted ones.",
+        "Depth of engagement matters more than duration. Give all 45 minutes your full presence.",
       ],
       cbTip: "The GIV\u2022EN\u2122 framework aligns your spirit and your science simultaneously. When you open with Gratitude and invite your Creator into co-creation, then see and feel your desired life through Vision & Visualization and Emotional Embodiment, you are not just preparing for the day — you are becoming the founder who already lives it.",
     },
@@ -1003,14 +1002,14 @@ export function DesignMyWeekClient() {
               {"borrowNote" in current && current.borrowNote && (
                 <div className="mb-6 flex items-start gap-2 rounded-xl border border-brand-blush bg-brand-cream/50 px-4 py-3">
                   <Info className="h-4 w-4 mt-0.5 shrink-0 text-brand-ink-soft" aria-hidden />
-                  <p className="font-sans text-[13px] font-medium text-brand-ink-soft">
+                  <p className="font-sans text-[16px] font-medium text-brand-ink-soft">
                     <strong className="text-brand-ink">Borrow Flex Time™:</strong>{" "}
                     {(current as typeof SEGMENTS[1]).borrowNote}
                   </p>
                 </div>
               )}
 
-              {/* Learn More About This Segment™ */}
+              {/* Learn More About This Boundary™ */}
               {"learnMore" in current && current.learnMore && (() => {
                 const lm = current.learnMore as {
                   purpose: string; whyItMatters: string; science: string
@@ -1024,9 +1023,9 @@ export function DesignMyWeekClient() {
                       className="flex w-full items-center justify-between px-5 py-4 text-left"
                       aria-expanded={showLearnMore}
                     >
-                      <span className="flex items-center gap-2 font-sans text-sm font-bold text-brand-ink">
+                      <span className="flex items-center gap-2 font-sans text-[17px] font-bold text-brand-ink">
                         <Info className="h-4 w-4 text-brand-green" aria-hidden />
-                        Learn More About This Segment™
+                        Learn More About This Boundary™
                       </span>
                       <ChevronDown
                         className={`h-4 w-4 text-brand-ink-soft transition-transform duration-200 ${showLearnMore ? "rotate-180" : ""}`}
@@ -1034,7 +1033,7 @@ export function DesignMyWeekClient() {
                       />
                     </button>
                     {showLearnMore && (
-                      <div className="px-5 pb-6 space-y-5 font-sans text-[15px] leading-relaxed text-brand-ink">
+                      <div className="px-5 pb-6 space-y-5 font-sans text-[18px] leading-relaxed text-brand-ink">
                         <Section heading="Purpose" body={lm.purpose} />
                         <Section heading="Why It Matters" body={lm.whyItMatters} />
                         <Section heading="Scientific Foundation" body={lm.science} />

@@ -15,14 +15,14 @@ export type SegmentAbout = { sections: Section[] }
 /* ── shared sub-components ──────────────────────────────────────────────── */
 
 function Para({ children }: { children: ReactNode }) {
-  return <p className="text-sm leading-relaxed text-[#5C4F55]">{children}</p>
+  return <p className="text-[17px] leading-relaxed text-[#5C4F55]">{children}</p>
 }
 
 function Bullets({ items }: { items: string[] }) {
   return (
     <ul className="space-y-1.5 pl-1">
       {items.map((item) => (
-        <li key={item} className="flex items-start gap-2 text-sm leading-relaxed text-[#5C4F55]">
+        <li key={item} className="flex items-start gap-2 text-[17px] leading-relaxed text-[#5C4F55]">
           <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#C13B6B]/50" aria-hidden />
           {item}
         </li>
@@ -34,10 +34,10 @@ function Bullets({ items }: { items: string[] }) {
 function Tip({ children }: { children: ReactNode }) {
   return (
     <div className="rounded-xl border border-[#C13B6B]/20 bg-[#C13B6B]/5 px-4 py-3">
-      <p className="mb-1 font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#C13B6B]">
+      <p className="mb-1 font-montserrat text-[13px] font-bold uppercase tracking-[0.18em] text-[#C13B6B]">
         Cherry Blossom™
       </p>
-      <p className="text-sm leading-relaxed text-[#5C4F55]">{children}</p>
+      <p className="text-[17px] leading-relaxed text-[#5C4F55]">{children}</p>
     </div>
   )
 }
@@ -45,10 +45,10 @@ function Tip({ children }: { children: ReactNode }) {
 function FlexBox({ children }: { children: ReactNode }) {
   return (
     <div className="rounded-xl border border-[#7FB069]/25 bg-[#7FB069]/8 px-4 py-3">
-      <p className="mb-1 font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
+      <p className="mb-1 font-montserrat text-[13px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
         Flex Time™ Borrowing
       </p>
-      <div className="text-sm leading-relaxed text-[#5C4F55]">{children}</div>
+      <div className="text-[17px] leading-relaxed text-[#5C4F55]">{children}</div>
     </div>
   )
 }
@@ -201,20 +201,11 @@ export const SEGMENT_ABOUT: Record<string, SegmentAbout> = {
         heading: "Purpose",
         body: (
           <Para>
-            Morning GIV&bull;EN™ is your 90-minute intentional morning operating ritual. GIV&bull;EN™ stands
+            Morning GIV&bull;EN™ is your 45-minute intentional morning operating ritual. GIV&bull;EN™ stands
             for: Gratitude &bull; Invitation to Your Creator &bull; Vision & Visualization &bull; Emotional
             Embodiment &bull; Nurture. It combines spiritual alignment with scientific habit formation to
             create sustainable transformation from the inside out.
           </Para>
-        ),
-      },
-      {
-        heading: "Borrow Flex Time™",
-        body: (
-          <FlexBox>
-            Up to 1 hour of this 90-minute segment may be temporarily reallocated to Flex Time™ when life
-            requires it — preserving at least 30 minutes for Morning GIV&bull;EN™.
-          </FlexBox>
         ),
       },
       {
@@ -249,8 +240,8 @@ export const SEGMENT_ABOUT: Record<string, SegmentAbout> = {
           <Para>
             Founders who protect Morning GIV&bull;EN™ report higher focus during their CEO Workday™, clearer
             decision-making, stronger sense of purpose, and reduced entrepreneurial isolation. This is not
-            indulgence — it is operational preparation. The 30-minute borrow buffer ensures you never lose
-            this practice entirely, even on demanding days.
+            indulgence — it is operational preparation. Because it is never borrowed from, this practice
+            stays protected even on demanding days.
           </Para>
         ),
       },
@@ -275,7 +266,7 @@ export const SEGMENT_ABOUT: Record<string, SegmentAbout> = {
               "Move through each GIV\u2022EN™ element in sequence: Gratitude → Invitation → Vision → Emotional Embodiment → Nurture.",
               "Wear comfortable clothing after Flex Time™ so you flow directly into the Movement Window™ at 10:30 AM.",
               "Complete your ritual before opening any device-based communication.",
-              "Depth of engagement matters more than duration. 30 focused minutes outperforms 90 distracted ones.",
+              "Depth of engagement matters more than duration. Give all 45 minutes your full presence.",
             ]}
           />
         ),
@@ -808,7 +799,7 @@ export function renderSegmentAbout(about: SegmentAbout): ReactNode {
       {about.sections.map((section, i) => (
         <div key={i}>
           {section.heading && (
-            <p className="mb-1.5 font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/70">
+            <p className="mb-1.5 font-montserrat text-[13px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/70">
               {section.heading}
             </p>
           )}

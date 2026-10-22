@@ -472,7 +472,7 @@ export function BusinessDayBlock({
             {open
               ? "Close"
               : locked
-                ? "About This Segment™"
+                ? "About This Boundary™"
                 : blockId && SPACE_LABEL[blockId as keyof typeof SPACE_LABEL]
                   ? `Enter ${SPACE_LABEL[blockId as keyof typeof SPACE_LABEL]}`
                   : "Open Segment"}

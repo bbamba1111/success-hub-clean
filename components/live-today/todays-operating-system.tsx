@@ -518,8 +518,8 @@ function SegmentCard({ segment, isCurrent }: { segment: HarmonySegment; isCurren
               className="flex w-full items-center justify-between bg-white/40 px-4 py-3 text-left transition-colors hover:bg-white/60"
               aria-expanded={showLearnMore}
             >
-              <p className="font-montserrat text-xs font-semibold text-[#6B5860]">
-                Learn More About This Segment™
+              <p className="font-montserrat text-[15px] font-semibold text-[#6B5860]">
+                Learn More About This Boundary™
               </p>
               <ChevronDown
                 className={`h-3.5 w-3.5 text-[#6B5860]/60 transition-transform duration-200 ${showLearnMore ? "rotate-180" : ""}`}
@@ -527,7 +527,7 @@ function SegmentCard({ segment, isCurrent }: { segment: HarmonySegment; isCurren
               />
             </button>
             {showLearnMore && (
-              <div className="bg-white/20 px-4 py-4 font-montserrat text-[12px] leading-relaxed text-[#6B5860]">
+              <div className="bg-white/20 px-4 py-4 font-montserrat text-[15px] leading-relaxed text-[#6B5860]">
                 <p>
                   Open{" "}
                   <Link
@@ -536,7 +536,7 @@ function SegmentCard({ segment, isCurrent }: { segment: HarmonySegment; isCurren
                   >
                     Design My Week™
                   </Link>{" "}
-                  to review the full purpose, scientific foundation, business value, and Cherry Blossom™ tips for this segment.
+                  to review the full purpose, scientific foundation, business value, and Cherry Blossom™ tips for this boundary.
                 </p>
               </div>
             )}

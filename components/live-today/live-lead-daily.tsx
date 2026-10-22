@@ -369,14 +369,14 @@ function ExpandableBlock({ block }: { block: RhythmBlock }) {
                 className={`h-4 w-4 text-brand-ink/40 transition-transform duration-200 ${showAbout ? "rotate-180" : ""}`}
                 aria-hidden
               />
-              <span className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-brand-ink/40">
-                About This Segment
+              <span className="font-montserrat text-[13px] font-bold uppercase tracking-[0.18em] text-brand-ink/40">
+                About This Boundary
               </span>
             </button>
 
             {showAbout && (
               <div className="px-7 pb-6 space-y-3 border-t border-black/[0.05]">
-                <p className="font-sans text-[14px] leading-relaxed text-brand-ink/65 max-w-2xl pt-4">
+                <p className="font-sans text-[17px] leading-relaxed text-brand-ink/65 max-w-2xl pt-4">
                   {block.description}
                 </p>
                 {block.items && block.items.length > 0 && (
@@ -385,8 +385,8 @@ function ExpandableBlock({ block }: { block: RhythmBlock }) {
                       <li key={item.label} className="flex items-start gap-3">
                         <span className={`mt-1.5 h-1.5 w-1.5 rounded-full shrink-0 ${a.itemDot}`} aria-hidden />
                         <div>
-                          <span className="font-sans text-sm font-semibold text-brand-ink">{item.label} — </span>
-                          <span className="font-sans text-sm text-brand-ink/60">{item.body}</span>
+                          <span className="font-sans text-[17px] font-semibold text-brand-ink">{item.label} — </span>
+                          <span className="font-sans text-[17px] text-brand-ink/60">{item.body}</span>
                         </div>
                       </li>
                     ))}

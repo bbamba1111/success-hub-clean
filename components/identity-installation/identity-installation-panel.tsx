@@ -71,7 +71,7 @@ export const SEGMENT_CONFIGS: Record<string, SegmentIntentionConfig> = {
   "morning-given": {
     intentionLabel: "Set My Morning GIV\u2022EN\u2122 Intention\u2122",
     segmentDescription:
-      "Your 90-minute intentional morning operating ritual — Gratitude, Invitation, Vision, Emotional Embodiment, and Nurture — where you lead yourself before you lead your business.",
+      "Your 45-minute intentional morning operating ritual — Gratitude, Invitation, Vision, Emotional Embodiment, and Nurture — where you lead yourself before you lead your business.",
     accentColor: "#C13B6B",
     surface: "#FBF1F3",
     completionLabel: "I Completed My Morning GIV\u2022EN\u2122",

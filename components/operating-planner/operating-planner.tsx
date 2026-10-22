@@ -12,7 +12,7 @@
  *        · Flex Time™ info panel (early-access only)
  *        · Morning GIV•EN™ guided experience (morning-given only)
  *        · Borrow note (morning-given, lunch-break)
- *        · Learn More About This Segment™ accordion
+ *        · Learn More About This Boundary™ accordion
  *        · Movement Planner (movement-window only)
  *        · Sleep Planner (power-down only)
  *        · Choose one… or create your own — example chips (skipped for
@@ -134,7 +134,7 @@ const SEGMENT_DATA: Partial<Record<BlockId, SegmentData>> = {
     time: "9:00 AM – 10:30 AM",
     type: "life",
     description:
-      "Your 90-minute intentional morning operating ritual — grounding your mind, aligning your spirit, and setting the tone for your entire Work-Life Balance Business Day™. GIV•EN™ stands for: Gratitude • Invitation to Your Creator • Vision & Visualization • Emotional Embodiment • Nurture.",
+      "Your 45-minute intentional morning operating ritual — grounding your mind, aligning your spirit, and setting the tone for your entire Work-Life Balance Business Day™. GIV•EN™ stands for: Gratitude • Invitation to Your Creator • Vision & Visualization • Emotional Embodiment • Nurture.",
     examples: [
       "opening my heart and mind to gratitude, allowing abundance, possibility, and peace to become today's starting point",
       "inviting my Creator to co-create my day with me",
@@ -143,17 +143,15 @@ const SEGMENT_DATA: Partial<Record<BlockId, SegmentData>> = {
       "nurturing my Daily Non-Negotiables™ with consistent action",
       "journaling my intentions and setting a clear focus for the day",
     ],
-    borrowNote:
-      "Up to 1 hour of this 90-minute segment may be temporarily reallocated to Flex Time™ when life requires it �� preserving at least 30 minutes for Morning GIV•EN™.",
     learnMore: {
       purpose:
-        "Morning GIV•EN™ is your 90-minute intentional morning operating ritual. GIV•EN™ stands for: Gratitude • Invitation to Your Creator • Vision & Visualization • Emotional Embodiment • Nurture. It combines spiritual alignment with scientific habit formation to create sustainable transformation from the inside out.",
+        "Morning GIV•EN™ is your 45-minute intentional morning operating ritual. GIV•EN™ stands for: Gratitude • Invitation to Your Creator • Vision & Visualization • Emotional Embodiment • Nurture. It combines spiritual alignment with scientific habit formation to create sustainable transformation from the inside out.",
       whyItMatters:
         "How you begin your morning determines how you execute your day. Harmony Lane™ combines two powerful forces: spiritual alignment — inviting your Creator and planting seeds of intention — and scientific habit formation through neuroscience, identity-based behavior change, and the Reticular Activating System (RAS). Together they align both your beliefs and your behaviors.",
       science:
         "The Reticular Activating System (RAS) in the brain acts as a filter — when you clearly visualize and emotionally embody your desired outcomes, the RAS begins directing your attention toward opportunities that match. Behavioral science research (Duhigg, Clear, Dispenza) confirms that emotional conditioning and consistent repetition rewire identity at the neurological level. Nervous system regulation through gratitude and visualization also lowers cortisol, improving executive decision-making throughout the day.",
       businessValue:
-        "Founders who protect Morning GIV•EN™ report higher focus during their CEO Workday™, clearer decision-making, stronger sense of purpose, and reduced entrepreneurial isolation. This is not indulgence — it is operational preparation. The 30-minute borrow buffer ensures you never lose this practice entirely, even on demanding days.",
+        "Founders who protect Morning GIV•EN™ report higher focus during their CEO Workday™, clearer decision-making, stronger sense of purpose, and reduced entrepreneurial isolation. This is not indulgence — it is operational preparation. Because it is never borrowed from, this practice stays protected even on demanding days.",
       commonMistakes: [
         "Checking email or social media before completing Morning GIV•EN™.",
         "Skipping the ritual when time is tight — that is exactly when you need it most.",
@@ -164,7 +162,7 @@ const SEGMENT_DATA: Partial<Record<BlockId, SegmentData>> = {
         "Move through each GIV•EN™ element in sequence: Gratitude → Invitation → Vision → Emotional Embodiment → Nurture.",
         "Wear comfortable clothing after Flex Time™ so you flow directly into the Movement Window™ at 10:30 AM.",
         "Complete your ritual before opening any device-based communication.",
-        "Depth of engagement matters more than duration. 30 focused minutes outperforms 90 distracted ones.",
+        "Depth of engagement matters more than duration. Give all 45 minutes your full presence.",
       ],
       cbTip:
         "The GIV•EN™ framework aligns your spirit and your science simultaneously. When you open with Gratitude and invite your Creator into co-creation, then see and feel your desired life through Vision & Visualization and Emotional Embodiment, you are not just preparing for the day — you are becoming the founder who already lives it.",
@@ -891,7 +889,7 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
             the rest of the member's Work-Life Balance Business Day™. */}
         {blockId === "morning-given" && <MorningGivenExperience />}
 
-        {/* Learn More About This Segment™ accordion — right under title */}
+        {/* Learn More About This Boundary™ accordion — right under title */}
         {data.learnMore && (
           <div className={`mb-6 mt-3 rounded-2xl border ${sx.border20} ${sx.bg05} overflow-hidden`}>
             <button
@@ -900,9 +898,9 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
               className={`flex w-full items-center justify-between px-5 py-4 text-left ${sx.hoverBg04} transition-colors`}
               aria-expanded={showLearnMore}
             >
-              <span className={`flex items-center gap-2 font-sans text-sm font-bold ${sx.textDark}`}>
+              <span className={`flex items-center gap-2 font-sans text-[17px] font-bold ${sx.textDark}`}>
                 <Info className={`h-4 w-4 ${sx.text}`} aria-hidden />
-                Learn More About This Segment™
+                Learn More About This Boundary™
               </span>
               <ChevronDown
                 className={`h-4 w-4 ${sx.text60} transition-transform duration-200 ${showLearnMore ? "rotate-180" : ""}`}
@@ -910,7 +908,7 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
               />
             </button>
             {showLearnMore && (
-              <div className={`px-5 pb-6 pt-1 space-y-5 font-sans text-[15px] leading-relaxed text-brand-ink border-t ${sx.border10}`}>
+              <div className={`px-5 pb-6 pt-1 space-y-5 font-sans text-[18px] leading-relaxed text-brand-ink border-t ${sx.border10}`}>
                 <LearnMoreSection heading="Purpose" body={data.learnMore.purpose} />
                 <LearnMoreSection heading="Why It Matters" body={data.learnMore.whyItMatters} />
                 <LearnMoreSection heading="Scientific Foundation" body={data.learnMore.science} />
