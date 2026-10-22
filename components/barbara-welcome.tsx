@@ -127,7 +127,7 @@ export function BarbaraWelcome() {
 
             {/* Today's Reflection */}
             <div className="mt-7 border-l-2 border-[#C13B6B]/30 pl-4">
-              <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.22em] text-[#C13B6B]">
+              <p className="font-montserrat text-[11px] font-bold uppercase tracking-[0.22em] text-[#C13B6B]">
                 {"Today\u2019s Reflection"}
               </p>
               <p className="mt-2 font-playfair text-[15px] italic leading-relaxed text-[#4A3A42]">

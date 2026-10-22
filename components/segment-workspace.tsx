@@ -201,7 +201,7 @@ export function SegmentWorkspace({ blockId, isCurrent, tint = "255 255 255" }: S
                     </span>
                     <div>
                       <p className="text-sm font-semibold text-[#3A2E33]">{tool.label}</p>
-                      <p className="text-xs text-[#6B5860]">{tool.description}</p>
+                      <p className="text-[13px] text-[#6B5860]">{tool.description}</p>
                     </div>
                   </div>
                   <Button asChild size="sm" variant="outline" className={TOGGLE_CLASS}>

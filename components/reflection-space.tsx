@@ -208,7 +208,7 @@ export function ReflectionSpace() {
       <div className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm px-8 py-7 space-y-5">
         <div className="flex items-center gap-2">
           <Clock className="h-3.5 w-3.5 text-[#C0545A]" aria-hidden />
-          <p className="font-sans text-[10px] font-bold uppercase tracking-[0.18em] text-[#C0545A]">
+          <p className="font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-[#C0545A]">
             Monday Ritual™ · {realityCheckSchedule?.timeLabel ?? "9:45–10:30 AM"}
           </p>
         </div>
@@ -269,7 +269,7 @@ export function ReflectionSpace() {
           {auditDone && (
             <div className="flex items-center gap-1.5 shrink-0 pt-0.5">
               <span
-                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] whitespace-nowrap ${
+                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] whitespace-nowrap ${
                   auditLocked ? "bg-black/10 text-[#6B5860]" : "bg-[#7FB069] text-white"
                 }`}
               >
@@ -482,7 +482,7 @@ function StepRibbon({ steps, doneFlags }: { steps: string[]; doneFlags: boolean[
               >
                 {done ? <CheckCircle2 className="h-3.5 w-3.5" /> : i + 1}
               </span>
-              <span className="font-sans text-[10px] font-semibold uppercase tracking-[0.12em] text-[#6B5860]">
+              <span className="font-sans text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6B5860]">
                 {label}
               </span>
             </div>
@@ -519,7 +519,7 @@ function BreakdownRow({ label, score }: { label: string; score: number }) {
       <div className="flex items-center justify-between gap-3 mb-1.5">
         <div className="flex items-center gap-2">
           <span
-            className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em]"
+            className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-bold uppercase tracking-[0.12em]"
             style={{ backgroundColor: accent + "15", color: accent }}
           >
             Life
