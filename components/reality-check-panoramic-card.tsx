@@ -27,8 +27,8 @@ export function RealityCheckPanoramicCard() {
         </div>
 
         <Link
-          href="/boundary-report"
-          className="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-full bg-[#C13B6B] px-6 py-3 text-center font-montserrat text-[12px] font-bold uppercase tracking-[0.12em] text-white transition-colors hover:bg-[#A8305C] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C13B6B] focus-visible:ring-offset-2 md:self-center"
+          href="/welcome/cherry-blossom"
+          className="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-full bg-[#5B835F] px-6 py-3 text-center font-montserrat text-[12px] font-bold uppercase tracking-[0.12em] text-white transition-colors hover:bg-[#4A6E4E] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B835F] focus-visible:ring-offset-2 md:self-center"
         >
           Take the Reality Check™
           <ArrowRight className="h-4 w-4" aria-hidden="true" />
