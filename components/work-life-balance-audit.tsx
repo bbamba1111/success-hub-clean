@@ -33,11 +33,11 @@ const questionBodies = AUDIT_QUESTION_BODIES
  * Hover states shift one tone darker.
  */
 const AUDIT_OPTIONS = [
-  { value: 5, label: "Always",    bg: "bg-[#B5294A]", hover: "hover:bg-[#9E2040]", text: "text-white" },
-  { value: 4, label: "Often",     bg: "bg-[#D45475]", hover: "hover:bg-[#C0466A]", text: "text-white" },
-  { value: 3, label: "Sometimes", bg: "bg-[#E2849A]", hover: "hover:bg-[#D4738B]", text: "text-white" },
-  { value: 2, label: "Rarely",    bg: "bg-[#EEB0BF]", hover: "hover:bg-[#E5A0B0]", text: "text-brand-ink" },
-  { value: 1, label: "Never",     bg: "bg-[#F8DAE2]", hover: "hover:bg-[#F0CCD6]", text: "text-brand-ink" },
+  { value: 5, label: "Always",    bg: "bg-[#4F6B4C]", hover: "hover:bg-[#435C41]", text: "text-white" },
+  { value: 4, label: "Often",     bg: "bg-[#6F8F6B]", hover: "hover:bg-[#62805E]", text: "text-white" },
+  { value: 3, label: "Sometimes", bg: "bg-[#8BA888]", hover: "hover:bg-[#7E9B7B]", text: "text-white" },
+  { value: 2, label: "Rarely",    bg: "bg-[#C3D4C0]", hover: "hover:bg-[#B6C9B3]", text: "text-brand-ink" },
+  { value: 1, label: "Never",     bg: "bg-[#E8EFE6]", hover: "hover:bg-[#DCE6DA]", text: "text-brand-ink" },
 ]
 
 interface WorkLifeBalanceAuditProps {
@@ -156,15 +156,15 @@ export default function WorkLifeBalanceAudit({
   if (isComplete && results) {
     return (
       <div className="w-full max-w-4xl mx-auto px-4 py-10" ref={completionRef}>
-        <div className="rounded-3xl bg-white border border-brand-blush shadow-lg overflow-hidden">
-          <div className="bg-brand-blush/40 px-8 py-6 text-center">
-            <p className="font-sans text-xs font-bold uppercase tracking-[0.22em] text-brand-coral mb-2">
+        <div className="rounded-3xl bg-white border border-brand-sage-light shadow-lg overflow-hidden">
+          <div className="bg-brand-sage-light/40 px-8 py-6 text-center">
+            <p className="font-sans text-xs font-bold uppercase tracking-[0.22em] text-brand-sage-dark mb-2">
               Cherry Blossom&trade;
             </p>
             <h2 className="font-playfair text-3xl font-bold text-brand-ink">Audit Complete</h2>
           </div>
           <div className="px-8 py-8 text-center">
-            <div className="text-6xl font-bold text-brand-coral font-sans mb-2">{results.overallScore}%</div>
+            <div className="text-6xl font-bold text-brand-sage-dark font-sans mb-2">{results.overallScore}%</div>
             <p className="font-sans font-medium text-brand-ink-soft mb-8">
               {results.overallScore >= 80
                 ? "Excellent Balance"
@@ -177,14 +177,14 @@ export default function WorkLifeBalanceAudit({
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <button
                 onClick={() => router.push(resultsUrl)}
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-coral px-8 py-3 font-sans text-sm font-bold text-white shadow transition-colors hover:bg-brand-coral-dark"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-tan px-8 py-3 font-sans text-sm font-bold text-white shadow transition-colors hover:bg-brand-tan-dark"
               >
                 View Detailed Results
                 <ArrowRight className="h-4 w-4" />
               </button>
               <button
                 onClick={() => { setCurrentQuestion(0); setAnswers({}); setIsComplete(false); setResults(null) }}
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-brand-coral/40 px-8 py-3 font-sans text-sm font-bold text-brand-coral hover:bg-brand-blush/40 transition-colors"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-brand-tan/50 px-8 py-3 font-sans text-sm font-bold text-brand-sage-dark hover:bg-brand-sage-light/40 transition-colors"
               >
                 <RotateCcw className="h-4 w-4" />
                 Retake Audit
@@ -201,7 +201,7 @@ export default function WorkLifeBalanceAudit({
       {/* Progress header */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-2">
-          <span className="font-sans text-xs font-semibold uppercase tracking-widest text-brand-coral">
+          <span className="font-sans text-xs font-semibold uppercase tracking-widest text-brand-sage-dark">
             Work-Life Balance Audit™
           </span>
           <span className="font-sans text-xs font-medium text-brand-ink-soft tabular-nums">
@@ -209,19 +209,19 @@ export default function WorkLifeBalanceAudit({
           </span>
         </div>
         {/* Progress bar — brand pink */}
-        <div className="h-1.5 w-full rounded-full bg-brand-blush overflow-hidden">
+        <div className="h-1.5 w-full rounded-full bg-brand-sage-light overflow-hidden">
           <div
-            className="h-full rounded-full bg-brand-coral transition-all duration-300"
+            className="h-full rounded-full bg-brand-sage-medium transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
       </div>
 
       {/* Question card */}
-      <div className="rounded-3xl bg-white border border-brand-blush/60 shadow-lg overflow-hidden">
+      <div className="rounded-3xl bg-white border border-brand-sage-light/60 shadow-lg overflow-hidden">
         <div className="px-7 pt-8 pb-2 sm:px-9 sm:pt-9">
           {/* Category label */}
-          <p className="font-sans text-xs font-bold uppercase tracking-[0.2em] text-brand-coral mb-3">
+          <p className="font-sans text-xs font-bold uppercase tracking-[0.2em] text-brand-sage-dark mb-3">
             {categoryLabels[currentQ.category as keyof typeof categoryLabels]}
           </p>
 
@@ -250,8 +250,8 @@ export default function WorkLifeBalanceAudit({
                     w-full flex items-center gap-4 rounded-2xl px-5 py-4
                     font-sans font-semibold text-[15px] text-left
                     transition-all duration-150 hover:scale-[1.015] active:scale-[0.99]
-                    focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-coral/50
-                    ${isSelected ? "ring-2 ring-offset-2 ring-brand-coral" : ""}
+                    focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-tan/50
+                    ${isSelected ? "ring-2 ring-offset-2 ring-brand-tan" : ""}
                   `}
                 >
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/20 font-bold text-sm">
@@ -265,7 +265,7 @@ export default function WorkLifeBalanceAudit({
         </div>
 
         {/* Footer nav */}
-        <div className="flex items-center justify-between border-t border-brand-blush/50 px-7 py-4 sm:px-9">
+        <div className="flex items-center justify-between border-t border-brand-sage-light/50 px-7 py-4 sm:px-9">
           <button
             type="button"
             onClick={() => setCurrentQuestion((q) => Math.max(0, q - 1))}
