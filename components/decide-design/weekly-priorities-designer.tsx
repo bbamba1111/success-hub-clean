@@ -19,7 +19,7 @@
  */
 
 import { useEffect, useMemo, useState, type ReactNode } from "react"
-import { Check, ChevronLeft, Plus, Sparkles } from "lucide-react"
+import { Check, ChevronLeft, Heart, Plus, Sparkles } from "lucide-react"
 import { useWeeklyLifePriorities } from "@/lib/weekly-life-priorities/use-weekly-life-priorities"
 import {
   LIFE_PRIORITY_CATEGORIES,
@@ -125,7 +125,8 @@ function LifePrioritiesSection({
   return (
     <Card tone="pink">
       <div>
-        <p className="font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#C0545A]">
+        <p className="flex items-center gap-2 font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#C0545A]">
+          <Heart className="h-4 w-4 shrink-0" aria-hidden />
           My Weekly Life Priorities™
         </p>
         <p className="mt-2 font-serif text-lg text-[#2E1F27] text-pretty">

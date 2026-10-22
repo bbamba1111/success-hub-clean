@@ -746,7 +746,6 @@ export function DesignMyWeekClient() {
       }])
     )
   )
-  const [showFlexInfo, setShowFlexInfo] = useState(false)
   const [showLearnMore, setShowLearnMore] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
   const completionRef = useRef<HTMLDivElement>(null)
@@ -770,7 +769,6 @@ export function DesignMyWeekClient() {
 
   useEffect(() => {
     setShowLearnMore(false)
-    setShowFlexInfo(false)
   }, [step])
 
   function scrollToCard() {
@@ -955,48 +953,6 @@ export function DesignMyWeekClient() {
                 </div>
               )}
 
-              {/* Flex Time™ info panel */}
-              {isFlex && (
-                <div className="mb-6 rounded-2xl border border-brand-blush bg-brand-cream/50 p-5">
-                  <button
-                    onClick={() => setShowFlexInfo((v) => !v)}
-                    className="flex w-full items-center justify-between text-left"
-                    aria-expanded={showFlexInfo}
-                  >
-                    <span className="flex items-center gap-2 font-sans text-sm font-bold text-brand-ink">
-                      <Info className="h-4 w-4 text-brand-coral" aria-hidden />
-                      How Flex Time™ works
-                    </span>
-                    <span className="font-sans text-xs font-medium text-brand-ink-soft">
-                      {showFlexInfo ? "Hide" : "Show"}
-                    </span>
-                  </button>
-                  {showFlexInfo && (
-                    <div className="mt-4 space-y-3 font-sans text-[15px] font-medium leading-relaxed text-brand-ink">
-                      <p>
-                        <strong className="text-brand-ink">Default:</strong>{" "}
-                        {flexSegment.flexNote!.default}
-                      </p>
-                      <p>
-                        <strong className="text-brand-ink">Borrowing:</strong> When life requires
-                        it, you may temporarily expand Flex Time™ by borrowing:
-                      </p>
-                      <ul className="ml-4 space-y-1 list-disc">
-                        {flexSegment.flexNote!.borrow.map((b) => (
-                          <li key={b.from}>
-                            <strong className="text-brand-ink">{b.from}</strong> — {b.max}
-                          </li>
-                        ))}
-                      </ul>
-                      <p className="font-semibold text-brand-ink">{flexSegment.flexNote!.max}</p>
-                      <p className="rounded-xl border border-brand-coral/20 bg-brand-coral/5 px-4 py-3 text-brand-ink-soft">
-                        <strong className="text-brand-ink">Important:</strong>{" "}
-                        {flexSegment.flexNote!.rule}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              )}
 
               {/* Borrow note */}
               {"borrowNote" in current && current.borrowNote && (

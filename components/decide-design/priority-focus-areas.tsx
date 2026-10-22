@@ -22,7 +22,7 @@ export function PriorityFocusAreas() {
       className="scroll-mt-24 rounded-3xl border border-brand-sage-medium/30 bg-brand-sage-light/60 shadow-sm px-6 py-6 sm:px-8 sm:py-7 space-y-4"
     >
       <div className="flex items-center gap-2">
-        <Target className="h-4 w-4 text-brand-tan-dark" aria-hidden />
+        <Target className="h-4 w-4 text-[#C0545A]" aria-hidden />
         <p className="font-montserrat text-base font-bold uppercase tracking-[0.18em] text-brand-sage-dark">
           My 3 Priority Focus Areas™
         </p>
@@ -54,12 +54,12 @@ export function PriorityFocusAreas() {
                 href="/focus-areas"
                 className="inline-flex w-fit font-sans text-sm font-semibold text-brand-sage-dark underline-offset-4 hover:underline"
               >
-                Revise My Priority Focus Areas™
+                Change My Priority Focus Areas™
               </a>
             )}
             <a
               href="/audit"
-              className="inline-flex w-fit items-center gap-1.5 font-sans text-sm font-semibold text-brand-tan-dark underline-offset-4 hover:underline"
+              className="inline-flex w-fit items-center gap-1.5 font-sans text-sm font-semibold text-[#C0545A] underline-offset-4 hover:underline"
             >
               <RotateCcw className="h-3.5 w-3.5" aria-hidden />
               Retake Audit

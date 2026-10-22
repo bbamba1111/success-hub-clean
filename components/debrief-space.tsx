@@ -18,7 +18,7 @@
  * my three priorities, my declaration, and the protected windows of my day.
  */
 
-import { Clock } from "lucide-react"
+import { Briefcase, CalendarDays, Clock, Footprints, MoonStar, Sun, Utensils } from "lucide-react"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
 import { SCHEDULE_BY_ID } from "@/operating-engine/config/schedule"
 import { CollapsibleSubSection } from "@/components/collapsible-sub-section"
@@ -76,7 +76,8 @@ export function DebriefSpace() {
       {/* ── Design My Work-Life Balance Business Day™ ────────────────────────── */}
       <div className="rounded-3xl border border-[#7FB069]/30 bg-[#F3F8ED] shadow-sm px-6 py-6 sm:px-8 sm:py-7 space-y-6">
         <div>
-          <p className="font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#5B835F]">
+          <p className="flex items-center gap-2 font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#5B835F]">
+            <CalendarDays className="h-4 w-4 shrink-0" aria-hidden />
             Design My Work-Life Balance Business Day™
           </p>
           <p className="mt-2 font-sans text-sm text-[#3A2E33] leading-relaxed">
@@ -86,19 +87,19 @@ export function DebriefSpace() {
 
         {/* ── The protected windows of the day, in daily rhythm order ───────── */}
         <div className="space-y-4 pt-2">
-          <CollapsibleSubSection title="30-Minute Movement Window">
+          <CollapsibleSubSection title="30-Minute Movement Window" icon={Footprints}>
             <MovementIntentionForm />
           </CollapsibleSubSection>
 
-          <CollapsibleSubSection title="Extended Healthy Hybrid Lunch Break">
+          <CollapsibleSubSection title="Extended Healthy Hybrid Lunch Break" icon={Utensils}>
             <LunchIntentionForm />
           </CollapsibleSubSection>
 
-          <CollapsibleSubSection title="4-Hour Focused CEO Workday">
+          <CollapsibleSubSection title="4-Hour Focused CEO Workday" icon={Briefcase}>
             <CeoWorkdayDesignForm />
           </CollapsibleSubSection>
 
-          <CollapsibleSubSection title="Time Freedom" keepMounted={false}>
+          <CollapsibleSubSection title="Time Freedom" icon={Sun} keepMounted={false}>
             {(open) => (
               <div className="space-y-5">
                 <WeeklyLifePrioritiesCard />
@@ -111,7 +112,7 @@ export function DebriefSpace() {
             )}
           </CollapsibleSubSection>
 
-          <CollapsibleSubSection title="Power Down">
+          <CollapsibleSubSection title="Power Down" icon={MoonStar}>
             <PowerDownIntentionForm />
           </CollapsibleSubSection>
         </div>

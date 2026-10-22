@@ -15,6 +15,7 @@
  */
 
 import { useEffect, useState } from "react"
+import { UserRound } from "lucide-react"
 import { getWeekKey, loadWeek } from "@/lib/wlbb-week/storage"
 import type { WlbbWeekState } from "@/lib/wlbb-week/types"
 import { getDateKey, loadDailyIdentity, updateDailyIdentity } from "@/lib/daily-identity/storage"
@@ -54,7 +55,8 @@ export function DecideIdentitySpace() {
         <div>
           {/* Matches the exact treatment of "Decide My Three Weekly Priorities™"
               so the two headings read as the same hierarchy. */}
-          <p className="font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#5B835F]">
+          <p className="flex items-center gap-2 font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#5B835F]">
+            <UserRound className="h-4 w-4 shrink-0" aria-hidden />
             Decide Who You&apos;re Being This Week
           </p>
           <p className="mt-2 font-sans text-sm text-[#3A2E33] leading-relaxed text-pretty">

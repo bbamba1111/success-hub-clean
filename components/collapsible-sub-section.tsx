@@ -15,7 +15,7 @@
  */
 
 import { useRef, useState, type ReactNode } from "react"
-import { ChevronDown } from "lucide-react"
+import { ChevronDown, type LucideIcon } from "lucide-react"
 
 export function CollapsibleSubSection({
   title,
@@ -31,8 +31,10 @@ export function CollapsibleSubSection({
    * closed. Pass `false` for heavy render-only content that is safe to unmount.
    */
   keepMounted = true,
+  icon: Icon,
 }: {
   title: string
+  icon?: LucideIcon
   children: ReactNode | ((open: boolean) => ReactNode)
   defaultOpen?: boolean
   open?: boolean
@@ -71,7 +73,10 @@ export function CollapsibleSubSection({
           open ? "bg-[#5F8F47] hover:bg-[#548039]" : "hover:bg-[#E1EFD5]"
         }`}
       >
-        <span className={`font-sans text-sm font-semibold ${open ? "text-white" : "text-[#2E1F27]"}`}>{title}</span>
+        <span className={`flex items-center gap-2 font-sans text-sm font-semibold ${open ? "text-white" : "text-[#2E1F27]"}`}>
+          {Icon && <Icon className={`h-4 w-4 shrink-0 ${open ? "text-white" : "text-[#5B835F]"}`} aria-hidden />}
+          {title}
+        </span>
         <ChevronDown
           className={`h-4 w-4 shrink-0 transition-transform ${open ? "rotate-180 text-white" : "text-[#6B5860]"}`}
           aria-hidden
