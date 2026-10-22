@@ -19,7 +19,7 @@ export async function WeeklyHistoryList() {
           <li key={h.id}>
             <Link
               href={`/my-report/weekly/${h.id}`}
-              className="flex items-center justify-between gap-3 rounded-2xl border border-brand-blush bg-white px-5 py-3.5 transition-colors hover:border-brand-coral/50"
+              className="flex items-center justify-between gap-3 rounded-2xl border border-brand-sage-light bg-white px-5 py-3.5 transition-colors hover:border-brand-tan-dark/50"
             >
               <span className="flex flex-col">
                 <span className="font-sans text-sm font-semibold text-brand-ink">

@@ -82,7 +82,7 @@ const STAGE_ORDER: Stage[] = [
 const RESUMABLE = new Set<string>(STAGE_ORDER.filter((s) => s !== "report"))
 
 const SCORE_RED_PINK = "#D9505E"
-const SCORE_PINK = "#E58A9A"
+const SCORE_PINK = "#C9A87C"
 const SCORE_GREEN = "#5B835F"
 
 function scoreColor(score: number): string {
@@ -126,7 +126,7 @@ function StageShell({
 }) {
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-14">
-      <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.22em] text-brand-coral mb-2">
+      <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.22em] text-brand-sage-medium mb-2">
         {eyebrow}
       </p>
       <h1 className="font-playfair text-3xl sm:text-4xl font-bold text-brand-ink text-balance mb-3">{title}</h1>
@@ -164,7 +164,7 @@ function NavRow({
         type="button"
         onClick={onNext}
         disabled={nextDisabled}
-        className="inline-flex items-center gap-2 rounded-full bg-brand-coral px-7 py-3 font-sans text-sm font-bold text-white shadow-md transition-all hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-40"
+        className="inline-flex items-center gap-2 rounded-full bg-brand-sage-medium px-7 py-3 font-sans text-sm font-bold text-white shadow-md transition-all hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-40"
       >
         {nextLabel}
         <ArrowRight className="h-4 w-4" aria-hidden />
@@ -173,20 +173,6 @@ function NavRow({
   )
 }
 
-function ProgressBar({ stage }: { stage: Stage }) {
-  const idx = Math.max(0, STAGE_ORDER.indexOf(stage))
-  const pct = ((idx + 1) / STAGE_ORDER.length) * 100
-  return (
-    <div className="sticky top-0 z-10 bg-brand-cream/90 backdrop-blur-sm">
-      <div className="h-1 w-full bg-brand-green/10">
-        <div
-          className="h-full bg-gradient-to-r from-brand-coral via-[#E58A9A] to-brand-green transition-all duration-500"
-          style={{ width: `${pct}%` }}
-        />
-      </div>
-    </div>
-  )
-}
 
 const CATEGORIES: { label: string; stages: Stage[] }[] = [
   { label: "Your Intention™", stages: ["intention"] },
@@ -253,7 +239,7 @@ function TextArea({
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
       rows={3}
-      className="w-full rounded-2xl border border-brand-blush bg-white px-4 py-3 font-sans text-sm text-brand-ink placeholder:text-brand-ink-soft/60 outline-none transition-colors focus:border-brand-coral"
+      className="w-full rounded-2xl border border-brand-tan-light bg-white px-4 py-3 font-sans text-sm text-brand-ink placeholder:text-brand-ink-soft/60 outline-none transition-colors focus:border-brand-sage-medium"
     />
   )
 }
@@ -538,7 +524,6 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
   return (
     <div className="min-h-screen bg-card">
       <div ref={topRef} />
-      <ProgressBar stage={stage} />
       <CategoryStepper stage={stage} />
       <p aria-live="polite" className="mx-auto h-5 w-full max-w-3xl px-4 pt-2 text-right font-sans text-xs text-brand-ink-soft">
         {saveStatus === "saving" && "Saving your progress…"}
@@ -584,9 +569,9 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
               "What needs to be protected?",
               "What might your business need to change to make that possible?",
             ].map((q) => (
-              <li key={q} className="flex items-start gap-3 rounded-2xl border border-brand-blush bg-white px-5 py-4">
-                <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-coral/10">
-                  <Sparkles className="h-3.5 w-3.5 text-brand-coral" aria-hidden />
+              <li key={q} className="flex items-start gap-3 rounded-2xl border border-brand-tan-light bg-white px-5 py-4">
+                <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-sage-medium/10">
+                  <Sparkles className="h-3.5 w-3.5 text-brand-sage-medium" aria-hidden />
                 </span>
                 <span className="font-sans text-sm font-medium text-brand-ink">{q}</span>
               </li>
@@ -626,13 +611,13 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
                           onClick={() => toggleIntention(group.id, item)}
                           className={`flex items-center gap-3 rounded-xl border px-4 py-2.5 text-left font-sans text-sm transition-colors ${
                             active
-                              ? "border-brand-coral bg-brand-coral/10 text-brand-ink"
-                              : "border-brand-blush bg-white text-brand-ink hover:border-brand-coral/50"
+                              ? "border-brand-sage-medium bg-brand-sage-medium/10 text-brand-ink"
+                              : "border-brand-tan-light bg-white text-brand-ink hover:border-brand-sage-medium/50"
                           }`}
                         >
                           <span
                             className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border ${
-                              active ? "border-brand-coral bg-brand-coral" : "border-brand-ink-soft/40 bg-white"
+                              active ? "border-brand-sage-medium bg-brand-sage-medium" : "border-brand-ink-soft/40 bg-white"
                             }`}
                             aria-hidden
                           >
@@ -711,7 +696,7 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
           title="How have the past 30 days really felt?"
           intro="Answer 15 quick questions about the last 30 days across your Core Value Areas. Your answers become your 30-Day Work-Life Balance Baseline™."
         >
-          <div className="overflow-hidden rounded-2xl border border-brand-blush bg-white">
+          <div className="overflow-hidden rounded-2xl border border-brand-tan-light bg-white">
             <WorkLifeBalanceAudit
               assessmentWindow="30-day"
               assessmentType="baseline_30_day"
@@ -753,10 +738,10 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
         >
           {!baselineLoaded ? (
             <div className="flex justify-center py-16">
-              <Loader2 className="h-6 w-6 animate-spin text-brand-coral" aria-hidden />
+              <Loader2 className="h-6 w-6 animate-spin text-brand-sage-medium" aria-hidden />
             </div>
           ) : !baseline ? (
-            <div className="flex flex-col items-center gap-4 rounded-2xl border border-dashed border-brand-blush bg-white py-12 text-center">
+            <div className="flex flex-col items-center gap-4 rounded-2xl border border-dashed border-brand-tan-light bg-white py-12 text-center">
               <p className="font-sans text-sm text-brand-ink-soft max-w-sm">
                 Your 30-Day Baseline comes from the Work-Life Balance Audit™. Complete it once and your baseline will
                 appear here — it becomes your persistent starting point.
@@ -764,7 +749,7 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
               <button
                 type="button"
                 onClick={() => setStage("audit")}
-                className="inline-flex items-center gap-1.5 rounded-full bg-brand-coral px-5 py-2.5 font-sans text-sm font-bold text-white hover:brightness-105"
+                className="inline-flex items-center gap-1.5 rounded-full bg-brand-sage-medium px-5 py-2.5 font-sans text-sm font-bold text-white hover:brightness-105"
               >
                 Take the Audit™
                 <ArrowRight className="h-4 w-4" aria-hidden />
@@ -772,7 +757,7 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
             </div>
           ) : (
             <div className="space-y-6">
-              <div className="flex items-center gap-5 rounded-3xl border border-brand-blush bg-white px-6 py-6">
+              <div className="flex items-center gap-5 rounded-3xl border border-brand-tan-light bg-white px-6 py-6">
                 <div className="flex h-20 w-20 shrink-0 flex-col items-center justify-center rounded-full border-4"
                   style={{ borderColor: scoreColor(baseline.overall) }}>
                   <span className="font-sans text-2xl font-bold tabular-nums" style={{ color: scoreColor(baseline.overall) }}>
@@ -780,7 +765,7 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
                   </span>
                 </div>
                 <div>
-                  <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-brand-coral mb-1">
+                  <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-brand-sage-medium mb-1">
                     Overall Work-Life Balance Score™
                   </p>
                   <p className="font-sans text-sm text-brand-ink-soft text-pretty">
@@ -791,12 +776,12 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
 
               <div className="space-y-2.5">
                 {baseline.areas.map((a) => (
-                  <div key={a.key} className="rounded-2xl border border-brand-blush bg-white px-5 py-3.5">
+                  <div key={a.key} className="rounded-2xl border border-brand-tan-light bg-white px-5 py-3.5">
                     <div className="mb-1.5 flex items-center justify-between gap-3">
                       <span className="font-sans text-sm font-semibold text-brand-ink">{a.label}</span>
                       <div className="flex items-center gap-2">
                         {a.isCandidate && (
-                          <span className="rounded-full bg-brand-coral/10 px-2 py-0.5 font-montserrat text-[9px] font-bold uppercase tracking-wider text-brand-coral">
+                          <span className="rounded-full bg-brand-sage-medium/10 px-2 py-0.5 font-montserrat text-[9px] font-bold uppercase tracking-wider text-brand-sage-medium">
                             Focus Candidate
                           </span>
                         )}
@@ -835,10 +820,10 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
                   disabled={disabled}
                   className={`flex w-full items-center justify-between gap-3 rounded-2xl border px-5 py-4 text-left transition-colors ${
                     active
-                      ? "border-brand-coral bg-brand-coral/5"
+                      ? "border-brand-sage-medium bg-brand-sage-medium/5"
                       : disabled
-                        ? "border-brand-blush bg-white opacity-40"
-                        : "border-brand-blush bg-white hover:border-brand-coral/50"
+                        ? "border-brand-tan-light bg-white opacity-40"
+                        : "border-brand-tan-light bg-white hover:border-brand-sage-medium/50"
                   }`}
                 >
                   <span className="font-sans text-sm font-semibold text-brand-ink">{a.label}</span>
@@ -848,7 +833,7 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
                     </span>
                     <span
                       className={`flex h-5 w-5 items-center justify-center rounded-full border-2 ${
-                        active ? "border-brand-coral bg-brand-coral" : "border-brand-blush"
+                        active ? "border-brand-sage-medium bg-brand-sage-medium" : "border-brand-tan-light"
                       }`}
                     >
                       {active && <Check className="h-3 w-3 text-white" aria-hidden />}
@@ -882,10 +867,10 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
                   type="button"
                   onClick={() => toggleRequirement(opt.id)}
                   className={`flex items-start gap-3 rounded-2xl border px-4 py-3.5 text-left transition-colors ${
-                    active ? "border-brand-coral bg-brand-coral/5" : "border-brand-blush bg-white hover:border-brand-coral/50"
+                    active ? "border-brand-sage-medium bg-brand-sage-medium/5" : "border-brand-tan-light bg-white hover:border-brand-sage-medium/50"
                   }`}
                 >
-                  <span className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${active ? "border-brand-coral bg-brand-coral" : "border-brand-blush"}`}>
+                  <span className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${active ? "border-brand-sage-medium bg-brand-sage-medium" : "border-brand-tan-light"}`}>
                     {active && <Check className="h-3 w-3 text-white" aria-hidden />}
                   </span>
                   <span>
@@ -934,7 +919,7 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
 
       {stage === "generating" && (
         <div className="mx-auto flex w-full max-w-md flex-col items-center gap-6 px-4 py-28 text-center">
-          <Loader2 className="h-7 w-7 animate-spin text-brand-coral" aria-hidden />
+          <Loader2 className="h-7 w-7 animate-spin text-brand-sage-medium" aria-hidden />
           <div className="space-y-1.5">
             <p className="font-playfair text-2xl font-bold text-brand-ink">Composing your Boundary Report™&hellip;</p>
             <p className="font-sans text-sm text-brand-ink-soft">Bringing your intention, baseline, and boundaries together.</p>
@@ -1012,8 +997,8 @@ function AlignmentStep({
                   active
                     ? c.value === "willing"
                       ? "border-brand-green bg-brand-green/10"
-                      : "border-brand-coral bg-brand-coral/5"
-                    : "border-brand-blush bg-white hover:border-brand-green/50"
+                      : "border-brand-sage-medium bg-brand-sage-medium/5"
+                    : "border-brand-tan-light bg-white hover:border-brand-green/50"
                 }`}
               >
                 <span className="font-sans text-base font-semibold text-brand-ink">{c.label}</span>
@@ -1022,8 +1007,8 @@ function AlignmentStep({
                     active
                       ? c.value === "willing"
                         ? "border-brand-green bg-brand-green"
-                        : "border-brand-coral bg-brand-coral"
-                      : "border-brand-blush"
+                        : "border-brand-sage-medium bg-brand-sage-medium"
+                      : "border-brand-tan-light"
                   }`}
                 >
                   {active && <Check className="h-3 w-3 text-white" aria-hidden />}
@@ -1071,7 +1056,7 @@ function TourStep({
             <div
               key={m.name}
               className={`rounded-2xl border px-5 py-4 transition-all ${
-                isRevealed ? "border-brand-blush bg-white" : "border-dashed border-brand-blush/60 bg-brand-cream/40"
+                isRevealed ? "border-brand-tan-light bg-white" : "border-dashed border-brand-tan-light/60 bg-brand-cream/40"
               }`}
             >
               {isRevealed ? (
@@ -1110,8 +1095,8 @@ function TourStep({
 
 function ReportBlock({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="border-t border-brand-blush py-6 first:border-t-0 first:pt-0">
-      <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.2em] text-brand-coral mb-3">{label}</p>
+    <div className="border-t border-brand-tan-light py-6 first:border-t-0 first:pt-0">
+      <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.2em] text-brand-sage-medium mb-3">{label}</p>
       {children}
     </div>
   )
@@ -1137,7 +1122,7 @@ function BoundaryReport({
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-12">
       <div className="mb-8 text-center">
-        <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.22em] text-brand-coral mb-2">
+        <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.22em] text-brand-sage-medium mb-2">
           Your Boundary Report Is Ready
         </p>
         <h1 className="font-playfair text-4xl font-bold text-brand-ink text-balance">
@@ -1155,12 +1140,12 @@ function BoundaryReport({
       </div>
 
       {saveError && (
-        <div className="mb-6 rounded-2xl border border-[#E26C73]/40 bg-[#E26C73]/5 px-5 py-4 text-center">
+        <div className="mb-6 rounded-2xl border border-[#A8875A]/40 bg-[#A8875A]/5 px-5 py-4 text-center">
           <p className="font-sans text-sm text-brand-ink">{saveError}</p>
         </div>
       )}
 
-      <div className="rounded-3xl border border-brand-blush bg-white px-7 py-8 shadow-lg">
+      <div className="rounded-3xl border border-brand-tan-light bg-white px-7 py-8 shadow-lg">
         <ReportBlock label="Original Entrepreneurial Intention™">
           <p className="font-sans text-sm leading-relaxed text-brand-ink italic">{intentionSummary || "—"}</p>
         </ReportBlock>
@@ -1177,7 +1162,7 @@ function BoundaryReport({
         <ReportBlock label="Priority Focus Areas™">
           <div className="flex flex-wrap gap-2">
             {(data.priorityAreas ?? []).map((a) => (
-              <span key={a.key} className="rounded-full bg-brand-coral/10 px-3 py-1 font-sans text-xs font-semibold text-brand-coral">
+              <span key={a.key} className="rounded-full bg-brand-sage-medium/10 px-3 py-1 font-sans text-xs font-semibold text-brand-sage-medium">
                 {a.label}
               </span>
             ))}
@@ -1199,7 +1184,7 @@ function BoundaryReport({
                   <span className="font-sans text-sm font-medium text-brand-ink">{r.title}</span>
                   <span
                     className={`shrink-0 rounded-full px-2.5 py-0.5 font-montserrat text-[9px] font-bold uppercase tracking-wider ${
-                      r.choice === "willing" ? "bg-brand-green/15 text-brand-green" : "bg-brand-coral/10 text-brand-coral"
+                      r.choice === "willing" ? "bg-brand-green/15 text-brand-green" : "bg-brand-sage-medium/10 text-brand-sage-medium"
                     }`}
                   >
                     {r.choice === "willing" ? "Willing" : "Not sure yet"}
@@ -1215,7 +1200,7 @@ function BoundaryReport({
             <ul className="space-y-2">
               {data.businessRequirements.map((r) => (
                 <li key={r.id} className="flex items-start gap-2 font-sans text-sm text-brand-ink">
-                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-coral" aria-hidden />
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-sage-medium" aria-hidden />
                   <span>
                     <span className="font-semibold">{r.label}.</span>{" "}
                     <span className="text-brand-ink-soft">Your diagnostic suggests this may need attention.</span>
@@ -1281,7 +1266,7 @@ function BoundaryReport({
         </div>
       ) : (
         <div className="mt-8 grid gap-4 sm:grid-cols-2">
-          <div className="rounded-3xl border-2 border-brand-coral bg-white px-6 py-7 flex flex-col">
+          <div className="rounded-3xl border-2 border-brand-sage-medium bg-white px-6 py-7 flex flex-col">
             <p className="font-playfair text-xl font-bold text-brand-ink mb-2">Join the Work-Life Balance Business Week™</p>
             <p className="font-sans text-sm text-brand-ink-soft leading-relaxed flex-1 text-pretty">
               Take everything you just discovered into the full operating experience. Your diagnostic flows directly
@@ -1291,13 +1276,13 @@ function BoundaryReport({
               type="button"
               onClick={() => onChoosePath("JOINED_WEEK")}
               disabled={saving}
-              className="mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-brand-coral px-6 py-3 font-sans text-sm font-bold text-white shadow-md transition-all hover:brightness-105 disabled:opacity-50"
+              className="mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-brand-sage-medium px-6 py-3 font-sans text-sm font-bold text-white shadow-md transition-all hover:brightness-105 disabled:opacity-50"
             >
               Join the Work-Life Balance Business Week™
               <ArrowRight className="h-4 w-4" aria-hidden />
             </button>
           </div>
-          <div className="rounded-3xl border border-brand-blush bg-white px-6 py-7 flex flex-col">
+          <div className="rounded-3xl border border-brand-tan-light bg-white px-6 py-7 flex flex-col">
             <p className="font-playfair text-xl font-bold text-brand-ink mb-2">Get my report</p>
             <p className="font-sans text-sm text-brand-ink-soft leading-relaxed flex-1 text-pretty">
               Your report is yours whether or not you join — no purchase required. Keep it and work from it on your

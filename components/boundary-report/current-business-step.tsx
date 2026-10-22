@@ -20,7 +20,7 @@ import type { BusinessStage } from "@/lib/boundary-report/types"
 type Patch = (next: Partial<CurrentBusiness>) => void
 
 const inputClass =
-  "w-full rounded-2xl border border-brand-blush bg-white px-4 py-3 font-sans text-sm text-brand-ink placeholder:text-brand-ink-soft/60 outline-none transition-colors focus:border-brand-coral"
+  "w-full rounded-2xl border border-brand-tan-light bg-white px-4 py-3 font-sans text-sm text-brand-ink placeholder:text-brand-ink-soft/60 outline-none transition-colors focus:border-brand-sage-medium"
 
 function Choice({
   label,
@@ -40,13 +40,13 @@ function Choice({
       aria-checked={active}
       onClick={onClick}
       className={`flex items-center gap-3 rounded-xl border px-4 py-2.5 text-left font-sans text-sm text-brand-ink transition-colors ${
-        active ? "border-brand-coral bg-brand-coral/10" : "border-brand-blush bg-white hover:border-brand-coral/50"
+        active ? "border-brand-sage-medium bg-brand-sage-medium/10" : "border-brand-tan-light bg-white hover:border-brand-sage-medium/50"
       }`}
     >
       <span
         aria-hidden
         className={`flex h-4 w-4 shrink-0 items-center justify-center border ${multi ? "rounded" : "rounded-full"} ${
-          active ? "border-brand-coral bg-brand-coral" : "border-brand-ink-soft/40 bg-white"
+          active ? "border-brand-sage-medium bg-brand-sage-medium" : "border-brand-ink-soft/40 bg-white"
         }`}
       >
         {active && <Check className="h-2.5 w-2.5 text-white" />}
@@ -178,7 +178,7 @@ export function CurrentBusinessStep({
                 aria-checked={active}
                 onClick={() => onChange({ stage: s })}
                 className={`rounded-2xl border px-5 py-5 text-center transition-colors ${
-                  active ? "border-brand-coral bg-brand-coral/5" : "border-brand-blush bg-white hover:border-brand-coral/50"
+                  active ? "border-brand-sage-medium bg-brand-sage-medium/5" : "border-brand-tan-light bg-white hover:border-brand-sage-medium/50"
                 }`}
               >
                 <span className="block font-playfair text-lg font-bold text-brand-ink">{STAGE_LABELS[s]}</span>

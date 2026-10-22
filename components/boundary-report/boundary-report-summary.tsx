@@ -6,14 +6,14 @@ import { WeeklyHistoryList } from "@/components/weekly-audit/weekly-history-list
 
 function scoreColor(score: number): string {
   if (score > 60) return "#5B835F"
-  if (score >= 40) return "#E8A84E"
-  return "#E26C73"
+  if (score >= 40) return "#C9A87C"
+  return "#A8875A"
 }
 
 function Section({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="border-t border-brand-blush py-6 first:border-t-0 first:pt-0">
-      <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.2em] text-brand-coral mb-3">{label}</p>
+    <div className="border-t border-brand-tan-light py-6 first:border-t-0 first:pt-0">
+      <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.2em] text-brand-sage-medium mb-3">{label}</p>
       {children}
     </div>
   )
@@ -24,7 +24,7 @@ export async function BoundaryReportSummary() {
 
   if (!latest) {
     return (
-      <div className="flex flex-col items-center gap-4 rounded-2xl border border-dashed border-brand-blush px-6 py-9 text-center">
+      <div className="flex flex-col items-center gap-4 rounded-2xl border border-dashed border-brand-tan-light px-6 py-9 text-center">
         <p className="max-w-sm font-sans text-sm leading-relaxed text-brand-ink-soft text-pretty">
           Your Work-Life Balance Boundary Report™ appears here once you complete the Reality Check™. Your first
           baseline is saved permanently and never overwritten.
@@ -67,7 +67,7 @@ export async function BoundaryReportSummary() {
             {data.priorityAreas.map((a) => (
               <span
                 key={a.key}
-                className="rounded-full bg-brand-coral/10 px-3 py-1 font-sans text-xs font-semibold text-brand-coral"
+                className="rounded-full bg-brand-sage-medium/10 px-3 py-1 font-sans text-xs font-semibold text-brand-sage-medium"
               >
                 {a.label}
               </span>
@@ -81,7 +81,7 @@ export async function BoundaryReportSummary() {
           <ul className="flex flex-col gap-2">
             {data.businessRequirements.map((r) => (
               <li key={r.id} className="flex items-start gap-2 font-sans text-sm text-brand-ink">
-                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-coral" aria-hidden />
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-sage-medium" aria-hidden />
                 <span>
                   <span className="font-semibold">{r.label}.</span>{" "}
                   <span className="text-brand-ink-soft">Your diagnostic suggests this may need attention.</span>
@@ -107,7 +107,7 @@ export async function BoundaryReportSummary() {
                 <span className="font-sans text-sm font-medium text-brand-ink">{r.title}</span>
                 <span
                   className={`shrink-0 rounded-full px-2.5 py-0.5 font-montserrat text-[9px] font-bold uppercase tracking-wider ${
-                    r.choice === "willing" ? "bg-brand-green/15 text-brand-green" : "bg-brand-coral/10 text-brand-coral"
+                    r.choice === "willing" ? "bg-brand-green/15 text-brand-green" : "bg-brand-sage-medium/10 text-brand-sage-medium"
                   }`}
                 >
                   {r.choice === "willing" ? "Willing" : "Not sure yet"}

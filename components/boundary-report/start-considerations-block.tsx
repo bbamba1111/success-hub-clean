@@ -47,7 +47,7 @@ export function StartConsiderationsBlock({
         to review, not a commitment.
       </p>
       {considerations.map((c) => (
-        <article key={c.id} className="flex flex-col gap-4 rounded-2xl border border-brand-blush bg-brand-cream/40 px-5 py-5">
+        <article key={c.id} className="flex flex-col gap-4 rounded-2xl border border-brand-tan-light bg-brand-cream/40 px-5 py-5">
           <h3 className="font-playfair text-lg font-bold text-brand-ink text-balance">{c.title}</h3>
           <Row label="Finding">{c.finding}</Row>
           <Row label="Why it matters">{c.whyItMatters}</Row>
@@ -57,7 +57,7 @@ export function StartConsiderationsBlock({
                 <li key={e.text} className="flex items-start gap-2">
                   <span
                     className={`mt-0.5 shrink-0 rounded-full px-2 py-0.5 font-montserrat text-[8px] font-bold uppercase tracking-wider ${
-                      e.source === "provided" ? "bg-brand-coral/10 text-brand-coral" : "bg-brand-green/15 text-brand-green"
+                      e.source === "provided" ? "bg-brand-sage-medium/10 text-brand-sage-medium" : "bg-brand-green/15 text-brand-green"
                     }`}
                   >
                     {e.source === "provided" ? "You told us" : "Audit result"}

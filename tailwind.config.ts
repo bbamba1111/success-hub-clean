@@ -43,6 +43,11 @@ const config: Config = {
           // Power Down™, which keep the original brand-green treatment.
           sage: "#7FB069",
           "sage-dark": "#5A7A45",
+          "sage-medium": "#8BA888",
+          "sage-light": "#E3EBE1",
+          tan: "#C9A87C",
+          "tan-dark": "#A8875A",
+          "tan-light": "#F3EADC",
           coral: "#E26C73",
           "coral-dark": "#C9545B",
           blush: "#F6E4E7",

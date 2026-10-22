@@ -1,8 +1,8 @@
 import type { WeeklyAuditReport, WeeklyComparison } from "@/lib/boundary-report/weekly-types"
 
 const FOCUS_THRESHOLD = 60
-const SCORE_RED_PINK = "#D9505E"
-const SCORE_PINK = "#E58A9A"
+const SCORE_RED_PINK = "#A8875A"
+const SCORE_PINK = "#C9A87C"
 const SCORE_GREEN = "#5B835F"
 
 function scoreColor(score: number): string {
@@ -24,7 +24,7 @@ export function formatPeriod(start: string | null | undefined, end: string | nul
 function Delta({ value, label }: { value: number | undefined; label: string }) {
   if (typeof value !== "number") return null
   const text = value === 0 ? "No change" : `${value > 0 ? "+" : ""}${value}`
-  const tone = value > 0 ? "text-brand-green" : value < 0 ? "text-brand-coral" : "text-brand-ink-soft"
+  const tone = value > 0 ? "text-brand-green" : value < 0 ? "text-brand-tan-dark" : "text-brand-ink-soft"
   return (
     <span className="font-sans text-xs text-brand-ink-soft">
       <span className={`font-bold tabular-nums ${tone}`}>{text}</span> {label}
@@ -35,12 +35,12 @@ function Delta({ value, label }: { value: number | undefined; label: string }) {
 function ComparisonCard({ title, note, comparison }: { title: string; note: string; comparison: WeeklyComparison }) {
   const d = comparison.overallDelta
   return (
-    <div className="flex flex-col gap-1 rounded-2xl border border-brand-blush bg-white px-5 py-4">
+    <div className="flex flex-col gap-1 rounded-2xl border border-brand-sage-light bg-white px-5 py-4">
       <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-brand-ink-soft">{title}</p>
       <p className="font-sans text-sm text-brand-ink">
         <span className="font-bold tabular-nums">{comparison.overall}</span> on{" "}
         {formatAuditDate(comparison.completedAt)} ·{" "}
-        <span className={`font-bold tabular-nums ${d > 0 ? "text-brand-green" : d < 0 ? "text-brand-coral" : ""}`}>
+        <span className={`font-bold tabular-nums ${d > 0 ? "text-brand-green" : d < 0 ? "text-brand-tan-dark" : ""}`}>
           {d === 0 ? "no change" : `${d > 0 ? "+" : ""}${d} points`}
         </span>
       </p>
@@ -56,7 +56,7 @@ export function WeeklyResults({ report }: { report: WeeklyAuditReport }) {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-1">
-        <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.22em] text-brand-coral">
+        <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.22em] text-brand-tan-dark">
           Weekly 7-Day Work-Life Balance Audit™
         </p>
         <h2 className="font-playfair text-3xl font-bold text-brand-ink text-balance">
@@ -74,7 +74,7 @@ export function WeeklyResults({ report }: { report: WeeklyAuditReport }) {
         </dl>
       </div>
 
-      <div className="flex items-center gap-5 rounded-3xl border border-brand-blush bg-white px-6 py-6">
+      <div className="flex items-center gap-5 rounded-3xl border border-brand-sage-light bg-white px-6 py-6">
         <div
           className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full border-4"
           style={{ borderColor: scoreColor(report.overall) }}
@@ -84,7 +84,7 @@ export function WeeklyResults({ report }: { report: WeeklyAuditReport }) {
           </span>
         </div>
         <div className="flex flex-col gap-1">
-          <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-brand-coral">
+          <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-brand-tan-dark">
             Overall Work-Life Balance Score™
           </p>
           <p className="font-sans text-sm leading-relaxed text-brand-ink-soft text-pretty">
@@ -103,7 +103,7 @@ export function WeeklyResults({ report }: { report: WeeklyAuditReport }) {
             comparison={previousWeekly}
           />
         ) : (
-          <div className="rounded-2xl border border-dashed border-brand-blush bg-white px-5 py-4">
+          <div className="rounded-2xl border border-dashed border-brand-sage-light bg-white px-5 py-4">
             <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-brand-ink-soft">
               Compared with last weekly audit
             </p>
@@ -119,7 +119,7 @@ export function WeeklyResults({ report }: { report: WeeklyAuditReport }) {
             comparison={initialBaseline}
           />
         ) : (
-          <div className="rounded-2xl border border-dashed border-brand-blush bg-white px-5 py-4">
+          <div className="rounded-2xl border border-dashed border-brand-sage-light bg-white px-5 py-4">
             <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-brand-ink-soft">
               Compared with your 30-day baseline
             </p>
@@ -132,12 +132,12 @@ export function WeeklyResults({ report }: { report: WeeklyAuditReport }) {
 
       <ul className="flex flex-col gap-2.5" aria-label="Scores for all 15 Core Life Value Areas">
         {report.areas.map((a) => (
-          <li key={a.key} className="rounded-2xl border border-brand-blush bg-white px-5 py-3.5">
+          <li key={a.key} className="rounded-2xl border border-brand-sage-light bg-white px-5 py-3.5">
             <div className="mb-1.5 flex items-center justify-between gap-3">
               <span className="flex items-center gap-2 font-sans text-sm font-semibold text-brand-ink">
                 {a.label}
                 {priorityKeys.has(a.key) && (
-                  <span className="rounded-full bg-brand-coral/10 px-2 py-0.5 font-montserrat text-[9px] font-bold uppercase tracking-wider text-brand-coral">
+                  <span className="rounded-full bg-brand-tan-dark/10 px-2 py-0.5 font-montserrat text-[9px] font-bold uppercase tracking-wider text-brand-tan-dark">
                     Priority
                   </span>
                 )}
@@ -160,15 +160,15 @@ export function WeeklyResults({ report }: { report: WeeklyAuditReport }) {
       </ul>
 
       {report.priorityAreas.length > 0 && (
-        <div className="rounded-2xl border border-brand-coral/25 bg-white px-5 py-4">
-          <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-brand-coral">
+        <div className="rounded-2xl border border-brand-tan-dark/25 bg-white px-5 py-4">
+          <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-brand-tan-dark">
             My Priority Focus Areas™ this week
           </p>
           <ul className="mt-2 flex flex-wrap gap-2">
             {report.priorityAreas.map((a) => (
               <li
                 key={a.key}
-                className="rounded-full border border-brand-coral/25 bg-brand-cream px-4 py-1.5 font-sans text-sm font-semibold text-brand-ink"
+                className="rounded-full border border-brand-tan-dark/25 bg-brand-cream px-4 py-1.5 font-sans text-sm font-semibold text-brand-ink"
               >
                 {a.label}
               </li>

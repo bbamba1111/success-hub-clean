@@ -105,7 +105,7 @@ export function WeeklyAuditFlow() {
     return (
       <div className="flex flex-col">
         {error && (
-          <p role="alert" className="mx-auto w-full max-w-4xl px-4 pt-4 font-sans text-sm text-brand-coral">
+          <p role="alert" className="mx-auto w-full max-w-4xl px-4 pt-4 font-sans text-sm text-brand-tan-dark">
             {error}
           </p>
         )}
@@ -156,7 +156,7 @@ export function WeeklyAuditFlow() {
           <button
             type="button"
             onClick={() => setStage("priorities")}
-            className="inline-flex items-center justify-center gap-2 self-end rounded-full bg-brand-coral px-7 py-3 font-sans text-sm font-bold text-white shadow-md transition-all hover:brightness-105"
+            className="inline-flex items-center justify-center gap-2 self-end rounded-full bg-brand-tan-dark px-7 py-3 font-sans text-sm font-bold text-white shadow-md transition-all hover:brightness-105"
           >
             Choose My Priority Focus Areas™
             <ArrowRight className="h-4 w-4" aria-hidden />
@@ -175,7 +175,7 @@ export function WeeklyAuditFlow() {
           <button
             type="button"
             onClick={() => setStage("priorities")}
-            className="self-end font-sans text-sm font-semibold text-brand-coral underline-offset-4 hover:underline"
+            className="self-end font-sans text-sm font-semibold text-brand-tan-dark underline-offset-4 hover:underline"
           >
             Change my priorities
           </button>
@@ -189,7 +189,7 @@ export function WeeklyAuditFlow() {
 
   return (
     <div className="flex flex-col gap-6 px-4 py-8 sm:px-6">
-      <div className="flex flex-col gap-3 rounded-3xl border border-brand-blush bg-white px-6 py-6">
+      <div className="flex flex-col gap-3 rounded-3xl border border-brand-sage-light bg-white px-6 py-6">
         <p className="font-sans text-sm leading-relaxed text-brand-ink text-pretty">
           Fifteen questions about the past seven days. Your answers save as you go, so you can leave and resume anytime.
           This weekly audit is separate from your 30-day baseline, which is never changed.
@@ -200,7 +200,7 @@ export function WeeklyAuditFlow() {
               <button
                 type="button"
                 onClick={() => begin(draft)}
-                className="inline-flex items-center gap-2 rounded-full bg-brand-coral px-6 py-3 font-sans text-sm font-bold text-white shadow-md transition-all hover:brightness-105"
+                className="inline-flex items-center gap-2 rounded-full bg-brand-tan-dark px-6 py-3 font-sans text-sm font-bold text-white shadow-md transition-all hover:brightness-105"
               >
                 Resume my audit ({answered} of {AUDIT_QUESTION_COUNT} answered)
                 <ArrowRight className="h-4 w-4" aria-hidden />
@@ -208,7 +208,7 @@ export function WeeklyAuditFlow() {
               <button
                 type="button"
                 onClick={() => begin({ answers: {}, questionIndex: 0 })}
-                className="inline-flex items-center gap-2 rounded-full border border-brand-coral/40 px-6 py-3 font-sans text-sm font-bold text-brand-coral hover:bg-brand-blush/40"
+                className="inline-flex items-center gap-2 rounded-full border border-brand-tan-dark/40 px-6 py-3 font-sans text-sm font-bold text-brand-tan-dark hover:bg-brand-sage-light/40"
               >
                 <RotateCcw className="h-4 w-4" aria-hidden /> Start over
               </button>
@@ -217,7 +217,7 @@ export function WeeklyAuditFlow() {
             <button
               type="button"
               onClick={() => begin(null)}
-              className="inline-flex items-center gap-2 rounded-full bg-brand-coral px-6 py-3 font-sans text-sm font-bold text-white shadow-md transition-all hover:brightness-105"
+              className="inline-flex items-center gap-2 rounded-full bg-brand-tan-dark px-6 py-3 font-sans text-sm font-bold text-white shadow-md transition-all hover:brightness-105"
             >
               Begin My 7-Day Audit
               <ArrowRight className="h-4 w-4" aria-hidden />
@@ -227,7 +227,7 @@ export function WeeklyAuditFlow() {
       </div>
 
       {latest && (
-        <div className="flex flex-col gap-3 rounded-3xl border border-brand-blush bg-white px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 rounded-3xl border border-brand-sage-light bg-white px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-col gap-0.5">
             <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-brand-ink-soft">
               Latest 7-day results
@@ -243,7 +243,7 @@ export function WeeklyAuditFlow() {
               setActive(latest)
               setStage("priorities")
             }}
-            className="self-start rounded-full border border-brand-coral/40 px-5 py-2.5 font-sans text-xs font-bold text-brand-coral hover:bg-brand-blush/40 sm:self-center"
+            className="self-start rounded-full border border-brand-tan-dark/40 px-5 py-2.5 font-sans text-xs font-bold text-brand-tan-dark hover:bg-brand-sage-light/40 sm:self-center"
           >
             Use these results to choose priorities
           </button>
@@ -260,7 +260,7 @@ export function WeeklyAuditFlow() {
               <li key={h.id}>
                 <Link
                   href={`/my-report/weekly/${h.id}`}
-                  className="flex items-center justify-between gap-3 rounded-2xl border border-brand-blush bg-white px-5 py-3 transition-colors hover:border-brand-coral/50"
+                  className="flex items-center justify-between gap-3 rounded-2xl border border-brand-sage-light bg-white px-5 py-3 transition-colors hover:border-brand-tan-dark/50"
                 >
                   <span className="flex flex-col">
                     <span className="font-sans text-sm font-semibold text-brand-ink">

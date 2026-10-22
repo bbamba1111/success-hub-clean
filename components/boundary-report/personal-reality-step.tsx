@@ -27,12 +27,12 @@ export function PersonalRealityStep({
                   aria-pressed={active}
                   onClick={() => onToggle(opt.id)}
                   className={`flex items-start gap-3 rounded-2xl border px-4 py-3.5 text-left transition-colors ${
-                    active ? "border-brand-coral bg-brand-coral/5" : "border-brand-blush bg-white hover:border-brand-coral/50"
+                    active ? "border-brand-sage-medium bg-brand-sage-medium/5" : "border-brand-tan-light bg-white hover:border-brand-sage-medium/50"
                   }`}
                 >
                   <span
                     className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${
-                      active ? "border-brand-coral bg-brand-coral" : "border-brand-blush"
+                      active ? "border-brand-sage-medium bg-brand-sage-medium" : "border-brand-tan-light"
                     }`}
                   >
                     {active && <Check className="h-3 w-3 text-white" aria-hidden />}
