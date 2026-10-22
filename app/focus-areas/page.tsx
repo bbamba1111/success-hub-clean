@@ -8,8 +8,6 @@ import { CheckCircle2, Circle, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { updateRealityCheck } from "@/utils/reality-check-storage"
-import { CherryBlossomGuidance } from "@/components/cherry-blossom/cherry-blossom-guidance"
-import { CherryBlossomTransitionCard } from "@/components/cherry-blossom/cherry-blossom-transition-card"
 import { loadWeeklyAudit, setWeeklyPriorities } from "@/lib/boundary-report/weekly-actions"
 import { CURRENT_PRIORITY_FOCUS_KEY } from "@/lib/boundary-report/use-current-priority-focus"
 import { MAX_WEEKLY_PRIORITIES } from "@/lib/boundary-report/weekly-types"
@@ -124,16 +122,6 @@ export default function FocusAreasPage() {
               {formatAuditDate(latest.report.completedAt ?? "")}.
             </p>
           )}
-        </div>
-
-        <div className="mb-8 text-left">
-          <CherryBlossomGuidance greeting="I've reviewed your Work-Life Balance Audit™.">
-            <p>You don&apos;t need to transform every part of your life at once.</p>
-            <p>
-              Choose the one to three areas you&apos;re ready to intentionally nurture this week. They&apos;ll anchor
-              your declaration in Decide &amp; Design&trade;.
-            </p>
-          </CherryBlossomGuidance>
         </div>
 
         {isLoading ? (
@@ -259,22 +247,6 @@ export default function FocusAreasPage() {
             </Button>
           </Link>
         </div>
-
-        {latest && (
-          <div className="mb-16 text-left">
-            <CherryBlossomTransitionCard
-              greeting="Life Reflection Complete."
-              ctaLabel="Return to My Audit Results"
-              ctaHref="/my-results"
-            >
-              <p>Thank you for taking the time to reflect on your life.</p>
-              <p>
-                Your responses have created a clear picture of how your life has been operating over the past 7
-                days. Your saved audit results are always there to review while you choose your priorities.
-              </p>
-            </CherryBlossomTransitionCard>
-          </div>
-        )}
       </div>
     </div>
   )

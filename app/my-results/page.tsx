@@ -81,6 +81,16 @@ function getScoreMessage(score: number): string {
   return "Needs attention"
 }
 
+function getWeekRange(timestamp: number): string {
+  const start = new Date(timestamp)
+  const daysSinceMonday = (start.getDay() + 6) % 7
+  start.setDate(start.getDate() - daysSinceMonday)
+  const end = new Date(start)
+  end.setDate(start.getDate() + 6)
+  const short: Intl.DateTimeFormatOptions = { month: "short", day: "numeric" }
+  return `${start.toLocaleDateString("en-US", short)} – ${end.toLocaleDateString("en-US", { ...short, year: "numeric" })}`
+}
+
 export default function MyResultsPage() {
   const [auditData, setAuditData] = useState<AuditData | null>(null)
   // Mirrors the Assessment Cadence Engine — first Reality Check™ ever looks
@@ -181,6 +191,28 @@ export default function MyResultsPage() {
 
         {/* Cherry Blossom Transition Card — the only thing below the breakdown */}
         <div className="mb-16">
+          {period === "7 days" ? (
+            <CherryBlossomTransitionCard
+              greeting="Beautiful work showing up for yourself this week."
+              ctaLabel="Choose My Priority Focus Areas™"
+              ctaHref="/focus-areas"
+            >
+              <p>
+                Pausing to honestly reflect on the past 7 days is the kind of awareness most
+                founders never make time for. You just did.
+              </p>
+              <p>
+                Your results show where your life is thriving and where it&apos;s asking for a
+                little more of your attention.
+              </p>
+              <p>
+                Next, choose the one to three Priority Focus Areas&trade; you&apos;ll nurture this
+                week, <span className="font-semibold">{getWeekRange(auditData.timestamp)}</span>.
+                Then you&apos;ll return to Decide &amp; Design&trade; to create your declaration and
+                plan your Work-Life Balance Business Day&trade;.
+              </p>
+            </CherryBlossomTransitionCard>
+          ) : (
           <CherryBlossomTransitionCard
             greeting="Life Reflection Complete."
             ctaLabel="Begin Entrepreneur Success Assessment™"
@@ -199,6 +231,7 @@ export default function MyResultsPage() {
               Reality Check&trade;.
             </p>
           </CherryBlossomTransitionCard>
+          )}
         </div>
 
       </div>
