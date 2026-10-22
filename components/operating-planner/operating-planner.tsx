@@ -890,7 +890,7 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
         {blockId === "morning-given" && <MorningGivenExperience />}
 
         {/* Learn More About This Boundary™ accordion — right under title */}
-        {data.learnMore && (
+        {data.learnMore && blockId !== "morning-given" && (
           <div className={`mb-6 mt-3 rounded-2xl border ${sx.border20} ${sx.bg05} overflow-hidden`}>
             <button
               type="button"
