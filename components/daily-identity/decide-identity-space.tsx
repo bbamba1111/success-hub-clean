@@ -56,7 +56,7 @@ export function DecideIdentitySpace() {
           {/* Matches the exact treatment of "Decide My Three Weekly Priorities™"
               so the two headings read as the same hierarchy. */}
           <p className="flex items-center gap-2 font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#5B835F]">
-            <UserRound className="h-4 w-4 shrink-0" aria-hidden />
+            <UserRound className="h-4 w-4 shrink-0 text-[#A8875A]" aria-hidden />
             Decide Who You&apos;re Being This Week
           </p>
           <p className="mt-2 font-sans text-sm text-[#3A2E33] leading-relaxed text-pretty">

@@ -269,7 +269,7 @@ export function ReflectionSpace() {
           {auditDone && (
             <div className="flex items-center gap-1.5 shrink-0 pt-0.5">
               <span
-                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[12px] font-bold uppercase tracking-[0.14em] whitespace-nowrap ${
+                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] whitespace-nowrap ${
                   auditLocked ? "bg-black/10 text-[#6B5860]" : "bg-[#7FB069] text-white"
                 }`}
               >
@@ -313,7 +313,7 @@ export function ReflectionSpace() {
         <p className="font-sans text-sm text-[#5A4A52] leading-relaxed">
           {auditDone
             ? (auditEditMode
-                ? "Use ← Previous to step back through your responses and change an answer. Retaking counts as your second and final attempt this week."
+                ? "Use ��� Previous to step back through your responses and change an answer. Retaking counts as your second and final attempt this week."
                 : "Reviewing your saved responses from this week's audit.")
             : (<>Reflect on how you&apos;ve been living over the past <strong>{period}</strong>. This audit provides a snapshot of your overall work-life balance and helps you identify the areas of your life that may need more attention before the week begins.</>)}
         </p>

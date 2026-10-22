@@ -32,9 +32,11 @@ export function CollapsibleSubSection({
    */
   keepMounted = true,
   icon: Icon,
+  iconClassName = "text-[#5B835F]",
 }: {
   title: string
   icon?: LucideIcon
+  iconClassName?: string
   children: ReactNode | ((open: boolean) => ReactNode)
   defaultOpen?: boolean
   open?: boolean
@@ -74,7 +76,7 @@ export function CollapsibleSubSection({
         }`}
       >
         <span className={`flex items-center gap-2 font-sans text-sm font-semibold ${open ? "text-white" : "text-[#2E1F27]"}`}>
-          {Icon && <Icon className={`h-4 w-4 shrink-0 ${open ? "text-white" : "text-[#5B835F]"}`} aria-hidden />}
+          {Icon && <Icon className={`h-4 w-4 shrink-0 ${open ? "text-white" : iconClassName}`} aria-hidden />}
           {title}
         </span>
         <ChevronDown

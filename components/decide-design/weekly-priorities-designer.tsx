@@ -126,7 +126,7 @@ function LifePrioritiesSection({
     <Card tone="pink">
       <div>
         <p className="flex items-center gap-2 font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#C0545A]">
-          <Heart className="h-4 w-4 shrink-0" aria-hidden />
+          <Heart className="h-4 w-4 shrink-0 fill-[#E58A9A] text-[#C0545A]" aria-hidden />
           My Weekly Life Priorities™
         </p>
         <p className="mt-2 font-serif text-lg text-[#2E1F27] text-pretty">

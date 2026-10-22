@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { CheckCircle2, PenLine, RefreshCw, Sparkles } from "lucide-react"
+import { CheckCircle2, RefreshCw, Sparkles, Speech } from "lucide-react"
 import { useWeeklyCommitments } from "@/lib/weekly-commitments/use-weekly-commitments"
 import { useCurrentPriorityFocus } from "@/lib/boundary-report/use-current-priority-focus"
 import { useMonthlyBoundaryFocus } from "@/lib/monthly-boundary-focus/use-monthly-boundary-focus"
@@ -189,7 +189,7 @@ export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read"
     <div className="flex flex-col gap-5">
       <div>
         <p className="flex items-center gap-2 font-montserrat text-base font-bold uppercase tracking-[0.18em] text-brand-green">
-          <PenLine className="h-4 w-4 shrink-0" aria-hidden />
+          <Speech className="h-4 w-4 shrink-0 text-[#B8892E]" aria-hidden />
           My 4-Hour CEO Workday Declaration™
         </p>
         <p className="mt-1 font-sans text-sm text-muted-foreground leading-relaxed text-pretty">

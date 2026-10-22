@@ -77,7 +77,7 @@ export function DebriefSpace() {
       <div className="rounded-3xl border border-[#7FB069]/30 bg-[#F3F8ED] shadow-sm px-6 py-6 sm:px-8 sm:py-7 space-y-6">
         <div>
           <p className="flex items-center gap-2 font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#5B835F]">
-            <CalendarDays className="h-4 w-4 shrink-0" aria-hidden />
+            <CalendarDays className="h-4 w-4 shrink-0 text-[#C0545A]" aria-hidden />
             Design My Work-Life Balance Business Day™
           </p>
           <p className="mt-2 font-sans text-sm text-[#3A2E33] leading-relaxed">
@@ -87,19 +87,19 @@ export function DebriefSpace() {
 
         {/* ── The protected windows of the day, in daily rhythm order ───────── */}
         <div className="space-y-4 pt-2">
-          <CollapsibleSubSection title="30-Minute Movement Window" icon={Footprints}>
+          <CollapsibleSubSection title="30-Minute Movement Window" icon={Footprints} iconClassName="text-[#5B835F]">
             <MovementIntentionForm />
           </CollapsibleSubSection>
 
-          <CollapsibleSubSection title="Extended Healthy Hybrid Lunch Break" icon={Utensils}>
+          <CollapsibleSubSection title="Extended Healthy Hybrid Lunch Break" icon={Utensils} iconClassName="text-[#A8875A]">
             <LunchIntentionForm />
           </CollapsibleSubSection>
 
-          <CollapsibleSubSection title="4-Hour Focused CEO Workday" icon={Briefcase}>
+          <CollapsibleSubSection title="4-Hour Focused CEO Workday" icon={Briefcase} iconClassName="text-[#C0545A]">
             <CeoWorkdayDesignForm />
           </CollapsibleSubSection>
 
-          <CollapsibleSubSection title="Time Freedom" icon={Sun} keepMounted={false}>
+          <CollapsibleSubSection title="Time Freedom" icon={Sun} iconClassName="text-[#C9A227]" keepMounted={false}>
             {(open) => (
               <div className="space-y-5">
                 <WeeklyLifePrioritiesCard />
@@ -112,7 +112,7 @@ export function DebriefSpace() {
             )}
           </CollapsibleSubSection>
 
-          <CollapsibleSubSection title="Power Down" icon={MoonStar}>
+          <CollapsibleSubSection title="Power Down" icon={MoonStar} iconClassName="text-[#7A5C8E]">
             <PowerDownIntentionForm />
           </CollapsibleSubSection>
         </div>

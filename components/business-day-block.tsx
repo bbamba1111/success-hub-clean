@@ -329,7 +329,7 @@ export function BusinessDayBlock({
                   )
                 })() : (
                   <span
-                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[12px] font-semibold uppercase tracking-[0.18em] ${
+                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] ${
                       isEvening ? STATUS_BADGE_EVENING[status] : STATUS_BADGE[status]
                     }`}
                   >
