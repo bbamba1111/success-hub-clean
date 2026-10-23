@@ -168,7 +168,7 @@ export function DailyDeclaration() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.6 }}
-            className="relative mx-auto max-w-7xl overflow-hidden rounded-[1.75rem] border border-[#EADFCB] bg-white/70"
+            className="relative mx-auto max-w-[1208px] overflow-hidden rounded-[1.75rem] border border-[#EADFCB] bg-white/70"
             style={{ boxShadow: "0 24px 60px rgba(193,59,107,0.08), 0 6px 20px rgba(0,0,0,0.04)" }}
           >
             <div className="flex flex-col items-center gap-2.5 px-6 py-6 text-center sm:px-12 sm:py-7">
