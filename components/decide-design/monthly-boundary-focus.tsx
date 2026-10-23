@@ -80,7 +80,7 @@ export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | 
   const showPicker = !locked && (choosing || (!chosen && !isLoading))
 
   return (
-    <details className="group rounded-3xl border border-[#7FB069]/30 bg-[#F3F8ED] shadow-sm">
+    <details className="group rounded-3xl border border-[#7FB069]/30 bg-[#F3F8ED] shadow-sm transition-shadow duration-700 hover:shadow-[0_24px_50px_-12px_rgba(28,22,26,0.35)]">
       <summary className="flex cursor-pointer list-none items-start justify-between gap-4 px-6 py-6 sm:px-8 [&::-webkit-details-marker]:hidden">
         <div>
           <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">

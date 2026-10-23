@@ -41,7 +41,7 @@ function Card({ children, tone = "white" }: { children: ReactNode; tone?: "white
       : tone === "pink"
         ? "border-[#C0545A]/20 bg-[#FDF8F5]"
         : "border-[#E8DFE2] bg-white"
-  return <div className={`rounded-3xl border shadow-sm px-6 py-6 sm:px-8 sm:py-7 space-y-5 ${cls}`}>{children}</div>
+  return <div className={`rounded-3xl border shadow-sm transition-shadow duration-700 hover:shadow-[0_24px_50px_-12px_rgba(28,22,26,0.35)] px-6 py-6 sm:px-8 sm:py-7 space-y-5 ${cls}`}>{children}</div>
 }
 
 function Eyebrow({ children }: { children: ReactNode }) {

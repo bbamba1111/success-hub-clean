@@ -87,7 +87,7 @@ export function ReviewRealityCheck() {
   // turning this into a retake prompt inside Decide & Design.
   if (!loading && !report) {
     return (
-      <div className="rounded-3xl border border-[#7FB069]/30 bg-[#F3F8ED] shadow-sm px-6 py-6 sm:px-8 sm:py-7 space-y-3">
+      <div className="rounded-3xl border border-[#7FB069]/30 bg-[#F3F8ED] shadow-sm transition-shadow duration-700 hover:shadow-[0_24px_50px_-12px_rgba(28,22,26,0.35)] px-6 py-6 sm:px-8 sm:py-7 space-y-3">
         <div className="flex items-center gap-2">
           <ClipboardCheck className="h-4 w-4 text-[#5B835F]" aria-hidden />
           <p className="font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#5B835F]">
@@ -115,7 +115,7 @@ export function ReviewRealityCheck() {
   const willingCount = alignment.filter((a) => a.choice === "willing").length
 
   return (
-    <div className="rounded-3xl border border-[#7FB069]/30 bg-[#F3F8ED] shadow-sm px-6 py-6 sm:px-8 sm:py-7 space-y-5">
+    <div className="rounded-3xl border border-[#7FB069]/30 bg-[#F3F8ED] shadow-sm transition-shadow duration-700 hover:shadow-[0_24px_50px_-12px_rgba(28,22,26,0.35)] px-6 py-6 sm:px-8 sm:py-7 space-y-5">
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-2">
           <div className="flex items-center gap-2">

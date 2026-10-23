@@ -19,7 +19,7 @@ export function PriorityFocusAreas() {
   return (
     <div
       id="priority-focus-areas"
-      className="scroll-mt-24 rounded-3xl border border-brand-sage-medium/30 bg-brand-sage-light/60 shadow-sm px-6 py-6 sm:px-8 sm:py-7 space-y-4"
+      className="scroll-mt-24 rounded-3xl border border-brand-sage-medium/30 bg-brand-sage-light/60 shadow-sm transition-shadow duration-700 hover:shadow-[0_24px_50px_-12px_rgba(28,22,26,0.35)] px-6 py-6 sm:px-8 sm:py-7 space-y-4"
     >
       <div className="flex items-center gap-2">
         <Target className="h-4 w-4 text-[#C0545A]" aria-hidden />

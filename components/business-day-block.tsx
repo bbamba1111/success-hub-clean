@@ -232,7 +232,7 @@ export function BusinessDayBlock({
   const isHighlighted = Boolean(blockId && activeSpace?.highlightBlockId === blockId)
 
   return (
-    <section id={sectionId} aria-label={title} className="scroll-mt-24 w-full px-4 py-3 sm:px-6 lg:px-8">
+    <section id={sectionId} aria-label={title} className="scroll-mt-24 w-full px-4 py-[14.4px] sm:px-6 lg:px-8">
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}

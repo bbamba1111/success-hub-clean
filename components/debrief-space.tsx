@@ -69,12 +69,12 @@ export function DebriefSpace() {
 
       {/* ── My 4-Hour CEO Workday Declaration™ — woven from who you're being,
            your weekly life priorities, and your boundary focus. */}
-      <div className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm px-6 py-6 sm:px-8 sm:py-7">
+      <div className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm transition-shadow duration-700 hover:shadow-[0_24px_50px_-12px_rgba(28,22,26,0.35)] px-6 py-6 sm:px-8 sm:py-7">
         <WorkdayDeclaration mode="build" />
       </div>
 
       {/* ── Design My Work-Life Balance Business Day™ ────────────────────────── */}
-      <div className="rounded-3xl border border-[#7FB069]/30 bg-[#F3F8ED] shadow-sm px-6 py-6 sm:px-8 sm:py-7 space-y-6">
+      <div className="rounded-3xl border border-[#7FB069]/30 bg-[#F3F8ED] shadow-sm transition-shadow duration-700 hover:shadow-[0_24px_50px_-12px_rgba(28,22,26,0.35)] px-6 py-6 sm:px-8 sm:py-7 space-y-6">
         <div>
           <p className="flex items-center gap-2 font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#5B835F]">
             <CalendarDays className="h-4 w-4 shrink-0 text-[#C0545A]" aria-hidden />

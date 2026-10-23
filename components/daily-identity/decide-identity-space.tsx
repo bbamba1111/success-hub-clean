@@ -51,7 +51,7 @@ export function DecideIdentitySpace() {
   return (
     <div className="space-y-6">
       {/* ── Decide who you're being today ────────────────────────────────── */}
-      <div className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm px-6 py-5 sm:px-7 sm:py-6 space-y-4">
+      <div className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm transition-shadow duration-700 hover:shadow-[0_24px_50px_-12px_rgba(28,22,26,0.35)] px-6 py-5 sm:px-7 sm:py-6 space-y-4">
         <div>
           {/* Matches the exact treatment of "Decide My Three Weekly Priorities™"
               so the two headings read as the same hierarchy. */}

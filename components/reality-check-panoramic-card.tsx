@@ -8,7 +8,7 @@ import { ArrowRight } from "lucide-react"
  */
 export function RealityCheckPanoramicCard() {
   return (
-    <section aria-labelledby="reality-check-panoramic-title" className="px-4 py-6 sm:px-6 lg:px-8">
+    <section aria-labelledby="reality-check-panoramic-title" className="px-4 py-[28.8px] sm:px-6 lg:px-8">
       <div className="flex flex-col gap-6 overflow-hidden rounded-3xl border border-[#D9D3C0] bg-[#EEEDE2] px-6 py-8 shadow-lg transition-shadow duration-700 hover:shadow-[0_24px_50px_-12px_rgba(28,22,26,0.35)] sm:px-10 md:flex-row md:items-center md:justify-between">
         <div className="min-w-0 max-w-3xl">
           <p className="mb-2 font-montserrat text-[12px] font-bold uppercase tracking-[0.2em] text-[#5B835F]">

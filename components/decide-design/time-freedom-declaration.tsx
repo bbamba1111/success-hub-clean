@@ -55,7 +55,7 @@ export function TimeFreedomDeclaration() {
   }
 
   return (
-    <div className="rounded-3xl border border-[#C0545A]/20 bg-[#FDF8F5] px-6 py-6 shadow-sm sm:px-8 sm:py-7">
+    <div className="rounded-3xl border border-[#C0545A]/20 bg-[#FDF8F5] px-6 py-6 shadow-sm transition-shadow duration-700 hover:shadow-[0_24px_50px_-12px_rgba(28,22,26,0.35)] sm:px-8 sm:py-7">
       <div className="mb-4">
         <p className="font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#C0545A]">
           My Time Freedom Declaration™

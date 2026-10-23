@@ -179,7 +179,7 @@ export function DailyDeclaration() {
                 {"You haven\u2019t set today\u2019s intention yet."}
               </p>
               <p className="max-w-[520px] font-montserrat text-[15px] leading-relaxed text-[#4A3A42]/80">
-                {"Set it during Morning GIV\u2022EN\u2122 and it will stay right here, all day, until you change it."}
+                {"Set it during Morning GIV\u2022EN\u2122 and it will stay right here until you change it."}
               </p>
               <a
                 href="/?openSpace=morning-given"
