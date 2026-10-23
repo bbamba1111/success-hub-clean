@@ -183,7 +183,7 @@ export function DailyDeclaration() {
               </p>
               <a
                 href="/?openSpace=morning-given"
-                className="mt-0.5 inline-flex items-center gap-2 rounded-full bg-[#78AD7D] px-5 py-2 font-montserrat text-[13px] font-bold text-white shadow-sm transition-colors hover:bg-[#5F9165]"
+                className="mt-0.5 inline-flex items-center gap-2 rounded-full bg-[#8FA68A] px-5 py-2 font-montserrat text-[13px] font-bold text-white shadow-sm transition-colors hover:bg-[#768E71]"
               >
                 {"Set Today\u2019s Intention"}
               </a>

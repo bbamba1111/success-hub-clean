@@ -562,7 +562,7 @@ function MovementPlanner({ activities, onChange }: { activities: PlannedActivity
   function remove(id: string) { onChange(activities.filter((a) => a.id !== id)) }
   function update(id: string, patch: Partial<PlannedActivity>) { onChange(activities.map((a) => a.id === id ? { ...a, ...patch } : a)) }
   return (
-    <div className="mb-6 rounded-2xl border border-brand-sage/20 bg-brand-sage/[0.04] overflow-hidden">
+    <div className="mb-6 rounded-2xl shadow-sm transition-shadow duration-700 hover:shadow-[0_24px_50px_-12px_rgba(28,22,26,0.35)] border border-brand-sage/20 bg-brand-sage/[0.04] overflow-hidden">
       <div className="px-5 py-4 border-b border-brand-sage/10">
         <p className="font-sans text-sm font-bold text-brand-sage">Planned Movement™ <span className="font-normal text-brand-ink-soft">(optional)</span></p>
         <p className="mt-0.5 font-sans text-xs text-brand-ink-soft">Build your 30-minute movement plan. Cherry Blossom™ will track your consistency over time.</p>
@@ -600,7 +600,7 @@ function MovementPlanner({ activities, onChange }: { activities: PlannedActivity
 // ---------------------------------------------------------------------------
 function SleepPlanner({ value, onChange }: { value: number | null; onChange: (v: number) => void }) {
   return (
-    <div className="mb-6 rounded-2xl border border-brand-green/20 bg-brand-green/[0.04] overflow-hidden">
+    <div className="mb-6 rounded-2xl shadow-sm transition-shadow duration-700 hover:shadow-[0_24px_50px_-12px_rgba(28,22,26,0.35)] border border-brand-green/20 bg-brand-green/[0.04] overflow-hidden">
       <div className="px-5 py-4 border-b border-brand-green/10">
         <p className="font-sans text-sm font-bold text-brand-green">My Sleep Goal™</p>
         <p className="mt-0.5 font-sans text-xs text-brand-ink-soft">How many hours of restorative sleep will you protect tonight?</p>
@@ -679,7 +679,7 @@ function RepeatAfterMe({ blockId, data }: RepeatAfterMeProps) {
   if (confirmed && declaration) {
     return (
       <div className="mt-6 w-full space-y-4 text-left">
-        <div className={`rounded-2xl border ${ax.border20} ${ax.bg5} px-5 py-4`}>
+        <div className={`rounded-2xl shadow-sm transition-shadow duration-700 hover:shadow-[0_24px_50px_-12px_rgba(28,22,26,0.35)] border ${ax.border20} ${ax.bg5} px-5 py-4`}>
           <p className={`font-sans text-xs font-bold uppercase tracking-[0.2em] mb-2 ${typeColorClass}`}>
             {TYPE_DECLARATION_LABEL[data.type]}
           </p>
@@ -777,7 +777,7 @@ function RepeatAfterMe({ blockId, data }: RepeatAfterMeProps) {
         </div>
       ) : (
         <div className="space-y-4">
-          <div className={`rounded-2xl border ${ax.border20} ${ax.bg5} px-5 py-4`}>
+          <div className={`rounded-2xl shadow-sm transition-shadow duration-700 hover:shadow-[0_24px_50px_-12px_rgba(28,22,26,0.35)] border ${ax.border20} ${ax.bg5} px-5 py-4`}>
             <p className={`font-sans text-xs font-bold uppercase tracking-[0.2em] mb-2 ${typeColorClass}`}>
               {TYPE_DECLARATION_LABEL[data.type]}
             </p>
@@ -892,7 +892,7 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
 
         {/* Learn More About This Boundary™ accordion — right under title */}
         {data.learnMore && blockId !== "morning-given" && blockId !== "early-access" && (
-          <div className={`mb-6 mt-3 rounded-2xl border ${sx.border20} ${sx.bg05} overflow-hidden`}>
+          <div className={`mb-6 mt-3 rounded-2xl shadow-sm transition-shadow duration-700 hover:shadow-[0_24px_50px_-12px_rgba(28,22,26,0.35)] border ${sx.border20} ${sx.bg05} overflow-hidden`}>
             <button
               type="button"
               onClick={() => setShowLearnMore((v) => !v)}
@@ -948,7 +948,7 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
 
         {/* Unplug™ CB message */}
         {data.isUnplug && (
-          <div className="mb-6 rounded-2xl border border-brand-coral/20 bg-brand-coral/[0.04] px-5 py-4">
+          <div className="mb-6 rounded-2xl shadow-sm transition-shadow duration-700 hover:shadow-[0_24px_50px_-12px_rgba(28,22,26,0.35)] border border-brand-coral/20 bg-brand-coral/[0.04] px-5 py-4">
             <p className="font-sans text-xs font-bold uppercase tracking-[0.16em] text-brand-coral mb-2">
               Cherry Blossom™ says:
             </p>
@@ -983,7 +983,7 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
 
         {/* Business Context Assessment™ accordion — ceo-workday only */}
         {blockId === "ceo-workday" && (
-          <div className={`mt-8 rounded-2xl border ${sx.border20} ${sx.bg04} overflow-hidden`}>
+          <div className={`mt-8 rounded-2xl shadow-sm transition-shadow duration-700 hover:shadow-[0_24px_50px_-12px_rgba(28,22,26,0.35)] border ${sx.border20} ${sx.bg04} overflow-hidden`}>
             <button
               type="button"
               onClick={() => setShowBca((v) => !v)}

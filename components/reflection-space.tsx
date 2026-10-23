@@ -187,7 +187,7 @@ export function ReflectionSpace() {
     <section className="w-full space-y-6">
 
       {/* ── Header ─────────────────────────────────────────────────────────── */}
-      <div className="relative overflow-hidden rounded-3xl border border-[#E8DFE2] bg-[#FDF8F5] shadow-sm">
+      <div className="relative overflow-hidden rounded-3xl border border-[#E8DFE2] bg-[#FDF8F5] shadow-sm transition-shadow duration-700 hover:shadow-[0_24px_50px_-12px_rgba(28,22,26,0.35)]">
         <div className="relative text-center space-y-3 px-6 py-10 sm:px-10 sm:py-12">
           <p className="font-sans text-xs font-semibold uppercase tracking-[0.25em] text-[#C0545A]">
             Reflection Space™
@@ -205,7 +205,7 @@ export function ReflectionSpace() {
       </div>
 
       {/* ── Full card wrapper ─────────────────────────────────────────────── */}
-      <div className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm px-8 py-7 space-y-5">
+      <div className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm transition-shadow duration-700 hover:shadow-[0_24px_50px_-12px_rgba(28,22,26,0.35)] px-8 py-7 space-y-5">
         <div className="flex items-center gap-2">
           <Clock className="h-3.5 w-3.5 text-[#C0545A]" aria-hidden />
           <p className="font-sans text-[12px] font-bold uppercase tracking-[0.18em] text-[#C0545A]">
@@ -345,7 +345,7 @@ export function ReflectionSpace() {
             transition={{ duration: 0.5, ease: "easeOut" }}
             className="space-y-6"
           >
-            <div className="rounded-3xl border border-[#7FB069]/25 bg-[#F7FBF4] p-8 space-y-6">
+            <div className="rounded-3xl shadow-sm transition-shadow duration-700 hover:shadow-[0_24px_50px_-12px_rgba(28,22,26,0.35)] border border-[#7FB069]/25 bg-[#F7FBF4] p-8 space-y-6">
               <div className="text-center space-y-1">
                 <p className="font-sans text-xs font-semibold uppercase tracking-[0.25em] text-[#5B835F]">
                   Step 2 — Your Work-Life Balance Reality Check™

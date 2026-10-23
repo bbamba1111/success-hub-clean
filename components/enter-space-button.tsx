@@ -29,7 +29,7 @@ export function EnterSpaceButton({ variant }: { variant: "hero" | "welcome" }) {
     <button
       type="button"
       onClick={() => activeSpace.enterSpace(current.id, current.sectionId)}
-      className={`${baseClasses} ${sizeClasses} bg-[#C13B6B] text-white shadow-sm hover:bg-[#A8305A] focus-visible:ring-[#C13B6B]/40`}
+      className={`${baseClasses} ${sizeClasses} bg-[#E05A6A] text-white shadow-sm hover:bg-[#C84858] focus-visible:ring-[#E05A6A]/40`}
     >
       <Sparkles className="h-4 w-4 shrink-0" aria-hidden />
       {`Enter ${label}`}
