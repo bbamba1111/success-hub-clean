@@ -557,7 +557,15 @@ export function BusinessDayBlock({
                 Flex Time™ and Decide & Design™. Sits tight under the content
                 above it (pt-0) so the gap is driven by that content's padding. */}
             <>
-                <div className="px-7 pt-[50px] pb-5">
+                {/* Planner segments already carry 24px of tinted surface below
+                    their white card, so 26px here keeps the card→button gap at 50px. */}
+                <div
+                  className={`px-7 pb-5 ${
+                    blockId && blockId !== "digital-detox" && blockId !== "monday-reality-check" && blockId !== "monday-debrief" && blockId !== "daily-planning-gps" && !LEGACY_PLANNER_EXCLUDED_IDS.has(blockId) && PLANNER_CONFIG[blockId as keyof typeof PLANNER_CONFIG]
+                      ? "pt-[26px]"
+                      : "pt-[50px]"
+                  }`}
+                >
                   <a
                     href="https://us05web.zoom.us/j/2648726290?pwd=ubrd71NpIvu9tEkwDbvxQ9uaiuIIpS.1"
                     target="_blank"

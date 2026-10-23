@@ -1043,7 +1043,7 @@ export function OperatingPlanner({ blockId }: OperatingPlannerProps) {
 
   return (
     /* Panoramic outer wrapper — truly full width, no margin constraints */
-    <div className="relative z-10 w-full pb-[4.5rem] pt-0">
+    <div className="relative z-10 w-full pb-0 pt-0">
       {/* Toggle header — full width */}
       <div
         className="w-full overflow-hidden rounded-none"
@@ -1087,7 +1087,7 @@ export function OperatingPlanner({ blockId }: OperatingPlannerProps) {
           {/* Space™ — tinted surface bg + elevated white workspace card */}
           {data && (
             // Part 5: subtle tinted background spans the full Space™ area
-            <div className="w-full px-4 pb-12 pt-12 sm:px-8 lg:px-12" style={{ backgroundColor: config.surface }}>
+            <div className="w-full px-4 pb-6 pt-12 sm:px-8 lg:px-12" style={{ backgroundColor: config.surface }}>
               {/* Part 6: single elevated white workspace card */}
               <div className="mx-auto w-full max-w-5xl rounded-3xl bg-white shadow-[0_4px_32px_rgba(0,0,0,0.08)] overflow-hidden ring-1 ring-black/[0.04]">
                 <SegmentBody blockId={blockId} data={data} config={config} />
