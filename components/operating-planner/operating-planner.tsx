@@ -844,7 +844,11 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
   }
 
   return (
-    <div className="px-6 py-10 sm:px-12 lg:px-20 xl:px-28">
+    <div
+      className={`px-6 pt-10 sm:px-12 lg:px-20 xl:px-28 ${
+        blockId === "early-access" || blockId === "morning-given" ? "pb-6" : "pb-10"
+      }`}
+    >
       <div className="w-full max-w-5xl mx-auto">
 
         {/* Segment meta: type chip + time */}
@@ -889,7 +893,7 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
         {blockId === "morning-given" && <MorningGivenExperience />}
 
         {/* Learn More About This Boundary™ accordion — right under title */}
-        {data.learnMore && blockId !== "morning-given" && (
+        {data.learnMore && blockId !== "morning-given" && blockId !== "early-access" && (
           <div className={`mb-6 mt-3 rounded-2xl border ${sx.border20} ${sx.bg05} overflow-hidden`}>
             <button
               type="button"

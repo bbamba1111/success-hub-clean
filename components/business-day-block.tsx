@@ -519,7 +519,7 @@ export function BusinessDayBlock({
                 as Monday — same content, same order, only the hero background image and title
                 ("My" vs "Your") ever differed, and title now matches too. */}
             {(blockId === "monday-debrief" || blockId === "daily-planning-gps") && (
-              <div className="px-7 py-8 space-y-8">
+              <div className="px-7 pt-8 pb-6 space-y-8">
                 {/* DecideIdentitySpace now renders inside DebriefSpace, directly
                     under the Decide & Design heading (heading + identity box
                     were reversed per design). */}
@@ -553,13 +553,11 @@ export function BusinessDayBlock({
             {blockId === "time-freedom" && <TimeFreedomTodayCard />}
             {blockId === "power-down" && <PowerDownReleaseCard />}
 
-            {/* Row 1 — Join Us Live™. The Work-Life Balance Debrief™ and Decide &
-                Design™ are intentionally independent of Zoom — self-guided windows,
-                not live rooms. Flex Time™ (early-access) now also carries the
-                Join Us Live™ link. */}
-            {blockId !== "monday-debrief" && blockId !== "daily-planning-gps" && (
-              <>
-                <div className="px-7 py-5">
+            {/* Row 1 — Join Us Live™. Shown in every open workspace, including
+                Flex Time™ and Decide & Design™. Sits tight under the content
+                above it (pt-0) so the gap is driven by that content's padding. */}
+            <>
+                <div className="px-7 pt-0 pb-5">
                   <a
                     href="https://us05web.zoom.us/j/2648726290?pwd=ubrd71NpIvu9tEkwDbvxQ9uaiuIIpS.1"
                     target="_blank"
@@ -572,8 +570,7 @@ export function BusinessDayBlock({
                 </div>
 
                 <div className={`mx-7 border-t ${isEvening ? "border-white/10" : "border-black/[0.05]"}`} />
-              </>
-            )}
+            </>
 
             {/* Sound Ritual™ — curated ambient soundscapes per segment. Removed
                 from the 6 segments in SOUND_RITUAL_EXCLUDED_IDS; kept everywhere else.
