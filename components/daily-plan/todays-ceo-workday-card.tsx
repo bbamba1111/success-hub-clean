@@ -32,7 +32,7 @@ export function TodaysCeoWorkdayCard() {
   }, [])
 
   return (
-    <div className="px-7 pt-6 pb-2.5 space-y-4">
+    <div className="px-7 pt-6 pb-0 space-y-4">
       {bottlenecks.length > 0 && (
         <div className="rounded-3xl border border-[#C0545A]/25 bg-[#FDF8F5] px-6 py-4 sm:px-7">
           <div className="mb-1.5 flex items-center gap-2">

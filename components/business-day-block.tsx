@@ -507,7 +507,7 @@ export function BusinessDayBlock({
 
             {/* Reflection Space™ — guided Work-Life Balance Reality Check™ for Monday */}
             {blockId === "monday-reality-check" && (
-              <div className="px-7 pt-8 pb-2.5">
+              <div className="px-7 pt-8 pb-0">
                 <ReflectionSpace />
               </div>
             )}
@@ -519,7 +519,7 @@ export function BusinessDayBlock({
                 as Monday — same content, same order, only the hero background image and title
                 ("My" vs "Your") ever differed, and title now matches too. */}
             {(blockId === "monday-debrief" || blockId === "daily-planning-gps") && (
-              <div className="px-7 pt-8 pb-2.5 space-y-8">
+              <div className="px-7 pt-8 pb-0 space-y-8">
                 {/* DecideIdentitySpace now renders inside DebriefSpace, directly
                     under the Decide & Design heading (heading + identity box
                     were reversed per design). */}
@@ -557,7 +557,7 @@ export function BusinessDayBlock({
                 Flex Time™ and Decide & Design™. Sits tight under the content
                 above it (pt-0) so the gap is driven by that content's padding. */}
             <>
-                <div className="px-7 pt-0 pb-5">
+                <div className="px-7 pt-[50px] pb-5">
                   <a
                     href="https://us05web.zoom.us/j/2648726290?pwd=ubrd71NpIvu9tEkwDbvxQ9uaiuIIpS.1"
                     target="_blank"

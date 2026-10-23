@@ -845,7 +845,7 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
 
   return (
     <div
-      className="px-6 pt-10 pb-2.5 sm:px-12 lg:px-20 xl:px-28"
+      className="px-6 pt-10 pb-0 sm:px-12 lg:px-20 xl:px-28"
     >
       <div className="w-full max-w-5xl mx-auto">
 
