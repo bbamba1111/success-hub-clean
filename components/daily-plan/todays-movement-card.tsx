@@ -143,7 +143,7 @@ export function TodaysMovementCard() {
   const weeklyStats = getWeeklyMovementStats(history)
 
   return (
-    <div className="px-7 py-6 space-y-5">
+    <div className="px-7 pt-6 pb-2.5 space-y-5">
       {/* ── Step 2: the declaration itself, or an empty state pointing back to Decide & Design ── */}
       <AnimatePresence mode="wait">
         {!declaration ? (

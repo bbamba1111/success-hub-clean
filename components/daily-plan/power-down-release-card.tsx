@@ -143,7 +143,7 @@ export function PowerDownReleaseCard() {
   if (!mounted) return null
 
   return (
-    <div className="px-7 py-8 space-y-8">
+    <div className="px-7 pt-8 pb-2.5 space-y-8">
       {/* ── The declaration itself, or an empty state pointing back to Decide & Design ── */}
       <AnimatePresence mode="wait">
         {!declaration ? (

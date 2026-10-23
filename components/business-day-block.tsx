@@ -507,7 +507,7 @@ export function BusinessDayBlock({
 
             {/* Reflection Space™ — guided Work-Life Balance Reality Check™ for Monday */}
             {blockId === "monday-reality-check" && (
-              <div className="px-7 py-8">
+              <div className="px-7 pt-8 pb-2.5">
                 <ReflectionSpace />
               </div>
             )}
@@ -519,7 +519,7 @@ export function BusinessDayBlock({
                 as Monday — same content, same order, only the hero background image and title
                 ("My" vs "Your") ever differed, and title now matches too. */}
             {(blockId === "monday-debrief" || blockId === "daily-planning-gps") && (
-              <div className="px-7 pt-8 pb-6 space-y-8">
+              <div className="px-7 pt-8 pb-2.5 space-y-8">
                 {/* DecideIdentitySpace now renders inside DebriefSpace, directly
                     under the Decide & Design heading (heading + identity box
                     were reversed per design). */}

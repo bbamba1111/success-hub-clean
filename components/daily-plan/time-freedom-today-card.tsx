@@ -29,7 +29,7 @@ export function TimeFreedomTodayCard() {
   const remaining = TIME_FREEDOM_CAP_MINUTES - totalMinutes
 
   return (
-    <div className="px-7 py-6">
+    <div className="px-7 pt-6 pb-2.5">
       <div className="rounded-3xl border border-[#E8A24C]/25 bg-[#FBF3E6] px-6 py-5 sm:px-7 sm:py-6 space-y-4">
         <div className="flex items-center justify-between">
           <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#B47A2E]">
