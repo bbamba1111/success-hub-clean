@@ -251,7 +251,7 @@ export function SleepTrackerWidget() {
 
       {/* ── STEP 1: Intention ── */}
       {state.step === "intention" && (
-        <Card className="border-2 border-[#2F5233]/30">
+        <Card className="border-2 border-[#2F5233]/30 shadow-sm transition-shadow duration-700 hover:shadow-[0_24px_50px_-12px_rgba(28,22,26,0.35)]">
           <CardContent className="pt-6 pb-6 space-y-6">
             <div>
               <h4 className="text-xl font-bold text-[#5E8C63] mb-1">Set My Sleep Intention™</h4>

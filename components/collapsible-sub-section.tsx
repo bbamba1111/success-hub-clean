@@ -33,7 +33,11 @@ export function CollapsibleSubSection({
   keepMounted = true,
   icon: Icon,
   iconClassName = "text-[#5B835F]",
+  tone = "green",
+  hoverShadow = false,
 }: {
+  tone?: "green" | "sage"
+  hoverShadow?: boolean
   title: string
   icon?: LucideIcon
   iconClassName?: string
@@ -63,8 +67,16 @@ export function CollapsibleSubSection({
     // panel with a darker-sage header, so the active segment reads clearly
     // against its still-closed siblings.
     <div
-      className={`rounded-2xl border overflow-hidden transition-colors ${
-        open ? "border-[#7FB069] bg-white" : "border-[#BFDDA8] bg-[#EEF6E7]"
+      className={`rounded-2xl border overflow-hidden transition-[color,background-color,border-color,box-shadow] ${
+        hoverShadow ? "shadow-sm duration-700 hover:shadow-[0_24px_50px_-12px_rgba(28,22,26,0.35)]" : ""
+      } ${
+        tone === "sage"
+          ? open
+            ? "border-[#8FA68A] bg-white"
+            : "border-[#8FA68A]/40 bg-[#8FA68A]/10"
+          : open
+            ? "border-[#7FB069] bg-white"
+            : "border-[#BFDDA8] bg-[#EEF6E7]"
       }`}
     >
       <button
@@ -72,7 +84,13 @@ export function CollapsibleSubSection({
         onClick={toggle}
         aria-expanded={open}
         className={`flex w-full items-center justify-between gap-3 px-5 py-4 text-left transition-colors ${
-          open ? "bg-[#5F8F47] hover:bg-[#548039]" : "hover:bg-[#E1EFD5]"
+          tone === "sage"
+            ? open
+              ? "bg-[#8FA68A] hover:bg-[#768E71]"
+              : "hover:bg-[#8FA68A]/20"
+            : open
+              ? "bg-[#5F8F47] hover:bg-[#548039]"
+              : "hover:bg-[#E1EFD5]"
         }`}
       >
         <span className={`flex items-center gap-2 font-sans text-sm font-semibold ${open ? "text-white" : "text-[#2E1F27]"}`}>

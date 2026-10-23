@@ -153,7 +153,7 @@ export function TodaysMovementCard() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
-            className="rounded-3xl border border-[#E8DFE2] bg-white px-6 py-5 sm:px-7 sm:py-6"
+            className="rounded-3xl shadow-sm transition-shadow duration-700 hover:shadow-[0_24px_50px_-12px_rgba(28,22,26,0.35)] border border-[#E8DFE2] bg-white px-6 py-5 sm:px-7 sm:py-6"
           >
             <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5A7A45]">
               Today&apos;s Movement Declaration™
@@ -205,6 +205,8 @@ export function TodaysMovementCard() {
       {/* ── Step 1, inline: set or change today's Movement Intention™ without ever
           leaving this segment. Opens by itself when there's nothing set yet. ── */}
       <CollapsibleSubSection
+        tone="sage"
+        hoverShadow
         title={declaration ? "Change My Movement Intention™" : "Set My Movement Intention™"}
         open={editOpen}
         onOpenChange={setEditOpen}

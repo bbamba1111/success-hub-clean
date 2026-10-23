@@ -30,7 +30,7 @@ export function TimeFreedomTodayCard() {
 
   return (
     <div className="px-7 pt-6 pb-0">
-      <div className="rounded-3xl border border-[#E8A24C]/25 bg-[#FBF3E6] px-6 py-5 sm:px-7 sm:py-6 space-y-4">
+      <div className="rounded-3xl shadow-sm transition-shadow duration-700 hover:shadow-[0_24px_50px_-12px_rgba(28,22,26,0.35)] border border-[#E8A24C]/25 bg-[#FBF3E6] px-6 py-5 sm:px-7 sm:py-6 space-y-4">
         <div className="flex items-center justify-between">
           <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#B47A2E]">
             5 Hours Of Time Freedom™

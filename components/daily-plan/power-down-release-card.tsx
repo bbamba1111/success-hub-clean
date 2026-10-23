@@ -153,7 +153,7 @@ export function PowerDownReleaseCard() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
-            className="rounded-3xl border border-[#2F5233]/15 bg-[#F5F8F5] px-7 py-7 sm:px-8 sm:py-8"
+            className="rounded-3xl shadow-sm transition-shadow duration-700 hover:shadow-[0_24px_50px_-12px_rgba(28,22,26,0.35)] border border-[#2F5233]/15 bg-[#F5F8F5] px-7 py-7 sm:px-8 sm:py-8"
           >
             <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5E8C63]">
               Tonight&apos;s Power Down Declaration™
@@ -212,6 +212,7 @@ export function PowerDownReleaseCard() {
       {/* ── Step 1, inline: set or change tonight's Power Down Intention™ without
           ever leaving this segment. Opens by itself when there's nothing set yet. ── */}
       <CollapsibleSubSection
+        hoverShadow
         title={declaration ? "Change My Power Down Intention™" : "Set My Power Down Intention™"}
         open={editOpen}
         onOpenChange={setEditOpen}

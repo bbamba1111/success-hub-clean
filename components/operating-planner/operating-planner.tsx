@@ -1046,7 +1046,7 @@ export function OperatingPlanner({ blockId }: OperatingPlannerProps) {
     <div className="relative z-10 w-full pb-0 pt-0">
       {/* Toggle header — full width */}
       <div
-        className="w-full overflow-hidden rounded-none"
+        className="w-full overflow-hidden rounded-none shadow-sm transition-shadow duration-700 hover:shadow-[0_24px_50px_-12px_rgba(28,22,26,0.35)]"
         style={{ backgroundColor: config.surface }}
       >
         <button

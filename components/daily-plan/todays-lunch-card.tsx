@@ -180,6 +180,8 @@ export function TodaysLunchCard() {
       {/* ── Step 1, inline: set or change today's Lunch Break Intention™ without
           ever leaving this segment. Opens by itself when there's nothing set yet. ── */}
       <CollapsibleSubSection
+        tone="sage"
+        hoverShadow
         title={declaration ? "Change My Lunch Break Intention™" : "Set My Lunch Break Intention™"}
         open={editOpen}
         onOpenChange={setEditOpen}
