@@ -367,29 +367,6 @@ export function BusinessDayBlock({
                 {description}
               </div>
 
-              {operatingRulePreview && (
-                <div
-                  className={`mt-3 flex flex-col gap-1 rounded-xl border px-3.5 py-2.5 ${
-                    isEvening ? "border-white/20 bg-white/10" : "border-[#7FB069]/30 bg-[#F3F8ED]"
-                  }`}
-                >
-                  <span
-                    className={`font-montserrat text-[10px] font-bold uppercase tracking-[0.16em] ${
-                      isEvening ? "text-white/75" : "text-[#5A7A45]"
-                    }`}
-                  >
-                    My Boundary Rule™
-                  </span>
-                  <p
-                    className={`line-clamp-2 font-sans text-sm leading-relaxed text-pretty ${
-                      isEvening ? "text-white" : "text-[#2E1F27]"
-                    }`}
-                  >
-                    {operatingRulePreview}
-                  </p>
-                </div>
-              )}
-
               {/* Locked workspace card face — the founder is already inside
                   Harmony Lane™ and can explore the destination before it opens.
                   We surface the SAME About This Segment™ content here via the

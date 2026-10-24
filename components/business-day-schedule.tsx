@@ -16,7 +16,6 @@ import useSWR from "swr"
 import { DailyTransition } from "@/components/cherry-blossom/daily-transition"
 import { BusinessDayBlock } from "@/components/business-day-block"
 import { RealityCheckPanoramicCard } from "@/components/reality-check-panoramic-card"
-import { MonthlyBoundaryRuleLine } from "@/components/ceo-workday/monthly-boundary-rule-line"
 import type { SegmentInnerTone } from "@/lib/segment-theme"
 
 /**
@@ -36,7 +35,6 @@ const SAGE_SEGMENT_INNER_TONE: Record<string, SegmentInnerTone> = {
 import { useActiveSpace } from "@/components/active-space-provider"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
 import { useHarmonyWeek } from "@/components/harmony-week/harmony-week-provider"
-import { getActiveRules } from "@/lib/operating-rules/storage"
 import { SCHEDULE, type BlockConfig } from "@/operating-engine"
 import { SEGMENT_ABOUT, renderSegmentAbout } from "@/operating-engine/config/segment-about"
 
@@ -104,17 +102,6 @@ export function BusinessDaySchedule() {
     return () => clearTimeout(timer)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeSpace])
-
-  // Each segment's current Operating Rule™, loaded once (newest-first) and
-  // mapped by segment so every card can preview its guiding commitment.
-  const { data: activeRules } = useSWR("operating-rules:active", getActiveRules)
-  const ruleBySegment = useMemo(() => {
-    const map: Record<string, string> = {}
-    for (const rule of activeRules ?? []) {
-      if (!map[rule.operatingSegment]) map[rule.operatingSegment] = rule.ruleText
-    }
-    return map
-  }, [activeRules])
 
   // Before the first client tick, render the schedule with no active highlight
   // (every block "upcoming") so the markup is stable and SSR-safe. The engine's
@@ -210,15 +197,12 @@ export function BusinessDaySchedule() {
                 }
                 segmentProgress={timing?.progress}
                 segmentRemaining={timing?.remaining}
-                operatingRulePreview={ruleBySegment[block.id]}
                 aboutContent={
                   SEGMENT_ABOUT[block.id]
                     ? renderSegmentAbout(SEGMENT_ABOUT[block.id])
                     : undefined
                 }
-              >
-                {block.id === "ceo-workday" && <MonthlyBoundaryRuleLine />}
-              </BusinessDayBlock>
+              />
               {block.id === "early-access" && isMonday && <RealityCheckPanoramicCard />}
               </div>
             )

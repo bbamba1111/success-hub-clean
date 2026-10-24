@@ -213,7 +213,7 @@ export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | 
             <div role="radiogroup" aria-label="Monthly business boundary" className="flex flex-col gap-5">
               {BOUNDARY_CATEGORIES.map((cat) => (
                 <fieldset key={cat.label} className="flex flex-col gap-2">
-                  <legend className="mb-2 font-montserrat text-[13px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
+                  <legend className="mb-2 font-montserrat text-[13px] font-bold uppercase tracking-[0.18em] text-[#2E1F27]">
                     {cat.label}
                   </legend>
                   {cat.options.map((o) => {
@@ -239,7 +239,7 @@ export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | 
                           {active && <span className="h-1.5 w-1.5 rounded-full bg-white" />}
                         </span>
                         <span className="flex flex-col gap-1">
-                          <span className="font-sans text-sm font-semibold text-[#2E1F27]">
+                          <span className="font-sans text-sm font-semibold text-[#5B835F]">
                             {o.label}
                           </span>
                           <span className="font-sans text-[15px] leading-relaxed text-[#6B5860]">{o.helper}</span>
