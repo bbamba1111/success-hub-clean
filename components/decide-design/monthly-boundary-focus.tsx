@@ -2,16 +2,49 @@
 
 import { useMemo, useState } from "react"
 import { Check, ChevronDown, ChevronLeft, Lock, Plus } from "lucide-react"
-import { useWeeklyLifePriorities } from "@/lib/weekly-life-priorities/use-weekly-life-priorities"
 import { useMonthlyBoundaryFocus } from "@/lib/monthly-boundary-focus/use-monthly-boundary-focus"
 import {
   BOUNDARY_CATEGORIES,
   BOUNDARY_OPTIONS,
   boundaryAffectsOthers,
-  recommendBoundary,
   type BoundaryOption,
 } from "@/lib/weekly-boundary-focus/catalog"
 import type { BoundaryReportData } from "@/lib/boundary-report/types"
+import { COLLISION_GROUPS } from "@/lib/boundary-check-ins/collisions"
+import { useBoundaryCheckIns } from "@/lib/boundary-check-ins/use-boundary-check-ins"
+import { BoundaryCollisionHistory } from "@/components/boundary-check-in/boundary-collision-history"
+
+function CollisionExplorer() {
+  return (
+    <details className="group/explore rounded-2xl border border-[#E8DFE2] bg-white shadow-sm transition-shadow duration-700 hover:shadow-[0_18px_36px_-14px_rgba(28,22,26,0.35)]">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 [&::-webkit-details-marker]:hidden">
+        <span className="font-sans text-sm font-bold text-[#2E1F27]">Explore My Complete Collision History</span>
+        <ChevronDown className="h-4 w-4 shrink-0 text-[#5B835F] transition-transform group-open/explore:rotate-180" aria-hidden />
+      </summary>
+      <div className="flex flex-col gap-6 border-t border-[#E8DFE2] px-5 py-5">
+        <section aria-label="Saved Boundary Check-In history" className="flex flex-col gap-3">
+          <p className={microLabel}>My saved Boundary Check-Ins™</p>
+          <BoundaryCollisionHistory showBoundary />
+        </section>
+        <section aria-label="All collision options" className="flex flex-col gap-4">
+          <p className={microLabel}>All collision options</p>
+          {COLLISION_GROUPS.map((g) => (
+            <div key={g.source} className="flex flex-col gap-2">
+              <p className="font-sans text-sm font-semibold text-[#2E1F27]">{g.title}</p>
+              <ul className="flex flex-col gap-1.5">
+                {g.options.map((o) => (
+                  <li key={o.id} className="font-sans text-xs leading-relaxed text-[#6B5860]">
+                    <span className="font-semibold text-[#3A2E33]">{o.label}</span> — {o.hint}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </section>
+      </div>
+    </details>
+  )
+}
 
 const microLabel = "font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60"
 const inputCls =
@@ -28,15 +61,22 @@ function CollisionTags({ tags }: { tags: string[] }) {
 }
 
 export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | null }) {
-  const { priorities } = useWeeklyLifePriorities()
   const { focus, save, isLoading, entitled, signedIn } = useMonthlyBoundaryFocus()
+  const { checkIns } = useBoundaryCheckIns()
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const recommendation = useMemo(
-    () => recommendBoundary(report, priorities.map((p) => p.label)),
-    [report, priorities],
-  )
+  const linkedCounts = useMemo(() => {
+    const counts = new Map<string, { total: number; collided: number }>()
+    for (const c of checkIns) {
+      if (!c.boundaryOptionId || c.boundaryOptionId === "custom") continue
+      const entry = counts.get(c.boundaryOptionId) ?? { total: 0, collided: 0 }
+      entry.total += 1
+      if (c.collided) entry.collided += 1
+      counts.set(c.boundaryOptionId, entry)
+    }
+    return counts
+  }, [checkIns])
 
   const [choosing, setChoosing] = useState(false)
   const [pending, setPending] = useState<BoundaryOption | null>(null)
@@ -91,6 +131,14 @@ export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | 
           </h3>
           <p className="mt-1 font-sans text-sm leading-relaxed text-[#6B5860] text-pretty">
             Choose the one boundary you&apos;ll build a rule around this membership cycle.
+          </p>
+          <p className="mt-2 font-sans text-sm leading-relaxed text-[#6B5860] text-pretty">
+            Review what has been competing with your time, interrupting your intended activities, or making it
+            difficult to protect your work and personal life.
+          </p>
+          <p className="mt-2 font-sans text-sm leading-relaxed text-[#6B5860] text-pretty">
+            Your Boundary Check-In™ history can help inform your decision. Your experience provides evidence; you
+            make the choice.
           </p>
         </div>
         <ChevronDown
@@ -149,12 +197,13 @@ export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | 
 
         {showPicker && (
           <div className="flex flex-col gap-5 rounded-2xl border border-[#E8DFE2] bg-white px-5 py-5">
+          <CollisionExplorer />
           <div>
             <p className="font-serif text-lg text-[#2E1F27] text-pretty">
-              Which of these collided with your work most recently?
+              Which ONE boundary will you build a rule around this membership cycle?
             </p>
             <p className="mt-1 font-sans text-sm leading-relaxed text-[#6B5860] text-pretty">
-              Select the boundary or boundaries that reflect what interfered with the way you wanted to work or live.
+              Explore as many options as you like. You&apos;ll confirm one boundary for this 30-day cycle.
             </p>
           </div>
 
@@ -164,7 +213,7 @@ export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | 
                   <legend className={`${microLabel} mb-2`}>{cat.label}</legend>
                   {cat.options.map((o) => {
                     const active = pending ? pending.id === o.id : focus?.optionId === o.id
-                    const recommended = recommendation?.option.id === o.id
+                    const linked = linkedCounts.get(o.id)
                     return (
                       <button
                         key={o.id}
@@ -187,14 +236,15 @@ export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | 
                         <span className="flex flex-col gap-1">
                           <span className="font-sans text-sm font-semibold text-[#2E1F27]">
                             {o.label}
-                            {recommended && (
-                              <span className="ml-2 font-montserrat text-[10px] font-bold uppercase tracking-[0.14em] text-[#5B835F]">
-                                Recommended
-                              </span>
-                            )}
                           </span>
                           <span className="font-sans text-xs leading-relaxed text-[#6B5860]">{o.helper}</span>
                           <CollisionTags tags={o.collisionTags} />
+                          {linked && (
+                            <span className="font-sans text-xs text-[#5B835F]">
+                              Linked to {linked.total} saved check-in{linked.total === 1 ? "" : "s"}
+                              {` · ${linked.collided} with collisions`}
+                            </span>
+                          )}
                         </span>
                       </button>
                     )
