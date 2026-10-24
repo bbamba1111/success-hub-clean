@@ -9,7 +9,14 @@
 
 import { COLLISION_SOURCE_LABEL } from "@/lib/boundary-check-ins/collisions"
 import { formatCheckInDate, useBoundaryCheckIns } from "@/lib/boundary-check-ins/use-boundary-check-ins"
-import type { BoundaryCheckIn } from "@/lib/boundary-check-ins/server"
+import type { ActivityStatus, BoundaryCheckIn } from "@/lib/boundary-check-ins/server"
+
+const ACTIVITY_LABEL: Record<ActivityStatus, string> = {
+  completed: "Completed",
+  partial: "Partially completed",
+  not_completed: "Not completed",
+  no_activity: "No specific activity planned",
+}
 
 interface Props {
   boundaryOptionId?: string | null
@@ -86,6 +93,11 @@ export function BoundaryCollisionHistory({ boundaryOptionId, boundaryText, showB
                       {c.collided ? "Something collided" : "Nothing collided"}
                     </span>
                   </div>
+                  {c.activityStatus && (
+                    <p className="mt-1 font-sans text-xs text-[#5C4F55]">
+                      Activity: {ACTIVITY_LABEL[c.activityStatus]}
+                    </p>
+                  )}
                   {showBoundary && (
                     <p className="mt-1 font-sans text-xs text-[#6B5860]">
                       Boundary: {c.boundaryText ?? "No boundary was set for this week"}

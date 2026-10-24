@@ -10,7 +10,11 @@
  */
 
 import { createClient } from "@/lib/supabase/server"
+import { getEntitlements } from "@/lib/entitlements"
 import type { CollisionSource, SelectedCollision } from "./collisions"
+
+export type ActivityStatus = "completed" | "partial" | "not_completed" | "no_activity"
+const ACTIVITY_STATUSES = new Set<ActivityStatus>(["completed", "partial", "not_completed", "no_activity"])
 
 export interface BoundaryCheckIn {
   id: string
@@ -20,6 +24,7 @@ export interface BoundaryCheckIn {
   boundaryOptionId: string | null
   boundaryText: string | null
   boundaryWeekKey: string | null
+  activityStatus: ActivityStatus | null
   collided: boolean
   collisions: SelectedCollision[]
   note: string | null
@@ -34,6 +39,7 @@ export interface SaveBoundaryCheckInInput {
   boundaryOptionId?: string | null
   boundaryText?: string | null
   boundaryWeekKey?: string | null
+  activityStatus?: ActivityStatus | null
   collided: boolean
   collisions: SelectedCollision[]
   note?: string | null
@@ -47,6 +53,7 @@ type Row = {
   boundary_option_id: string | null
   boundary_text: string | null
   boundary_week_key: string | null
+  activity_status: string | null
   collided: boolean
   collisions: unknown
   note: string | null
@@ -55,7 +62,7 @@ type Row = {
 }
 
 const COLUMNS =
-  "id, check_in_date, segment_id, segment_label, boundary_option_id, boundary_text, boundary_week_key, collided, collisions, note, created_at, updated_at"
+  "id, check_in_date, segment_id, segment_label, boundary_option_id, boundary_text, boundary_week_key, activity_status, collided, collisions, note, created_at, updated_at"
 
 const SOURCES = new Set<CollisionSource>(["business", "personal", "schedule"])
 
@@ -84,6 +91,7 @@ function fromRow(r: Row): BoundaryCheckIn {
     boundaryOptionId: r.boundary_option_id,
     boundaryText: r.boundary_text,
     boundaryWeekKey: r.boundary_week_key,
+    activityStatus: ACTIVITY_STATUSES.has(r.activity_status as ActivityStatus) ? (r.activity_status as ActivityStatus) : null,
     collided: r.collided,
     collisions: sanitizeCollisions(r.collisions),
     note: r.note,
@@ -139,6 +147,7 @@ export async function saveBoundaryCheckIn(
           boundary_option_id: clip(input.boundaryOptionId, 80),
           boundary_text: clip(input.boundaryText, 300),
           boundary_week_key: clip(input.boundaryWeekKey, 20),
+          activity_status: ACTIVITY_STATUSES.has(input.activityStatus as ActivityStatus) ? input.activityStatus : null,
           collided,
           collisions: collided ? sanitizeCollisions(input.collisions) : [],
           note: collided ? clip(input.note, 1000) : null,
@@ -154,4 +163,10 @@ export async function saveBoundaryCheckIn(
   } catch {
     return { ok: false, error: "We couldn't save your check-in. Please try again." }
   }
+}
+
+/** Whether the signed-in person is a monthly member (has Builder access). */
+export async function getCheckInAudience(): Promise<"member" | "guest"> {
+  const entitlements = await getEntitlements()
+  return entitlements.active ? "member" : "guest"
 }
