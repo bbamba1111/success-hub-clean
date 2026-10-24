@@ -16,10 +16,10 @@ import { BoundaryCollisionHistory } from "@/components/boundary-check-in/boundar
 
 function CollisionExplorer() {
   return (
-    <details className="group/explore rounded-2xl border border-[#E8DFE2] bg-white shadow-sm transition-shadow duration-700 hover:shadow-[0_18px_36px_-14px_rgba(28,22,26,0.35)]">
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 [&::-webkit-details-marker]:hidden">
-        <span className="font-sans text-sm font-bold text-[#2E1F27]">Explore My Complete Collision History</span>
-        <ChevronDown className="h-4 w-4 shrink-0 text-[#5B835F] transition-transform group-open/explore:rotate-180" aria-hidden />
+    <details className="group/explore overflow-hidden rounded-2xl border border-[#E6A2B1] bg-white shadow-sm transition-shadow duration-700 hover:shadow-[0_18px_36px_-14px_rgba(28,22,26,0.35)]">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 bg-[#E3899D] px-5 py-4 [&::-webkit-details-marker]:hidden">
+        <span className="font-sans text-base font-bold text-white">Explore My Complete Collision History</span>
+        <ChevronDown className="h-4 w-4 shrink-0 text-white transition-transform group-open/explore:rotate-180" aria-hidden />
       </summary>
       <div className="flex flex-col gap-6 border-t border-[#E8DFE2] px-5 py-5">
         <section aria-label="Saved Boundary Check-In history" className="flex flex-col gap-3">
@@ -33,7 +33,7 @@ function CollisionExplorer() {
               <p className="font-sans text-sm font-semibold text-[#2E1F27]">{g.title}</p>
               <ul className="flex flex-col gap-1.5">
                 {g.options.map((o) => (
-                  <li key={o.id} className="font-sans text-xs leading-relaxed text-[#6B5860]">
+                  <li key={o.id} className="font-sans text-[15px] leading-relaxed text-[#6B5860]">
                     <span className="font-semibold text-[#3A2E33]">{o.label}</span> — {o.hint}
                   </li>
                 ))}
@@ -53,7 +53,7 @@ const inputCls =
 function CollisionTags({ tags }: { tags: string[] }) {
   if (tags.length === 0) return null
   return (
-    <p className="font-sans text-xs italic text-[#6B5860]">
+    <p className="font-sans text-[15px] italic leading-relaxed text-[#6B5860]">
       <span className="sr-only">Collision tags: </span>
       {tags.join(" · ")}
     </p>
@@ -129,16 +129,9 @@ export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | 
           <h3 className="mt-2 font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#5B835F] text-balance">
             Monthly Business Boundary Focus™
           </h3>
-          <p className="mt-1 font-sans text-sm leading-relaxed text-[#6B5860] text-pretty">
-            Choose the one boundary you&apos;ll build a rule around this membership cycle.
-          </p>
-          <p className="mt-2 font-sans text-sm leading-relaxed text-[#6B5860] text-pretty">
-            Review what has been competing with your time, interrupting your intended activities, or making it
-            difficult to protect your work and personal life.
-          </p>
-          <p className="mt-2 font-sans text-sm leading-relaxed text-[#6B5860] text-pretty">
-            Your Boundary Check-In™ history can help inform your decision. Your experience provides evidence; you
-            make the choice.
+          <p className="mt-1 font-sans text-sm leading-relaxed text-[#6B5860] text-pretty group-open:hidden">
+            Choose the one human sustainability boundary you&apos;ll build a business operating rule around this
+            membership cycle.
           </p>
         </div>
         <ChevronDown
@@ -148,6 +141,16 @@ export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | 
       </summary>
 
       <div className="flex flex-col gap-4 px-6 pb-7 sm:px-8">
+        <div className="flex flex-col gap-2">
+          <p className="font-sans text-sm leading-relaxed text-[#6B5860] text-pretty">
+            Review what has been competing with your time, interrupting your intended activities, or making it
+            difficult to protect your work and personal life.
+          </p>
+          <p className="font-sans text-sm leading-relaxed text-[#6B5860] text-pretty">
+            Your Boundary Check-In™ history can help inform your decision. Your experience provides evidence; you
+            make the choice.
+          </p>
+        </div>
         {isLoading ? (
           <div className="flex flex-col gap-3 rounded-2xl border border-[#7FB069]/30 bg-white px-5 py-5">
             <div className="h-4 w-1/2 animate-pulse rounded-full bg-[#7FB069]/20" />
@@ -210,7 +213,7 @@ export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | 
             <div role="radiogroup" aria-label="Monthly business boundary" className="flex flex-col gap-5">
               {BOUNDARY_CATEGORIES.map((cat) => (
                 <fieldset key={cat.label} className="flex flex-col gap-2">
-                  <legend className={`${microLabel} mb-2`}>{cat.label}</legend>
+                  <legend className={`${microLabel} mb-2 text-[13px]`}>{cat.label}</legend>
                   {cat.options.map((o) => {
                     const active = pending ? pending.id === o.id : focus?.optionId === o.id
                     const linked = linkedCounts.get(o.id)
@@ -237,10 +240,10 @@ export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | 
                           <span className="font-sans text-sm font-semibold text-[#2E1F27]">
                             {o.label}
                           </span>
-                          <span className="font-sans text-xs leading-relaxed text-[#6B5860]">{o.helper}</span>
+                          <span className="font-sans text-[15px] leading-relaxed text-[#6B5860]">{o.helper}</span>
                           <CollisionTags tags={o.collisionTags} />
                           {linked && (
-                            <span className="font-sans text-xs text-[#5B835F]">
+                            <span className="font-sans text-[15px] text-[#5B835F]">
                               Linked to {linked.total} saved check-in{linked.total === 1 ? "" : "s"}
                               {` · ${linked.collided} with collisions`}
                             </span>
