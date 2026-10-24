@@ -134,7 +134,12 @@ export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | 
             )}
             <button
               type="button"
-              onClick={() => setChoosing(true)}
+              onClick={() => {
+                const ok = window.confirm(
+                  "This boundary is your active focus for the full 30-day cycle. Replacing it changes the boundary shown at the top of your 4-Hour Focused CEO Workday™. To adjust its rule instead, use the Business Boundary Builder™. Replace this cycle's boundary?",
+                )
+                if (ok) setChoosing(true)
+              }}
               className="self-start rounded-full border border-[#7FB069]/30 bg-white px-5 py-2.5 font-sans text-sm font-semibold text-[#3A2E33] hover:bg-black/[0.03]"
             >
               Change this cycle&apos;s boundary

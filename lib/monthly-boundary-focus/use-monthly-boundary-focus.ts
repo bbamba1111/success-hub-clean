@@ -24,6 +24,9 @@ export function useMonthlyBoundaryFocus() {
     isLoading,
     signedIn: data?.signedIn ?? false,
     entitled: data?.entitled ?? false,
+    cycleKey: data?.cycleKey ?? null,
+    cycleStart: data?.cycleStart ?? null,
+    cycleEnd: data?.cycleEnd ?? null,
     focus: data?.focus ?? null,
     save,
   }

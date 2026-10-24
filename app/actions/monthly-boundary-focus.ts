@@ -18,11 +18,21 @@ export type MonthlyBoundaryRecord = {
 }
 
 export type MonthlyBoundaryState =
-  | { signedIn: false; entitled: false; cycleKey: null; focus: null; history: [] }
+  | {
+      signedIn: false
+      entitled: false
+      cycleKey: null
+      cycleStart: null
+      cycleEnd: null
+      focus: null
+      history: []
+    }
   | {
       signedIn: true
       entitled: boolean
       cycleKey: string | null
+      cycleStart: string | null
+      cycleEnd: string | null
       focus: MonthlyBoundaryRecord | null
       history: MonthlyBoundaryRecord[]
     }
@@ -42,16 +52,31 @@ function membershipCycleKey(cycleStartDate: string | null, now = new Date()): st
   return `c${Math.floor(elapsedDays / MEMBERSHIP_CYCLE_DAYS) + 1}`
 }
 
-async function getCurrentCycleKey(
+type CurrentCycle = { key: string; start: string; end: string }
+
+async function getCurrentCycle(
   supabase: Awaited<ReturnType<typeof createClient>>,
   userId: string,
-): Promise<string | null> {
+): Promise<CurrentCycle | null> {
   const { data } = await supabase
     .from("user_profiles")
     .select("cycle_start_date")
     .eq("id", userId)
     .maybeSingle<{ cycle_start_date: string | null }>()
-  return membershipCycleKey(data?.cycle_start_date ?? null)
+  const startDate = data?.cycle_start_date ?? null
+  const key = membershipCycleKey(startDate)
+  if (!key || !startDate) return null
+  const cycleIndex = Number(key.slice(1)) - 1
+  const start = new Date(new Date(startDate).getTime() + cycleIndex * MEMBERSHIP_CYCLE_DAYS * DAY_MS)
+  const end = new Date(start.getTime() + (MEMBERSHIP_CYCLE_DAYS - 1) * DAY_MS)
+  return { key, start: start.toISOString(), end: end.toISOString() }
+}
+
+async function getCurrentCycleKey(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  userId: string,
+): Promise<string | null> {
+  return (await getCurrentCycle(supabase, userId))?.key ?? null
 }
 
 function clean(value: string | undefined | null) {
@@ -88,10 +113,11 @@ export async function getMonthlyBoundaryState(): Promise<MonthlyBoundaryState> {
   const {
     data: { user },
   } = await supabase.auth.getUser()
-  if (!user) return { signedIn: false, entitled: false, cycleKey: null, focus: null, history: [] }
+  if (!user)
+    return { signedIn: false, entitled: false, cycleKey: null, cycleStart: null, cycleEnd: null, focus: null, history: [] }
 
-  const [cycleKey, { data: entitled }, { data: rows }] = await Promise.all([
-    getCurrentCycleKey(supabase, user.id),
+  const [cycle, { data: entitled }, { data: rows }] = await Promise.all([
+    getCurrentCycle(supabase, user.id),
     supabase.rpc("has_active_entitlement", { p_entitlement: ENTITLEMENT }),
     supabase
       .from("monthly_boundary_focus")
@@ -101,11 +127,20 @@ export async function getMonthlyBoundaryState(): Promise<MonthlyBoundaryState> {
       .returns<Row[]>(),
   ])
 
+  const cycleKey = cycle?.key ?? null
   const records = (rows ?? []).map(toRecord)
   const focus = cycleKey ? (records.find((r) => r.cycleKey === cycleKey) ?? null) : null
   const history = records.filter((r) => r.cycleKey !== cycleKey)
 
-  return { signedIn: true, entitled: entitled === true, cycleKey, focus, history }
+  return {
+    signedIn: true,
+    entitled: entitled === true,
+    cycleKey,
+    cycleStart: cycle?.start ?? null,
+    cycleEnd: cycle?.end ?? null,
+    focus,
+    history,
+  }
 }
 
 export async function saveMonthlyBoundary(
