@@ -2,6 +2,7 @@
 
 import { useCallback } from "react"
 import useSWR from "swr"
+import { setCheckInBoundaryLink } from "@/app/actions/monthly-boundary-focus"
 import { listBoundaryCheckIns, saveBoundaryCheckIn, type BoundaryCheckIn, type SaveBoundaryCheckInInput } from "./server"
 
 const KEY = "boundary-check-ins"
@@ -33,7 +34,16 @@ export function useBoundaryCheckIns() {
     [mutate],
   )
 
-  return { checkIns: data ?? [], isLoading, save }
+  const setLink = useCallback(
+    async (checkInId: string, linked: boolean) => {
+      const res = await setCheckInBoundaryLink(checkInId, linked)
+      if (res.ok) await mutate()
+      return res
+    },
+    [mutate],
+  )
+
+  return { checkIns: data ?? [], isLoading, save, setLink }
 }
 
 export function formatCheckInDate(date: string): string {

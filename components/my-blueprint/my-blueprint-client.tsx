@@ -23,7 +23,12 @@
 
 import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
-import { BoundaryCollisionHistory } from "@/components/boundary-check-in/boundary-collision-history"
+import {
+  BoundaryWorkflowTracker,
+  CollisionHistoryWithLinks,
+  MonthlyFocusSummary,
+  MonthlyReviewAndHistory,
+} from "@/components/my-blueprint/boundary-workflow"
 import {
   ArrowRight,
   ArrowUpRight,
@@ -425,15 +430,51 @@ export function MyBlueprintClient({ boundaryReport }: { boundaryReport?: React.R
           </div>
         )}
 
+        <div id="boundary-workflow" className="scroll-mt-24">
+          <BlueprintSection
+            eyebrow="A — 30-Day Boundary Workflow"
+            icon={ShieldCheck}
+            title="30-Day Boundary Workflow Tracker™"
+            subtitle="Where you are this cycle — based on your cycle dates and the milestones you mark"
+            accent="#5B835F"
+          >
+            <BoundaryWorkflowTracker />
+          </BlueprintSection>
+        </div>
+
+        <div id="monthly-boundary-focus" className="scroll-mt-24">
+          <BlueprintSection
+            eyebrow="B — This Cycle"
+            icon={ShieldCheck}
+            title="My Monthly Boundary Focus™"
+            subtitle="Your selected boundary, operating rule, and implementation milestones"
+            accent="#5B835F"
+          >
+            <MonthlyFocusSummary />
+          </BlueprintSection>
+        </div>
+
         <div id="boundary-check-ins" className="scroll-mt-24">
           <BlueprintSection
-            eyebrow="Boundary Check-Ins™"
+            eyebrow="C — Boundary Check-Ins™"
             icon={ShieldCheck}
-            title="What Collided With My Boundaries"
-            subtitle="Every saved Boundary Check-In™, by date and segment — use it to review or revise a boundary"
+            title="My Collision History"
+            subtitle="What you actually recorded, organized by the Collision Glossary™"
             accent="#E26C73"
           >
-            <BoundaryCollisionHistory showBoundary />
+            <CollisionHistoryWithLinks />
+          </BlueprintSection>
+        </div>
+
+        <div id="monthly-boundary-review" className="scroll-mt-24">
+          <BlueprintSection
+            eyebrow="D — Review"
+            icon={ShieldCheck}
+            title="Monthly Boundary Review & History"
+            subtitle="Reflect on this cycle and revisit previous boundaries"
+            accent="#5B835F"
+          >
+            <MonthlyReviewAndHistory />
           </BlueprintSection>
         </div>
 

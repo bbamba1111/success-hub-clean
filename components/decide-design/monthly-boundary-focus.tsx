@@ -10,37 +10,19 @@ import {
   type BoundaryOption,
 } from "@/lib/weekly-boundary-focus/catalog"
 import type { BoundaryReportData } from "@/lib/boundary-report/types"
-import { COLLISION_GROUPS } from "@/lib/boundary-check-ins/collisions"
 import { useBoundaryCheckIns } from "@/lib/boundary-check-ins/use-boundary-check-ins"
-import { BoundaryCollisionHistory } from "@/components/boundary-check-in/boundary-collision-history"
+import { linkedCollisionLabels } from "@/lib/boundary-check-ins/linked"
+import { CollisionGlossaryHistory } from "@/components/boundary-check-in/collision-glossary-history"
 
-function CollisionExplorer() {
+function CollisionExplorer({ cycleStart }: { cycleStart: string | null }) {
   return (
     <details className="group/explore overflow-hidden rounded-2xl border border-[#E6A2B1] bg-white shadow-sm transition-shadow duration-700 hover:shadow-[0_18px_36px_-14px_rgba(28,22,26,0.35)]">
       <summary className="flex cursor-pointer list-none items-center justify-between gap-3 bg-[#E3899D] px-5 py-4 [&::-webkit-details-marker]:hidden">
-        <span className="font-sans text-base font-bold text-white">Explore My Complete Collision History</span>
+        <span className="font-sans text-base font-bold text-white">Explore My Collision History</span>
         <ChevronDown className="h-4 w-4 shrink-0 text-white transition-transform group-open/explore:rotate-180" aria-hidden />
       </summary>
-      <div className="flex flex-col gap-6 border-t border-[#E8DFE2] px-5 py-5">
-        <section aria-label="Saved Boundary Check-In history" className="flex flex-col gap-3">
-          <p className={microLabel}>My saved Boundary Check-Ins™</p>
-          <BoundaryCollisionHistory showBoundary />
-        </section>
-        <section aria-label="All collision options" className="flex flex-col gap-4">
-          <p className={microLabel}>All collision options</p>
-          {COLLISION_GROUPS.map((g) => (
-            <div key={g.source} className="flex flex-col gap-2">
-              <p className="font-sans text-sm font-semibold text-[#2E1F27]">{g.title}</p>
-              <ul className="flex flex-col gap-1.5">
-                {g.options.map((o) => (
-                  <li key={o.id} className="font-sans text-[15px] leading-relaxed text-[#6B5860]">
-                    <span className="font-semibold text-[#3A2E33]">{o.label}</span> — {o.hint}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </section>
+      <div className="border-t border-[#E8DFE2] px-5 py-5">
+        <CollisionGlossaryHistory cycleStart={cycleStart} />
       </div>
     </details>
   )
@@ -61,7 +43,7 @@ function CollisionTags({ tags }: { tags: string[] }) {
 }
 
 export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | null }) {
-  const { focus, save, isLoading, entitled, signedIn } = useMonthlyBoundaryFocus()
+  const { focus, save, isLoading, entitled, signedIn, cycleStart } = useMonthlyBoundaryFocus()
   const { checkIns } = useBoundaryCheckIns()
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -179,7 +161,7 @@ export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | 
             {focus?.ruleDescription && (
               <p className="font-sans text-sm leading-relaxed text-[#3A2E33]">{focus.ruleDescription}</p>
             )}
-            <CollisionTags tags={focus?.collisionTags ?? chosenOption?.collisionTags ?? []} />
+            <CollisionTags tags={linkedCollisionLabels(checkIns, focus?.optionId, chosen)} />
             {focus?.agreement && (
               <p className="font-sans text-xs text-[#6B5860]">Who needs to agree: {focus.agreement}</p>
             )}
@@ -200,7 +182,7 @@ export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | 
 
         {showPicker && (
           <div className="flex flex-col gap-5 rounded-2xl border border-[#E8DFE2] bg-white px-5 py-5">
-          <CollisionExplorer />
+          <CollisionExplorer cycleStart={cycleStart} />
           <div>
             <p className="font-serif text-lg text-[#2E1F27] text-pretty">
               Which ONE boundary will you build a rule around this membership cycle?
@@ -243,7 +225,7 @@ export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | 
                             {o.label}
                           </span>
                           <span className="font-sans text-[15px] leading-relaxed text-[#6B5860]">{o.helper}</span>
-                          <CollisionTags tags={o.collisionTags} />
+                          <CollisionTags tags={linkedCollisionLabels(checkIns, o.id)} />
                           {linked && (
                             <span className="font-sans text-[15px] text-[#5B835F]">
                               Linked to {linked.total} saved check-in{linked.total === 1 ? "" : "s"}
@@ -262,7 +244,7 @@ export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | 
               <div className="flex flex-col gap-3 rounded-2xl border border-[#5B835F]/40 bg-[#F3F8ED] px-4 py-4">
                 <p className={microLabel}>Review your choice</p>
                 <p className="font-sans text-sm font-semibold text-[#2E1F27]">{pending.label}</p>
-                <CollisionTags tags={pending.collisionTags} />
+                <CollisionTags tags={linkedCollisionLabels(checkIns, pending.id)} />
                 {boundaryAffectsOthers(pending.collisionTags) && (
                   <label className="flex flex-col gap-1.5">
                     <span className="font-sans text-sm font-semibold text-[#2E1F27]">Who needs to agree?</span>

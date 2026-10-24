@@ -28,6 +28,10 @@ export interface BoundaryCheckIn {
   collided: boolean
   collisions: SelectedCollision[]
   note: string | null
+  /** Set only when the member explicitly links this check-in to a monthly boundary. */
+  linkedBoundaryOptionId: string | null
+  linkedBoundaryText: string | null
+  linkedCycleKey: string | null
   createdAt: string
   updatedAt: string
 }
@@ -57,12 +61,15 @@ type Row = {
   collided: boolean
   collisions: unknown
   note: string | null
+  linked_boundary_option_id: string | null
+  linked_boundary_text: string | null
+  linked_cycle_key: string | null
   created_at: string
   updated_at: string
 }
 
 const COLUMNS =
-  "id, check_in_date, segment_id, segment_label, boundary_option_id, boundary_text, boundary_week_key, activity_status, collided, collisions, note, created_at, updated_at"
+  "id, check_in_date, segment_id, segment_label, boundary_option_id, boundary_text, boundary_week_key, activity_status, collided, collisions, note, linked_boundary_option_id, linked_boundary_text, linked_cycle_key, created_at, updated_at"
 
 const SOURCES = new Set<CollisionSource>(["business", "personal", "schedule"])
 
@@ -95,6 +102,9 @@ function fromRow(r: Row): BoundaryCheckIn {
     collided: r.collided,
     collisions: sanitizeCollisions(r.collisions),
     note: r.note,
+    linkedBoundaryOptionId: r.linked_boundary_option_id,
+    linkedBoundaryText: r.linked_boundary_text,
+    linkedCycleKey: r.linked_cycle_key,
     createdAt: r.created_at,
     updatedAt: r.updated_at,
   }
