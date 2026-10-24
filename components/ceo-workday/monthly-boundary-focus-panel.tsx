@@ -4,6 +4,7 @@ import { useState } from "react"
 import { CalendarRange, Hammer, MessageSquareShare, ShieldCheck } from "lucide-react"
 
 import { useMonthlyBoundaryFocus } from "@/lib/monthly-boundary-focus/use-monthly-boundary-focus"
+import { useHumanSos } from "@/lib/human-sos/use-human-sos"
 import { BoundaryBuilderDialog } from "@/components/boundary-builder/boundary-builder-dialog"
 import { CommunicateDelegateDialog } from "@/components/communications/communicate-delegate-dialog"
 
@@ -20,6 +21,48 @@ function formatDate(iso: string | null) {
  */
 export function monthlyBuilderKey(cycleKey: string) {
   return `monthly-${cycleKey}`
+}
+
+function OperatingRuleBlock({
+  builderKey,
+  boundaryText,
+  fallbackDescription,
+  onBuild,
+}: {
+  builderKey: string
+  boundaryText: string
+  fallbackDescription: string | null
+  onBuild: () => void
+}) {
+  // Shares the Builder's SWR key, so saving in the Builder updates this card instantly.
+  const { sos } = useHumanSos(builderKey, boundaryText)
+  const rule = sos.operatingRuleText?.trim()
+
+  if (rule) {
+    return (
+      <div className="mt-1 flex flex-col gap-1.5 rounded-2xl border border-[#7FB069]/30 bg-background px-5 py-4">
+        <span className="font-montserrat text-[10px] font-bold uppercase tracking-[0.16em] text-[#5A7A45]">
+          My Operating Rule — follow this all cycle
+        </span>
+        <p className="font-sans text-base leading-relaxed text-[#2E1F27] text-pretty">{rule}</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex flex-col gap-2">
+      {fallbackDescription && (
+        <p className="font-sans text-sm leading-relaxed text-[#3A2E33] text-pretty">{fallbackDescription}</p>
+      )}
+      <p className="font-sans text-xs leading-relaxed text-[#6B5860]">
+        You haven&apos;t set your operating rule yet.{" "}
+        <button type="button" onClick={onBuild} className="font-semibold text-[#5A7A45] underline underline-offset-2">
+          Build it in Business Boundary Builder™
+        </button>{" "}
+        and it will appear here for you to follow.
+      </p>
+    </div>
+  )
 }
 
 export function MonthlyBoundaryFocusPanel() {
@@ -75,9 +118,12 @@ export function MonthlyBoundaryFocusPanel() {
         <h2 className="font-serif text-2xl font-semibold text-[#2E1F27] text-balance sm:text-3xl">
           {focus.boundaryText}
         </h2>
-        {focus.ruleDescription && (
-          <p className="font-sans text-sm leading-relaxed text-[#3A2E33] text-pretty">{focus.ruleDescription}</p>
-        )}
+        <OperatingRuleBlock
+          builderKey={builderKey}
+          boundaryText={focus.boundaryText}
+          fallbackDescription={focus.ruleDescription}
+          onBuild={() => setBuilderOpen(true)}
+        />
         {start && end && (
           <p className="inline-flex items-center gap-2 font-sans text-xs text-[#6B5860]">
             <CalendarRange className="h-3.5 w-3.5" aria-hidden />
