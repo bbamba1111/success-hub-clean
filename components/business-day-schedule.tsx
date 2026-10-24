@@ -16,6 +16,7 @@ import useSWR from "swr"
 import { DailyTransition } from "@/components/cherry-blossom/daily-transition"
 import { BusinessDayBlock } from "@/components/business-day-block"
 import { RealityCheckPanoramicCard } from "@/components/reality-check-panoramic-card"
+import { MonthlyBoundaryRuleLine } from "@/components/ceo-workday/monthly-boundary-rule-line"
 import type { SegmentInnerTone } from "@/lib/segment-theme"
 
 /**
@@ -215,7 +216,9 @@ export function BusinessDaySchedule() {
                     ? renderSegmentAbout(SEGMENT_ABOUT[block.id])
                     : undefined
                 }
-              />
+              >
+                {block.id === "ceo-workday" && <MonthlyBoundaryRuleLine />}
+              </BusinessDayBlock>
               {block.id === "early-access" && isMonday && <RealityCheckPanoramicCard />}
               </div>
             )
