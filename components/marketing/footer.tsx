@@ -6,7 +6,7 @@ const footerLinks = {
   main: [
     { label: "Home", href: "/" },
     { label: "The Sunday Shift", href: "#sunday-shift" },
-    { label: "Mondays", href: "/mondays" },
+    { label: "Mondays", href: "/landing" },
     { label: "Experiences", href: "/experiences" },
     { label: "About Barbara", href: "/about" },
   ],

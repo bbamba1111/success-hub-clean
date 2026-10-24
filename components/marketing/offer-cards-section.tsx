@@ -118,10 +118,6 @@ export function OfferCardsSection() {
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-[#7FB069] text-xl">•</span>
-                    <span>Integration weeks included</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-[#7FB069] text-xl">•</span>
                     <span>Personalized guidance</span>
                   </li>
                 </ul>

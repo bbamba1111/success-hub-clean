@@ -24,8 +24,6 @@ import {
   Gamepad2,
   Users2,
   Gift,
-  Copy,
-  Check,
 } from "lucide-react"
 import Link from "next/link"
 import { getAuditResults } from "@/utils/audit-storage"
@@ -81,7 +79,6 @@ const categoryIcons = {
 export default function SundayShiftMyResultsPage() {
   const [auditData, setAuditData] = useState<AuditData | null>(null)
   const [userName, setUserName] = useState("")
-  const [copied, setCopied] = useState(false)
   const [isChatOpen, setIsChatOpen] = useState(false)
   const [chatContext, setChatContext] = useState("")
   const [chatTitle, setChatTitle] = useState("")
@@ -126,40 +123,6 @@ export default function SundayShiftMyResultsPage() {
     if (score >= 70) return "Good balance"
     if (score >= 60) return "Fair balance"
     return "Needs attention"
-  }
-
-  const handleCopyResults = async () => {
-    const namePrefix = userName.trim() ? `Hi Cherry Blossom! My name is ${userName.trim()}.\n\n` : ""
-    const auditSummary = `${namePrefix}My Work-Life Balance Audit Results:
-
-Overall Score: ${auditData.overallScore}%
-Completed: ${new Date(auditData.timestamp).toLocaleDateString()}
-
-Category Breakdown:
-${sortedResults
-  .map((result) => {
-    const categoryName = categoryLabels[result.category as keyof typeof categoryLabels]
-    return `• ${categoryName}: ${result.percentage}%`
-  })
-  .join("\n")}
-
-Top 3 Areas for Improvement:
-${recommendations
-  .map((rec, index) => {
-    const categoryName = categoryLabels[rec.category as keyof typeof categoryLabels]
-    return `${index + 1}. ${categoryName}: ${rec.percentage}%`
-  })
-  .join("\n")}
-
-Please provide personalized insights and recommendations based on these results.`
-
-    try {
-      await navigator.clipboard.writeText(auditSummary)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    } catch (err) {
-      console.error("Failed to copy text: ", err)
-    }
   }
 
   const openChat = (context: string, title: string) => {
@@ -540,19 +503,6 @@ Please provide personalized insights and recommendations based on these results.
 
                 <div className="flex items-center justify-between mb-4">
                   <h4 className="text-lg font-semibold text-[#E26C73]">Your Audit Summary:</h4>
-                  <Button
-                    onClick={handleCopyResults}
-                    variant="outline"
-                    size="sm"
-                    className={`flex items-center gap-2 bg-transparent border-[#E26C73] transition-all duration-200 ${
-                      copied
-                        ? "text-green-600 border-green-600 hover:bg-green-50"
-                        : "text-[#E26C73] hover:bg-[#E26C73] hover:text-white"
-                    }`}
-                  >
-                    {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                    {copied ? "Copied!" : "Copy Results"}
-                  </Button>
                 </div>
 
                 <div className="bg-gray-50 p-4 rounded-lg max-h-48 overflow-y-auto">
@@ -606,25 +556,11 @@ Please provide personalized insights and recommendations based on these results.
                   </div>
                 </div>
 
-                <div className="space-y-3">
-                  <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-[#E26C73] text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
-                      1
-                    </div>
-                    <p className="text-gray-700">Enter your name above (optional) and copy your audit results</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-[#E26C73] text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
-                      2
-                    </div>
-                    <p className="text-gray-700">Click "Review Your Audit" to open Cherry Blossom AI</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-[#E26C73] text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
-                      3
-                    </div>
-                    <p className="text-gray-700">Paste your results and get personalized insights</p>
-                  </div>
+                <div className="rounded-lg bg-[#7FB069]/10 border border-[#7FB069]/30 p-4 text-center">
+                  <p className="text-gray-700">
+                    Cherry Blossom already has your results and remembers your previous weeks. Just start the
+                    conversation — no copying or pasting needed.
+                  </p>
                 </div>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
