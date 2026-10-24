@@ -213,7 +213,9 @@ export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | 
             <div role="radiogroup" aria-label="Monthly business boundary" className="flex flex-col gap-5">
               {BOUNDARY_CATEGORIES.map((cat) => (
                 <fieldset key={cat.label} className="flex flex-col gap-2">
-                  <legend className={`${microLabel} mb-2 text-[13px]`}>{cat.label}</legend>
+                  <legend className="mb-2 font-montserrat text-[13px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
+                    {cat.label}
+                  </legend>
                   {cat.options.map((o) => {
                     const active = pending ? pending.id === o.id : focus?.optionId === o.id
                     const linked = linkedCounts.get(o.id)
