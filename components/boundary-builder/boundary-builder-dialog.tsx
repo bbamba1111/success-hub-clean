@@ -46,6 +46,7 @@ import {
 } from "@/lib/human-sos/types"
 import { BUILDER_STEP_META, protectionOptionsForFamily } from "./builder-options"
 import { StakeholderCard } from "./stakeholder-card"
+import { BoundaryCollisionHistory } from "@/components/boundary-check-in/boundary-collision-history"
 
 interface Props {
   open: boolean
@@ -353,6 +354,22 @@ export function BoundaryBuilderDialog({ open, onOpenChange, weekKey, boundaryFoc
               {draft.boundaryFocusText || boundaryFocusText || "Your boundary for this week"}
             </p>
           </div>
+
+          <details className="group mb-6 rounded-2xl border border-[#E26C73]/20 bg-[#FDF6F0] px-5 py-4">
+            <summary className="cursor-pointer list-none font-sans text-sm font-semibold text-[#2E1F27] marker:hidden">
+              What has collided with this boundary
+              <span className="ml-2 font-normal text-[#6B5860] group-open:hidden">· Show</span>
+              <span className="ml-2 hidden font-normal text-[#6B5860] group-open:inline">· Hide</span>
+            </summary>
+            <p className="mt-2 mb-4 font-sans text-xs leading-relaxed text-[#6B5860]">
+              From your Boundary Check-Ins™. Use it to choose what to work on, set the rule, decide what needs to change in the business, and know who to tell.
+            </p>
+            <BoundaryCollisionHistory
+              boundaryOptionId={boundaryOptionId}
+              boundaryText={draft.boundaryFocusText || boundaryFocusText}
+              emptyMessage="No Boundary Check-Ins™ saved for this boundary yet."
+            />
+          </details>
 
           {error && (
             <p className="mb-4 rounded-lg bg-[#FBEEF0] px-4 py-2 font-sans text-sm text-[#B4304A]">{error}</p>

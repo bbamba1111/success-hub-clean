@@ -12,12 +12,15 @@
 import { useEffect, useState } from "react"
 import { ChevronDown, Copy, Check } from "lucide-react"
 import { IdentityCheckIn } from "@/components/daily-identity/identity-check-in"
+import { BoundaryCheckIn } from "@/components/boundary-check-in/boundary-check-in"
 import type { IdentityCheckInStatus } from "@/lib/daily-identity/types"
 
 interface TodaysMoveCardProps {
   segmentId: string
   /** Human label for time left in the segment, e.g. "4m left" — passed through from BusinessDayBlock. */
   segmentRemaining?: string
+  /** Segment title, saved with the Boundary Check-In™ so history reads clearly. */
+  segmentLabel?: string
 }
 
 interface TodaysDeclaration {
@@ -46,7 +49,7 @@ function isEndingSoon(segmentRemaining?: string): boolean {
   return Number.parseInt(match[1], 10) <= 5
 }
 
-export function TodaysMoveCard({ segmentId, segmentRemaining }: TodaysMoveCardProps) {
+export function TodaysMoveCard({ segmentId, segmentRemaining, segmentLabel }: TodaysMoveCardProps) {
   const [loaded, setLoaded] = useState(false)
   const [todaysMove, setTodaysMove] = useState<TodaysDeclaration | null>(null)
   const [showWhy, setShowWhy] = useState(false)
@@ -128,10 +131,12 @@ export function TodaysMoveCard({ segmentId, segmentRemaining }: TodaysMoveCardPr
     })
   }
 
-  if (!loaded || !todaysMove) return null
+  const endingSoon = isEndingSoon(segmentRemaining)
+  if (!loaded || (!todaysMove && !endingSoon)) return null
 
   return (
     <div className="px-7 py-6 space-y-4">
+      {todaysMove && (
       <div className="rounded-3xl shadow-sm transition-shadow duration-700 hover:shadow-[0_24px_50px_-12px_rgba(28,22,26,0.35)] border border-[#7FB069]/25 bg-[#F7FBF4] px-6 py-5 sm:px-7 sm:py-6 space-y-3">
         <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5A7A45]">Your Move</p>
         <p className="font-sans text-sm leading-relaxed text-[#2E1F27]">{todaysMove.declaration}</p>
@@ -162,14 +167,17 @@ export function TodaysMoveCard({ segmentId, segmentRemaining }: TodaysMoveCardPr
           {copied ? "Copied" : "Copy & Share"}
         </button>
       </div>
+      )}
 
-      {isEndingSoon(segmentRemaining) && (
+      {endingSoon && todaysMove && (
         <IdentityCheckIn
           onRecord={handleCheckIn}
           recorded={checkInStatus}
           changedAction={{ label: "Adjust in Decide & Design", href: "/?openSpace=daily-planning-gps" }}
         />
       )}
+
+      {endingSoon && <BoundaryCheckIn segmentId={segmentId} segmentLabel={segmentLabel} />}
     </div>
   )
 }

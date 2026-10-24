@@ -23,6 +23,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
+import { BoundaryCollisionHistory } from "@/components/boundary-check-in/boundary-collision-history"
 import {
   ArrowRight,
   ArrowUpRight,
@@ -423,6 +424,18 @@ export function MyBlueprintClient({ boundaryReport }: { boundaryReport?: React.R
             </BlueprintSection>
           </div>
         )}
+
+        <div id="boundary-check-ins" className="scroll-mt-24">
+          <BlueprintSection
+            eyebrow="Boundary Check-Ins™"
+            icon={ShieldCheck}
+            title="What Collided With My Boundaries"
+            subtitle="Every saved Boundary Check-In™, by date and segment — use it to review or revise a boundary"
+            accent="#E26C73"
+          >
+            <BoundaryCollisionHistory showBoundary />
+          </BlueprintSection>
+        </div>
 
         {/* 02 — CURRENT REALITY ────────────────────────────────────────── */}
         <BlueprintSection

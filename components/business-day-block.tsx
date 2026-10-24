@@ -533,7 +533,7 @@ export function BusinessDayBlock({
                 (no regression) when no such declaration exists. Excluded for the 5
                 segments that now render a dedicated "Today's X" card instead. */}
             {blockId && blockId !== "digital-detox" && blockId !== "monday-reality-check" && blockId !== "monday-debrief" && blockId !== "daily-planning-gps" && !LEGACY_PLANNER_EXCLUDED_IDS.has(blockId) && PLANNER_CONFIG[blockId as keyof typeof PLANNER_CONFIG] && (
-              <TodaysMoveCard segmentId={blockId} segmentRemaining={segmentRemaining} />
+              <TodaysMoveCard segmentId={blockId} segmentRemaining={segmentRemaining} segmentLabel={title} />
             )}
 
             {/* Operating Planner™ — chip picker → commitment → declaration → Install This™
