@@ -1,25 +1,24 @@
 import type { Metadata } from "next"
 import { LandingNav } from "@/components/landing/landing-nav"
-import { MondayHeroSection } from "@/components/landing/monday-hero-section"
-import { FreedomGapSection } from "@/components/landing/freedom-gap-section"
-import { FounderPathwaysSection } from "@/components/landing/founder-pathways-section"
-import { WorkplaceDesignSection } from "@/components/landing/workplace-design-section"
-import { WhyHarmonyLaneSection } from "@/components/landing/why-harmony-lane-section"
-import { MondayOfferSection } from "@/components/landing/monday-offer-section"
-import { BusinessWeekSection } from "@/components/landing/business-week-section"
-import { WhyNowSection } from "@/components/landing/why-now-section"
-import { FounderAuthoritySection } from "@/components/landing/founder-authority-section"
-import { FinalOffersSection } from "@/components/landing/final-offers-section"
 import { LandingFooter } from "@/components/landing/landing-footer"
+import { WlbHeroSection } from "@/components/landing/wlb-week/wlb-hero-section"
+import { FreedomRealitySection } from "@/components/landing/wlb-week/freedom-reality-section"
+import { IntroducingSection } from "@/components/landing/wlb-week/introducing-section"
+import { RealityCheckSection } from "@/components/landing/wlb-week/reality-check-section"
+import { MondayExperienceSection } from "@/components/landing/wlb-week/monday-experience-section"
+import { FourDaySection } from "@/components/landing/wlb-week/four-day-section"
+import { CommunitySection } from "@/components/landing/wlb-week/community-section"
+import { AiCapacitySection } from "@/components/landing/wlb-week/ai-capacity-section"
+import { ClosingSection } from "@/components/landing/wlb-week/closing-section"
 
 export const metadata: Metadata = {
-  title: "Harmony Lane™ — Human Sustainability™ in the Agentic AI Age",
+  title: "Make Time For More™ — The Work-Life Balance Business Week™",
   description:
-    "Make Time For More™ On Mondays ($997) and The Work-Life Balance Business Week™ ($1,997, includes Monday). Reconnect with your entrepreneurial intention and personalize your human boundaries before AI accelerates the way you work.",
+    "Workweek redesign for human sustainability in the accelerated age of AI. Take the Work-Life Balance Reality Check™, experience Monday, extend across the four-day week, and practice inside the coworking community.",
   openGraph: {
-    title: "Harmony Lane™ — Make Time For More™ On Mondays",
+    title: "Make Time For More™ — The Work-Life Balance Business Week™",
     description:
-      "Redesign your entry into the workweek, then live The Work-Life Balance Business Week™ in real time. Human Sustainability™ in the Agentic AI Age.",
+      "AI is creating capacity. What will you do with the time it gives you back? Experience work-life balance in real time.",
     type: "website",
   },
 }
@@ -28,36 +27,28 @@ export const viewport = {
   themeColor: "#FDF6F3",
 }
 
-/**
- * Public marketing site at /landing — two public offers:
- *   Make Time For More™ On Mondays (business-day, $997) — the entry experience
- *   The Work-Life Balance Business Week™ (business-week, $1,997, includes Monday)
- * The Monthly Business Boundary Builder™ is member-only and intentionally absent.
- * Prices and checkout URLs come from lib/payments/config.ts.
- */
 export default function LandingPage() {
   return (
     <main className="min-h-screen bg-white">
       <LandingNav
-        experiencesHref="#monday"
-        ctaLabel="Reserve Monday"
+        experiencesHref="/reality-check"
+        ctaLabel="Take the Reality Check"
         links={[
-          { label: "The Monday Experience", href: "#monday" },
-          { label: "The Business Week", href: "#business-week" },
-          { label: "Why Harmony Lane", href: "#why-harmony-lane" },
-          { label: "Meet Barbara", href: "#meet-barbara" },
+          { label: "Reality Check", href: "#reality-check" },
+          { label: "Monday", href: "#monday" },
+          { label: "Four-Day Week", href: "#four-day" },
+          { label: "Community", href: "#community" },
         ]}
       />
-      <MondayHeroSection />
-      <FreedomGapSection />
-      <FounderPathwaysSection />
-      <WhyHarmonyLaneSection />
-      <MondayOfferSection />
-      <BusinessWeekSection />
-      <WhyNowSection />
-      <WorkplaceDesignSection />
-      <FounderAuthoritySection />
-      <FinalOffersSection />
+      <WlbHeroSection />
+      <FreedomRealitySection />
+      <IntroducingSection />
+      <RealityCheckSection />
+      <MondayExperienceSection />
+      <FourDaySection />
+      <CommunitySection />
+      <AiCapacitySection />
+      <ClosingSection />
       <LandingFooter />
     </main>
   )
