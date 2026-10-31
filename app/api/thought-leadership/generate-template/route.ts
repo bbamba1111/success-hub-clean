@@ -14,6 +14,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { EXECUTIVE_TEAM } from "@/lib/executive-team/executive-registry"
+import { getFounderContext } from "@/lib/executive-team/founder-context"
 
 export async function POST(req: NextRequest) {
   try {
@@ -30,14 +31,30 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "You must be signed in to create a template." }, { status: 401 })
     }
 
-    const { request: formatRequest } = (await req.json()) as { request?: string }
+    const {
+      request: formatRequest,
+      details,
+      businessFunction,
+      expectedOutcome,
+    } = (await req.json()) as { request?: string; details?: string; businessFunction?: string; expectedOutcome?: string }
     if (!formatRequest || typeof formatRequest !== "string" || !formatRequest.trim()) {
       return NextResponse.json({ error: "Describe what you need to create." }, { status: 400 })
     }
 
     const executiveMenu = EXECUTIVE_TEAM.map((e) => `- ${e.id}: ${e.name} (${e.department}) — ${e.mission}`).join("\n")
+    const founderContext = await getFounderContext(supabase, user.id)
 
-    const systemPrompt = `You are the Executive Conductor of a founder's AI Executive Team™. A founder needs to create a piece of thought leadership or communications work, and the Business Template Library™ does not yet contain a template for it. Design a clean, reusable template.
+    const workContext = [
+      businessFunction ? `Business function: ${String(businessFunction).slice(0, 80)}` : "",
+      expectedOutcome ? `Expected outcome: ${String(expectedOutcome).slice(0, 300)}` : "",
+      details ? `Founder's details: ${String(details).slice(0, 800)}` : "",
+    ]
+      .filter(Boolean)
+      .join("\n")
+
+    const systemPrompt = `You are the Executive Conductor of a founder's AI Executive Team™. A founder needs to produce a piece of CEO work, and the Business Template Library™ does not yet contain a template for it. Design a clean template that is REUSABLE by any founder (no names, numbers, or facts hard-coded into the Steps) but whose Steps are chosen and ordered for how this kind of business actually operates. The founder's specifics are applied when the template is filled, not baked into it.
+
+${founderContext || "No Founder Context™ is on file yet — design for a typical service-based founder."}
 
 Assign the single most appropriate owning executive by id from this roster:
 ${executiveMenu}
@@ -62,7 +79,10 @@ Return ONLY valid JSON (no markdown, no commentary) in exactly this shape:
         model: "gpt-4o-mini",
         messages: [
           { role: "system", content: systemPrompt },
-          { role: "user", content: `The founder needs to create: ${formatRequest.trim()}` },
+          {
+            role: "user",
+            content: `The founder needs to create: ${formatRequest.trim().slice(0, 300)}${workContext ? `\n${workContext}` : ""}`,
+          },
         ],
         temperature: 0.5,
         max_tokens: 700,

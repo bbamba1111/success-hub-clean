@@ -18,6 +18,7 @@
 
 import { type NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
+import { getFounderContext } from "@/lib/executive-team/founder-context"
 
 interface ChatMessage {
   role: "user" | "assistant"
@@ -90,12 +91,16 @@ export async function POST(req: NextRequest) {
       : ""
 
     const roleLine = executiveTitle ? `${executiveName}, ${executiveTitle},` : `${executiveName},`
+    const founderContext = await getFounderContext(supabase, user.id)
+    const founderBlock = founderContext
+      ? `\n\n${founderContext}\n\nTailor every Step to this founder and business automatically. Do not ask the founder for anything already listed above — only ask for what is genuinely missing.`
+      : ""
 
     const modeInstruction = isResearch
       ? `The founder chose RESEARCH WITH AI. Your job is to gather, organize, and sharpen the raw material for this piece — NOT to write the final prose. For each Step, provide the angles, key points, talking points, supporting facts, examples, and considerations the founder needs. Be substantive and specific. As soon as you have real material for a Step, wrap it in [FIELD:n]...[/FIELD]. When every Step has solid research, compile a clean RESEARCH BRIEF between [FINAL_DRAFT_START]/[FINAL_DRAFT_END].`
       : `The founder chose WRITE WITH AI. Your job is to WRITE this piece for them in polished, ready-to-use prose. Ask at most one quick clarifying question only if the founder's input is genuinely unusable; otherwise draft immediately, filling every Step with reasonable, clearly-grounded content. As soon as you draft a Step, wrap it in [FIELD:n]...[/FIELD]. When the piece is complete, compile the finished, formatted document between [FINAL_DRAFT_START]/[FINAL_DRAFT_END].`
 
-    const systemPrompt = `You are ${roleLine} one of the founder's AI Executive Team™ inside the Harmony Lane™ Operating System. You have been assigned to help the founder create their "${formatName}".${whatIsThis ? ` What this is: ${whatIsThis}` : ""}${whyItMatters ? ` Why it matters: ${whyItMatters}` : ""}
+    const systemPrompt = `You are ${roleLine} one of the founder's AI Executive Team™ inside the Harmony Lane™ Operating System. You have been assigned to help the founder create their "${formatName}".${whatIsThis ? ` What this is: ${whatIsThis}` : ""}${whyItMatters ? ` Why it matters: ${whyItMatters}` : ""}${founderBlock}
 
 ${modeInstruction}
 
