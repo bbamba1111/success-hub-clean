@@ -5,12 +5,12 @@ type ChipStyle = { idle: string; active: string }
 const BASE =
   "rounded-full border px-3 py-1.5 font-montserrat text-[14px] font-bold tracking-normal transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1"
 
-const GREEN_ACTIVE =
-  "border-[#7E9C72] bg-[#E1EDD9] text-[#3F5A36] shadow-md ring-2 ring-[#7E9C72]/30 ring-offset-1"
+const TAN_ACTIVE =
+  "-translate-y-0.5 border-[#C9AE86] bg-[#F7F0E5] text-[#7A6243] shadow-md ring-2 ring-[#C9AE86]/40 ring-offset-1"
 
 const TAN: ChipStyle = {
-  idle: "border-[#E4D6C1] bg-[#F7F0E5] text-[#7A6243] focus-visible:ring-[#C9AE86]",
-  active: GREEN_ACTIVE,
+  idle: "border-[#C5D9BA] bg-[#E1EDD9] text-[#3F5A36] focus-visible:ring-[#7E9C72]",
+  active: TAN_ACTIVE,
 }
 
 const STYLES: Partial<Record<CeoBusinessFunction, ChipStyle>> = {
