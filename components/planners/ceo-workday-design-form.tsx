@@ -857,13 +857,17 @@ function WorkCard({
           ? "border-dashed border-[#E8DFE2] bg-white/60 opacity-60"
           : parked
             ? "border-[#E8DFE2] bg-white"
-            : "border-[#E8DFE2] bg-[#FAF8F5]"
+            : "border-[#D8E6CF] bg-[#F1F7ED]"
       }`}
     >
       <div className="flex flex-wrap items-center gap-2">
         <span
           className={`rounded-full px-2 py-0.5 font-montserrat text-[13px] font-bold uppercase tracking-[0.16em] ${
-            item.role === "primary" ? "bg-[#3A2E33] text-white" : "bg-[#E8DFE2] text-[#3A2E33]"
+            item.role === "primary"
+              ? "bg-[#3A2E33] text-white"
+              : item.role === "founder-added"
+                ? "bg-[#E1EDD9] text-[#3F5A36]"
+                : "bg-[#E8DFE2] text-[#3A2E33]"
           }`}
         >
           {ROLE_LABEL[item.role]}
@@ -1000,7 +1004,9 @@ function WorkCard({
                 onClick={() => onDecide(d)}
                 className={`rounded-full border px-2.5 py-1 font-sans text-base capitalize transition-colors ${
                   active
-                    ? "border-[#3A2E33] bg-[#3A2E33] text-white"
+                    ? d === "keep"
+                      ? "border-[#C5D9BA] bg-[#E1EDD9] font-semibold text-[#3F5A36]"
+                      : "border-[#3A2E33] bg-[#3A2E33] text-white"
                     : "border-[#E8DFE2] bg-white text-[#6B5860] hover:bg-black/[0.03]"
                 }`}
               >
