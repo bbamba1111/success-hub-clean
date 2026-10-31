@@ -54,13 +54,13 @@ export type CeoBusinessFunction =
   | "solve"
 
 export const CEO_FUNCTION_LABEL: Record<CeoBusinessFunction, string> = {
-  "client-attraction": "CLIENT ATTRACTION",
-  "sales-conversion": "SALES & CONVERSION",
-  delivery: "SERVICE OR PRODUCT DELIVERY",
-  operations: "BUSINESS OPERATIONS",
-  "operations-design": "BUSINESS OPERATIONS DESIGN & REDESIGN",
-  build: "BUILD",
-  decide: "DECIDE",
+  "client-attraction": "Client Attraction",
+  "sales-conversion": "Sales & Conversion",
+  delivery: "Service or Product Delivery",
+  operations: "Business Operations",
+  "operations-design": "Business Operations Design & Redesign",
+  build: "Build",
+  decide: "Decide",
   own: "OWN",
   delegate: "DELEGATE",
   systemize: "SYSTEMIZE",

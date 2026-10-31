@@ -285,7 +285,7 @@ export function WhatMustHappenToday({
                                 type="button"
                                 aria-pressed={builder.fn === fn}
                                 onClick={() => setBuilder((b) => (b.fn === fn ? b : { ...b, fn, work: "", outcome: "" }))}
-                                className={`rounded-full border px-2.5 py-1 font-montserrat text-[14px] font-bold uppercase tracking-wider transition-colors ${
+                                className={`rounded-full border px-2.5 py-1 font-montserrat text-[12px] font-bold tracking-normal transition-colors ${
                                   builder.fn === fn
                                     ? "border-[#3A2E33] bg-[#3A2E33] text-white"
                                     : "border-[#E8DFE2] bg-white text-[#6B5860] hover:bg-black/[0.03]"
