@@ -13,7 +13,7 @@ function RuleLine({ builderKey, boundaryText }: { builderKey: string; boundaryTe
 
   return (
     <div className="mt-3 flex flex-col gap-1 rounded-xl border border-[#7FB069]/30 bg-[#F3F8ED] px-3.5 py-2.5">
-      <span className="inline-flex items-center gap-1.5 font-montserrat text-[10px] font-bold uppercase tracking-[0.16em] text-[#5A7A45]">
+      <span className="inline-flex items-center gap-1.5 font-montserrat text-[14px] font-bold uppercase tracking-[0.16em] text-[#5A7A45]">
         <ShieldCheck className="h-3.5 w-3.5" aria-hidden />
         {rule ? "My Boundary Rule™" : "My Monthly Boundary™"}
       </span>

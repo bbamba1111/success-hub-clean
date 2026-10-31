@@ -132,7 +132,7 @@ export function WeeklyPrioritiesPanel() {
         <Compass className="h-5 w-5 text-[#5A7A45]" aria-hidden />
         <p
           id="weekly-priorities-heading"
-          className="flex-1 font-montserrat text-xs font-bold uppercase tracking-[0.18em] text-[#5A7A45]"
+          className="flex-1 font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#5A7A45]"
         >
           This Week&apos;s Three Priorities™
         </p>
@@ -161,13 +161,13 @@ export function WeeklyPrioritiesPanel() {
           {rows.map((r) => (
             <li key={r.key} className="rounded-2xl border border-[#E8DFE2] bg-white px-5 py-5 flex flex-col gap-3">
               <div className="flex items-start justify-between gap-2">
-                <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.16em] text-[#6B5860]">
+                <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.16em] text-[#6B5860]">
                   {r.label}
                 </p>
                 {r.value && (
                   <span
                     className={
-                      "shrink-0 inline-flex items-center rounded-full px-2.5 py-1 font-montserrat text-[9px] font-bold uppercase tracking-[0.12em] whitespace-nowrap " +
+                      "shrink-0 inline-flex items-center rounded-full px-2.5 py-1 font-montserrat text-[13px] font-bold uppercase tracking-[0.12em] whitespace-nowrap " +
                       (DONE.has(r.status) ? "bg-[#8DAE72]/20 text-[#5A7A45]" : "bg-[#F4F7F0] text-[#6B5860]")
                     }
                   >
@@ -195,14 +195,14 @@ export function WeeklyPrioritiesPanel() {
                         <button
                           type="button"
                           onClick={() => saveEdit(r.key)}
-                          className="rounded-full bg-[#5A7A45] px-3 py-1 font-montserrat text-[10px] font-bold uppercase tracking-[0.12em] text-white hover:opacity-90"
+                          className="rounded-full bg-[#5A7A45] px-3 py-1 font-montserrat text-[14px] font-bold uppercase tracking-[0.12em] text-white hover:opacity-90"
                         >
                           Save
                         </button>
                         <button
                           type="button"
                           onClick={() => setEditingKey(null)}
-                          className="font-montserrat text-[10px] font-bold uppercase tracking-[0.12em] text-[#6B5860] hover:underline"
+                          className="font-montserrat text-[14px] font-bold uppercase tracking-[0.12em] text-[#6B5860] hover:underline"
                         >
                           Cancel
                         </button>
@@ -226,7 +226,7 @@ export function WeeklyPrioritiesPanel() {
                   <button
                     type="button"
                     onClick={() => setCommunicate(KEY_TO_COMMITMENT[r.key])}
-                    className="mt-1 inline-flex w-fit items-center gap-1.5 rounded-full border border-[#5A7A45] bg-white px-3.5 py-1.5 font-sans text-xs font-bold text-[#5A7A45] transition-colors hover:bg-[#5A7A45]/5"
+                    className="mt-1 inline-flex w-fit items-center gap-1.5 rounded-full border border-[#5A7A45] bg-white px-3.5 py-1.5 font-sans text-base font-bold text-[#5A7A45] transition-colors hover:bg-[#5A7A45]/5"
                   >
                     <Megaphone className="h-3.5 w-3.5" aria-hidden /> Communicate It™
                   </button>

@@ -45,7 +45,7 @@ export function BoundaryFocusPanel() {
       <ShieldCheck className="h-5 w-5 text-[#5A7A45]" aria-hidden />
       <p
         id="boundary-focus-heading"
-        className="font-montserrat text-xs font-bold uppercase tracking-[0.18em] text-[#5A7A45]"
+        className="font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#5A7A45]"
       >
         This Week&apos;s Boundary Focus™
       </p>
@@ -72,7 +72,7 @@ export function BoundaryFocusPanel() {
               }
             >
               <span className="font-sans text-sm font-semibold text-[#2E1F27]">{o.label}</span>
-              <span className="font-sans text-xs text-[#6B5860]">{o.helper}</span>
+              <span className="font-sans text-base text-[#6B5860]">{o.helper}</span>
             </button>
           )
         })}
@@ -178,7 +178,7 @@ export function BoundaryFocusPanel() {
         {headingRow}
         <span
           className={
-            "shrink-0 inline-flex items-center rounded-full px-3 py-1 font-montserrat text-[10px] font-bold uppercase tracking-[0.12em] " +
+            "shrink-0 inline-flex items-center rounded-full px-3 py-1 font-montserrat text-[14px] font-bold uppercase tracking-[0.12em] " +
             (isActive ? "bg-[#8DAE72]/20 text-[#5A7A45]" : "bg-white text-[#6B5860]")
           }
         >
@@ -208,7 +208,7 @@ export function BoundaryFocusPanel() {
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="inline-flex items-center gap-2 rounded-full bg-[#5A7A45] px-6 py-3 font-montserrat text-xs font-bold uppercase tracking-[0.14em] text-white transition-opacity hover:opacity-90"
+            className="inline-flex items-center gap-2 rounded-full bg-[#5A7A45] px-6 py-3 font-montserrat text-base font-bold uppercase tracking-[0.14em] text-white transition-opacity hover:opacity-90"
           >
             {sos.id && status === "building" ? "Continue Building My Human SOS™" : "Build My Human SOS™"}
             <ArrowRight className="h-4 w-4" aria-hidden />

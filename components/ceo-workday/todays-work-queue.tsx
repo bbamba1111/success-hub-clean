@@ -100,7 +100,7 @@ export function TodaysWorkQueue() {
           }}
         />
       ))}
-      <p className="pt-1 font-sans text-xs text-[#6B5860] text-pretty">
+      <p className="pt-1 font-sans text-base text-[#6B5860] text-pretty">
         More work can be added — there&apos;s no limit on how many meaningful outcomes fit in your CEO Workday™.
       </p>
     </div>
@@ -143,10 +143,10 @@ function TodaysWorkItemRow({
   return (
     <div className="rounded-2xl border border-[#E8DFE2] bg-white overflow-hidden">
       <div className="flex items-center gap-3 px-4 py-3.5">
-        <span className="shrink-0 font-montserrat text-xs font-bold text-[#B7A6AE]">{index + 1}</span>
+        <span className="shrink-0 font-montserrat text-base font-bold text-[#B7A6AE]">{index + 1}</span>
 
         <button type="button" onClick={onToggle} className="flex flex-1 items-center gap-3 min-w-0 text-left">
-          <span className="shrink-0 inline-flex items-center rounded-full bg-[#5A7A45]/10 px-2.5 py-1 font-montserrat text-[10px] font-bold uppercase tracking-[0.08em] text-[#5A7A45]">
+          <span className="shrink-0 inline-flex items-center rounded-full bg-[#5A7A45]/10 px-2.5 py-1 font-montserrat text-[14px] font-bold uppercase tracking-[0.08em] text-[#5A7A45]">
             {category.label}
           </span>
           <span className="min-w-0 truncate font-sans text-sm font-bold text-[#2E1F27]">
@@ -155,12 +155,12 @@ function TodaysWorkItemRow({
         </button>
 
         <span
-          className={`shrink-0 inline-flex items-center rounded-full px-2.5 py-1 font-montserrat text-[10px] font-bold uppercase tracking-[0.08em] ${STATUS_STYLE[item.status]}`}
+          className={`shrink-0 inline-flex items-center rounded-full px-2.5 py-1 font-montserrat text-[14px] font-bold uppercase tracking-[0.08em] ${STATUS_STYLE[item.status]}`}
         >
           {STATUS_LABEL[item.status]}
         </span>
 
-        <span className="hidden sm:inline-flex shrink-0 items-center gap-1 font-sans text-[11px] text-[#B7A6AE]">
+        <span className="hidden sm:inline-flex shrink-0 items-center gap-1 font-sans text-[15px] text-[#B7A6AE]">
           {item.source === "gps" ? (
             <Sparkles className="h-3 w-3" aria-hidden />
           ) : (
@@ -212,7 +212,7 @@ function TodaysWorkItemRow({
                   <button
                     type="button"
                     onClick={() => setShowArticulation(true)}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-[#5A7A45]/10 px-3 py-1.5 font-sans text-xs font-bold text-[#5A7A45] hover:bg-[#5A7A45]/15 transition-colors"
+                    className="inline-flex items-center gap-1.5 rounded-full bg-[#5A7A45]/10 px-3 py-1.5 font-sans text-base font-bold text-[#5A7A45] hover:bg-[#5A7A45]/15 transition-colors"
                   >
                     <Mic className="h-3.5 w-3.5" aria-hidden />
                     Practice Communicating This
@@ -220,19 +220,19 @@ function TodaysWorkItemRow({
                   <button
                     type="button"
                     onClick={() => setShowCommunicate(true)}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-[#5A7A45]/10 px-3 py-1.5 font-sans text-xs font-bold text-[#5A7A45] hover:bg-[#5A7A45]/15 transition-colors"
+                    className="inline-flex items-center gap-1.5 rounded-full bg-[#5A7A45]/10 px-3 py-1.5 font-sans text-base font-bold text-[#5A7A45] hover:bg-[#5A7A45]/15 transition-colors"
                   >
                     <Send className="h-3.5 w-3.5" aria-hidden />
                     Communicate + Delegate™
                   </button>
                 </div>
                 {item.source === "barbara" ? (
-                  <p className="font-sans text-xs text-[#B7A6AE]">Assigned by Barbara</p>
+                  <p className="font-sans text-base text-[#B7A6AE]">Assigned by Barbara</p>
                 ) : (
                   <button
                     type="button"
                     onClick={onRemove}
-                    className="font-sans text-xs font-bold text-[#B7A6AE] hover:text-[#C4707B] transition-colors"
+                    className="font-sans text-base font-bold text-[#B7A6AE] hover:text-[#C4707B] transition-colors"
                   >
                     Remove from Today&apos;s Work
                   </button>
@@ -308,28 +308,28 @@ function ComingNextPanel({
       <button
         type="button"
         onClick={onCommunicate}
-        className="inline-flex items-center gap-1.5 rounded-full bg-[#5A7A45]/10 px-3 py-1.5 font-sans text-xs font-bold text-[#5A7A45] hover:bg-[#5A7A45]/15 transition-colors"
+        className="inline-flex items-center gap-1.5 rounded-full bg-[#5A7A45]/10 px-3 py-1.5 font-sans text-base font-bold text-[#5A7A45] hover:bg-[#5A7A45]/15 transition-colors"
       >
         <Send className="h-3.5 w-3.5" aria-hidden />
         Communicate + Delegate™
       </button>
       <div className="flex items-center justify-between gap-3">
         {category.bossFunction ? (
-          <span className="inline-flex items-center rounded-full bg-[#5A7A45]/10 px-3 py-1.5 font-sans text-xs font-bold text-[#5A7A45]">
+          <span className="inline-flex items-center rounded-full bg-[#5A7A45]/10 px-3 py-1.5 font-sans text-base font-bold text-[#5A7A45]">
             {category.label}
           </span>
         ) : (
-          <span className="inline-flex items-center rounded-full bg-[#F4F1EC] px-3 py-1.5 font-montserrat text-[10px] font-bold uppercase tracking-[0.1em] text-[#6B5860]">
+          <span className="inline-flex items-center rounded-full bg-[#F4F1EC] px-3 py-1.5 font-montserrat text-[14px] font-bold uppercase tracking-[0.1em] text-[#6B5860]">
             Coming Next
           </span>
         )}
         {item.source === "barbara" ? (
-          <p className="font-sans text-xs text-[#B7A6AE]">Assigned by Barbara</p>
+          <p className="font-sans text-base text-[#B7A6AE]">Assigned by Barbara</p>
         ) : (
           <button
             type="button"
             onClick={onRemove}
-            className="font-sans text-xs font-bold text-[#B7A6AE] hover:text-[#C4707B] transition-colors"
+            className="font-sans text-base font-bold text-[#B7A6AE] hover:text-[#C4707B] transition-colors"
           >
             Remove from Today&apos;s Work
           </button>

@@ -97,7 +97,7 @@ function FunctionMenu({
       {category.examples && (
         <ul className="flex flex-wrap gap-1.5" aria-label={`Examples of ${category.label} work`}>
           {category.examples.map((example) => (
-            <li key={example} className="rounded-full bg-[#F4F7F0] px-2.5 py-1 font-sans text-xs text-[#4A5E3A]">
+            <li key={example} className="rounded-full bg-[#F4F7F0] px-2.5 py-1 font-sans text-base text-[#4A5E3A]">
               {example}
             </li>
           ))}
@@ -134,7 +134,7 @@ function FunctionMenu({
       </div>
 
       <div className="flex flex-col gap-1 border-t border-[#E8DFE2] pt-3">
-        <p className="font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#6B5860]">Open in The BO$$</p>
+        <p className="font-sans text-base font-bold uppercase tracking-[0.08em] text-[#6B5860]">Open in The BO$$</p>
         <BossLink href={queueHref} icon={<ListChecks className="h-4 w-4" aria-hidden />} label="Business Work Queue" />
         <BossLink href="/boss/workforce" icon={<Users className="h-4 w-4" aria-hidden />} label="Human & AI Workforce" />
         <BossLink

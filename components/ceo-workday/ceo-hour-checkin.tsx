@@ -106,7 +106,7 @@ export function CeoHourCheckin({ planId, block, scheduledAt, openedAt, items, is
   return (
     <div className="rounded-3xl border-2 border-[#E26C73]/30 bg-[#FDF8F5] px-6 py-6 sm:px-7 space-y-5">
       <div>
-        <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#C0545A]">
+        <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.18em] text-[#C0545A]">
           5-Minute Check-In™ · {block.label} PM
         </p>
         <h4 className="mt-1 font-sans text-xl font-bold text-[#2E1F27]">What happened this hour?</h4>
@@ -117,7 +117,7 @@ export function CeoHourCheckin({ planId, block, scheduledAt, openedAt, items, is
 
       {planned.work.trim() && (
         <div className="rounded-2xl border border-[#7FB069]/30 bg-[#F3F8ED] px-4 py-3">
-          <p className="font-montserrat text-[9px] font-bold uppercase tracking-[0.16em] text-[#5B835F]">
+          <p className="font-montserrat text-[13px] font-bold uppercase tracking-[0.16em] text-[#5B835F]">
             What you planned to work on this hour
           </p>
           <p className="mt-1 font-sans text-sm leading-relaxed text-[#2E1F27] text-pretty">{planned.work}</p>
@@ -142,7 +142,7 @@ export function CeoHourCheckin({ planId, block, scheduledAt, openedAt, items, is
               <div key={item.id} className="space-y-3 rounded-2xl border border-[#E8DFE2] bg-white p-4">
                 <div className="flex items-start justify-between gap-3">
                   <p className="font-sans text-sm font-bold text-[#2E1F27]">{item.title}</p>
-                  <span className="shrink-0 font-sans text-xs text-[#6B5860]">planned {item.estimatedMinutes} min</span>
+                  <span className="shrink-0 font-sans text-base text-[#6B5860]">planned {item.estimatedMinutes} min</span>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   {STATUS_OPTIONS.map((opt) => (
@@ -151,7 +151,7 @@ export function CeoHourCheckin({ planId, block, scheduledAt, openedAt, items, is
                       type="button"
                       aria-pressed={s === opt}
                       onClick={() => setStatus((p) => ({ ...p, [item.id]: opt }))}
-                      className={`rounded-full border px-2.5 py-1 font-sans text-xs transition-colors ${
+                      className={`rounded-full border px-2.5 py-1 font-sans text-base transition-colors ${
                         s === opt ? STATUS_STYLE[opt] + " font-semibold" : "border-[#E8DFE2] bg-white text-[#6B5860] hover:bg-black/[0.03]"
                       }`}
                     >
@@ -161,7 +161,7 @@ export function CeoHourCheckin({ planId, block, scheduledAt, openedAt, items, is
                 </div>
                 {needsNext && (
                   <div className="space-y-2 border-t border-[#E8DFE2] pt-3">
-                    <p className="font-montserrat text-[9px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/70">
+                    <p className="font-montserrat text-[13px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/70">
                       What should happen next?
                     </p>
                     <div className="flex flex-wrap gap-1.5">
@@ -171,7 +171,7 @@ export function CeoHourCheckin({ planId, block, scheduledAt, openedAt, items, is
                           type="button"
                           aria-pressed={next[item.id] === n}
                           onClick={() => setNext((p) => ({ ...p, [item.id]: n }))}
-                          className={`rounded-full border px-2.5 py-1 font-sans text-xs transition-colors ${
+                          className={`rounded-full border px-2.5 py-1 font-sans text-base transition-colors ${
                             next[item.id] === n
                               ? "border-[#3A2E33] bg-[#3A2E33] text-white"
                               : "border-[#E8DFE2] bg-white text-[#6B5860] hover:bg-black/[0.03]"
@@ -199,7 +199,7 @@ export function CeoHourCheckin({ planId, block, scheduledAt, openedAt, items, is
       )}
 
       <div>
-        <label htmlFor={`refl-${block.index}`} className="font-montserrat text-[9px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/70">
+        <label htmlFor={`refl-${block.index}`} className="font-montserrat text-[13px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/70">
           One line for future-you (optional)
         </label>
         <input

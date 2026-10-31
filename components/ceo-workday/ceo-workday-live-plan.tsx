@@ -409,9 +409,9 @@ export function CeoWorkdayLivePlan() {
     return (
       <div className={`rounded-2xl border border-[#E8DFE2] bg-white px-4 py-3 ${gone ? "opacity-50" : ""}`}>
         <div className="flex flex-wrap items-center gap-2">
-          <span className="font-montserrat text-[9px] font-bold uppercase tracking-[0.16em] text-[#5B835F]">{CEO_FUNCTION_LABEL[item.businessFunction]}</span>
-          <span className="font-montserrat text-[9px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/60">{CEO_TREATMENT_LABEL[item.treatment]}</span>
-          <span className="ml-auto rounded-full bg-[#F4F1EC] px-2 py-0.5 font-montserrat text-[9px] font-bold uppercase tracking-[0.1em] text-[#6B5860]">
+          <span className="font-montserrat text-[13px] font-bold uppercase tracking-[0.16em] text-[#5B835F]">{CEO_FUNCTION_LABEL[item.businessFunction]}</span>
+          <span className="font-montserrat text-[13px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/60">{CEO_TREATMENT_LABEL[item.treatment]}</span>
+          <span className="ml-auto rounded-full bg-[#F4F1EC] px-2 py-0.5 font-montserrat text-[13px] font-bold uppercase tracking-[0.1em] text-[#6B5860]">
             {CEO_ITEM_STATUS_LABEL[item.status]}
           </span>
         </div>
@@ -430,12 +430,12 @@ export function CeoWorkdayLivePlan() {
         ) : (
           <p className={`mt-1 font-sans text-sm font-bold text-[#2E1F27] ${item.status === "eliminated" ? "line-through" : ""}`}>{item.title}</p>
         )}
-        <p className="mt-0.5 font-sans text-xs text-[#6B5860]">
+        <p className="mt-0.5 font-sans text-base text-[#6B5860]">
           {item.estimatedMinutes} min{item.relatedAssetTitle ? ` · ${item.relatedAssetTitle}` : ""}
           {item.nextAction && item.status !== "completed" ? ` · next: ${item.nextAction.replace(/-/g, " ")}` : ""}
         </p>
         {item.expectedEvidence && (
-          <p className="mt-1 font-sans text-xs text-[#3A2E33]">
+          <p className="mt-1 font-sans text-base text-[#3A2E33]">
             <span className="font-semibold text-[#5A7A45]">Expected outcome:</span> {item.expectedEvidence}
           </p>
         )}
@@ -443,7 +443,7 @@ export function CeoWorkdayLivePlan() {
           <button
             type="button"
             onClick={() => recallItem(item)}
-            className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-[#5A7A45] px-3.5 py-1.5 font-sans text-xs font-bold text-[#5A7A45] hover:bg-[#5A7A45]/5"
+            className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-[#5A7A45] px-3.5 py-1.5 font-sans text-base font-bold text-[#5A7A45] hover:bg-[#5A7A45]/5"
           >
             <RotateCcw className="h-3 w-3" aria-hidden /> Recall to today
           </button>
@@ -452,7 +452,7 @@ export function CeoWorkdayLivePlan() {
           <button
             type="button"
             onClick={() => recallItem(item)}
-            className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-[#5A7A45] px-3.5 py-1.5 font-sans text-xs font-bold text-[#5A7A45] hover:bg-[#5A7A45]/5"
+            className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-[#5A7A45] px-3.5 py-1.5 font-sans text-base font-bold text-[#5A7A45] hover:bg-[#5A7A45]/5"
           >
             <RotateCcw className="h-3 w-3" aria-hidden /> Review / edit
           </button>
@@ -463,7 +463,7 @@ export function CeoWorkdayLivePlan() {
               <button
                 type="button"
                 onClick={() => openWork(item)}
-                className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 font-sans text-xs font-bold ${
+                className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 font-sans text-base font-bold ${
                   item.status === "completed"
                     ? "border border-[#E8DFE2] bg-white text-[#6B5860] hover:bg-black/[0.03]"
                     : item.status === "planned"
@@ -475,7 +475,7 @@ export function CeoWorkdayLivePlan() {
                 {item.status === "planned" ? "Start" : item.status === "completed" ? "Open" : "Continue"}
               </button>
             ) : (
-              <button type="button" onClick={() => setOpenItemId(null)} className="inline-flex items-center gap-1.5 rounded-full border border-[#E8DFE2] bg-white px-3.5 py-1.5 font-sans text-xs font-semibold text-[#6B5860] hover:bg-black/[0.03]">
+              <button type="button" onClick={() => setOpenItemId(null)} className="inline-flex items-center gap-1.5 rounded-full border border-[#E8DFE2] bg-white px-3.5 py-1.5 font-sans text-base font-semibold text-[#6B5860] hover:bg-black/[0.03]">
                 Close work surface
               </button>
             )}
@@ -483,18 +483,18 @@ export function CeoWorkdayLivePlan() {
               <button
                 type="button"
                 onClick={() => setEditTitleId(item.id)}
-                className="inline-flex items-center gap-1.5 rounded-full border border-[#E8DFE2] bg-white px-3.5 py-1.5 font-sans text-xs font-semibold text-[#6B5860] hover:bg-black/[0.03]"
+                className="inline-flex items-center gap-1.5 rounded-full border border-[#E8DFE2] bg-white px-3.5 py-1.5 font-sans text-base font-semibold text-[#6B5860] hover:bg-black/[0.03]"
               >
                 <Pencil className="h-3 w-3" aria-hidden /> Edit
               </button>
             )}
             <label className="inline-flex items-center gap-1 rounded-full border border-[#E8DFE2] bg-white px-2.5 py-1">
-              <span className="font-sans text-[11px] font-semibold text-[#6B5860]">Move to hour</span>
+              <span className="font-sans text-[15px] font-semibold text-[#6B5860]">Move to hour</span>
               <span className="sr-only">Move this work to another hour</span>
               <select
                 value={resolveHour(item.id, autoHours, overrides)}
                 onChange={(e) => setHour(item.id, Number(e.target.value) as HourBlockIndex)}
-                className="cursor-pointer bg-transparent font-sans text-[11px] font-bold text-[#2E1F27] focus:outline-none"
+                className="cursor-pointer bg-transparent font-sans text-[15px] font-bold text-[#2E1F27] focus:outline-none"
               >
                 {[1, 2, 3, 4].map((h) => (
                   <option key={h} value={h}>
@@ -529,7 +529,7 @@ export function CeoWorkdayLivePlan() {
                 ["other", "Other"],
               ] as Array<[AdjustAction, string]>
             ).map(([a, label]) => (
-              <button key={a} type="button" onClick={() => adjust(item, a)} className="inline-flex items-center gap-1 rounded-full border border-[#E8DFE2] bg-white px-2.5 py-1 font-sans text-xs text-[#6B5860] hover:bg-black/[0.03]">
+              <button key={a} type="button" onClick={() => adjust(item, a)} className="inline-flex items-center gap-1 rounded-full border border-[#E8DFE2] bg-white px-2.5 py-1 font-sans text-base text-[#6B5860] hover:bg-black/[0.03]">
                 {a === "change" && <Pencil className="h-3 w-3" aria-hidden />}
                 {label}
               </button>
@@ -553,11 +553,11 @@ export function CeoWorkdayLivePlan() {
           className="rounded-3xl border-2 border-[#7FB069]/30 bg-white px-6 py-6 sm:px-7 space-y-4"
         >
           <div className="flex items-center justify-between gap-3">
-            <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5A7A45]">
+            <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.18em] text-[#5A7A45]">
               {dayDeclaration ? "My Workday Declaration™" : "My 4-Hour CEO Workday Declaration™"}
             </p>
             {plan?.identityStatement && (
-              <span className="rounded-full bg-[#7FB069]/15 px-2.5 py-1 font-montserrat text-[10px] font-semibold text-[#3A6B3E]">
+              <span className="rounded-full bg-[#7FB069]/15 px-2.5 py-1 font-montserrat text-[14px] font-semibold text-[#3A6B3E]">
                 {plan.identityStatement}
               </span>
             )}
@@ -603,7 +603,7 @@ export function CeoWorkdayLivePlan() {
         <div className="space-y-3">
           <div className="flex items-center gap-2">
             <Clock className="h-4 w-4 text-[#5A7A45]" aria-hidden />
-            <p className="font-montserrat text-xs font-bold uppercase tracking-[0.16em] text-[#5A7A45]">Four hours · four check-ins</p>
+            <p className="font-montserrat text-base font-bold uppercase tracking-[0.16em] text-[#5A7A45]">Four hours · four check-ins</p>
           </div>
           <div className="grid gap-2 sm:grid-cols-4">
             {HOUR_BLOCKS.map((b) => {
@@ -612,13 +612,13 @@ export function CeoWorkdayLivePlan() {
               const overdue = !saved && isCheckinOverdue(b, nowMin)
               return (
                 <div key={b.index} className={`rounded-2xl border px-3 py-3 ${active ? "border-[#5A7A45] bg-white" : saved ? "border-[#7FB069]/40 bg-[#7FB069]/5" : "border-[#E8DFE2] bg-white/60"}`}>
-                  <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.14em] text-[#6B5860]">Hour {b.index}</p>
+                  <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.14em] text-[#6B5860]">Hour {b.index}</p>
                   <p className="font-sans text-sm font-bold text-[#2E1F27]">{b.label} PM</p>
-                  <p className="mt-1 font-sans text-[11px] text-[#6B5860]">
+                  <p className="mt-1 font-sans text-[15px] text-[#6B5860]">
                     {saved ? "Checked in" : overdue ? "Check-in waiting" : active ? `Check-in at ${b.checkinLabel} · ${minutesUntilCheckin(b, nowMin)} min` : `Check-in ${b.checkinLabel}`}
                   </p>
                   {!saved && (active || overdue) && !checkinOpen && (
-                    <button type="button" onClick={() => openCheckinManually(b)} className="mt-2 font-sans text-xs font-semibold text-[#C0545A] underline underline-offset-2">
+                    <button type="button" onClick={() => openCheckinManually(b)} className="mt-2 font-sans text-base font-semibold text-[#C0545A] underline underline-offset-2">
                       Open check-in now
                     </button>
                   )}
@@ -630,7 +630,7 @@ export function CeoWorkdayLivePlan() {
           {/* Tell us what you're working on — for the current hour */}
           {block && !allSaved && !checkinOpen && (
             <div className="rounded-2xl border border-[#E8DFE2] bg-white px-5 py-4 space-y-2">
-              <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5A7A45]">Tell us what you&apos;re working on</p>
+              <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.18em] text-[#5A7A45]">Tell us what you&apos;re working on</p>
               {workingOnByBlock[block.index] ? (
                 <p className="font-sans text-sm text-[#2E1F27]">
                   <span className="font-semibold">This hour:</span> {workingOnByBlock[block.index]}
@@ -659,7 +659,7 @@ export function CeoWorkdayLivePlan() {
           )}
 
           {!block && !allSaved && (
-            <p className="font-sans text-xs text-[#6B5860]">
+            <p className="font-sans text-base text-[#6B5860]">
               Your CEO Workday™ runs 1:00–5:00 PM. Check-ins open automatically at 1:55, 2:55, 3:55 and 4:55.
             </p>
           )}
@@ -682,7 +682,7 @@ export function CeoWorkdayLivePlan() {
 
           {plan.status === "closed" && (
             <div className="rounded-2xl border-2 border-[#7FB069]/30 bg-[#7FB069]/5 px-5 py-4">
-              <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5A7A45]">CEO Workday™ closed</p>
+              <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.18em] text-[#5A7A45]">CEO Workday™ closed</p>
               <p className="mt-1 font-sans text-sm text-[#3A2E33]">
                 {plan.items.filter((i) => i.status === "completed").length} of {activeItems.length} completed. Your evidence is saved for GPS and Cherry Blossom.
               </p>
@@ -734,11 +734,11 @@ function CeoPlanItemWorkSurface({
   if (asset) {
     return (
       <div className="mt-3 rounded-2xl border border-[#E8DFE2] bg-[#FAF8F5] px-4 py-4 sm:px-5">
-        <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.16em] text-[#5A7A45]">
+        <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.16em] text-[#5A7A45]">
           Business Asset™ template · {asset.name}
         </p>
         {item.expectedEvidence && (
-          <p className="mt-1 font-sans text-xs text-[#6B5860]">
+          <p className="mt-1 font-sans text-base text-[#6B5860]">
             Done when: <span className="text-[#3A2E33]">{item.expectedEvidence}</span>
           </p>
         )}
@@ -752,7 +752,7 @@ function CeoPlanItemWorkSurface({
   if (!withoutTemplate) {
     return (
       <div className="mt-3 rounded-2xl border border-[#E8DFE2] bg-[#FAF8F5] px-4 py-4 sm:px-5">
-        <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.16em] text-[#5A7A45]">
+        <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.16em] text-[#5A7A45]">
           Link this work to a Business Asset™ template
         </p>
         <p className="mt-1 font-sans text-sm leading-relaxed text-[#3A2E33] text-pretty">
@@ -783,7 +783,7 @@ function CeoPlanItemWorkSurface({
         <button
           type="button"
           onClick={() => setWithoutTemplate(true)}
-          className="mt-3 font-sans text-xs font-semibold text-[#6B5860] underline underline-offset-2 hover:text-[#2E1F27]"
+          className="mt-3 font-sans text-base font-semibold text-[#6B5860] underline underline-offset-2 hover:text-[#2E1F27]"
         >
           This work doesn&apos;t need a template
         </button>
@@ -793,7 +793,7 @@ function CeoPlanItemWorkSurface({
 
   return (
     <div className="mt-3 rounded-2xl border border-[#E8DFE2] bg-[#FAF8F5] px-4 py-4 sm:px-5">
-      <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.16em] text-[#5A7A45]">Working without a template</p>
+      <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.16em] text-[#5A7A45]">Working without a template</p>
       {item.purpose && <p className="mt-2 font-sans text-sm leading-relaxed text-[#3A2E33] text-pretty">{item.purpose}</p>}
       <p className="mt-2 font-sans text-sm text-[#3A2E33]">
         <span className="font-semibold text-[#5A7A45]">Done when:</span> {item.expectedEvidence ?? "the outcome you designed exists."}
@@ -804,17 +804,17 @@ function CeoPlanItemWorkSurface({
             <button
               type="button"
               onClick={() => setConfirming(true)}
-              className="inline-flex items-center gap-1.5 rounded-full border border-[#5A7A45] px-3.5 py-1.5 font-sans text-xs font-bold text-[#5A7A45] hover:bg-[#5A7A45]/5"
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#5A7A45] px-3.5 py-1.5 font-sans text-base font-bold text-[#5A7A45] hover:bg-[#5A7A45]/5"
             >
               <Check className="h-3 w-3" aria-hidden /> The outcome exists — mark complete
             </button>
           ) : (
             <>
-              <span className="font-sans text-xs text-[#6B5860]">Confirm the expected outcome is real and in place?</span>
-              <button type="button" onClick={onManualComplete} className="rounded-full bg-[#5A7A45] px-3.5 py-1.5 font-sans text-xs font-bold text-white hover:opacity-90">
+              <span className="font-sans text-base text-[#6B5860]">Confirm the expected outcome is real and in place?</span>
+              <button type="button" onClick={onManualComplete} className="rounded-full bg-[#5A7A45] px-3.5 py-1.5 font-sans text-base font-bold text-white hover:opacity-90">
                 Yes, complete
               </button>
-              <button type="button" onClick={() => setConfirming(false)} className="font-sans text-xs font-semibold text-[#6B5860] underline underline-offset-2">
+              <button type="button" onClick={() => setConfirming(false)} className="font-sans text-base font-semibold text-[#6B5860] underline underline-offset-2">
                 Not yet
               </button>
             </>
@@ -822,7 +822,7 @@ function CeoPlanItemWorkSurface({
           <button
             type="button"
             onClick={() => setWithoutTemplate(false)}
-            className="ml-auto font-sans text-xs font-semibold text-[#6B5860] underline underline-offset-2 hover:text-[#2E1F27]"
+            className="ml-auto font-sans text-base font-semibold text-[#6B5860] underline underline-offset-2 hover:text-[#2E1F27]"
           >
             Link a template instead
           </button>

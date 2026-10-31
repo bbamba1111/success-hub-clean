@@ -41,7 +41,7 @@ function OperatingRuleBlock({
   if (rule) {
     return (
       <div className="mt-1 flex flex-col gap-1.5 rounded-2xl border border-[#7FB069]/30 bg-background px-5 py-4">
-        <span className="font-montserrat text-[10px] font-bold uppercase tracking-[0.16em] text-[#5A7A45]">
+        <span className="font-montserrat text-[14px] font-bold uppercase tracking-[0.16em] text-[#5A7A45]">
           My Operating Rule — follow this all cycle
         </span>
         <p className="font-sans text-base leading-relaxed text-[#2E1F27] text-pretty">{rule}</p>
@@ -54,7 +54,7 @@ function OperatingRuleBlock({
       {fallbackDescription && (
         <p className="font-sans text-sm leading-relaxed text-[#3A2E33] text-pretty">{fallbackDescription}</p>
       )}
-      <p className="font-sans text-xs leading-relaxed text-[#6B5860]">
+      <p className="font-sans text-base leading-relaxed text-[#6B5860]">
         You haven&apos;t set your operating rule yet.{" "}
         <button type="button" onClick={onBuild} className="font-semibold text-[#5A7A45] underline underline-offset-2">
           Build it in Business Boundary Builder™
@@ -83,7 +83,7 @@ export function MonthlyBoundaryFocusPanel() {
       >
         <p
           id="monthly-boundary-heading"
-          className="inline-flex items-center gap-2 font-montserrat text-xs font-bold uppercase tracking-[0.18em] text-[#5A7A45]"
+          className="inline-flex items-center gap-2 font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#5A7A45]"
         >
           <ShieldCheck className="h-4 w-4" aria-hidden /> My Monthly Boundary Focus™
         </p>
@@ -105,11 +105,11 @@ export function MonthlyBoundaryFocusPanel() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p
           id="monthly-boundary-heading"
-          className="inline-flex items-center gap-2 font-montserrat text-xs font-bold uppercase tracking-[0.18em] text-[#5A7A45]"
+          className="inline-flex items-center gap-2 font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#5A7A45]"
         >
           <ShieldCheck className="h-4 w-4" aria-hidden /> My Monthly Boundary Focus™
         </p>
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-[#5A7A45] px-3 py-1 font-montserrat text-[10px] font-bold uppercase tracking-[0.16em] text-white">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-[#5A7A45] px-3 py-1 font-montserrat text-[14px] font-bold uppercase tracking-[0.16em] text-white">
           Active this cycle
         </span>
       </div>
@@ -125,7 +125,7 @@ export function MonthlyBoundaryFocusPanel() {
           onBuild={() => setBuilderOpen(true)}
         />
         {start && end && (
-          <p className="inline-flex items-center gap-2 font-sans text-xs text-[#6B5860]">
+          <p className="inline-flex items-center gap-2 font-sans text-base text-[#6B5860]">
             <CalendarRange className="h-3.5 w-3.5" aria-hidden />
             30-day cycle: {start} – {end}
           </p>
@@ -141,7 +141,7 @@ export function MonthlyBoundaryFocusPanel() {
           <span className="inline-flex items-center gap-2 font-sans text-sm font-bold text-[#2E1F27]">
             <Hammer className="h-4 w-4 text-[#5A7A45]" aria-hidden /> Business Boundary Builder™
           </span>
-          <span className="font-sans text-xs leading-relaxed text-[#6B5860]">
+          <span className="font-sans text-base leading-relaxed text-[#6B5860]">
             Build, review, and refine the operating rule for this boundary.
           </span>
         </button>
@@ -153,7 +153,7 @@ export function MonthlyBoundaryFocusPanel() {
           <span className="inline-flex items-center gap-2 font-sans text-sm font-bold text-[#2E1F27]">
             <MessageSquareShare className="h-4 w-4 text-[#5A7A45]" aria-hidden /> Communicate It™
           </span>
-          <span className="font-sans text-xs leading-relaxed text-[#6B5860]">
+          <span className="font-sans text-base leading-relaxed text-[#6B5860]">
             Tell the people affected by this boundary what changes and when.
           </span>
         </button>

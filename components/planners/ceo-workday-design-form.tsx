@@ -312,6 +312,7 @@ export function CeoWorkdayDesignForm() {
               ...i,
               founderDecision: decision,
               status: decision === "defer" ? "deferred" : decision === "delegate" ? "delegated" : "planned",
+              deferUntil: decision === "defer" ? (i.deferUntil ?? "tomorrow") : i.deferUntil,
             }
           : i,
       ),
@@ -461,11 +462,11 @@ export function CeoWorkdayDesignForm() {
                 boxShadow: "0 8px 32px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.6)",
               }}
             >
-              <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#3A6B3E]">
+              <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.18em] text-[#3A6B3E]">
                 Your CEO Workday Declaration™
               </p>
               <p className="mt-2 font-serif text-lg italic leading-snug text-[#1F2A1F]">{built.declaration}</p>
-              <p className="mt-3 font-montserrat text-[10px] font-semibold uppercase tracking-[0.16em] text-[#3A6B3E]/80">
+              <p className="mt-3 font-montserrat text-[14px] font-semibold uppercase tracking-[0.16em] text-[#3A6B3E]/80">
                 Arriving in your 4-Hour Focused CEO Workday™ …
               </p>
             </motion.div>
@@ -490,7 +491,7 @@ export function CeoWorkdayDesignForm() {
             <button
               type="button"
               onClick={handleEdit}
-              className="font-sans text-xs font-semibold text-[#6B5860] underline underline-offset-2 hover:text-[#2E1F27]"
+              className="font-sans text-base font-semibold text-[#6B5860] underline underline-offset-2 hover:text-[#2E1F27]"
             >
               Edit my CEO Workday™
             </button>
@@ -500,7 +501,7 @@ export function CeoWorkdayDesignForm() {
                 handleEdit()
                 rebuildDeclaration()
               }}
-              className="font-sans text-xs font-semibold text-[#6B5860] underline underline-offset-2 hover:text-[#2E1F27]"
+              className="font-sans text-base font-semibold text-[#6B5860] underline underline-offset-2 hover:text-[#2E1F27]"
             >
               Build a different declaration
             </button>
@@ -518,7 +519,7 @@ export function CeoWorkdayDesignForm() {
           Shape the work that will move this week&apos;s boundary focus forward inside your protected 4-hour CEO
           Workday™.
         </p>
-        <p className="mt-2 font-sans text-xs leading-relaxed text-[#6B5860]/80">
+        <p className="mt-2 font-sans text-base leading-relaxed text-[#6B5860]/80">
           Your CEO Workday™ protects 240 minutes for meaningful business work. You do not need to fill every minute.
         </p>
       </div>
@@ -529,11 +530,11 @@ export function CeoWorkdayDesignForm() {
           {design?.relatedAssetName && <SourceCell label="Related Business Asset™" value={design.relatedAssetName} />}
           {design?.constraintSummary && (
             <div className="sm:col-span-2">
-              <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60">
+              <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60">
                 GPS reading
               </p>
               <p className="mt-1 font-sans text-sm leading-relaxed text-[#2E1F27]">{design.constraintSummary}</p>
-              <p className="mt-1 font-sans text-xs leading-relaxed text-[#6B5860]">{design.interventionSummary}</p>
+              <p className="mt-1 font-sans text-base leading-relaxed text-[#6B5860]">{design.interventionSummary}</p>
             </div>
           )}
         </div>
@@ -542,7 +543,7 @@ export function CeoWorkdayDesignForm() {
       {/* WHAT MUST HAPPEN TODAY? → function → work → outcome */}
       <div ref={composerRef} className="space-y-4 rounded-2xl border border-[#E8DFE2] bg-white p-5 scroll-mt-24">
         <div>
-          <p className="font-montserrat text-xs font-bold uppercase tracking-[0.18em] text-[#2E1F27]">
+          <p className="font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#2E1F27]">
             What must happen today?
           </p>
           <p className="mt-1 font-sans text-sm text-[#6B5860]">
@@ -551,7 +552,7 @@ export function CeoWorkdayDesignForm() {
         </div>
 
         <div>
-          <p className="mb-2 font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60">
+          <p className="mb-2 font-montserrat text-[14px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60">
             Business function
           </p>
           <div className="flex flex-wrap gap-1.5" role="group" aria-label="Business function">
@@ -568,7 +569,7 @@ export function CeoWorkdayDesignForm() {
                   setAddFn(fn)
                   setTimeout(() => workInputRef.current?.focus(), 50)
                 }}
-                className={`rounded-full border px-2.5 py-1 font-montserrat text-[10px] font-bold uppercase tracking-wider transition-colors ${
+                className={`rounded-full border px-2.5 py-1 font-montserrat text-[14px] font-bold uppercase tracking-wider transition-colors ${
                   addFn === fn
                     ? "border-[#3A2E33] bg-[#3A2E33] text-white"
                     : "border-[#E8DFE2] bg-white text-[#6B5860] hover:bg-black/[0.03]"
@@ -593,11 +594,11 @@ export function CeoWorkdayDesignForm() {
               <div>
                 <label
                   htmlFor="ceo-add-work"
-                  className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60"
+                  className="font-montserrat text-[14px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60"
                 >
                   What needs to happen?
                 </label>
-                <p className="mb-2 mt-0.5 font-sans text-xs text-[#6B5860]">
+                <p className="mb-2 mt-0.5 font-sans text-base text-[#6B5860]">
                   Choose common work for {CEO_FUNCTION_LABEL[addFn].toLowerCase()}, or write your own.
                 </p>
                 <div className="mb-2">
@@ -630,11 +631,11 @@ export function CeoWorkdayDesignForm() {
               <div>
                 <label
                   htmlFor="ceo-add-outcome"
-                  className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60"
+                  className="font-montserrat text-[14px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60"
                 >
                   Expected outcome
                 </label>
-                <p className="mb-2 mt-0.5 font-sans text-xs text-[#6B5860]">
+                <p className="mb-2 mt-0.5 font-sans text-base text-[#6B5860]">
                   What should be different or true when this work is complete?
                 </p>
                 <textarea
@@ -649,7 +650,7 @@ export function CeoWorkdayDesignForm() {
 
               <div className="flex flex-wrap items-center gap-3">
                 <div className="flex items-center gap-2">
-                  <label className="font-sans text-xs text-[#6B5860]" htmlFor="ceo-add-minutes">
+                  <label className="font-sans text-base text-[#6B5860]" htmlFor="ceo-add-minutes">
                     Estimated time
                   </label>
                   <input
@@ -661,7 +662,7 @@ export function CeoWorkdayDesignForm() {
                     onChange={(e) => setAddMinutes(Math.max(5, Number(e.target.value) || 0))}
                     className="w-20 rounded-lg border border-[#E8DFE2] bg-white px-2 py-1.5 font-sans text-sm text-[#2E1F27] focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
                   />
-                  <span className="font-sans text-xs text-[#6B5860]">min</span>
+                  <span className="font-sans text-base text-[#6B5860]">min</span>
                 </div>
                 <div className="ml-auto flex items-center gap-3">
                   <button
@@ -693,11 +694,11 @@ export function CeoWorkdayDesignForm() {
       {/* TODAY'S CEO WORK */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60">
+          <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60">
             Today&apos;s CEO work
           </p>
           <span
-            className={`font-sans text-xs font-semibold ${
+            className={`font-sans text-base font-semibold ${
               planned > CEO_WORKDAY_CONTAINER_MINUTES ? "text-[#C13B6B]" : "text-[#6B5860]"
             }`}
           >
@@ -719,7 +720,7 @@ export function CeoWorkdayDesignForm() {
         <button
           type="button"
           onClick={openComposer}
-          className="inline-flex items-center gap-1.5 rounded-full border border-[#E8DFE2] bg-white px-4 py-2 font-sans text-xs text-[#6B5860] hover:bg-black/[0.03]"
+          className="inline-flex items-center gap-1.5 rounded-full border border-[#E8DFE2] bg-white px-4 py-2 font-sans text-base text-[#6B5860] hover:bg-black/[0.03]"
         >
           <Plus className="h-3.5 w-3.5" aria-hidden />
           Add Another CEO Work Item
@@ -733,14 +734,14 @@ export function CeoWorkdayDesignForm() {
         }`}
       >
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#3A6B3E]">
+          <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.18em] text-[#3A6B3E]">
             Your CEO Workday Declaration™
           </p>
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={rebuildDeclaration}
-              className="inline-flex items-center gap-1 font-sans text-xs font-semibold text-[#6B5860] hover:text-[#2E1F27]"
+              className="inline-flex items-center gap-1 font-sans text-base font-semibold text-[#6B5860] hover:text-[#2E1F27]"
             >
               <RefreshCw className="h-3 w-3" aria-hidden /> Rebuild
             </button>
@@ -756,7 +757,7 @@ export function CeoWorkdayDesignForm() {
                   setDeclManual(true)
                 }
               }}
-              className="inline-flex items-center gap-1 font-sans text-xs font-semibold text-[#6B5860] hover:text-[#2E1F27]"
+              className="inline-flex items-center gap-1 font-sans text-base font-semibold text-[#6B5860] hover:text-[#2E1F27]"
             >
               {declEditing ? (
                 <>
@@ -771,13 +772,13 @@ export function CeoWorkdayDesignForm() {
           </div>
         </div>
         {declStale && !declEditing && (
-          <p className="inline-flex items-start gap-1.5 font-sans text-xs text-[#C13B6B]">
+          <p className="inline-flex items-start gap-1.5 font-sans text-base text-[#C13B6B]">
             <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
             Your work changed since this declaration was written. Rebuild it so it describes today&apos;s final design.
           </p>
         )}
         {!identity && (
-          <p className="font-sans text-xs text-[#6B5860]">
+          <p className="font-sans text-base text-[#6B5860]">
             Tip: choose who you&apos;re being today in{" "}
             <span className="font-semibold">Decide Who You&apos;re Being Today</span> above and your declaration will
             speak in that voice.
@@ -797,9 +798,9 @@ export function CeoWorkdayDesignForm() {
         )}
       </div>
 
-      {saveError && <p className="font-sans text-xs text-[#C13B6B]">{saveError}</p>}
+      {saveError && <p className="font-sans text-base text-[#C13B6B]">{saveError}</p>}
       {!saveError && !saving && readiness.length > 0 && (
-        <p className="font-sans text-xs text-[#6B5860]">
+        <p className="font-sans text-base text-[#6B5860]">
           To build your CEO Workday™: {readiness.join("; ")}.
         </p>
       )}
@@ -821,7 +822,7 @@ export function CeoWorkdayDesignForm() {
 function SourceCell({ label, value, muted }: { label: string; value: string; muted?: boolean }) {
   return (
     <div>
-      <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60">{label}</p>
+      <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60">{label}</p>
       <p className={`mt-1 font-sans text-sm font-semibold leading-snug ${muted ? "text-[#6B5860]/60" : "text-[#2E1F27]"}`}>
         {value}
       </p>
@@ -864,19 +865,19 @@ function WorkCard({
     >
       <div className="flex flex-wrap items-center gap-2">
         <span
-          className={`rounded-full px-2 py-0.5 font-montserrat text-[9px] font-bold uppercase tracking-[0.16em] ${
+          className={`rounded-full px-2 py-0.5 font-montserrat text-[13px] font-bold uppercase tracking-[0.16em] ${
             item.role === "primary" ? "bg-[#3A2E33] text-white" : "bg-[#E8DFE2] text-[#3A2E33]"
           }`}
         >
           {ROLE_LABEL[item.role]}
         </span>
-        <span className="font-montserrat text-[9px] font-bold uppercase tracking-[0.16em] text-[#5B835F]">
+        <span className="font-montserrat text-[13px] font-bold uppercase tracking-[0.16em] text-[#5B835F]">
           {CEO_FUNCTION_LABEL[item.businessFunction]}
         </span>
-        <span className="font-montserrat text-[9px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/60">
+        <span className="font-montserrat text-[13px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/60">
           {CEO_TREATMENT_LABEL[item.treatment]}
         </span>
-        <span className="ml-auto font-sans text-xs font-semibold text-[#6B5860]">{item.estimatedMinutes} min</span>
+        <span className="ml-auto font-sans text-base font-semibold text-[#6B5860]">{item.estimatedMinutes} min</span>
       </div>
 
       {editing ? (
@@ -884,7 +885,7 @@ function WorkCard({
           <div>
             <label
               htmlFor={`title-${item.id}`}
-              className="font-montserrat text-[9px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/60"
+              className="font-montserrat text-[13px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/60"
             >
               {item.founderDecision === "replace" ? "Replace with" : "Work"}
             </label>
@@ -897,7 +898,7 @@ function WorkCard({
             />
           </div>
           <div>
-            <p className="font-montserrat text-[9px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/60">
+            <p className="font-montserrat text-[13px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/60">
               Business function
             </p>
             <div className="mt-1 flex flex-wrap gap-1.5" role="group" aria-label="Business function">
@@ -907,7 +908,7 @@ function WorkCard({
                   type="button"
                   aria-pressed={item.businessFunction === fn}
                   onClick={() => onPatch({ businessFunction: fn, ceoWorkCategory: CEO_FUNCTION_TO_CATEGORY[fn] })}
-                  className={`rounded-full border px-2 py-0.5 font-montserrat text-[9px] font-bold uppercase tracking-wider transition-colors ${
+                  className={`rounded-full border px-2 py-0.5 font-montserrat text-[13px] font-bold uppercase tracking-wider transition-colors ${
                     item.businessFunction === fn
                       ? "border-[#3A2E33] bg-[#3A2E33] text-white"
                       : "border-[#E8DFE2] bg-white text-[#6B5860] hover:bg-black/[0.03]"
@@ -919,7 +920,7 @@ function WorkCard({
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <label className="font-sans text-xs text-[#6B5860]" htmlFor={`min-${item.id}`}>
+            <label className="font-sans text-base text-[#6B5860]" htmlFor={`min-${item.id}`}>
               Estimated time
             </label>
             <input
@@ -931,7 +932,7 @@ function WorkCard({
               onChange={(e) => onPatch({ estimatedMinutes: Math.max(5, Number(e.target.value) || 0) })}
               className="w-20 rounded-lg border border-[#E8DFE2] bg-white px-2 py-1.5 font-sans text-sm text-[#2E1F27] focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
             />
-            <span className="font-sans text-xs text-[#6B5860]">min</span>
+            <span className="font-sans text-base text-[#6B5860]">min</span>
           </div>
         </div>
       ) : (
@@ -940,7 +941,7 @@ function WorkCard({
             {item.title}
           </p>
           {item.relatedAssetTitle && (
-            <p className="mt-1 font-sans text-xs text-[#6B5860]">
+            <p className="mt-1 font-sans text-base text-[#6B5860]">
               Related Business Asset™:{" "}
               <span className="font-semibold text-[#2E1F27]">{item.relatedAssetTitle}</span>
             </p>
@@ -948,18 +949,20 @@ function WorkCard({
         </>
       )}
 
-      {!removed && (
+      {parked && !editing && <ParkedPanel item={item} onPatch={onPatch} onBringBack={() => onDecide("keep")} />}
+
+      {!removed && !parked && (
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           <div>
-            <p className="font-montserrat text-[9px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/60">
+            <p className="font-montserrat text-[13px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/60">
               Why this work
             </p>
-            <p className="mt-1 font-sans text-xs leading-relaxed text-[#3A2E33]">{item.purpose}</p>
+            <p className="mt-1 font-sans text-base leading-relaxed text-[#3A2E33]">{item.purpose}</p>
           </div>
           <div>
             <label
               htmlFor={`outcome-${item.id}`}
-              className={`font-montserrat text-[9px] font-bold uppercase tracking-[0.16em] ${
+              className={`font-montserrat text-[13px] font-bold uppercase tracking-[0.16em] ${
                 outcomeMissing ? "text-[#C13B6B]" : "text-[#6B5860]/60"
               }`}
             >
@@ -972,7 +975,7 @@ function WorkCard({
               onChange={(e) => onPatch({ expectedEvidence: e.target.value })}
               rows={2}
               placeholder="What should be different or true when this work is complete?"
-              className={`mt-1 w-full rounded-lg border bg-white px-2.5 py-1.5 font-sans text-xs leading-relaxed text-[#3A2E33] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30 ${
+              className={`mt-1 w-full rounded-lg border bg-white px-2.5 py-1.5 font-sans text-base leading-relaxed text-[#3A2E33] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30 ${
                 outcomeMissing ? "border-[#C13B6B]/40" : "border-[#E8DFE2]"
               }`}
             />
@@ -985,7 +988,7 @@ function WorkCard({
           <button
             type="button"
             onClick={onDoneEditing}
-            className="inline-flex items-center gap-1 rounded-lg border border-[#7FB069]/40 px-3 py-1.5 font-sans text-xs font-semibold text-[#3A6B3E] hover:bg-[#7FB069]/10"
+            className="inline-flex items-center gap-1 rounded-lg border border-[#7FB069]/40 px-3 py-1.5 font-sans text-base font-semibold text-[#3A6B3E] hover:bg-[#7FB069]/10"
           >
             <Check className="h-3 w-3" aria-hidden /> Done
           </button>
@@ -998,7 +1001,7 @@ function WorkCard({
                 type="button"
                 aria-pressed={active}
                 onClick={() => onDecide(d)}
-                className={`rounded-full border px-2.5 py-1 font-sans text-xs capitalize transition-colors ${
+                className={`rounded-full border px-2.5 py-1 font-sans text-base capitalize transition-colors ${
                   active
                     ? "border-[#3A2E33] bg-[#3A2E33] text-white"
                     : "border-[#E8DFE2] bg-white text-[#6B5860] hover:bg-black/[0.03]"
@@ -1009,10 +1012,127 @@ function WorkCard({
             )
           })
         )}
-        <span className="ml-auto font-montserrat text-[9px] font-bold uppercase tracking-[0.14em] text-[#6B5860]/70">
+        <span className="ml-auto font-montserrat text-[13px] font-bold uppercase tracking-[0.14em] text-[#6B5860]/70">
           {provenanceLabel(item)}
         </span>
       </div>
+    </div>
+  )
+}
+
+const DEFER_OPTIONS = [
+  { value: "tomorrow", label: "Tomorrow" },
+  { value: "later-this-week", label: "Later this week" },
+  { value: "next-week", label: "Next week" },
+] as const
+
+const DELEGATE_SUGGESTIONS = ["A team member", "My virtual assistant", "A contractor", "My AI Executive Team™"]
+
+function ParkedPanel({
+  item,
+  onPatch,
+  onBringBack,
+}: {
+  item: CeoPlanItem
+  onPatch: (p: Partial<CeoPlanItem>) => void
+  onBringBack: () => void
+}) {
+  const isDefer = item.founderDecision === "defer"
+  const deferUntil = item.deferUntil ?? "tomorrow"
+  const noteId = `handoff-${item.id}`
+  const whoId = `delegate-to-${item.id}`
+  const deferLabel = DEFER_OPTIONS.find((o) => o.value === deferUntil)?.label.toLowerCase() ?? "later"
+
+  return (
+    <div className="mt-3 flex flex-col gap-3 rounded-xl border border-[#E8DFE2] bg-[#FAF8F5] p-3">
+      <p className="font-sans text-base leading-relaxed text-[#3A2E33]">
+        {isDefer
+          ? `Moved off today. This work comes back ${deferLabel} and does not use your 240 minutes today.`
+          : "Handed off. Someone else owns this work, so it does not use your 240 minutes today."}
+      </p>
+
+      {isDefer ? (
+        <div className="flex flex-col gap-1.5">
+          <p className="font-montserrat text-[13px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/70">
+            Bring it back
+          </p>
+          <div className="flex flex-wrap gap-1.5" role="group" aria-label="When to bring this work back">
+            {DEFER_OPTIONS.map((o) => (
+              <button
+                key={o.value}
+                type="button"
+                aria-pressed={deferUntil === o.value}
+                onClick={() => onPatch({ deferUntil: o.value })}
+                className={`rounded-full border px-3 py-1 font-sans text-base transition-colors ${
+                  deferUntil === o.value
+                    ? "border-[#5B835F] bg-[#5B835F] text-white"
+                    : "border-[#E8DFE2] bg-white text-[#6B5860] hover:bg-black/[0.03]"
+                }`}
+              >
+                {o.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-1.5">
+          <label
+            htmlFor={whoId}
+            className="font-montserrat text-[13px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/70"
+          >
+            Delegate to
+          </label>
+          <input
+            id={whoId}
+            type="text"
+            value={item.delegateTo ?? ""}
+            onChange={(e) => onPatch({ delegateTo: e.target.value })}
+            placeholder="Name or role (e.g. Maria, my VA)"
+            className="w-full rounded-lg border border-[#E8DFE2] bg-white px-3 py-2 font-sans text-base text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
+          />
+          <div className="flex flex-wrap gap-1.5">
+            {DELEGATE_SUGGESTIONS.map((s) => (
+              <button
+                key={s}
+                type="button"
+                onClick={() => onPatch({ delegateTo: s })}
+                className="rounded-full border border-[#E8DFE2] bg-white px-3 py-1 font-sans text-base text-[#6B5860] hover:bg-black/[0.03]"
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="flex flex-col gap-1.5">
+        <label
+          htmlFor={noteId}
+          className="font-montserrat text-[13px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/70"
+        >
+          {isDefer ? "Note to future you (optional)" : "Handoff instructions"}
+        </label>
+        <textarea
+          id={noteId}
+          rows={2}
+          value={item.handoffNote ?? ""}
+          onChange={(e) => onPatch({ handoffNote: e.target.value })}
+          placeholder={
+            isDefer
+              ? "Where you left off, or what you need before you start."
+              : `What does done look like? ${item.expectedEvidence ? `(${item.expectedEvidence})` : ""}`
+          }
+          className="w-full rounded-lg border border-[#E8DFE2] bg-white px-3 py-2 font-sans text-base leading-relaxed text-[#3A2E33] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
+        />
+      </div>
+
+      <button
+        type="button"
+        onClick={onBringBack}
+        className="self-start font-sans text-base font-semibold text-[#5B835F] underline underline-offset-2 hover:text-[#3A6B3E]"
+      >
+        Keep it in today instead
+      </button>
     </div>
   )
 }

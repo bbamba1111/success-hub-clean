@@ -73,6 +73,9 @@ type ItemRow = {
   status: CeoPlanItemStatus
   next_action: CeoNextAction | null
   local_work_item_id: string | null
+  defer_until: string | null
+  delegate_to: string | null
+  handoff_note: string | null
 }
 
 function rowToItem(r: ItemRow): CeoPlanItem {
@@ -95,6 +98,9 @@ function rowToItem(r: ItemRow): CeoPlanItem {
     status: r.status,
     nextAction: r.next_action,
     localWorkItemId: r.local_work_item_id,
+    deferUntil: r.defer_until,
+    delegateTo: r.delegate_to,
+    handoffNote: r.handoff_note,
   }
 }
 
@@ -122,7 +128,7 @@ function rowToPlan(p: PlanRow, items: ItemRow[]): CeoWorkdayPlan {
 const PLAN_COLS =
   "id, plan_date, week_key, business_area_id, bottleneck_ega_entry_ids, primary_assignment_ref, primary_asset_id, constraint_summary, intervention_summary, identity_statement, declaration, planned_minutes, status, entered_at, closed_at"
 const ITEM_COLS =
-  "id, plan_id, position, title, purpose, expected_evidence, treatment, business_function, role, estimated_minutes, related_asset_id, related_assignment_ref, ceo_work_category, gps_original, founder_decision, status, next_action, local_work_item_id"
+  "id, plan_id, position, title, purpose, expected_evidence, treatment, business_function, role, estimated_minutes, related_asset_id, related_assignment_ref, ceo_work_category, gps_original, founder_decision, status, next_action, local_work_item_id, defer_until, delegate_to, handoff_note"
 
 // ── reads ───────────────────────────────────────────────────────────────────
 
@@ -257,6 +263,12 @@ export async function saveCeoWorkdayPlan(input: SaveCeoWorkdayPlanInput): Promis
       status: i.founderDecision === "defer" ? "deferred" : i.founderDecision === "delegate" ? "delegated" : "planned",
       next_action: null,
       local_work_item_id: i.localWorkItemId ?? null,
+      defer_until: i.founderDecision === "defer" ? (i.deferUntil ?? "tomorrow") : null,
+      delegate_to: i.founderDecision === "delegate" ? (i.delegateTo?.trim().slice(0, 200) || null) : null,
+      handoff_note:
+        i.founderDecision === "defer" || i.founderDecision === "delegate"
+          ? (i.handoffNote?.trim().slice(0, 1200) || null)
+          : null,
     }))
 
     const { data: items } = rows.length

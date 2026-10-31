@@ -190,7 +190,7 @@ export function WhatMustHappenToday({
           </p>
         </div>
         {typeof plannedMinutes === "number" && (
-          <span className="shrink-0 rounded-full bg-white px-3 py-1 font-sans text-xs font-semibold text-[#5B835F]">
+          <span className="shrink-0 rounded-full bg-white px-3 py-1 font-sans text-base font-semibold text-[#5B835F]">
             {plannedMinutes} / 240 min planned
           </span>
         )}
@@ -209,7 +209,7 @@ export function WhatMustHappenToday({
                 {/* My Work Affirmation™ — always at the top of the hour block. */}
                 {affirmation && (
                   <div className="rounded-2xl border border-[#7FB069]/40 bg-white px-5 py-4">
-                    <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
+                    <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
                       My Work Affirmation™
                     </p>
                     <p className="mt-2 font-serif text-base italic leading-relaxed text-[#2E1F27] text-pretty">
@@ -219,7 +219,7 @@ export function WhatMustHappenToday({
                       <button
                         type="button"
                         onClick={() => copyAffirmation(index)}
-                        className="inline-flex items-center gap-1.5 rounded-full border border-[#7FB069]/50 bg-[#F3F8ED] px-3.5 py-1.5 font-sans text-xs font-semibold text-[#3A6B2E] transition-colors hover:bg-[#E7F1DD]"
+                        className="inline-flex items-center gap-1.5 rounded-full border border-[#7FB069]/50 bg-[#F3F8ED] px-3.5 py-1.5 font-sans text-base font-semibold text-[#3A6B2E] transition-colors hover:bg-[#E7F1DD]"
                       >
                         {copied === index ? (
                           <>
@@ -231,7 +231,7 @@ export function WhatMustHappenToday({
                           </>
                         )}
                       </button>
-                      <span className="font-sans text-xs text-[#6B5860]">Paste it into the live session chat.</span>
+                      <span className="font-sans text-base text-[#6B5860]">Paste it into the live session chat.</span>
                     </div>
                   </div>
                 )}
@@ -239,7 +239,7 @@ export function WhatMustHappenToday({
                 {/* The executable CEO assignments designed for this hour. */}
                 {renderItem && hourItems.length > 0 && (
                   <div className="flex flex-col gap-2">
-                    <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
+                    <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
                       Your CEO work this hour
                     </p>
                     <ol className="space-y-2">
@@ -254,19 +254,19 @@ export function WhatMustHappenToday({
                     executable CEO assignment inside this hour. */}
                 {onAddWork && (
                   <div className="rounded-2xl border border-dashed border-[#7FB069]/45 bg-white/70 px-4 py-4">
-                    <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
+                    <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
                       What must happen this hour?
                     </p>
                     {!builderOpen ? (
                       <>
-                        <p className="mt-1 font-sans text-xs leading-relaxed text-[#6B5860]">
+                        <p className="mt-1 font-sans text-base leading-relaxed text-[#6B5860]">
                           Add or adjust a piece of work for this hour. Choosing it creates an executable CEO assignment
                           and writes this hour&apos;s Work Affirmation™.
                         </p>
                         <button
                           type="button"
                           onClick={() => openBuilder(index)}
-                          className="mt-2.5 inline-flex items-center gap-1.5 rounded-full bg-[#5F8F47] px-4 py-2 font-sans text-xs font-bold text-white transition-colors hover:bg-[#548039]"
+                          className="mt-2.5 inline-flex items-center gap-1.5 rounded-full bg-[#5F8F47] px-4 py-2 font-sans text-base font-bold text-white transition-colors hover:bg-[#548039]"
                         >
                           <Plus className="h-3.5 w-3.5" aria-hidden />
                           Add a piece of work
@@ -275,7 +275,7 @@ export function WhatMustHappenToday({
                     ) : (
                       <div className="mt-3 flex flex-col gap-3">
                         <div>
-                          <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/70">
+                          <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/70">
                             Business Function
                           </p>
                           <div className="mt-1.5 flex flex-wrap gap-1.5">
@@ -285,7 +285,7 @@ export function WhatMustHappenToday({
                                 type="button"
                                 aria-pressed={builder.fn === fn}
                                 onClick={() => setBuilder((b) => (b.fn === fn ? b : { ...b, fn, work: "", outcome: "" }))}
-                                className={`rounded-full border px-2.5 py-1 font-montserrat text-[10px] font-bold uppercase tracking-wider transition-colors ${
+                                className={`rounded-full border px-2.5 py-1 font-montserrat text-[14px] font-bold uppercase tracking-wider transition-colors ${
                                   builder.fn === fn
                                     ? "border-[#3A2E33] bg-[#3A2E33] text-white"
                                     : "border-[#E8DFE2] bg-white text-[#6B5860] hover:bg-black/[0.03]"
@@ -300,7 +300,7 @@ export function WhatMustHappenToday({
                         <div>
                           <label
                             htmlFor={`wmht-work-${index}`}
-                            className="font-montserrat text-[10px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/70"
+                            className="font-montserrat text-[14px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/70"
                           >
                             What needs to happen?
                           </label>
@@ -331,7 +331,7 @@ export function WhatMustHappenToday({
                         <div>
                           <label
                             htmlFor={`wmht-outcome-${index}`}
-                            className="font-montserrat text-[10px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/70"
+                            className="font-montserrat text-[14px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/70"
                           >
                             Expected outcome
                           </label>
@@ -347,7 +347,7 @@ export function WhatMustHappenToday({
 
                         <div className="flex flex-wrap items-center gap-3">
                           <div className="flex items-center gap-2">
-                            <label className="font-sans text-xs text-[#6B5860]" htmlFor={`wmht-min-${index}`}>
+                            <label className="font-sans text-base text-[#6B5860]" htmlFor={`wmht-min-${index}`}>
                               Estimated time
                             </label>
                             <input
@@ -361,7 +361,7 @@ export function WhatMustHappenToday({
                               }
                               className="w-20 rounded-lg border border-[#E8DFE2] bg-white px-2 py-1.5 font-sans text-sm text-[#2E1F27] focus:outline-none focus:ring-2 focus:ring-[#7FB069]/40"
                             />
-                            <span className="font-sans text-xs text-[#6B5860]">min</span>
+                            <span className="font-sans text-base text-[#6B5860]">min</span>
                           </div>
                           <div className="ml-auto flex items-center gap-3">
                             <button
@@ -384,16 +384,16 @@ export function WhatMustHappenToday({
                         </div>
                       </div>
                     )}
-                    {errors[index] && <p className="mt-2 font-sans text-xs text-[#C0545A]">{errors[index]}</p>}
+                    {errors[index] && <p className="mt-2 font-sans text-base text-[#C0545A]">{errors[index]}</p>}
                   </div>
                 )}
 
                 {/* Write / Research with AI — for keynotes, press releases, Op-Eds, PSAs, etc. */}
                 <div className="rounded-2xl border border-dashed border-[#7FB069]/45 bg-white/70 px-4 py-3">
-                  <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
+                  <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
                     Write or research with AI
                   </p>
-                  <p className="mt-1 font-sans text-xs leading-relaxed text-[#6B5860]">
+                  <p className="mt-1 font-sans text-base leading-relaxed text-[#6B5860]">
                     Need to write, research, or practice something this hour — a keynote, pitch, presentation, webinar,
                     press release, Op-Ed, PSA, or any thought leadership piece? The right AI executive will build it with
                     you from a template, or rehearse it with you in Business Articulation Training™.
@@ -402,7 +402,7 @@ export function WhatMustHappenToday({
                     <button
                       type="button"
                       onClick={() => setStudio({ mode: "write-with-ai", hour: index })}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-[#5F8F47] px-4 py-2 font-sans text-xs font-bold text-white transition-colors hover:bg-[#548039]"
+                      className="inline-flex items-center gap-1.5 rounded-full bg-[#5F8F47] px-4 py-2 font-sans text-base font-bold text-white transition-colors hover:bg-[#548039]"
                     >
                       <PenLine className="h-3.5 w-3.5" aria-hidden />
                       Write with AI
@@ -410,7 +410,7 @@ export function WhatMustHappenToday({
                     <button
                       type="button"
                       onClick={() => setStudio({ mode: "research-with-ai", hour: index })}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-[#7FB069]/50 bg-[#F3F8ED] px-4 py-2 font-sans text-xs font-bold text-[#3A6B2E] transition-colors hover:bg-[#E7F1DD]"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-[#7FB069]/50 bg-[#F3F8ED] px-4 py-2 font-sans text-base font-bold text-[#3A6B2E] transition-colors hover:bg-[#E7F1DD]"
                     >
                       <Search className="h-3.5 w-3.5" aria-hidden />
                       Research with AI
@@ -418,7 +418,7 @@ export function WhatMustHappenToday({
                     <button
                       type="button"
                       onClick={() => setArticulationHour(index)}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-[#7FB069]/50 bg-[#F3F8ED] px-4 py-2 font-sans text-xs font-bold text-[#3A6B2E] transition-colors hover:bg-[#E7F1DD]"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-[#7FB069]/50 bg-[#F3F8ED] px-4 py-2 font-sans text-base font-bold text-[#3A6B2E] transition-colors hover:bg-[#E7F1DD]"
                     >
                       <Mic className="h-3.5 w-3.5" aria-hidden />
                       Business Articulation Training
@@ -431,7 +431,7 @@ export function WhatMustHappenToday({
         })}
       </div>
 
-      <p className="mt-4 font-sans text-xs italic leading-relaxed text-[#6B5860]">
+      <p className="mt-4 font-sans text-base italic leading-relaxed text-[#6B5860]">
         Each hour connects to its own 5-Minute Check-In™ below, where you&apos;ll capture what actually happened.
       </p>
 

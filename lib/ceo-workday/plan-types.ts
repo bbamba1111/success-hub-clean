@@ -172,6 +172,12 @@ export interface CeoPlanItem {
   nextAction?: CeoNextAction | null
   /** id of the mirrored Today's Work™ queue item (localStorage). */
   localWorkItemId?: string | null
+  /** When deferred work comes back (e.g. "tomorrow", "later-this-week", "next-week"). */
+  deferUntil?: string | null
+  /** Who deferred/delegated work is handed to. */
+  delegateTo?: string | null
+  /** Handoff instructions for delegated work, or a reminder note for deferred work. */
+  handoffNote?: string | null
 }
 
 // ── Plan ────────────────────────────────────────────────────────────────────
