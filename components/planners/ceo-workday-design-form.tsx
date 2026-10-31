@@ -353,17 +353,19 @@ export function CeoWorkdayDesignForm() {
   const missingOutcome = approved.filter((i) => !i.expectedEvidence.trim())
   const missingTitle = approved.filter((i) => !i.title.trim())
   const readiness: string[] = []
-  if (!weeklyBoundaryFocus.boundaryText?.trim())
-    readiness.push("choose this week's Work-Life Balance Boundary Focus™ above")
-  if (approved.length === 0) readiness.push("keep or add at least one piece of work")
+  if (approved.length === 0) readiness.push("add at least one piece of work")
   if (missingTitle.length) readiness.push("give every kept piece of work a title")
   if (missingOutcome.length) readiness.push("add an expected outcome to every kept piece of work")
-  if (!declaration.trim()) readiness.push("build your declaration")
-  const canBuild = !saving && readiness.length === 0 && week !== null && design !== null
+  const canBuild = !saving && week !== null
 
   // ── build ─────────────────────────────────────────────────────────────────
   async function handleBuild() {
-    if (!canBuild || !week || !design) return
+    if (!canBuild || !week) return
+    if (readiness.length > 0) {
+      setSaveError(`Almost there — ${readiness.join("; ")}.`)
+      if (approved.length === 0) openComposer()
+      return
+    }
     setSaving(true)
     setSaveError(null)
     const saved = await saveCeoWorkdayPlan({
@@ -371,11 +373,13 @@ export function CeoWorkdayDesignForm() {
       weekKey: week.weekKey,
       businessAreaId: week.business.businessAreaId,
       bottleneckEgaEntryIds: week.business.bottleneckEgaEntryIds,
-      primaryAssetId: design.relatedAssetId,
-      constraintSummary: design.constraintSummary,
-      interventionSummary: design.interventionSummary,
+      primaryAssetId: design?.relatedAssetId ?? null,
+      constraintSummary: design?.constraintSummary ?? null,
+      interventionSummary: design?.interventionSummary ?? null,
       identityStatement: identity,
-      declaration: declaration.trim(),
+      declaration:
+        declaration.trim() ||
+        "I am a focused CEO. Today I commit to the work that moves this week forward — because I build a business that creates revenue without consuming my life.",
       items: items.map(({ id: _id, planId: _p, ...rest }, idx) => ({ ...rest, position: idx })),
     })
     if (!saved) {
@@ -794,7 +798,7 @@ export function CeoWorkdayDesignForm() {
       </div>
 
       {saveError && <p className="font-sans text-xs text-[#C13B6B]">{saveError}</p>}
-      {!canBuild && !saving && readiness.length > 0 && (
+      {!saveError && !saving && readiness.length > 0 && (
         <p className="font-sans text-xs text-[#6B5860]">
           To build your CEO Workday™: {readiness.join("; ")}.
         </p>
