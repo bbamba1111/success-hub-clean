@@ -23,6 +23,7 @@ import { CollapsibleSubSection } from "@/components/collapsible-sub-section"
 import { HOUR_BLOCKS, type HourBlockIndex } from "@/lib/ceo-workday/hour-blocks"
 import { useHourlyWork } from "@/lib/ceo-workday/use-hourly-work"
 import { CEO_FUNCTION_LABEL, type CeoBusinessFunction, type CeoPlanItem } from "@/lib/ceo-workday/plan-types"
+import { FunctionWorkSelect } from "@/components/ceo-workday/function-work-select"
 import { WriteWithAiStudio } from "@/components/thought-leadership/write-with-ai-studio"
 import type { ThoughtLeadershipMode } from "@/lib/thought-leadership/format-registry"
 import {
@@ -129,7 +130,7 @@ export function WhatMustHappenToday({
 
   function openBuilder(index: HourBlockIndex) {
     setBuilderHour(index)
-    setBuilder({ ...emptyBuilder(), fn: "build" })
+    setBuilder({ ...emptyBuilder(), fn: "client-attraction" })
     setErrors((e) => ({ ...e, [index]: null }))
   }
 
@@ -283,7 +284,7 @@ export function WhatMustHappenToday({
                                 key={fn}
                                 type="button"
                                 aria-pressed={builder.fn === fn}
-                                onClick={() => setBuilder((b) => ({ ...b, fn }))}
+                                onClick={() => setBuilder((b) => (b.fn === fn ? b : { ...b, fn, work: "", outcome: "" }))}
                                 className={`rounded-full border px-2.5 py-1 font-montserrat text-[10px] font-bold uppercase tracking-wider transition-colors ${
                                   builder.fn === fn
                                     ? "border-[#3A2E33] bg-[#3A2E33] text-white"
@@ -303,6 +304,20 @@ export function WhatMustHappenToday({
                           >
                             What needs to happen?
                           </label>
+                          <div className="mt-1">
+                            <FunctionWorkSelect
+                              id={`wmht-option-${index}`}
+                              fn={builder.fn}
+                              value={builder.work}
+                              onSelect={(option) =>
+                                setBuilder((b) =>
+                                  option
+                                    ? { ...b, work: option.work, outcome: b.outcome.trim() ? b.outcome : option.outcome }
+                                    : { ...b, work: "" },
+                                )
+                              }
+                            />
+                          </div>
                           <textarea
                             id={`wmht-work-${index}`}
                             value={builder.work}

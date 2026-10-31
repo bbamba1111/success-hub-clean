@@ -63,6 +63,7 @@ import {
   saveCeoWorkdayPlan,
 } from "@/lib/ceo-workday/plan-server"
 import { addWorkItem, getTodaysWork, removeWorkItem } from "@/lib/ceo-workday/todays-work-store"
+import { FunctionWorkSelect } from "@/components/ceo-workday/function-work-select"
 import { getWorkflowEntry } from "@/lib/ceo-workday/workflow-registry"
 import {
   loadCeoWorkdayDeclaration,
@@ -556,6 +557,10 @@ export function CeoWorkdayDesignForm() {
                 type="button"
                 aria-pressed={addFn === fn}
                 onClick={() => {
+                  if (addFn !== fn) {
+                    setAddWork("")
+                    setAddOutcome("")
+                  }
                   setAddFn(fn)
                   setTimeout(() => workInputRef.current?.focus(), 50)
                 }}
@@ -589,8 +594,24 @@ export function CeoWorkdayDesignForm() {
                   What needs to happen?
                 </label>
                 <p className="mb-2 mt-0.5 font-sans text-xs text-[#6B5860]">
-                  Tell us what you need to accomplish in this CEO Workday™.
+                  Choose common work for {CEO_FUNCTION_LABEL[addFn].toLowerCase()}, or write your own.
                 </p>
+                <div className="mb-2">
+                  <FunctionWorkSelect
+                    id="ceo-add-work-option"
+                    fn={addFn}
+                    value={addWork}
+                    onSelect={(option) => {
+                      if (!option) {
+                        setAddWork("")
+                        setTimeout(() => workInputRef.current?.focus(), 50)
+                        return
+                      }
+                      setAddWork(option.work)
+                      if (!addOutcome.trim()) setAddOutcome(option.outcome)
+                    }}
+                  />
+                </div>
                 <textarea
                   id="ceo-add-work"
                   ref={workInputRef}
