@@ -37,7 +37,7 @@ export function FunctionWorkSelect({
           if (v === WRITE_MY_OWN || v === "") onSelect(null)
           else onSelect(options[Number(v)] ?? null)
         }}
-        className="w-full cursor-pointer appearance-none rounded-lg border border-[#C9DBBE] bg-[#E1EDD9] py-2.5 pl-3 pr-9 font-sans text-sm text-[#2E1F27] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md focus:-translate-y-0.5 focus:shadow-md focus:outline-none focus:ring-2 focus:ring-[#7E9C72]/40"
+        className="w-full cursor-pointer appearance-none rounded-lg border border-[#C9AE86] bg-[#F7F0E5] py-2.5 pl-3 pr-9 font-sans text-sm text-[#7A6243] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md focus:-translate-y-0.5 focus:shadow-md focus:outline-none focus:ring-2 focus:ring-[#C9AE86]/40"
       >
         <option value="" disabled>
           Click here to choose from common work…
@@ -50,7 +50,7 @@ export function FunctionWorkSelect({
         <option value={WRITE_MY_OWN}>Something else — I&apos;ll write my own</option>
       </select>
       <ChevronDown
-        className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#5B835F]"
+        className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#7A6243]"
         aria-hidden
       />
     </div>
