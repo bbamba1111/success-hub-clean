@@ -1,10 +1,13 @@
 "use client"
 
-import { ChevronDown } from "lucide-react"
 import type { CeoBusinessFunction } from "@/lib/ceo-workday/plan-types"
 import { workOptionsFor, type FunctionWorkOption } from "@/lib/ceo-workday/function-work-options"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 const WRITE_MY_OWN = "__own__"
+
+const ITEM_CLASS =
+  "cursor-pointer font-sans text-sm text-[#5C4A33] hover:bg-[#FBF6EE] focus:bg-[#FBF6EE] focus:text-[#5C4A33] data-[highlighted]:bg-[#FBF6EE] data-[highlighted]:text-[#5C4A33] data-[state=checked]:font-bold"
 
 export function FunctionWorkSelect({
   id,
@@ -25,34 +28,36 @@ export function FunctionWorkSelect({
   const selectValue = selectedIndex >= 0 ? String(selectedIndex) : value ? WRITE_MY_OWN : ""
 
   return (
-    <div className="relative">
+    <div>
       <label htmlFor={id} className="sr-only">
         Choose a suggested piece of work
       </label>
-      <select
-        id={id}
+      <Select
         value={selectValue}
-        onChange={(e) => {
-          const v = e.target.value
-          if (v === WRITE_MY_OWN || v === "") onSelect(null)
+        onValueChange={(v) => {
+          if (v === WRITE_MY_OWN) onSelect(null)
           else onSelect(options[Number(v)] ?? null)
         }}
-        className="w-full cursor-pointer appearance-none rounded-lg border border-[#C9AE86] bg-[#F7F0E5] py-2.5 pl-3 pr-9 font-sans text-sm text-[#7A6243] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md focus:-translate-y-0.5 focus:shadow-md focus:outline-none focus:ring-2 focus:ring-[#C9AE86]/40"
       >
-        <option value="" disabled>
-          Click here to choose from common work…
-        </option>
-        {options.map((o, i) => (
-          <option key={o.work} value={String(i)}>
-            {o.work}
-          </option>
-        ))}
-        <option value={WRITE_MY_OWN}>Something else — I&apos;ll write my own</option>
-      </select>
-      <ChevronDown
-        className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#7A6243]"
-        aria-hidden
-      />
+        <SelectTrigger
+          id={id}
+          className={`h-auto cursor-pointer rounded-lg border-[#C9AE86] bg-[#F7F0E5] py-2.5 pl-3 pr-3 text-left font-sans text-sm text-[#5C4A33] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md focus:-translate-y-0.5 focus:shadow-md focus:ring-2 focus:ring-[#C9AE86]/40 focus:ring-offset-0 data-[placeholder]:font-normal data-[placeholder]:text-[#7A6243] [&>svg]:text-[#7A6243] [&>svg]:opacity-100 ${
+            selectValue ? "font-bold" : "font-normal"
+          }`}
+        >
+          <SelectValue placeholder="Click here to choose from common work…" />
+        </SelectTrigger>
+        <SelectContent className="border-[#C9AE86] bg-[#FFFDF9]">
+          {options.map((o, i) => (
+            <SelectItem key={o.work} value={String(i)} className={ITEM_CLASS}>
+              {o.work}
+            </SelectItem>
+          ))}
+          <SelectItem value={WRITE_MY_OWN} className={ITEM_CLASS}>
+            Something else — I&apos;ll write my own
+          </SelectItem>
+        </SelectContent>
+      </Select>
     </div>
   )
 }

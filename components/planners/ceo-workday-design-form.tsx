@@ -641,7 +641,11 @@ export function CeoWorkdayDesignForm() {
                   onChange={(e) => setAddOutcome(e.target.value)}
                   rows={2}
                   placeholder="e.g. Founders begin visiting the website and expressing interest."
-                  className="w-full rounded-lg border border-[#E8DFE2] bg-white px-3 py-2 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
+                  className={`w-full rounded-lg border px-3 py-2 font-sans text-sm placeholder:font-normal placeholder:text-[#6B5860]/50 transition-all duration-200 focus:outline-none ${
+                    addOutcome.trim()
+                      ? "border-[#C9AE86] bg-[#F7F0E5] font-bold text-[#5C4A33] shadow-sm hover:-translate-y-0.5 hover:shadow-md focus:ring-2 focus:ring-[#C9AE86]/40"
+                      : "border-[#E8DFE2] bg-white text-[#2E1F27] focus:ring-2 focus:ring-[#8DAE72]/30"
+                  }`}
                 />
               </div>
 
@@ -976,8 +980,10 @@ function WorkCard({
               onChange={(e) => onPatch({ expectedEvidence: e.target.value })}
               rows={2}
               placeholder="What should be different or true when this work is complete?"
-              className={`mt-1 w-full rounded-lg border bg-white px-2.5 py-1.5 font-sans text-base leading-relaxed text-[#3A2E33] placeholder:text-[#6B5860]/50 focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30 ${
-                outcomeMissing ? "border-[#C13B6B]/40" : "border-[#E8DFE2]"
+              className={`mt-1 w-full rounded-lg border px-2.5 py-1.5 font-sans text-base leading-relaxed placeholder:font-normal placeholder:text-[#6B5860]/50 transition-all duration-200 focus:outline-none ${
+                outcomeMissing
+                  ? "border-[#C13B6B]/40 bg-white text-[#3A2E33] focus:ring-2 focus:ring-[#8DAE72]/30"
+                  : "border-[#C9AE86] bg-[#F7F0E5] font-bold text-[#5C4A33] shadow-sm hover:-translate-y-0.5 hover:shadow-md focus:ring-2 focus:ring-[#C9AE86]/40"
               }`}
             />
           </div>
