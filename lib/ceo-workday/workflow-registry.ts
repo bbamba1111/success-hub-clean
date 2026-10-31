@@ -25,6 +25,11 @@ export interface WorkflowRegistryEntry {
 }
 
 export const WORKFLOW_REGISTRY: Record<CeoWorkCategoryId, WorkflowRegistryEntry> = {
+  CLIENT_ATTRACTION: { category: "CLIENT_ATTRACTION", workflowId: "boss-work-queue", availability: "workflow-not-yet-available" },
+  SALES_CONVERSION: { category: "SALES_CONVERSION", workflowId: "boss-work-queue", availability: "workflow-not-yet-available" },
+  DELIVERY: { category: "DELIVERY", workflowId: "boss-work-queue", availability: "workflow-not-yet-available" },
+  OPERATIONS: { category: "OPERATIONS", workflowId: "boss-work-queue", availability: "workflow-not-yet-available" },
+  OPERATIONS_DESIGN: { category: "OPERATIONS_DESIGN", workflowId: "boss-work-queue", availability: "workflow-not-yet-available" },
   BUILD: { category: "BUILD", workflowId: "business-asset-builder", availability: "available" },
   DESIGN: { category: "DESIGN", workflowId: "operating-rule-builder", availability: "available" },
   DECIDE: { category: "DECIDE", workflowId: "decision-workflow", availability: "workflow-not-yet-available" },

@@ -278,11 +278,33 @@ function ComingNextPanel({
   return (
     <div className="space-y-4">
       <p className="font-sans text-sm leading-relaxed text-[#3A2E33] text-pretty">{category.definition}</p>
-      <p className="font-sans text-sm leading-relaxed text-[#6B5860] text-pretty">
-        This category&apos;s guided builder isn&apos;t available yet — it&apos;s part of the CEO Workday™
-        architecture, and a real, step-by-step workflow for {category.label.toLowerCase()} work is coming next.
-        {item.tangibleOutcome && <> The outcome it will produce: {item.tangibleOutcome}.</>}
-      </p>
+      {category.bossFunction ? (
+        <div className="flex flex-col gap-2 rounded-xl bg-[#F4F7F0] p-3">
+          <p className="font-sans text-sm leading-relaxed text-[#3A2E33] text-pretty">
+            Plan, assign, and track this {category.label} work in The BO$$.
+          </p>
+          <div className="flex flex-wrap gap-x-4 gap-y-1.5">
+            <a
+              href={`/boss/queue?fn=${category.bossFunction}`}
+              className="font-sans text-sm font-bold text-[#5A7A45] hover:underline"
+            >
+              Business Work Queue
+            </a>
+            <a href="/boss/workforce" className="font-sans text-sm font-bold text-[#5A7A45] hover:underline">
+              Human &amp; AI Workforce
+            </a>
+            <a href="/boss/systems" className="font-sans text-sm font-bold text-[#5A7A45] hover:underline">
+              Systems &amp; Integrations
+            </a>
+          </div>
+        </div>
+      ) : (
+        <p className="font-sans text-sm leading-relaxed text-[#6B5860] text-pretty">
+          This category&apos;s guided builder isn&apos;t available yet — it&apos;s part of the CEO Workday™
+          architecture, and a real, step-by-step workflow for {category.label.toLowerCase()} work is coming next.
+          {item.tangibleOutcome && <> The outcome it will produce: {item.tangibleOutcome}.</>}
+        </p>
+      )}
       <button
         type="button"
         onClick={onCommunicate}
@@ -292,9 +314,15 @@ function ComingNextPanel({
         Communicate + Delegate™
       </button>
       <div className="flex items-center justify-between gap-3">
-        <span className="inline-flex items-center rounded-full bg-[#F4F1EC] px-3 py-1.5 font-montserrat text-[10px] font-bold uppercase tracking-[0.1em] text-[#6B5860]">
-          Coming Next
-        </span>
+        {category.bossFunction ? (
+          <span className="inline-flex items-center rounded-full bg-[#5A7A45]/10 px-3 py-1.5 font-sans text-xs font-bold text-[#5A7A45]">
+            {category.label}
+          </span>
+        ) : (
+          <span className="inline-flex items-center rounded-full bg-[#F4F1EC] px-3 py-1.5 font-montserrat text-[10px] font-bold uppercase tracking-[0.1em] text-[#6B5860]">
+            Coming Next
+          </span>
+        )}
         {item.source === "barbara" ? (
           <p className="font-sans text-xs text-[#B7A6AE]">Assigned by Barbara</p>
         ) : (

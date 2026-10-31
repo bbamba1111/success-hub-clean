@@ -1,6 +1,9 @@
 /**
  * CEO Workday™ — Category Taxonomy
  * ---------------------------------------------------------------------------
+ * Current: the Five Business Functions (CEO_WORK_CATEGORIES). The notes
+ * below describe the legacy 12 work modes (LEGACY_CEO_WORK_CATEGORIES).
+ * ---------------------------------------------------------------------------
  * The 12 top-level categories of CEO work. These are work MODES available
  * inside ONE CEO Workday™ — not 12 separate assessments and not 12 separate
  * full builders. Only BUILD has a real backing workflow this phase (see
@@ -22,7 +25,20 @@
  *   - Clear                 → sub-action of SOLVE / DELIVER, never its own category
  */
 
+/**
+ * The Five Business Functions are the ONLY top-level categories shown in the
+ * CEO Workday™ planner. The older 12 work modes remain in the union only so
+ * work items saved before this change still render.
+ */
+export type BusinessFunctionCategoryId =
+  | "CLIENT_ATTRACTION"
+  | "SALES_CONVERSION"
+  | "DELIVERY"
+  | "OPERATIONS"
+  | "OPERATIONS_DESIGN"
+
 export type CeoWorkCategoryId =
+  | BusinessFunctionCategoryId
   | "BUILD"
   | "DESIGN"
   | "DECIDE"
@@ -44,9 +60,58 @@ export interface CeoWorkCategory {
   definition: string
   /** The tangible outcome this category is meant to produce. */
   tangibleOutcome: string
+  /** Plain-language examples of work in this function. */
+  examples?: string[]
+  /** Matching BO$$ business function id, used to open the Business Work Queue filtered. */
+  bossFunction?: "attraction" | "sales" | "delivery" | "operations" | "design"
 }
 
 export const CEO_WORK_CATEGORIES: CeoWorkCategory[] = [
+  {
+    id: "CLIENT_ATTRACTION",
+    label: "Client Attraction",
+    definition: "Help the right people find the business and connect with it.",
+    tangibleOutcome: "Visibility, interest, or a new connection",
+    examples: ["Visibility & content", "Marketing", "Referrals & partnerships", "Networking", "Speaking, publicity & media"],
+    bossFunction: "attraction",
+  },
+  {
+    id: "SALES_CONVERSION",
+    label: "Sales & Conversion",
+    definition: "Help interested people decide to buy and become paying clients or customers.",
+    tangibleOutcome: "A sale, enrollment, or next step toward one",
+    examples: ["Sales conversations", "Qualification", "Follow-up", "Proposals", "Enrollment & payment"],
+    bossFunction: "sales",
+  },
+  {
+    id: "DELIVERY",
+    label: "Service or Product Delivery",
+    definition: "Give clients and customers what the business promised.",
+    tangibleOutcome: "A delivered client or customer outcome",
+    examples: ["Onboarding", "Client work", "Delivery steps", "Customer experience", "Fulfillment"],
+    bossFunction: "delivery",
+  },
+  {
+    id: "OPERATIONS",
+    label: "Business Operations",
+    definition: "Run the business day to day.",
+    tangibleOutcome: "Work that keeps the business running",
+    examples: ["Money tasks", "Records", "Scheduling", "Systems", "Administration", "Team coordination"],
+    bossFunction: "operations",
+  },
+  {
+    id: "OPERATIONS_DESIGN",
+    label: "Business Operations Design & Redesign",
+    definition:
+      "Examine how the business operates and decide what to keep, repair, replace, redesign, document, automate, delegate, or eliminate.",
+    tangibleOutcome: "A better way the business operates",
+    examples: ["Keep or repair", "Replace or redesign", "Document", "Automate", "Delegate", "Eliminate"],
+    bossFunction: "design",
+  },
+]
+
+/** Pre–Five Functions work modes. Kept only so previously saved items still display. */
+export const LEGACY_CEO_WORK_CATEGORIES: CeoWorkCategory[] = [
   {
     id: "BUILD",
     label: "Build",
@@ -122,7 +187,7 @@ export const CEO_WORK_CATEGORIES: CeoWorkCategory[] = [
 ]
 
 export function getCeoWorkCategory(id: CeoWorkCategoryId): CeoWorkCategory {
-  const category = CEO_WORK_CATEGORIES.find((c) => c.id === id)
-  if (!category) throw new Error(`Unknown CEO Work category: ${id}`)
-  return category
+  const category =
+    CEO_WORK_CATEGORIES.find((c) => c.id === id) ?? LEGACY_CEO_WORK_CATEGORIES.find((c) => c.id === id)
+  return category ?? { id, label: id, definition: "", tangibleOutcome: "" }
 }

@@ -12,6 +12,11 @@
 import type { CeoWorkCategoryId } from "@/lib/ceo-workday/categories"
 
 export const ARTICULATION_PURPOSE: Record<CeoWorkCategoryId, string> = {
+  CLIENT_ATTRACTION: "introduce your expertise to the right people",
+  SALES_CONVERSION: "help an interested person decide and make the ask",
+  DELIVERY: "explain the outcome and value delivered",
+  OPERATIONS: "explain how this keeps the business running",
+  OPERATIONS_DESIGN: "explain what you're changing in how the business works and why",
   BUILD: "explain what you built and why it matters",
   DESIGN: "explain this operating rule or design",
   DECIDE: "explain this decision and the reasoning behind it",

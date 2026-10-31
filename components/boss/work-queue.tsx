@@ -1,6 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
+import { useSearchParams } from "next/navigation"
 import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -15,12 +16,12 @@ import { founderDecisionItems } from "./business-day/workday-panels"
 type View = "new" | "ready" | "progress" | "waiting" | "decisions" | "completed"
 
 const VIEWS: { id: View; label: string }[] = [
-  { id: "new", label: "New" },
-  { id: "ready", label: "Needs someone" },
-  { id: "progress", label: "Doing now" },
-  { id: "waiting", label: "Stuck or waiting" },
-  { id: "decisions", label: "Needs you" },
-  { id: "completed", label: "Done" },
+  { id: "new", label: "New & Unassigned" },
+  { id: "ready", label: "Ready to Assign" },
+  { id: "progress", label: "In Progress" },
+  { id: "waiting", label: "Waiting & Blocked" },
+  { id: "decisions", label: "Founder Decisions" },
+  { id: "completed", label: "Completed" },
 ]
 
 function inView(view: View, w: WorkItem, decisions: Set<string>) {
@@ -42,8 +43,10 @@ function inView(view: View, w: WorkItem, decisions: Set<string>) {
 
 export function WorkQueue() {
   const { state } = useBoss()
-  const [view, setView] = useState<View>("progress")
-  const [fn, setFn] = useState("all")
+  const searchParams = useSearchParams()
+  const fnParam = searchParams.get("fn")
+  const [view, setView] = useState<View>(fnParam ? "new" : "progress")
+  const [fn, setFn] = useState(fnParam && FUNCTIONS.some((f) => f.id === fnParam) ? fnParam : "all")
   const [resource, setResource] = useState("all")
   const [priority, setPriority] = useState("all")
   const [status, setStatus] = useState("all")
