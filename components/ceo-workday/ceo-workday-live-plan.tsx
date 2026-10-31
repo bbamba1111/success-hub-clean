@@ -407,7 +407,7 @@ export function CeoWorkdayLivePlan() {
     const gone = item.founderDecision === "remove" || item.status === "eliminated"
     const closed = plan?.status === "closed"
     return (
-      <div className={`rounded-2xl border border-[#E8DFE2] bg-white px-4 py-3 ${gone ? "opacity-50" : ""}`}>
+      <div className={`rounded-2xl border border-[#E8DFE2] bg-white px-4 py-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#7FB069]/50 hover:bg-[#F7FBF3] hover:shadow-[0_8px_20px_-8px_rgba(95,143,71,0.35)] ${gone ? "opacity-50" : ""}`}>
         <div className="flex flex-wrap items-center gap-2">
           <span className="font-montserrat text-[13px] font-bold uppercase tracking-[0.16em] text-[#5B835F]">{CEO_FUNCTION_LABEL[item.businessFunction]}</span>
           <span className="font-montserrat text-[13px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/60">{CEO_TREATMENT_LABEL[item.treatment]}</span>
@@ -428,14 +428,14 @@ export function CeoWorkdayLivePlan() {
             aria-label="Edit work title"
           />
         ) : (
-          <p className={`mt-1 font-sans text-sm font-bold text-[#2E1F27] ${item.status === "eliminated" ? "line-through" : ""}`}>{item.title}</p>
+          <p className={`mt-1 font-sans text-[16.5px] font-bold leading-snug text-[#2E1F27] ${item.status === "eliminated" ? "line-through" : ""}`}>{item.title}</p>
         )}
         <p className="mt-0.5 font-sans text-base text-[#6B5860]">
           {item.estimatedMinutes} min{item.relatedAssetTitle ? ` · ${item.relatedAssetTitle}` : ""}
           {item.nextAction && item.status !== "completed" ? ` · next: ${item.nextAction.replace(/-/g, " ")}` : ""}
         </p>
         {item.expectedEvidence && (
-          <p className="mt-1 font-sans text-base text-[#3A2E33]">
+          <p className="mt-1 font-sans text-[18.5px] leading-relaxed text-[#3A2E33]">
             <span className="font-semibold text-[#5A7A45]">Expected outcome:</span> {item.expectedEvidence}
           </p>
         )}

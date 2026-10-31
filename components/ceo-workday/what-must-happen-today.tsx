@@ -209,7 +209,7 @@ export function WhatMustHappenToday({
               <div className="flex flex-col gap-4">
                 {/* My Work Affirmation™ — always at the top of the hour block. */}
                 {affirmation && (
-                  <div className="rounded-2xl border border-[#7FB069]/40 bg-white px-5 py-4">
+                  <div className="rounded-2xl border border-[#7FB069]/40 bg-white px-5 py-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#7FB069]/60 hover:bg-[#F7FBF3] hover:shadow-[0_8px_20px_-8px_rgba(95,143,71,0.35)]">
                     <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
                       My Work Affirmation™
                     </p>
@@ -254,7 +254,7 @@ export function WhatMustHappenToday({
                 {/* What Must Happen Today Business Function Builder™ — creates an
                     executable CEO assignment inside this hour. */}
                 {onAddWork && (
-                  <div className="rounded-2xl border border-dashed border-[#7FB069]/45 bg-white/70 px-4 py-4">
+                  <div className="rounded-2xl border border-dashed border-[#7FB069]/45 bg-white/70 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#7FB069]/60 hover:bg-[#F7FBF3] hover:shadow-[0_8px_20px_-8px_rgba(95,143,71,0.35)] px-4 py-4">
                     <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
                       What must happen this hour?
                     </p>
@@ -386,7 +386,7 @@ export function WhatMustHappenToday({
                 )}
 
                 {/* Write / Research with AI — for keynotes, press releases, Op-Eds, PSAs, etc. */}
-                <div className="rounded-2xl border border-dashed border-[#7FB069]/45 bg-white/70 px-4 py-3">
+                <div className="rounded-2xl border border-dashed border-[#7FB069]/45 bg-white/70 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#7FB069]/60 hover:bg-[#F7FBF3] hover:shadow-[0_8px_20px_-8px_rgba(95,143,71,0.35)] px-4 py-3">
                   <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
                     Write or research with AI
                   </p>
