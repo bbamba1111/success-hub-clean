@@ -20,41 +20,42 @@ export function OutcomesEditor({ checkable }: { checkable?: boolean }) {
 
   return (
     <Panel
-      title={checkable ? `Planned outcomes · ${done} of ${outcomes.length} achieved` : "Today's intended outcomes"}
-      description={checkable ? "Change any outcome as the day develops." : "What must be true by 5:00 PM ET for today to be a success?"}
+      title={checkable ? `Your goals: ${done} of ${outcomes.length} done` : "What do you want to get done today?"}
+      description={checkable ? "Check a goal when it is done." : "Write one goal at a time. Ask: what must be true by 5:00 PM?"}
     >
-      <ul className="flex flex-col gap-2">
+      <ul className="flex flex-col gap-3">
         {outcomes.map((o) => (
-          <li key={o.id} className="flex items-center gap-2">
+          <li key={o.id} className="flex items-center gap-3">
             {checkable && (
               <input
                 type="checkbox"
                 checked={o.done}
                 onChange={(e) => dispatch({ type: "OUTCOME_UPDATE", id: o.id, patch: { done: e.target.checked } })}
-                className="h-4 w-4 accent-[hsl(var(--primary))]"
-                aria-label={`Mark outcome achieved: ${o.text}`}
+                className="h-6 w-6 shrink-0 accent-[hsl(var(--primary))]"
+                aria-label={`Done: ${o.text}`}
               />
             )}
             <input
               defaultValue={o.text}
               onBlur={(e) => e.target.value.trim() && dispatch({ type: "OUTCOME_UPDATE", id: o.id, patch: { text: e.target.value.trim() } })}
-              className={cn(fieldClass, "border-transparent bg-transparent px-2 py-1.5 hover:border-input", o.done && "text-muted-foreground line-through")}
-              aria-label="Outcome"
+              className={cn(fieldClass, "bg-muted/40", o.done && "text-muted-foreground line-through")}
+              aria-label="Goal"
             />
             <button
               onClick={() => dispatch({ type: "OUTCOME_REMOVE", id: o.id })}
-              className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-brand-coral-dark"
-              aria-label={`Remove outcome: ${o.text}`}
+              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-brand-coral-dark"
+              aria-label={`Remove goal: ${o.text}`}
             >
-              <Trash2 className="h-4 w-4" />
+              <Trash2 className="h-5 w-5" />
             </button>
           </li>
         ))}
       </ul>
-      <div className="mt-3 flex gap-2">
+      <div className="mt-4 flex gap-3">
         <input
           className={fieldClass}
-          placeholder="Add an outcome"
+          placeholder="Type a new goal"
+          aria-label="New goal"
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => {
@@ -63,9 +64,9 @@ export function OutcomesEditor({ checkable }: { checkable?: boolean }) {
         />
         <button
           onClick={add}
-          className="inline-flex shrink-0 items-center gap-1 rounded-md border border-border px-3 text-sm hover:bg-muted"
+          className="inline-flex h-12 shrink-0 items-center gap-2 rounded-xl border border-brand-green/40 px-5 text-base font-semibold text-brand-green-dark hover:bg-brand-sage-light"
         >
-          <Plus className="h-4 w-4" aria-hidden />
+          <Plus className="h-5 w-5" aria-hidden />
           Add
         </button>
       </div>

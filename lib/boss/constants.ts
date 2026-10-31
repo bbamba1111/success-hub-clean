@@ -12,35 +12,35 @@ export const FUNCTIONS: { id: BusinessFunction; label: string; short: string; pu
     id: "attraction",
     label: "Client Attraction",
     short: "Attraction",
-    purpose: "Help the right people discover and connect with the business.",
+    purpose: "Help the right people find you.",
     tone: "bg-brand-blush text-brand-coral-dark border-brand-coral/30",
   },
   {
     id: "sales",
     label: "Sales & Conversion",
     short: "Sales",
-    purpose: "Help interested prospects decide to become customers or clients.",
+    purpose: "Help people say yes and buy.",
     tone: "bg-brand-tan-light text-brand-tan-dark border-brand-tan/40",
   },
   {
     id: "delivery",
     label: "Service or Product Delivery",
     short: "Delivery",
-    purpose: "Deliver what the business promised.",
+    purpose: "Give people what you promised.",
     tone: "bg-brand-sage-light text-brand-green-dark border-brand-green/30",
   },
   {
     id: "operations",
     label: "Business Operations",
     short: "Operations",
-    purpose: "Manage the ongoing activities that keep the business functioning.",
+    purpose: "Keep the business running each day.",
     tone: "bg-muted text-brand-ink-soft border-border",
   },
   {
     id: "design",
     label: "Business Operations Design & Redesign",
     short: "Design & Redesign",
-    purpose: "Improve how the business operates.",
+    purpose: "Make the way you work better.",
     tone: "bg-card text-brand-green-dark border-brand-green/40",
   },
 ]
@@ -48,7 +48,7 @@ export const FUNCTIONS: { id: BusinessFunction; label: string; short: string; pu
 export const fnMeta = (fn: BusinessFunction) => FUNCTIONS.find((f) => f.id === fn) ?? FUNCTIONS[0]
 
 export const PRIORITIES: { id: Priority; label: string; weight: number }[] = [
-  { id: "critical", label: "Critical", weight: 4 },
+  { id: "critical", label: "Must do", weight: 4 },
   { id: "high", label: "High", weight: 3 },
   { id: "medium", label: "Medium", weight: 2 },
   { id: "low", label: "Low", weight: 1 },
@@ -75,20 +75,20 @@ export const EXCEPTIONS: WorkStatus[] = [
 ]
 
 export const STATUS_LABEL: Record<WorkStatus, string> = {
-  captured: "Captured",
-  defined: "Defined",
+  captured: "New",
+  defined: "Written down",
   planned: "Planned",
-  authorized: "Authorized",
-  assigned: "Assigned",
-  in_progress: "In Progress",
-  under_review: "Under Review",
-  completed: "Completed",
-  blocked: "Blocked",
-  awaiting_approval: "Awaiting Approval",
-  awaiting_external: "Awaiting External Response",
-  on_hold: "On Hold",
-  cancelled: "Cancelled",
-  failed: "Failed",
+  authorized: "Allowed",
+  assigned: "Given out",
+  in_progress: "Doing now",
+  under_review: "Ready to check",
+  completed: "Done",
+  blocked: "Stuck",
+  awaiting_approval: "Needs your OK",
+  awaiting_external: "Waiting on someone",
+  on_hold: "Paused",
+  cancelled: "Stopped",
+  failed: "Did not work",
 }
 
 export const OPEN_STATUSES: WorkStatus[] = [
@@ -108,55 +108,55 @@ export const OPEN_STATUSES: WorkStatus[] = [
 export const isClosed = (s: WorkStatus) => s === "completed" || s === "cancelled" || s === "failed"
 
 export const CATEGORIES: { id: ResourceCategory; label: string; description: string }[] = [
-  { id: "founder", label: "Founder", description: "The business owner and final authority." },
-  { id: "employee", label: "Employees / Team Members", description: "People employed by the business." },
+  { id: "founder", label: "Founder", description: "You. You make the final call." },
+  { id: "employee", label: "Team Members", description: "People who work for you." },
   {
     id: "contractor",
-    label: "Contractors, VAs & Specialists",
-    description: "Independent professionals engaged for defined scopes of work.",
+    label: "Contractors & Helpers",
+    description: "People you hire for one kind of job.",
   },
   {
     id: "external",
-    label: "External Collaborators & Partners",
-    description: "Independent organizations and people. Not under the founder's direct control.",
+    label: "Outside Partners",
+    description: "People and groups outside your business. You can ask. They choose.",
   },
   {
     id: "ai",
     label: "AI Agents & AI Tools",
-    description: "AI capabilities coordinated by the Central AI Operations Coordinator.",
+    description: "Computer helpers that do tasks you allow.",
   },
   {
     id: "automation",
-    label: "Automated Workflows & Systems",
-    description: "Automations that execute predictable, pre-defined steps.",
+    label: "Automatic Tools",
+    description: "Tools that do the same steps each time.",
   },
 ]
 
 export const AUTH_LEVELS: { id: AuthLevel; label: string; rank: number; description: string }[] = [
-  { id: "research", label: "Research", rank: 1, description: "Gather and summarize information. No outputs leave the business." },
-  { id: "prepare", label: "Prepare", rank: 2, description: "Draft work for founder review. Cannot send, publish, or commit." },
+  { id: "research", label: "Look up", rank: 1, description: "Research. Find facts and sum them up. Nothing leaves your business." },
+  { id: "prepare", label: "Get ready", rank: 2, description: "Prepare. Make a first try for you to check. It cannot send or post." },
   {
     id: "approved_execution",
-    label: "Approved Execution",
+    label: "Do after your OK",
     rank: 3,
-    description: "Execute a specific action after the founder approves each instance.",
+    description: "Approved Execution. It does the job only after you say yes each time.",
   },
   {
     id: "preauthorized_execution",
-    label: "Pre-authorized Execution",
+    label: "Do within limits",
     rank: 4,
-    description: "Execute a defined action within stated limits without per-instance approval.",
+    description: "Pre-authorized Execution. It does the job on its own, inside the limits you set.",
   },
 ]
 
 export const levelMeta = (l: AuthLevel) => AUTH_LEVELS.find((a) => a.id === l) ?? AUTH_LEVELS[0]
 
 export const PERMISSION_STATUS_LABEL: Record<PermissionStatus, string> = {
-  authorized: "Authorized",
-  awaiting_approval: "Awaiting Founder Approval",
-  not_authorized: "Not Authorized",
-  suspended: "Suspended",
-  expired: "Expired",
+  authorized: "Allowed",
+  awaiting_approval: "Needs your OK",
+  not_authorized: "Not allowed",
+  suspended: "Paused",
+  expired: "Ended",
 }
 
 export const WORKDAY_START = 13 * 60

@@ -1,7 +1,7 @@
 "use client"
 
-import { Fragment, useState } from "react"
-import { ChevronDown, ChevronRight } from "lucide-react"
+import { useState, type ReactNode } from "react"
+import { ChevronDown } from "lucide-react"
 import { useBoss } from "@/lib/boss/store"
 import { authorityFor, resourceName } from "@/lib/boss/reducer"
 import { formatDate, formatStamp } from "@/lib/boss/clock"
@@ -21,101 +21,74 @@ export function WorkRegister() {
     <>
       <PageHeader
         eyebrow="Work Register"
-        title="The record of all business work"
-        description="Every assignment, including cancelled work, with its full change history. Prototype record — not a production audit log."
+        title="The record of all your work"
+        description="Every task, even ones you stopped. Tap a task to see what changed."
       />
-      <input className={`${fieldClass} max-w-md`} placeholder="Search by ID, title, or outcome" value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Search the Work Register" />
+      <input className={`${fieldClass} max-w-md`} placeholder="Search for a task" value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Search the Work Register" />
 
-      <div className="overflow-x-auto rounded-xl border border-border bg-card">
-        <table className="w-full min-w-[960px] text-left text-sm">
-          <thead className="border-b border-border bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground">
-            <tr>
-              <th className="w-8 px-3 py-3" />
-              <th className="px-3 py-3 font-semibold">Work ID</th>
-              <th className="px-3 py-3 font-semibold">Assignment</th>
-              <th className="px-3 py-3 font-semibold">Function</th>
-              <th className="px-3 py-3 font-semibold">Priority</th>
-              <th className="px-3 py-3 font-semibold">Resource</th>
-              <th className="px-3 py-3 font-semibold">Authority</th>
-              <th className="px-3 py-3 font-semibold">Due</th>
-              <th className="px-3 py-3 font-semibold">Status</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
-            {rows.map((w) => (
-              <Fragment key={w.id}>
-                <tr className="align-top hover:bg-muted/30">
-                  <td className="px-3 py-3">
-                    <button
-                      onClick={() => setOpen(open === w.id ? null : w.id)}
-                      aria-expanded={open === w.id}
-                      aria-label={`Show history for ${w.id}`}
-                      className="rounded p-0.5 hover:bg-muted"
-                    >
-                      {open === w.id ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                    </button>
-                  </td>
-                  <td className="px-3 py-3 font-mono text-xs text-muted-foreground">
-                    {w.id}
-                    {w.parentId && <span className="block">↳ {w.parentId}</span>}
-                  </td>
-                  <td className="max-w-xs px-3 py-3">
-                    <button className="text-left font-medium text-brand-ink hover:underline" onClick={() => setEditor({ mode: "edit", id: w.id })}>
-                      {w.title}
-                    </button>
-                    {w.outcome && <p className="mt-0.5 text-xs text-muted-foreground">{w.outcome}</p>}
-                    {w.dependsOn.length > 0 && <p className="mt-0.5 text-xs text-muted-foreground">Depends on {w.dependsOn.join(", ")}</p>}
-                  </td>
-                  <td className="px-3 py-3"><FunctionBadge fn={w.fn} /></td>
-                  <td className="px-3 py-3"><PriorityBadge priority={w.priority} /></td>
-                  <td className="px-3 py-3 text-xs">{resourceName(state, w.assigneeId)}</td>
-                  <td className="px-3 py-3"><AuthorityBadge check={authorityFor(state, w.assigneeId, w)} /></td>
-                  <td className="px-3 py-3 text-xs">{formatDate(w.dueDate, { month: "short", day: "numeric" })}</td>
-                  <td className="px-3 py-3"><StatusBadge status={w.status} /></td>
-                </tr>
-                {open === w.id && (
-                  <tr className="bg-muted/30">
-                    <td />
-                    <td colSpan={8} className="px-3 py-4">
-                      <div className="grid gap-4 md:grid-cols-3">
-                        <dl className="flex flex-col gap-1 text-xs">
-                          <dt className="font-semibold text-brand-ink-soft">Responsible owner</dt>
-                          <dd>{resourceName(state, w.ownerId)}</dd>
-                          <dt className="mt-2 font-semibold text-brand-ink-soft">Review requirement</dt>
-                          <dd>{w.reviewRequired ? "Founder review before completion" : "None"}</dd>
-                          <dt className="mt-2 font-semibold text-brand-ink-soft">Completion evidence</dt>
-                          <dd>{w.evidence || "Not yet provided"}</dd>
-                        </dl>
-                        <ol className="flex flex-col gap-1.5 text-xs md:col-span-2">
-                          {w.history.length === 0 && <li className="text-muted-foreground">No changes recorded in this session.</li>}
-                          {w.history.map((h) => (
-                            <li key={h.id} className="flex gap-3">
-                              <span className="w-16 shrink-0 text-muted-foreground">{formatStamp(h.at)}</span>
-                              <span className="w-20 shrink-0 text-muted-foreground">{h.actor === "R-COORD" ? "Coordinator" : h.actor}</span>
-                              <span className="text-brand-ink">{h.summary}</span>
-                            </li>
-                          ))}
-                        </ol>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-              </Fragment>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <ul className="flex flex-col gap-3">
+        {rows.map((w) => (
+          <li key={w.id} className="rounded-2xl border border-border bg-card">
+            <button
+              onClick={() => setOpen(open === w.id ? null : w.id)}
+              aria-expanded={open === w.id}
+              className="flex w-full items-center gap-4 rounded-2xl p-5 text-left hover:bg-muted/40"
+            >
+              <span className="flex min-w-0 flex-1 flex-col gap-2">
+                <span className="text-lg font-semibold text-brand-ink">{w.title}</span>
+                <span className="flex flex-wrap items-center gap-x-4 gap-y-2 text-base text-brand-ink-soft">
+                  <StatusBadge status={w.status} />
+                  <span>Who: {resourceName(state, w.assigneeId)}</span>
+                </span>
+              </span>
+              <ChevronDown className={`h-6 w-6 shrink-0 text-brand-green-dark transition-transform ${open === w.id ? "rotate-180" : ""}`} aria-hidden />
+            </button>
+            {open === w.id && (
+              <div className="flex flex-col gap-5 border-t border-border p-5 text-base">
+                <dl className="grid gap-4 sm:grid-cols-2">
+                  {w.outcome && <RegisterDetail label="Done looks like" value={w.outcome} />}
+                  <RegisterDetail label="Part of the business" value={<FunctionBadge fn={w.fn} full />} />
+                  <RegisterDetail label="How important" value={<PriorityBadge priority={w.priority} />} />
+                  <RegisterDetail label="Permission" value={<AuthorityBadge check={authorityFor(state, w.assigneeId, w)} />} />
+                  <RegisterDetail label="Due" value={formatDate(w.dueDate, { month: "long", day: "numeric" })} />
+                  <RegisterDetail label="Owner" value={resourceName(state, w.ownerId)} />
+                  <RegisterDetail label="Do you check it first?" value={w.reviewRequired ? "Yes" : "No"} />
+                  <RegisterDetail label="Proof it is done" value={w.evidence || "None yet"} />
+                  <RegisterDetail label="Task number" value={`${w.id}${w.parentId ? ` · part of ${w.parentId}` : ""}`} />
+                </dl>
+                <div className="flex flex-col gap-3">
+                  <p className="font-semibold text-brand-ink">What changed</p>
+                  <ol className="flex flex-col gap-2">
+                    {w.history.length === 0 && <li className="text-muted-foreground">No changes yet.</li>}
+                    {w.history.map((h) => (
+                      <li key={h.id} className="flex gap-4">
+                        <span className="w-20 shrink-0 text-muted-foreground">{formatStamp(h.at)}</span>
+                        <span className="text-brand-ink">{h.summary}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+                <div>
+                  <button onClick={() => setEditor({ mode: "edit", id: w.id })} className="h-12 rounded-xl border border-border px-5 font-medium hover:bg-muted">
+                    Edit this task
+                  </button>
+                </div>
+              </div>
+            )}
+          </li>
+        ))}
+      </ul>
 
       {state.pastDays.length > 0 && (
-        <Panel title="Business-day closeouts">
-          <ul className="flex flex-col gap-2 text-sm">
+        <Panel title="Days you closed">
+          <ul className="flex flex-col gap-3 text-base">
             {state.pastDays.map((d) => (
               <li key={d.closedAt} className="flex flex-wrap gap-x-4 gap-y-1">
                 <span className="font-semibold">{formatDate(d.date)}</span>
                 <span className="text-muted-foreground">
-                  {d.completed.length} completed · {d.carried.length} carried · {d.returned.length} returned · {d.cancelled.length} cancelled
+                  {d.completed.length} done · {d.carried.length} moved · {d.returned.length} saved · {d.cancelled.length} stopped
                 </span>
-                {d.notes && <span className="w-full text-xs text-muted-foreground">Note: {d.notes}</span>}
+                {d.notes && <span className="w-full text-muted-foreground">Note: {d.notes}</span>}
               </li>
             ))}
           </ul>
@@ -124,5 +97,14 @@ export function WorkRegister() {
 
       <TaskEditorDialog target={editor} onClose={() => setEditor(null)} />
     </>
+  )
+}
+
+function RegisterDetail({ label, value }: { label: string; value: ReactNode }) {
+  return (
+    <div className="flex flex-col gap-1">
+      <dt className="font-semibold text-brand-ink">{label}</dt>
+      <dd className="leading-relaxed text-brand-ink-soft">{value}</dd>
+    </div>
   )
 }

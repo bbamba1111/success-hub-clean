@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils"
 import { useBoss } from "@/lib/boss/store"
 import { FUNCTIONS, PRIORITIES, STATUS_LABEL, LIFECYCLE, EXCEPTIONS } from "@/lib/boss/constants"
 import type { WorkItem, WorkStatus } from "@/lib/boss/types"
-import { EmptyState, PageHeader, fieldClass } from "./primitives"
+import { EmptyState, MoreDetails, PageHeader, fieldClass } from "./primitives"
 import { ReassignDialog, TaskEditorDialog, type EditorTarget } from "./task-dialogs"
 import { WorkItemCard } from "./business-day/work-item-card"
 import { founderDecisionItems } from "./business-day/workday-panels"
@@ -15,12 +15,12 @@ import { founderDecisionItems } from "./business-day/workday-panels"
 type View = "new" | "ready" | "progress" | "waiting" | "decisions" | "completed"
 
 const VIEWS: { id: View; label: string }[] = [
-  { id: "new", label: "New & Unassigned" },
-  { id: "ready", label: "Ready to Assign" },
-  { id: "progress", label: "In Progress" },
-  { id: "waiting", label: "Waiting & Blocked" },
-  { id: "decisions", label: "Founder Decisions" },
-  { id: "completed", label: "Completed" },
+  { id: "new", label: "New" },
+  { id: "ready", label: "Needs someone" },
+  { id: "progress", label: "Doing now" },
+  { id: "waiting", label: "Stuck or waiting" },
+  { id: "decisions", label: "Needs you" },
+  { id: "completed", label: "Done" },
 ]
 
 function inView(view: View, w: WorkItem, decisions: Set<string>) {
@@ -68,17 +68,17 @@ export function WorkQueue() {
     <>
       <PageHeader
         eyebrow="Business Work Queue"
-        title="All business assignments"
-        description="The central command view. The same records you change during the CEO Workday."
+        title="All your work"
+        description="Every task, not just today's. Changes here also change your day plan."
         actions={
           <Button onClick={() => setEditor({ mode: "create", inPlan: false })}>
             <Plus className="h-4 w-4" aria-hidden />
-            Capture work
+            Add work
           </Button>
         }
       />
 
-      <div role="tablist" aria-label="Queue views" className="flex gap-2 overflow-x-auto pb-1">
+      <div role="tablist" aria-label="Show work" className="flex flex-wrap gap-2">
         {VIEWS.map((v) => {
           const count = parents.filter((w) => inView(v.id, w, decisions)).length
           return (
@@ -88,38 +88,40 @@ export function WorkQueue() {
               aria-selected={view === v.id}
               onClick={() => setView(v.id)}
               className={cn(
-                "flex shrink-0 items-center gap-2 rounded-md border px-3 py-2 text-sm transition-colors",
-                view === v.id ? "border-brand-ink bg-brand-ink text-primary-foreground" : "border-border bg-card hover:bg-muted",
+                "inline-flex h-12 shrink-0 items-center gap-2 rounded-full border px-5 text-base font-medium transition-colors",
+                view === v.id ? "border-brand-green bg-brand-green text-primary-foreground" : "border-border bg-card hover:bg-muted",
               )}
             >
               {v.label}
-              <span className={cn("rounded-full px-1.5 text-xs tabular-nums", view === v.id ? "bg-primary-foreground/20" : "bg-muted")}>{count}</span>
+              <span className={cn("rounded-full px-2 text-sm tabular-nums", view === v.id ? "bg-primary-foreground/20" : "bg-muted")}>{count}</span>
             </button>
           )
         })}
       </div>
 
-      <div className="grid gap-3 rounded-xl border border-border bg-card p-4 sm:grid-cols-2 lg:grid-cols-5">
-        <Filter label="Business function" value={fn} onChange={setFn} options={FUNCTIONS.map((f) => [f.id, f.label])} />
+      <MoreDetails summary="Filter the list">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Filter label="Part of the business" value={fn} onChange={setFn} options={FUNCTIONS.map((f) => [f.id, f.label])} />
         <Filter
-          label="Resource"
+          label="Who"
           value={resource}
           onChange={setResource}
-          options={[["none", "Unassigned"], ...state.resources.map((r) => [r.id, r.name] as [string, string])]}
+          options={[["none", "No one yet"], ...state.resources.map((r) => [r.id, r.name] as [string, string])]}
         />
-        <Filter label="Priority" value={priority} onChange={setPriority} options={PRIORITIES.map((p) => [p.id, p.label])} />
+        <Filter label="How important" value={priority} onChange={setPriority} options={PRIORITIES.map((p) => [p.id, p.label])} />
         <Filter
-          label="Status"
+          label="Where it is now"
           value={status}
           onChange={setStatus}
           options={[...LIFECYCLE, ...EXCEPTIONS].map((s) => [s, STATUS_LABEL[s as WorkStatus]])}
         />
-        <Filter label="Due date" value={due} onChange={setDue} options={[["today", "Due today or overdue"], ["later", "Due later"]]} />
+        <Filter label="When is it due?" value={due} onChange={setDue} options={[["today", "Today or late"], ["later", "Later"]]} />
       </div>
+      </MoreDetails>
 
-      <div className="flex flex-col gap-3 pl-2">
+      <div className="flex flex-col gap-4">
         {items.length === 0 ? (
-          <EmptyState title="No assignments in this view" description="Try another view or clear filters." />
+          <EmptyState title="Nothing here" description="Try another tab. Or change the filter." />
         ) : (
           items.map((w) => <WorkItemCard key={w.id} item={w} handlers={handlers} allowReorder={false} />)
         )}
@@ -143,7 +145,7 @@ function Filter({
   options: [string, string][]
 }) {
   return (
-    <label className="flex flex-col gap-1 text-xs font-semibold text-brand-ink-soft">
+    <label className="flex flex-col gap-2 text-base font-semibold text-brand-ink">
       {label}
       <select className={fieldClass} value={value} onChange={(e) => onChange(e.target.value)}>
         <option value="all">All</option>

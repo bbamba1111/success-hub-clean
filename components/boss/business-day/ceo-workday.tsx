@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Plus, Zap } from "lucide-react"
+import { ArrowRight, Moon, Pencil, Plus, Zap } from "lucide-react"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -9,20 +9,20 @@ import { useBoss } from "@/lib/boss/store"
 import { FUNCTIONS, isClosed, WORKDAY_END, WORKDAY_START } from "@/lib/boss/constants"
 import { formatDuration, formatMinutes, formatStamp, type ClockReading } from "@/lib/boss/clock"
 import type { BusinessFunction, Priority, WorkItem } from "@/lib/boss/types"
-import { EmptyState, fieldClass, labelClass } from "../primitives"
+import { EmptyState, MoreDetails, bigButton, fieldClass, labelClass } from "../primitives"
 import { WorkItemCard, type WorkCardHandlers } from "./work-item-card"
 import { OutcomesEditor } from "./outcomes-editor"
 import { ChangeLogPanel, CoordinatorFeed, DecisionsPanel, NoticesPanel, founderDecisionItems } from "./workday-panels"
-import { usePlan } from "./decide-design"
+import { StepIntro, usePlan } from "./decide-design"
 
 type Lane = "active" | "decisions" | "waiting" | "remaining" | "completed"
 
 const LANES: { id: Lane; label: string; match: (w: WorkItem, decisions: Set<string>) => boolean }[] = [
-  { id: "active", label: "In progress", match: (w) => w.status === "in_progress" },
-  { id: "decisions", label: "Needs my decision", match: (w, d) => d.has(w.id) },
-  { id: "waiting", label: "Blocked & waiting", match: (w) => ["blocked", "awaiting_external", "on_hold"].includes(w.status) },
-  { id: "remaining", label: "Remaining", match: (w) => ["captured", "defined", "planned", "authorized", "assigned"].includes(w.status) },
-  { id: "completed", label: "Completed", match: (w) => isClosed(w.status) },
+  { id: "remaining", label: "Not started", match: (w) => ["captured", "defined", "planned", "authorized", "assigned"].includes(w.status) },
+  { id: "active", label: "Doing now", match: (w) => w.status === "in_progress" },
+  { id: "decisions", label: "Needs you", match: (w, d) => d.has(w.id) },
+  { id: "waiting", label: "Stuck or waiting", match: (w) => ["blocked", "awaiting_external", "on_hold"].includes(w.status) },
+  { id: "completed", label: "Done", match: (w) => isClosed(w.status) },
 ]
 
 function WorkdayClock({ clock }: { clock: ClockReading }) {
@@ -31,161 +31,182 @@ function WorkdayClock({ clock }: { clock: ClockReading }) {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex flex-wrap items-end justify-between gap-2">
-        <p className="font-display text-4xl font-semibold tabular-nums text-brand-ink">{formatMinutes(clock.minutes)}</p>
-        <p className="text-sm text-muted-foreground">
-          <span className="font-semibold text-brand-ink">{formatDuration(remaining)}</span> remaining · ends 5:00 PM ET
+        <p className="font-display text-5xl font-semibold tabular-nums text-brand-ink">{formatMinutes(clock.minutes)}</p>
+        <p className="text-lg text-brand-ink-soft">
+          <span className="font-semibold text-brand-ink">{formatDuration(remaining)}</span> left. Work ends at 5:00 PM.
         </p>
       </div>
-      <div className="relative h-2 overflow-hidden rounded-full bg-muted" role="progressbar" aria-label="CEO Workday elapsed" aria-valuenow={elapsed} aria-valuemax={240}>
+      <div className="h-3 overflow-hidden rounded-full bg-muted" role="progressbar" aria-label="Work time used" aria-valuenow={elapsed} aria-valuemax={240}>
         <div className="h-full rounded-full bg-brand-green" style={{ width: `${(elapsed / 240) * 100}%` }} />
-      </div>
-      <div className="flex justify-between text-[11px] text-muted-foreground">
-        <span>1:00 PM</span>
-        <span>2:00</span>
-        <span>3:00</span>
-        <span>4:00</span>
-        <span>5:00 PM</span>
       </div>
     </div>
   )
 }
 
 export function CeoWorkdayView({
+  mode,
   handlers,
   clock,
   onCloseout,
   onReviewPlan,
+  onChange,
+  onDone,
 }: {
+  mode: "do" | "change"
   handlers: WorkCardHandlers
   clock: ClockReading
   onCloseout: () => void
   onReviewPlan: () => void
+  onChange: () => void
+  onDone: () => void
 }) {
   const { state, dispatch } = useBoss()
   const { plan } = usePlan()
-  const [lane, setLane] = useState<Lane>("active")
+  const [lane, setLane] = useState<Lane>("remaining")
   const [captureOpen, setCaptureOpen] = useState(false)
   const decisions = new Set(founderDecisionItems(plan).map((w) => w.id))
   const counts = Object.fromEntries(LANES.map((l) => [l.id, plan.filter((w) => l.match(w, decisions)).length])) as Record<Lane, number>
-  const laneItems = plan.filter((w) => LANES.find((l) => l.id === lane)!.match(w, decisions))
+  const laneMeta = LANES.find((l) => l.id === lane)!
+  const laneItems = plan.filter((w) => laneMeta.match(w, decisions))
   const openPlan = plan.filter((w) => !isClosed(w.status))
 
   if (!state.day.workdayStartedAt) {
     return (
-      <div className="flex flex-col gap-6 rounded-xl border border-brand-green/40 bg-card p-6 md:p-10">
-        <div className="flex flex-col gap-2">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-green-dark">4-Hour Focused CEO Workday™ · 1:00–5:00 PM ET</p>
-          <h2 className="text-balance font-display text-3xl font-semibold text-brand-ink md:text-4xl">Your business day is ready to run.</h2>
-          <p className="max-w-2xl text-pretty text-sm leading-relaxed text-muted-foreground">
-            {state.day.planConfirmedAt
-              ? `You confirmed this plan at ${formatStamp(state.day.planConfirmedAt)} ET. Enter the workspace to execute, adapt, and decide.`
-              : "The plan has not been confirmed in Decide & Design. You can review it first, or enter now and adjust as you go."}
-          </p>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-3">
-          <Summary label="Planned outcomes" value={state.day.outcomes.length} />
-          <Summary label="Planned tasks" value={openPlan.length} />
-          <Summary label="Decisions waiting" value={decisions.size} />
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <Button size="lg" onClick={() => dispatch({ type: "START_WORKDAY" })}>
-            Enter the CEO Workday
+      <div className="flex flex-col gap-6 rounded-2xl bg-card p-8 md:p-12">
+        <StepIntro
+          title="Step 3: Do"
+          text={
+            state.day.planConfirmedAt
+              ? `Your plan is ready. You said yes to it at ${formatStamp(state.day.planConfirmedAt)}.`
+              : "You have not said yes to your plan yet. You can look at it first. Or you can start now."
+          }
+        />
+        <p className="text-lg text-brand-ink">
+          You have <span className="font-semibold">{state.day.outcomes.length} goals</span> and{" "}
+          <span className="font-semibold">{openPlan.length} tasks</span> today.
+        </p>
+        <div className="flex flex-wrap gap-3">
+          <Button className={bigButton} onClick={() => dispatch({ type: "START_WORKDAY" })}>
+            Start work time
+            <ArrowRight className="h-5 w-5" aria-hidden />
           </Button>
-          <Button size="lg" variant="outline" onClick={onReviewPlan}>
-            Review plan in Decide & Design
+          <Button className={bigButton} variant="outline" onClick={onReviewPlan}>
+            Look at my plan
           </Button>
         </div>
       </div>
     )
   }
 
-  return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-6 rounded-xl border border-border bg-card p-5 md:p-6">
-        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-          <div className="flex flex-col gap-1">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-green-dark">CEO Workday Execution Workspace</p>
-            <p className="text-sm text-muted-foreground">
-              {state.day.planConfirmedAt ? "Executing the confirmed plan" : "Plan not formally confirmed"} · the plan adapts as you do
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <Button size="sm" onClick={() => handlers.onEdit({ mode: "create", inPlan: true })}>
-              <Plus className="h-4 w-4" aria-hidden />
-              Add task
-            </Button>
-            <Button size="sm" variant="outline" onClick={() => setCaptureOpen(true)}>
-              <Zap className="h-4 w-4" aria-hidden />
-              New business development
-            </Button>
-            <Button size="sm" variant="outline" onClick={onCloseout}>
-              Close out the day
-            </Button>
-          </div>
+  if (mode === "change") {
+    return (
+      <div className="flex flex-col gap-8">
+        <StepIntro title="Step 4: Change" text="Plans change. That is OK. Find the task. Tap Change. Pick what to do." />
+        <div className="flex flex-wrap gap-3">
+          <Button className={bigButton} onClick={() => setCaptureOpen(true)}>
+            <Zap className="h-5 w-5" aria-hidden />
+            Something new came up
+          </Button>
+          <Button className={bigButton} variant="outline" onClick={() => handlers.onEdit({ mode: "create", inPlan: true })}>
+            <Plus className="h-5 w-5" aria-hidden />
+            Add a task
+          </Button>
         </div>
+        <section aria-label="Tasks you can change" className="flex flex-col gap-4">
+          {openPlan.length === 0 ? (
+            <EmptyState title="All tasks are done" />
+          ) : (
+            openPlan.map((w, i) => <WorkItemCard key={w.id} item={w} position={i + 1} total={openPlan.length} handlers={handlers} />)
+          )}
+        </section>
+        <OutcomesEditor checkable />
+        <div>
+          <Button className={bigButton} variant="outline" onClick={onDone}>
+            I am done changing
+          </Button>
+        </div>
+        <MoreDetails summary="See all changes today">
+          <ChangeLogPanel />
+        </MoreDetails>
+        <CaptureDialog open={captureOpen} onClose={() => setCaptureOpen(false)} />
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex flex-col gap-8">
+      <StepIntro title="Step 3: Do" text="Work on one task at a time. Tap the green button to move it forward." />
+      <div className="rounded-2xl bg-card p-6 md:p-8">
         <WorkdayClock clock={clock} />
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
-        <div className="flex min-w-0 flex-col gap-6">
-          <div role="tablist" aria-label="Workday lanes" className="grid grid-cols-2 gap-2 sm:grid-cols-5">
-            {LANES.map((l) => (
-              <button
-                key={l.id}
-                role="tab"
-                aria-selected={lane === l.id}
-                onClick={() => setLane(l.id)}
-                className={cn(
-                  "flex flex-col items-start gap-1 rounded-lg border px-3 py-2.5 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                  lane === l.id ? "border-brand-green bg-brand-sage-light/70" : "border-border bg-card hover:bg-muted/60",
-                )}
-              >
-                <span className={cn("font-display text-2xl font-semibold tabular-nums", l.id === "decisions" && counts[l.id] > 0 ? "text-brand-coral-dark" : "text-brand-ink")}>
-                  {counts[l.id]}
-                </span>
-                <span className="text-xs text-muted-foreground">{l.label}</span>
-              </button>
-            ))}
-          </div>
+      <NoticesPanel />
+      {decisions.size > 0 && <DecisionsPanel />}
 
-          <section aria-label={LANES.find((l) => l.id === lane)!.label} className="flex flex-col gap-3 pl-2">
-            {laneItems.length === 0 ? (
-              <EmptyState title={`Nothing in "${LANES.find((l) => l.id === lane)!.label}"`} />
-            ) : (
-              laneItems.map((w) => (
-                <WorkItemCard
-                  key={w.id}
-                  item={w}
-                  position={openPlan.findIndex((p) => p.id === w.id) + 1 || undefined}
-                  total={openPlan.length}
-                  handlers={handlers}
-                  allowReorder={lane !== "completed"}
-                />
-              ))
+      <div role="tablist" aria-label="Show tasks" className="flex flex-wrap gap-2">
+        {LANES.map((l) => (
+          <button
+            key={l.id}
+            role="tab"
+            aria-selected={lane === l.id}
+            onClick={() => setLane(l.id)}
+            className={cn(
+              "inline-flex h-12 items-center gap-2 rounded-full border px-5 text-base font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              lane === l.id ? "border-brand-green bg-brand-green text-primary-foreground" : "border-border bg-card text-brand-ink hover:bg-muted",
             )}
-          </section>
-
-          <OutcomesEditor checkable />
-          <ChangeLogPanel />
-        </div>
-
-        <aside className="flex flex-col gap-6">
-          <NoticesPanel />
-          <DecisionsPanel />
-          <CoordinatorFeed phase={clock.phase} />
-        </aside>
+          >
+            {l.label}
+            <span
+              className={cn(
+                "rounded-full px-2 text-sm tabular-nums",
+                lane === l.id ? "bg-primary-foreground/20" : l.id === "decisions" && counts[l.id] > 0 ? "bg-brand-blush text-brand-coral-dark" : "bg-muted",
+              )}
+            >
+              {counts[l.id]}
+            </span>
+          </button>
+        ))}
       </div>
 
-      <CaptureDialog open={captureOpen} onClose={() => setCaptureOpen(false)} />
-    </div>
-  )
-}
+      <section aria-label={laneMeta.label} className="flex flex-col gap-4">
+        {laneItems.length === 0 ? (
+          <EmptyState title={`No tasks in "${laneMeta.label}"`} />
+        ) : (
+          laneItems.map((w) => (
+            <WorkItemCard
+              key={w.id}
+              item={w}
+              position={openPlan.findIndex((p) => p.id === w.id) + 1 || undefined}
+              total={openPlan.length}
+              handlers={handlers}
+              allowReorder={lane !== "completed"}
+            />
+          ))
+        )}
+      </section>
 
-function Summary({ label, value }: { label: string; value: number }) {
-  return (
-    <div className="flex flex-col gap-1 rounded-lg bg-muted/60 p-4">
-      <span className="font-display text-3xl font-semibold text-brand-ink">{value}</span>
-      <span className="text-xs text-muted-foreground">{label}</span>
+      <div className="flex flex-wrap gap-3">
+        <Button className={bigButton} variant="outline" onClick={onChange}>
+          <Pencil className="h-5 w-5" aria-hidden />
+          Change my plan
+        </Button>
+        <Button className={bigButton} variant="outline" onClick={onCloseout}>
+          <Moon className="h-5 w-5" aria-hidden />
+          Close my day
+        </Button>
+      </div>
+
+      <div className="flex flex-col gap-4">
+        <MoreDetails summary="My goals for today">
+          <OutcomesEditor checkable />
+        </MoreDetails>
+        <MoreDetails summary="What my AI helper is doing">
+          <CoordinatorFeed phase={clock.phase} />
+        </MoreDetails>
+        <MoreDetails summary="See all changes today">
+          <ChangeLogPanel />
+        </MoreDetails>
+      </div>
     </div>
   )
 }
@@ -213,46 +234,44 @@ function CaptureDialog({ open, onClose }: { open: boolean; onClose: () => void }
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle className="font-display text-2xl">Respond to a new development</DialogTitle>
-          <DialogDescription>Capture what just happened. You can define, delegate, or defer it next.</DialogDescription>
+          <DialogTitle className="font-display text-3xl">Something new came up</DialogTitle>
+          <DialogDescription className="text-base leading-relaxed">Write it down now. You can decide what to do with it next.</DialogDescription>
         </DialogHeader>
-        <div className="flex flex-col gap-4">
-          <label className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-5">
+          <label className="flex flex-col gap-2">
             <span className={labelClass}>What happened?</span>
-            <input className={fieldClass} value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Corbin Health asked for a revised scope" autoFocus />
+            <input className={fieldClass} value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Example: A client asked for a new price" autoFocus />
           </label>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <label className="flex flex-col gap-1.5">
-              <span className={labelClass}>Business function</span>
-              <select className={fieldClass} value={fn} onChange={(e) => setFn(e.target.value as BusinessFunction)}>
-                {FUNCTIONS.map((f) => (
-                  <option key={f.id} value={f.id}>
-                    {f.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="flex flex-col gap-1.5">
-              <span className={labelClass}>Priority</span>
-              <select className={fieldClass} value={priority} onChange={(e) => setPriority(e.target.value as Priority)}>
-                <option value="critical">Critical</option>
-                <option value="high">High</option>
-                <option value="medium">Medium</option>
-                <option value="low">Low</option>
-              </select>
-            </label>
-          </div>
-          <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={inPlan} onChange={(e) => setInPlan(e.target.checked)} className="accent-[hsl(var(--primary))]" />
-            {"Add to today's plan (otherwise it goes to the Work Queue)"}
+          <label className="flex flex-col gap-2">
+            <span className={labelClass}>Which part of your business is it?</span>
+            <select className={fieldClass} value={fn} onChange={(e) => setFn(e.target.value as BusinessFunction)}>
+              {FUNCTIONS.map((f) => (
+                <option key={f.id} value={f.id}>
+                  {f.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="flex flex-col gap-2">
+            <span className={labelClass}>How important is it?</span>
+            <select className={fieldClass} value={priority} onChange={(e) => setPriority(e.target.value as Priority)}>
+              <option value="critical">Must do</option>
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+          </label>
+          <label className="flex items-center gap-3 text-base">
+            <input type="checkbox" checked={inPlan} onChange={(e) => setInPlan(e.target.checked)} className="h-6 w-6 accent-[hsl(var(--primary))]" />
+            {"Add it to today's plan"}
           </label>
         </div>
-        <DialogFooter className="gap-2">
-          <Button variant="outline" onClick={onClose}>
+        <DialogFooter className="gap-3">
+          <Button className={bigButton} variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button onClick={submit} disabled={!title.trim()}>
-            Capture
+          <Button className={bigButton} onClick={submit} disabled={!title.trim()}>
+            Save it
           </Button>
         </DialogFooter>
       </DialogContent>

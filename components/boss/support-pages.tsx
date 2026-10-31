@@ -13,6 +13,7 @@ import type { AuthLevel, OpportunityStage, PermissionStatus } from "@/lib/boss/t
 import {
   DemoTag,
   EmptyState,
+  MoreDetails,
   FunctionBadge,
   LevelBadge,
   PageHeader,
@@ -32,37 +33,37 @@ export function BusinessDashboard() {
     <>
       <PageHeader
         eyebrow="Business Dashboard"
-        title="The business across five functions"
-        description="A read of the whole business. Run the day from My Business Day."
+        title="How your business is doing"
+        description="A quick look at all five parts of your business."
         actions={
           <Button asChild>
-            <Link href="/boss">{clock.phase === "workday" ? "Return to CEO Workday" : "Open My Business Day"}</Link>
+            <Link href="/boss">{clock.phase === "workday" ? "Go back to work time" : "Open My Business Day"}</Link>
           </Button>
         }
       />
       <div className="grid gap-4 sm:grid-cols-3">
         {[
-          ["Today's plan complete", `${plan.filter((w) => w.status === "completed").length} of ${plan.length}`],
-          ["Open assignments", open.length],
-          ["Founder decisions waiting", decisions.length],
+          ["Tasks done today", `${plan.filter((w) => w.status === "completed").length} of ${plan.length}`],
+          ["Tasks not done yet", open.length],
+          ["Things you need to decide", decisions.length],
         ].map(([l, v]) => (
-          <div key={l} className="flex flex-col gap-1 rounded-xl border border-border bg-card p-5">
-            <span className="font-display text-3xl font-semibold text-brand-ink">{v}</span>
-            <span className="text-xs text-muted-foreground">{l}</span>
+          <div key={l} className="flex flex-col gap-2 rounded-2xl border border-border bg-card p-6">
+            <span className="font-display text-4xl font-semibold text-brand-ink">{v}</span>
+            <span className="text-base text-brand-ink-soft">{l}</span>
           </div>
         ))}
       </div>
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+      <div className="grid gap-4 md:grid-cols-2">
         {FUNCTIONS.map((f) => {
           const items = open.filter((w) => w.fn === f.id)
           return (
             <Panel key={f.id} title={f.label} description={f.purpose}>
-              <dl className="flex flex-col gap-1.5 text-xs">
+              <dl className="flex flex-col gap-2 text-base">
                 {[
-                  ["Open", items.length],
-                  ["In progress", items.filter((w) => w.status === "in_progress").length],
-                  ["Blocked or waiting", items.filter((w) => ["blocked", "awaiting_external", "on_hold"].includes(w.status)).length],
-                  ["Needs founder", items.filter((w) => decisions.some((d) => d.id === w.id)).length],
+                  ["Not done", items.length],
+                  ["Doing now", items.filter((w) => w.status === "in_progress").length],
+                  ["Stuck or waiting", items.filter((w) => ["blocked", "awaiting_external", "on_hold"].includes(w.status)).length],
+                  ["Needs you", items.filter((w) => decisions.some((d) => d.id === w.id)).length],
                 ].map(([l, v]) => (
                   <div key={l} className="flex justify-between">
                     <dt className="text-muted-foreground">{l}</dt>
@@ -74,21 +75,21 @@ export function BusinessDashboard() {
           )
         })}
       </div>
-      <div className="grid gap-6 lg:grid-cols-2">
-        <DecisionsPanel limitToPlan={false} />
+      <DecisionsPanel limitToPlan={false} />
+      <MoreDetails summary="What my AI helper did lately">
         <CoordinatorFeed phase={clock.phase} limit={5} />
-      </div>
+      </MoreDetails>
     </>
   )
 }
 
 const STAGES: { id: OpportunityStage; label: string }[] = [
-  { id: "researching", label: "Researching" },
-  { id: "pitch_preparing", label: "Pitch preparing" },
-  { id: "awaiting_founder_approval", label: "Awaiting approval" },
-  { id: "outreach_sent", label: "Outreach sent" },
-  { id: "response_received", label: "Response received" },
-  { id: "closed", label: "Closed" },
+  { id: "researching", label: "Looking into it" },
+  { id: "pitch_preparing", label: "Getting the pitch ready" },
+  { id: "awaiting_founder_approval", label: "Needs your OK" },
+  { id: "outreach_sent", label: "Message sent" },
+  { id: "response_received", label: "They wrote back" },
+  { id: "closed", label: "Finished" },
 ]
 
 export function OpportunitiesPage() {
@@ -97,48 +98,48 @@ export function OpportunitiesPage() {
     <>
       <PageHeader
         eyebrow="Business Work Queue · Opportunities"
-        title="Visibility & growth opportunities"
-        description="Speaking, podcasts, media, partnerships, and Work-Life Balance Week™ invitations. No outreach is sent from this prototype."
+        title="Chances to grow"
+        description="Talks, podcasts, news stories, and partners. In this practice version, no messages are sent."
         actions={<DemoTag />}
       />
       <div className="flex gap-4 overflow-x-auto pb-2">
         {STAGES.map((s) => {
           const items = state.opportunities.filter((o) => o.stage === s.id)
           return (
-            <section key={s.id} aria-label={s.label} className="flex w-72 shrink-0 flex-col gap-3">
-              <h2 className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-brand-ink-soft">
+            <section key={s.id} aria-label={s.label} className="flex w-80 shrink-0 flex-col gap-4">
+              <h2 className="flex items-center justify-between text-lg font-semibold text-brand-ink">
                 {s.label}
-                <span className="rounded-full bg-muted px-2 tabular-nums">{items.length}</span>
+                <span className="rounded-full bg-muted px-2.5 text-base tabular-nums">{items.length}</span>
               </h2>
               {items.map((o) => (
-                <article key={o.id} className="flex flex-col gap-2 rounded-lg border border-border bg-card p-3">
-                  <p className="text-sm font-semibold leading-snug text-brand-ink">{o.name}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {o.organization} · {o.type.replace(/_/g, " ")} · fit {o.fit}
+                <article key={o.id} className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-5">
+                  <p className="text-lg font-semibold leading-snug text-brand-ink">{o.name}</p>
+                  <p className="text-base text-muted-foreground">
+                    {o.organization} · {o.type.replace(/_/g, " ")}
                   </p>
-                  <p className="text-xs leading-relaxed text-brand-ink">Next: {o.nextAction}</p>
-                  <p className="text-xs text-muted-foreground">{resourceName(state, o.assigneeId)}</p>
+                  <p className="text-base leading-relaxed text-brand-ink">Next step: {o.nextAction}</p>
+                  <p className="text-base text-muted-foreground">Who: {resourceName(state, o.assigneeId)}</p>
                   {o.approval === "awaiting" ? (
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-3">
                       <button
                         onClick={() => dispatch({ type: "OPPORTUNITY_UPDATE", id: o.id, patch: { approval: "approved", stage: "outreach_sent" } })}
-                        className="rounded-md bg-brand-green px-2.5 py-1 text-xs font-semibold text-primary-foreground hover:bg-brand-green-dark"
+                        className="h-12 rounded-xl bg-brand-green px-4 text-base font-semibold text-primary-foreground hover:bg-brand-green-dark"
                       >
-                        Approve outreach
+                        Yes, send it
                       </button>
                       <button
                         onClick={() => dispatch({ type: "OPPORTUNITY_UPDATE", id: o.id, patch: { approval: "declined", stage: "closed", outcome: "Declined by founder" } })}
-                        className="rounded-md border border-border px-2.5 py-1 text-xs hover:bg-muted"
+                        className="h-12 rounded-xl border border-border px-4 text-base hover:bg-muted"
                       >
-                        Decline
+                        No, thank you
                       </button>
                     </div>
                   ) : (
                     <select
                       value={o.stage}
                       onChange={(e) => dispatch({ type: "OPPORTUNITY_UPDATE", id: o.id, patch: { stage: e.target.value as OpportunityStage } })}
-                      className={cn(fieldClass, "py-1.5 text-xs")}
-                      aria-label={`Stage for ${o.name}`}
+                      className={fieldClass}
+                      aria-label={`Where is ${o.name} now?`}
                     >
                       {STAGES.map((st) => (
                         <option key={st.id} value={st.id}>{st.label}</option>
@@ -165,35 +166,35 @@ export function AuthorityPage() {
     <>
       <PageHeader
         eyebrow="Authority & Permissions"
-        title="What each resource may do"
-        description="Authority is granted per resource, action, scope, and level. Single-task approvals never become standing permissions."
+        title="Who is allowed to do what"
+        description="You choose what each person or tool may do. Saying yes to one task does not mean yes to every task."
         actions={
           <Button onClick={() => setAdding((a) => !a)}>
             <Plus className="h-4 w-4" aria-hidden />
-            Grant permission
+            Give permission
           </Button>
         }
       />
-      <div className="grid gap-3 md:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2">
         {AUTH_LEVELS.map((l) => (
-          <div key={l.id} className="flex flex-col gap-1 rounded-lg border border-border bg-card p-4">
+          <div key={l.id} className="flex flex-col gap-2 rounded-2xl border border-border bg-card p-5">
             <LevelBadge level={l.id} />
-            <p className="text-xs leading-relaxed text-muted-foreground">{l.description}</p>
+            <p className="text-base leading-relaxed text-brand-ink">{l.description}</p>
           </div>
         ))}
       </div>
       {adding && (
-        <Panel title="New permission">
-          <div className="grid gap-3 md:grid-cols-5">
+        <Panel title="Give a new permission">
+          <div className="grid gap-4 md:grid-cols-2">
             <select className={fieldClass} value={draft.resourceId} onChange={(e) => setDraft({ ...draft, resourceId: e.target.value })} aria-label="Resource">
-              <option value="">Choose resource</option>
+              <option value="">Who?</option>
               {state.resources.filter((r) => r.category !== "founder").map((r) => (
                 <option key={r.id} value={r.id}>{r.name}</option>
               ))}
             </select>
-            <input className={fieldClass} placeholder="Action" value={draft.action} onChange={(e) => setDraft({ ...draft, action: e.target.value })} aria-label="Action" />
-            <input className={fieldClass} placeholder="Scope" value={draft.scope} onChange={(e) => setDraft({ ...draft, scope: e.target.value })} aria-label="Scope" />
-            <select className={fieldClass} value={draft.level} onChange={(e) => setDraft({ ...draft, level: e.target.value as AuthLevel })} aria-label="Level">
+            <input className={fieldClass} placeholder="What may they do? Example: Write emails" value={draft.action} onChange={(e) => setDraft({ ...draft, action: e.target.value })} aria-label="Action" />
+            <input className={fieldClass} placeholder="For what? Example: Client emails only" value={draft.scope} onChange={(e) => setDraft({ ...draft, scope: e.target.value })} aria-label="Scope" />
+            <select className={fieldClass} value={draft.level} onChange={(e) => setDraft({ ...draft, level: e.target.value as AuthLevel })} aria-label="How much may they do?">
               {AUTH_LEVELS.map((l) => <option key={l.id} value={l.id}>{l.label}</option>)}
             </select>
             <Button
@@ -219,52 +220,44 @@ export function AuthorityPage() {
                 setAdding(false)
               }}
             >
-              Grant
+              Save permission
             </Button>
           </div>
         </Panel>
       )}
-      <div className="overflow-x-auto rounded-xl border border-border bg-card">
-        <table className="w-full min-w-[900px] text-left text-sm">
-          <thead className="border-b border-border bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground">
-            <tr>
-              {["Resource", "Action & scope", "Level", "Limits", "Duration", "Status", ""].map((h) => (
-                <th key={h} className="px-3 py-3 font-semibold">{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
-            {state.permissions.map((p) => (
-              <tr key={p.id} className="align-top">
-                <td className="px-3 py-3">
-                  <p className="font-medium">{resourceName(state, p.resourceId)}</p>
-                  <p className="font-mono text-[11px] text-muted-foreground">{p.id}{p.workId && ` · only ${p.workId}`}</p>
-                </td>
-                <td className="max-w-xs px-3 py-3">
-                  <p>{p.action}</p>
-                  <p className="text-xs text-muted-foreground">{p.scope}</p>
-                </td>
-                <td className="px-3 py-3"><LevelBadge level={p.level} /></td>
-                <td className="px-3 py-3 text-xs">{p.limits}</td>
-                <td className="px-3 py-3 text-xs">{p.duration}</td>
-                <td className="px-3 py-3"><PermissionStatusBadge status={p.status} /></td>
-                <td className="px-3 py-3">
-                  <div className="flex gap-1.5">
-                    {p.status === "authorized" ? (
-                      <button onClick={() => set("suspended", p.id, "Suspended by founder")} className="rounded-md border border-border px-2 py-1 text-xs hover:bg-muted">Suspend</button>
-                    ) : (
-                      <button onClick={() => set("authorized", p.id, "Authorized by founder")} className="rounded-md border border-border px-2 py-1 text-xs hover:bg-muted">Authorize</button>
-                    )}
-                    {p.status !== "not_authorized" && (
-                      <button onClick={() => set("not_authorized", p.id, "Revoked by founder")} className="rounded-md px-2 py-1 text-xs text-brand-coral-dark hover:bg-brand-blush">Revoke</button>
-                    )}
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <ul className="flex flex-col gap-4">
+        {state.permissions.map((p) => (
+          <li key={p.id} className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5">
+            <div className="flex flex-col gap-1">
+              <p className="text-xl font-semibold text-brand-ink">{resourceName(state, p.resourceId)}</p>
+              <p className="text-lg text-brand-ink">{p.action}</p>
+              <p className="text-base text-brand-ink-soft">For: {p.scope}</p>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <LevelBadge level={p.level} />
+              <PermissionStatusBadge status={p.status} />
+            </div>
+            <div className="flex flex-wrap gap-3">
+              {p.status === "authorized" ? (
+                <button onClick={() => set("suspended", p.id, "Suspended by founder")} className="h-12 rounded-xl border border-border px-5 text-base hover:bg-muted">Pause</button>
+              ) : (
+                <button onClick={() => set("authorized", p.id, "Authorized by founder")} className="h-12 rounded-xl bg-brand-green px-5 text-base font-semibold text-primary-foreground hover:bg-brand-green-dark">Allow</button>
+              )}
+              {p.status !== "not_authorized" && (
+                <button onClick={() => set("not_authorized", p.id, "Revoked by founder")} className="h-12 rounded-xl px-5 text-base text-brand-coral-dark hover:bg-brand-blush">Take away</button>
+              )}
+            </div>
+            <details className="text-base">
+              <summary className="cursor-pointer font-medium text-brand-green-dark">More details</summary>
+              <dl className="mt-3 grid gap-3 sm:grid-cols-3">
+                <div><dt className="font-semibold">Limits</dt><dd className="text-brand-ink-soft">{p.limits}</dd></div>
+                <div><dt className="font-semibold">How long</dt><dd className="text-brand-ink-soft">{p.duration}</dd></div>
+                <div><dt className="font-semibold">Number</dt><dd className="text-brand-ink-soft">{p.id}{p.workId && ` · only ${p.workId}`}</dd></div>
+              </dl>
+            </details>
+          </li>
+        ))}
+      </ul>
     </>
   )
 }
@@ -276,25 +269,24 @@ export function CoordinatorPage() {
     <>
       <PageHeader
         eyebrow="Central AI Operations Coordinator"
-        title="The operations layer between you and your workforce"
-        description="Classifies, routes, monitors, and escalates business work — always within the authority you grant. Rule-based prototype; no AI model is connected."
+        title="Your AI helper"
+        description="It sorts new work, sends it to the right person, and tells you when something is stuck. It only does what you allow. This practice version uses simple rules, not real AI."
       />
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
-        <CoordinatorFeed phase={clock.phase} limit={30} />
+      <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-6">
-          <Panel title="Operating boundaries">
-            <ul className="flex list-disc flex-col gap-1.5 pl-4 text-xs leading-relaxed text-brand-ink">
-              <li>Advances work only during the CEO Workday, Monday–Thursday 1:00–5:00 PM ET.</li>
-              <li>Cannot exceed its own permissions or a resource&apos;s permissions.</li>
-              <li>Proposes delegation; the founder accepts or declines.</li>
-              <li>Notifications to people require founder authorization.</li>
-              <li>Pauses during protected personal time.</li>
+          <Panel title="Rules your AI helper follows">
+            <ul className="flex list-disc flex-col gap-2 pl-6 text-base leading-relaxed text-brand-ink">
+              <li>It only works Monday to Thursday, 1:00 to 5:00 PM Eastern.</li>
+              <li>It cannot do more than you allow.</li>
+              <li>It can suggest who should do a task. You say yes or no.</li>
+              <li>It asks you before telling anyone about a change.</li>
+              <li>It rests during your free time.</li>
             </ul>
           </Panel>
-          <Panel title={`Coordinator permissions (${perms.length})`}>
-            <ul className="flex flex-col gap-2">
+          <Panel title={`What your AI helper may do (${perms.length})`}>
+            <ul className="flex flex-col gap-4">
               {perms.map((p) => (
-                <li key={p.id} className="flex flex-col gap-1 text-xs">
+                <li key={p.id} className="flex flex-col gap-2 text-base">
                   <span className="text-brand-ink">{p.action}</span>
                   <span className="flex gap-2"><LevelBadge level={p.level} /><PermissionStatusBadge status={p.status} /></span>
                 </li>
@@ -302,6 +294,9 @@ export function CoordinatorPage() {
             </ul>
           </Panel>
         </div>
+        <MoreDetails summary="What my AI helper did lately" defaultOpen>
+          <CoordinatorFeed phase={clock.phase} limit={30} />
+        </MoreDetails>
       </div>
     </>
   )
@@ -314,15 +309,15 @@ export function ProfilePage({ which }: { which: "founderProfile" | "businessProf
     <>
       <PageHeader
         eyebrow={which === "founderProfile" ? "Founder Profile" : "Business Profile"}
-        title={which === "founderProfile" ? "How you lead and decide" : "What the business is and how it works"}
-        description="The Coordinator reads this context when classifying and routing work. Changes save as you leave each field."
+        title={which === "founderProfile" ? "Tell us about you" : "Tell us about your business"}
+        description="Your AI helper reads this to send work to the right place. Your answer saves when you click out of the box."
         actions={<DemoTag />}
       />
       <div className="grid gap-4 md:grid-cols-2">
         {fields.map((f) => (
-          <label key={f.key} className={cn("flex flex-col gap-1.5 rounded-xl border border-border bg-card p-4", f.multiline && "md:col-span-2")}>
+          <label key={f.key} className={cn("flex flex-col gap-2 rounded-2xl border border-border bg-card p-5", f.multiline && "md:col-span-2")}>
             <span className={labelClass}>{f.label}</span>
-            <span className="text-xs text-muted-foreground">{f.prompt}</span>
+            <span className="text-base text-brand-ink-soft">{f.prompt}</span>
             {f.multiline ? (
               <textarea rows={3} className={fieldClass} defaultValue={f.value} onBlur={(e) => dispatch({ type: "PROFILE_UPDATE", which, key: f.key, value: e.target.value })} />
             ) : (
@@ -335,6 +330,14 @@ export function ProfilePage({ which }: { which: "founderProfile" | "businessProf
   )
 }
 
+const SYSTEM_TYPE: Record<string, string> = {
+  all: "All",
+  system: "Systems",
+  workflow: "Step lists (workflows)",
+  sop: "How-to guides (SOPs)",
+  automation: "Automatic tools",
+}
+
 export function SystemsPage() {
   const { state } = useBoss()
   const [type, setType] = useState("all")
@@ -343,37 +346,36 @@ export function SystemsPage() {
     <>
       <PageHeader
         eyebrow="Business Systems & SOPs"
-        title="How the business repeatably operates"
-        description="Systems, workflows, SOPs, and automations, each with an owner and review date."
+        title="How you do things the same way each time"
+        description="Your steps, how-to guides, and tools. Each one has an owner and a date to check it."
         actions={<DemoTag />}
       />
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-3">
         {["all", "system", "workflow", "sop", "automation"].map((t) => (
           <button
             key={t}
             onClick={() => setType(t)}
             aria-pressed={type === t}
-            className={cn("rounded-md border px-3 py-1.5 text-sm capitalize", type === t ? "border-brand-ink bg-brand-ink text-primary-foreground" : "border-border bg-card hover:bg-muted")}
+            className={cn("h-12 rounded-full border px-5 text-base", type === t ? "border-brand-ink bg-brand-ink text-primary-foreground" : "border-border bg-card hover:bg-muted")}
           >
-            {t === "sop" ? "SOPs" : t === "all" ? "All" : `${t}s`}
+            {SYSTEM_TYPE[t]}
           </button>
         ))}
       </div>
       {list.length === 0 ? (
         <EmptyState title="Nothing recorded yet" />
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2">
           {list.map((s) => (
-            <article key={s.id} className="flex flex-col gap-2 rounded-xl border border-border bg-card p-4">
+            <article key={s.id} className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-5">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{s.type}</span>
+                <span className="text-base font-semibold text-brand-green-dark">{SYSTEM_TYPE[s.type]}</span>
                 <FunctionBadge fn={s.fn} />
-                <span className="text-[11px] text-muted-foreground">{s.approval.replace("_", " ")}</span>
               </div>
-              <h2 className="font-semibold text-brand-ink">{s.name}</h2>
-              <p className="text-xs leading-relaxed text-muted-foreground">{s.summary}</p>
-              <p className="text-xs text-brand-ink">
-                {resourceName(state, s.ownerId)} · review {formatDate(s.reviewDate, { month: "short", day: "numeric" })}
+              <h2 className="text-xl font-semibold text-brand-ink">{s.name}</h2>
+              <p className="text-base leading-relaxed text-brand-ink-soft">{s.summary}</p>
+              <p className="text-base text-brand-ink">
+                Owner: {resourceName(state, s.ownerId)} · check on {formatDate(s.reviewDate, { month: "short", day: "numeric" })}
               </p>
             </article>
           ))}

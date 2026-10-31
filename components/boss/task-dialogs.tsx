@@ -7,7 +7,7 @@ import { useBoss } from "@/lib/boss/store"
 import { CATEGORIES, FUNCTIONS, PRIORITIES, STATUS_LABEL, LIFECYCLE, EXCEPTIONS, isClosed } from "@/lib/boss/constants"
 import { authorityFor, canProceed } from "@/lib/boss/reducer"
 import type { BusinessFunction, Priority, WorkItem, WorkStatus } from "@/lib/boss/types"
-import { AuthorityBadge, fieldClass, labelClass } from "./primitives"
+import { AuthorityBadge, bigButton, fieldClass, labelClass } from "./primitives"
 import { cn } from "@/lib/utils"
 
 type Draft = Omit<WorkItem, "id" | "history" | "rank" | "createdAt" | "carriedFrom" | "ownerId" | "plannedForDate">
@@ -81,30 +81,30 @@ function EditorBody({ target, onClose }: { target: NonNullable<EditorTarget>; on
   return (
     <>
       <DialogHeader>
-        <DialogTitle className="font-display text-2xl">
-          {existing ? `Edit ${existing.id}` : parent ? `Add subtask to ${parent.id}` : "Add business task"}
+        <DialogTitle className="font-display text-3xl">
+          {existing ? "Edit this task" : parent ? "Add a smaller step" : "Add a task"}
         </DialogTitle>
-        <DialogDescription>
-          Changes update the Work Register, the Work Queue, and anything that depends on this task.
+        <DialogDescription className="text-base leading-relaxed">
+          Fill in what you know. You can change it later.
         </DialogDescription>
       </DialogHeader>
 
-      <div className="grid gap-4 py-2 md:grid-cols-2">
-        <label className="flex flex-col gap-1.5 md:col-span-2">
-          <span className={labelClass}>Assignment title</span>
+      <div className="grid gap-5 py-2 md:grid-cols-2">
+        <label className="flex flex-col gap-2 md:col-span-2">
+          <span className={labelClass}>What is the task?</span>
           <input className={fieldClass} value={d.title} onChange={(e) => set("title", e.target.value)} autoFocus />
         </label>
-        <label className="flex flex-col gap-1.5 md:col-span-2">
-          <span className={labelClass}>Desired outcome</span>
+        <label className="flex flex-col gap-2 md:col-span-2">
+          <span className={labelClass}>What does done look like?</span>
           <input
             className={fieldClass}
             value={d.outcome}
-            placeholder="What will be true when this is done?"
+            placeholder="Example: The email is sent to all clients"
             onChange={(e) => set("outcome", e.target.value)}
           />
         </label>
-        <label className="flex flex-col gap-1.5">
-          <span className={labelClass}>Business function</span>
+        <label className="flex flex-col gap-2">
+          <span className={labelClass}>Which part of the business?</span>
           <select className={fieldClass} value={d.fn} onChange={(e) => set("fn", e.target.value as BusinessFunction)}>
             {FUNCTIONS.map((f) => (
               <option key={f.id} value={f.id}>
@@ -113,8 +113,8 @@ function EditorBody({ target, onClose }: { target: NonNullable<EditorTarget>; on
             ))}
           </select>
         </label>
-        <label className="flex flex-col gap-1.5">
-          <span className={labelClass}>Priority</span>
+        <label className="flex flex-col gap-2">
+          <span className={labelClass}>How important is it?</span>
           <select className={fieldClass} value={d.priority} onChange={(e) => set("priority", e.target.value as Priority)}>
             {PRIORITIES.map((p) => (
               <option key={p.id} value={p.id}>
@@ -123,10 +123,10 @@ function EditorBody({ target, onClose }: { target: NonNullable<EditorTarget>; on
             ))}
           </select>
         </label>
-        <label className="flex flex-col gap-1.5">
-          <span className={labelClass}>Assigned resource</span>
+        <label className="flex flex-col gap-2">
+          <span className={labelClass}>Who will do it?</span>
           <select className={fieldClass} value={d.assigneeId ?? ""} onChange={(e) => set("assigneeId", e.target.value || null)}>
-            <option value="">Unassigned</option>
+            <option value="">No one yet</option>
             {CATEGORIES.map((c) => (
               <optgroup key={c.id} label={c.label}>
                 {state.resources
@@ -139,35 +139,16 @@ function EditorBody({ target, onClose }: { target: NonNullable<EditorTarget>; on
               </optgroup>
             ))}
           </select>
-          <span className="flex items-center gap-2 text-xs text-muted-foreground">
-            Authority: <AuthorityBadge check={authority} />
+          <span className="flex flex-wrap items-center gap-2 text-base text-brand-ink-soft">
+            Permission: <AuthorityBadge check={authority} />
           </span>
         </label>
-        <label className="flex flex-col gap-1.5">
-          <span className={labelClass}>Status</span>
-          <select className={fieldClass} value={d.status} onChange={(e) => set("status", e.target.value as WorkStatus)}>
-            <optgroup label="Lifecycle">
-              {LIFECYCLE.map((s) => (
-                <option key={s} value={s}>
-                  {STATUS_LABEL[s]}
-                </option>
-              ))}
-            </optgroup>
-            <optgroup label="Exceptions">
-              {EXCEPTIONS.map((s) => (
-                <option key={s} value={s}>
-                  {STATUS_LABEL[s]}
-                </option>
-              ))}
-            </optgroup>
-          </select>
-        </label>
-        <label className="flex flex-col gap-1.5">
-          <span className={labelClass}>Due date</span>
+        <label className="flex flex-col gap-2">
+          <span className={labelClass}>When is it due?</span>
           <input type="date" className={fieldClass} value={d.dueDate} onChange={(e) => set("dueDate", e.target.value)} />
         </label>
-        <label className="flex flex-col gap-1.5">
-          <span className={labelClass}>Founder effort (minutes)</span>
+        <label className="flex flex-col gap-2">
+          <span className={labelClass}>How many minutes of your time?</span>
           <input
             type="number"
             min={0}
@@ -177,94 +158,119 @@ function EditorBody({ target, onClose }: { target: NonNullable<EditorTarget>; on
             onChange={(e) => set("effortMins", Math.max(0, Number(e.target.value)))}
           />
         </label>
-        <label className="flex flex-col gap-1.5 md:col-span-2">
-          <span className={labelClass}>Execution approach</span>
-          <textarea
-            rows={2}
-            className={fieldClass}
-            value={d.approach}
-            placeholder="How should this work be done?"
-            onChange={(e) => set("approach", e.target.value)}
-          />
-        </label>
-        <fieldset className="flex flex-col gap-1.5 md:col-span-2">
-          <legend className={cn(labelClass, "mb-1.5")}>Dependencies</legend>
-          <div className="flex max-h-32 flex-col gap-1 overflow-y-auto rounded-md border border-border p-2">
-            {depOptions.map((w) => (
-              <label key={w.id} className="flex items-center gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  className="accent-[hsl(var(--primary))]"
-                  checked={d.dependsOn.includes(w.id)}
-                  onChange={(e) =>
-                    set("dependsOn", e.target.checked ? [...d.dependsOn, w.id] : d.dependsOn.filter((x) => x !== w.id))
-                  }
-                />
-                <span className="font-mono text-xs text-muted-foreground">{w.id}</span>
-                <span className="truncate">{w.title}</span>
-              </label>
-            ))}
-          </div>
-        </fieldset>
-        <label className="flex items-center gap-2 text-sm">
+        <label className="flex items-center gap-3 text-base">
           <input
             type="checkbox"
-            className="accent-[hsl(var(--primary))]"
-            checked={d.reviewRequired}
-            onChange={(e) => set("reviewRequired", e.target.checked)}
-          />
-          Founder review required before completion
-        </label>
-        <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            className="accent-[hsl(var(--primary))]"
+            className="h-5 w-5 accent-[hsl(var(--primary))]"
             checked={d.inTodayPlan}
             onChange={(e) => set("inTodayPlan", e.target.checked)}
           />
           {"Include in today's plan"}
         </label>
-        <label className="flex items-center gap-2 text-sm md:col-span-2">
+        <details className="group rounded-xl border border-border md:col-span-2">
+          <summary className="flex min-h-12 cursor-pointer list-none items-center px-4 text-base font-semibold text-brand-green-dark [&::-webkit-details-marker]:hidden">
+            More options
+          </summary>
+          <div className="grid gap-5 p-4 pt-1 md:grid-cols-2">
+        <label className="flex flex-col gap-2">
+          <span className={labelClass}>Where is it now?</span>
+          <select className={fieldClass} value={d.status} onChange={(e) => set("status", e.target.value as WorkStatus)}>
+            <optgroup label="Normal steps">
+              {LIFECYCLE.map((s) => (
+                <option key={s} value={s}>
+                  {STATUS_LABEL[s]}
+                </option>
+              ))}
+            </optgroup>
+            <optgroup label="Problems">
+              {EXCEPTIONS.map((s) => (
+                <option key={s} value={s}>
+                  {STATUS_LABEL[s]}
+                </option>
+              ))}
+            </optgroup>
+          </select>
+        </label>
+        <label className="flex flex-col gap-2 md:col-span-2">
+          <span className={labelClass}>How should it be done?</span>
+          <textarea
+            rows={2}
+            className={fieldClass}
+            value={d.approach}
+            placeholder="Write the steps, if you know them"
+            onChange={(e) => set("approach", e.target.value)}
+          />
+        </label>
+        <fieldset className="flex flex-col gap-2 md:col-span-2">
+          <legend className={cn(labelClass, "mb-2")}>Must another task be done first?</legend>
+          <div className="flex max-h-48 flex-col gap-2 overflow-y-auto rounded-lg border border-border p-3">
+            {depOptions.map((w) => (
+              <label key={w.id} className="flex items-center gap-3 text-base">
+                <input
+                  type="checkbox"
+                  className="h-5 w-5 accent-[hsl(var(--primary))]"
+                  checked={d.dependsOn.includes(w.id)}
+                  onChange={(e) =>
+                    set("dependsOn", e.target.checked ? [...d.dependsOn, w.id] : d.dependsOn.filter((x) => x !== w.id))
+                  }
+                />
+                <span className="truncate">{w.title}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+        <label className="flex items-center gap-3 text-base">
           <input
             type="checkbox"
-            className="accent-[hsl(var(--primary))]"
+            className="h-5 w-5 accent-[hsl(var(--primary))]"
+            checked={d.reviewRequired}
+            onChange={(e) => set("reviewRequired", e.target.checked)}
+          />
+          I want to check it before it is done
+        </label>
+        <label className="flex items-center gap-3 text-base md:col-span-2">
+          <input
+            type="checkbox"
+            className="h-5 w-5 accent-[hsl(var(--primary))]"
             checked={d.requiresFounderDecision}
             onChange={(e) => set("requiresFounderDecision", e.target.checked)}
           />
-          Requires a founder decision
+          I need to make a choice about this
         </label>
         {d.requiresFounderDecision && (
-          <label className="flex flex-col gap-1.5 md:col-span-2">
-            <span className={labelClass}>Decision needed</span>
+          <label className="flex flex-col gap-2 md:col-span-2">
+            <span className={labelClass}>What do you need to decide?</span>
             <input className={fieldClass} value={d.decisionQuestion} onChange={(e) => set("decisionQuestion", e.target.value)} />
           </label>
         )}
-        <label className="flex flex-col gap-1.5 md:col-span-2">
-          <span className={labelClass}>Completion evidence</span>
+        <label className="flex flex-col gap-2 md:col-span-2">
+          <span className={labelClass}>Proof it is done</span>
           <input
             className={fieldClass}
             value={d.evidence}
-            placeholder="Link or description of what proves this is done"
+            placeholder="A link, or a few words"
             onChange={(e) => set("evidence", e.target.value)}
           />
         </label>
+          </div>
+        </details>
       </div>
 
       {(affected.length > 0 || assigneeChangesOther || (d.assigneeId && !canProceed(authority) && authority.status !== "unassigned")) && (
-        <div className="flex flex-col gap-1 rounded-lg border border-brand-coral/30 bg-brand-blush/60 p-3 text-xs leading-relaxed text-brand-ink">
-          <p className="font-semibold">This change affects other work</p>
-          {affected.length > 0 && <p>Dependent tasks will be updated: {affected.map((a) => a.id).join(", ")}.</p>}
-          {assigneeChangesOther && <p>The previous resource must be notified. A notification request will await your authorization.</p>}
-          {authority.status === "not_authorized" && <p>{`The selected resource is not authorized for this work (${authority.reason}). It will wait for your approval.`}</p>}
-          {authority.status === "external" && <p>External collaborators are not under your direct control. This becomes a request awaiting their response.</p>}
+        <div className="flex flex-col gap-2 rounded-xl border border-brand-coral/30 bg-brand-blush/60 p-4 text-base leading-relaxed text-brand-ink">
+          <p className="font-semibold">Good to know</p>
+          {affected.length > 0 && <p>Other tasks wait on this one. We will update them: {affected.map((a) => a.title).join(", ")}.</p>}
+          {assigneeChangesOther && <p>The person who had this task should know. We will ask you before telling them.</p>}
+          {authority.status === "not_authorized" && <p>{`This helper is not allowed to do this yet (${authority.reason}). It will wait for your OK.`}</p>}
+          {authority.status === "external" && <p>This is an outside partner. We will ask them. They choose yes or no.</p>}
         </div>
       )}
 
-      <DialogFooter className="gap-2">
-        <Button variant="outline" onClick={onClose}>
+      <DialogFooter className="gap-3">
+        <Button className={bigButton} variant="outline" onClick={onClose}>
           Cancel
         </Button>
-        <Button onClick={save} disabled={!d.title.trim()}>
+        <Button className={bigButton} onClick={save} disabled={!d.title.trim()}>
           {existing ? "Save changes" : "Add task"}
         </Button>
       </DialogFooter>
@@ -293,10 +299,10 @@ export function ReassignDialog({ workId, onClose }: { workId: string | null; onC
         {item && (
           <>
             <DialogHeader>
-              <DialogTitle className="font-display text-2xl">Reassign {item.id}</DialogTitle>
-              <DialogDescription>{item.title}</DialogDescription>
+              <DialogTitle className="font-display text-3xl">Give this task to someone else</DialogTitle>
+              <DialogDescription className="text-base">{item.title}</DialogDescription>
             </DialogHeader>
-            <div className="flex flex-col gap-2" role="radiogroup" aria-label="Choose a resource">
+            <div className="flex flex-col gap-3" role="radiogroup" aria-label="Choose who">
               {state.resources
                 .filter((r) => r.id !== item.assigneeId && r.id !== "R-COORD")
                 .map((r) => {
@@ -305,21 +311,21 @@ export function ReassignDialog({ workId, onClose }: { workId: string | null; onC
                     <label
                       key={r.id}
                       className={cn(
-                        "flex cursor-pointer items-center gap-3 rounded-lg border p-3 text-sm transition-colors",
+                        "flex cursor-pointer flex-wrap items-center gap-3 rounded-xl border p-4 text-base transition-colors",
                         toId === r.id ? "border-brand-green bg-brand-sage-light/60" : "border-border hover:bg-muted/60",
                       )}
                     >
                       <input
                         type="radio"
                         name="assignee"
-                        className="accent-[hsl(var(--primary))]"
+                        className="h-5 w-5 accent-[hsl(var(--primary))]"
                         checked={toId === r.id}
                         onChange={() => setToId(r.id)}
                       />
                       <span className="flex min-w-0 flex-1 flex-col">
-                        <span className="font-medium text-brand-ink">{r.name}</span>
-                        <span className="truncate text-xs text-muted-foreground">
-                          {CATEGORIES.find((c) => c.id === r.category)?.label} · {r.role}
+                        <span className="text-lg font-medium text-brand-ink">{r.name}</span>
+                        <span className="truncate text-base text-muted-foreground">
+                          {r.role}
                         </span>
                       </span>
                       <AuthorityBadge check={check} />
@@ -327,21 +333,21 @@ export function ReassignDialog({ workId, onClose }: { workId: string | null; onC
                   )
                 })}
             </div>
-            <label className="flex flex-col gap-1.5">
-              <span className={labelClass}>Reason (recorded in the Work Register)</span>
+            <label className="flex flex-col gap-2">
+              <span className={labelClass}>Why? (You can skip this.)</span>
               <input className={fieldClass} value={reason} onChange={(e) => setReason(e.target.value)} />
             </label>
             {item.assigneeId && item.assigneeId !== "R-FOUNDER" && (
-              <p className="text-xs leading-relaxed text-muted-foreground">
-                {state.resources.find((r) => r.id === item.assigneeId)?.name} is currently assigned. A notification to them will be
-                queued for your authorization. No message is sent automatically.
+              <p className="text-base leading-relaxed text-brand-ink-soft">
+                {state.resources.find((r) => r.id === item.assigneeId)?.name} has this task now. We will ask you before telling them.
               </p>
             )}
-            <DialogFooter className="gap-2">
-              <Button variant="outline" onClick={onClose}>
+            <DialogFooter className="gap-3">
+              <Button className={bigButton} variant="outline" onClick={onClose}>
                 Cancel
               </Button>
               <Button
+                className={bigButton}
                 disabled={!toId}
                 onClick={() => {
                   dispatch({ type: "REASSIGN", id: item.id, toId, reason })
@@ -350,7 +356,7 @@ export function ReassignDialog({ workId, onClose }: { workId: string | null; onC
                   onClose()
                 }}
               >
-                Reassign
+                Give it to them
               </Button>
             </DialogFooter>
           </>

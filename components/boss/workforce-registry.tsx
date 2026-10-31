@@ -37,51 +37,51 @@ export function WorkforceRegistry() {
     <>
       <PageHeader
         eyebrow="Workforce Registry"
-        title="Everyone and everything doing business work"
-        description="Being listed here never grants authority. Permissions are granted separately, per action and scope."
+        title="Your team: people, AI, and tools"
+        description="Being on this list does not let anyone do work. You give permission one job at a time."
         actions={
           <Button onClick={() => setAdding(true)}>
             <Plus className="h-4 w-4" aria-hidden />
-            Add resource
+            Add someone
           </Button>
         }
       />
 
-      <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
+      <div className="flex flex-wrap gap-2">
         {CATEGORIES.map((c) => (
           <button
             key={c.id}
             onClick={() => setTab(tab === c.id ? "all" : c.id)}
             aria-pressed={tab === c.id}
             className={cn(
-              "flex flex-col gap-1 rounded-lg border p-3 text-left transition-colors",
-              tab === c.id ? "border-brand-green bg-brand-sage-light/70" : "border-border bg-card hover:bg-muted/60",
+              "inline-flex h-12 items-center gap-2 rounded-full border px-5 text-base font-medium transition-colors",
+              tab === c.id ? "border-brand-green bg-brand-green text-primary-foreground" : "border-border bg-card text-brand-ink hover:bg-muted/60",
             )}
           >
-            <span className="font-display text-2xl font-semibold">{state.resources.filter((r) => r.category === c.id).length}</span>
-            <span className="text-xs font-medium leading-snug text-brand-ink">{c.label}</span>
+            {c.label}
+            <span className="rounded-full bg-muted px-2 text-sm tabular-nums text-brand-ink">{state.resources.filter((r) => r.category === c.id).length}</span>
           </button>
         ))}
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
+      <div className="grid gap-6 lg:grid-cols-2">
         <div className="flex flex-col gap-3">
-          <input className={fieldClass} placeholder="Search name, role, or capability" value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Search the registry" />
+          <input className={fieldClass} placeholder="Search by name or skill" value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Search the registry" />
           <ul className="flex flex-col gap-2">
             {list.map((r) => (
               <li key={r.id}>
                 <button
                   onClick={() => setSelected(r.id)}
                   className={cn(
-                    "flex w-full flex-col gap-1 rounded-lg border p-3 text-left transition-colors",
+                    "flex w-full flex-col gap-1 rounded-2xl border p-4 text-left transition-colors",
                     selected === r.id ? "border-brand-ink bg-card shadow-ds-sm" : "border-border bg-card hover:bg-muted/50",
                   )}
                 >
                   <span className="flex items-center justify-between gap-2">
-                    <span className="font-semibold text-brand-ink">{r.name}</span>
-                    <span className="text-[11px] text-muted-foreground">{CATEGORIES.find((c) => c.id === r.category)?.label}</span>
+                    <span className="text-lg font-semibold text-brand-ink">{r.name}</span>
+                    <span className="text-sm text-muted-foreground">{CATEGORIES.find((c) => c.id === r.category)?.label}</span>
                   </span>
-                  <span className="text-xs text-muted-foreground">{r.role}</span>
+                  <span className="text-base text-brand-ink-soft">{r.role}</span>
                 </button>
               </li>
             ))}
@@ -96,34 +96,34 @@ export function WorkforceRegistry() {
           >
             <div className="flex flex-col gap-5">
               {res.category === "external" && (
-                <p className="rounded-lg bg-muted p-3 text-xs leading-relaxed text-brand-ink">
-                  An independent collaborator — not an employee and not under your direct control. Work with them is a request they can accept or decline.
+                <p className="rounded-xl bg-muted p-4 text-base leading-relaxed text-brand-ink">
+                  This partner does not work for you. You can ask them to help. They choose yes or no.
                 </p>
               )}
               {(res.category === "ai" || res.category === "automation") && (
-                <p className="rounded-lg bg-muted p-3 text-xs leading-relaxed text-brand-ink">
+                <p className="rounded-xl bg-muted p-4 text-base leading-relaxed text-brand-ink">
                   {res.category === "ai"
-                    ? "An AI capability coordinated by the Central AI Operations Coordinator. Prototype record; no live AI is connected."
-                    : "Executes predictable steps only. Prototype record; no live automation is running."}
+                    ? "A computer helper. Your AI helper tells it what to do. This is a practice record. No real AI is connected."
+                    : "A tool that does the same steps each time. This is a practice record. Nothing is running."}
                 </p>
               )}
-              <dl className="grid gap-3 text-sm sm:grid-cols-2">
+              <dl className="grid gap-4 text-base sm:grid-cols-2">
                 {CATEGORY_FIELDS[res.category].map((k) => (
                   <div key={k}>
                     <dt className={labelClass}>{k}</dt>
-                    <dd className="text-brand-ink">{res.detail[k] || "Not recorded"}</dd>
+                    <dd className="text-brand-ink-soft">{res.detail[k] || "Not written down"}</dd>
                   </div>
                 ))}
                 <div className="sm:col-span-2">
-                  <dt className={labelClass}>Availability</dt>
-                  <dd className="text-brand-ink">{res.availability}</dd>
+                  <dt className={labelClass}>When they can work</dt>
+                  <dd className="text-brand-ink-soft">{res.availability}</dd>
                 </div>
               </dl>
               <div className="flex flex-col gap-2">
-                <p className={labelClass}>Capabilities</p>
+                <p className={labelClass}>What they are good at</p>
                 <div className="flex flex-wrap gap-1.5">
                   {res.capabilities.map((c) => (
-                    <span key={c} className="rounded-full bg-muted px-2 py-0.5 text-xs">{c}</span>
+                    <span key={c} className="rounded-full bg-muted px-3 py-1 text-sm">{c}</span>
                   ))}
                 </div>
                 <div className="flex flex-wrap gap-1.5">
@@ -131,14 +131,13 @@ export function WorkforceRegistry() {
                 </div>
               </div>
               <div className="flex flex-col gap-2">
-                <p className={labelClass}>Authority & permissions ({perms.length})</p>
+                <p className={labelClass}>What they are allowed to do ({perms.length})</p>
                 {perms.length === 0 ? (
-                  <p className="text-xs text-muted-foreground">{res.category === "founder" ? "Final authority on all business decisions." : "No permissions granted."}</p>
+                  <p className="text-base text-muted-foreground">{res.category === "founder" ? "You make the final call on everything." : "Nothing yet."}</p>
                 ) : (
-                  <ul className="flex flex-col gap-1.5">
+                  <ul className="flex flex-col gap-3">
                     {perms.map((p) => (
-                      <li key={p.id} className="flex flex-wrap items-center gap-2 text-xs">
-                        <span className="font-mono text-muted-foreground">{p.id}</span>
+                      <li key={p.id} className="flex flex-wrap items-center gap-2 text-base">
                         <span className="text-brand-ink">{p.action}</span>
                         <LevelBadge level={p.level} />
                         <PermissionStatusBadge status={p.status} />
@@ -148,11 +147,10 @@ export function WorkforceRegistry() {
                 )}
               </div>
               <div className="flex flex-col gap-2">
-                <p className={labelClass}>Current assignments ({work.length})</p>
-                <ul className="flex flex-col gap-1.5">
+                <p className={labelClass}>Tasks they have now ({work.length})</p>
+                <ul className="flex flex-col gap-3">
                   {work.map((w) => (
-                    <li key={w.id} className="flex items-center gap-2 text-xs">
-                      <span className="font-mono text-muted-foreground">{w.id}</span>
+                    <li key={w.id} className="flex flex-wrap items-center gap-3 text-base">
                       <span className="flex-1 truncate">{w.title}</span>
                       <StatusBadge status={w.status} />
                     </li>
@@ -181,12 +179,12 @@ function AddResourceDialog({ open, onClose }: { open: boolean; onClose: () => vo
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle className="font-display text-2xl">Add a resource</DialogTitle>
-          <DialogDescription>New resources start with no permissions.</DialogDescription>
+          <DialogTitle className="font-display text-3xl">Add someone to your team</DialogTitle>
+          <DialogDescription className="text-base">They start with no permission to do anything.</DialogDescription>
         </DialogHeader>
-        <div className="flex flex-col gap-4">
-          <label className="flex flex-col gap-1.5">
-            <span className={labelClass}>Category</span>
+        <div className="flex flex-col gap-5">
+          <label className="flex flex-col gap-2">
+            <span className={labelClass}>What kind of helper?</span>
             <select className={fieldClass} value={category} onChange={(e) => setCategory(e.target.value as ResourceCategory)}>
               {CATEGORIES.filter((c) => c.id !== "founder").map((c) => (
                 <option key={c.id} value={c.id}>{c.label}</option>
@@ -198,20 +196,20 @@ function AddResourceDialog({ open, onClose }: { open: boolean; onClose: () => vo
             <input className={fieldClass} value={name} onChange={(e) => setName(e.target.value)} />
           </label>
           <label className="flex flex-col gap-1.5">
-            <span className={labelClass}>Role</span>
+            <span className={labelClass}>Their job</span>
             <input className={fieldClass} value={role} onChange={(e) => setRole(e.target.value)} />
           </label>
           <label className="flex flex-col gap-1.5">
-            <span className={labelClass}>Capabilities (comma-separated)</span>
+            <span className={labelClass}>What are they good at? (Use commas between skills)</span>
             <input className={fieldClass} value={caps} onChange={(e) => setCaps(e.target.value)} />
           </label>
           <fieldset className="flex flex-col gap-1.5">
-            <legend className={cn(labelClass, "mb-1")}>Business functions</legend>
+            <legend className={cn(labelClass, "mb-2")}>Which parts of the business?</legend>
             {FUNCTIONS.map((f) => (
-              <label key={f.id} className="flex items-center gap-2 text-sm">
+              <label key={f.id} className="flex items-center gap-3 text-base">
                 <input
                   type="checkbox"
-                  className="accent-[hsl(var(--primary))]"
+                  className="h-5 w-5 accent-[hsl(var(--primary))]"
                   checked={fns.includes(f.id)}
                   onChange={(e) => setFns(e.target.checked ? [...fns, f.id] : fns.filter((x) => x !== f.id))}
                 />
@@ -245,7 +243,7 @@ function AddResourceDialog({ open, onClose }: { open: boolean; onClose: () => vo
               onClose()
             }}
           >
-            Add resource
+            Add to team
           </Button>
         </DialogFooter>
       </DialogContent>

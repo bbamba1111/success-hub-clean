@@ -1,103 +1,133 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { Check } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useBoss } from "@/lib/boss/store"
 import { BUSINESS_DAY_SEQUENCE, isClosed } from "@/lib/boss/constants"
 import { formatDate, nextBusinessDate, type DayPhase } from "@/lib/boss/clock"
-import { PageHeader } from "../primitives"
+import { MoreDetails, PageHeader, WordsToKnow } from "../primitives"
 import { ReassignDialog, TaskEditorDialog, type EditorTarget } from "../task-dialogs"
 import { DecideDesignView } from "./decide-design"
 import { CeoWorkdayView } from "./ceo-workday"
 import { CloseoutView } from "./closeout"
 import type { WorkCardHandlers } from "./work-item-card"
 
-type Stage = "design" | "workday" | "closeout"
+export type Step = "decide" | "design" | "do" | "change" | "close"
 
-const defaultStage = (phase: DayPhase): Stage => (phase === "planning" ? "design" : phase === "workday" ? "workday" : "closeout")
+const defaultStep = (phase: DayPhase): Step => (phase === "planning" ? "decide" : phase === "workday" ? "do" : "close")
 
-const SEQUENCE_INDEX: Record<DayPhase, number> = { planning: 2, workday: 6, after_hours: 7, protected_weekend: -1 }
+const WORDS: [string, string][] = [
+  ["Decide & Design My Business Day™", "Your morning plan. You pick your goals and the tasks for today."],
+  ["4-Hour Focused CEO Workday™", "Your work time. Monday to Thursday, 1:00 to 5:00 PM Eastern. You do the plan here."],
+  ["Time Freedom™", "Your free time after 5:00 PM. Work stops so you can live your life."],
+  ["AI Operations Coordinator", "Your AI helper. It sorts and moves work forward. It only does what you allow."],
+  ["Business Work Queue", "The list of all your work, not just today's."],
+  ["Authority", "Permission. It means who is allowed to do a task."],
+]
 
 export function MyBusinessDay() {
   const { state, clock } = useBoss()
-  const [stage, setStage] = useState<Stage>(() => defaultStage(clock.phase))
+  const [step, setStep] = useState<Step>(() => defaultStep(clock.phase))
   const [editor, setEditor] = useState<EditorTarget>(null)
   const [reassignId, setReassignId] = useState<string | null>(null)
   const handlers: WorkCardHandlers = { onEdit: setEditor, onReassign: setReassignId }
 
-  useEffect(() => setStage(defaultStage(clock.phase)), [clock.phase])
+  useEffect(() => setStep(defaultStep(clock.phase)), [clock.phase])
 
-  const protectedTime = clock.phase === "protected_weekend"
-  const stages: { id: Stage; label: string; sub: string; enabled: boolean }[] = [
-    { id: "design", label: "Decide & Design My Business Day™", sub: "Plan before 1:00 PM ET", enabled: !state.day.closedOutAt },
-    { id: "workday", label: "4-Hour Focused CEO Workday™", sub: "Mon–Thu · 1:00–5:00 PM ET", enabled: clock.phase === "workday" && !state.day.closedOutAt },
-    { id: "closeout", label: "Business-day closeout", sub: "5:00 PM ET", enabled: clock.phase !== "planning" },
+  const closed = !!state.day.closedOutAt
+  const working = clock.phase === "workday" && !closed
+  const steps: { id: Step; label: string; sub: string; enabled: boolean }[] = [
+    { id: "decide", label: "Decide", sub: "Pick your goals", enabled: !closed },
+    { id: "design", label: "Design", sub: "Plan the tasks", enabled: !closed },
+    { id: "do", label: "Do", sub: "Do the work", enabled: working },
+    { id: "change", label: "Change", sub: "Fix the plan", enabled: working },
+    { id: "close", label: "Close", sub: "End your day", enabled: clock.phase !== "planning" },
   ]
+  const currentIndex = steps.findIndex((s) => s.id === step)
+
+  if (clock.phase === "protected_weekend") {
+    return (
+      <>
+        <PageHeader eyebrow="My Business Day" title="It is your weekend." />
+        <ProtectedTime />
+      </>
+    )
+  }
 
   return (
     <>
-      <PageHeader
-        eyebrow="My Business Day"
-        title={protectedTime ? "Protected personal time" : formatDate(state.day.date)}
-        description="Decide & Design establishes the plan. The CEO Workday lets you adapt and execute it. You remain in control throughout."
-      />
+      <PageHeader eyebrow="My Business Day" title={formatDate(state.day.date)} description="Follow the steps. Do one step at a time." />
 
-      <ol aria-label="Work-Life Balance Business Day™" className="flex gap-2 overflow-x-auto pb-1">
-        {BUSINESS_DAY_SEQUENCE.map((s, i) => (
-          <li
-            key={s.name}
-            className={cn(
-              "flex min-w-36 shrink-0 flex-col gap-0.5 rounded-md border px-3 py-2",
-              i === SEQUENCE_INDEX[clock.phase] ? "border-brand-green bg-brand-sage-light" : "border-border bg-card",
-              i === 6 && i !== SEQUENCE_INDEX[clock.phase] && "border-brand-green/40",
-            )}
-          >
-            <span className="text-[11px] font-semibold leading-snug text-brand-ink">{s.name}</span>
-            <span className="text-[11px] text-muted-foreground">{s.time}</span>
-          </li>
-        ))}
-      </ol>
-
-      {protectedTime ? (
-        <ProtectedTime />
-      ) : (
-        <>
-          <div role="tablist" aria-label="Business day stages" className="grid gap-2 md:grid-cols-3">
-            {stages.map((s, i) => (
-              <button
-                key={s.id}
-                role="tab"
-                aria-selected={stage === s.id}
-                disabled={!s.enabled}
-                onClick={() => setStage(s.id)}
-                className={cn(
-                  "flex items-center gap-3 rounded-lg border px-4 py-3 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
-                  stage === s.id ? "border-brand-ink bg-brand-ink text-primary-foreground" : "border-border bg-card hover:bg-muted/60",
-                )}
-              >
-                <span
+      <nav aria-label="Steps for your business day">
+        <ol className="grid grid-cols-5 gap-2">
+          {steps.map((s, i) => {
+            const active = s.id === step
+            const done = i < currentIndex
+            return (
+              <li key={s.id}>
+                <button
+                  disabled={!s.enabled}
+                  onClick={() => setStep(s.id)}
+                  aria-current={active ? "step" : undefined}
                   className={cn(
-                    "flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold",
-                    stage === s.id ? "bg-primary-foreground text-brand-ink" : "bg-muted text-brand-ink-soft",
+                    "flex w-full flex-col items-center gap-2 rounded-2xl px-2 py-4 text-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-40",
+                    active ? "bg-brand-green text-primary-foreground" : "bg-card hover:bg-muted",
                   )}
                 >
-                  {String.fromCharCode(65 + i)}
-                </span>
-                <span className="flex flex-col">
-                  <span className="text-sm font-semibold leading-snug">{s.label}</span>
-                  <span className={cn("text-xs", stage === s.id ? "text-primary-foreground/75" : "text-muted-foreground")}>{s.sub}</span>
-                </span>
-              </button>
-            ))}
-          </div>
+                  <span
+                    className={cn(
+                      "flex h-10 w-10 items-center justify-center rounded-full text-lg font-semibold",
+                      active ? "bg-primary-foreground text-brand-green-dark" : done ? "bg-brand-sage-light text-brand-green-dark" : "bg-muted text-brand-ink",
+                    )}
+                  >
+                    {done ? <Check className="h-5 w-5" aria-label="Done" /> : i + 1}
+                  </span>
+                  <span className="text-lg font-semibold leading-tight">{s.label}</span>
+                  <span className={cn("hidden text-sm sm:block", active ? "text-primary-foreground/85" : "text-muted-foreground")}>{s.sub}</span>
+                </button>
+              </li>
+            )
+          })}
+        </ol>
+      </nav>
 
-          {stage === "design" && <DecideDesignView handlers={handlers} phase={clock.phase} onEnterWorkday={() => setStage("workday")} />}
-          {stage === "workday" && (
-            <CeoWorkdayView handlers={handlers} clock={clock} onCloseout={() => setStage("closeout")} onReviewPlan={() => setStage("design")} />
-          )}
-          {stage === "closeout" && <CloseoutView onBack={clock.phase === "workday" && !state.day.closedOutAt ? () => setStage("workday") : undefined} />}
-        </>
+      {(step === "decide" || step === "design") && (
+        <DecideDesignView
+          step={step}
+          handlers={handlers}
+          phase={clock.phase}
+          onNext={() => setStep("design")}
+          onBack={() => setStep("decide")}
+          onEnterWorkday={() => setStep("do")}
+        />
       )}
+      {(step === "do" || step === "change") && (
+        <CeoWorkdayView
+          mode={step}
+          handlers={handlers}
+          clock={clock}
+          onCloseout={() => setStep("close")}
+          onReviewPlan={() => setStep("design")}
+          onChange={() => setStep("change")}
+          onDone={() => setStep("do")}
+        />
+      )}
+      {step === "close" && <CloseoutView onBack={working ? () => setStep("do") : undefined} />}
+
+      <div className="flex flex-col gap-4">
+        <MoreDetails summary="See your whole day">
+          <ol className="flex flex-col gap-3">
+            {BUSINESS_DAY_SEQUENCE.map((s) => (
+              <li key={s.name} className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border pb-3 last:border-0">
+                <span className="text-base font-medium text-brand-ink">{s.name}</span>
+                <span className="text-base text-muted-foreground">{s.time}</span>
+              </li>
+            ))}
+          </ol>
+        </MoreDetails>
+        <WordsToKnow words={WORDS} />
+      </div>
 
       <TaskEditorDialog target={editor} onClose={() => setEditor(null)} />
       <ReassignDialog workId={reassignId} onClose={() => setReassignId(null)} />
@@ -110,21 +140,18 @@ function ProtectedTime() {
   const next = state.day.closedOutAt ? nextBusinessDate(state.day.date) : state.day.date
   const waiting = state.work.filter((w) => !isClosed(w.status) && (w.plannedForDate === next || w.inTodayPlan)).length
   return (
-    <div className="flex flex-col gap-6 rounded-xl border border-border bg-card p-6 md:p-10">
-      <div className="flex flex-col gap-2">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-coral-dark">Thursday 5:00 PM – Sunday 10:00 PM</p>
-        <h2 className="text-balance font-display text-3xl font-semibold text-brand-ink md:text-4xl">Your protected three-day weekend.</h2>
-        <p className="max-w-2xl text-pretty text-sm leading-relaxed text-muted-foreground">
-          The business is designed to operate within its boundaries. {waiting} items are waiting for {formatDate(next)}. The Coordinator is
-          paused and no work is assigned or advanced on your behalf.
-        </p>
-      </div>
+    <div className="flex flex-col gap-6 rounded-2xl bg-card p-8 md:p-12">
+      <p className="text-lg font-semibold text-brand-coral-dark">Thursday 5:00 PM to Sunday 10:00 PM</p>
+      <h2 className="text-balance font-display text-4xl font-semibold text-brand-ink">Rest. Work is done for now.</h2>
+      <p className="max-w-2xl text-pretty text-lg leading-relaxed text-brand-ink-soft">
+        {waiting} tasks will wait for {formatDate(next)}. Your AI helper is resting too. No work moves while you are away.
+      </p>
       <div>
         <button
           onClick={() => dispatch({ type: "SET_CLOCK", mode: "workday" })}
-          className="text-sm font-medium text-brand-green-dark underline-offset-4 hover:underline"
+          className="text-lg font-medium text-brand-green-dark underline underline-offset-4"
         >
-          Preview the CEO Workday (prototype clock)
+          Practice: try work time
         </button>
       </div>
     </div>
