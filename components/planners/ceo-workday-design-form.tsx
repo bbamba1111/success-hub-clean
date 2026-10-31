@@ -64,6 +64,7 @@ import {
 } from "@/lib/ceo-workday/plan-server"
 import { addWorkItem, getTodaysWork, removeWorkItem } from "@/lib/ceo-workday/todays-work-store"
 import { FunctionWorkSelect } from "@/components/ceo-workday/function-work-select"
+import { functionChipClass } from "@/lib/ceo-workday/function-chip-styles"
 import { getWorkflowEntry } from "@/lib/ceo-workday/workflow-registry"
 import {
   loadCeoWorkdayDeclaration,
@@ -569,11 +570,7 @@ export function CeoWorkdayDesignForm() {
                   setAddFn(fn)
                   setTimeout(() => workInputRef.current?.focus(), 50)
                 }}
-                className={`rounded-full border px-2.5 py-1 font-montserrat text-[12px] font-bold tracking-normal transition-colors ${
-                  addFn === fn
-                    ? "border-[#3A2E33] bg-[#3A2E33] text-white"
-                    : "border-[#E8DFE2] bg-white text-[#6B5860] hover:bg-black/[0.03]"
-                }`}
+                className={functionChipClass(fn, addFn === fn)}
               >
                 {CEO_FUNCTION_LABEL[fn]}
               </button>
