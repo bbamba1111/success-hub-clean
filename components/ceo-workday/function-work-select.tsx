@@ -37,10 +37,10 @@ export function FunctionWorkSelect({
           if (v === WRITE_MY_OWN || v === "") onSelect(null)
           else onSelect(options[Number(v)] ?? null)
         }}
-        className="w-full appearance-none rounded-lg border border-[#E8DFE2] bg-white py-2.5 pl-3 pr-9 font-sans text-sm text-[#2E1F27] focus:outline-none focus:ring-2 focus:ring-[#7FB069]/40"
+        className="w-full cursor-pointer appearance-none rounded-lg border border-[#C9DBBE] bg-[#E1EDD9] py-2.5 pl-3 pr-9 font-sans text-sm text-[#2E1F27] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md focus:-translate-y-0.5 focus:shadow-md focus:outline-none focus:ring-2 focus:ring-[#7E9C72]/40"
       >
         <option value="" disabled>
-          Choose from common work for this function…
+          Click here to choose from common work…
         </option>
         {options.map((o, i) => (
           <option key={o.work} value={String(i)}>
