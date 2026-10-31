@@ -113,19 +113,19 @@ export function MovementIntentionForm() {
                 boxShadow: "0 8px 32px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.6)",
               }}
             >
-              <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#3A6B3E]">
+              <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#3F5A36]">
                 Your Movement Declaration™
               </p>
               <p className="mt-2 font-serif text-lg italic leading-snug text-[#1F2A1F]">{built.declaration}</p>
-              <p className="mt-3 font-montserrat text-[10px] font-semibold uppercase tracking-[0.16em] text-[#3A6B3E]/80">
+              <p className="mt-3 font-montserrat text-[10px] font-semibold uppercase tracking-[0.16em] text-[#3F5A36]/80">
                 Arriving in your 30-Minute Movement Window™ …
               </p>
             </motion.div>
           )}
         </AnimatePresence>
 
-        <div className="space-y-4 rounded-2xl border-2 border-[#7FB069]/30 bg-[#7FB069]/5 px-5 py-6 text-center">
-          <CheckCircle2 className="mx-auto h-8 w-8 text-[#7FB069]" aria-hidden />
+        <div className="space-y-4 rounded-2xl border-2 border-[#7E9C72]/30 bg-[#7E9C72]/5 px-5 py-6 text-center">
+          <CheckCircle2 className="mx-auto h-8 w-8 text-[#5F8B4C]" aria-hidden />
           <div>
             <p className="font-sans text-base font-bold text-[#2E1F27]">Your Movement Declaration™ is ready</p>
             <p className="mt-1 font-sans text-sm text-[#6B5860]">
@@ -152,7 +152,7 @@ export function MovementIntentionForm() {
   return (
     <div className="space-y-6">
       <div>
-        <p className="mb-1 font-montserrat text-xs font-semibold uppercase tracking-widest text-[#7FB069]">
+        <p className="mb-1 font-montserrat text-xs font-semibold uppercase tracking-widest text-[#5F8B4C]">
           Step 1 of 3
         </p>
         <h4 className="mb-1 font-sans text-xl font-bold text-[#2E1F27]">Set My Movement Intention™</h4>
@@ -174,8 +174,8 @@ export function MovementIntentionForm() {
               onClick={() => toggleType(t)}
               className={`rounded-full border px-3 py-1.5 font-sans text-sm transition-all ${
                 types.includes(t)
-                  ? "border-[#7FB069] bg-[#7FB069] font-semibold text-white"
-                  : "border-[#E5E5E5] bg-white text-[#3A2E33] hover:border-[#7FB069] hover:text-[#7FB069]"
+                  ? "-translate-y-0.5 border-[#C9AE86] bg-[#F7F0E5] font-semibold text-[#7A6243] shadow-md"
+                  : "border-[#E5E5E5] bg-white text-[#3A2E33] transition-all hover:-translate-y-0.5 hover:border-[#7E9C72] hover:bg-[#E1EDD9] hover:text-[#3F5A36] hover:shadow-md"
               }`}
             >
               {t}
@@ -194,13 +194,13 @@ export function MovementIntentionForm() {
                 addCustomType()
               }
             }}
-            className="flex-1 rounded-lg border border-[#E5E5E5] px-3 py-2 font-sans text-sm focus:outline-none focus:ring-2 focus:ring-[#7FB069]/40"
+            className="flex-1 rounded-lg border border-[#E5E5E5] px-3 py-2 font-sans text-sm focus:outline-none focus:ring-2 focus:ring-[#7E9C72]/40"
           />
           <button
             type="button"
             onClick={addCustomType}
             disabled={!customType.trim()}
-            className="rounded-lg border border-[#7FB069]/40 px-4 py-2 font-sans text-sm font-semibold text-[#3A6B3E] transition-colors hover:bg-[#7FB069]/10 disabled:opacity-40"
+            className="rounded-lg border border-[#7E9C72]/40 px-4 py-2 font-sans text-sm font-semibold text-[#3F5A36] transition-colors hover:bg-[#7E9C72]/10 disabled:opacity-40"
           >
             Add
           </button>
@@ -210,14 +210,14 @@ export function MovementIntentionForm() {
             {types.map((t) => (
               <span
                 key={t}
-                className="inline-flex items-center gap-1.5 rounded-full bg-[#7FB069]/10 px-3 py-1 font-sans text-xs font-semibold text-[#3A6B3E]"
+                className="inline-flex items-center gap-1.5 rounded-full border border-[#C9AE86] bg-[#F7F0E5] px-3 py-1 font-sans text-xs font-semibold text-[#3F5A36]"
               >
                 {t}
                 <button
                   type="button"
                   onClick={() => toggleType(t)}
                   aria-label={`Remove ${t}`}
-                  className="text-[#3A6B3E]/60 hover:text-[#3A6B3E]"
+                  className="text-[#3F5A36]/60 hover:text-[#3F5A36]"
                 >
                   ×
                 </button>
@@ -237,9 +237,9 @@ export function MovementIntentionForm() {
             max={MAX_DURATION}
             value={duration}
             onChange={(e) => setDuration(Number(e.target.value))}
-            className="flex-1 accent-[#7FB069]"
+            className="flex-1 accent-[#7E9C72]"
           />
-          <span className="w-20 shrink-0 text-right font-sans text-lg font-bold text-[#3A6B3E]">
+          <span className="w-20 shrink-0 text-right font-sans text-lg font-bold text-[#3F5A36]">
             {duration} min
           </span>
         </div>
@@ -248,7 +248,7 @@ export function MovementIntentionForm() {
       <Button
         onClick={handleBuild}
         disabled={types.length === 0}
-        className="w-full bg-[#7FB069] py-6 text-base font-semibold text-white hover:bg-[#6FA055] disabled:opacity-40"
+        className="w-full bg-[#5F8B4C] py-6 text-base font-semibold text-white hover:bg-[#4F7A3E] disabled:opacity-40"
       >
         <Sparkles className="mr-2 h-4 w-4" />
         Build My Declaration <ChevronRight className="ml-2 h-4 w-4" />

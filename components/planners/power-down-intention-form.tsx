@@ -124,19 +124,19 @@ export function PowerDownIntentionForm() {
                 boxShadow: "0 8px 32px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.6)",
               }}
             >
-              <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#3A4A7A]">
+              <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#7A6243]">
                 Your Power Down Declaration™
               </p>
               <p className="mt-2 font-serif text-lg italic leading-snug text-[#1F1F2A]">{built.declaration}</p>
-              <p className="mt-3 font-montserrat text-[10px] font-semibold uppercase tracking-[0.16em] text-[#3A4A7A]/80">
+              <p className="mt-3 font-montserrat text-[10px] font-semibold uppercase tracking-[0.16em] text-[#7A6243]/80">
                 Arriving in your Power Down™ …
               </p>
             </motion.div>
           )}
         </AnimatePresence>
 
-        <div className="space-y-4 rounded-2xl border-2 border-[#5B6EA8]/30 bg-[#5B6EA8]/5 px-5 py-6 text-center">
-          <CheckCircle2 className="mx-auto h-8 w-8 text-[#5B6EA8]" aria-hidden />
+        <div className="space-y-4 rounded-2xl border-2 border-[#7E9C72]/30 bg-[#7E9C72]/5 px-5 py-6 text-center">
+          <CheckCircle2 className="mx-auto h-8 w-8 text-[#5F8B4C]" aria-hidden />
           <div>
             <p className="font-sans text-base font-bold text-[#2E1F27]">Your Power Down Declaration™ is ready</p>
             <p className="mt-1 font-sans text-sm text-[#6B5860]">{joinNaturally(built.activities)}</p>
@@ -161,7 +161,7 @@ export function PowerDownIntentionForm() {
   return (
     <div className="space-y-6">
       <div>
-        <p className="mb-1 font-montserrat text-xs font-semibold uppercase tracking-widest text-[#5B6EA8]">
+        <p className="mb-1 font-montserrat text-xs font-semibold uppercase tracking-widest text-[#5F8B4C]">
           Step 1 of 3
         </p>
         <h4 className="mb-1 font-sans text-xl font-bold text-[#2E1F27]">Set My Power Down Intention™</h4>
@@ -183,8 +183,8 @@ export function PowerDownIntentionForm() {
               onClick={() => toggleActivity(t)}
               className={`rounded-full border px-3 py-1.5 font-sans text-sm transition-all ${
                 activities.includes(t)
-                  ? "border-[#6B786B] bg-[#6B786B] font-semibold text-white"
-                  : "border-[#E5E5E5] bg-white text-[#3A2E33] hover:border-[#6B786B] hover:text-[#6B786B]"
+                  ? "-translate-y-0.5 border-[#C9AE86] bg-[#F7F0E5] font-semibold text-[#7A6243] shadow-md"
+                  : "border-[#E5E5E5] bg-white text-[#3A2E33] transition-all hover:-translate-y-0.5 hover:border-[#7E9C72] hover:bg-[#E1EDD9] hover:text-[#3F5A36] hover:shadow-md"
               }`}
             >
               {t}
@@ -203,13 +203,13 @@ export function PowerDownIntentionForm() {
                 addCustomActivity()
               }
             }}
-            className="flex-1 rounded-lg border border-[#E5E5E5] px-3 py-2 font-sans text-sm focus:outline-none focus:ring-2 focus:ring-[#5B6EA8]/40"
+            className="flex-1 rounded-lg border border-[#E5E5E5] px-3 py-2 font-sans text-sm focus:outline-none focus:ring-2 focus:ring-[#7E9C72]/40"
           />
           <button
             type="button"
             onClick={addCustomActivity}
             disabled={!customActivity.trim()}
-            className="rounded-lg border border-[#5B6EA8]/40 px-4 py-2 font-sans text-sm font-semibold text-[#3A4A7A] transition-colors hover:bg-[#5B6EA8]/10 disabled:opacity-40"
+            className="rounded-lg border border-[#7E9C72]/40 px-4 py-2 font-sans text-sm font-semibold text-[#7A6243] transition-colors hover:bg-[#7E9C72]/10 disabled:opacity-40"
           >
             Add
           </button>
@@ -219,14 +219,14 @@ export function PowerDownIntentionForm() {
             {activities.map((a) => (
               <span
                 key={a}
-                className="inline-flex items-center gap-1.5 rounded-full bg-[#5B6EA8]/10 px-3 py-1 font-sans text-xs font-semibold text-[#3A4A7A]"
+                className="inline-flex items-center gap-1.5 rounded-full border border-[#C9AE86] bg-[#F7F0E5] px-3 py-1 font-sans text-xs font-semibold text-[#7A6243]"
               >
                 {a}
                 <button
                   type="button"
                   onClick={() => toggleActivity(a)}
                   aria-label={`Remove ${a}`}
-                  className="text-[#3A4A7A]/60 hover:text-[#3A4A7A]"
+                  className="text-[#7A6243]/60 hover:text-[#7A6243]"
                 >
                   ×
                 </button>
@@ -251,8 +251,8 @@ export function PowerDownIntentionForm() {
               onClick={() => setSleepHours(h)}
               className={`rounded-full border px-3 py-1.5 font-sans text-sm transition-all ${
                 sleepHours === h
-                  ? "border-[#6B786B] bg-[#6B786B] font-semibold text-white"
-                  : "border-[#E5E5E5] bg-white text-[#3A2E33] hover:border-[#6B786B] hover:text-[#6B786B]"
+                  ? "-translate-y-0.5 border-[#C9AE86] bg-[#F7F0E5] font-semibold text-[#7A6243] shadow-md"
+                  : "border-[#E5E5E5] bg-white text-[#3A2E33] transition-all hover:-translate-y-0.5 hover:border-[#7E9C72] hover:bg-[#E1EDD9] hover:text-[#3F5A36] hover:shadow-md"
               }`}
             >
               {formatHours(h)}
@@ -264,7 +264,7 @@ export function PowerDownIntentionForm() {
       <Button
         onClick={handleBuild}
         disabled={activities.length === 0 || !sleepHours}
-        className="w-full bg-[#2F5233] py-6 text-base font-semibold text-white hover:bg-[#264227] disabled:opacity-40"
+        className="w-full bg-[#5F8B4C] py-6 text-base font-semibold text-white hover:bg-[#4F7A3E] disabled:opacity-40"
       >
         <Sparkles className="mr-2 h-4 w-4" />
         Build My Declaration <ChevronRight className="ml-2 h-4 w-4" />
