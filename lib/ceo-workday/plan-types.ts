@@ -34,6 +34,12 @@ export const CEO_TREATMENT_LABEL: Record<CeoTreatment, string> = {
 
 /** The CEO business function through which the intervention happens. */
 export type CeoBusinessFunction =
+  | "client-attraction"
+  | "sales-conversion"
+  | "delivery"
+  | "operations"
+  | "operations-design"
+  // Legacy values kept so previously saved plan items still render.
   | "build"
   | "decide"
   | "own"
@@ -48,6 +54,11 @@ export type CeoBusinessFunction =
   | "solve"
 
 export const CEO_FUNCTION_LABEL: Record<CeoBusinessFunction, string> = {
+  "client-attraction": "CLIENT ATTRACTION",
+  "sales-conversion": "SALES & CONVERSION",
+  delivery: "SERVICE OR PRODUCT DELIVERY",
+  operations: "BUSINESS OPERATIONS",
+  "operations-design": "BUSINESS OPERATIONS DESIGN & REDESIGN",
   build: "BUILD",
   decide: "DECIDE",
   own: "OWN",
@@ -62,8 +73,19 @@ export const CEO_FUNCTION_LABEL: Record<CeoBusinessFunction, string> = {
   solve: "SOLVE",
 }
 
+/** The Five Business Functions — the only top-level work categories in the planner. */
+export const FIVE_BUSINESS_FUNCTIONS: CeoBusinessFunction[] = [
+  "client-attraction",
+  "sales-conversion",
+  "delivery",
+  "operations",
+  "operations-design",
+]
+
 /** Functions that contextually activate Business Articulation™. */
 export const ARTICULATION_FUNCTIONS: ReadonlySet<CeoBusinessFunction> = new Set<CeoBusinessFunction>([
+  "client-attraction",
+  "sales-conversion",
   "communicate",
   "sell",
   "connect",

@@ -41,18 +41,11 @@ export type HourWorkInput = {
 }
 
 const FUNCTION_ORDER: CeoBusinessFunction[] = [
-  "build",
-  "decide",
-  "own",
-  "delegate",
-  "systemize",
-  "augment-automate-ai",
-  "connect",
-  "communicate",
-  "sell",
-  "market",
-  "deliver",
-  "solve",
+  "client-attraction",
+  "sales-conversion",
+  "delivery",
+  "operations",
+  "operations-design",
 ]
 
 function emptyBools(): PerHour<boolean> {

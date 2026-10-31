@@ -61,7 +61,7 @@ create table if not exists public.ceo_workday_plan_items (
   treatment text not null
     check (treatment in ('build-change','implement-operate','practice-develop','delegate-transfer','systemize-augment-automate-ai')),
   business_function text not null
-    check (business_function in ('build','decide','own','delegate','systemize','augment-automate-ai','connect','communicate','sell','market','deliver','solve')),
+    check (business_function in ('client-attraction','sales-conversion','delivery','operations','operations-design','build','decide','own','delegate','systemize','augment-automate-ai','connect','communicate','sell','market','deliver','solve')),
   role text not null default 'primary'
     check (role in ('primary','supporting','validate','continue','founder-added')),
 

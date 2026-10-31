@@ -74,6 +74,11 @@ import { CeoHourCheckin } from "./ceo-hour-checkin"
 type AdjustAction = "change" | "defer" | "delegate" | "remove" | "help" | "other"
 
 const CEO_FUNCTION_TO_CATEGORY: Record<CeoBusinessFunction, NonNullable<CeoPlanItem["ceoWorkCategory"]>> = {
+  "client-attraction": "MARKET",
+  "sales-conversion": "SELL",
+  delivery: "DELIVER",
+  operations: "SYSTEMIZE",
+  "operations-design": "BUILD",
   build: "BUILD",
   decide: "DECIDE",
   own: "DECIDE",
@@ -689,7 +694,7 @@ export function CeoWorkdayLivePlan() {
   )
 }
 
-/* ── Work surface ──────────────────────────────────────────────────────────── */
+/* ── Work surface ──────��───────────────────────────────────────────────────── */
 
 /**
  * Where the assignment is actually done. Three states:

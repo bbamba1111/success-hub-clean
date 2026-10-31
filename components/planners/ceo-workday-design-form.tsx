@@ -91,18 +91,11 @@ const DECISION_LABEL: Record<CeoFounderDecision, string> = {
 }
 
 const FUNCTION_ORDER: CeoBusinessFunction[] = [
-  "build",
-  "decide",
-  "own",
-  "delegate",
-  "systemize",
-  "augment-automate-ai",
-  "connect",
-  "communicate",
-  "sell",
-  "market",
-  "deliver",
-  "solve",
+  "client-attraction",
+  "sales-conversion",
+  "delivery",
+  "operations",
+  "operations-design",
 ]
 
 function newLocalId() {
@@ -1000,6 +993,11 @@ function WorkCard({
 }
 
 const CEO_FUNCTION_TO_CATEGORY: Record<CeoBusinessFunction, CeoPlanItem["ceoWorkCategory"]> = {
+  "client-attraction": "MARKET",
+  "sales-conversion": "SELL",
+  delivery: "DELIVER",
+  operations: "SYSTEMIZE",
+  "operations-design": "BUILD",
   build: "BUILD",
   decide: "DECIDE",
   own: "DECIDE",
