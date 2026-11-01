@@ -28,7 +28,6 @@ import { MonthlyBoundaryFocusPanel } from "@/components/ceo-workday/monthly-boun
 export function FounderGpsWorkspace() {
   return (
     <div className="space-y-6">
-      <MonthlyBoundaryFocusPanel />
       {/* This Week's Three Priorities™ now renders inside CeoWorkdayLivePlan,
           directly under the Workday Declaration™ (the two cards were reversed). */}
       <CeoWorkdayLivePlan />

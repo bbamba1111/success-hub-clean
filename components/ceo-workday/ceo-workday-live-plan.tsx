@@ -72,6 +72,7 @@ import type { BusinessAssetBuildRecord } from "@/utils/business-asset-build-stor
 import { CeoHourCheckin } from "./ceo-hour-checkin"
 import { BoundaryWorkSurface } from "./boundary-work-surface"
 import { boundaryWorkKind } from "@/lib/ceo-workday/boundary-work"
+import { MonthlyBoundaryFocusPanel } from "./monthly-boundary-focus-panel"
 
 type AdjustAction = "change" | "defer" | "delegate" | "remove" | "help" | "other"
 
@@ -707,7 +708,10 @@ export function CeoWorkdayLivePlan() {
         </div>
   )
 
+  const monthlyBoundaryChosen = activeItems.some((i) => boundaryWorkKind(i.title) === "monthly")
+
   const sections: Record<WorkdaySectionId, { title: string; node: ReactNode }> = {
+    monthly: { title: "My Monthly Boundary Focus™", node: monthlyBoundaryChosen ? <MonthlyBoundaryFocusPanel /> : null },
     declaration: { title: dayDeclaration ? "My Workday Declaration™" : "My 4-Hour CEO Workday Declaration™", node: declarationSection },
     work: { title: "What Must Happen Today™", node: plan ? workSection : null },
     hours: { title: "Four hours · four check-ins", node: hoursSection },
