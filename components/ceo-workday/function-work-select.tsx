@@ -2,7 +2,7 @@
 
 import type { CeoBusinessFunction } from "@/lib/ceo-workday/plan-types"
 import { workOptionsFor, type FunctionWorkOption } from "@/lib/ceo-workday/function-work-options"
-import { useWeeklyBoundaryFocus } from "@/lib/weekly-boundary-focus/use-weekly-boundary-focus"
+import { MONTHLY_BOUNDARY_WORK, WEEKLY_BOUNDARY_WORK } from "@/lib/ceo-workday/boundary-work"
 import { useMonthlyBoundaryFocus } from "@/lib/monthly-boundary-focus/use-monthly-boundary-focus"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
@@ -23,27 +23,12 @@ export function FunctionWorkSelect({
   value: string
   onSelect: (option: FunctionWorkOption | null) => void
 }) {
-  const weekly = useWeeklyBoundaryFocus()
   const monthly = useMonthlyBoundaryFocus()
 
   const boundaryOptions: FunctionWorkOption[] = []
   if (fn === "operations-design") {
-    const weeklyText = weekly.focus.boundaryText?.trim()
-    boundaryOptions.push({
-      work: weeklyText
-        ? `Build my Weekly Boundary Focus™ into my business: ${weeklyText}`
-        : "Choose and build my Weekly Boundary Focus™ into my business.",
-      outcome: "This week's boundary is protected by a clear business rule I can follow.",
-    })
-    if (monthly.entitled) {
-      const monthlyText = monthly.focus?.boundaryText?.trim()
-      boundaryOptions.push({
-        work: monthlyText
-          ? `Build my Monthly Business Boundary Focus™ into my business: ${monthlyText}`
-          : "Choose and build my Monthly Business Boundary Focus™ into my business.",
-        outcome: "This cycle's boundary is built into how my business operates.",
-      })
-    }
+    boundaryOptions.push(WEEKLY_BOUNDARY_WORK)
+    if (monthly.entitled) boundaryOptions.push(MONTHLY_BOUNDARY_WORK)
   }
 
   const options = [...boundaryOptions, ...workOptionsFor(fn)]

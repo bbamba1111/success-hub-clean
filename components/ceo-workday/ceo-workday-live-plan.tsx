@@ -69,6 +69,8 @@ import { BUSINESS_ASSETS, getBusinessAsset } from "@/lib/business-asset-library/
 import { AssetDetailView } from "@/components/business-asset-library/asset-detail-view"
 import type { BusinessAssetBuildRecord } from "@/utils/business-asset-build-storage"
 import { CeoHourCheckin } from "./ceo-hour-checkin"
+import { BoundaryWorkSurface } from "./boundary-work-surface"
+import { boundaryWorkKind } from "@/lib/ceo-workday/boundary-work"
 
 type AdjustAction = "change" | "defer" | "delegate" | "remove" | "help" | "other"
 
@@ -725,6 +727,20 @@ function CeoPlanItemWorkSurface({
     }
     return Array.from(m.entries())
   }, [])
+
+  const boundaryKind = boundaryWorkKind(item.title)
+  if (boundaryKind && !asset) {
+    return (
+      <BoundaryWorkSurface
+        kind={boundaryKind}
+        expectedEvidence={item.expectedEvidence}
+        completed={item.status === "completed"}
+        workItemId={item.id}
+        planId={item.planId ?? null}
+        onComplete={onManualComplete}
+      />
+    )
+  }
 
   if (asset) {
     return (
