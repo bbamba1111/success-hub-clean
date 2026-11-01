@@ -24,6 +24,7 @@ import { HOUR_BLOCKS, type HourBlockIndex } from "@/lib/ceo-workday/hour-blocks"
 import { useHourlyWork } from "@/lib/ceo-workday/use-hourly-work"
 import { CEO_FUNCTION_LABEL, type CeoBusinessFunction, type CeoPlanItem } from "@/lib/ceo-workday/plan-types"
 import { FunctionWorkSelect } from "@/components/ceo-workday/function-work-select"
+import { BoundaryDesignRedesign } from "@/components/ceo-workday/boundary-design-redesign"
 import { functionChipClass } from "@/lib/ceo-workday/function-chip-styles"
 import { WriteWithAiStudio } from "@/components/thought-leadership/write-with-ai-studio"
 import type { ThoughtLeadershipMode } from "@/lib/thought-leadership/format-registry"
@@ -293,6 +294,8 @@ export function WhatMustHappenToday({
                             ))}
                           </div>
                         </div>
+
+                        {builder.fn === "operations-design" && <BoundaryDesignRedesign />}
 
                         <div>
                           <label
