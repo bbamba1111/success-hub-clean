@@ -28,7 +28,7 @@ import { LunchIntentionForm } from "@/components/planners/lunch-intention-form"
 import { PowerDownIntentionForm } from "@/components/planners/power-down-intention-form"
 import { CherryBlossomWorkstation } from "@/components/cherry-blossom-workstation"
 import { PriorityFocusAreas } from "@/components/decide-design/priority-focus-areas"
-import { WeeklyPrioritiesDesigner, WeeklyLifePrioritiesCard } from "@/components/decide-design/weekly-priorities-designer"
+import { WeeklyLifePrioritiesCard } from "@/components/decide-design/weekly-priorities-designer"
 import { WorkdayDeclaration } from "@/components/decide-design/workday-declaration"
 import { TimeFreedomDeclaration } from "@/components/decide-design/time-freedom-declaration"
 import { DecideIdentitySpace } from "@/components/daily-identity/decide-identity-space"
@@ -64,8 +64,6 @@ export function DebriefSpace() {
       {/* Identity box — moved under the heading so the two are reversed. */}
       <DecideIdentitySpace />
 
-      {/* ── My Weekly Work-Life Balance Boundary Focus™ (ends with Save My Week) ── */}
-      <WeeklyPrioritiesDesigner />
 
       {/* ── My 4-Hour CEO Workday Declaration™ — woven from who you're being,
            your weekly life priorities, and your boundary focus. */}

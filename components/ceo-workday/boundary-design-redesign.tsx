@@ -44,8 +44,7 @@ export function BoundaryDesignRedesign() {
         <ShieldCheck className="h-4 w-4" aria-hidden /> Boundary Design &amp; Redesign
       </p>
       <p className="font-sans text-base leading-relaxed text-[#6B5860] text-pretty">
-        Open your weekly or monthly boundary to review, choose, or change how it protects your time. These are the
-        same boundaries you set in Decide &amp; Design™.
+        Open your weekly or monthly boundary to choose, review, or change how it protects your time.
       </p>
 
       <div className="grid gap-3 sm:grid-cols-2">
@@ -70,37 +69,30 @@ export function BoundaryDesignRedesign() {
           </span>
         </button>
 
-        {monthly.entitled ? (
-          <button
-            type="button"
-            className={cn(cardClass, open === "monthly" && "border-[#5A7A45] bg-[#F3F8ED]")}
-            aria-expanded={open === "monthly"}
-            aria-controls="boundary-design-monthly"
-            onClick={() => toggle("monthly")}
-          >
-            <span className="flex w-full items-center justify-between gap-2 font-sans text-base font-bold text-[#2E1F27]">
-              <span className="inline-flex items-center gap-2">
-                <CalendarRange className="h-4 w-4 text-[#5A7A45]" aria-hidden /> Monthly Boundary Focus™
-              </span>
-              <ChevronDown
-                className={cn("h-4 w-4 text-[#5A7A45] transition-transform", open === "monthly" && "rotate-180")}
-                aria-hidden
-              />
+        <button
+          type="button"
+          className={cn(cardClass, open === "monthly" && "border-[#5A7A45] bg-[#F3F8ED]")}
+          aria-expanded={open === "monthly"}
+          aria-controls="boundary-design-monthly"
+          onClick={() => toggle("monthly")}
+        >
+          <span className="flex w-full items-center justify-between gap-2 font-sans text-base font-bold text-[#2E1F27]">
+            <span className="inline-flex items-center gap-2">
+              <CalendarRange className="h-4 w-4 text-[#5A7A45]" aria-hidden /> Monthly Boundary Focus™
             </span>
-            <span className="font-sans text-base leading-relaxed text-[#6B5860]">
-              {monthlyText ? `This cycle: ${monthlyText}` : "Choose this cycle's boundary in Decide & Design™."}
-            </span>
-          </button>
-        ) : (
-          <div className="flex flex-col items-start gap-1 rounded-2xl border border-dashed border-[#E8DFE2] bg-white px-4 py-3">
-            <span className="inline-flex items-center gap-2 font-sans text-base font-bold text-[#6B5860]">
-              <Lock className="h-4 w-4" aria-hidden /> Monthly Boundary Focus™
-            </span>
-            <span className="font-sans text-base leading-relaxed text-[#6B5860]">
-              Included with Monthly Membership.
-            </span>
-          </div>
-        )}
+            <ChevronDown
+              className={cn("h-4 w-4 text-[#5A7A45] transition-transform", open === "monthly" && "rotate-180")}
+              aria-hidden
+            />
+          </span>
+          <span className="font-sans text-base leading-relaxed text-[#6B5860]">
+            {!monthly.entitled
+              ? "Included with Monthly Membership."
+              : monthlyText
+                ? `This cycle: ${monthlyText}`
+                : "Choose this cycle's boundary."}
+          </span>
+        </button>
       </div>
 
       {open === "weekly" && (
@@ -108,9 +100,16 @@ export function BoundaryDesignRedesign() {
           <BoundaryFocusPanel />
         </div>
       )}
-      {open === "monthly" && monthly.entitled && (
+      {open === "monthly" && (
         <div id="boundary-design-monthly">
-          <MonthlyBoundaryFocusPanel />
+          {monthly.entitled ? (
+            <MonthlyBoundaryFocusPanel />
+          ) : (
+            <p className="inline-flex items-center gap-2 rounded-2xl border border-dashed border-[#E8DFE2] bg-white px-4 py-3 font-sans text-base text-[#6B5860]">
+              <Lock className="h-4 w-4 shrink-0" aria-hidden /> The Monthly Boundary Focus™ is included with Monthly
+              Membership.
+            </p>
+          )}
         </div>
       )}
     </section>

@@ -4,7 +4,6 @@ import { useEffect, useState } from "react"
 import { CheckCircle2, RefreshCw, Sparkles, Speech } from "lucide-react"
 import { useWeeklyCommitments } from "@/lib/weekly-commitments/use-weekly-commitments"
 import { useCurrentPriorityFocus } from "@/lib/boundary-report/use-current-priority-focus"
-import { useMonthlyBoundaryFocus } from "@/lib/monthly-boundary-focus/use-monthly-boundary-focus"
 import { DAILY_IDENTITY_CHANGED_EVENT, getDateKey, loadDailyIdentity } from "@/lib/daily-identity/storage"
 
 /**
@@ -81,10 +80,10 @@ function buildDeclaration(
 
 export function WorkdayDeclaration({ mode = "build" }: { mode?: "build" | "read" }) {
   const { commitments: c, update, saveWeek, isLoading } = useWeeklyCommitments()
-  // Only Monthly Cycle members have a boundary strand. Monday-only and
-  // Business Week participants build their declaration from two boxes.
-  const { focus: monthlyFocus, entitled: isMonthlyMember } = useMonthlyBoundaryFocus()
-  const boundary = isMonthlyMember ? (monthlyFocus?.boundaryText ?? "") : ""
+  // The declaration is built from two boxes only: who I'm being and Priority
+  // Focus Areas. Boundaries live in Business Function 5 of the CEO Workday™.
+  const isMonthlyMember = false
+  const boundary = ""
 
   // Priority Focus Areas™ are carried over from the most recent Work-Life
   // Balance Reality Check™ (Thursday/Sunday) — they replace the old freeform
