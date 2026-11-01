@@ -99,23 +99,48 @@ Return ONLY valid JSON with exactly two keys: {"subject": string, "body": string
     .filter(Boolean)
     .join("\n")
 
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.OPENAI_API_KEY}` },
-    body: JSON.stringify({
-      model: "gpt-4o-mini",
-      temperature: 0.85,
-      max_tokens: 400,
-      response_format: { type: "json_object" },
-      messages: [
-        { role: "system", content: system },
-        { role: "user", content: user },
-      ],
-    }),
-  })
+  const messages = [
+    { role: "system", content: system },
+    { role: "user", content: user },
+  ]
 
-  if (!response.ok) {
-    console.error("[v0] communications/draft OpenAI error:", response.status, await response.text())
+  // The installed AI SDK (v3) predates built-in Gateway support, so we call the
+  // Gateway's OpenAI-compatible endpoint directly and fall back to OpenAI.
+  const gatewayToken = process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_OIDC_TOKEN
+  const providers = [
+    gatewayToken
+      ? { url: "https://ai-gateway.vercel.sh/v1/chat/completions", key: gatewayToken, model: "openai/gpt-4o-mini" }
+      : null,
+    process.env.OPENAI_API_KEY
+      ? { url: "https://api.openai.com/v1/chat/completions", key: process.env.OPENAI_API_KEY, model: "gpt-4o-mini" }
+      : null,
+  ].filter((p): p is { url: string; key: string; model: string } => p !== null)
+
+  let response: Response | null = null
+  for (const p of providers) {
+    try {
+      const r = await fetch(p.url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${p.key}` },
+        body: JSON.stringify({
+          model: p.model,
+          temperature: 0.85,
+          max_tokens: 400,
+          response_format: { type: "json_object" },
+          messages,
+        }),
+      })
+      if (r.ok) {
+        response = r
+        break
+      }
+      console.error("communications/draft provider error:", p.url, r.status, await r.text())
+    } catch (err) {
+      console.error("communications/draft provider failed:", p.url, err)
+    }
+  }
+
+  if (!response) {
     return NextResponse.json({ error: "Could not write a draft right now. Please try again." }, { status: 502 })
   }
 
