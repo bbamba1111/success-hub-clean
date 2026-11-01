@@ -28,6 +28,8 @@ import {
 } from "@/lib/weekly-life-priorities/catalog"
 import type { LifePrioritySelection } from "@/lib/weekly-life-priorities/types"
 import { MonthlyBoundaryFocus } from "@/components/decide-design/monthly-boundary-focus"
+import { BoundaryFocusPanel } from "@/components/ceo-workday/boundary-focus-panel"
+import { useMonthlyBoundaryFocus } from "@/lib/monthly-boundary-focus/use-monthly-boundary-focus"
 import { getLatestBoundaryReport } from "@/lib/boundary-report/actions"
 import { useCurrentPriorityFocus } from "@/lib/boundary-report/use-current-priority-focus"
 import type { BoundaryReportData } from "@/lib/boundary-report/types"
@@ -307,13 +309,18 @@ export function WeeklyLifePrioritiesCard() {
   return <LifePrioritiesSection report={report} />
 }
 
+/**
+ * Every participant builds a Weekly Boundary Focus™ here. The Monthly Business
+ * Boundary Focus™ appears alongside it only for active Monthly Cycle Members.
+ */
 export function WeeklyPrioritiesDesigner() {
   const report = useLatestBoundaryReport()
+  const { entitled: isMonthlyMember } = useMonthlyBoundaryFocus()
 
   return (
     <div className="space-y-6">
-      <MonthlyBoundaryFocus report={report} />
-
+      <BoundaryFocusPanel context="decide-design" />
+      {isMonthlyMember && <MonthlyBoundaryFocus report={report} />}
     </div>
   )
 }

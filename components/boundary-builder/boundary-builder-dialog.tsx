@@ -54,7 +54,28 @@ interface Props {
   weekKey: string
   boundaryFocusText: string
   boundaryOptionId?: string | null
+  /** Weekly (1-Week Experience) or Monthly (membership cycle). Changes labels, review timing and adoption rules. */
+  cadence?: "weekly" | "monthly"
 }
+
+const CADENCE_COPY = {
+  weekly: {
+    builder: "Weekly Boundary Builder™",
+    focusLabel: "This week's Boundary Focus™",
+    focusFallback: "Your boundary for this week",
+    summaryLabel: "Weekly Boundary Focus™",
+    timing: "Effective this week",
+    reviewDays: 7,
+  },
+  monthly: {
+    builder: "Monthly Boundary Builder™",
+    focusLabel: "This cycle's Monthly Boundary Focus™",
+    focusFallback: "Your boundary for this 30-day cycle",
+    summaryLabel: "Monthly Boundary Focus™",
+    timing: "Effective for this 30-day cycle",
+    reviewDays: 30,
+  },
+} as const
 
 /* -------------------------------------------------------------- */
 /* Small shared UI                                                 */
@@ -115,7 +136,15 @@ const microLabel = "font-montserrat text-[10px] font-bold uppercase tracking-[0.
 /* Main                                                            */
 /* -------------------------------------------------------------- */
 
-export function BoundaryBuilderDialog({ open, onOpenChange, weekKey, boundaryFocusText, boundaryOptionId }: Props) {
+export function BoundaryBuilderDialog({
+  open,
+  onOpenChange,
+  weekKey,
+  boundaryFocusText,
+  boundaryOptionId,
+  cadence = "weekly",
+}: Props) {
+  const copy = CADENCE_COPY[cadence]
   const { sos, stakeholders, saveSos, upsertStakeholder, removeStakeholder, refresh } = useHumanSos(
     weekKey,
     boundaryFocusText,
@@ -238,10 +267,19 @@ export function BoundaryBuilderDialog({ open, onOpenChange, weekKey, boundaryFoc
     setStep((s) => Math.max(1, s - 1))
   }
 
+  // A weekly operating rule is established by the founder alone. Stakeholder
+  // alignment stays available as optional depth, and remains the adoption gate
+  // only for the monthly Human SOS™ when stakeholders have been added.
+  const canAdopt = cadence === "weekly" || localStakeholders.length === 0 || alignment.ready
+
   async function adopt() {
-    if (!alignment.ready) return
+    if (!canAdopt) return
+    if (step === 7) {
+      if (!draft.id) await persist({ currentStep: 7 })
+      await persistStakeholders()
+    }
     const today = new Date()
-    const review = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000)
+    const review = new Date(today.getTime() + copy.reviewDays * 24 * 60 * 60 * 1000)
     const effective = draft.effectiveDate ?? today.toISOString().slice(0, 10)
     const reviewDate = draft.reviewDate ?? review.toISOString().slice(0, 10)
     const id = await persist({
@@ -330,7 +368,8 @@ export function BoundaryBuilderDialog({ open, onOpenChange, weekKey, boundaryFoc
         <div className="sticky top-0 z-10 border-b border-[#EFE7EA] bg-[#FBFAF7]/95 px-6 py-5 backdrop-blur sm:px-8">
           <DialogHeader className="space-y-1">
             <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#5A7A45]">
-              Weekly Work-Life Balance Boundary Builder™ · Step {step} of {TOTAL_BUILDER_STEPS}
+              {copy.builder} · Step {step} of {TOTAL_BUILDER_STEPS}
+              {step > 3 && " · optional"}
             </p>
             <DialogTitle className="font-serif text-2xl text-[#2E1F27]">{meta.label}</DialogTitle>
           </DialogHeader>
@@ -349,9 +388,9 @@ export function BoundaryBuilderDialog({ open, onOpenChange, weekKey, boundaryFoc
         <div className="px-6 py-6 sm:px-8">
           {/* The one boundary being operationalized — always in view. */}
           <div className="mb-6 rounded-2xl border border-[#8DAE72]/30 bg-[#F4F7F0] px-5 py-4">
-            <p className={microLabel}>This week&apos;s Boundary Focus™</p>
+            <p className={microLabel}>{copy.focusLabel}</p>
             <p className="mt-1 font-display text-lg font-semibold text-[#2E1F27] text-pretty">
-              {draft.boundaryFocusText || boundaryFocusText || "Your boundary for this week"}
+              {draft.boundaryFocusText || boundaryFocusText || copy.focusFallback}
             </p>
           </div>
 
@@ -818,7 +857,7 @@ export function BoundaryBuilderDialog({ open, onOpenChange, weekKey, boundaryFoc
                   A Human SOS™ makes that protection humanly sustainable and operational in the business.
                 </p>
 
-                <SummaryRow label="Weekly Boundary Focus™" value={draft.boundaryFocusText} />
+                <SummaryRow label={copy.summaryLabel} value={draft.boundaryFocusText} />
                 <SummaryRow label="Work-Life Balance Boundary™" value={draft.boundaryStatement} />
                 <SummaryRow
                   label="Business requirement"
@@ -873,10 +912,10 @@ export function BoundaryBuilderDialog({ open, onOpenChange, weekKey, boundaryFoc
                 </label>
               </div>
 
-              {!alignment.ready && (
+              {!canAdopt && (
                 <p className="rounded-lg bg-[#F4F7F0] px-4 py-3 font-sans text-sm text-[#6B5860]">
-                  This boundary can become a Human SOS™ once every required stakeholder is aligned and all questions
-                  and objections are resolved.
+                  You added stakeholders, so this monthly boundary becomes a Human SOS™ once each one is aligned and
+                  their questions and objections are resolved.
                 </p>
               )}
             </div>
@@ -895,19 +934,37 @@ export function BoundaryBuilderDialog({ open, onOpenChange, weekKey, boundaryFoc
           </button>
 
           {step < TOTAL_BUILDER_STEPS ? (
-            <button
-              type="button"
-              onClick={() => void goNext()}
-              disabled={!canContinue || saving}
-              className="inline-flex items-center gap-1.5 rounded-full bg-[#5A7A45] px-5 py-2.5 font-sans text-sm font-bold text-white hover:opacity-90 disabled:opacity-40"
-            >
-              {saving ? "Saving…" : "Continue"} <ArrowRight className="h-4 w-4" aria-hidden />
-            </button>
+            <div className="flex flex-wrap items-center justify-end gap-2">
+              {/* Steps 1–3 are all a weekly founder needs to establish the operating rule. */}
+              {cadence === "weekly" && step >= 3 && (
+                <button
+                  type="button"
+                  onClick={() => void adopt()}
+                  disabled={!draft.operatingRuleText.trim() || saving}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-[#5A7A45] px-5 py-2.5 font-sans text-sm font-bold text-white hover:opacity-90 disabled:opacity-40"
+                >
+                  <ShieldCheck className="h-4 w-4" aria-hidden /> {saving ? "Saving…" : "Establish My Operating Rule"}
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => void goNext()}
+                disabled={!canContinue || saving}
+                className={
+                  cadence === "weekly" && step >= 3
+                    ? "inline-flex items-center gap-1.5 rounded-full border border-[#5A7A45]/40 bg-white px-5 py-2.5 font-sans text-sm font-bold text-[#5A7A45] hover:bg-[#F4F7F0] disabled:opacity-40"
+                    : "inline-flex items-center gap-1.5 rounded-full bg-[#5A7A45] px-5 py-2.5 font-sans text-sm font-bold text-white hover:opacity-90 disabled:opacity-40"
+                }
+              >
+                {saving ? "Saving…" : cadence === "weekly" && step >= 3 ? "Keep building (optional)" : "Continue"}{" "}
+                <ArrowRight className="h-4 w-4" aria-hidden />
+              </button>
+            </div>
           ) : (
             <button
               type="button"
               onClick={() => void adopt()}
-              disabled={!alignment.ready || saving}
+              disabled={!canAdopt || saving}
               className="inline-flex items-center gap-1.5 rounded-full bg-[#5A7A45] px-5 py-2.5 font-sans text-sm font-bold text-white hover:opacity-90 disabled:opacity-40"
             >
               <ShieldCheck className="h-4 w-4" aria-hidden /> {saving ? "Adopting…" : "Adopt Human SOS™"}
@@ -934,7 +991,7 @@ export function BoundaryBuilderDialog({ open, onOpenChange, weekKey, boundaryFoc
         initialType="boundary"
         commitmentText={draft.boundaryStatement}
         initialSubjectText={draft.boundaryStatement}
-        initialTiming="Effective this week"
+        initialTiming={copy.timing}
       />
     </Dialog>
   )

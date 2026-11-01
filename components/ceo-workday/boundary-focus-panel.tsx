@@ -20,8 +20,9 @@ import { useHumanSos } from "@/lib/human-sos/use-human-sos"
 import { BOUNDARY_OPTIONS } from "@/lib/weekly-boundary-focus/catalog"
 import { BoundaryBuilderDialog } from "@/components/boundary-builder/boundary-builder-dialog"
 
-export function BoundaryFocusPanel() {
+export function BoundaryFocusPanel({ context = "workday" }: { context?: "workday" | "decide-design" } = {}) {
   const { focus, save, isLoading } = useWeeklyBoundaryFocus()
+  const elsewhere = context === "workday" ? "Decide & Design™" : "your 4-Hour Focused CEO Workday™"
   const boundaryText = focus.boundaryText?.trim() || ""
   const { sos } = useHumanSos(focus.weekKey, boundaryText)
   const [open, setOpen] = useState(false)
@@ -55,8 +56,9 @@ export function BoundaryFocusPanel() {
   const chooser = (
     <div className="space-y-3">
       <p className="font-sans text-sm leading-relaxed text-[#6B5860] text-pretty">
-        Choose the one Work-Life Balance Boundary Focus™ you&apos;ll build into the business and live this week. You can
-        also set or change it in Decide &amp; Design™.
+        Choose the one Weekly Boundary Focus™ you&apos;ll build into the business and live this week, then define
+        what it protects, the business requirement, and the operating rule. You can also set or change it in{" "}
+        {elsewhere}.
       </p>
       <div className="space-y-2">
         {BOUNDARY_OPTIONS.map((o) => {
@@ -157,11 +159,12 @@ export function BoundaryFocusPanel() {
 
   const status = sos.status
   const isActive = status === "active"
+  const operatingRule = sos.operatingRuleText?.trim() || ""
   const statusLabel =
     status === "active"
-      ? "Human SOS™ Active"
+      ? "Operating Rule Established"
       : status === "ready"
-        ? "Ready to Adopt"
+        ? "Ready to Establish"
         : status === "building" && sos.id
           ? "Building"
           : "Not Built"
@@ -188,20 +191,41 @@ export function BoundaryFocusPanel() {
 
       <p className="font-display text-2xl font-semibold leading-snug text-[#2E1F27] text-pretty">{boundaryText}</p>
 
+      {operatingRule && (
+        <div className="rounded-2xl border border-[#8DAE72]/30 bg-white px-4 py-3">
+          <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.14em] text-[#6B5860]">
+            My operating rule this week
+          </p>
+          <p className="mt-1 font-sans text-sm leading-relaxed text-[#2E1F27] text-pretty">{operatingRule}</p>
+        </div>
+      )}
+
       {isActive ? (
         <div className="space-y-2">
           <p className="font-sans text-sm leading-relaxed text-[#3A2E33] text-pretty">
-            This boundary is now a Human Sustainability Operating Standard™. Live it this week — the following
-            Monday&apos;s Reality Check™ will evaluate how it held.
+            Your operating rule is established. Live it this week and record what collides with it in your Boundary
+            Check-Ins™.
           </p>
-          <button
-            type="button"
-            onClick={() => setOpen(true)}
-            className="inline-flex items-center gap-1.5 font-sans text-sm font-bold text-[#5A7A45] hover:underline"
-          >
-            View my Human SOS™
-            <ArrowRight className="h-4 w-4" aria-hidden />
-          </button>
+          <div className="flex flex-wrap items-center gap-4">
+            <button
+              type="button"
+              onClick={() => setOpen(true)}
+              className="inline-flex items-center gap-1.5 font-sans text-sm font-bold text-[#5A7A45] hover:underline"
+            >
+              Review or refine my boundary
+              <ArrowRight className="h-4 w-4" aria-hidden />
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setChoosing(true)
+                setCustomMode(false)
+              }}
+              className="inline-flex items-center gap-1.5 font-sans text-sm font-semibold text-[#6B5860] hover:underline"
+            >
+              Change this week&apos;s boundary
+            </button>
+          </div>
         </div>
       ) : (
         <div className="flex flex-wrap items-center gap-3">
@@ -210,7 +234,7 @@ export function BoundaryFocusPanel() {
             onClick={() => setOpen(true)}
             className="inline-flex items-center gap-2 rounded-full bg-[#5A7A45] px-6 py-3 font-montserrat text-base font-bold uppercase tracking-[0.14em] text-white transition-opacity hover:opacity-90"
           >
-            {sos.id && status === "building" ? "Continue Building My Human SOS™" : "Build My Human SOS™"}
+            {sos.id && status === "building" ? "Continue My Weekly Boundary Builder™" : "Build My Operating Rule"}
             <ArrowRight className="h-4 w-4" aria-hidden />
           </button>
           <button
@@ -233,6 +257,7 @@ export function BoundaryFocusPanel() {
         weekKey={focus.weekKey}
         boundaryFocusText={boundaryText}
         boundaryOptionId={focus.optionId}
+        cadence="weekly"
       />
     </section>
   )

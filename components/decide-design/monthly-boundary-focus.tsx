@@ -48,16 +48,24 @@ export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | 
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const linkedCounts = useMemo(() => {
-    const counts = new Map<string, { total: number; collided: number }>()
-    for (const c of checkIns) {
-      if (!c.boundaryOptionId || c.boundaryOptionId === "custom") continue
-      const entry = counts.get(c.boundaryOptionId) ?? { total: 0, collided: 0 }
+  // Two separate sources of evidence, never merged:
+  //   monthly — check-ins the member explicitly linked to a monthly boundary
+  //   weekly  — check-ins recorded while that option was the Weekly Boundary Focus™
+  const evidenceCounts = useMemo(() => {
+    const monthly = new Map<string, { total: number; collided: number }>()
+    const weekly = new Map<string, { total: number; collided: number }>()
+    const bump = (map: typeof monthly, id: string, collided: boolean) => {
+      const entry = map.get(id) ?? { total: 0, collided: 0 }
       entry.total += 1
-      if (c.collided) entry.collided += 1
-      counts.set(c.boundaryOptionId, entry)
+      if (collided) entry.collided += 1
+      map.set(id, entry)
     }
-    return counts
+    for (const c of checkIns) {
+      if (c.linkedBoundaryOptionId && c.linkedBoundaryOptionId !== "custom")
+        bump(monthly, c.linkedBoundaryOptionId, c.collided)
+      if (c.boundaryOptionId && c.boundaryOptionId !== "custom") bump(weekly, c.boundaryOptionId, c.collided)
+    }
+    return { monthly, weekly }
   }, [checkIns])
 
   const [choosing, setChoosing] = useState(false)
@@ -200,7 +208,8 @@ export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | 
                   </legend>
                   {cat.options.map((o) => {
                     const active = pending ? pending.id === o.id : focus?.optionId === o.id
-                    const linked = linkedCounts.get(o.id)
+                    const linked = evidenceCounts.monthly.get(o.id)
+                    const weeklyTagged = evidenceCounts.weekly.get(o.id)
                     return (
                       <button
                         key={o.id}
@@ -228,8 +237,15 @@ export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | 
                           <CollisionTags tags={linkedCollisionLabels(checkIns, o.id)} />
                           {linked && (
                             <span className="font-sans text-[15px] text-[#5B835F]">
-                              Linked to {linked.total} saved check-in{linked.total === 1 ? "" : "s"}
+                              Linked to this monthly boundary: {linked.total} check-in{linked.total === 1 ? "" : "s"}
                               {` · ${linked.collided} with collisions`}
+                            </span>
+                          )}
+                          {weeklyTagged && (
+                            <span className="font-sans text-[15px] text-[#6B5860]">
+                              Recorded while this was your weekly boundary: {weeklyTagged.total} check-in
+                              {weeklyTagged.total === 1 ? "" : "s"}
+                              {` · ${weeklyTagged.collided} with collisions`}
                             </span>
                           )}
                         </span>
@@ -246,16 +262,10 @@ export function MonthlyBoundaryFocus({ report }: { report: BoundaryReportData | 
                 <p className="font-sans text-sm font-semibold text-[#2E1F27]">{pending.label}</p>
                 <CollisionTags tags={linkedCollisionLabels(checkIns, pending.id)} />
                 {boundaryAffectsOthers(pending.collisionTags) && (
-                  <label className="flex flex-col gap-1.5">
-                    <span className="font-sans text-sm font-semibold text-[#2E1F27]">Who needs to agree?</span>
-                    <input
-                      type="text"
-                      value={agreement}
-                      onChange={(e) => setAgreement(e.target.value)}
-                      placeholder="People or roles, e.g. my VA, key clients, my operations lead"
-                      className={inputCls}
-                    />
-                  </label>
+                  <p className="font-sans text-sm leading-relaxed text-[#6B5860] text-pretty">
+                    This boundary affects other people. You&apos;ll name who needs to understand or agree in the
+                    Monthly Boundary Builder™.
+                  </p>
                 )}
                 <div className="flex flex-wrap gap-2">
                   <button

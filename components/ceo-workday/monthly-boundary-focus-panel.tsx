@@ -165,6 +165,7 @@ export function MonthlyBoundaryFocusPanel() {
         weekKey={builderKey}
         boundaryFocusText={focus.boundaryText}
         boundaryOptionId={focus.optionId}
+        cadence="monthly"
       />
       <CommunicateDelegateDialog
         open={communicateOpen}
