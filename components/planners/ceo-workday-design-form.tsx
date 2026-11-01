@@ -707,16 +707,20 @@ export function CeoWorkdayDesignForm() {
           </span>
         </div>
 
-        {items.map((item) => (
-          <WorkCard
-            key={item.id}
-            item={item}
-            editing={editingId === item.id}
-            onDecide={(d) => decide(item.id, d)}
-            onPatch={(p) => patchItem(item.id, p)}
-            onDoneEditing={() => setEditingId(null)}
-          />
-        ))}
+        {items.length > 0 && (
+          <div className="flex flex-col gap-6">
+            {items.map((item) => (
+              <WorkCard
+                key={item.id}
+                item={item}
+                editing={editingId === item.id}
+                onDecide={(d) => decide(item.id, d)}
+                onPatch={(p) => patchItem(item.id, p)}
+                onDoneEditing={() => setEditingId(null)}
+              />
+            ))}
+          </div>
+        )}
 
         <button
           type="button"
