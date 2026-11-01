@@ -105,6 +105,10 @@ export function CeoWorkdayLivePlan() {
   const [workingOnByBlock, setWorkingOnByBlock] = useState<Record<number, string>>({})
 
   const [entered, setEntered] = useState(false)
+  const [highlightWork, setHighlightWork] = useState(false)
+  const whatMustHappenRef = useRef<HTMLDivElement>(null)
+  const highlightTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  useEffect(() => () => { if (highlightTimer.current) clearTimeout(highlightTimer.current) }, [])
   const [adjusting, setAdjusting] = useState(false)
   const [editTitleId, setEditTitleId] = useState<string | null>(null)
   const [workingOnDraft, setWorkingOnDraft] = useState("")
@@ -217,8 +221,12 @@ export function CeoWorkdayLivePlan() {
 
   // ── handlers ─────────────────────────────────────────────────────────────
   async function handleEnter() {
-    if (!plan) return
-    setEntered(true)
+  if (!plan) return
+  setEntered(true)
+  whatMustHappenRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+  setHighlightWork(true)
+  if (highlightTimer.current) clearTimeout(highlightTimer.current)
+  highlightTimer.current = setTimeout(() => setHighlightWork(false), 2600)
     await updateCeoPlanStatus(plan.id, "entered")
   }
 
@@ -585,7 +593,14 @@ export function CeoWorkdayLivePlan() {
           hour reveals that work, editable / deferrable / delegable / removable right
           there, followed by the hour's Work Affirmation™ and Copy. */}
       {plan && (
-        <div className="space-y-4">
+        <div
+          ref={whatMustHappenRef}
+          className={`scroll-mt-6 space-y-4 rounded-3xl transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-[0_18px_40px_-12px_rgba(90,122,69,0.35)] ${
+            highlightWork
+              ? "-translate-y-1 shadow-[0_18px_40px_-12px_rgba(90,122,69,0.45)] ring-2 ring-[#7FB069]/60 ring-offset-4 ring-offset-white"
+              : ""
+          }`}
+        >
           <WhatMustHappenToday
             itemsByHour={itemsByHour}
             renderItem={renderPlanItem}
