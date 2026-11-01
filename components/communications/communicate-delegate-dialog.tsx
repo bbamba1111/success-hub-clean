@@ -396,7 +396,7 @@ export function CommunicateDelegateDialog({
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl rounded-3xl border border-[#E8DFE2] bg-[#FDFBFA] p-0">
         <div className="px-7 pt-7 pb-6 space-y-6">
           <DialogHeader className="space-y-2 text-left">
-            <DialogTitle className="font-montserrat text-lg font-bold uppercase tracking-[0.18em] text-[#5A7A45]">
+            <DialogTitle className="font-montserrat text-[21px] font-bold uppercase tracking-[0.18em] text-[#5A7A45]">
               Communicate + Delegate™
             </DialogTitle>
             <DialogDescription className="font-serif text-2xl font-semibold leading-snug text-[#2E1F27] text-balance">

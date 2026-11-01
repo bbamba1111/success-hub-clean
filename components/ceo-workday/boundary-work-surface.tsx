@@ -43,10 +43,10 @@ export function BoundaryWorkSurface({
   return (
     <div className="mt-3 flex flex-col gap-4 rounded-2xl border border-[#E8DFE2] bg-[#FAF8F5] px-4 py-4 sm:px-5">
       <div>
-        <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.16em] text-[#5A7A45]">
+        <p className="font-montserrat text-[16.5px] font-bold uppercase tracking-[0.16em] text-[#5A7A45]">
           {kind === "weekly" ? "Your Weekly Boundary Focus™ tools" : "Your Monthly Business Boundary Focus™ tools"}
         </p>
-        <p className="mt-1 font-sans text-sm leading-relaxed text-[#3A2E33] text-pretty">
+        <p className="mt-1 font-sans text-[16.5px] leading-relaxed text-[#3A2E33] text-pretty">
           Elect your boundary, build the operating rule that protects it, then communicate it to the people it affects.
         </p>
         {expectedEvidence && (
@@ -65,7 +65,7 @@ export function BoundaryWorkSurface({
               onClick={() => setCommunicateOpen(true)}
               className="flex flex-col items-start gap-1 rounded-2xl border border-[#7FB069]/30 bg-white px-5 py-4 text-left shadow-sm transition-shadow hover:shadow-md"
             >
-              <span className="inline-flex items-center gap-2 font-sans text-sm font-bold text-[#2E1F27]">
+              <span className="inline-flex items-center gap-2 font-sans text-[16.5px] font-bold text-[#2E1F27]">
                 <MessageSquareShare className="h-4 w-4 text-[#5A7A45]" aria-hidden /> Communicate It™
               </span>
               <span className="font-sans text-base leading-relaxed text-[#6B5860]">

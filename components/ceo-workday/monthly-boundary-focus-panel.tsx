@@ -41,7 +41,7 @@ function OperatingRuleBlock({
   if (rule) {
     return (
       <div className="mt-1 flex flex-col gap-1.5 rounded-2xl border border-[#7FB069]/30 bg-background px-5 py-4">
-        <span className="font-montserrat text-[14px] font-bold uppercase tracking-[0.16em] text-[#5A7A45]">
+        <span className="font-montserrat text-[16.5px] font-bold uppercase tracking-[0.16em] text-[#5A7A45]">
           My Operating Rule — follow this all cycle
         </span>
         <p className="font-sans text-base leading-relaxed text-[#2E1F27] text-pretty">{rule}</p>
@@ -52,7 +52,7 @@ function OperatingRuleBlock({
   return (
     <div className="flex flex-col gap-2">
       {fallbackDescription && (
-        <p className="font-sans text-sm leading-relaxed text-[#3A2E33] text-pretty">{fallbackDescription}</p>
+        <p className="font-sans text-[16.5px] leading-relaxed text-[#3A2E33] text-pretty">{fallbackDescription}</p>
       )}
       <p className="font-sans text-base leading-relaxed text-[#6B5860]">
         You haven&apos;t set your operating rule yet.{" "}
@@ -87,7 +87,7 @@ export function MonthlyBoundaryFocusPanel() {
         >
           <ShieldCheck className="h-4 w-4" aria-hidden /> My Monthly Boundary Focus™
         </p>
-        <p className="font-sans text-sm leading-relaxed text-[#3A2E33] text-pretty">
+        <p className="font-sans text-[16.5px] leading-relaxed text-[#3A2E33] text-pretty">
           You haven&apos;t elected this cycle&apos;s boundary yet. Choose it in Monthly Business Boundary Focus™ and
           it will stay here for the full 30 days{start && end ? ` (${start} – ${end})` : ""}.
         </p>
@@ -109,7 +109,7 @@ export function MonthlyBoundaryFocusPanel() {
         >
           <ShieldCheck className="h-4 w-4" aria-hidden /> My Monthly Boundary Focus™
         </p>
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-[#5A7A45] px-3 py-1 font-montserrat text-[14px] font-bold uppercase tracking-[0.16em] text-white">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-[#5A7A45] px-3 py-1 font-montserrat text-[16.5px] font-bold uppercase tracking-[0.16em] text-white">
           Active this cycle
         </span>
       </div>
@@ -138,7 +138,7 @@ export function MonthlyBoundaryFocusPanel() {
           onClick={() => setBuilderOpen(true)}
           className="flex flex-col items-start gap-1 rounded-2xl border border-[#7FB069]/30 bg-background px-5 py-4 text-left shadow-sm transition-shadow duration-500 hover:shadow-[0_18px_36px_-14px_rgba(28,22,26,0.35)]"
         >
-          <span className="inline-flex items-center gap-2 font-sans text-sm font-bold text-[#2E1F27]">
+          <span className="inline-flex items-center gap-2 font-sans text-[16.5px] font-bold text-[#2E1F27]">
             <Hammer className="h-4 w-4 text-[#5A7A45]" aria-hidden /> Business Boundary Builder™
           </span>
           <span className="font-sans text-base leading-relaxed text-[#6B5860]">
@@ -150,7 +150,7 @@ export function MonthlyBoundaryFocusPanel() {
           onClick={() => setCommunicateOpen(true)}
           className="flex flex-col items-start gap-1 rounded-2xl border border-[#7FB069]/30 bg-background px-5 py-4 text-left shadow-sm transition-shadow duration-500 hover:shadow-[0_18px_36px_-14px_rgba(28,22,26,0.35)]"
         >
-          <span className="inline-flex items-center gap-2 font-sans text-sm font-bold text-[#2E1F27]">
+          <span className="inline-flex items-center gap-2 font-sans text-[16.5px] font-bold text-[#2E1F27]">
             <MessageSquareShare className="h-4 w-4 text-[#5A7A45]" aria-hidden /> Communicate It™
           </span>
           <span className="font-sans text-base leading-relaxed text-[#6B5860]">

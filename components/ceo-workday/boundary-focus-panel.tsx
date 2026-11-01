@@ -55,7 +55,7 @@ export function BoundaryFocusPanel({ context = "workday" }: { context?: "workday
 
   const chooser = (
     <div className="space-y-3">
-      <p className="font-sans text-sm leading-relaxed text-[#6B5860] text-pretty">
+      <p className="font-sans text-[16.5px] leading-relaxed text-[#6B5860] text-pretty">
         Choose the one Weekly Boundary Focus™ you&apos;ll build into the business and live this week, then define
         what it protects, the business requirement, and the operating rule. You can also set or change it in{" "}
         {elsewhere}.
@@ -73,7 +73,7 @@ export function BoundaryFocusPanel({ context = "workday" }: { context?: "workday
                 (active ? "border-[#5A7A45] bg-[#F3F8ED]" : "border-[#E8DFE2] bg-white hover:bg-black/[0.03]")
               }
             >
-              <span className="font-sans text-sm font-semibold text-[#2E1F27]">{o.label}</span>
+              <span className="font-sans text-[16.5px] font-semibold text-[#2E1F27]">{o.label}</span>
               <span className="font-sans text-base text-[#6B5860]">{o.helper}</span>
             </button>
           )
@@ -92,13 +92,13 @@ export function BoundaryFocusPanel({ context = "workday" }: { context?: "workday
             }}
             placeholder="Name the boundary in your own words…"
             aria-label="Create my own boundary"
-            className="flex-1 rounded-xl border border-[#E8DFE2] bg-white px-3.5 py-2.5 font-sans text-sm text-[#2E1F27] placeholder:text-[#6B5860]/60 focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
+            className="flex-1 rounded-xl border border-[#E8DFE2] bg-white px-3.5 py-2.5 font-sans text-[16.5px] text-[#2E1F27] placeholder:text-[#6B5860]/60 focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
           />
           <button
             type="button"
             onClick={() => chooseBoundary(customDraft, "custom")}
             disabled={!customDraft.trim()}
-            className="rounded-full bg-[#5A7A45] px-5 py-2.5 font-sans text-sm font-semibold text-white hover:opacity-90 disabled:opacity-40"
+            className="rounded-full bg-[#5A7A45] px-5 py-2.5 font-sans text-[16.5px] font-semibold text-white hover:opacity-90 disabled:opacity-40"
           >
             Use this
           </button>
@@ -108,7 +108,7 @@ export function BoundaryFocusPanel({ context = "workday" }: { context?: "workday
           <button
             type="button"
             onClick={() => setCustomMode(true)}
-            className="inline-flex items-center gap-1.5 rounded-full border border-[#E8DFE2] bg-white px-5 py-2.5 font-sans text-sm font-semibold text-[#3A2E33] hover:bg-black/[0.03]"
+            className="inline-flex items-center gap-1.5 rounded-full border border-[#E8DFE2] bg-white px-5 py-2.5 font-sans text-[16.5px] font-semibold text-[#3A2E33] hover:bg-black/[0.03]"
           >
             <Plus className="h-4 w-4" aria-hidden /> Create my own
           </button>
@@ -119,7 +119,7 @@ export function BoundaryFocusPanel({ context = "workday" }: { context?: "workday
                 setChoosing(false)
                 setCustomMode(false)
               }}
-              className="font-sans text-sm text-[#6B5860] hover:text-[#2E1F27]"
+              className="font-sans text-[16.5px] text-[#6B5860] hover:text-[#2E1F27]"
             >
               Cancel
             </button>
@@ -181,7 +181,7 @@ export function BoundaryFocusPanel({ context = "workday" }: { context?: "workday
         {headingRow}
         <span
           className={
-            "shrink-0 inline-flex items-center rounded-full px-3 py-1 font-montserrat text-[14px] font-bold uppercase tracking-[0.12em] " +
+            "shrink-0 inline-flex items-center rounded-full px-3 py-1 font-montserrat text-[16.5px] font-bold uppercase tracking-[0.12em] " +
             (isActive ? "bg-[#8DAE72]/20 text-[#5A7A45]" : "bg-white text-[#6B5860]")
           }
         >
@@ -193,16 +193,16 @@ export function BoundaryFocusPanel({ context = "workday" }: { context?: "workday
 
       {operatingRule && (
         <div className="rounded-2xl border border-[#8DAE72]/30 bg-white px-4 py-3">
-          <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.14em] text-[#6B5860]">
+          <p className="font-montserrat text-[12.5px] font-bold uppercase tracking-[0.14em] text-[#6B5860]">
             My operating rule this week
           </p>
-          <p className="mt-1 font-sans text-sm leading-relaxed text-[#2E1F27] text-pretty">{operatingRule}</p>
+          <p className="mt-1 font-sans text-[16.5px] leading-relaxed text-[#2E1F27] text-pretty">{operatingRule}</p>
         </div>
       )}
 
       {isActive ? (
         <div className="space-y-2">
-          <p className="font-sans text-sm leading-relaxed text-[#3A2E33] text-pretty">
+          <p className="font-sans text-[16.5px] leading-relaxed text-[#3A2E33] text-pretty">
             Your operating rule is established. Live it this week and record what collides with it in your Boundary
             Check-Ins™.
           </p>
@@ -210,7 +210,7 @@ export function BoundaryFocusPanel({ context = "workday" }: { context?: "workday
             <button
               type="button"
               onClick={() => setOpen(true)}
-              className="inline-flex items-center gap-1.5 font-sans text-sm font-bold text-[#5A7A45] hover:underline"
+              className="inline-flex items-center gap-1.5 font-sans text-[16.5px] font-bold text-[#5A7A45] hover:underline"
             >
               Review or refine my boundary
               <ArrowRight className="h-4 w-4" aria-hidden />
@@ -221,7 +221,7 @@ export function BoundaryFocusPanel({ context = "workday" }: { context?: "workday
                 setChoosing(true)
                 setCustomMode(false)
               }}
-              className="inline-flex items-center gap-1.5 font-sans text-sm font-semibold text-[#6B5860] hover:underline"
+              className="inline-flex items-center gap-1.5 font-sans text-[16.5px] font-semibold text-[#6B5860] hover:underline"
             >
               Change this week&apos;s boundary
             </button>
@@ -243,7 +243,7 @@ export function BoundaryFocusPanel({ context = "workday" }: { context?: "workday
               setChoosing(true)
               setCustomMode(false)
             }}
-            className="inline-flex items-center gap-1.5 font-sans text-sm font-semibold text-[#5A7A45] hover:underline"
+            className="inline-flex items-center gap-1.5 font-sans text-[16.5px] font-semibold text-[#5A7A45] hover:underline"
           >
             <Check className="h-4 w-4" aria-hidden />
             Change this week&apos;s boundary
