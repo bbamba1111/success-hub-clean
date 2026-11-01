@@ -16,7 +16,7 @@
  * this panel is the same plan mirrored, never a second copy.
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Check, Clock, Copy, Pencil, Play, RotateCcw } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -28,6 +28,7 @@ import {
   type CeoWorkdayDeclaration,
 } from "@/lib/daily-plan/ceo-workday-declaration"
 import { WhatMustHappenToday } from "@/components/ceo-workday/what-must-happen-today"
+import { WorkdaySection, useWorkdaySectionLayout, type WorkdaySectionId } from "@/components/ceo-workday/workday-section"
 import { useWeeklyCommitments } from "@/lib/weekly-commitments/use-weekly-commitments"
 import {
   HOUR_BLOCKS,
@@ -170,6 +171,8 @@ export function CeoWorkdayLivePlan() {
     })()
   }, [loaded, plan, weeklyDeclaration, dateKey, weekly.weekKey])
 
+  const sectionLayout = useWorkdaySectionLayout()
+
   const activeItems = useMemo(() => plan?.items.filter((i) => i.founderDecision !== "remove") ?? [], [plan])
 
   // The designed work populates the four hours: auto-filled by order + time,
@@ -223,7 +226,8 @@ export function CeoWorkdayLivePlan() {
   async function handleEnter() {
   if (!plan) return
   setEntered(true)
-  whatMustHappenRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+  sectionLayout.expand("work")
+  requestAnimationFrame(() => whatMustHappenRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }))
   setHighlightWork(true)
   if (highlightTimer.current) clearTimeout(highlightTimer.current)
   highlightTimer.current = setTimeout(() => setHighlightWork(false), 2600)
@@ -437,15 +441,15 @@ export function CeoWorkdayLivePlan() {
             aria-label="Edit work title"
           />
         ) : (
-          <p className={`mt-1 font-sans text-[16.5px] font-bold leading-snug text-[#2E1F27] ${item.status === "eliminated" ? "line-through" : ""}`}>{item.title}</p>
+          <p className={`mt-1 font-sans text-[15.5px] font-bold leading-snug text-[#2E1F27] ${item.status === "eliminated" ? "line-through" : ""}`}>{item.title}</p>
         )}
-        <p className="mt-0.5 font-sans text-base text-[#6B5860]">
+        <p className="mt-0.5 font-sans text-[15px] text-[#6B5860]">
           {item.estimatedMinutes} min{item.relatedAssetTitle ? ` · ${item.relatedAssetTitle}` : ""}
           {item.nextAction && item.status !== "completed" ? ` · next: ${item.nextAction.replace(/-/g, " ")}` : ""}
         </p>
         {item.expectedEvidence && (
-          <p className="mt-1 font-sans text-[18.5px] leading-relaxed text-[#3A2E33]">
-            <span className="font-semibold text-[#5A7A45]">Expected outcome:</span> {item.expectedEvidence}
+          <p className="mt-1 font-sans text-[16.5px] leading-relaxed text-[#3A2E33]">
+            <span className="font-bold italic text-[#5A7A45]">Expected outcome:</span> {item.expectedEvidence}
           </p>
         )}
         {!closed && gone && (
@@ -550,10 +554,7 @@ export function CeoWorkdayLivePlan() {
   }
 
   // ── render ──────────────────────────────────────────────────────────────��
-  return (
-    <div className="space-y-5">
-      {/* My Workday Declaration™ — always first in the space, like Movement/Lunch */}
-      {declaration && (
+  const declarationSection = declaration && (
         <motion.div
           key={dayDeclaration ? (plan?.id ?? local?.builtAt) : `weekly-${weekly.workdayDeclarationBuiltAt ?? weekly.weekKey}`}
           initial={{ opacity: 0, y: -14 }}
@@ -585,8 +586,10 @@ export function CeoWorkdayLivePlan() {
             )}
           </div>
         </motion.div>
-      )}
+  )
 
+  const workSection = (
+    <>
       {/* What Must Happen Today™ + CEO Workday Execution™ — combined. The work the
           founder designed with the Business Function tool populates each of the four
           protected hours (auto-filled by order + time, and reassignable). Opening an
@@ -609,9 +612,10 @@ export function CeoWorkdayLivePlan() {
           />
         </div>
       )}
+    </>
+  )
 
-      {/* Hour blocks */}
-      {plan && entered && (
+  const hoursSection = plan && entered && (
         <div className="space-y-3">
           <div className="flex items-center gap-2">
             <Clock className="h-4 w-4 text-[#5A7A45]" aria-hidden />
@@ -701,7 +705,31 @@ export function CeoWorkdayLivePlan() {
             </div>
           )}
         </div>
-      )}
+  )
+
+  const sections: Record<WorkdaySectionId, { title: string; node: ReactNode }> = {
+    declaration: { title: dayDeclaration ? "My Workday Declaration™" : "My 4-Hour CEO Workday Declaration™", node: declarationSection },
+    work: { title: "What Must Happen Today™", node: plan ? workSection : null },
+    hours: { title: "Four hours · four check-ins", node: hoursSection },
+  }
+  const visibleOrder = sectionLayout.order.filter((id) => Boolean(sections[id].node))
+
+  return (
+    <div className="space-y-5">
+      {visibleOrder.map((id, i) => (
+        <WorkdaySection
+          key={id}
+          id={id}
+          title={sections[id].title}
+          isFirst={i === 0}
+          isLast={i === visibleOrder.length - 1}
+          collapsed={sectionLayout.collapsed.includes(id)}
+          onMove={(dir) => sectionLayout.move(id, dir)}
+          onToggle={() => sectionLayout.toggle(id)}
+        >
+          {sections[id].node}
+        </WorkdaySection>
+      ))}
     </div>
   )
 }
