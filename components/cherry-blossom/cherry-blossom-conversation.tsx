@@ -63,10 +63,13 @@ function formatMessage(content: string) {
 export function CherryBlossomConversation({
   context,
   avatarSrc = "/images/logo.png",
+  details,
 }: {
   /** Coaching context passed to the API (e.g. "intention-setting"). */
   context: string
   avatarSrc?: string
+  /** Optional structured details for this conversation (e.g. a saved check-in). */
+  details?: Record<string, unknown>
 }) {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
@@ -88,7 +91,7 @@ export function CherryBlossomConversation({
         const response = await fetch("/api/cherry-blossom-chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: "WELCOME_MESSAGE", messages: [], context }),
+          body: JSON.stringify({ message: "WELCOME_MESSAGE", messages: [], context, details }),
         })
         const data = await response.json()
         if (!cancelled && data.message) {
@@ -128,6 +131,7 @@ export function CherryBlossomConversation({
           message: userMessage.content,
           messages: priorMessages.map((m) => ({ role: m.role, content: m.content })),
           context,
+          details,
         }),
       })
 

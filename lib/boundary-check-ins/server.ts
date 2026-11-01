@@ -11,6 +11,7 @@
 
 import { createClient } from "@/lib/supabase/server"
 import { getEntitlements } from "@/lib/entitlements"
+import { getMonthlyBoundaryState } from "@/app/actions/monthly-boundary-focus"
 import type { CollisionSource, SelectedCollision } from "./collisions"
 
 export type ActivityStatus = "completed" | "partial" | "not_completed" | "no_activity"
@@ -47,6 +48,8 @@ export interface SaveBoundaryCheckInInput {
   collided: boolean
   collisions: SelectedCollision[]
   note?: string | null
+  /** Member said this collision affected the active monthly boundary. */
+  linkMonthly?: boolean
 }
 
 type Row = {
@@ -146,6 +149,28 @@ export async function saveBoundaryCheckIn(
     if (!segmentId) return { ok: false, error: "Missing segment." }
 
     const collided = Boolean(input.collided)
+
+    // Boundaries are attached only when the member says the collision affected
+    // them; nothing is inferred from the segment or from which boundary is active.
+    const weeklyTagged = collided && Boolean(input.boundaryOptionId || input.boundaryText)
+    let monthly: Record<string, string | null> = {
+      linked_boundary_option_id: null,
+      linked_boundary_text: null,
+      linked_cycle_key: null,
+      linked_at: null,
+    }
+    if (collided && input.linkMonthly) {
+      const state = await getMonthlyBoundaryState()
+      if (state.signedIn && state.entitled && state.focus && state.cycleKey) {
+        monthly = {
+          linked_boundary_option_id: state.focus.optionId,
+          linked_boundary_text: state.focus.boundaryText,
+          linked_cycle_key: state.cycleKey,
+          linked_at: new Date().toISOString(),
+        }
+      }
+    }
+
     const { data, error } = await supabase
       .from("boundary_check_ins")
       .upsert(
@@ -154,9 +179,10 @@ export async function saveBoundaryCheckIn(
           check_in_date: input.checkInDate,
           segment_id: segmentId,
           segment_label: clip(input.segmentLabel, 160),
-          boundary_option_id: clip(input.boundaryOptionId, 80),
-          boundary_text: clip(input.boundaryText, 300),
-          boundary_week_key: clip(input.boundaryWeekKey, 20),
+          boundary_option_id: weeklyTagged ? clip(input.boundaryOptionId, 80) : null,
+          boundary_text: weeklyTagged ? clip(input.boundaryText, 300) : null,
+          boundary_week_key: weeklyTagged ? clip(input.boundaryWeekKey, 20) : null,
+          ...monthly,
           activity_status: ACTIVITY_STATUSES.has(input.activityStatus as ActivityStatus) ? input.activityStatus : null,
           collided,
           collisions: collided ? sanitizeCollisions(input.collisions) : [],

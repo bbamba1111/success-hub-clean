@@ -58,7 +58,10 @@ export async function POST(req: NextRequest) {
 
     // Shared Cherry Blossom brain: core identity + the member's memory. Routine
     // contexts get exactly what they had before; ceo-workday adds the coordinator role.
-    const systemPrompt = await buildCherrySystemPrompt(resolveSurface(context))
+    let systemPrompt = await buildCherrySystemPrompt(resolveSurface(context))
+    if (context === "boundary-check-in") {
+      systemPrompt += describeCheckIn(body.details)
+    }
 
     const conversationMessages = [
       { role: "system", content: systemPrompt },
@@ -86,6 +89,9 @@ export async function POST(req: NextRequest) {
         "sabbatical-planning":
           "Hello, I'm Cherry Blossom, your work-life harmony co-guide! I'm here to help you intentionally design restorative breaks that prevent burnout and create sustainable work-life harmony.\n\nWhether you're planning a 1-week mini-sabbatical, a 2-4 week sabbatical, or an extended leave, this process helps you restore what matters most: energy, creativity, relationships, and health.\n\n**Quick Benefits:**\n• **Spiritually:** Soul restoration, reconnection with purpose, honoring the sacred rhythm of work and rest\n• **Scientifically:** Prevents burnout, boosts creativity (incubation effect), improves health, increases long-term productivity\n• **Your ROI:** Rest isn't a luxury - it's a strategic investment that compounds your effectiveness\n\nI'll guide you through assessing your current state, designing your ideal break, overcoming resistance, and creating a re-entry plan.\n\nHow burned out are you feeling right now on a scale of 1-10?\n\n(I can share more about the Sabbatical Design Canvas, break resistance breakthrough strategies, or budget-friendly break ideas if you'd like!)",
       }
+
+      welcomePrompts["boundary-check-in"] =
+        "The member just saved a Boundary Check-In and chose to talk it through. In two or three warm sentences, reflect back what they recorded for this segment, then ask one open question about what they'd like help with. Do not introduce yourself at length and do not assign them anything."
 
       userPrompt =
         welcomePrompts[context] || "Please introduce yourself as Cherry Blossom and ask how you can help today."
@@ -157,4 +163,26 @@ export async function POST(req: NextRequest) {
       { status: 500 },
     )
   }
+}
+
+/** Saved Boundary Check-In details, clipped and flattened for the system prompt. */
+function describeCheckIn(details: unknown): string {
+  if (!details || typeof details !== "object") return ""
+  const d = details as Record<string, unknown>
+  const text = (v: unknown, n = 200) => (typeof v === "string" ? v.trim().slice(0, n) : "")
+  const list = (v: unknown) =>
+    Array.isArray(v) ? v.filter((x) => typeof x === "string").slice(0, 20).map((x) => (x as string).slice(0, 120)) : []
+
+  const collisions = list(d.collisions)
+  const boundaries = list(d.boundaries)
+  const lines = [
+    `Segment: ${text(d.segment, 160) || "Unknown"}`,
+    `Intended activity: ${text(d.activity, 80) || "Not answered"}`,
+    `Something collided: ${d.collided === true ? "Yes" : "No"}`,
+    collisions.length ? `Collisions: ${collisions.join("; ")}` : "",
+    boundaries.length ? `Boundaries the member said were affected: ${boundaries.join("; ")}` : "Boundaries affected: none",
+    text(d.note, 1000) ? `What needs to change next time: ${text(d.note, 1000)}` : "",
+  ].filter(Boolean)
+
+  return `\n\n## Boundary Check-In the member just saved\n${lines.join("\n")}\nThis conversation is optional for the member. Help them understand what happened and what might change, without adding new planning steps.`
 }

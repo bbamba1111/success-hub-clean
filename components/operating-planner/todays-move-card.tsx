@@ -42,7 +42,7 @@ function mapCheckInToCompletionStatus(status: IdentityCheckInStatus): "honored" 
   }
 }
 
-function isEndingSoon(segmentRemaining?: string): boolean {
+export function isEndingSoon(segmentRemaining?: string): boolean {
   if (!segmentRemaining) return false
   const match = segmentRemaining.match(/(\d+)/)
   if (!match) return false

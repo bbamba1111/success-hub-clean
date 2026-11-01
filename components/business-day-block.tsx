@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button"
 import { ChevronDown, Lock } from "lucide-react"
 import { OperatingPlanner } from "@/components/operating-planner/operating-planner"
 import { PLANNER_CONFIG } from "@/components/operating-planner/planner-config"
-import { TodaysMoveCard } from "@/components/operating-planner/todays-move-card"
+import { TodaysMoveCard, isEndingSoon } from "@/components/operating-planner/todays-move-card"
+import { BoundaryCheckIn } from "@/components/boundary-check-in/boundary-check-in"
 import { ReflectionSpace } from "@/components/reflection-space"
 import { DebriefSpace } from "@/components/debrief-space"
 import { TodaysMovementCard } from "@/components/daily-plan/todays-movement-card"
@@ -102,6 +103,8 @@ const CREAM_GRADIENT = "linear-gradient(135deg, #FDF6F0 0%, #FBF0F4 40%, #F0F5EE
 const SOLID_GREEN = "#7FB069"
 
 /** These 5 segments now get a dedicated "Today's X" card (reading Today's Plan™) instead of the old generic Operating Planner™ chip-picker flow. `daily-planning-gps` was already excluded — it renders `DebriefSpace` + `DecideIdentitySpace` instead, same as `monday-debrief`. */
+const DEDICATED_CARD_SEGMENTS = new Set(["movement-window", "lunch-break", "ceo-workday", "time-freedom", "power-down"])
+
 const LEGACY_PLANNER_EXCLUDED_IDS = new Set([
   "movement-window",
   "lunch-break",
@@ -552,6 +555,14 @@ export function BusinessDayBlock({
             {blockId === "ceo-workday" && <TodaysCeoWorkdayCard />}
             {blockId === "time-freedom" && <TimeFreedomTodayCard />}
             {blockId === "power-down" && <PowerDownReleaseCard />}
+
+            {/* Boundary Check-In™ for segments with a dedicated card. Planner
+                segments already get it inside Today's Move™. */}
+            {blockId && DEDICATED_CARD_SEGMENTS.has(blockId) && isEndingSoon(segmentRemaining) && (
+              <div className="px-7 pt-6">
+                <BoundaryCheckIn segmentId={blockId} segmentLabel={title} />
+              </div>
+            )}
 
             {/* Row 1 — Join Us Live™. Shown in every open workspace, including
                 Flex Time™ and Decide & Design™. Sits tight under the content

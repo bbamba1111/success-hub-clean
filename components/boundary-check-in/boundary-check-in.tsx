@@ -16,6 +16,8 @@ import { useWeeklyBoundaryFocus } from "@/lib/weekly-boundary-focus/use-weekly-b
 import { COLLISION_GROUPS, type SelectedCollision } from "@/lib/boundary-check-ins/collisions"
 import { todayKey, useBoundaryCheckIns } from "@/lib/boundary-check-ins/use-boundary-check-ins"
 import { getCheckInAudience, type ActivityStatus } from "@/lib/boundary-check-ins/server"
+import { useMonthlyBoundaryFocus } from "@/lib/monthly-boundary-focus/use-monthly-boundary-focus"
+import { CherryBlossomConversation } from "@/components/cherry-blossom/cherry-blossom-conversation"
 
 interface BoundaryCheckInProps {
   segmentId: string
@@ -70,6 +72,7 @@ const pillOff = "border-[#E26C73]/30 bg-white text-[#3A2E33] hover:bg-[#E26C73]/
 
 export function BoundaryCheckIn({ segmentId, segmentLabel }: BoundaryCheckInProps) {
   const { focus } = useWeeklyBoundaryFocus()
+  const monthly = useMonthlyBoundaryFocus()
   const { checkIns, save, isLoading } = useBoundaryCheckIns()
   const { data: audience } = useSWR("boundary-check-in-audience", () => getCheckInAudience(), {
     revalidateOnFocus: false,
@@ -85,6 +88,9 @@ export function BoundaryCheckIn({ segmentId, segmentLabel }: BoundaryCheckInProp
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [hydrated, setHydrated] = useState(false)
+  const [weeklyTagged, setWeeklyTagged] = useState(false)
+  const [monthlyTagged, setMonthlyTagged] = useState(false)
+  const [askingCherry, setAskingCherry] = useState(false)
 
   useEffect(() => {
     if (hydrated || isLoading) return
@@ -93,6 +99,8 @@ export function BoundaryCheckIn({ segmentId, segmentLabel }: BoundaryCheckInProp
       setAnswer(existing.collided ? "yes" : "no")
       setSelected(existing.collisions)
       setNote(existing.note ?? "")
+      setWeeklyTagged(Boolean(existing.boundaryText))
+      setMonthlyTagged(Boolean(existing.linkedCycleKey))
       setSaved(true)
     }
     setHydrated(true)
@@ -100,21 +108,28 @@ export function BoundaryCheckIn({ segmentId, segmentLabel }: BoundaryCheckInProp
 
   const boundaryText =
     focus.boundaryText ?? BOUNDARY_OPTIONS.find((o) => o.id === focus.optionId)?.label ?? null
+  const monthlyText = monthly.entitled && monthly.focus ? monthly.focus.boundaryText : null
+  const boundaryChoices = [
+    boundaryText && { key: "weekly", label: `This week: ${boundaryText}`, on: weeklyTagged, set: setWeeklyTagged },
+    monthlyText && { key: "monthly", label: `This month: ${monthlyText}`, on: monthlyTagged, set: setMonthlyTagged },
+  ].filter(Boolean) as { key: string; label: string; on: boolean; set: (v: boolean) => void }[]
 
   async function persist(collided: boolean, activityStatus: ActivityStatus | null = activity) {
     setSaving(true)
     setError(null)
+    const tagWeekly = collided && weeklyTagged && Boolean(boundaryText)
     const res = await save({
       checkInDate: date,
       segmentId,
       segmentLabel: segmentLabel ?? null,
-      boundaryOptionId: focus.optionId,
-      boundaryText,
-      boundaryWeekKey: focus.weekKey,
+      boundaryOptionId: tagWeekly ? focus.optionId : null,
+      boundaryText: tagWeekly ? boundaryText : null,
+      boundaryWeekKey: tagWeekly ? focus.weekKey : null,
       activityStatus,
       collided,
       collisions: collided ? selected : [],
       note: collided ? note : null,
+      linkMonthly: collided && monthlyTagged && Boolean(monthlyText),
     })
     setSaving(false)
     if (res.ok) setSaved(true)
@@ -131,6 +146,8 @@ export function BoundaryCheckIn({ segmentId, segmentLabel }: BoundaryCheckInProp
     setAnswer("no")
     setSelected([])
     setNote("")
+    setWeeklyTagged(false)
+    setMonthlyTagged(false)
     void persist(false)
   }
 
@@ -151,12 +168,6 @@ export function BoundaryCheckIn({ segmentId, segmentLabel }: BoundaryCheckInProp
       <p className="mb-2 font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#C0545A]">
         Boundary Check-In™
       </p>
-      {boundaryText && (
-        <p className="mb-3 font-sans text-xs leading-relaxed text-[#6B5860]">
-          Boundary: <span className="font-semibold text-[#3A2E33]">{boundaryText}</span>
-        </p>
-      )}
-
       <p className="mb-4 font-sans text-sm leading-relaxed text-[#3A2E33]">
         Did you complete the activity you intended to complete during this segment?
       </p>
@@ -237,6 +248,38 @@ export function BoundaryCheckIn({ segmentId, segmentLabel }: BoundaryCheckInProp
             </fieldset>
           ))}
 
+          {boundaryChoices.length > 0 && (
+            <fieldset className="flex flex-col gap-2">
+              <legend className="mb-2 font-sans text-sm font-semibold text-[#3A2E33]">
+                Did this collide with one of your boundaries?
+              </legend>
+              <p className="font-sans text-xs leading-relaxed text-[#6B5860]">
+                Optional. Leave these unselected if it didn&apos;t affect a boundary.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {boundaryChoices.map((b) => (
+                  <button
+                    key={b.key}
+                    type="button"
+                    aria-pressed={b.on}
+                    onClick={() => {
+                      b.set(!b.on)
+                      setSaved(false)
+                    }}
+                    className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-left font-sans text-xs transition-colors ${
+                      b.on
+                        ? "border-[#C0545A] bg-[#C0545A] text-white"
+                        : "border-[#E26C73]/30 bg-white text-[#3A2E33] hover:bg-[#E26C73]/10"
+                    }`}
+                  >
+                    {b.on && <Check className="h-3 w-3" aria-hidden />}
+                    {b.label}
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+          )}
+
           <label className="flex flex-col gap-2">
             <span className="font-sans text-sm font-semibold text-[#3A2E33]">What needs to change next time?</span>
             <textarea
@@ -266,6 +309,32 @@ export function BoundaryCheckIn({ segmentId, segmentLabel }: BoundaryCheckInProp
       )}
 
       {activity && answer && saved && audience && <NextStep audience={audience} />}
+
+      {activity && answer && saved && (
+        <div className="mt-4">
+          {askingCherry ? (
+            <CherryBlossomConversation
+              context="boundary-check-in"
+              details={{
+                segment: segmentLabel ?? segmentId,
+                activity: ACTIVITY_OPTIONS.find((o) => o.value === activity)?.label,
+                collided: answer === "yes",
+                collisions: selected.map((c) => c.label),
+                boundaries: boundaryChoices.filter((b) => b.on).map((b) => b.label),
+                note,
+              }}
+            />
+          ) : (
+            <button
+              type="button"
+              onClick={() => setAskingCherry(true)}
+              className="font-sans text-sm font-semibold text-[#C0545A] underline underline-offset-2 hover:text-[#A8305A]"
+            >
+              Ask Cherry Blossom™ <span className="font-normal text-[#6B5860]">(optional)</span>
+            </button>
+          )}
+        </div>
+      )}
 
       {error && <p className="mt-3 font-sans text-sm text-[#B4304A]">{error}</p>}
     </div>
