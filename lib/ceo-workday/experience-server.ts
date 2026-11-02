@@ -189,21 +189,208 @@ export async function createOccurrence(seriesId: string, dateISO?: string): Prom
         : null
   if (!date) return null
 
+  return insertOccurrenceIfMissing(supabase, userId, series, date)
+}
+
+type Supabase = Awaited<ReturnType<typeof createClient>>
+
+/**
+ * `on conflict (series_id, occurrence_date) do nothing`, then read the row.
+ * An existing occurrence is never overwritten, so its results stay intact.
+ */
+async function insertOccurrenceIfMissing(
+  supabase: Supabase,
+  userId: string,
+  series: ExperienceSeries,
+  date: string,
+): Promise<ExperienceOccurrence | null> {
+  await supabase.from("boss_experience_occurrences").upsert(
+    {
+      user_id: userId,
+      series_id: series.id,
+      template_key: series.templateKey,
+      occurrence_date: date,
+      duration_minutes: series.durationMinutes,
+    },
+    { onConflict: "series_id,occurrence_date", ignoreDuplicates: true },
+  )
   const { data } = await supabase
     .from("boss_experience_occurrences")
-    .upsert(
-      {
-        user_id: userId,
-        series_id: series.id,
-        template_key: series.templateKey,
-        occurrence_date: date,
-        duration_minutes: series.durationMinutes,
-      },
-      { onConflict: "series_id,occurrence_date", ignoreDuplicates: false },
-    )
     .select(OCC_COLS)
-    .single()
+    .eq("user_id", userId)
+    .eq("series_id", series.id)
+    .eq("occurrence_date", date)
+    .maybeSingle()
   return data ? toOccurrence(data) : null
+}
+
+export interface UpcomingExperience {
+  occurrence: ExperienceOccurrence
+  title: string
+  /** Proposals still waiting for the founder (not placed, not dismissed). */
+  pendingCount: number
+}
+
+/**
+ * Called when the founder opens weekly or daily planning. Creates the next
+ * occurrence of each active weekly series on demand (never months ahead) and
+ * returns upcoming planned occurrences. Creates no assignments.
+ */
+export async function ensureUpcomingOccurrences(todayISO?: string): Promise<UpcomingExperience[]> {
+  const { supabase, userId } = await requireUser()
+  if (!userId) return []
+  const today = todayISO && /^\d{4}-\d{2}-\d{2}$/.test(todayISO) ? todayISO : new Date().toISOString().slice(0, 10)
+
+  const { data: seriesRows } = await supabase
+    .from("boss_experience_series")
+    .select(SERIES_COLS)
+    .eq("user_id", userId)
+    .eq("status", "active")
+  const series = (seriesRows ?? []).map(toSeries)
+  for (const s of series) {
+    if (s.cadence === "weekly" && s.weekday !== null) {
+      await insertOccurrenceIfMissing(supabase, userId, s, nextWeekdayOnOrAfter(today, s.weekday))
+    }
+  }
+
+  const { data: occRows } = await supabase
+    .from("boss_experience_occurrences")
+    .select(OCC_COLS)
+    .eq("user_id", userId)
+    .eq("status", "planned")
+    .gte("occurrence_date", today)
+    .order("occurrence_date", { ascending: true })
+    .limit(10)
+  const nameBySeries = new Map(series.map((s) => [s.id, s.name]))
+
+  const upcoming: UpcomingExperience[] = []
+  for (const r of occRows ?? []) {
+    const occ = toOccurrence(r)
+    const proposals = await proposeOccurrenceAssignments(occ.id)
+    upcoming.push({
+      occurrence: occ,
+      title: (occ.seriesId && nameBySeries.get(occ.seriesId)) || EXPERIENCE_TEMPLATES[occ.templateKey].name,
+      pendingCount: proposals.filter((p) => !p.placed).length,
+    })
+  }
+  return upcoming
+}
+
+/** For Cherry Blossom™'s brief: the next planned occurrence, read-only. */
+export async function getNextScheduledExperience(
+  todayISO?: string,
+): Promise<{ title: string; occurrenceDate: string } | null> {
+  const { supabase, userId } = await requireUser()
+  if (!userId) return null
+  const today = todayISO && /^\d{4}-\d{2}-\d{2}$/.test(todayISO) ? todayISO : new Date().toISOString().slice(0, 10)
+  const { data } = await supabase
+    .from("boss_experience_occurrences")
+    .select("occurrence_date, template_key, series_id, boss_experience_series(name)")
+    .eq("user_id", userId)
+    .eq("status", "planned")
+    .gte("occurrence_date", today)
+    .order("occurrence_date", { ascending: true })
+    .limit(1)
+    .maybeSingle()
+  if (!data) return null
+  const seriesName = (data as { boss_experience_series?: { name?: string } | null }).boss_experience_series?.name
+  const templateKey = data.template_key as string
+  return {
+    title: seriesName || (isExperienceTemplateKey(templateKey) ? EXPERIENCE_TEMPLATES[templateKey].name : "Experience"),
+    occurrenceDate: data.occurrence_date as string,
+  }
+}
+
+/** Four 55-minute work blocks; the 5-minute buffers are never used. */
+const WORKDAY_WORK_MINUTES = 4 * 55
+
+export type PlaceResult =
+  | { ok: true; itemId: string }
+  | { ok: false; reason: "not-signed-in" | "not-proposed" | "already-placed" | "no-plan" | "full" | "error" }
+
+/**
+ * Accept and place one proposal into the founder's CEO Workday™ for a date.
+ * The founder chooses the date; capacity is checked and nothing is bumped.
+ * `saveForLater` stores it as unscheduled work that returns at next planning.
+ */
+export async function acceptProposedAssignment(
+  occurrenceId: string,
+  optionKey: string,
+  planDate: string,
+  opts: { saveForLater?: boolean } = {},
+): Promise<PlaceResult> {
+  const { supabase, userId } = await requireUser()
+  if (!userId) return { ok: false, reason: "not-signed-in" }
+  if (!isExperienceOptionKey(optionKey) || !/^\d{4}-\d{2}-\d{2}$/.test(planDate)) {
+    return { ok: false, reason: "not-proposed" }
+  }
+
+  const proposals = await proposeOccurrenceAssignments(occurrenceId)
+  const proposal = proposals.find((p) => p.optionKey === optionKey)
+  if (!proposal) return { ok: false, reason: "not-proposed" }
+  if (proposal.placed) return { ok: false, reason: "already-placed" }
+
+  const { data: plan } = await supabase
+    .from("ceo_workday_plans")
+    .select("id")
+    .eq("user_id", userId)
+    .eq("plan_date", planDate)
+    .maybeSingle()
+  if (!plan) return { ok: false, reason: "no-plan" }
+
+  const { data: items } = await supabase
+    .from("ceo_workday_plan_items")
+    .select("estimated_minutes, status, next_action")
+    .eq("plan_id", plan.id)
+    .eq("user_id", userId)
+
+  if (!opts.saveForLater) {
+    const scheduled = (items ?? [])
+      .filter((i) => !["saved-for-later", "delegated", "eliminated"].includes(i.status as string))
+      .reduce((sum, i) => sum + (i.estimated_minutes ?? 0), 0)
+
+    // An event inside workday hours with an approved exception fills those hours.
+    const { data: occ } = await supabase
+      .from("boss_experience_occurrences")
+      .select("occurrence_date, duration_minutes, workday_overlap")
+      .eq("id", occurrenceId)
+      .eq("user_id", userId)
+      .maybeSingle()
+    const blockedByEvent =
+      occ && occ.occurrence_date === planDate && occ.workday_overlap === "approved-exception"
+        ? Math.ceil((occ.duration_minutes ?? 60) / 60) * 55
+        : 0
+
+    if (scheduled + proposal.minutes > WORKDAY_WORK_MINUTES - blockedByEvent) return { ok: false, reason: "full" }
+  }
+
+  const option = EXPERIENCE_OPTION_BY_KEY[optionKey]
+  const { data, error } = await supabase
+    .from("ceo_workday_plan_items")
+    .insert({
+      plan_id: plan.id,
+      user_id: userId,
+      position: items?.length ?? 0,
+      title: option.work,
+      purpose: option.outcome,
+      expected_evidence: option.outcome,
+      treatment: "build-change",
+      business_function: "trust-experiences",
+      role: "founder-added",
+      estimated_minutes: option.minutes,
+      ceo_work_category: option.category,
+      founder_decision: opts.saveForLater ? "save-for-later" : "added",
+      next_action: opts.saveForLater ? "save-for-later" : null,
+      status: opts.saveForLater ? "saved-for-later" : "planned",
+      assignment_key: `${occurrenceId}:${optionKey}`,
+      experience_occurrence_id: occurrenceId,
+    })
+    .select("id")
+    .single()
+  // Unique (user_id, assignment_key) rejects a second accept of the same option.
+  if (error?.code === "23505") return { ok: false, reason: "already-placed" }
+  if (error || !data) return { ok: false, reason: "error" }
+  return { ok: true, itemId: data.id }
 }
 
 /** Founder-entered results. "Verified" follow-up can't be set from here. */
@@ -311,10 +498,10 @@ export async function proposeOccurrenceAssignments(occurrenceId: string): Promis
 
   const { data: linked } = await supabase
     .from("ceo_workday_plan_items")
-    .select("title")
+    .select("assignment_key")
     .eq("user_id", userId)
     .eq("experience_occurrence_id", occ.id)
-  const placedTitles = new Set((linked ?? []).map((r) => String(r.title).trim().toLowerCase()))
+  const placedKeys = new Set((linked ?? []).map((r) => String(r.assignment_key ?? "")))
 
   return EXPERIENCE_OPTIONS.filter((opt) => (opt.scope === "setup" ? isFirst : true))
     .filter((opt) => !occ.dismissedOptionKeys.includes(opt.key))
@@ -326,7 +513,7 @@ export async function proposeOccurrenceAssignments(occurrenceId: string): Promis
         proposedDate: addDaysISO(occ.occurrenceDate, offset),
         minutes: EXPERIENCE_OPTION_BY_KEY[opt.key].minutes,
         scope: opt.scope,
-        placed: placedTitles.has(opt.work.toLowerCase()),
+        placed: placedKeys.has(`${occ.id}:${opt.key}`),
       }
     })
 }

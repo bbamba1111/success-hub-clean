@@ -649,7 +649,7 @@ function buildGentleIntervention(ctx: HarmonyContextValue, progress: ProgressSum
   if (ceoEvidence && ceoEvidence.planStatus === "closed" && ceoEvidence.carryForward.length > 0) {
     const first = ceoEvidence.carryForward[0]
     const verb =
-      first.nextAction === "later"
+      first.nextAction === "save-for-later"
         ? "chose to continue it later"
         : first.nextAction === "need-help"
           ? "asked for help with it"

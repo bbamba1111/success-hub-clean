@@ -19,6 +19,8 @@
  */
 
 import { useState } from "react"
+import useSWR from "swr"
+import { getNextScheduledExperience } from "@/lib/ceo-workday/experience-server"
 import { ArrowRight, ChevronDown, ChevronUp } from "lucide-react"
 import { useHarmonyContext } from "@/components/harmony-context/harmony-context-provider"
 import { assembleMorningExecutiveBrief } from "@/lib/cherry-blossom/executive-brief"
@@ -30,10 +32,13 @@ import type { MorningExecutiveBrief } from "@/lib/cherry-blossom/executive-brief
 
 export function MorningExecutiveBriefPanel() {
   const ctx = useHarmonyContext()
+  const { data: nextExperience } = useSWR("boss:next-experience", () => getNextScheduledExperience(), {
+    revalidateOnFocus: false,
+  })
 
   if (!ctx.ready) return <BriefSkeleton />
 
-  const brief = assembleMorningExecutiveBrief(ctx)
+  const brief = assembleMorningExecutiveBrief(ctx, { nextExperience })
 
   return (
     <section
