@@ -490,9 +490,29 @@ export async function closeCeoWorkdayPlan(planId: string, planDate: string) {
 
     const { data: items } = await supabase
       .from("ceo_workday_plan_items")
-      .select("status")
+      .select("status, local_work_item_id")
       .eq("plan_id", planId)
       .eq("user_id", userId)
+
+    const finishedJobIds = (items ?? [])
+      .filter((i) => i.status === "completed" && typeof i.local_work_item_id === "string")
+      .map((i) => i.local_work_item_id as string)
+      .filter((id) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id))
+    if (finishedJobIds.length > 0) {
+      await supabase
+        .from("boss_jobs")
+        .update({
+          status: "done",
+          paused: false,
+          last_change_actor: "founder",
+          last_change_action: "finished",
+          last_change_note: "Finished during CEO Workday™ close-out",
+        })
+        .eq("user_id", userId)
+        .in("id", finishedJobIds)
+        .neq("status", "done")
+    }
+
     const total = items?.length ?? 0
     const completed = items?.filter((i) => i.status === "completed").length ?? 0
     const completionStatus = total === 0 ? "skipped" : completed === total ? "completed" : completed > 0 ? "partial" : "skipped"

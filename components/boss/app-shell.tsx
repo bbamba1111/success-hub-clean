@@ -29,10 +29,10 @@ import type { ClockMode } from "@/lib/boss/types"
 const NAV = [
   { href: "/boss", label: "My Business Day", hint: "Plan and do today", icon: CalendarClock },
   { href: "/boss/dashboard", label: "Business Dashboard", hint: "See how it is going", icon: Gauge },
-  { href: "/boss/queue", label: "Business Work Queue", hint: "All your work", icon: ListChecks },
+  { href: "/boss/queue", label: "Jobs", hint: "Who is doing what", icon: ListChecks },
   { href: "/boss/opportunities", label: "Opportunities", hint: "Chances to grow", icon: Sparkles, child: true },
   { href: "/boss/register", label: "Work Register", hint: "The record of all work", icon: ClipboardList },
-  { href: "/boss/workforce", label: "Workforce Registry", hint: "Your people and tools", icon: Users },
+  { href: "/boss/workforce", label: "Team", hint: "Your people and helpers", icon: Users },
   { href: "/boss/authority", label: "Authority & Permissions", hint: "Who may do what", icon: KeyRound },
   { href: "/boss/coordinator", label: "AI Operations Coordinator", hint: "Your AI helper", icon: Bot },
   { href: "/boss/business-profile", label: "Business Profile", hint: "About your business", icon: Building2 },
