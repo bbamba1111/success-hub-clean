@@ -75,26 +75,72 @@ export async function PUT(req: Request) {
   const { supabase, user } = await requireUser()
   if (!user) return NextResponse.json({ error: "Please sign in." }, { status: 401 })
 
-  const entry = parseEntry(await req.json().catch(() => null))
+  const body = (await req.json().catch(() => null)) as Record<string, unknown> | null
+  const entry = parseEntry(body)
   if (!entry) return NextResponse.json({ error: "Invalid workday data." }, { status: 400 })
 
-  const { error } = await supabase.from("ceo_workday_day_state").upsert(
-    {
+  // baseUpdatedAt is the version this device last loaded (null = "I believe
+  // nothing is saved yet"). A save only lands if the account still holds that
+  // version; otherwise the founder is warned instead of overwriting newer work.
+  const base = typeof body?.baseUpdatedAt === "string" ? body.baseUpdatedAt : null
+  const force = body?.force === true
+  const updatedAt = new Date().toISOString()
+  const table = () => supabase.from("ceo_workday_day_state")
+  const fail = (message: string) => {
+    console.error("[day-state] save failed:", message)
+    return NextResponse.json({ error: "Could not save your workday." }, { status: 500 })
+  }
+  const conflict = async () => {
+    const { data } = await table()
+      .select("state_date, kind, payload, updated_at")
+      .eq("user_id", user.id)
+      .eq("state_date", entry.date)
+      .eq("kind", entry.kind)
+      .maybeSingle()
+    return NextResponse.json({ error: "conflict", current: data }, { status: 409 })
+  }
+
+  if (force) {
+    const { error } = await table().upsert(
+      {
+        user_id: user.id,
+        state_date: entry.date,
+        kind: entry.kind,
+        payload: entry.payload,
+        source: "app",
+        updated_at: updatedAt,
+      },
+      { onConflict: "user_id,state_date,kind" },
+    )
+    return error ? fail(error.message) : NextResponse.json({ updated_at: updatedAt })
+  }
+
+  if (base) {
+    const { data, error } = await table()
+      .update({ payload: entry.payload, source: "app", updated_at: updatedAt })
+      .eq("user_id", user.id)
+      .eq("state_date", entry.date)
+      .eq("kind", entry.kind)
+      .eq("updated_at", base)
+      .select("updated_at")
+    if (error) return fail(error.message)
+    if (data && data.length > 0) return NextResponse.json({ updated_at: data[0].updated_at })
+    return conflict()
+  }
+
+  const { data, error } = await table()
+    .insert({
       user_id: user.id,
       state_date: entry.date,
       kind: entry.kind,
       payload: entry.payload,
       source: "app",
-      updated_at: new Date().toISOString(),
-    },
-    { onConflict: "user_id,state_date,kind" },
-  )
-
-  if (error) {
-    console.error("[day-state] save failed:", error.message)
-    return NextResponse.json({ error: "Could not save your workday." }, { status: 500 })
-  }
-  return NextResponse.json({ ok: true })
+      updated_at: updatedAt,
+    })
+    .select("updated_at")
+    .single()
+  if (error) return error.code === "23505" ? conflict() : fail(error.message)
+  return NextResponse.json({ updated_at: data.updated_at })
 }
 
 export async function POST(req: Request) {

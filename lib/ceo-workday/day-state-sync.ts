@@ -36,36 +36,92 @@ interface DayStateRow {
   state_date: string
   kind: DayStateKind
   payload: Record<string, unknown>
+  updated_at: string
 }
+
+export type SaveProblem =
+  | { type: "failed"; key: string; entry: DayStateEntry; signedOut: boolean }
+  | { type: "conflict"; key: string; entry: DayStateEntry; current: DayStateRow | null }
 
 const ENDPOINT = "/api/ceo-workday/day-state"
 const PUSH_DELAY_MS = 600
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
 
 const pending = new Map<string, { entry: DayStateEntry; timer: ReturnType<typeof setTimeout> }>()
+const inFlight = new Set<string>()
+/** The account version (updated_at) each key was last loaded/saved at; null = known absent. */
+const versions = new Map<string, string | null>()
+let versionsLoaded = false
 let applyingServerState = false
 
-async function send(entry: DayStateEntry): Promise<void> {
+/* -------------------- save problems (failed saves / conflicts) -------------------- */
+
+const problems = new Map<string, SaveProblem>()
+let problemsSnapshot: SaveProblem[] = []
+const problemListeners = new Set<() => void>()
+
+function setProblem(key: string, problem: SaveProblem | null) {
+  if (problem) problems.set(key, problem)
+  else if (!problems.delete(key)) return
+  problemsSnapshot = Array.from(problems.values())
+  problemListeners.forEach((l) => l())
+}
+
+export function subscribeSaveProblems(listener: () => void) {
+  problemListeners.add(listener)
+  return () => problemListeners.delete(listener)
+}
+export const getSaveProblems = () => problemsSnapshot
+export const getServerSaveProblems = (): SaveProblem[] => []
+
+export function hasUnsavedDayState(): boolean {
+  return pending.size > 0 || inFlight.size > 0 || problems.size > 0
+}
+
+const keyOf = (kind: DayStateKind, date: string) => `${kind}:${date}`
+
+async function send(entry: DayStateEntry, force = false): Promise<void> {
+  const key = keyOf(entry.kind, entry.date)
+  inFlight.add(key)
   try {
+    const base = versionsLoaded || versions.has(key) ? (versions.get(key) ?? null) : null
     const res = await fetch(ENDPOINT, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(entry),
+      body: JSON.stringify({ ...entry, baseUpdatedAt: base, force }),
       keepalive: true,
     })
-    if (!res.ok && res.status !== 401) console.error("[DayStateSync] save failed:", res.status)
-  } catch (error) {
-    console.error("[DayStateSync] save failed:", error)
+    if (res.ok) {
+      const { updated_at } = (await res.json()) as { updated_at: string }
+      versions.set(key, updated_at)
+      setProblem(key, null)
+    } else if (res.status === 409) {
+      const { current } = (await res.json().catch(() => ({}))) as { current?: DayStateRow | null }
+      setProblem(key, { type: "conflict", key, entry, current: current ?? null })
+    } else {
+      setProblem(key, { type: "failed", key, entry, signedOut: res.status === 401 })
+    }
+  } catch {
+    setProblem(key, { type: "failed", key, entry, signedOut: false })
+  } finally {
+    inFlight.delete(key)
   }
 }
 
 /** Called by the local stores after each write. No-op while applying account data. */
 export function queueDayStatePush(kind: DayStateKind, date: string, payload: Record<string, unknown>): void {
   if (typeof window === "undefined" || applyingServerState || !DATE_RE.test(date)) return
-  const key = `${kind}:${date}`
+  const key = keyOf(kind, date)
   const existing = pending.get(key)
   if (existing) clearTimeout(existing.timer)
   const entry = { kind, date, payload }
+  // While a conflict is open, keep collecting the founder's edits but don't
+  // send them until they choose which version to keep.
+  const problem = problems.get(key)
+  if (problem?.type === "conflict") {
+    setProblem(key, { ...problem, entry })
+    return
+  }
   const timer = setTimeout(() => {
     pending.delete(key)
     void send(entry)
@@ -76,12 +132,42 @@ export function queueDayStatePush(kind: DayStateKind, date: string, payload: Rec
 async function flushPending(): Promise<void> {
   const entries = Array.from(pending.values())
   pending.clear()
-  await Promise.all(
-    entries.map(({ entry, timer }) => {
+  const retries = problemsSnapshot.filter((p) => p.type === "failed").map((p) => p.entry)
+  await Promise.all([
+    ...entries.map(({ entry, timer }) => {
       clearTimeout(timer)
       return send(entry)
     }),
-  )
+    ...retries.map((entry) => send(entry)),
+  ])
+}
+
+/** Retry every failed save now. */
+export function retryFailedSaves(): Promise<void> {
+  return Promise.all(problemsSnapshot.filter((p) => p.type === "failed").map((p) => send(p.entry))).then(() => {})
+}
+
+/** Conflict resolution: overwrite the account copy with this device's version. */
+export function keepMyVersion(key: string): Promise<void> {
+  const problem = problems.get(key)
+  return problem ? send(problem.entry, true) : Promise.resolve()
+}
+
+/** Conflict resolution: discard this device's edits and load the newer account copy. */
+export function acceptNewerVersion(key: string): void {
+  const problem = problems.get(key)
+  if (problem?.type !== "conflict") return
+  setProblem(key, null)
+  if (problem.current) {
+    applyingServerState = true
+    try {
+      applyRow(problem.current)
+    } finally {
+      applyingServerState = false
+    }
+  } else {
+    versions.set(key, null)
+  }
 }
 
 function readJson(key: string): unknown {
@@ -159,12 +245,29 @@ async function syncDayState(dates: string[]): Promise<{ imported: boolean; rows:
     result = (await fetchRows(dates)) ?? result
   }
 
+  const kinds: DayStateKind[] = ["todays_work", "hourly_work", "hour_overrides"]
+  const unsaved = (key: string) => pending.has(key) || inFlight.has(key) || problems.has(key)
+  for (const date of dates) {
+    for (const kind of kinds) {
+      const key = keyOf(kind, date)
+      if (!unsaved(key)) versions.set(key, null)
+    }
+  }
+
   applyingServerState = true
   try {
-    for (const row of result.rows) applyRow(row)
+    for (const row of result.rows) {
+      const key = keyOf(row.kind, row.state_date)
+      // Never replace this device's unsaved or conflicting edits with the
+      // account copy; the founder resolves those explicitly.
+      if (unsaved(key)) continue
+      versions.set(key, row.updated_at)
+      applyRow(row)
+    }
   } finally {
     applyingServerState = false
   }
+  versionsLoaded = true
   return { imported: true, rows: result.rows.length }
 }
 

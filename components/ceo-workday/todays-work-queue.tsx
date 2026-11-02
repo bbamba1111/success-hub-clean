@@ -27,6 +27,7 @@ import {
 } from "@/lib/ceo-workday/todays-work-store"
 import type { CeoWorkItem, CeoWorkItemStatus } from "@/lib/ceo-workday/types"
 import { useDayStateSync } from "@/lib/ceo-workday/day-state-sync"
+import { DayStateSaveNotice } from "./day-state-save-notice"
 import { getCeoWorkCategory } from "@/lib/ceo-workday/categories"
 import { getBusinessAsset } from "@/lib/business-asset-library/business-asset-registry"
 import { AssetDetailView } from "@/components/business-asset-library/asset-detail-view"
@@ -79,6 +80,7 @@ export function TodaysWorkQueue() {
   if (items.length === 0) {
     return (
       <div className="rounded-2xl border border-dashed border-[#E8DFE2] px-5 py-6 text-center">
+        <DayStateSaveNotice />
         <p className="font-sans text-sm leading-relaxed text-[#6B5860] text-pretty">
           Nothing queued yet. Choose from a category above, or accept Founder GPS&apos;s recommendation, to start
           filling today&apos;s CEO Workday™.
@@ -89,6 +91,7 @@ export function TodaysWorkQueue() {
 
   return (
     <div className="space-y-2">
+      <DayStateSaveNotice />
       {items.map((item, index) => (
         <TodaysWorkItemRow
           key={item.id}

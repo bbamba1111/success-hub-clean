@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button"
 
 import { getDateKey } from "@/lib/daily-plan/storage"
 import { useDayStateSync } from "@/lib/ceo-workday/day-state-sync"
+import { DayStateSaveNotice } from "./day-state-save-notice"
 import {
   CEO_WORKDAY_DECLARATION_EVENT,
   loadCeoWorkdayDeclaration,
@@ -722,6 +723,7 @@ export function CeoWorkdayLivePlan() {
 
   return (
     <div className="space-y-5">
+      <DayStateSaveNotice />
       {visibleOrder.map((id, i) => (
         <WorkdaySection
           key={id}
