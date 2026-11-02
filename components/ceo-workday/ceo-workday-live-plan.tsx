@@ -49,25 +49,21 @@ import {
   CEO_FUNCTION_LABEL,
   CEO_ITEM_STATUS_LABEL,
   CEO_TREATMENT_LABEL,
-  type CeoBusinessFunction,
   type CeoNextAction,
   type CeoPlanItem,
   type CeoWorkdayPlan,
 } from "@/lib/ceo-workday/plan-types"
 import {
-  addCeoPlanItem,
   closeCeoWorkdayPlan,
   getCeoWorkdayCheckins,
   getCeoWorkdayPlan,
-  linkPlanItemsToLocalQueue,
   saveCeoWorkdayPlan,
   saveWorkingOnDeclaration,
   updateCeoPlanItem,
   updateCeoPlanStatus,
   type HourCheckinItemOutcome,
 } from "@/lib/ceo-workday/plan-server"
-import { addWorkItem, linkWorkItemAsset, updateWorkItemStatus } from "@/lib/ceo-workday/todays-work-store"
-import { getWorkflowEntry } from "@/lib/ceo-workday/workflow-registry"
+import { linkWorkItemAsset, updateWorkItemStatus } from "@/lib/ceo-workday/todays-work-store"
 import { BUSINESS_ASSETS, getBusinessAsset } from "@/lib/business-asset-library/business-asset-registry"
 import { AssetDetailView } from "@/components/business-asset-library/asset-detail-view"
 import type { BusinessAssetBuildRecord } from "@/utils/business-asset-build-storage"
@@ -77,26 +73,6 @@ import { boundaryWorkKind } from "@/lib/ceo-workday/boundary-work"
 import { MonthlyBoundaryFocusPanel } from "./monthly-boundary-focus-panel"
 
 type AdjustAction = "change" | "defer" | "delegate" | "remove" | "help" | "other"
-
-const CEO_FUNCTION_TO_CATEGORY: Record<CeoBusinessFunction, NonNullable<CeoPlanItem["ceoWorkCategory"]>> = {
-  "client-attraction": "MARKET",
-  "sales-conversion": "SELL",
-  delivery: "DELIVER",
-  operations: "SYSTEMIZE",
-  "operations-design": "BUILD",
-  build: "BUILD",
-  decide: "DECIDE",
-  own: "DECIDE",
-  delegate: "DELEGATE",
-  systemize: "SYSTEMIZE",
-  "augment-automate-ai": "AUGMENT",
-  connect: "CONNECT",
-  communicate: "COMMUNICATE",
-  sell: "SELL",
-  market: "MARKET",
-  deliver: "DELIVER",
-  solve: "SOLVE",
-}
 
 export function CeoWorkdayLivePlan() {
   useDayStateSync()
@@ -261,61 +237,6 @@ export function CeoWorkdayLivePlan() {
     await updateCeoPlanItem(item.id, { status: "planned", nextAction: null, founderDecision: "edit" })
     if (item.localWorkItemId) updateWorkItemStatus(item.localWorkItemId, "not-started")
     await updateCeoPlanStatus(plan.id, "adjusted")
-  }
-
-  /**
-   * Founder creates a new executable CEO assignment inside a specific hour using
-   * the What Must Happen Today Business Function Builder™. Mirrors into the
-   * Today's Work™ queue and pins the new work to the chosen hour.
-   */
-  async function addWorkToHour(
-    hour: HourBlockIndex,
-    input: { businessFunction: CeoBusinessFunction; work: string; outcome: string; minutes: number },
-  ): Promise<boolean> {
-    if (!plan) return false
-    const title = input.work.trim()
-    if (!title) return false
-    const category = CEO_FUNCTION_TO_CATEGORY[input.businessFunction]
-    const wf = getWorkflowEntry(category)
-    const purpose = "Added by me inside my CEO Workday™ as something that must happen this hour."
-    const estimatedMinutes = Math.max(5, input.minutes)
-    const created = await addCeoPlanItem(plan.id, {
-      title,
-      purpose,
-      expectedEvidence: input.outcome.trim(),
-      treatment: "implement-operate",
-      businessFunction: input.businessFunction,
-      role: "founder-added",
-      estimatedMinutes,
-      relatedAssetId: null,
-      relatedAssetTitle: null,
-      ceoWorkCategory: category,
-      founderDecision: "added",
-      status: "planned",
-      nextAction: null,
-      localWorkItemId: null,
-    })
-    if (!created) return false
-    const local = addWorkItem({
-      category,
-      selectedOptionLabel: title,
-      workflowId: wf.workflowId,
-      availability: wf.availability,
-      source: "founder",
-      sourceDetail: "What Must Happen Today™ · CEO Workday",
-      status: "not-started",
-      planItemId: created.id,
-      estimatedMinutes: created.estimatedMinutes,
-      purpose,
-      expectedEvidence: input.outcome.trim(),
-      tangibleOutcome: input.outcome.trim(),
-    })
-    void linkPlanItemsToLocalQueue([{ itemId: created.id, localWorkItemId: local.id }])
-    setPlan((p) => p && { ...p, items: [...p.items, { ...created, localWorkItemId: local.id }], plannedMinutes: p.plannedMinutes + created.estimatedMinutes })
-    // Pin the new assignment to the hour the founder built it in.
-    setHour(created.id, hour)
-    await updateCeoPlanStatus(plan.id, "adjusted")
-    return true
   }
 
   async function commitTitle(item: CeoPlanItem, title: string) {
@@ -612,7 +533,6 @@ export function CeoWorkdayLivePlan() {
             itemsByHour={itemsByHour}
             renderItem={renderPlanItem}
             plannedMinutes={plan.plannedMinutes}
-            onAddWork={addWorkToHour}
           />
         </div>
       )}
@@ -799,6 +719,9 @@ function CeoPlanItemWorkSurface({
         <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.16em] text-[#5A7A45]">
           Business Asset™ template · {asset.name}
         </p>
+        {item.assetReason && (
+          <p className="mt-1 font-sans text-sm leading-relaxed text-[#3A2E33] text-pretty">{item.assetReason}</p>
+        )}
         {item.expectedEvidence && (
           <p className="mt-1 font-sans text-base text-[#6B5860]">
             Done when: <span className="text-[#3A2E33]">{item.expectedEvidence}</span>
@@ -811,15 +734,21 @@ function CeoPlanItemWorkSurface({
     )
   }
 
-  if (!withoutTemplate) {
+  // Business assets are conditional: the template panel only appears when the
+  // BO$$ readiness assessment marked this assignment as needing an asset.
+  const needsAsset = item.assetRequirement === "required" || item.assetRequirement === "suggested"
+  const assetRequired = item.assetRequirement === "required"
+
+  if (needsAsset && !withoutTemplate) {
     return (
       <div className="mt-3 rounded-2xl border border-[#E8DFE2] bg-[#FAF8F5] px-4 py-4 sm:px-5">
         <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.16em] text-[#5A7A45]">
-          Link this work to a Business Asset™ template
+          {assetRequired ? "This assignment needs a Business Asset™" : "A Business Asset™ will help here"}
         </p>
         <p className="mt-1 font-sans text-sm leading-relaxed text-[#3A2E33] text-pretty">
-          Choose the step-by-step template from your Business Asset Library™ that produces this outcome. The
-          builder opens right here, and finishing it completes this assignment.
+          {item.assetReason ??
+            "Choose the step-by-step template from your Business Asset Library™ that produces this outcome."}{" "}
+          The builder opens right here, and finishing it completes this assignment.
         </p>
         <label className="mt-3 block">
           <span className="sr-only">Business Asset template</span>
@@ -842,20 +771,22 @@ function CeoPlanItemWorkSurface({
             ))}
           </select>
         </label>
-        <button
-          type="button"
-          onClick={() => setWithoutTemplate(true)}
-          className="mt-3 font-sans text-base font-semibold text-[#6B5860] underline underline-offset-2 hover:text-[#2E1F27]"
-        >
-          This work doesn&apos;t need a template
-        </button>
+        {!assetRequired && (
+          <button
+            type="button"
+            onClick={() => setWithoutTemplate(true)}
+            className="mt-3 font-sans text-base font-semibold text-[#6B5860] underline underline-offset-2 hover:text-[#2E1F27]"
+          >
+            Continue without it
+          </button>
+        )}
       </div>
     )
   }
 
   return (
     <div className="mt-3 rounded-2xl border border-[#E8DFE2] bg-[#FAF8F5] px-4 py-4 sm:px-5">
-      <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.16em] text-[#5A7A45]">Working without a template</p>
+      <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.16em] text-[#5A7A45]">Your work surface</p>
       {item.purpose && <p className="mt-2 font-sans text-sm leading-relaxed text-[#3A2E33] text-pretty">{item.purpose}</p>}
       <p className="mt-2 font-sans text-sm text-[#3A2E33]">
         <span className="font-semibold text-[#5A7A45]">Done when:</span> {item.expectedEvidence ?? "the outcome you designed exists."}
@@ -881,13 +812,15 @@ function CeoPlanItemWorkSurface({
               </button>
             </>
           )}
-          <button
-            type="button"
-            onClick={() => setWithoutTemplate(false)}
-            className="ml-auto font-sans text-base font-semibold text-[#6B5860] underline underline-offset-2 hover:text-[#2E1F27]"
-          >
-            Link a template instead
-          </button>
+          {needsAsset && (
+            <button
+              type="button"
+              onClick={() => setWithoutTemplate(false)}
+              className="ml-auto font-sans text-base font-semibold text-[#6B5860] underline underline-offset-2 hover:text-[#2E1F27]"
+            >
+              Use the suggested template
+            </button>
+          )}
         </div>
       )}
     </div>
