@@ -72,6 +72,7 @@ import { CeoHourCheckin } from "./ceo-hour-checkin"
 import { BoundaryWorkSurface } from "./boundary-work-surface"
 import { boundaryWorkKind } from "@/lib/ceo-workday/boundary-work"
 import { MonthlyBoundaryFocusPanel } from "./monthly-boundary-focus-panel"
+import { ScheduledExperiencesStrip } from "./scheduled-experiences-strip"
 
 type AdjustAction = "change" | "save-for-later" | "delegate" | "remove" | "help" | "other"
 
@@ -488,7 +489,7 @@ export function CeoWorkdayLivePlan() {
     )
   }
 
-  // ── render ───────────────────────────────────��──────────────────────────��
+  // ── render ──────────��────────────────────────��──────────────────────────��
   const declarationSection = declaration && (
         <motion.div
           key={dayDeclaration ? (plan?.id ?? local?.builtAt) : `weekly-${weekly.workdayDeclarationBuiltAt ?? weekly.weekKey}`}
@@ -546,6 +547,7 @@ export function CeoWorkdayLivePlan() {
           />
         </div>
       )}
+      {plan && <ScheduledExperiencesStrip dateKey={dateKey} onPlaced={() => void refresh()} />}
     </>
   )
 
