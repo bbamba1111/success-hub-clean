@@ -73,6 +73,7 @@ type ItemRow = {
   status: CeoPlanItemStatus
   next_action: CeoNextAction | null
   local_work_item_id: string | null
+  job_id: string | null
   defer_until: string | null
   delegate_to: string | null
   handoff_note: string | null
@@ -98,6 +99,7 @@ function rowToItem(r: ItemRow): CeoPlanItem {
     status: r.status,
     nextAction: r.next_action,
     localWorkItemId: r.local_work_item_id,
+    jobId: r.job_id,
     deferUntil: r.defer_until,
     delegateTo: r.delegate_to,
     handoffNote: r.handoff_note,
@@ -128,7 +130,143 @@ function rowToPlan(p: PlanRow, items: ItemRow[]): CeoWorkdayPlan {
 const PLAN_COLS =
   "id, plan_date, week_key, business_area_id, bottleneck_ega_entry_ids, primary_assignment_ref, primary_asset_id, constraint_summary, intervention_summary, identity_statement, declaration, planned_minutes, status, entered_at, closed_at"
 const ITEM_COLS =
-  "id, plan_id, position, title, purpose, expected_evidence, treatment, business_function, role, estimated_minutes, related_asset_id, related_assignment_ref, ceo_work_category, gps_original, founder_decision, status, next_action, local_work_item_id, defer_until, delegate_to, handoff_note"
+  "id, plan_id, position, title, purpose, expected_evidence, treatment, business_function, role, estimated_minutes, related_asset_id, related_assignment_ref, ceo_work_category, gps_original, founder_decision, status, next_action, local_work_item_id, job_id, defer_until, delegate_to, handoff_note"
+
+// ── Phase 3 job link ────────────────────────────────────────────────────────
+
+type Db = Awaited<ReturnType<typeof createClient>>
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+function jobFunction(fn: CeoPlanItem["businessFunction"]): string {
+  switch (fn) {
+    case "client-attraction":
+    case "market":
+    case "connect":
+    case "communicate":
+      return "attraction"
+    case "sales-conversion":
+    case "sell":
+      return "sales"
+    case "delivery":
+    case "deliver":
+      return "delivery"
+    case "operations-design":
+    case "build":
+    case "systemize":
+    case "augment-automate-ai":
+      return "design"
+    default:
+      return "operations"
+  }
+}
+
+/** Item status → job status. `null` means "leave the job as it is". */
+function jobStatusFor(status: CeoPlanItemStatus): string | null {
+  switch (status) {
+    case "planned":
+      return "not_started"
+    case "in-progress":
+      return "working"
+    case "completed":
+      return "done"
+    case "blocked":
+      return "needs_help"
+    default:
+      return null
+  }
+}
+
+function needsJob(decision: CeoPlanItem["founderDecision"]) {
+  return decision !== "remove"
+}
+
+/**
+ * Gives every kept item a persistent BO$$ job. Reuses the job the item already
+ * had (only if it belongs to this founder), otherwise creates one. Returns
+ * job ids aligned with `items`.
+ */
+async function ensureJobs(
+  supabase: Db,
+  userId: string,
+  items: Array<Pick<CeoPlanItem, "title" | "purpose" | "businessFunction" | "founderDecision"> & { jobId?: string | null }>,
+): Promise<Array<string | null>> {
+  const wanted = Array.from(
+    new Set(items.map((i) => i.jobId).filter((id): id is string => !!id && UUID_RE.test(id))),
+  )
+  const owned = new Set<string>()
+  if (wanted.length) {
+    const { data } = await supabase.from("boss_jobs").select("id").eq("user_id", userId).in("id", wanted)
+    for (const r of data ?? []) owned.add(r.id as string)
+  }
+
+  const used = new Set<string>()
+  const result: Array<string | null> = []
+  for (const item of items) {
+    if (!needsJob(item.founderDecision)) {
+      result.push(null)
+      continue
+    }
+    if (item.jobId && owned.has(item.jobId) && !used.has(item.jobId)) {
+      used.add(item.jobId)
+      result.push(item.jobId)
+      continue
+    }
+    const { data: job } = await supabase
+      .from("boss_jobs")
+      .insert({
+        user_id: userId,
+        title: item.title.trim().slice(0, 200) || "CEO Workday™ work",
+        details: item.purpose?.trim().slice(0, 4000) || null,
+        business_function: jobFunction(item.businessFunction),
+        assignee_type: "founder",
+        created_by_actor: "founder",
+        last_change_actor: "founder",
+        last_change_action: "created",
+        last_change_note: "Planned in the CEO Workday™",
+      })
+      .select("id")
+      .single()
+    const id = (job?.id as string | undefined) ?? null
+    if (id) used.add(id)
+    result.push(id)
+  }
+  return result
+}
+
+/** Keeps each linked job's status in step with its Workday item. */
+async function syncJobs(supabase: Db, userId: string, updates: Array<{ itemId: string; status: CeoPlanItemStatus }>) {
+  const relevant = updates.filter((u) => jobStatusFor(u.status))
+  if (!relevant.length) return
+  const { data: rows } = await supabase
+    .from("ceo_workday_plan_items")
+    .select("id, job_id")
+    .eq("user_id", userId)
+    .in(
+      "id",
+      relevant.map((u) => u.itemId),
+    )
+  const jobByItem = new Map((rows ?? []).map((r) => [r.id as string, r.job_id as string | null]))
+  // One update per job: the database refuses to finish a job that is still
+  // waiting on another, and that refusal must not block the other jobs.
+  for (const u of relevant) {
+    const jobId = jobByItem.get(u.itemId)
+    const status = jobStatusFor(u.status)
+    if (!jobId || !status) continue
+    await supabase
+      .from("boss_jobs")
+      .update({
+        status,
+        ...(status === "done" ? { paused: false } : {}),
+        last_change_actor: "founder",
+        last_change_action: status === "done" ? "finished" : "status_changed",
+        last_change_note: "Updated from the CEO Workday™",
+      })
+      .eq("user_id", userId)
+      .eq("id", jobId)
+      .neq("status", status)
+  }
+}
 
 // ── reads ───────────────────────────────────────────────────────────────────
 
@@ -241,10 +379,29 @@ export async function saveCeoWorkdayPlan(input: SaveCeoWorkdayPlanInput): Promis
       .single()
     if (error || !plan) return null
 
+    // Re-saving the design must keep each item on the job it already has, so
+    // remember the current links (by title when the caller has no job id).
+    const { data: previous } = await supabase
+      .from("ceo_workday_plan_items")
+      .select("title, job_id")
+      .eq("plan_id", plan.id)
+      .eq("user_id", userId)
+    const jobByTitle = new Map<string, string>()
+    for (const p of previous ?? []) {
+      const key = String(p.title).trim().toLowerCase()
+      if (p.job_id && !jobByTitle.has(key)) jobByTitle.set(key, p.job_id as string)
+    }
+    const jobIds = await ensureJobs(
+      supabase,
+      userId,
+      input.items.map((i) => ({ ...i, jobId: i.jobId ?? jobByTitle.get(i.title.trim().toLowerCase()) ?? null })),
+    )
+
     // Replace items (design-time only — before execution begins).
     await supabase.from("ceo_workday_plan_items").delete().eq("plan_id", plan.id).eq("user_id", userId)
 
     const rows = input.items.map((i, idx) => ({
+      job_id: jobIds[idx],
       plan_id: plan.id,
       user_id: userId,
       position: idx,
@@ -344,6 +501,7 @@ export async function updateCeoPlanItem(
     // Linking (or re-linking) the item to a Business Asset Library™ template.
     if (patch.relatedAssetId !== undefined) row.related_asset_id = patch.relatedAssetId
     await supabase.from("ceo_workday_plan_items").update(row).eq("id", itemId).eq("user_id", userId)
+    if (patch.status !== undefined) await syncJobs(supabase, userId, [{ itemId, status: patch.status }])
   } catch {
     // best-effort
   }
@@ -361,9 +519,11 @@ export async function addCeoPlanItem(
       .from("ceo_workday_plan_items")
       .select("id", { count: "exact", head: true })
       .eq("plan_id", planId)
+    const [jobId] = await ensureJobs(supabase, userId, [{ ...item, founderDecision: "added" }])
     const { data } = await supabase
       .from("ceo_workday_plan_items")
       .insert({
+        job_id: jobId,
         plan_id: planId,
         user_id: userId,
         position: count ?? 0,
@@ -466,6 +626,11 @@ export async function saveHourCheckin(input: {
             .eq("user_id", userId),
         ),
       )
+      await syncJobs(
+        supabase,
+        userId,
+        input.outcomes.map((o) => ({ itemId: o.itemId, status: o.actualStatus })),
+      )
     }
   } catch {
     // best-effort
@@ -490,30 +655,17 @@ export async function closeCeoWorkdayPlan(planId: string, planDate: string) {
 
     const { data: items } = await supabase
       .from("ceo_workday_plan_items")
-      .select("status, local_work_item_id")
+      .select("id, status")
       .eq("plan_id", planId)
       .eq("user_id", userId)
 
-    const finishedJobIds = (items ?? [])
-      .filter((i) => i.status === "completed" && typeof i.local_work_item_id === "string")
-      .map((i) => i.local_work_item_id as string)
-      .filter((id) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id))
-    // One update per job: the database refuses to finish a job that is still
-    // waiting on another, and that refusal must not block the other jobs.
-    for (const jobId of finishedJobIds) {
-      await supabase
-        .from("boss_jobs")
-        .update({
-          status: "done",
-          paused: false,
-          last_change_actor: "founder",
-          last_change_action: "finished",
-          last_change_note: "Finished during CEO Workday™ close-out",
-        })
-        .eq("user_id", userId)
-        .eq("id", jobId)
-        .neq("status", "done")
-    }
+    await syncJobs(
+      supabase,
+      userId,
+      (items ?? [])
+        .filter((i) => i.status === "completed")
+        .map((i) => ({ itemId: i.id as string, status: "completed" as const })),
+    )
 
     const total = items?.length ?? 0
     const completed = items?.filter((i) => i.status === "completed").length ?? 0

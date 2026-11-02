@@ -172,6 +172,8 @@ export interface CeoPlanItem {
   nextAction?: CeoNextAction | null
   /** id of the mirrored Today's Work™ queue item (localStorage). */
   localWorkItemId?: string | null
+  /** The persistent BO$$ job this item is carried by (Phase 3 job system). */
+  jobId?: string | null
   /** When deferred work comes back (e.g. "tomorrow", "later-this-week", "next-week"). */
   deferUntil?: string | null
   /** Who deferred/delegated work is handed to. */
