@@ -1,5 +1,4 @@
 import "server-only"
-import { createHash } from "node:crypto"
 import { NextResponse } from "next/server"
 import type { User } from "@supabase/supabase-js"
 import { createClient } from "@/lib/supabase/server"
@@ -102,11 +101,13 @@ export async function guardMemberAi(req: Request, route: string): Promise<Member
   }
 }
 
-function visitorKey(req: Request) {
+// Web Crypto keeps this usable from both Edge and Node route runtimes.
+async function visitorKey(req: Request) {
   const forwarded = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
   const ip = forwarded || req.headers.get("x-real-ip")?.trim() || "unknown"
   const salt = process.env.SUPABASE_JWT_SECRET ?? process.env.SUPABASE_SERVICE_ROLE_KEY ?? ""
-  return createHash("sha256").update(`public-ai:${salt}:${ip}`).digest("hex")
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`public-ai:${salt}:${ip}`))
+  return Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, "0")).join("")
 }
 
 /** Gate for the public homepage AI route: shutdown switch, per-visitor limit, size cap. No member data. */
@@ -118,7 +119,7 @@ export async function guardPublicAi(req: Request, route: string): Promise<Public
   try {
     const admin = createAdminClient()
     if (!(await aiSwitchOn(admin))) return SHUTDOWN()
-    const limited = await consume(admin, "public", visitorKey(req), route, PUBLIC_LIMITS)
+    const limited = await consume(admin, "public", await visitorKey(req), route, PUBLIC_LIMITS)
     if (limited) return limited
     return { ok: true }
   } catch (error) {
