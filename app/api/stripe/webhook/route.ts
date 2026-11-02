@@ -71,6 +71,25 @@ export async function POST(request: Request) {
   }
 
   try {
+    // A cancelled subscription must end paid access, otherwise member-only AI stays open after the member stops paying.
+    if (event.type === "customer.subscription.deleted") {
+      const subscription = event.data.object as Stripe.Subscription
+      const customerId = typeof subscription.customer === "string" ? subscription.customer : subscription.customer.id
+      const customer = await stripe.customers.retrieve(customerId)
+      const email = customer.deleted ? null : (customer as Stripe.Customer).email
+      if (!email) return NextResponse.json({ received: true, skipped: "no customer email" })
+
+      const { error } = await createAdminClient()
+        .from("user_profiles")
+        .update({ membership_tier: "free", updated_at: new Date().toISOString() })
+        .eq("email", email)
+      if (error) {
+        console.error("[stripe-webhook] Could not end membership after cancellation:", error.message)
+        return NextResponse.json({ error: "Failed to update membership" }, { status: 500 })
+      }
+      return NextResponse.json({ received: true, membership_tier: "free" })
+    }
+
     if (event.type !== "checkout.session.completed") {
       // Acknowledge everything else so Stripe doesn't retry, but take no action.
       return NextResponse.json({ received: true, ignored: event.type })
@@ -157,7 +176,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Failed to create profile" }, { status: 500 })
     }
 
-    console.log("[v0] User created successfully via Stripe:", { email, user_id: authData.user.id, membership_tier })
+    console.log("[v0] User created successfully via Stripe:", { email, user_id: authData.user.id, membership_tier: membershipTier })
 
     try {
       const resend = new Resend(process.env.RESEND_API_KEY)
