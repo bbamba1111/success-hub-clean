@@ -159,6 +159,7 @@ export function acceptNewerVersion(key: string): void {
   if (problem?.type !== "conflict") return
   setProblem(key, null)
   if (problem.current) {
+    versions.set(key, problem.current.updated_at)
     applyingServerState = true
     try {
       applyRow(problem.current)
