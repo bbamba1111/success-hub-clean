@@ -58,11 +58,20 @@ export function FunctionWorkSelect({
           <SelectValue placeholder="Click here to choose from common work…" />
         </SelectTrigger>
         <SelectContent className="border-[#C9AE86] bg-[#FFFDF9]">
-          {options.map((o, i) => (
-            <SelectItem key={o.work} value={String(i)} className={ITEM_CLASS}>
-              {o.work}
-            </SelectItem>
-          ))}
+          {options.map((o, i) =>
+            o.retired ? (
+              <SelectItem key={o.work} value={String(i)} disabled className={`${ITEM_CLASS} opacity-70`}>
+                <span className="line-through">{o.work}</span>
+                <span className="block text-xs no-underline">
+                  Moved to Workshops &amp; Webinars — choose that function to plan or promote an experience.
+                </span>
+              </SelectItem>
+            ) : (
+              <SelectItem key={o.work} value={String(i)} className={ITEM_CLASS}>
+                {o.work}
+              </SelectItem>
+            ),
+          )}
           <SelectItem value={WRITE_MY_OWN} className={ITEM_CLASS}>
             Something else — I&apos;ll write my own
           </SelectItem>

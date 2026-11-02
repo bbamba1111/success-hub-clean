@@ -26,6 +26,7 @@ import type {
   CeoWorkdayEvidenceSummary,
   CeoWorkdayPlan,
 } from "./plan-types"
+import { isRetiredWorkTitle } from "./function-work-options"
 
 // ── helpers ─────────────────────────────────────────────────────────────────
 
@@ -81,6 +82,8 @@ type ItemRow = {
   readiness: CeoPlanItem["readiness"]
   asset_requirement: CeoPlanItem["assetRequirement"]
   asset_reason: string | null
+  experience_occurrence_id: string | null
+  completion_basis: CeoPlanItem["completionBasis"]
 }
 
 function rowToItem(r: ItemRow): CeoPlanItem {
@@ -111,6 +114,8 @@ function rowToItem(r: ItemRow): CeoPlanItem {
     readiness: r.readiness,
     assetRequirement: r.asset_requirement,
     assetReason: r.asset_reason,
+    experienceOccurrenceId: r.experience_occurrence_id,
+    completionBasis: r.completion_basis,
   }
 }
 
@@ -138,7 +143,12 @@ function rowToPlan(p: PlanRow, items: ItemRow[]): CeoWorkdayPlan {
 const PLAN_COLS =
   "id, plan_date, week_key, business_area_id, bottleneck_ega_entry_ids, primary_assignment_ref, primary_asset_id, constraint_summary, intervention_summary, identity_statement, declaration, planned_minutes, status, entered_at, closed_at"
 const ITEM_COLS =
-  "id, plan_id, position, title, purpose, expected_evidence, treatment, business_function, role, estimated_minutes, related_asset_id, related_assignment_ref, ceo_work_category, gps_original, founder_decision, status, next_action, local_work_item_id, job_id, delegate_to, handoff_note, assignment_key, strategic_objective, readiness, asset_requirement, asset_reason"
+  "id, plan_id, position, title, purpose, expected_evidence, treatment, business_function, role, estimated_minutes, related_asset_id, related_assignment_ref, ceo_work_category, gps_original, founder_decision, status, next_action, local_work_item_id, job_id, delegate_to, handoff_note, assignment_key, strategic_objective, readiness, asset_requirement, asset_reason, experience_occurrence_id, completion_basis"
+
+/** Founder sessions may only record these; `system-verified` is written by the service role. */
+function clientCompletionBasis(b: CeoPlanItem["completionBasis"]) {
+  return b === "internal" || b === "founder-reported" ? b : null
+}
 
 // ── Phase 3 job link ────────────────────────────────────────────────────────
 
@@ -397,9 +407,15 @@ export async function saveCeoWorkdayPlan(input: SaveCeoWorkdayPlanInput): Promis
       .eq("plan_id", plan.id)
       .eq("user_id", userId)
     const jobByTitle = new Map<string, string>()
+    const previousTitles = new Set<string>()
     for (const p of previous ?? []) {
       const key = String(p.title).trim().toLowerCase()
+      previousTitles.add(key)
       if (p.job_id && !jobByTitle.has(key)) jobByTitle.set(key, p.job_id as string)
+    }
+    // Retired options stay on rows that already had them, but can't be added anew.
+    if (input.items.some((i) => isRetiredWorkTitle(i.title) && !previousTitles.has(i.title.trim().toLowerCase()))) {
+      return null
     }
     const jobIds = await ensureJobs(
       supabase,
@@ -441,6 +457,8 @@ export async function saveCeoWorkdayPlan(input: SaveCeoWorkdayPlanInput): Promis
       readiness: i.readiness ?? null,
       asset_requirement: i.assetRequirement ?? null,
       asset_reason: i.assetReason?.trim().slice(0, 600) ?? null,
+      experience_occurrence_id: i.experienceOccurrenceId ?? null,
+      completion_basis: clientCompletionBasis(i.completionBasis),
     }))
 
     const { data: items } = rows.length
@@ -547,7 +565,7 @@ export async function addCeoPlanItem(
 ): Promise<CeoPlanItem | null> {
   try {
     const { supabase, userId } = await requireUser()
-    if (!userId) return null
+    if (!userId || isRetiredWorkTitle(item.title)) return null
     const { count } = await supabase
       .from("ceo_workday_plan_items")
       .select("id", { count: "exact", head: true })

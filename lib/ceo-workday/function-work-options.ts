@@ -1,8 +1,13 @@
 import type { CeoBusinessFunction } from "./plan-types"
+import { EXPERIENCE_OPTIONS, type ExperienceOptionKey } from "./experience-options"
 
 export type FunctionWorkOption = {
   work: string
   outcome: string
+  /** Stable key for options that are tracked by key (Workshops & Webinars). */
+  key?: ExperienceOptionKey
+  /** Visible for history, but not choosable for new work. */
+  retired?: boolean
 }
 
 /**
@@ -181,43 +186,27 @@ export const FUNCTION_WORK_OPTIONS: Partial<Record<CeoBusinessFunction, Function
       outcome: "My schedule supports work-life balance and my business priorities.",
     },
   ],
-  "trust-experiences": [
-    {
-      work: "Choose the experience, date and audience for my next workshop or webinar.",
-      outcome: "The experience has a date, a clear audience and one promise.",
-    },
-    {
-      work: "Write the title, promise and invitation for the experience.",
-      outcome: "The invitation is ready to send and clearly says who it is for.",
-    },
-    {
-      work: "Set up the registration page and confirmation email.",
-      outcome: "People can register and receive a confirmation.",
-    },
-    {
-      work: "Prepare the agenda, slides and live delivery flow.",
-      outcome: "The run-of-show is ready from welcome to next-step invitation.",
-    },
-    {
-      work: "Rehearse and run a technical check before the live experience.",
-      outcome: "Links, audio, slides and recording work before going live.",
-    },
-    {
-      work: "Host the live workshop or webinar.",
-      outcome: "The experience was held and attendees were invited to a next step.",
-    },
-    {
-      work: "Send the replay and follow-up to attendees and registrants.",
-      outcome: "Attendees and no-shows receive the replay and a clear next step.",
-    },
-    {
-      work: "Review what happened and choose one improvement for next time.",
-      outcome: "One improvement is recorded and ready to apply to the next experience.",
-    },
-  ],
+  "trust-experiences": EXPERIENCE_OPTIONS.map((o) => ({ key: o.key, work: o.work, outcome: o.outcome })),
+}
+
+/**
+ * Work that used to live under another function. It stays visible (so history
+ * still reads correctly) but can't be chosen again; the server refuses it too.
+ */
+export const RETIRED_WORK_OPTIONS: Array<{ work: string; from: CeoBusinessFunction; movedTo: CeoBusinessFunction }> = [
+  {
+    work: "Plan or promote an upcoming webinar, workshop or live event.",
+    from: "client-attraction",
+    movedTo: "trust-experiences",
+  },
+]
+
+export function isRetiredWorkTitle(title: string): boolean {
+  const t = title.trim().toLowerCase()
+  return RETIRED_WORK_OPTIONS.some((r) => r.work.toLowerCase() === t)
 }
 
 export function workOptionsFor(fn: CeoBusinessFunction | null | undefined): FunctionWorkOption[] {
   if (!fn) return []
-  return FUNCTION_WORK_OPTIONS[fn] ?? []
+  return (FUNCTION_WORK_OPTIONS[fn] ?? []).map((o) => (isRetiredWorkTitle(o.work) ? { ...o, retired: true } : o))
 }
