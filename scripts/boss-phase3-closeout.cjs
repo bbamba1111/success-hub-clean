@@ -23,7 +23,8 @@ async function closeOut(supabase, userId, planId) {
   }
   const total = items?.length ?? 0
   const completed = items?.filter((i) => i.status === "completed").length ?? 0
-  const completionStatus = total === 0 ? "skipped" : completed === total ? "completed" : completed > 0 ? "partial" : "skipped"
+  const completionStatus =
+    total > 0 && completed === total ? "honored" : completed > 0 ? "modified" : "not-completed"
   const { data: existing } = await supabase.from("segment_completions").select("id")
     .eq("user_id", userId).eq("segment_id", "ceo-workday").eq("segment_date", plan.plan_date).limit(1).maybeSingle()
   const seg = existing

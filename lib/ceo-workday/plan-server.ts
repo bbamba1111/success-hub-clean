@@ -517,7 +517,8 @@ export async function closeCeoWorkdayPlan(planId: string, planDate: string) {
 
     const total = items?.length ?? 0
     const completed = items?.filter((i) => i.status === "completed").length ?? 0
-    const completionStatus = total === 0 ? "skipped" : completed === total ? "completed" : completed > 0 ? "partial" : "skipped"
+    const completionStatus =
+      total > 0 && completed === total ? "honored" : completed > 0 ? "modified" : "not-completed"
 
     // segment_completions has no unique key on (user, segment, date), so
     // update the day's row if it exists instead of relying on upsert.
