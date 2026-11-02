@@ -306,7 +306,11 @@ const WORKDAY_WORK_MINUTES = 4 * 55
 
 export type PlaceResult =
   | { ok: true; itemId: string }
-  | { ok: false; reason: "not-signed-in" | "not-proposed" | "already-placed" | "no-plan" | "full" | "error" }
+  | {
+      ok: false
+      reason: "not-signed-in" | "not-proposed" | "already-placed" | "no-plan" | "full" | "error"
+      existingItemId?: string
+    }
 
 /**
  * Accept and place one proposal into the founder's CEO Workday™ for a date.
@@ -387,8 +391,18 @@ export async function acceptProposedAssignment(
     })
     .select("id")
     .single()
-  // Unique (user_id, assignment_key) rejects a second accept of the same option.
-  if (error?.code === "23505") return { ok: false, reason: "already-placed" }
+  // The partial unique index (user_id, experience_occurrence_id, assignment_key)
+  // atomically rejects a concurrent second accept; hand back the existing row.
+  if (error?.code === "23505") {
+    const { data: existing } = await supabase
+      .from("ceo_workday_plan_items")
+      .select("id")
+      .eq("user_id", userId)
+      .eq("experience_occurrence_id", occurrenceId)
+      .eq("assignment_key", `${occurrenceId}:${optionKey}`)
+      .maybeSingle()
+    return { ok: false, reason: "already-placed", existingItemId: existing?.id }
+  }
   if (error || !data) return { ok: false, reason: "error" }
   return { ok: true, itemId: data.id }
 }
