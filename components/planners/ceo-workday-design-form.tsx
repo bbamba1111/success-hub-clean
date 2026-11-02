@@ -55,6 +55,7 @@ import {
   type CeoFounderDecision,
   type CeoPlanItem,
   type CeoTreatment,
+  type CeoWorkdayPlan,
 } from "@/lib/ceo-workday/plan-types"
 import {
   getCeoWorkdayEvidence,
@@ -129,6 +130,9 @@ export function CeoWorkdayDesignForm() {
   const [design, setDesign] = useState<DesignEngineOutput | null>(null)
   const [items, setItems] = useState<CeoPlanItem[]>([])
   const [editingId, setEditingId] = useState<string | null>(null)
+  // Today's persisted plan. Editing starts from it so a re-save keeps every
+  // item (and its linked BO$$ job) instead of replacing them with a fresh proposal.
+  const [savedPlan, setSavedPlan] = useState<CeoWorkdayPlan | null>(null)
 
   // Founder work composer — WHAT MUST HAPPEN TODAY? → function → work → outcome
   const [addFn, setAddFn] = useState<CeoBusinessFunction | null>(null)
@@ -177,6 +181,7 @@ export function CeoWorkdayDesignForm() {
       setBottlenecks(ega.filter((e) => ids.has(e.id)))
       setBba(bbaSummary)
       setPrior(evidence && evidence.planDate !== dateKey ? evidence : null)
+      setSavedPlan(existingPlan && existingPlan.items.length > 0 ? existingPlan : null)
       if (existingPlan && existingPlan.declaration && !loadCeoWorkdayDeclaration(dateKey)) {
         setBuilt(
           saveCeoWorkdayDeclaration({
@@ -237,10 +242,14 @@ export function CeoWorkdayDesignForm() {
       businessStage: getBusinessStage(),
     })
     setDesign(out)
+    if (savedPlan) {
+      setItems(savedPlan.items)
+      return
+    }
     // Re-proposing replaces GPS items but keeps anything the founder added.
     setItems((prev) => [...out.items, ...prev.filter((i) => i.role === "founder-added")])
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading, week, bottlenecks, bba, prior, built])
+  }, [loading, week, bottlenecks, bba, prior, built, savedPlan])
 
   const approved = items.filter(isApproved)
   const planned = sumPlanned(items)
@@ -389,6 +398,7 @@ export function CeoWorkdayDesignForm() {
       setSaveError("Your plan could not be saved. Please make sure you are signed in and try again.")
       return
     }
+    setSavedPlan(saved)
 
     // Mirror into the Today's Work™ queue the live workspace already renders
     // (clear previous CEO-plan mirrors for today first so nothing duplicates).
