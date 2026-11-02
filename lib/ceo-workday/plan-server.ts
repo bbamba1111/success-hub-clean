@@ -164,6 +164,8 @@ function jobFunction(fn: CeoPlanItem["businessFunction"]): string {
     case "systemize":
     case "augment-automate-ai":
       return "design"
+    case "trust-experiences":
+      return "experiences"
     default:
       return "operations"
   }

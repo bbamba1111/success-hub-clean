@@ -19,6 +19,7 @@ const STYLES: Partial<Record<CeoBusinessFunction, ChipStyle>> = {
   delivery: TAN,
   operations: TAN,
   "operations-design": TAN,
+  "trust-experiences": TAN,
 }
 
 const FALLBACK: ChipStyle = {

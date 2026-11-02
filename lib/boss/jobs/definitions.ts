@@ -4,6 +4,7 @@ export const JOB_FUNCTIONS = [
   { key: "delivery", label: "Delivery" },
   { key: "operations", label: "Operations" },
   { key: "design", label: "Design" },
+  { key: "experiences", label: "Workshops & Webinars" },
 ] as const
 export type JobFunction = (typeof JOB_FUNCTIONS)[number]["key"]
 

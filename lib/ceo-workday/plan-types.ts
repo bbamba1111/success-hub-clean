@@ -39,6 +39,7 @@ export type CeoBusinessFunction =
   | "delivery"
   | "operations"
   | "operations-design"
+  | "trust-experiences"
   // Legacy values kept so previously saved plan items still render.
   | "build"
   | "decide"
@@ -59,6 +60,7 @@ export const CEO_FUNCTION_LABEL: Record<CeoBusinessFunction, string> = {
   delivery: "Service or Product Delivery",
   operations: "Business Operations",
   "operations-design": "Business Operations Design & Redesign",
+  "trust-experiences": "Workshops & Webinars",
   build: "Build",
   decide: "Decide",
   own: "OWN",
@@ -73,14 +75,31 @@ export const CEO_FUNCTION_LABEL: Record<CeoBusinessFunction, string> = {
   solve: "SOLVE",
 }
 
-/** The Five Business Functions — the only top-level work categories in the planner. */
-export const FIVE_BUSINESS_FUNCTIONS: CeoBusinessFunction[] = [
+/** Official name of the sixth function; the UI uses the short label above. */
+export const TRUST_EXPERIENCES_OFFICIAL_NAME = "Workshops, Webinars & Trust-Building Experiences"
+
+/** The Six Business Functions — the only top-level work categories in the planner. */
+export const BUSINESS_FUNCTIONS: CeoBusinessFunction[] = [
   "client-attraction",
   "sales-conversion",
   "delivery",
   "operations",
   "operations-design",
+  "trust-experiences",
 ]
+
+/** @deprecated Kept for existing imports; now includes the sixth function. */
+export const FIVE_BUSINESS_FUNCTIONS = BUSINESS_FUNCTIONS
+
+/** How an assignment's outcome is known. Only `system-verified` may say "Verified". */
+export type CeoCompletionBasis = "internal" | "founder-reported" | "system-verified"
+
+export function completionBasisLabel(basis: CeoCompletionBasis | null | undefined, detail?: string | null): string | null {
+  if (basis === "internal") return "Ready"
+  if (basis === "founder-reported") return detail ? `You confirmed: ${detail}` : "You confirmed"
+  if (basis === "system-verified") return detail ? `Verified: ${detail}` : "Verified"
+  return null
+}
 
 /** Functions that contextually activate Business Articulation™. */
 export const ARTICULATION_FUNCTIONS: ReadonlySet<CeoBusinessFunction> = new Set<CeoBusinessFunction>([
@@ -192,6 +211,9 @@ export interface CeoPlanItem {
   /** Design-time only: what is still unknown/missing for this assignment. */
   gaps?: string[]
   aiHint?: string | null
+  /** Workshops & Webinars: the dated experience occurrence this work serves. */
+  experienceOccurrenceId?: string | null
+  completionBasis?: CeoCompletionBasis | null
 }
 
 // ── Plan ────────────────────────────────────────────────────────────────────

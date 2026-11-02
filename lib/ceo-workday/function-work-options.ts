@@ -6,7 +6,7 @@ export type FunctionWorkOption = {
 }
 
 /**
- * Suggested "What needs to happen?" work for each of the Five Business Functions,
+ * Suggested "What needs to happen?" work for each of the Six Business Functions,
  * written for expertise-based businesses (coaching, consulting, speaking,
  * publishing, programs, memberships, advisory and digital products).
  */
@@ -179,6 +179,40 @@ export const FUNCTION_WORK_OPTIONS: Partial<Record<CeoBusinessFunction, Function
     {
       work: "Redesign my week so business work fits inside my protected hours.",
       outcome: "My schedule supports work-life balance and my business priorities.",
+    },
+  ],
+  "trust-experiences": [
+    {
+      work: "Choose the experience, date and audience for my next workshop or webinar.",
+      outcome: "The experience has a date, a clear audience and one promise.",
+    },
+    {
+      work: "Write the title, promise and invitation for the experience.",
+      outcome: "The invitation is ready to send and clearly says who it is for.",
+    },
+    {
+      work: "Set up the registration page and confirmation email.",
+      outcome: "People can register and receive a confirmation.",
+    },
+    {
+      work: "Prepare the agenda, slides and live delivery flow.",
+      outcome: "The run-of-show is ready from welcome to next-step invitation.",
+    },
+    {
+      work: "Rehearse and run a technical check before the live experience.",
+      outcome: "Links, audio, slides and recording work before going live.",
+    },
+    {
+      work: "Host the live workshop or webinar.",
+      outcome: "The experience was held and attendees were invited to a next step.",
+    },
+    {
+      work: "Send the replay and follow-up to attendees and registrants.",
+      outcome: "Attendees and no-shows receive the replay and a clear next step.",
+    },
+    {
+      work: "Review what happened and choose one improvement for next time.",
+      outcome: "One improvement is recorded and ready to apply to the next experience.",
     },
   ],
 }

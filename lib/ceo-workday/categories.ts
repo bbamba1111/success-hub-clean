@@ -1,7 +1,7 @@
 /**
  * CEO Workday™ — Category Taxonomy
  * ---------------------------------------------------------------------------
- * Current: the Five Business Functions (CEO_WORK_CATEGORIES). The notes
+ * Current: the Six Business Functions (CEO_WORK_CATEGORIES). The notes
  * below describe the legacy 12 work modes (LEGACY_CEO_WORK_CATEGORIES).
  * ---------------------------------------------------------------------------
  * The 12 top-level categories of CEO work. These are work MODES available
@@ -26,7 +26,7 @@
  */
 
 /**
- * The Five Business Functions are the ONLY top-level categories shown in the
+ * The Six Business Functions are the ONLY top-level categories shown in the
  * CEO Workday™ planner. The older 12 work modes remain in the union only so
  * work items saved before this change still render.
  */
@@ -36,6 +36,7 @@ export type BusinessFunctionCategoryId =
   | "DELIVERY"
   | "OPERATIONS"
   | "OPERATIONS_DESIGN"
+  | "TRUST_EXPERIENCES"
 
 export type CeoWorkCategoryId =
   | BusinessFunctionCategoryId
@@ -63,7 +64,7 @@ export interface CeoWorkCategory {
   /** Plain-language examples of work in this function. */
   examples?: string[]
   /** Matching BO$$ business function id, used to open the Business Work Queue filtered. */
-  bossFunction?: "attraction" | "sales" | "delivery" | "operations" | "design"
+  bossFunction?: "attraction" | "sales" | "delivery" | "operations" | "design" | "experiences"
 }
 
 export const CEO_WORK_CATEGORIES: CeoWorkCategory[] = [
@@ -107,6 +108,15 @@ export const CEO_WORK_CATEGORIES: CeoWorkCategory[] = [
     tangibleOutcome: "A better way the business operates",
     examples: ["Keep or repair", "Replace or redesign", "Document", "Automate", "Delegate", "Eliminate"],
     bossFunction: "design",
+  },
+  {
+    id: "TRUST_EXPERIENCES",
+    label: "Workshops & Webinars",
+    definition:
+      "Workshops, Webinars & Trust-Building Experiences: design, host, follow up on and improve live experiences that build trust and invite people into the next step.",
+    tangibleOutcome: "A held experience with follow-up and one chosen improvement",
+    examples: ["Monday Redesigned™", "Reality Check™ (live)", "Weekly workshop / webinar", "Masterclass"],
+    bossFunction: "experiences",
   },
 ]
 
