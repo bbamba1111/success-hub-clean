@@ -1,3 +1,4 @@
+import { guardMemberAi } from "@/lib/ai/guard"
 import { type NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { upsertMemories, type MemoryInput, type MemoryType } from "@/lib/cherry-blossom/memory"
@@ -46,6 +47,9 @@ STRICT RULES:
 - If nothing meaningful was shared, return { "memories": [] }.`
 
 export async function POST(req: NextRequest) {
+  const aiGuard = await guardMemberAi(req, "cherry-blossom-remember")
+  if (!aiGuard.ok) return aiGuard.response
+
   try {
     if (!process.env.OPENAI_API_KEY) {
       return NextResponse.json({ saved: 0 })

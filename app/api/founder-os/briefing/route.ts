@@ -1,3 +1,4 @@
+import { guardMemberAi } from "@/lib/ai/guard"
 import { type NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { loadMemories, formatMemoryVault, formatUpcomingReminders } from "@/lib/cherry-blossom/memory"
@@ -165,6 +166,9 @@ function buildContextPackage(params: {
 }
 
 export async function POST(req: NextRequest) {
+  const aiGuard = await guardMemberAi(req, "founder-os-briefing")
+  if (!aiGuard.ok) return aiGuard.response
+
   try {
     const body = await req.json().catch(() => ({}))
     const requested = body?.mode

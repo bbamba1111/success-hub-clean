@@ -82,6 +82,42 @@ export type Job = {
   updatedAt: string
   dependsOn: string[]
   onTodaysWorkday: boolean
+  openProposal: JobProposal | null
+}
+
+export const ACTION_KINDS = [
+  { key: "job.save_whats_ready", label: "Write What's Ready", requires: "prepare" },
+  { key: "job.set_status", label: "Change the status", requires: "approved_execution" },
+] as const
+export type ActionKind = (typeof ACTION_KINDS)[number]["key"]
+
+export type JobProposal = {
+  id: string
+  version: number
+  proposedBy: JobActor
+  aiCapability: string
+  summary: string
+  actionKind: ActionKind
+  payloadHash: string
+  status: "pending" | "approved" | "change_requested" | "waiting" | "failed"
+  error: string | null
+  createdAt: string
+}
+
+export type Preauthorization = {
+  id: string
+  jobId: string | null
+  businessFunction: JobFunction | null
+  actionKinds: ActionKind[]
+  maxUses: number | null
+  uses: number
+  note: string | null
+  expiresAt: string
+  revokedAt: string | null
+}
+
+export function preauthorizationActive(p: Preauthorization) {
+  return !p.revokedAt && new Date(p.expiresAt).getTime() > Date.now() && (p.maxUses === null || p.uses < p.maxUses)
 }
 
 export type JobHistoryEntry = {
@@ -92,6 +128,8 @@ export type JobHistoryEntry = {
   previousValue: string | null
   newValue: string | null
   note: string | null
+  result: string | null
+  error: string | null
   createdAt: string
 }
 
@@ -100,6 +138,7 @@ export type JobsData = {
   team: TeamMember[]
   todayPlanId: string | null
   todayDate: string
+  preauthorizations: Preauthorization[]
 }
 
 export const JOB_AREAS = [

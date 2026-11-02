@@ -24,6 +24,7 @@
  * practice session is ephemeral, as approved.
  */
 
+import { guardMemberAi } from "@/lib/ai/guard"
 import { type NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { getCommunicationStyle } from "@/lib/business-comprehension/business-comprehension"
@@ -77,6 +78,9 @@ function makeId(prefix: string): string {
 }
 
 export async function POST(req: NextRequest) {
+  const aiGuard = await guardMemberAi(req, "articulation-practice")
+  if (!aiGuard.ok) return aiGuard.response
+
   try {
     if (!process.env.OPENAI_API_KEY) {
       console.error("[v0] OPENAI_API_KEY is not set")

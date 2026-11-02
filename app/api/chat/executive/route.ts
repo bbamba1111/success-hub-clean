@@ -1,4 +1,5 @@
 // app/api/chat/executive/route.ts
+import { guardMemberAi } from "@/lib/ai/guard"
 import { type NextRequest, NextResponse } from "next/server"
 import { isWithinBusinessHours } from "@/lib/utils/business-hours"
 
@@ -63,6 +64,9 @@ function getExecutiveIntroduction(role: string): string {
 }
 
 export async function POST(req: NextRequest) {
+  const aiGuard = await guardMemberAi(req, "chat-executive")
+  if (!aiGuard.ok) return aiGuard.response
+
   try {
     if (!isWithinBusinessHours()) {
       return NextResponse.json(

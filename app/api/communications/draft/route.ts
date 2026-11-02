@@ -1,3 +1,4 @@
+import { guardMemberAi } from "@/lib/ai/guard"
 import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import {
@@ -38,6 +39,9 @@ function audienceLine(audience: DraftRequest["audience"], other?: string | null)
 }
 
 export async function POST(req: Request) {
+  const aiGuard = await guardMemberAi(req, "communications-draft")
+  if (!aiGuard.ok) return aiGuard.response
+
   const supabase = await createClient()
   const { data: auth } = await supabase.auth.getUser()
   if (!auth.user) return NextResponse.json({ error: "Please sign in." }, { status: 401 })

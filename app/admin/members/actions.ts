@@ -23,6 +23,30 @@ async function requirePlatformAdmin() {
   return profile?.role === "platform_admin" ? user : null
 }
 
+export async function getAiEnabledForAdmin(): Promise<boolean | null> {
+  const adminUser = await requirePlatformAdmin()
+  if (!adminUser) return null
+  const { data, error } = await createAdminClient()
+    .from("app_settings")
+    .select("value")
+    .eq("key", "ai_enabled")
+    .maybeSingle()
+  if (error) throw new Error(`Failed to load AI setting: ${error.message}`)
+  return data?.value === true
+}
+
+export async function setAiEnabled(enabled: boolean): Promise<AdminActionResult> {
+  if (typeof enabled !== "boolean") return { ok: false, error: "Invalid value" }
+  const adminUser = await requirePlatformAdmin()
+  if (!adminUser) return { ok: false, error: "Not authorized" }
+  const { error } = await createAdminClient()
+    .from("app_settings")
+    .upsert({ key: "ai_enabled", value: enabled, updated_by: adminUser.id, updated_at: new Date().toISOString() })
+  if (error) return { ok: false, error: "Could not save the setting. Please try again." }
+  revalidatePath("/admin/members")
+  return { ok: true }
+}
+
 export async function listMembersForAdmin(): Promise<MemberAccessRow[] | null> {
   const adminUser = await requirePlatformAdmin()
   if (!adminUser) return null

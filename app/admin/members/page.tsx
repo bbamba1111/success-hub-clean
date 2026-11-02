@@ -1,7 +1,8 @@
 import type { Metadata } from "next"
 import { redirect } from "next/navigation"
-import { listMembersForAdmin } from "./actions"
+import { getAiEnabledForAdmin, listMembersForAdmin } from "./actions"
 import { MemberAccessTable } from "@/components/admin/member-access-table"
+import { AiShutdownSwitch } from "@/components/admin/ai-shutdown-switch"
 
 export const metadata: Metadata = {
   title: "Member Access | Success Hub Admin",
@@ -9,8 +10,8 @@ export const metadata: Metadata = {
 }
 
 export default async function MemberAccessPage() {
-  const members = await listMembersForAdmin()
-  if (!members) redirect("/dashboard")
+  const [members, aiEnabled] = await Promise.all([listMembersForAdmin(), getAiEnabledForAdmin()])
+  if (!members || aiEnabled === null) redirect("/dashboard")
 
   return (
     <main className="min-h-screen bg-background">
@@ -23,6 +24,7 @@ export default async function MemberAccessPage() {
             database, not just the interface.
           </p>
         </header>
+        <AiShutdownSwitch enabled={aiEnabled} />
         <MemberAccessTable members={members} />
       </div>
     </main>

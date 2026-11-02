@@ -16,6 +16,7 @@
  * pattern as app/api/business-asset-build/route.ts.
  */
 
+import { guardMemberAi } from "@/lib/ai/guard"
 import { type NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { getFounderContext } from "@/lib/executive-team/founder-context"
@@ -26,6 +27,9 @@ interface ChatMessage {
 }
 
 export async function POST(req: NextRequest) {
+  const aiGuard = await guardMemberAi(req, "thought-leadership-write")
+  if (!aiGuard.ok) return aiGuard.response
+
   try {
     if (!process.env.OPENAI_API_KEY) {
       console.error("[v0] OPENAI_API_KEY is not set")

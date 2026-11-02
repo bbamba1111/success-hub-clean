@@ -14,6 +14,7 @@
  * authored in business-asset-registry.ts as the adaptive-language contract.
  */
 
+import { guardMemberAi } from "@/lib/ai/guard"
 import { type NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { getBusinessAsset } from "@/lib/business-asset-library/business-asset-registry"
@@ -28,6 +29,9 @@ interface ChatMessage {
 }
 
 export async function POST(req: NextRequest) {
+  const aiGuard = await guardMemberAi(req, "business-asset-build")
+  if (!aiGuard.ok) return aiGuard.response
+
   try {
     if (!process.env.OPENAI_API_KEY) {
       console.error("[v0] OPENAI_API_KEY is not set")

@@ -1,3 +1,4 @@
+import { guardMemberAi } from "@/lib/ai/guard"
 import { generateText, type LanguageModel } from "ai"
 import { openai } from "@ai-sdk/openai"
 
@@ -32,6 +33,9 @@ Work: "Delegate client scheduling." -> I am creating capacity by confidently han
 Return ONLY the affirmation text, nothing else.`
 
 export async function POST(req: Request) {
+  const aiGuard = await guardMemberAi(req, "ceo-workday-work-affirmation")
+  if (!aiGuard.ok) return aiGuard.response
+
   try {
     const body = (await req.json()) as { work?: unknown }
     const work = typeof body.work === "string" ? body.work.trim() : ""

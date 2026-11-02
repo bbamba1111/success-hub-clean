@@ -11,12 +11,16 @@
  * app/api/business-asset-build/route.ts (no streaming, existing OPENAI_API_KEY).
  */
 
+import { guardMemberAi } from "@/lib/ai/guard"
 import { type NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { EXECUTIVE_TEAM } from "@/lib/executive-team/executive-registry"
 import { getFounderContext } from "@/lib/executive-team/founder-context"
 
 export async function POST(req: NextRequest) {
+  const aiGuard = await guardMemberAi(req, "thought-leadership-generate-template")
+  if (!aiGuard.ok) return aiGuard.response
+
   try {
     if (!process.env.OPENAI_API_KEY) {
       console.error("[v0] OPENAI_API_KEY is not set")

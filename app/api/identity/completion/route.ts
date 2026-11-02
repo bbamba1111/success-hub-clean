@@ -1,3 +1,4 @@
+import { guardMemberAi } from "@/lib/ai/guard"
 import { type NextRequest } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import OpenAI from "openai"
@@ -88,6 +89,9 @@ Output only the reflection.`,
 }
 
 export async function POST(req: NextRequest) {
+  const aiGuard = await guardMemberAi(req, "identity-completion")
+  if (!aiGuard.ok) return aiGuard.response
+
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 

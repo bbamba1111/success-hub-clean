@@ -75,7 +75,8 @@ export function JobsBoard({ data }: { data: JobsData }) {
               position={rankOf.get(job.id) ?? 0}
               total={openJobs.length}
               canReorder={!isClosed(job)}
-              hasTodaysWorkday={Boolean(data.todayPlanId)}
+                hasTodaysWorkday={Boolean(data.todayPlanId)}
+                preauthorizations={data.preauthorizations}
             />
           ))
         )}

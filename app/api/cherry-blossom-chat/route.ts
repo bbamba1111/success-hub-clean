@@ -1,3 +1,4 @@
+import { guardMemberAi } from "@/lib/ai/guard"
 import { type NextRequest, NextResponse } from "next/server"
 import { isWithinBusinessHours } from "@/lib/utils/business-hours"
 import { createClient } from "@/lib/supabase/server"
@@ -24,6 +25,9 @@ const PLANNING_CHOICE_MAP: Record<string, { style: string; instruction: string }
 }
 
 export async function POST(req: NextRequest) {
+  const aiGuard = await guardMemberAi(req, "cherry-blossom-chat")
+  if (!aiGuard.ok) return aiGuard.response
+
   try {
     console.log("[v0] API route called")
 

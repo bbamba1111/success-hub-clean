@@ -1,3 +1,4 @@
+import { guardMemberAi } from "@/lib/ai/guard"
 import { convertToModelMessages, streamText, tool, type UIMessage } from "ai"
 import { z } from "zod"
 
@@ -118,6 +119,9 @@ const trackProgressTool = tool({
 })
 
 export async function POST(req: Request) {
+  const aiGuard = await guardMemberAi(req, "client-co-guide")
+  if (!aiGuard.ok) return aiGuard.response
+
   const { messages, clientContext }: { messages: UIMessage[]; clientContext?: any } = await req.json()
 
   const enhancedPrompt = clientContext

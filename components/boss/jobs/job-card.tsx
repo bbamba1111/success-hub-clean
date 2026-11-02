@@ -25,10 +25,13 @@ import {
   labelFor,
   type Job,
   type JobHistoryEntry,
+  type Preauthorization,
   type TeamMember,
 } from "@/lib/boss/jobs/definitions"
 import { fieldClass } from "@/components/boss/primitives"
 import { JobForm } from "./job-form"
+import { PreauthorizationPanel } from "./preauthorization-panel"
+import { ProposalPanel } from "./proposal-panel"
 
 const STATUS_STYLE: Record<Job["status"], string> = {
   not_started: "bg-muted text-brand-ink",
@@ -62,6 +65,23 @@ const FIELD_NAME: Record<string, string> = {
   must_happen_first: "What Must Happen First",
 }
 
+const DECISION_STATE: Record<string, string> = {
+  approved: "Yes, Do It",
+  rejected: "No, Stop",
+  change_requested: "Change It",
+  waiting: "Wait",
+}
+
+const AUTHORITY_TEXT: Record<string, (h: JobHistoryEntry) => string> = {
+  proposal_created: (h) => `proposed: "${h.newValue ?? ""}"`,
+  proposal_decided: (h) => `decided ${DECISION_STATE[h.newValue ?? ""] ?? h.newValue} on a proposal`,
+  executed: (h) => `carried out an approved proposal${h.result ? ` (${h.result})` : ""}`,
+  execution_refused: (h) => `was blocked: ${h.error ?? "not allowed"}`,
+  execution_failed: (h) => `tried to carry out a proposal but it failed: ${h.error ?? "unknown error"}`,
+  preauthorization_granted: (h) => `pre-approved ${h.newValue ?? "some actions"}`,
+  preauthorization_revoked: () => "withdrew a pre-approval",
+}
+
 const smallButton =
   "inline-flex h-10 items-center gap-2 rounded-lg border border-border px-4 text-sm font-medium text-brand-ink hover:bg-muted disabled:opacity-60"
 
@@ -73,6 +93,7 @@ export function JobCard({
   total,
   canReorder,
   hasTodaysWorkday,
+  preauthorizations,
 }: {
   job: Job
   allJobs: Job[]
@@ -81,6 +102,7 @@ export function JobCard({
   total: number
   canReorder: boolean
   hasTodaysWorkday: boolean
+  preauthorizations: Preauthorization[]
 }) {
   const [editing, setEditing] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -195,6 +217,8 @@ export function JobCard({
         </div>
       )}
 
+      {job.openProposal && !closed && <ProposalPanel key={job.openProposal.id} proposal={job.openProposal} />}
+
       {job.whatsReady && (
         <div className="flex flex-col gap-1 rounded-xl bg-muted p-4">
           <p className="text-base font-semibold text-brand-ink">What&apos;s Ready</p>
@@ -303,8 +327,11 @@ export function JobCard({
 
       {!closed && (
         <details className="rounded-xl border border-border p-4">
-          <summary className="cursor-pointer text-base font-medium text-brand-ink">More: questions, results, order</summary>
+          <summary className="cursor-pointer text-base font-medium text-brand-ink">
+            More: questions, results, order, limits
+          </summary>
           <div className="mt-4 flex flex-col gap-4">
+            <PreauthorizationPanel job={job} preauthorizations={preauthorizations} />
             <form
               action={(fd) => run(() => setWaitingQuestion(job.id, String(fd.get("question") ?? "")))}
               className="flex flex-col gap-2"
@@ -413,7 +440,9 @@ export function JobCard({
                     {" · "}
                   </span>
                   {ACTOR_NAME[h.actor] ?? h.actor}{" "}
-                  {h.action === "created"
+                  {AUTHORITY_TEXT[h.action]
+                    ? AUTHORITY_TEXT[h.action](h)
+                    : h.action === "created"
                     ? "created this job"
                     : h.action === "dependency_added"
                       ? `added "${describeValue(h.field, h.newValue)}" to What Must Happen First`

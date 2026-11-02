@@ -1,6 +1,39 @@
 import "server-only"
 import type { SupabaseClient } from "@supabase/supabase-js"
-import { todayInEastern, type Job, type JobsData, type TeamMember } from "./definitions"
+import {
+  todayInEastern,
+  type Job,
+  type JobProposal,
+  type JobsData,
+  type Preauthorization,
+  type TeamMember,
+} from "./definitions"
+
+type ProposalRow = {
+  id: string
+  job_id: string
+  version: number
+  proposed_by: JobProposal["proposedBy"]
+  ai_capability: string
+  summary: string
+  action_kind: JobProposal["actionKind"]
+  payload_hash: string
+  status: JobProposal["status"]
+  error: string | null
+  created_at: string
+}
+
+type PreauthRow = {
+  id: string
+  job_id: string | null
+  business_function: Preauthorization["businessFunction"]
+  action_kinds: Preauthorization["actionKinds"]
+  max_uses: number | null
+  uses: number
+  note: string | null
+  expires_at: string
+  revoked_at: string | null
+}
 
 export const JOB_COLUMNS =
   "id, title, details, business_function, due_date, do_first_rank, assignee_type, assignee_executive_id, assignee_team_member_id, status, paused, stopped, permission_level, waiting_question, whats_ready, decision, decision_note, decided_at, created_by_actor, last_change_actor, updated_at"
@@ -63,7 +96,7 @@ export async function loadTeam(supabase: SupabaseClient, userId: string): Promis
 
 export async function loadJobsData(supabase: SupabaseClient, userId: string): Promise<JobsData> {
   const todayDate = todayInEastern()
-  const [jobsRes, depsRes, team, planRes] = await Promise.all([
+  const [jobsRes, depsRes, team, planRes, proposalsRes, preauthRes] = await Promise.all([
     supabase
       .from("boss_jobs")
       .select(JOB_COLUMNS)
@@ -73,7 +106,48 @@ export async function loadJobsData(supabase: SupabaseClient, userId: string): Pr
     supabase.from("boss_job_dependencies").select("job_id, depends_on_job_id").eq("user_id", userId),
     loadTeam(supabase, userId),
     supabase.from("ceo_workday_plans").select("id").eq("user_id", userId).eq("plan_date", todayDate).maybeSingle(),
+    supabase
+      .from("boss_job_proposals")
+      .select("id, job_id, version, proposed_by, ai_capability, summary, action_kind, payload_hash, status, error, created_at")
+      .eq("user_id", userId)
+      .in("status", ["pending", "approved", "change_requested", "waiting", "failed"])
+      .order("version", { ascending: false }),
+    supabase
+      .from("boss_preauthorizations")
+      .select("id, job_id, business_function, action_kinds, max_uses, uses, note, expires_at, revoked_at")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(100),
   ])
+
+  const openProposals = new Map<string, JobProposal>()
+  for (const p of (proposalsRes.data ?? []) as ProposalRow[]) {
+    if (openProposals.has(p.job_id)) continue
+    openProposals.set(p.job_id, {
+      id: p.id,
+      version: p.version,
+      proposedBy: p.proposed_by,
+      aiCapability: p.ai_capability,
+      summary: p.summary,
+      actionKind: p.action_kind,
+      payloadHash: p.payload_hash,
+      status: p.status,
+      error: p.error,
+      createdAt: p.created_at,
+    })
+  }
+
+  const preauthorizations: Preauthorization[] = ((preauthRes.data ?? []) as PreauthRow[]).map((a) => ({
+    id: a.id,
+    jobId: a.job_id,
+    businessFunction: a.business_function,
+    actionKinds: a.action_kinds,
+    maxUses: a.max_uses,
+    uses: a.uses,
+    note: a.note,
+    expiresAt: a.expires_at,
+    revokedAt: a.revoked_at,
+  }))
 
   const todayPlanId = (planRes.data?.id as string | undefined) ?? null
   const linked = new Set<string>()
@@ -116,7 +190,8 @@ export async function loadJobsData(supabase: SupabaseClient, userId: string): Pr
     updatedAt: row.updated_at,
     dependsOn: deps.get(row.id) ?? [],
     onTodaysWorkday: linked.has(row.id),
+    openProposal: openProposals.get(row.id) ?? null,
   }))
 
-  return { jobs, team, todayPlanId, todayDate }
+  return { jobs, team, todayPlanId, todayDate, preauthorizations }
 }

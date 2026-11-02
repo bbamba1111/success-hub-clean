@@ -316,7 +316,7 @@ export async function loadJobHistory(jobId: string): Promise<JobHistoryEntry[]> 
   if (!userId || !UUID.test(jobId)) return []
   const { data } = await supabase
     .from("boss_job_history")
-    .select("id, action, actor, field, previous_value, new_value, note, created_at")
+    .select("id, action, actor, field, previous_value, new_value, note, result, error, created_at")
     .eq("user_id", userId)
     .eq("job_id", jobId)
     .order("created_at", { ascending: false })
@@ -329,6 +329,8 @@ export async function loadJobHistory(jobId: string): Promise<JobHistoryEntry[]> 
     previousValue: row.previous_value,
     newValue: row.new_value,
     note: row.note,
+    result: row.result,
+    error: row.error,
     createdAt: row.created_at,
   }))
 }
