@@ -102,7 +102,7 @@ const DECISION_LABEL: Record<CeoFounderDecision, string> = {
   keep: "kept",
   edit: "edited",
   replace: "replaced",
-  defer: "deferred",
+  "save-for-later": "saved for later",
   delegate: "delegated",
   remove: "removed",
   added: "added",
@@ -379,8 +379,8 @@ export function CeoWorkdayDesignForm() {
           ? {
               ...i,
               founderDecision: decision,
-              status: decision === "defer" ? "deferred" : decision === "delegate" ? "delegated" : "planned",
-              deferUntil: decision === "defer" ? (i.deferUntil ?? "tomorrow") : i.deferUntil,
+              status:
+                decision === "save-for-later" ? "saved-for-later" : decision === "delegate" ? "delegated" : "planned",
             }
           : i,
       ),
@@ -942,7 +942,7 @@ function WorkCard({
   onDoneEditing: () => void
 }) {
   const removed = item.founderDecision === "remove"
-  const parked = item.founderDecision === "defer" || item.founderDecision === "delegate"
+  const parked = item.founderDecision === "save-for-later" || item.founderDecision === "delegate"
   const outcomeMissing = !removed && !parked && !item.expectedEvidence.trim()
 
   return (
@@ -1100,7 +1100,7 @@ function WorkCard({
             <Check className="h-3 w-3" aria-hidden /> Done
           </button>
         ) : (
-          (["keep", "edit", "replace", "defer", "delegate", "remove"] as CeoFounderDecision[]).map((d) => {
+          (["keep", "edit", "replace", "save-for-later", "delegate", "remove"] as CeoFounderDecision[]).map((d) => {
             const active = item.founderDecision === d || (d === "keep" && item.founderDecision === "added")
             return (
               <button
@@ -1116,7 +1116,7 @@ function WorkCard({
                     : "border-[#E8DFE2] bg-white text-[#6B5860] hover:bg-black/[0.03]"
                 }`}
               >
-                {d}
+                {d === "save-for-later" ? "Save for later" : d}
               </button>
             )
           })
@@ -1129,12 +1129,6 @@ function WorkCard({
   )
 }
 
-const DEFER_OPTIONS = [
-  { value: "tomorrow", label: "Tomorrow" },
-  { value: "later-this-week", label: "Later this week" },
-  { value: "next-week", label: "Next week" },
-] as const
-
 const DELEGATE_SUGGESTIONS = ["A team member", "My virtual assistant", "A contractor", "My AI Executive Team™"]
 
 function ParkedPanel({
@@ -1146,44 +1140,19 @@ function ParkedPanel({
   onPatch: (p: Partial<CeoPlanItem>) => void
   onBringBack: () => void
 }) {
-  const isDefer = item.founderDecision === "defer"
-  const deferUntil = item.deferUntil ?? "tomorrow"
+  const isSaved = item.founderDecision === "save-for-later"
   const noteId = `handoff-${item.id}`
   const whoId = `delegate-to-${item.id}`
-  const deferLabel = DEFER_OPTIONS.find((o) => o.value === deferUntil)?.label.toLowerCase() ?? "later"
 
   return (
     <div className="mt-3 flex flex-col gap-3 rounded-xl border border-[#E8DFE2] bg-[#FAF8F5] p-3">
       <p className="font-sans text-base leading-relaxed text-[#3A2E33]">
-        {isDefer
-          ? `Moved off today. This work comes back ${deferLabel} and does not use your 240 minutes today.`
+        {isSaved
+          ? "Saved for later. All progress is kept. It returns as unscheduled work at your next planning session, and you choose when it happens. It does not use your 240 minutes today."
           : "Handed off. Someone else owns this work, so it does not use your 240 minutes today."}
       </p>
 
-      {isDefer ? (
-        <div className="flex flex-col gap-1.5">
-          <p className="font-montserrat text-[13px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/70">
-            Bring it back
-          </p>
-          <div className="flex flex-wrap gap-1.5" role="group" aria-label="When to bring this work back">
-            {DEFER_OPTIONS.map((o) => (
-              <button
-                key={o.value}
-                type="button"
-                aria-pressed={deferUntil === o.value}
-                onClick={() => onPatch({ deferUntil: o.value })}
-                className={`rounded-full border px-3 py-1 font-sans text-base transition-colors ${
-                  deferUntil === o.value
-                    ? "border-[#5B835F] bg-[#5B835F] text-white"
-                    : "border-[#E8DFE2] bg-white text-[#6B5860] hover:bg-black/[0.03]"
-                }`}
-              >
-                {o.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      ) : (
+      {isSaved ? null : (
         <div className="flex flex-col gap-1.5">
           <label
             htmlFor={whoId}
@@ -1219,7 +1188,7 @@ function ParkedPanel({
           htmlFor={noteId}
           className="font-montserrat text-[13px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/70"
         >
-          {isDefer ? "Note to future you (optional)" : "Handoff instructions"}
+          {isSaved ? "Where you left off (optional)" : "Handoff instructions"}
         </label>
         <textarea
           id={noteId}
@@ -1227,7 +1196,7 @@ function ParkedPanel({
           value={item.handoffNote ?? ""}
           onChange={(e) => onPatch({ handoffNote: e.target.value })}
           placeholder={
-            isDefer
+            isSaved
               ? "Where you left off, or what you need before you start."
               : `What does done look like? ${item.expectedEvidence ? `(${item.expectedEvidence})` : ""}`
           }

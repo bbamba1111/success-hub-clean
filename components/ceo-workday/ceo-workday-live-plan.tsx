@@ -73,7 +73,7 @@ import { BoundaryWorkSurface } from "./boundary-work-surface"
 import { boundaryWorkKind } from "@/lib/ceo-workday/boundary-work"
 import { MonthlyBoundaryFocusPanel } from "./monthly-boundary-focus-panel"
 
-type AdjustAction = "change" | "defer" | "delegate" | "remove" | "help" | "other"
+type AdjustAction = "change" | "save-for-later" | "delegate" | "remove" | "help" | "other"
 
 export function CeoWorkdayLivePlan() {
   useDayStateSync()
@@ -222,12 +222,12 @@ export function CeoWorkdayLivePlan() {
       return
     }
     const status =
-      action === "defer" ? "deferred" : action === "delegate" ? "delegated" : action === "remove" ? "eliminated" : action === "help" ? "blocked" : "other"
+      action === "save-for-later" ? "saved-for-later" : action === "delegate" ? "delegated" : action === "remove" ? "eliminated" : action === "help" ? "blocked" : "other"
     const nextAction: CeoNextAction | null =
-      action === "defer" ? "later" : action === "delegate" ? "delegate" : action === "remove" ? "eliminate" : action === "help" ? "need-help" : "other"
+      action === "save-for-later" ? "save-for-later" : action === "delegate" ? "delegate" : action === "remove" ? "eliminate" : action === "help" ? "need-help" : "other"
     setPlan((p) => p && { ...p, items: p.items.map((i) => (i.id === item.id ? { ...i, status, nextAction } : i)) })
     await updateCeoPlanItem(item.id, { status, nextAction })
-    if (item.localWorkItemId) updateWorkItemStatus(item.localWorkItemId, status === "blocked" ? "blocked" : "deferred")
+    if (item.localWorkItemId) updateWorkItemStatus(item.localWorkItemId, status === "blocked" ? "blocked" : "saved-for-later")
     await updateCeoPlanStatus(plan.id, "adjusted")
   }
 
@@ -275,7 +275,7 @@ export function CeoWorkdayLivePlan() {
   /** Start = open the work surface. Marks in-progress the first time. */
   function openWork(item: CeoPlanItem) {
     setOpenItemId(item.id)
-    if (item.status === "planned" || ["deferred", "blocked", "other"].includes(item.status)) void startItem(item)
+    if (item.status === "planned" || ["saved-for-later", "blocked", "other"].includes(item.status)) void startItem(item)
   }
 
   /** Founder links an unlinked item to a Business Asset Library™ template. */
@@ -470,7 +470,7 @@ export function CeoWorkdayLivePlan() {
             {(
               [
                 ["change", "Change"],
-                ["defer", "Defer"],
+                ["save-for-later", "Save for later"],
                 ["delegate", "Delegate"],
                 ["remove", "Remove"],
                 ["help", "Ask for help"],
@@ -488,7 +488,7 @@ export function CeoWorkdayLivePlan() {
     )
   }
 
-  // ── render ──────────────────────────────────────────────────────────────��
+  // ── render ───────────────────────────────────��──────────────────────────��
   const declarationSection = declaration && (
         <motion.div
           key={dayDeclaration ? (plan?.id ?? local?.builtAt) : `weekly-${weekly.workdayDeclarationBuiltAt ?? weekly.weekKey}`}

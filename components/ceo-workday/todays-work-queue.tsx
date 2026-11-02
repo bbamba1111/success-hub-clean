@@ -46,7 +46,7 @@ const STATUS_LABEL: Record<CeoWorkItemStatus, string> = {
   "in-progress": "In Progress",
   completed: "Completed",
   blocked: "Blocked",
-  deferred: "Deferred",
+  "saved-for-later": "Saved for Later",
 }
 
 const STATUS_STYLE: Record<CeoWorkItemStatus, string> = {
@@ -54,7 +54,7 @@ const STATUS_STYLE: Record<CeoWorkItemStatus, string> = {
   "in-progress": "bg-[#8DAE72]/15 text-[#5A7A45]",
   completed: "bg-[#5A7A45] text-white",
   blocked: "bg-[#C4707B]/15 text-[#C4707B]",
-  deferred: "bg-[#E8DFE2] text-[#6B5860]",
+  "saved-for-later": "bg-[#E8DFE2] text-[#6B5860]",
 }
 
 const SOURCE_LABEL: Record<CeoWorkItem["source"], string> = {

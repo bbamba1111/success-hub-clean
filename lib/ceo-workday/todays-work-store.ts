@@ -68,7 +68,7 @@ export function addWorkItem(item: NewCeoWorkItem): CeoWorkItem {
     ...item,
     id: `work_${now}_${Math.random().toString(36).slice(2, 9)}`,
     workdayDate: item.workdayDate ?? file.date,
-    status: item.status ?? "not-started",
+    status: (item.status as string) === "deferred" ? "saved-for-later" : (item.status ?? "not-started"),
     createdAt: now,
     updatedAt: now,
   }

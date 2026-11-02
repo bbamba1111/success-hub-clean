@@ -74,7 +74,6 @@ type ItemRow = {
   next_action: CeoNextAction | null
   local_work_item_id: string | null
   job_id: string | null
-  defer_until: string | null
   delegate_to: string | null
   handoff_note: string | null
   assignment_key: string | null
@@ -105,7 +104,6 @@ function rowToItem(r: ItemRow): CeoPlanItem {
     nextAction: r.next_action,
     localWorkItemId: r.local_work_item_id,
     jobId: r.job_id,
-    deferUntil: r.defer_until,
     delegateTo: r.delegate_to,
     handoffNote: r.handoff_note,
     assignmentKey: r.assignment_key,
@@ -140,7 +138,7 @@ function rowToPlan(p: PlanRow, items: ItemRow[]): CeoWorkdayPlan {
 const PLAN_COLS =
   "id, plan_date, week_key, business_area_id, bottleneck_ega_entry_ids, primary_assignment_ref, primary_asset_id, constraint_summary, intervention_summary, identity_statement, declaration, planned_minutes, status, entered_at, closed_at"
 const ITEM_COLS =
-  "id, plan_id, position, title, purpose, expected_evidence, treatment, business_function, role, estimated_minutes, related_asset_id, related_assignment_ref, ceo_work_category, gps_original, founder_decision, status, next_action, local_work_item_id, job_id, defer_until, delegate_to, handoff_note, assignment_key, strategic_objective, readiness, asset_requirement, asset_reason"
+  "id, plan_id, position, title, purpose, expected_evidence, treatment, business_function, role, estimated_minutes, related_asset_id, related_assignment_ref, ceo_work_category, gps_original, founder_decision, status, next_action, local_work_item_id, job_id, delegate_to, handoff_note, assignment_key, strategic_objective, readiness, asset_requirement, asset_reason"
 
 // ── Phase 3 job link ────────────────────────────────────────────────────────
 
@@ -427,13 +425,13 @@ export async function saveCeoWorkdayPlan(input: SaveCeoWorkdayPlanInput): Promis
       ceo_work_category: i.ceoWorkCategory ?? null,
       gps_original: i.gpsOriginal ?? null,
       founder_decision: i.founderDecision,
-      status: i.founderDecision === "defer" ? "deferred" : i.founderDecision === "delegate" ? "delegated" : "planned",
+      status:
+        i.founderDecision === "save-for-later" ? "saved-for-later" : i.founderDecision === "delegate" ? "delegated" : "planned",
       next_action: null,
       local_work_item_id: i.localWorkItemId ?? null,
-      defer_until: i.founderDecision === "defer" ? (i.deferUntil ?? "tomorrow") : null,
       delegate_to: i.founderDecision === "delegate" ? (i.delegateTo?.trim().slice(0, 200) || null) : null,
       handoff_note:
-        i.founderDecision === "defer" || i.founderDecision === "delegate"
+        i.founderDecision === "save-for-later" || i.founderDecision === "delegate"
           ? (i.handoffNote?.trim().slice(0, 1200) || null)
           : null,
       assignment_key: i.assignmentKey?.slice(0, 200) ?? null,
@@ -767,13 +765,13 @@ export async function getCeoWorkdayEvidence(userIdParam?: string): Promise<CeoWo
       itemCount: list.length,
       completedCount: count("completed"),
       inProgressCount: count("in-progress"),
-      deferredCount: count("deferred"),
+      savedForLaterCount: count("saved-for-later"),
       delegatedCount: count("delegated"),
       eliminatedCount: count("eliminated"),
       blockedCount: count("blocked"),
       founderChangedCount: list.filter((i) => !["keep", "added"].includes(i.founder_decision)).length,
       carryForward: list
-        .filter((i) => i.next_action && ["continue-next-hour", "later", "move-segment", "need-help"].includes(i.next_action))
+        .filter((i) => i.next_action && ["continue-next-hour", "save-for-later", "move-segment", "need-help"].includes(i.next_action))
         .map((i) => ({ itemId: i.id, title: i.title, nextAction: i.next_action as CeoNextAction })),
       hoursCheckedIn: new Set((checkins ?? []).map((c) => c.hour_block)).size,
     }

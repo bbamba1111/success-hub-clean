@@ -171,12 +171,12 @@ const prior = {
   itemCount: 3,
   completedCount: 2,
   inProgressCount: 1,
-  deferredCount: 0,
+  savedForLaterCount: 0,
   delegatedCount: 0,
   eliminatedCount: 0,
   blockedCount: 0,
   founderChangedCount: 0,
-  carryForward: [{ itemId: "x", title: "Prepare sales conversation", nextAction: "later" as const }],
+  carryForward: [{ itemId: "x", title: "Prepare sales conversation", nextAction: "save-for-later" as const }],
   hoursCheckedIn: 4,
 }
 const i1 = designCeoWorkday({ businessAreaId: "sales-revenue", bottleneckEntries: [], assetNameById: names, priorEvidence: prior })
@@ -190,9 +190,9 @@ const j = designCeoWorkday({ businessAreaId: "finance", bottleneckEntries: [] })
 const jItems = j.items.map((it, idx) => (idx === 0 ? { ...it, founderDecision: "remove" as const } : it))
 check("[J] removed item excluded from planned minutes", plannedMinutes(jItems) === j.plannedMinutes - j.items[0].estimatedMinutes)
 const jDeferred = j.items.map((it, idx) =>
-  idx === 0 ? { ...it, founderDecision: "defer" as const, status: "deferred" as const } : it,
+  idx === 0 ? { ...it, founderDecision: "save-for-later" as const, status: "saved-for-later" as const } : it,
 )
-check("[J] deferred item leaves today's minutes", plannedMinutes(jDeferred) === j.plannedMinutes - j.items[0].estimatedMinutes)
+check("[J] saved-for-later item leaves today's minutes", plannedMinutes(jDeferred) === j.plannedMinutes - j.items[0].estimatedMinutes)
 const jDelegated = j.items.map((it, idx) =>
   idx === 0 ? { ...it, founderDecision: "delegate" as const, status: "delegated" as const } : it,
 )

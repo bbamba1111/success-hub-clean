@@ -22,7 +22,7 @@ import type { WorkflowAvailability } from "./workflow-registry"
 
 export type CeoWorkItemSource = "gps" | "barbara" | "founder"
 
-export type CeoWorkItemStatus = "not-started" | "in-progress" | "completed" | "blocked" | "deferred"
+export type CeoWorkItemStatus = "not-started" | "in-progress" | "completed" | "blocked" | "saved-for-later"
 
 /**
  * Placeholder for the future permission model. Hardcoded to "enabled" this

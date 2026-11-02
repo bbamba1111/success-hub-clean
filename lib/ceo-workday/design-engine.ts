@@ -466,10 +466,10 @@ function designFromInitiative(
   }
 }
 
-/** Minutes that actually occupy today's container. Removed, deferred and delegated work leaves today. */
+/** Minutes that actually occupy today's container. Removed, saved-for-later and delegated work leaves today. */
 export function plannedMinutes(items: CeoPlanItem[]): number {
   return items
-    .filter((i) => i.founderDecision !== "remove" && i.status !== "deferred" && i.status !== "delegated")
+    .filter((i) => i.founderDecision !== "remove" && i.status !== "saved-for-later" && i.status !== "delegated")
     .reduce((s, i) => s + Math.max(0, Math.round(i.estimatedMinutes || 0)), 0)
 }
 
@@ -486,7 +486,7 @@ export function buildCeoWorkdayDeclaration(input: {
   destination: string | null
   variant?: number
 }): string {
-  const kept = input.items.filter((i) => i.founderDecision !== "remove" && i.status !== "deferred" && i.status !== "delegated")
+  const kept = input.items.filter((i) => i.founderDecision !== "remove" && i.status !== "saved-for-later" && i.status !== "delegated")
   const primary = kept.find((i) => i.role === "primary") ?? kept[0]
   const supporting = kept.filter((i) => i !== primary).slice(0, 1)
 

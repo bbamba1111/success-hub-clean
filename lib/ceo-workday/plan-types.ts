@@ -93,13 +93,13 @@ export const ARTICULATION_FUNCTIONS: ReadonlySet<CeoBusinessFunction> = new Set<
 
 export type CeoPlanItemRole = "primary" | "supporting" | "validate" | "continue" | "founder-added"
 
-export type CeoFounderDecision = "keep" | "edit" | "replace" | "defer" | "delegate" | "remove" | "added"
+export type CeoFounderDecision = "keep" | "edit" | "replace" | "save-for-later" | "delegate" | "remove" | "added"
 
 export type CeoPlanItemStatus =
   | "planned"
   | "in-progress"
   | "completed"
-  | "deferred"
+  | "saved-for-later"
   | "delegated"
   | "eliminated"
   | "blocked"
@@ -108,16 +108,19 @@ export type CeoPlanItemStatus =
 export type CeoNextAction =
   | "continue-next-hour"
   | "move-segment"
-  | "later"
+  | "save-for-later"
   | "delegate"
   | "eliminate"
   | "need-help"
   | "other"
 
+/** The only three end-of-hour outcomes a founder chooses between. */
+export type CeoHourOutcome = "complete" | "continue-next-hour" | "save-for-later"
+
 export const CEO_NEXT_ACTION_LABEL: Record<CeoNextAction, string> = {
-  "continue-next-hour": "Continue in the next hour",
+  "continue-next-hour": "Continue next hour",
   "move-segment": "Move to another segment",
-  later: "Work on it later",
+  "save-for-later": "Save for later",
   delegate: "Delegate it",
   eliminate: "Eliminate it",
   "need-help": "I need help",
@@ -128,7 +131,7 @@ export const CEO_ITEM_STATUS_LABEL: Record<CeoPlanItemStatus, string> = {
   planned: "Planned",
   "in-progress": "Still in progress",
   completed: "Completed",
-  deferred: "Deferred",
+  "saved-for-later": "Saved for later",
   delegated: "Delegated",
   eliminated: "Eliminated",
   blocked: "Blocked",
@@ -174,11 +177,9 @@ export interface CeoPlanItem {
   localWorkItemId?: string | null
   /** The persistent BO$$ job this item is carried by (Phase 3 job system). */
   jobId?: string | null
-  /** When deferred work comes back (e.g. "tomorrow", "later-this-week", "next-week"). */
-  deferUntil?: string | null
-  /** Who deferred/delegated work is handed to. */
+  /** Who delegated work is handed to. */
   delegateTo?: string | null
-  /** Handoff instructions for delegated work, or a reminder note for deferred work. */
+  /** Handoff instructions for delegated work, or a note to future you for saved work. */
   handoffNote?: string | null
   /** Stable assignment id (e.g. `authority.speaking.pitch`) — prevents re-proposing finished work. */
   assignmentKey?: string | null
@@ -241,11 +242,11 @@ export interface CeoWorkdayEvidenceSummary {
   itemCount: number
   completedCount: number
   inProgressCount: number
-  deferredCount: number
+  savedForLaterCount: number
   delegatedCount: number
   eliminatedCount: number
   blockedCount: number
-  /** Founder changed GPS proposals (edit/replace/remove/defer/delegate). */
+  /** Founder changed GPS proposals (edit/replace/remove/save-for-later/delegate). */
   founderChangedCount: number
   /** Items the founder decided to continue later (for Cherry Blossom). */
   carryForward: Array<{ itemId: string; title: string; nextAction: CeoNextAction }>
