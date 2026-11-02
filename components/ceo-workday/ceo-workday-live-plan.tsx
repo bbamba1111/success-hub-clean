@@ -22,6 +22,7 @@ import { Check, Clock, Copy, Pencil, Play, RotateCcw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 import { getDateKey } from "@/lib/daily-plan/storage"
+import { useDayStateSync } from "@/lib/ceo-workday/day-state-sync"
 import {
   CEO_WORKDAY_DECLARATION_EVENT,
   loadCeoWorkdayDeclaration,
@@ -97,6 +98,7 @@ const CEO_FUNCTION_TO_CATEGORY: Record<CeoBusinessFunction, NonNullable<CeoPlanI
 }
 
 export function CeoWorkdayLivePlan() {
+  useDayStateSync()
   const dateKey = getDateKey()
   const [local, setLocal] = useState<CeoWorkdayDeclaration | null>(null)
   const { commitments: weekly } = useWeeklyCommitments()

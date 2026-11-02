@@ -26,6 +26,7 @@ import {
   TODAYS_WORK_EVENT,
 } from "@/lib/ceo-workday/todays-work-store"
 import type { CeoWorkItem, CeoWorkItemStatus } from "@/lib/ceo-workday/types"
+import { useDayStateSync } from "@/lib/ceo-workday/day-state-sync"
 import { getCeoWorkCategory } from "@/lib/ceo-workday/categories"
 import { getBusinessAsset } from "@/lib/business-asset-library/business-asset-registry"
 import { AssetDetailView } from "@/components/business-asset-library/asset-detail-view"
@@ -62,6 +63,7 @@ const SOURCE_LABEL: Record<CeoWorkItem["source"], string> = {
 }
 
 export function TodaysWorkQueue() {
+  useDayStateSync()
   const [items, setItems] = useState<CeoWorkItem[]>([])
   const [expandedId, setExpandedId] = useState<string | null>(null)
 

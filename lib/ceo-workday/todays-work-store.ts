@@ -10,6 +10,7 @@
  */
 
 import type { CeoWorkItem, CeoWorkItemStatus, NewCeoWorkItem } from "./types"
+import { queueDayStatePush } from "./day-state-sync"
 
 const STORAGE_KEY = "hl:ceo-workday:todays-work:v1"
 
@@ -44,6 +45,7 @@ function writeFile(file: TodaysWorkFile): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(file))
     window.dispatchEvent(new CustomEvent(TODAYS_WORK_EVENT))
+    queueDayStatePush("todays_work", file.date, { items: file.items })
   } catch (error) {
     console.error("[TodaysWork] Error saving queue:", error)
   }

@@ -17,6 +17,7 @@
  */
 
 import type { HourBlockIndex } from "./hour-blocks"
+import { queueDayStatePush } from "./day-state-sync"
 
 const STORAGE_KEY = "hl:ceo-workday:hourly-work:v1"
 
@@ -94,6 +95,7 @@ function writeFile(file: HourlyWorkFile): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(file))
     window.dispatchEvent(new CustomEvent(HOURLY_WORK_EVENT))
+    queueDayStatePush("hourly_work", file.date, { hours: file.hours })
   } catch (error) {
     console.error("[HourlyWork] Error saving plan:", error)
   }

@@ -17,6 +17,7 @@
 import { useCallback, useEffect, useState } from "react"
 import type { CeoPlanItem } from "./plan-types"
 import type { HourBlockIndex } from "./hour-blocks"
+import { queueDayStatePush } from "./day-state-sync"
 
 const MINUTES_PER_HOUR = 60
 const STORAGE_KEY = (dateKey: string) => `ceo-workday-hour-overrides:${dateKey}`
@@ -60,6 +61,7 @@ function write(dateKey: string, value: HourOverrides) {
   try {
     localStorage.setItem(STORAGE_KEY(dateKey), JSON.stringify(value))
     window.dispatchEvent(new Event(CHANGED_EVENT))
+    queueDayStatePush("hour_overrides", dateKey, value)
   } catch {
     // storage can be unavailable; fail quietly
   }
