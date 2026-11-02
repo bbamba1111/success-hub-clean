@@ -234,7 +234,7 @@ declare
 begin
   if uid is null then raise exception 'Not signed in'; end if;
   if p_proposed_by not in ('cherry', 'executive', 'system') then
-    raise exception 'Only Cherry Blossom, an executive or BO$$ can propose';
+    raise exception 'Only Cherry Blossom, an executive or the system can propose';
   end if;
   if boss_action_required_level(p_action_kind) is null then
     raise exception 'That action is not allowed';
