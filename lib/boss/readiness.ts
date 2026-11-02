@@ -241,6 +241,64 @@ export const STRATEGIC_INITIATIVES: StrategicInitiative[] = [
   },
 
   // Operations
+  // Workshops & Webinars (sixth function) — selectable alternates under Growth & Innovation.
+  // Listed after the original growth initiatives so journey defaults are unchanged.
+  {
+    id: "experiences.first-brief",
+    areaId: "growth-innovation",
+    journey: "starting",
+    name: "Design your first workshop or webinar",
+    objective: "One trust-building experience designed, with a clear audience, promise and next step.",
+    requirements: [
+      req("experience-audience", "Audience and promise", "Do you know who the experience is for and what they will leave with?", "decision", true,
+        prep("Name the audience and promise for your experience", "One sentence: who it is for and the result they leave with.", "trust-experiences", "DECIDE", 30)),
+      req("experience-offer", "Offer behind the experience", "Is there an offer for attendees who want more?", "asset", false,
+        prep("Define the offer behind your experience", "The offer, its price and who it's for.", "sales-conversion", "BUILD", 45),
+        { assetId: "offer-design-canvas", factKeywords: ["offer", "program", "package"] }),
+    ],
+    steps: [
+      { key: "brief", title: "Write the experience brief", outcome: "Audience, promise, format, length, date and the offer it leads to, on one page.", fn: "trust-experiences", treatment: "build-change", category: "DESIGN", minutes: 45, requires: ["experience-audience"], assetRequirement: "none", aiHint: "Ask BO$$ to pressure-test the promise and format." },
+      { key: "outline", title: "Outline the curriculum", outcome: "Three teaching points, one exercise and the invitation at the end.", fn: "trust-experiences", treatment: "build-change", category: "BUILD", minutes: 60, requires: ["experience-audience"], assetRequirement: "none", aiHint: "Draft the outline with BO$$." },
+      { key: "invite", title: "Invite your first 10 people", outcome: "Ten personal invitations sent; registrations noted.", fn: "trust-experiences", treatment: "implement-operate", category: "MARKET", minutes: 30, requires: [], assetRequirement: "none" },
+    ],
+  },
+  {
+    id: "experiences.weekly-series",
+    areaId: "growth-innovation",
+    journey: "growing",
+    name: "Run a weekly workshop or webinar series",
+    objective: "A recurring experience that consistently builds trust and starts sales conversations.",
+    requirements: [
+      req("experience-curriculum", "Tested curriculum", "Have you delivered this experience at least once with a curriculum you can reuse?", "asset", true,
+        prep("Turn your last session into a reusable curriculum", "Session outline, slides or notes, and the invitation, saved for reuse.", "trust-experiences", "BUILD", 60)),
+      req("experience-registration", "Registration path", "Can people register on a page or form today?", "resource", false,
+        prep("Set up the registration page", "A live registration page or form with confirmation and reminder.", "operations", "SYSTEMIZE", 45)),
+    ],
+    steps: [
+      { key: "cadence", title: "Set the series cadence and next three dates", outcome: "Day, time and the next three occurrence dates decided.", fn: "trust-experiences", treatment: "build-change", category: "DECIDE", minutes: 20, requires: [], assetRequirement: "none" },
+      { key: "promote", title: "Promote the next occurrence", outcome: "Promotion posts and emails scheduled for the next session.", fn: "trust-experiences", treatment: "implement-operate", category: "MARKET", minutes: 45, requires: ["experience-registration"], assetRequirement: "none", aiHint: "Draft the promotion with BO$$." },
+      { key: "convert", title: "Follow up with attendees and invite them to the offer", outcome: "Follow-up sent to every attendee; conversations booked noted.", fn: "sales-conversion", treatment: "implement-operate", category: "SELL", minutes: 45, requires: [], assetRequirement: "none" },
+      { key: "review", title: "Review results and choose one improvement", outcome: "Attendance, conversations and one change for next time recorded.", fn: "trust-experiences", treatment: "practice-develop", category: "DECIDE", minutes: 20, requires: [], assetRequirement: "none" },
+    ],
+  },
+  {
+    id: "experiences.delegate-production",
+    areaId: "growth-innovation",
+    journey: "scaling",
+    name: "Delegate experience production and follow-up",
+    objective: "You host; the team produces, promotes and follows up.",
+    requirements: [
+      req("experience-run-of-show", "Written run of show", "Is the production of your experience written down step by step?", "asset", true,
+        prep("Document the run of show", "Every production step before, during and after the session, with timing.", "operations-design", "SYSTEMIZE", 60)),
+      req("experience-owner", "Production owner", "Is there a person who can own production and follow-up?", "resource", true,
+        prep("Decide who will own production and follow-up", "A named person (or role to hire) and what they own.", "operations", "DECIDE", 30)),
+    ],
+    steps: [
+      { key: "handoff", title: "Write the production and follow-up handoff brief", outcome: "One page: what they own, the checklist and how results are reported.", fn: "trust-experiences", treatment: "delegate-transfer", category: "DELEGATE", minutes: 45, requires: ["experience-run-of-show", "experience-owner"], assetId: "delegation-brief", assetRequirement: "suggested", assetReason: "The Delegation Brief makes the handoff complete enough to run without you." },
+      { key: "brief-owner", title: "Brief the production owner", outcome: "Briefing held; first independently produced session date set.", fn: "operations", treatment: "implement-operate", category: "COMMUNICATE", minutes: 30, requires: ["experience-owner"], assetRequirement: "none" },
+    ],
+  },
+
   {
     id: "ops.first-process",
     areaId: "operations",

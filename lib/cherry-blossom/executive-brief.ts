@@ -148,7 +148,29 @@ export interface BriefExplainability {
  * Assemble the Morning Executive Brief™ from the current Harmony Context™.
  * Returns a complete, valid brief regardless of how much context is present.
  */
-export function assembleMorningExecutiveBrief(ctx: HarmonyContextValue): MorningExecutiveBrief {
+export interface BriefExperienceContext {
+  /** Next scheduled Workshops & Webinars occurrence, if the caller has one loaded. */
+  nextExperience?: { title: string; occurrenceDate: string } | null
+}
+
+export function assembleMorningExecutiveBrief(
+  ctx: HarmonyContextValue,
+  experience: BriefExperienceContext = {},
+): MorningExecutiveBrief {
+  const brief = assembleCoreBrief(ctx)
+  const next = experience.nextExperience
+  if (!next || ctx.currentSegment?.id !== "ceo-workday") return brief
+  return {
+    ...brief,
+    openingStatement: `${brief.openingStatement} Your next Workshops & Webinars session, "${next.title}", is on ${next.occurrenceDate}.`,
+    explainability: {
+      ...brief.explainability,
+      signals: [...brief.explainability.signals, `Upcoming experience: ${next.title} (${next.occurrenceDate})`],
+    },
+  }
+}
+
+function assembleCoreBrief(ctx: HarmonyContextValue): MorningExecutiveBrief {
   const name = ctx.firstName?.trim() || null
   const greeting = name
     ? `${ctx.greeting}, ${name}.`
@@ -466,7 +488,11 @@ function selectAssignedExecutive(
   // Focus-area driven assignment
   if (focusAreas.length > 0) {
     const primaryFocus = focusAreas[0].toLowerCase()
-    if (primaryFocus.includes("marketing") || primaryFocus.includes("brand") || primaryFocus.includes("content")) {
+    if (primaryFocus.includes("workshop") || primaryFocus.includes("webinar") || primaryFocus.includes("experience")) {
+      executiveId = "growth"
+      missionStatement = "Design and run the workshops and webinars that build trust and start sales conversations."
+      reason = `Your Priority Focus Area™ on ${focusAreas[0]} activates your Growth Executive™ for Workshops & Webinars.`
+    } else if (primaryFocus.includes("marketing") || primaryFocus.includes("brand") || primaryFocus.includes("content")) {
       executiveId = "marketing-brand"
       missionStatement = "Strengthen your market presence and lead generation systems."
       reason = `Your Priority Focus Area™ on ${focusAreas[0]} activates your Marketing & Brand Executive™.`
