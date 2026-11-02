@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { guardPublicAi } from "@/lib/ai/guard"
+import { AI_GATEWAY_BASE_URL, getAiGatewayToken } from "@/lib/ai/gateway"
 
 const MAX_MESSAGE_CHARS = 1000
 const MAX_TURNS = 10
@@ -262,14 +263,14 @@ KEY RULES:
 
 Respond to their message now, considering their full context and your expanded mission as their holistic Co-Guide.`
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const response = await fetch(`${AI_GATEWAY_BASE_URL}/chat/completions`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        Authorization: `Bearer ${await getAiGatewayToken()}`,
       },
       body: JSON.stringify({
-        model: "gpt-4o",
+        model: "openai/gpt-4o",
         messages: [
           { role: "system", content: systemPrompt },
           ...messages,

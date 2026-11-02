@@ -1,6 +1,6 @@
 import { guardMemberAi } from "@/lib/ai/guard"
 import { streamText, type CoreMessage, type LanguageModel } from "ai"
-import { openai } from "@ai-sdk/openai"
+import { getGatewayOpenAI } from "@/lib/ai/gateway"
 
 export const maxDuration = 30
 
@@ -96,10 +96,11 @@ CURRENT CLIENT CONTEXT:
     : CLIENT_CO_GUIDE_SYSTEM_PROMPT
 
   try {
+    const gateway = await getGatewayOpenAI()
     const result = await streamText({
       // The repo pins two @ai-sdk/provider versions; cast to the model type
       // `ai` expects to bridge the nominal mismatch (runtime is unaffected).
-      model: openai("gpt-4o-mini") as unknown as LanguageModel,
+      model: gateway("openai/gpt-4o-mini") as unknown as LanguageModel,
       system: enhancedPrompt,
       messages,
       maxTokens: 2000,
