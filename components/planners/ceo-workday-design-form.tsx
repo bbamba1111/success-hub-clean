@@ -73,6 +73,21 @@ import {
   type CeoWorkdayDeclaration,
 } from "@/lib/daily-plan/ceo-workday-declaration"
 
+import { BossJourneyPanel } from "@/components/ceo-workday/boss-journey-panel"
+import {
+  getBossJourneyContext,
+  saveBossJourney,
+  saveReadinessAnswer,
+  type BossJourneyContext,
+} from "@/lib/boss/journey-server"
+import {
+  READINESS_LABEL,
+  effectiveJourney,
+  initiativesForArea,
+  type BossJourney,
+  type ReadinessAnswerStatus,
+} from "@/lib/boss/readiness"
+
 const GLASS_REVEAL_MS = 8000
 
 const ROLE_LABEL: Record<CeoPlanItem["role"], string> = {
@@ -126,6 +141,9 @@ export function CeoWorkdayDesignForm() {
   const [prior, setPrior] = useState<Awaited<ReturnType<typeof getCeoWorkdayEvidence>>>(null)
   const [identity, setIdentity] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  const [journeyCtx, setJourneyCtx] = useState<BossJourneyContext | null>(null)
+  const [initiativeId, setInitiativeId] = useState<string | null>(null)
+  const [journeyError, setJourneyError] = useState<string | null>(null)
 
   const [design, setDesign] = useState<DesignEngineOutput | null>(null)
   const [items, setItems] = useState<CeoPlanItem[]>([])
@@ -175,8 +193,10 @@ export function CeoWorkdayDesignForm() {
         .catch(() => null),
       getCeoWorkdayEvidence().catch(() => null),
       getCeoWorkdayPlan(dateKey).catch(() => null),
-    ]).then(([ega, bbaSummary, evidence, existingPlan]) => {
+      getBossJourneyContext().catch(() => null),
+    ]).then(([ega, bbaSummary, evidence, existingPlan, jctx]) => {
       if (cancelled) return
+      setJourneyCtx(jctx)
       const ids = new Set(w.business.bottleneckEgaEntryIds)
       setBottlenecks(ega.filter((e) => ids.has(e.id)))
       setBba(bbaSummary)
@@ -240,6 +260,19 @@ export function CeoWorkdayDesignForm() {
       currentAssignment: null,
       priorEvidence: prior,
       businessStage: getBusinessStage(),
+      journey: journeyCtx?.journey ?? null,
+      harmonyTransition: journeyCtx?.harmonyTransition ?? false,
+      readiness: journeyCtx
+        ? {
+            answers: journeyCtx.answers,
+            approvedFactLabels: journeyCtx.approvedFactLabels,
+            approvedAssetIds: Object.entries(getInstalledStatusByAssetId())
+              .filter(([, s]) => s === "installed")
+              .map(([id]) => id),
+          }
+        : null,
+      doneKeys: journeyCtx?.doneKeys ?? [],
+      initiativeId,
     })
     setDesign(out)
     if (savedPlan) {
@@ -249,7 +282,32 @@ export function CeoWorkdayDesignForm() {
     // Re-proposing replaces GPS items but keeps anything the founder added.
     setItems((prev) => [...out.items, ...prev.filter((i) => i.role === "founder-added")])
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading, week, bottlenecks, bba, prior, built, savedPlan])
+  }, [loading, week, bottlenecks, bba, prior, built, savedPlan, journeyCtx, initiativeId])
+
+  async function changeJourney(journey: BossJourney, harmonyTransition: boolean) {
+    if (!journeyCtx) return
+    const previous = journeyCtx
+    setJourneyError(null)
+    setInitiativeId(null)
+    setJourneyCtx({ ...journeyCtx, journey, harmonyTransition, suggested: false })
+    const res = await saveBossJourney({ journey, harmonyTransition })
+    if (!res.ok) {
+      setJourneyCtx(previous)
+      setJourneyError(res.error)
+    }
+  }
+
+  async function answerReadiness(key: string, status: ReadinessAnswerStatus) {
+    if (!journeyCtx) return
+    const previous = journeyCtx
+    setJourneyError(null)
+    setJourneyCtx({ ...journeyCtx, answers: { ...journeyCtx.answers, [key]: status } })
+    const res = await saveReadinessAnswer({ requirementKey: key, status })
+    if (!res.ok) {
+      setJourneyCtx(previous)
+      setJourneyError(res.error)
+    }
+  }
 
   const approved = items.filter(isApproved)
   const planned = sumPlanned(items)
@@ -702,7 +760,26 @@ export function CeoWorkdayDesignForm() {
         </AnimatePresence>
       </div>
 
-      {/* TODAY'S CEO WORK */}
+      {journeyCtx && !built && !savedPlan && (
+  <BossJourneyPanel
+  journey={journeyCtx.journey}
+  suggested={journeyCtx.suggested}
+  harmonyTransition={journeyCtx.harmonyTransition}
+  onJourneyChange={changeJourney}
+  initiatives={initiativesForArea(week?.business.businessAreaId).filter(
+  (i) => i.journey === effectiveJourney(journeyCtx.journey, journeyCtx.harmonyTransition),
+  )}
+  initiativeId={design?.initiative?.id ?? initiativeId}
+  onInitiativeChange={setInitiativeId}
+  objective={design?.initiative?.objective ?? null}
+  questions={design?.readinessQuestions ?? []}
+  answers={journeyCtx.answers}
+  onAnswer={answerReadiness}
+  error={journeyError}
+  />
+  )}
+
+  {/* TODAY'S CEO WORK */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60">
@@ -895,7 +972,16 @@ function WorkCard({
         </span>
         <span className="font-montserrat text-[13px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/60">
           {CEO_TREATMENT_LABEL[item.treatment]}
-        </span>
+  </span>
+  {item.readiness && item.readiness !== "ready" && (
+  <span
+  className={`rounded-full px-2 py-0.5 font-montserrat text-[12px] font-bold uppercase tracking-[0.14em] ${
+  item.readiness === "blocked" ? "bg-destructive/10 text-destructive" : "bg-[#E8DFE2] text-[#3A2E33]"
+  }`}
+  >
+  {READINESS_LABEL[item.readiness]}
+  </span>
+  )}
         <span className="ml-auto font-sans text-base font-semibold text-[#6B5860]">{item.estimatedMinutes} min</span>
       </div>
 

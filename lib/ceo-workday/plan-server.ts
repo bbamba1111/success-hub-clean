@@ -77,6 +77,11 @@ type ItemRow = {
   defer_until: string | null
   delegate_to: string | null
   handoff_note: string | null
+  assignment_key: string | null
+  strategic_objective: string | null
+  readiness: CeoPlanItem["readiness"]
+  asset_requirement: CeoPlanItem["assetRequirement"]
+  asset_reason: string | null
 }
 
 function rowToItem(r: ItemRow): CeoPlanItem {
@@ -103,6 +108,11 @@ function rowToItem(r: ItemRow): CeoPlanItem {
     deferUntil: r.defer_until,
     delegateTo: r.delegate_to,
     handoffNote: r.handoff_note,
+    assignmentKey: r.assignment_key,
+    strategicObjective: r.strategic_objective,
+    readiness: r.readiness,
+    assetRequirement: r.asset_requirement,
+    assetReason: r.asset_reason,
   }
 }
 
@@ -130,7 +140,7 @@ function rowToPlan(p: PlanRow, items: ItemRow[]): CeoWorkdayPlan {
 const PLAN_COLS =
   "id, plan_date, week_key, business_area_id, bottleneck_ega_entry_ids, primary_assignment_ref, primary_asset_id, constraint_summary, intervention_summary, identity_statement, declaration, planned_minutes, status, entered_at, closed_at"
 const ITEM_COLS =
-  "id, plan_id, position, title, purpose, expected_evidence, treatment, business_function, role, estimated_minutes, related_asset_id, related_assignment_ref, ceo_work_category, gps_original, founder_decision, status, next_action, local_work_item_id, job_id, defer_until, delegate_to, handoff_note"
+  "id, plan_id, position, title, purpose, expected_evidence, treatment, business_function, role, estimated_minutes, related_asset_id, related_assignment_ref, ceo_work_category, gps_original, founder_decision, status, next_action, local_work_item_id, job_id, defer_until, delegate_to, handoff_note, assignment_key, strategic_objective, readiness, asset_requirement, asset_reason"
 
 // ── Phase 3 job link ────────────────────────────────────────────────────────
 
@@ -426,11 +436,34 @@ export async function saveCeoWorkdayPlan(input: SaveCeoWorkdayPlanInput): Promis
         i.founderDecision === "defer" || i.founderDecision === "delegate"
           ? (i.handoffNote?.trim().slice(0, 1200) || null)
           : null,
+      assignment_key: i.assignmentKey?.slice(0, 200) ?? null,
+      strategic_objective: i.strategicObjective?.trim().slice(0, 600) ?? null,
+      readiness: i.readiness ?? null,
+      asset_requirement: i.assetRequirement ?? null,
+      asset_reason: i.assetReason?.trim().slice(0, 600) ?? null,
     }))
 
     const { data: items } = rows.length
       ? await supabase.from("ceo_workday_plan_items").insert(rows).select(ITEM_COLS)
       : { data: [] as ItemRow[] }
+
+    // Prerequisite assignments become real BO$$ job dependencies, so the
+    // database refuses to finish dependent work before its preparation.
+    const jobByKey = new Map<string, string>()
+    input.items.forEach((i, idx) => {
+      if (i.assignmentKey && jobIds[idx]) jobByKey.set(i.assignmentKey, jobIds[idx] as string)
+    })
+    const deps: Array<{ user_id: string; job_id: string; depends_on_job_id: string }> = []
+    input.items.forEach((i, idx) => {
+      const jobId = jobIds[idx]
+      if (!jobId || i.founderDecision === "remove") return
+      for (const k of i.prerequisiteKeys ?? []) {
+        const dep = jobByKey.get(k)
+        if (dep && dep !== jobId) deps.push({ user_id: userId, job_id: jobId, depends_on_job_id: dep })
+      }
+    })
+    // One insert per edge: a duplicate (re-save) must not discard the others.
+    for (const d of deps) await supabase.from("boss_job_dependencies").insert(d)
 
     return rowToPlan(plan as PlanRow, (items ?? []) as ItemRow[])
   } catch {

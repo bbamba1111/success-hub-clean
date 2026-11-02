@@ -180,6 +180,17 @@ export interface CeoPlanItem {
   delegateTo?: string | null
   /** Handoff instructions for delegated work, or a reminder note for deferred work. */
   handoffNote?: string | null
+  /** Stable assignment id (e.g. `authority.speaking.pitch`) — prevents re-proposing finished work. */
+  assignmentKey?: string | null
+  strategicObjective?: string | null
+  readiness?: "ready" | "ready_after_prep" | "blocked" | "info_needed" | null
+  assetRequirement?: "none" | "suggested" | "required" | null
+  assetReason?: string | null
+  /** Design-time only: assignment keys that must finish first (persisted as job dependencies). */
+  prerequisiteKeys?: string[]
+  /** Design-time only: what is still unknown/missing for this assignment. */
+  gaps?: string[]
+  aiHint?: string | null
 }
 
 // ── Plan ────────────────────────────────────────────────────────────────────

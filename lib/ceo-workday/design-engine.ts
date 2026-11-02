@@ -29,6 +29,15 @@ import type { BbaSignalSummary } from "@/lib/founder-gps/context/bba-context-agg
 import type { BusinessAssetInstallationStatus } from "@/lib/business-asset-inventory/types"
 import { INTERVENTION_MATRIX, OBSTACLE_TO_TREATMENT, TREATMENT_REASON, type AreaIntervention } from "./intervention-matrix"
 import type { CeoGpsOriginal, CeoPlanItem, CeoTreatment, CeoWorkdayEvidenceSummary } from "./plan-types"
+import {
+  defaultInitiative,
+  developAssignments,
+  effectiveJourney,
+  getInitiative,
+  type BossJourney,
+  type InitiativeRequirement,
+  type ReadinessContext,
+} from "@/lib/boss/readiness"
 
 export const CEO_WORKDAY_CONTAINER_MINUTES = 240
 
@@ -53,6 +62,18 @@ export interface DesignEngineInput {
   /** Yesterday's (or latest) CEO Workday evidence for carry-forward. */
   priorEvidence?: CeoWorkdayEvidenceSummary | null
   businessStage?: string | null
+  /**
+   * BO$$ Business Journey™. When provided and the area has a strategic
+   * initiative, assignments are developed from readiness (lib/boss/readiness.ts).
+   * When omitted, the original matrix behavior is used unchanged.
+   */
+  journey?: BossJourney | null
+  harmonyTransition?: boolean
+  readiness?: ReadinessContext | null
+  /** Assignment keys already finished — never re-proposed. */
+  doneKeys?: string[]
+  /** Founder-selected initiative; defaults to the area's initiative for the journey. */
+  initiativeId?: string | null
 }
 
 export interface DesignEngineOutput {
@@ -68,6 +89,11 @@ export interface DesignEngineOutput {
   relatedAssetName: string | null
   items: CeoPlanItem[]
   plannedMinutes: number
+  /** Present when the plan was developed from a strategic initiative. */
+  initiative?: { id: string; name: string; objective: string } | null
+  /** Hard requirements BO$$ needs the founder to answer (Information Needed). */
+  readinessQuestions?: InitiativeRequirement[]
+  journey?: BossJourney | null
 }
 
 // ── Constraint identification ───────────────────────────────────────────────
@@ -211,6 +237,14 @@ export function designCeoWorkday(input: DesignEngineInput): DesignEngineOutput {
   const area = input.businessAreaId ? INTERVENTION_MATRIX[input.businessAreaId] : null
   if (!area) return empty("Select this week's Business Building Priority first — GPS designs today's work from it.")
 
+  if (input.journey) {
+    const journey = effectiveJourney(input.journey, !!input.harmonyTransition)
+    const picked = getInitiative(input.initiativeId)
+    const initiative =
+      picked && picked.areaId === area.areaId ? picked : defaultInitiative(area.areaId, journey)
+    if (initiative) return designFromInitiative(input, area, initiative, journey)
+  }
+
   const { type: obstacleType, entry: dominantEntry } = dominantObstacle(input.bottleneckEntries)
   const asset = resolveAsset(area, input)
   const { treatment, because } = chooseTreatment(obstacleType, asset.status, input.bbaSignals, area)
@@ -310,6 +344,125 @@ export function designCeoWorkday(input: DesignEngineInput): DesignEngineOutput {
     relatedAssetName: asset.id ? asset.name : null,
     items,
     plannedMinutes: total,
+  }
+}
+
+/** Readiness-driven chain: journey → initiative → sequenced, readiness-labeled assignments. */
+function designFromInitiative(
+  input: DesignEngineInput,
+  area: (typeof INTERVENTION_MATRIX)[string],
+  initiative: NonNullable<ReturnType<typeof defaultInitiative>>,
+  journey: BossJourney,
+): DesignEngineOutput {
+  const names = input.assetNameById ?? {}
+  const ctx: ReadinessContext = input.readiness ?? { answers: {}, approvedFactLabels: [], approvedAssetIds: [] }
+  const developed = developAssignments({
+    initiative,
+    ctx,
+    doneKeys: input.doneKeys,
+    harmonyTransition: input.harmonyTransition,
+  })
+
+  const items: CeoPlanItem[] = []
+
+  const carry = (input.priorEvidence?.carryForward ?? []).filter(
+    () => input.priorEvidence?.businessAreaId === input.businessAreaId,
+  )
+  for (const c of carry.slice(0, 1)) {
+    const original: CeoGpsOriginal = {
+      title: c.title,
+      purpose: "You left this in progress in your last CEO Workday™ and chose to continue it.",
+      expectedEvidence: "The unfinished piece completed or explicitly re-decided.",
+      treatment: "implement-operate",
+      businessFunction: "operations",
+      role: "continue",
+      estimatedMinutes: 30,
+      relatedAssetId: null,
+    }
+    items.push({
+      id: newId(),
+      position: items.length,
+      ...original,
+      ceoWorkCategory: "DECIDE",
+      gpsOriginal: original,
+      founderDecision: "keep",
+      status: "planned",
+      readiness: "ready",
+      assetRequirement: "none",
+    })
+  }
+
+  let primaryAssigned = items.length > 0
+  for (const a of developed.assignments) {
+    const role: CeoPlanItem["role"] = !primaryAssigned ? "primary" : a.isPreparation ? "supporting" : "supporting"
+    primaryAssigned = true
+    const purpose = a.isPreparation
+      ? `${a.objective} Preparing it first keeps the next assignment from stalling.`
+      : `${a.objective} Part of "${initiative.name}" — your ${journey} journey.`
+    const original: CeoGpsOriginal = {
+      title: a.title,
+      purpose,
+      expectedEvidence: a.outcome,
+      treatment: a.treatment,
+      businessFunction: a.fn,
+      role,
+      estimatedMinutes: a.minutes,
+      relatedAssetId: a.assetRequirement === "none" ? null : a.assetId,
+    }
+    items.push({
+      id: newId(),
+      position: items.length,
+      ...original,
+      relatedAssetTitle: original.relatedAssetId ? (names[original.relatedAssetId] ?? null) : null,
+      ceoWorkCategory: a.category,
+      gpsOriginal: original,
+      founderDecision: "keep",
+      status: a.readiness === "blocked" ? "blocked" : "planned",
+      assignmentKey: a.assignmentKey,
+      strategicObjective: a.objective,
+      readiness: a.readiness,
+      assetRequirement: a.assetRequirement,
+      assetReason: a.assetReason,
+      prerequisiteKeys: a.prerequisiteKeys,
+      gaps: a.gaps,
+      aiHint: a.aiHint,
+    })
+  }
+
+  // Honest time — never pad; trim from the tail. Never keep work whose prerequisite was trimmed.
+  let total = items.reduce((s, i) => s + i.estimatedMinutes, 0)
+  while (total > CEO_WORKDAY_CONTAINER_MINUTES && items.length > 1) {
+    total -= items.pop()!.estimatedMinutes
+  }
+  const keptKeys = new Set(items.map((i) => i.assignmentKey).filter(Boolean))
+  for (const i of items) {
+    if (i.prerequisiteKeys?.length) i.prerequisiteKeys = i.prerequisiteKeys.filter((k) => keptKeys.has(k))
+  }
+
+  const primary = items.find((i) => i.role === "primary") ?? items[0] ?? null
+  const blockedCount = items.filter((i) => i.readiness === "blocked").length
+  const infoCount = developed.questions.filter((q) => q.hard).length
+  const constraintSummary = blockedCount
+    ? `${blockedCount} assignment${blockedCount === 1 ? " is" : "s are"} blocked until preparation is done.`
+    : infoCount
+      ? `BO$$ needs ${infoCount} answer${infoCount === 1 ? "" : "s"} to confirm readiness.`
+      : `Ready to move "${initiative.name}" forward.`
+
+  return {
+    ok: items.length > 0,
+    reason: items.length ? undefined : `Every assignment in "${initiative.name}" is already done. Choose the next initiative.`,
+    areaName: area.areaName,
+    destination: area.destination,
+    constraintSummary,
+    interventionSummary: `Strategic initiative: ${initiative.name}. Objective: ${initiative.objective}`,
+    treatment: primary?.treatment ?? null,
+    relatedAssetId: primary?.relatedAssetId ?? null,
+    relatedAssetName: primary?.relatedAssetId ? (names[primary.relatedAssetId] ?? null) : null,
+    items,
+    plannedMinutes: total,
+    initiative: { id: initiative.id, name: initiative.name, objective: initiative.objective },
+    readinessQuestions: developed.questions,
+    journey,
   }
 }
 
