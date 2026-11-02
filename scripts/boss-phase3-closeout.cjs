@@ -12,24 +12,26 @@ async function closeOut(supabase, userId, planId) {
     .filter((i) => i.status === "completed" && typeof i.local_work_item_id === "string")
     .map((i) => i.local_work_item_id)
     .filter((id) => UUID.test(id))
-  let outcome = "nothing to finish"
-  if (finishedJobIds.length > 0) {
+  const errors = []
+  for (const jobId of finishedJobIds) {
     const { error } = await supabase
       .from("boss_jobs")
       .update({ status: "done", paused: false, last_change_actor: "founder", last_change_action: "finished",
         last_change_note: "Finished during CEO Workday™ close-out" })
-      .eq("user_id", userId).in("id", finishedJobIds).neq("status", "done")
-    outcome = error ? `error: ${error.message}` : "ok"
+      .eq("user_id", userId).eq("id", jobId).neq("status", "done")
+    if (error) errors.push(error.message)
   }
   const total = items?.length ?? 0
   const completed = items?.filter((i) => i.status === "completed").length ?? 0
-  await supabase.from("segment_completions").upsert(
-    { user_id: userId, segment_id: "ceo-workday", completed_date: plan.plan_date,
-      completion_status: total === 0 ? "skipped" : completed === total ? "completed" : completed > 0 ? "partial" : "skipped",
-      completed_at: closedAt },
-    { onConflict: "user_id,segment_id,completed_date" },
-  )
-  return outcome
+  const completionStatus = total === 0 ? "skipped" : completed === total ? "completed" : completed > 0 ? "partial" : "skipped"
+  const { data: existing } = await supabase.from("segment_completions").select("id")
+    .eq("user_id", userId).eq("segment_id", "ceo-workday").eq("segment_date", plan.plan_date).limit(1).maybeSingle()
+  const seg = existing
+    ? await supabase.from("segment_completions").update({ completion_status: completionStatus }).eq("id", existing.id).eq("user_id", userId)
+    : await supabase.from("segment_completions").insert({ user_id: userId, segment_id: "ceo-workday",
+        segment_date: plan.plan_date, completion_status: completionStatus })
+  if (seg.error) errors.push(`segment: ${seg.error.message}`)
+  return finishedJobIds.length === 0 ? "nothing to finish" : errors.length ? `refused: ${errors.join("; ")}` : "ok"
 }
 
 module.exports = { closeOut }

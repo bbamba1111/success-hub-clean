@@ -218,7 +218,7 @@ async function main() {
     const doneAtAfter = (await a.from("boss_jobs").select("completed_at").eq("id", done1.id).single()).data.completed_at
     record("closing out 3 times adds no extra history", before === afterCount, `${before} → ${afterCount} entries`)
     record("closing out again doesn't change completion time", doneAtBefore === doneAtAfter)
-    const seg = (await a.from("segment_completions").select("id").eq("user_id", A.id).eq("segment_id", "ceo-workday").eq("completed_date", today)).data
+    const seg = (await a.from("segment_completions").select("id").eq("user_id", A.id).eq("segment_id", "ceo-workday").eq("segment_date", today)).data
     record("exactly one workday completion record after 3 close-outs", seg?.length === 1, `${seg?.length} records`)
 
     // 7. PRIVACY

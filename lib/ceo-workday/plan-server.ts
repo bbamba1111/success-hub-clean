@@ -498,7 +498,9 @@ export async function closeCeoWorkdayPlan(planId: string, planDate: string) {
       .filter((i) => i.status === "completed" && typeof i.local_work_item_id === "string")
       .map((i) => i.local_work_item_id as string)
       .filter((id) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id))
-    if (finishedJobIds.length > 0) {
+    // One update per job: the database refuses to finish a job that is still
+    // waiting on another, and that refusal must not block the other jobs.
+    for (const jobId of finishedJobIds) {
       await supabase
         .from("boss_jobs")
         .update({
@@ -509,7 +511,7 @@ export async function closeCeoWorkdayPlan(planId: string, planDate: string) {
           last_change_note: "Finished during CEO Workday™ close-out",
         })
         .eq("user_id", userId)
-        .in("id", finishedJobIds)
+        .eq("id", jobId)
         .neq("status", "done")
     }
 
@@ -517,16 +519,30 @@ export async function closeCeoWorkdayPlan(planId: string, planDate: string) {
     const completed = items?.filter((i) => i.status === "completed").length ?? 0
     const completionStatus = total === 0 ? "skipped" : completed === total ? "completed" : completed > 0 ? "partial" : "skipped"
 
-    await supabase.from("segment_completions").upsert(
-      {
+    // segment_completions has no unique key on (user, segment, date), so
+    // update the day's row if it exists instead of relying on upsert.
+    const { data: existing } = await supabase
+      .from("segment_completions")
+      .select("id")
+      .eq("user_id", userId)
+      .eq("segment_id", "ceo-workday")
+      .eq("segment_date", planDate)
+      .limit(1)
+      .maybeSingle()
+    if (existing) {
+      await supabase
+        .from("segment_completions")
+        .update({ completion_status: completionStatus })
+        .eq("id", existing.id)
+        .eq("user_id", userId)
+    } else {
+      await supabase.from("segment_completions").insert({
         user_id: userId,
         segment_id: "ceo-workday",
-        completed_date: planDate,
+        segment_date: planDate,
         completion_status: completionStatus,
-        completed_at: closedAt,
-      },
-      { onConflict: "user_id,segment_id,completed_date" },
-    )
+      })
+    }
   } catch {
     // best-effort
   }
