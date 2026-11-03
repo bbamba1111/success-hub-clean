@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     description:
       "AI is creating capacity. Decide what you'll do with the time it gives you back. Save your free seat — no credit card required.",
     type: "website",
-    images: ["/images/holiday/togetherness.png"],
+    images: [{ url: "/images/holiday/togetherness-og.jpg", width: 1200, height: 630 }],
   },
 }
 
@@ -40,11 +40,13 @@ export default function LandingPage() {
   return (
     <main className="min-h-screen bg-[#FFF8F4]">
       <LandingNav
+        tone="dark"
         experiencesHref="#register"
         ctaLabel="Save My Free Seat"
         links={[
           { label: "Reality Check", href: "#reality-check" },
           { label: "Monday", href: "#monday" },
+          { label: "Business Week", href: "#business-week" },
           { label: "Questions", href: "#faq" },
         ]}
       />

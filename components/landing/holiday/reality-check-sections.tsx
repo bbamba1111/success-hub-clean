@@ -1,16 +1,26 @@
 import { RegistrationForm } from "./registration-form"
-import { FOUNDER_PRICING_DEADLINE, SESSION_TIME_LABEL } from "@/lib/reality-check/session"
+import { OfferCta } from "@/components/landing/offer-cta"
+import { getPlanByLevel } from "@/lib/payments/config"
+import {
+  FOUNDER_PRICING_DEADLINE,
+  SESSION_DURATION_LABEL,
+  SESSION_TIME_LABEL,
+  isFounderPricingOpen,
+} from "@/lib/reality-check/session"
 
 const INK = "text-[#4A3A42]"
-const BODY = "font-poppins text-pretty leading-relaxed text-[#5A4A52]"
-const EYEBROW = "font-poppins text-xs font-semibold uppercase tracking-[0.24em] text-[#5A7F46]"
-const H2 = `font-playfair text-balance text-3xl font-bold leading-tight sm:text-4xl ${INK}`
+const BODY_BASE = "font-poppins text-pretty leading-relaxed text-[#5A4A52]"
+const BODY = `${BODY_BASE} text-[17px] sm:text-lg`
+const BODY_SM = `${BODY_BASE} text-base`
+const BODY_XS = `${BODY_BASE} text-sm`
+const EYEBROW = "font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#5A7F46]"
+const H2 = `font-playfair text-balance text-3xl font-bold leading-tight sm:text-5xl ${INK}`
 
 function CtaLink({ label = "Save My Free Seat" }: { label?: string }) {
   return (
     <a
       href="#register"
-      className="font-poppins inline-flex w-fit items-center justify-center rounded-full bg-[#C13B6B] px-7 py-4 text-sm font-semibold uppercase tracking-[0.12em] text-[#FFF8F4] shadow-lg shadow-[#C13B6B]/25 transition-colors hover:bg-[#A8305B]"
+      className="font-poppins inline-flex w-fit items-center justify-center rounded-full bg-[#C13B6B] px-7 py-4 text-base font-semibold uppercase tracking-[0.12em] text-[#FFF8F4] shadow-lg shadow-[#C13B6B]/25 transition-colors hover:bg-[#A8305B]"
     >
       {label}
     </a>
@@ -26,7 +36,7 @@ export function FreedomSection() {
     <section className="bg-[#FFF8F4] py-20 sm:py-28">
       <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 sm:px-8 lg:grid-cols-2">
         <div className="flex flex-col gap-5">
-          <p className={EYEBROW}>Why this matters now</p>
+          <p className={EYEBROW}>Workweek Redesign for Human Sustainability in the Accelerated Age of AI</p>
           <h2 className={H2}>AI is creating capacity. What will you do with the time it gives you back?</h2>
           <p className={BODY}>
             You started your business for freedom. But somewhere along the way, the business may have become another
@@ -34,17 +44,17 @@ export function FreedomSection() {
             to create.
           </p>
           <p className={BODY}>Now AI is changing what one person or a small team can accomplish.</p>
-          <p className={BODY}>
-            AI doesn&apos;t automatically create freedom. It creates capacity, and you decide what that capacity is for.
-            Technology should serve people, not the other way around.
-          </p>
-          <p className={`font-playfair text-xl italic leading-snug ${INK}`}>
+          <p className={`font-playfair text-xl italic leading-snug sm:text-2xl ${INK}`}>
             Before you use it to do more, consider this: have you redesigned the way your business operates to support
             the freedom you wanted in the first place?
           </p>
+          <p className={BODY}>Welcome to a different way to approach the workweek.</p>
+          <p className={`font-poppins text-lg font-semibold leading-relaxed text-[#5A7F46]`}>
+            Experience work-life balance in real time. Discover what needs to change. Make time for more life.
+          </p>
         </div>
         <img
-          src="/images/holiday/digital-detox-sign.png"
+          src="/images/holiday/digital-detox-sign.webp"
           alt="A holiday signboard reading: We are closed and unplugged, digital detox in session, business hours 9 AM to 5 PM and 10 PM to 11 PM. We don't hustle, we harmonize."
           className="w-full rounded-3xl object-cover shadow-xl"
           loading="lazy"
@@ -69,11 +79,11 @@ export function RealityCheckSection({ sessionLabel }: { sessionLabel: string }) 
   ]
   return (
     <section id="reality-check" className="relative scroll-mt-20 overflow-hidden bg-[#2E2228] py-20 sm:py-28">
-      <img src="/images/holiday/kwanzaa-rest.png" alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-25" loading="lazy" />
+      <img src="/images/holiday/kwanzaa-rest.webp" alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-25" loading="lazy" />
       <div className="relative mx-auto grid max-w-6xl gap-12 px-5 sm:px-8 lg:grid-cols-2">
         <div className="flex flex-col gap-5">
-          <p className="font-poppins text-xs font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">
-            {sessionLabel} · Free · Live online
+          <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">
+            Every Sunday · Next: {sessionLabel} · {SESSION_TIME_LABEL} · {SESSION_DURATION_LABEL} · Free
           </p>
           <h2 className="font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-4xl">
             Start with the free Weekly Work-Life Balance Reality Check™
@@ -89,13 +99,13 @@ export function RealityCheckSection({ sessionLabel }: { sessionLabel: string }) 
               </li>
             ))}
           </ul>
-          <p className="font-poppins text-sm italic leading-relaxed text-[#F6D6E1]">
+          <p className="font-poppins text-base italic leading-relaxed text-[#F6D6E1]">
             Your results are a starting point for reflection, not a judgment of you or your business.
           </p>
           <CtaLink />
         </div>
         <div className="flex flex-col gap-4">
-          <p className="font-poppins text-xs font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">How the path works</p>
+          <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">How the path works</p>
           <ol className="flex flex-col gap-4">
             {path.map((p, i) => (
               <li key={p.title} className="flex gap-4 rounded-2xl border border-[#FFF8F4]/15 bg-[#2E2228]/60 p-5 backdrop-blur-sm">
@@ -103,14 +113,14 @@ export function RealityCheckSection({ sessionLabel }: { sessionLabel: string }) 
                 <div className="flex flex-1 flex-col gap-1">
                   <div className="flex flex-wrap items-baseline justify-between gap-2">
                     <h3 className="font-playfair text-lg font-bold text-[#FFF8F4]">{p.title}</h3>
-                    <span className="font-poppins text-xs font-semibold uppercase tracking-[0.16em] text-[#C9DDB4]">{p.tag}</span>
+                    <span className="font-poppins text-sm font-semibold uppercase tracking-[0.16em] text-[#C9DDB4]">{p.tag}</span>
                   </div>
-                  <p className="font-poppins text-sm leading-relaxed text-[#F6D6E1]">{p.body}</p>
+                  <p className="font-poppins text-base leading-relaxed text-[#F6D6E1]">{p.body}</p>
                 </div>
               </li>
             ))}
           </ol>
-          <p className="font-poppins text-sm leading-relaxed text-[#F6D6E1]">
+          <p className="font-poppins text-base leading-relaxed text-[#F6D6E1]">
             The Reality Check is free and stands on its own. Monday is a separate, paid experience.
           </p>
         </div>
@@ -162,16 +172,18 @@ const CHECK_IN = [
 ]
 
 export function MondaySection() {
+  const monday = getPlanByLevel("business-day")
   return (
     <section id="monday" className="scroll-mt-20 bg-[#FFFDFB] py-20 sm:py-28">
       <div className="mx-auto flex max-w-6xl flex-col gap-14 px-5 sm:px-8">
         <div className="grid items-end gap-10 lg:grid-cols-2">
           <div className="flex flex-col gap-4">
-            <p className={EYEBROW}>Your first experience · Monday</p>
-            <h2 className={H2}>Live work-life balance. Don&apos;t just learn about it.</h2>
+            <p className={EYEBROW}>Offer One · Make Time For More on Mondays™</p>
+            <h2 className={H2}>Redesign Your Entry Into the Workweek™</h2>
             <p className={BODY}>
-              Make Time For More on Mondays™ is a full, guided Work-Life Balance Business Day™, not a workshop, a
-              presentation, or a four-hour coworking session.
+              Monday is your guided entry into the Work-Life Balance Business Day™, the operating rhythm you practice
+              Monday through Thursday, with Friday through Sunday protected as a three-day weekend. It&apos;s a full,
+              guided business day, not a workshop, a presentation, or a coworking session.
             </p>
           </div>
           <div className="flex flex-col gap-3">
@@ -184,18 +196,18 @@ export function MondaySection() {
         </div>
 
         <div className="flex flex-col gap-5">
-          <h3 className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C13B6B]">
+          <h3 className="font-poppins text-base font-semibold uppercase tracking-[0.18em] text-[#C13B6B]">
             The boundaries you&apos;ll practice
           </h3>
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {BOUNDARY_AREAS.map((b) => (
               <li key={b.title} className="flex flex-col gap-2 rounded-2xl bg-[#FFF8F4] p-6 ring-1 ring-[#F2E4E8]">
                 <h4 className={`font-playfair text-xl font-bold ${INK}`}>{b.title} boundaries</h4>
-                <p className={`${BODY} text-sm`}>{b.body}</p>
+                <p className={`${BODY_SM}`}>{b.body}</p>
               </li>
             ))}
           </ul>
-          <p className={`${BODY} max-w-3xl text-sm italic`}>
+          <p className={`${BODY_SM} max-w-3xl italic`}>
             These are areas to explore, not a rigid rulebook. You choose the boundaries that reflect your life, values,
             responsibilities, and business.
           </p>
@@ -203,7 +215,7 @@ export function MondaySection() {
 
         <div className="grid gap-10 lg:grid-cols-5">
           <div className="flex flex-col gap-5 lg:col-span-3">
-            <h3 className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C13B6B]">
+            <h3 className="font-poppins text-base font-semibold uppercase tracking-[0.18em] text-[#C13B6B]">
               What happens during the day
             </h3>
             <ol className="flex flex-col divide-y divide-[#F2E4E8] border-y border-[#F2E4E8]">
@@ -212,16 +224,16 @@ export function MondaySection() {
                   <span className="font-playfair w-6 shrink-0 text-2xl font-bold text-[#C13B6B]">{i + 1}</span>
                   <div className="flex flex-col gap-1">
                     <h4 className={`font-playfair text-lg font-bold ${INK}`}>{s.title}</h4>
-                    <p className={`${BODY} text-sm`}>{s.body}</p>
+                    <p className={`${BODY_SM}`}>{s.body}</p>
                   </div>
                 </li>
               ))}
             </ol>
             <div className="flex flex-col gap-3">
-              <p className="font-poppins text-xs font-semibold uppercase tracking-[0.18em] text-[#5A7F46]">The full day includes</p>
+              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#5A7F46]">The full day includes</p>
               <ul className="flex flex-wrap gap-2">
                 {DAY_RHYTHM.map((r) => (
-                  <li key={r} className="font-poppins rounded-full bg-[#EEF3E8] px-3 py-1.5 text-xs font-medium text-[#4A3A42]">
+                  <li key={r} className="font-poppins rounded-full bg-[#EEF3E8] px-3 py-1.5 text-sm font-medium text-[#4A3A42]">
                     {r}
                   </li>
                 ))}
@@ -230,18 +242,18 @@ export function MondaySection() {
           </div>
 
           <aside className="flex flex-col gap-5 rounded-3xl bg-[#2E2228] p-7 lg:col-span-2">
-            <p className="font-poppins text-xs font-semibold uppercase tracking-[0.2em] text-[#C9DDB4]">
+            <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#C9DDB4]">
               The Five-Minute Work-Life Boundary Check-In™
             </p>
             <ul className="flex flex-col gap-4">
               {CHECK_IN.map((c) => (
                 <li key={c.word} className="flex flex-col gap-1">
                   <span className="font-playfair text-xl font-bold text-[#F6A9C2]">{c.word}</span>
-                  <span className="font-poppins text-sm leading-relaxed text-[#FFF8F4]">{c.body}</span>
+                  <span className="font-poppins text-base leading-relaxed text-[#FFF8F4]">{c.body}</span>
                 </li>
               ))}
             </ul>
-            <p className="font-poppins text-sm leading-relaxed text-[#F6D6E1]">
+            <p className="font-poppins text-base leading-relaxed text-[#F6D6E1]">
               A practical reflection and decision tool. It isn&apos;t a score or a judgment, and not every collision can
               be fixed right away. You decide what to change first and what can wait.
             </p>
@@ -254,9 +266,10 @@ export function MondaySection() {
             to approach your business day differently, practiced boundaries while doing your actual work, and identified
             changes you can keep making.
           </p>
-          <div className="flex shrink-0 flex-col gap-1">
-            <p className={`font-playfair text-4xl font-bold ${INK}`}>$997</p>
-            <p className="font-poppins text-sm text-[#5A4A52]">Full guided day · live with Barbara</p>
+          <div className="flex shrink-0 flex-col gap-3">
+            <p className={`font-playfair text-4xl font-bold ${INK}`}>{monday?.priceLabel ?? "$997"}</p>
+            <p className="font-poppins text-base text-[#5A4A52]">Full guided day · live with Barbara</p>
+            <OfferCta href={monday?.checkoutUrl || undefined} label="Join Make Time For More on Mondays™" />
           </div>
         </div>
       </div>
@@ -264,7 +277,32 @@ export function MondaySection() {
   )
 }
 
+const TWENTY_EIGHT_DAYS = [
+  {
+    week: "Week 1",
+    title: "7-Day Reset",
+    body: "Interrupt old hustle patterns. Establish your work-life boundaries and begin practicing a different way to work and live.",
+  },
+  {
+    week: "Week 2",
+    title: "14-Day Momentum Builder",
+    body: "Strengthen the new practices through repeated Monday–Thursday experiences and a protected three-day weekend.",
+  },
+  {
+    week: "Week 3",
+    title: "21-Day Habit Builder",
+    body: "Reinforce the new behaviors until the operating rhythm feels familiar and sustainable.",
+  },
+  {
+    week: "Week 4",
+    title: "Solo Integration Week",
+    body: "Run the full seven-day rhythm on your own, Monday–Thursday business days and a Friday–Sunday weekend.",
+  },
+]
+
 export function BusinessWeekSection() {
+  const week = getPlanByLevel("business-week")
+  const founderOpen = isFounderPricingOpen()
   const noWait = [
     "Your business is fully built.",
     "You reach a particular revenue milestone.",
@@ -281,24 +319,37 @@ export function BusinessWeekSection() {
     <section id="business-week" className="scroll-mt-20 bg-[#FFF8F4] py-20 sm:py-28">
       <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 sm:px-8 lg:grid-cols-2">
         <img
-          src="/images/holiday/team-celebration.png"
+          src="/images/holiday/team-celebration.webp"
           alt="A team in holiday sweaters sharing a high five around a festive table"
           className="w-full rounded-3xl object-cover shadow-xl"
           loading="lazy"
         />
         <div className="flex flex-col gap-5">
-          <p className={EYEBROW}>How the practice continues</p>
-          <h2 className={H2}>The Work-Life Balance Business Week™</h2>
+          <p className={EYEBROW}>Offer Two · The monthly flagship</p>
+          <h2 className={H2}>The Full 4-Day Work-Life Balance Business Week™</h2>
           <p className={BODY}>
-            A recurring destination where founders experience work-life balance in real time while working on their
-            actual businesses. It helps you notice where work and life collide, recognize what needs attention, and keep
-            practicing a different operating rhythm.
+            A 28-day installation of the Work-Life Balance Business Model: three guided weekly cycles and one solo
+            integration week. Four business days, three protected days of time freedom, and a four-hour focused CEO
+            workday, built and practiced inside your actual business.
+          </p>
+          <ol className="flex flex-col divide-y divide-[#F2E4E8] border-y border-[#F2E4E8]">
+            {TWENTY_EIGHT_DAYS.map((w) => (
+              <li key={w.week} className="flex flex-col gap-1 py-4">
+                <p className="font-poppins text-sm font-semibold uppercase tracking-[0.16em] text-[#C13B6B]">{w.week}</p>
+                <h3 className={`font-playfair text-xl font-bold ${INK}`}>{w.title}</h3>
+                <p className={BODY_SM}>{w.body}</p>
+              </li>
+            ))}
+          </ol>
+          <p className={BODY_SM}>
+            Week four isn&apos;t a week off. It&apos;s a deliberate test of what has become sustainable: which habits
+            stuck, which boundaries you can hold on your own, and what still needs adjustment.
           </p>
           <div className="flex flex-col gap-2">
-            <p className={`font-poppins text-sm font-semibold ${INK}`}>You don&apos;t need to wait until:</p>
+            <p className={`font-poppins text-base font-semibold ${INK}`}>You don&apos;t need to wait until:</p>
             <ul className="flex flex-col gap-1.5">
               {noWait.map((n) => (
-                <li key={n} className={`${BODY} flex gap-3 text-sm`}>
+                <li key={n} className={`${BODY} flex gap-3 text-base`}>
                   <Dot />
                   {n}
                 </li>
@@ -306,25 +357,36 @@ export function BusinessWeekSection() {
             </ul>
           </div>
           <div className="flex flex-col gap-2">
-            <p className={`font-poppins text-sm font-semibold ${INK}`}>What continues after Monday:</p>
+            <p className={`font-poppins text-base font-semibold ${INK}`}>What continues after Monday:</p>
             <ul className="flex flex-col gap-1.5">
               {continues.map((c) => (
-                <li key={c} className={`${BODY} flex gap-3 text-sm`}>
+                <li key={c} className={`${BODY} flex gap-3 text-base`}>
                   <Dot className="bg-[#5A7F46]" />
                   {c}
                 </li>
               ))}
             </ul>
           </div>
-          <div className="flex flex-col gap-1 border-t border-[#F2E4E8] pt-5">
+          <div className="flex flex-col gap-3 border-t border-[#F2E4E8] pt-5">
             <p className={`font-playfair text-3xl font-bold ${INK}`}>
-              $1,997 <span className="font-poppins text-sm font-medium text-[#5A4A52]">· your $997 Monday is credited when you upgrade</span>
+              {week?.priceLabel ?? "$1,997"}{" "}
+              <span className="font-poppins text-base font-medium text-[#5A4A52]">· your $997 Monday is credited when you upgrade</span>
             </p>
-            <p className="font-poppins text-sm font-semibold text-[#5A7F46]">
-              Founder pricing is open through {FOUNDER_PRICING_DEADLINE}, 2026.
+            {founderOpen && (
+              <p className="font-poppins text-base font-semibold text-[#5A7F46]">
+                Founder pricing is open through {FOUNDER_PRICING_DEADLINE}, 2026.
+              </p>
+            )}
+            <OfferCta
+              href={week?.checkoutUrl || undefined}
+              label="Join the Full 4-Day Business Week™"
+              variant="secondary"
+            />
+            <p className={BODY_XS}>
+              Monday introduces the recurring Business Day. The Full Business Week installs it over 28 days.
             </p>
           </div>
-          <p className={`${BODY} text-xs`}>
+          <p className={`${BODY_XS}`}>
             Community support helps you keep practicing. It doesn&apos;t replace your own business decisions and
             leadership.
           </p>
@@ -357,16 +419,22 @@ export function NewYearSection() {
       <div className="mx-auto flex max-w-6xl flex-col gap-14 px-5 sm:px-8">
         <div className="grid items-center gap-10 lg:grid-cols-5">
           <img
-            src="/images/holiday/winter-stroll.png"
+            src="/images/holiday/winter-stroll.webp"
             alt="A smiling woman strolling a snowy, festive street with coffee and winter flowers"
             className="w-full rounded-3xl object-cover shadow-xl lg:col-span-2"
             loading="lazy"
           />
           <div className="flex flex-col gap-5 lg:col-span-3">
             <p className={EYEBROW}>Before January arrives</p>
-            <h2 className={H2}>Don&apos;t enter January with another resolution. Enter with a practice already underway.</h2>
+            <h2 className={H2}>Don&apos;t Wait for the New Year to Start Creating &amp; Celebrating the Life You Want.</h2>
             <p className={BODY}>
-              Resolutions tend to fade without support or accountability. Begin now, and by the New Year you can have:
+              AI is creating new possibilities. The world is changing. And uncertainty about what comes next can make it
+              tempting to wait until January to make a change. But you don&apos;t have to wait.
+            </p>
+            <p className={BODY}>
+              This holiday season, begin with the FREE Weekly Work-Life Balance Reality Check™ and start redesigning the
+              way you work, lead, and operate your business, so you can build sustainable success in the AI age and make
+              room for more of the life you started your business to create. By the New Year you can have:
             </p>
             <ul className="flex flex-col gap-2">
               {outcomes.map((o) => (
@@ -385,7 +453,7 @@ export function NewYearSection() {
             <h3 className={`font-playfair text-2xl font-bold ${INK}`}>Come if…</h3>
             <ul className="flex flex-col gap-3">
               {come.map((c) => (
-                <li key={c} className={`${BODY} text-sm`}>{c}</li>
+                <li key={c} className={`${BODY_SM}`}>{c}</li>
               ))}
             </ul>
           </div>
@@ -393,7 +461,7 @@ export function NewYearSection() {
             <h3 className={`font-playfair text-2xl font-bold ${INK}`}>Skip it if…</h3>
             <ul className="flex flex-col gap-3">
               {skip.map((s) => (
-                <li key={s} className={`${BODY} text-sm`}>{s}</li>
+                <li key={s} className={`${BODY_SM}`}>{s}</li>
               ))}
             </ul>
           </div>
@@ -436,13 +504,13 @@ export function AboutBarbaraSection() {
           </p>
           <ul className="grid gap-2 border-t border-[#F2E4E8] pt-5 sm:grid-cols-2">
             {BARBARA_ROLES.map((r) => (
-              <li key={r} className={`${BODY} flex gap-3 text-sm`}>
+              <li key={r} className={`${BODY} flex gap-3 text-base`}>
                 <Dot />
                 {r}
               </li>
             ))}
           </ul>
-          <p className="font-poppins text-sm font-semibold text-[#5A7F46]">
+          <p className="font-poppins text-base font-semibold text-[#5A7F46]">
             On Monday, Barbara isn&apos;t just teaching the concept. She&apos;s guiding you through the experience.
           </p>
         </div>
@@ -478,7 +546,7 @@ const FAQS = [
   },
   {
     q: "What does it cost?",
-    a: `The Reality Check is free, with no credit card required. Monday is $997 and the Business Week is $1,997. Founder pricing is open through ${FOUNDER_PRICING_DEADLINE}, 2026.`,
+    a: `The Reality Check is free, with no credit card required. Monday is $997 and the Business Week is $1,997.${isFounderPricingOpen() ? ` Founder pricing is open through ${FOUNDER_PRICING_DEADLINE}, 2026.` : ""}`,
   },
   {
     q: "What support continues afterward?",
@@ -503,7 +571,7 @@ export function FaqSection() {
                 {f.q}
                 <span aria-hidden="true" className="font-poppins text-xl text-[#C13B6B] transition-transform group-open:rotate-45">+</span>
               </summary>
-              <p className={`${BODY} mt-3 text-sm`}>{f.a}</p>
+              <p className={`${BODY} mt-3 text-base`}>{f.a}</p>
             </details>
           ))}
         </div>
@@ -515,17 +583,17 @@ export function FaqSection() {
 export function RegisterSection({ sessionLabel }: { sessionLabel: string }) {
   return (
     <section id="register" className="relative scroll-mt-20 overflow-hidden bg-[#2E2228] py-20 sm:py-28">
-      <img src="/images/holiday/togetherness.png" alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-30" loading="lazy" />
+      <img src="/images/holiday/togetherness.webp" alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-30" loading="lazy" />
       <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-8 lg:grid-cols-2">
         <div className="flex flex-col gap-4">
-          <p className="font-poppins text-xs font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">Save your free seat</p>
+          <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">Save your free seat</p>
           <h2 className="font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl">
             Start creating the life you want now, not in January.
           </h2>
           <p className="font-poppins text-lg text-[#F6D6E1]">
             {sessionLabel} · {SESSION_TIME_LABEL} · Live online
           </p>
-          <p className="font-poppins text-sm text-[#F6D6E1]">Free · No credit card required</p>
+          <p className="font-poppins text-base text-[#F6D6E1]">Free · No credit card required</p>
           <p className="font-playfair text-xl italic text-[#FFF8F4]">We Don&apos;t Hustle — We Harmonize Work &amp; Life.™</p>
         </div>
         <div className="rounded-3xl bg-[#FFFDFB] p-6 shadow-2xl sm:p-8">
@@ -538,7 +606,7 @@ export function RegisterSection({ sessionLabel }: { sessionLabel: string }) {
 
 export function DisclaimerFooter() {
   return (
-    <p className="font-poppins mx-auto max-w-3xl px-5 py-8 text-center text-xs leading-relaxed text-[#8A7A82]">
+    <p className="font-poppins mx-auto max-w-3xl px-5 py-8 text-center text-sm leading-relaxed text-[#8A7A82]">
       This is educational. Results vary with your experience, effort, and circumstances, and nothing here promises specific
       business or personal results.
     </p>

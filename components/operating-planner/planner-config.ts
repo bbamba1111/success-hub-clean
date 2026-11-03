@@ -88,7 +88,7 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
     purposeDescription: "A protected time and space to absorb life's unavoidable demands before they ever touch your CEO Workday™.",
     atmosphere: "Quiet · Unhurried · Open",
     surface: "#FBF4EC",
-    backgroundImage: "/images/holiday/winter-stroll.png",
+    backgroundImage: "/images/holiday/winter-stroll.webp",
     cherryBlossomMessage:
       "Welcome to your Flex Time™ — a protected 2-hour buffer at the start of every day, designed to absorb life's unavoidable demands without ever touching your CEO Workday™. This is not wasted time. It is your most powerful act of daily protection. Use it to prepare, handle what life asks of you, and arrive at your CEO Workday™ with clarity and full presence. What you design here determines the quality of everything that follows.",
     guidance:
@@ -107,7 +107,7 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
     purposeDescription: "A protected time and space to align your mind, body, spirit, and intentions before beginning your day.",
     atmosphere: "Light · Fresh · Hopeful",
     surface: "#FBF1F3",
-    backgroundImage: "/images/holiday/garden-meditation.png",
+    backgroundImage: "/images/holiday/garden-meditation.webp",
     cherryBlossomMessage:
       "Welcome to Morning GIV•EN™ — your 45-minute intentional morning operating ritual. GIV•EN™ stands for Gratitude, Invitation to Your Creator, Vision and Visualization, Emotional Embodiment, and Nurture. This is where you lead yourself before you lead your business. When you begin your day aligned in mind, body, and spirit, everything that follows — your decisions, your creativity, your presence — flows from a place of wholeness rather than depletion.",
     guidance:
@@ -126,7 +126,7 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
     purposeDescription: "A protected time and space to honor your body through intentional movement and strengthen the promises you make to yourself.",
     atmosphere: "Energizing · Present · Alive",
     surface: "#EFF5EC",
-    backgroundImage: "/images/holiday/hanukkah-tai-chi.png",
+    backgroundImage: "/images/holiday/hanukkah-tai-chi.webp",
     cherryBlossomMessage:
       "Welcome to your 30-Minute Movement Window™ — a non-negotiable block built directly into your Work-Life Balance Business Day™. The goal is not athletic performance. The goal is movement consistency. A 3-minute stretch performed every day compounds into far more value than an intense workout performed occasionally. When you move your body, you prepare your mind. The energy you bring to your CEO Workday™ at 1:00 PM is built right here.",
     guidance:
@@ -145,7 +145,7 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
     purposeDescription: "A protected time and space to nourish yourself, connect with what matters most, and prepare to enter your CEO Workspace™.",
     atmosphere: "Nourishing · Warm · Restorative",
     surface: "#F5F1E7",
-    backgroundImage: "/images/holiday/cafe-gathering.png",
+    backgroundImage: "/images/holiday/cafe-gathering.webp",
     cherryBlossomMessage:
       "Welcome to your Extended Healthy Hybrid Lunch Break™ — a nourishing midday pause that refuels your body, creates a natural rhythm break, and prepares you for your most important work. This window is not a gap between tasks. It is a deliberate Sustainable Operating Practice™. What happens here — the meal you choose, the air you breathe, the presence you cultivate — directly determines the quality of your 4-Hour CEO Workday™. Nourishment is productive.",
     guidance:
@@ -165,7 +165,7 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
     atmosphere: "Focused · Grounded · Executive",
     // Soft sage — the protected execution room.
     surface: "#E7F0E3",
-    backgroundImage: "/images/holiday/team-celebration.png",
+    backgroundImage: "/images/holiday/team-celebration.webp",
     sceneVariant: "ceo-office",
     cherryBlossomMessage:
       "Welcome to your 4-Hour Focused CEO Workday™ — the most protected and powerful four hours in your entire Work-Life Balance Business Week™. This is not your busiest time. This is your most strategic time. Deep, uninterrupted work produces 4 to 5 times more output than scattered, reactive hours. Here you lead from your Human Zone of Genius™. You decide what only you can decide. You create what only you can create. Nothing enters this space uninvited.",
@@ -215,7 +215,7 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
     // reward at the end of a beautifully lived Business Day™: work is finished,
     // life begins now.
     surface: "#F7EDDD",
-    backgroundImage: "/images/holiday/togetherness.png",
+    backgroundImage: "/images/holiday/togetherness.webp",
     cherryBlossomMessage:
       "Welcome to Time Freedom™ — the protected life your business exists to support. From 5:00 PM to 10:00 PM, you are fully present. The business does not follow you here. This five-hour window belongs to your relationships, your passions, your rest, and your joy. Work is finished. You kept your commitment. Now receive the reward you built your operating system to protect. Be here. Be whole. Be free.",
     guidance:
@@ -234,7 +234,7 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
     purposeDescription: "A protected time and space to prepare your mind and body for restorative sleep.",
     atmosphere: "Quiet · Warm · Restorative",
     surface: "#EEEFF3",
-    backgroundImage: "/images/holiday/kwanzaa-rest.png",
+    backgroundImage: "/images/holiday/kwanzaa-rest.webp",
     cherryBlossomMessage:
       "Welcome to Power Down™ — your intentional evening transition from productivity to restoration. This is how you close the day with the same intention you opened it. Honor what you accomplished. Set down what you didn't. Prepare tomorrow so your mind can release its grip on today. Quality rest is not a reward for good performance — it is the foundation of tomorrow's excellence. What you do in this hour determines how you wake.",
     guidance:
@@ -253,7 +253,7 @@ export const PLANNER_CONFIG: Partial<Record<BlockId, PlannerSegmentConfig>> = {
     purposeDescription: "A protected time and space to disconnect from technology and reconnect with deep rest.",
     atmosphere: "Still · Restful · Restorative",
     surface: "#EDEEF2",
-    backgroundImage: "/images/holiday/digital-detox-sign.png",
+    backgroundImage: "/images/holiday/digital-detox-sign.webp",
     cherryBlossomMessage:
       "Welcome to your Unplug Digital Detox™ — the final and most restorative practice of your Work-Life Balance Business Day™. This is where you turn off the devices and give your nervous system the deep recovery it needs. Tomorrow's clarity, creativity, and performance are being built right now, in the quiet. The most successful founders protect their sleep as fiercely as they protect their CEO Workday™. Rest is a business strategy.",
     guidance:

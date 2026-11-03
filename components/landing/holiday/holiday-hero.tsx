@@ -1,22 +1,36 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion"
 import { HOLIDAY_SCENES as HERO_SCENES, HOLIDAY_SCENE_INTERVAL_MS } from "@/lib/holiday-scenes"
+import { SESSION_TIME_LABEL } from "@/lib/reality-check/session"
 
 export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
   const [index, setIndex] = useState(0)
+  const [inView, setInView] = useState(true)
+  const sectionRef = useRef<HTMLElement>(null)
   const reduceMotion = useReducedMotion()
 
   useEffect(() => {
-    const timer = setInterval(() => setIndex((i) => (i + 1) % HERO_SCENES.length), HOLIDAY_SCENE_INTERVAL_MS)
-    return () => clearInterval(timer)
+    const el = sectionRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { threshold: 0.1 })
+    observer.observe(el)
+    return () => observer.disconnect()
   }, [])
+
+  useEffect(() => {
+    if (!inView || reduceMotion) return
+    const timer = setInterval(() => {
+      if (document.visibilityState === "visible") setIndex((i) => (i + 1) % HERO_SCENES.length)
+    }, HOLIDAY_SCENE_INTERVAL_MS)
+    return () => clearInterval(timer)
+  }, [inView, reduceMotion])
 
   const scene = HERO_SCENES[index]
 
   return (
-    <section id="top" className="relative min-h-[100svh] w-full overflow-hidden bg-[#2E2228]">
+    <section ref={sectionRef} id="top" className="relative min-h-[100svh] w-full overflow-hidden bg-[#2E2228]">
       <div className="absolute inset-0">
         <AnimatePresence mode="sync">
           <motion.img
@@ -24,6 +38,8 @@ export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
             src={scene.src}
             alt=""
             aria-hidden="true"
+            decoding="async"
+            fetchPriority={index === 0 ? "high" : "auto"}
             initial={{ opacity: 0, scale: reduceMotion ? 1 : 1.06 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
@@ -43,18 +59,18 @@ export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
           className="flex max-w-2xl flex-col gap-5"
         >
           <p className="font-poppins w-fit rounded-full border border-[#F6D6E1]/40 bg-[#2E2228]/40 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-[#F6D6E1] backdrop-blur-sm">
-            Free Weekly Reality Check™ · {sessionLabel} · Live online
+            Free Weekly Reality Check™ · {sessionLabel} · {SESSION_TIME_LABEL}
           </p>
+          <p className="font-playfair text-xl italic text-[#F6A9C2] sm:text-2xl">Make Time For More This Holiday Season</p>
           <h1 className="font-playfair text-balance text-4xl font-bold leading-[1.05] tracking-tight text-[#FFF8F4] sm:text-6xl">
-            Don&apos;t Wait for the New Year to Start{" "}
-            <span className="italic text-[#F6A9C2]">Creating &amp; Celebrating</span> the Life You Want.
+            Redesign Your Entry Into the Workweek™
           </h1>
-          <p className="font-playfair text-pretty text-xl leading-snug text-[#FFF8F4] sm:text-2xl">
-            We don&apos;t have to wait until January to start creating, practicing, and celebrating the life we want.
+          <p className="font-poppins text-pretty text-lg leading-relaxed text-[#FFF8F4] sm:text-xl">
+            AI is about to give founders back a lot of time. This season, decide what you&apos;ll do with it.
           </p>
           <p className="font-poppins text-pretty text-base leading-relaxed text-[#E9F0DF]">
-            This holiday season, begin with the free Weekly Work-Life Balance Reality Check™ and see what a different way
-            of living and working could look like before the New Year arrives.
+            Don&apos;t wait for the New Year to start reclaiming your life. Build a successful business. Reclaim your
+            freedom. Make time for more life.
           </p>
 
           <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center">
@@ -64,7 +80,7 @@ export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
             >
               Save My Free Seat
             </a>
-            <span className="font-poppins text-sm text-[#F6D6E1]">Free · Live online · No credit card required</span>
+            <span className="font-poppins text-sm text-[#F6D6E1]">FREE · No credit card required</span>
           </div>
         </motion.div>
       </div>
