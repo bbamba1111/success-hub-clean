@@ -1,54 +1,60 @@
 import type { Metadata } from "next"
 import { LandingNav } from "@/components/landing/landing-nav"
 import { LandingFooter } from "@/components/landing/landing-footer"
-import { WlbHeroSection } from "@/components/landing/wlb-week/wlb-hero-section"
-import { FreedomRealitySection } from "@/components/landing/wlb-week/freedom-reality-section"
-import { IntroducingSection } from "@/components/landing/wlb-week/introducing-section"
-import { RealityCheckSection } from "@/components/landing/wlb-week/reality-check-section"
-import { MondayExperienceSection } from "@/components/landing/wlb-week/monday-experience-section"
-import { FourDaySection } from "@/components/landing/wlb-week/four-day-section"
-import { CommunitySection } from "@/components/landing/wlb-week/community-section"
-import { AiCapacitySection } from "@/components/landing/wlb-week/ai-capacity-section"
-import { ClosingSection } from "@/components/landing/wlb-week/closing-section"
+import { HolidayHero } from "@/components/landing/holiday/holiday-hero"
+import {
+  BoundariesSection,
+  DisclaimerFooter,
+  ExperiencesSection,
+  FaqSection,
+  FitSection,
+  FreedomSection,
+  RealityCheckSection,
+  RegisterSection,
+} from "@/components/landing/holiday/reality-check-sections"
+import { formatSessionDate, nextSessionDate } from "@/lib/reality-check/session"
+
+export const dynamic = "force-dynamic"
 
 export const metadata: Metadata = {
-  title: "Make Time For More™ — The Work-Life Balance Business Week™",
+  title: "Make Time For More This Holiday Season — Free Weekly Work-Life Balance Reality Check™",
   description:
-    "Workweek redesign for human sustainability in the accelerated age of AI. Take the Work-Life Balance Reality Check™, experience Monday, extend across the four-day week, and practice inside the coworking community.",
+    "Join the free, live Work-Life Balance Reality Check™ every Sunday. See where your business collides with the life you want, and leave with a clear starting point for your first Monday.",
   openGraph: {
-    title: "Make Time For More™ — The Work-Life Balance Business Week™",
+    title: "Make Time For More This Holiday Season",
     description:
-      "AI is creating capacity. What will you do with the time it gives you back? Experience work-life balance in real time.",
+      "AI is about to give founders back a lot of time. This season, decide what you'll do with it. Save your free seat.",
     type: "website",
+    images: ["/images/holiday/togetherness.png"],
   },
 }
 
 export const viewport = {
-  themeColor: "#FDF6F3",
+  themeColor: "#2E2228",
 }
 
 export default function LandingPage() {
+  const sessionLabel = formatSessionDate(nextSessionDate())
+
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-[#FFF8F4]">
       <LandingNav
-        experiencesHref="/reality-check"
-        ctaLabel="Take the Reality Check"
+        experiencesHref="#register"
+        ctaLabel="Save My Free Seat"
         links={[
-          { label: "Reality Check", href: "#reality-check" },
-          { label: "Monday", href: "#monday" },
-          { label: "Four-Day Week", href: "#four-day" },
-          { label: "Community", href: "#community" },
+          { label: "How It Works", href: "#reality-check" },
+          { label: "Questions", href: "#faq" },
         ]}
       />
-      <WlbHeroSection />
-      <FreedomRealitySection />
-      <IntroducingSection />
+      <HolidayHero sessionLabel={sessionLabel} />
+      <FreedomSection />
+      <BoundariesSection />
+      <ExperiencesSection />
       <RealityCheckSection />
-      <MondayExperienceSection />
-      <FourDaySection />
-      <CommunitySection />
-      <AiCapacitySection />
-      <ClosingSection />
+      <FitSection />
+      <FaqSection />
+      <RegisterSection sessionLabel={sessionLabel} />
+      <DisclaimerFooter />
       <LandingFooter />
     </main>
   )
