@@ -11,14 +11,13 @@ const FROM = "Make Time For More <noreply@hub.maketimeformore.com>"
 type Recipient = { id: string; fullName: string; email: string; sessionDate: string }
 type SendResult = { ok: true } | { ok: false; error: string }
 
-const DEFAULT_ZOOM_URL = "https://us05web.zoom.us/j/2648726290?pwd=ubrd71NpIvu9tEkwDbvxQ9uaiuIIpS.1"
-
 /**
  * Server-only: the Zoom room is only placed in emails, never rendered into
- * page HTML or returned from an action. REALITY_CHECK_ZOOM_URL overrides it.
+ * page HTML or returned from an action. It must never be committed to source.
  */
 function zoomUrl(): string | null {
-  const raw = process.env.REALITY_CHECK_ZOOM_URL?.trim() || DEFAULT_ZOOM_URL
+  const raw = process.env.REALITY_CHECK_ZOOM_URL?.trim()
+  if (!raw) return null
   try {
     const url = new URL(raw)
     return url.protocol === "https:" && url.hostname.endsWith("zoom.us") ? url.toString() : null

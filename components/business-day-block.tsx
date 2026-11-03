@@ -578,7 +578,7 @@ export function BusinessDayBlock({
                   }`}
                 >
                   <a
-                    href="https://us05web.zoom.us/j/2648726290?pwd=ubrd71NpIvu9tEkwDbvxQ9uaiuIIpS.1"
+                    href="/api/live-room"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2.5 rounded-xl bg-[#E26C73] px-6 py-3 font-sans text-sm font-bold text-white shadow-sm transition-colors hover:bg-[#c04d54] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E26C73]/40"
