@@ -10,10 +10,11 @@
  * experience right now?" and renders it.
  */
 
-import { motion } from "framer-motion"
+import { useEffect, useState } from "react"
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
 import type { PartOfDay } from "@/operating-engine"
-import { LivingMoments } from "@/components/living-moments"
+import { HOLIDAY_SCENES, HOLIDAY_SCENE_INTERVAL_MS } from "@/lib/holiday-scenes"
 
 /**
  * Maps each block ID → the full "We're Now ___" phrase (plain + italic parts).
@@ -163,14 +164,6 @@ function getDayIntention(part: PartOfDay): string {
 export function BusinessDayHero() {
   const experience = useOperatingEngine()
 
-  // Use the business-day engine's current block image so weekend overrides
-  // (Time Freedom all-day on Fri/Sat/Sun) are reflected correctly.
-  // The hero shows a single frame, so if the block defines a crossfading
-  // array (e.g. Monday Reality Check™), use the first image here.
-  const currentBlockImage = experience?.businessDay.current.backgroundImage
-  const backgroundImage =
-    (Array.isArray(currentBlockImage) ? currentBlockImage[0] : currentBlockImage) ??
-    "/images/business-day-hero-bg.png"
   // Calendar-driven invitation — day of week + time is the single source of truth.
   // No workflow state (Synchronize/Execute/Optimize/Finish Strong) involved.
   const invitation = getCalendarInvitation()
@@ -285,29 +278,72 @@ export function BusinessDayHero() {
         </motion.div>
       </div>
 
-      {/* Imagery + dynamic glass card */}
-      <div className="relative w-full overflow-hidden">
-        {/* Living Moments™ — cinematic awakening on each new segment */}
-          <div className="absolute inset-0">
-          <LivingMoments
-            backgroundImage={backgroundImage || "/placeholder.svg"}
-            blockId={experience?.businessDay.current.id ?? "early-access"}
-            className="h-full w-full"
-          />
-          {/* Soft left-weighted wash — reduced so more background shows through */}
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(90deg, rgba(255,241,245,0.42) 0%, rgba(255,241,245,0.12) 46%, rgba(255,241,245,0) 68%)",
-            }}
-          />
-        </div>
-
-
-
-        <div className="min-h-[420px] sm:min-h-[500px]" />
-      </div>
+      {/* Imagery — holiday scene rotation, same order as /landing */}
+      <HolidaySceneRotation />
     </section>
+  )
+}
+
+function HolidaySceneRotation() {
+  const [index, setIndex] = useState(0)
+  const reduceMotion = useReducedMotion()
+
+  useEffect(() => {
+    const timer = setInterval(() => setIndex((i) => (i + 1) % HOLIDAY_SCENES.length), HOLIDAY_SCENE_INTERVAL_MS)
+    return () => clearInterval(timer)
+  }, [])
+
+  const scene = HOLIDAY_SCENES[index]
+
+  return (
+    <div className="relative w-full overflow-hidden bg-[#2E2228]">
+      <div className="absolute inset-0">
+        <AnimatePresence mode="sync">
+          <motion.img
+            key={scene.src}
+            src={scene.src}
+            alt=""
+            aria-hidden="true"
+            initial={{ opacity: 0, scale: reduceMotion ? 1 : 1.06 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ opacity: { duration: 1.6, ease: "easeInOut" }, scale: { duration: 7, ease: "easeOut" } }}
+            className="absolute inset-0 h-full w-full object-cover object-center"
+          />
+        </AnimatePresence>
+        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#2E2228]/60 to-transparent" />
+      </div>
+
+      <div className="min-h-[420px] sm:min-h-[500px]" />
+
+      <div className="absolute inset-x-0 bottom-5 z-10 mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 sm:px-8">
+        <AnimatePresence mode="wait">
+          <motion.p
+            key={scene.caption}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.5 }}
+            className="font-playfair text-sm italic text-[#FFF8F4]/90 sm:text-base"
+            aria-live="polite"
+          >
+            {scene.caption}
+          </motion.p>
+        </AnimatePresence>
+        <div className="flex items-center gap-1.5" role="tablist" aria-label="Holiday scenes">
+          {HOLIDAY_SCENES.map((s, i) => (
+            <button
+              key={s.src}
+              type="button"
+              role="tab"
+              aria-selected={i === index}
+              aria-label={s.caption}
+              onClick={() => setIndex(i)}
+              className={`h-1.5 rounded-full transition-all ${i === index ? "w-6 bg-[#F6A9C2]" : "w-1.5 bg-[#FFF8F4]/50 hover:bg-[#FFF8F4]/80"}`}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
   )
 }

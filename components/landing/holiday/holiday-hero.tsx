@@ -2,24 +2,14 @@
 
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion"
-
-const HERO_SCENES = [
-  { src: "/images/holiday/togetherness.png", caption: "Time for the people you love" },
-  { src: "/images/holiday/garden-meditation.png", caption: "Time to be still" },
-  { src: "/images/holiday/kwanzaa-rest.png", caption: "Time to rest and renew" },
-  { src: "/images/holiday/cafe-gathering.png", caption: "Time to gather" },
-  { src: "/images/holiday/hanukkah-tai-chi.png", caption: "Time to move, together" },
-  { src: "/images/holiday/team-celebration.png", caption: "Time to celebrate the work" },
-  { src: "/images/holiday/winter-stroll.png", caption: "Time to wander" },
-  { src: "/images/holiday/digital-detox-sign.png", caption: "Time to unplug" },
-]
+import { HOLIDAY_SCENES as HERO_SCENES, HOLIDAY_SCENE_INTERVAL_MS } from "@/lib/holiday-scenes"
 
 export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
   const [index, setIndex] = useState(0)
   const reduceMotion = useReducedMotion()
 
   useEffect(() => {
-    const timer = setInterval(() => setIndex((i) => (i + 1) % HERO_SCENES.length), 5200)
+    const timer = setInterval(() => setIndex((i) => (i + 1) % HERO_SCENES.length), HOLIDAY_SCENE_INTERVAL_MS)
     return () => clearInterval(timer)
   }, [])
 
