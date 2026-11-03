@@ -46,13 +46,15 @@ export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
             Free Weekly Reality Check™ · {sessionLabel} · Live online
           </p>
           <h1 className="font-playfair text-balance text-4xl font-bold leading-[1.05] tracking-tight text-[#FFF8F4] sm:text-6xl">
-            Make Time For More <span className="italic text-[#F6A9C2]">This Holiday Season</span>
+            Don&apos;t Wait for the New Year to Start{" "}
+            <span className="italic text-[#F6A9C2]">Creating &amp; Celebrating</span> the Life You Want.
           </h1>
-          <p className="font-poppins text-pretty text-base font-semibold tracking-wide text-[#E9F0DF] sm:text-lg">
-            Redesign Your Entry Into the Workweek™
-          </p>
           <p className="font-playfair text-pretty text-xl leading-snug text-[#FFF8F4] sm:text-2xl">
-            AI is about to give founders back a lot of time. This season, decide what you&apos;ll do with it.
+            We don&apos;t have to wait until January to start creating, practicing, and celebrating the life we want.
+          </p>
+          <p className="font-poppins text-pretty text-base leading-relaxed text-[#E9F0DF]">
+            This holiday season, begin with the free Weekly Work-Life Balance Reality Check™ and see what a different way
+            of living and working could look like before the New Year arrives.
           </p>
 
           <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center">
@@ -62,7 +64,7 @@ export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
             >
               Save My Free Seat
             </a>
-            <span className="font-poppins text-sm text-[#F6D6E1]">Free · No card needed</span>
+            <span className="font-poppins text-sm text-[#F6D6E1]">Free · Live online · No credit card required</span>
           </div>
         </motion.div>
       </div>
