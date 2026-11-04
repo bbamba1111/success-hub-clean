@@ -1,4 +1,9 @@
 {
   "installCommand": "pnpm install --no-frozen-lockfile",
-  "crons": [{ "path": "/api/cron/reality-check-reminders", "schedule": "0 14 * * 0" }]
+  "crons": [
+    {
+      "path": "/api/cron/reality-check-reminders",
+      "schedule": "*/5 * * * *"
+    }
+  ]
 }
