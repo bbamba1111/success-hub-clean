@@ -255,6 +255,7 @@ const WORKDAY_FUNCTION: Record<string, string> = {
   operations: "operations",
   design: "operations-design",
   experiences: "trust-experiences",
+  own_work: "own-work",
 }
 
 export async function addJobToTodaysWorkday(jobId: string): Promise<Result> {

@@ -5,6 +5,7 @@ export const JOB_FUNCTIONS = [
   { key: "operations", label: "Operations" },
   { key: "design", label: "Design" },
   { key: "experiences", label: "Workshops & Webinars" },
+  { key: "own_work", label: "Own Work" },
 ] as const
 export type JobFunction = (typeof JOB_FUNCTIONS)[number]["key"]
 

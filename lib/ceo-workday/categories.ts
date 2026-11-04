@@ -1,7 +1,7 @@
 /**
  * CEO Workday™ — Category Taxonomy
  * ---------------------------------------------------------------------------
- * Current: the Six Business Functions (CEO_WORK_CATEGORIES). The notes
+ * Current: the Seven Business Functions (CEO_WORK_CATEGORIES). The notes
  * below describe the legacy 12 work modes (LEGACY_CEO_WORK_CATEGORIES).
  * ---------------------------------------------------------------------------
  * The 12 top-level categories of CEO work. These are work MODES available
@@ -26,7 +26,7 @@
  */
 
 /**
- * The Six Business Functions are the ONLY top-level categories shown in the
+ * The Seven Business Functions are the ONLY top-level categories shown in the
  * CEO Workday™ planner. The older 12 work modes remain in the union only so
  * work items saved before this change still render.
  */
@@ -37,6 +37,7 @@ export type BusinessFunctionCategoryId =
   | "OPERATIONS"
   | "OPERATIONS_DESIGN"
   | "TRUST_EXPERIENCES"
+  | "OWN_WORK"
 
 export type CeoWorkCategoryId =
   | BusinessFunctionCategoryId
@@ -64,7 +65,7 @@ export interface CeoWorkCategory {
   /** Plain-language examples of work in this function. */
   examples?: string[]
   /** Matching BO$$ business function id, used to open the Business Work Queue filtered. */
-  bossFunction?: "attraction" | "sales" | "delivery" | "operations" | "design" | "experiences"
+  bossFunction?: "attraction" | "sales" | "delivery" | "operations" | "design" | "experiences" | "own_work"
 }
 
 export const CEO_WORK_CATEGORIES: CeoWorkCategory[] = [
@@ -117,6 +118,15 @@ export const CEO_WORK_CATEGORIES: CeoWorkCategory[] = [
     tangibleOutcome: "A held experience with follow-up and one chosen improvement",
     examples: ["Monday Redesigned™", "Reality Check™ (live)", "Weekly workshop / webinar", "Masterclass"],
     bossFunction: "experiences",
+  },
+  {
+    id: "OWN_WORK",
+    label: "Own Work",
+    definition:
+      "Other — Bring & Create Your Own Work: projects and ideas you bring or invent yourself, done your way.",
+    tangibleOutcome: "A project that moves forward by one clear step",
+    examples: ["A course or program", "A book", "A launch", "A cleanup", "Any idea of your own"],
+    bossFunction: "own_work",
   },
 ]
 

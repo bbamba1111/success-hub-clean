@@ -50,6 +50,13 @@ export const FUNCTIONS: { id: BusinessFunction; label: string; short: string; pu
     purpose: "Build trust through live experiences.",
     tone: "bg-brand-blush text-brand-green-dark border-brand-tan/40",
   },
+  {
+    id: "own_work",
+    label: "Other — Bring & Create Your Own Work",
+    short: "Own Work",
+    purpose: "Your projects and ideas, done your way.",
+    tone: "bg-brand-sage-light text-brand-tan-dark border-brand-tan/40",
+  },
 ]
 
 export const fnMeta = (fn: BusinessFunction) => FUNCTIONS.find((f) => f.id === fn) ?? FUNCTIONS[0]

@@ -1223,6 +1223,7 @@ const CEO_FUNCTION_TO_CATEGORY: Record<CeoBusinessFunction, CeoPlanItem["ceoWork
   operations: "SYSTEMIZE",
   "operations-design": "BUILD",
   "trust-experiences": "COMMUNICATE",
+  "own-work": "BUILD",
   build: "BUILD",
   decide: "DECIDE",
   own: "DECIDE",

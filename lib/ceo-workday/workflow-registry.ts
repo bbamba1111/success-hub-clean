@@ -31,6 +31,7 @@ export const WORKFLOW_REGISTRY: Record<CeoWorkCategoryId, WorkflowRegistryEntry>
   OPERATIONS: { category: "OPERATIONS", workflowId: "boss-work-queue", availability: "workflow-not-yet-available" },
   OPERATIONS_DESIGN: { category: "OPERATIONS_DESIGN", workflowId: "boss-work-queue", availability: "workflow-not-yet-available" },
   TRUST_EXPERIENCES: { category: "TRUST_EXPERIENCES", workflowId: "boss-work-queue", availability: "workflow-not-yet-available" },
+  OWN_WORK: { category: "OWN_WORK", workflowId: "boss-work-queue", availability: "workflow-not-yet-available" },
   BUILD: { category: "BUILD", workflowId: "business-asset-builder", availability: "available" },
   DESIGN: { category: "DESIGN", workflowId: "operating-rule-builder", availability: "available" },
   DECIDE: { category: "DECIDE", workflowId: "decision-workflow", availability: "workflow-not-yet-available" },

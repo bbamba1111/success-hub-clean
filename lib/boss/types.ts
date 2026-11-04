@@ -1,4 +1,4 @@
-export type BusinessFunction = "attraction" | "sales" | "delivery" | "operations" | "design" | "experiences"
+export type BusinessFunction = "attraction" | "sales" | "delivery" | "operations" | "design" | "experiences" | "own_work"
 
 export type Priority = "critical" | "high" | "medium" | "low"
 

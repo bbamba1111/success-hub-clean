@@ -40,6 +40,7 @@ export type CeoBusinessFunction =
   | "operations"
   | "operations-design"
   | "trust-experiences"
+  | "own-work"
   // Legacy values kept so previously saved plan items still render.
   | "build"
   | "decide"
@@ -61,6 +62,7 @@ export const CEO_FUNCTION_LABEL: Record<CeoBusinessFunction, string> = {
   operations: "Business Operations",
   "operations-design": "Business Operations Design & Redesign",
   "trust-experiences": "Workshops & Webinars",
+  "own-work": "Own Work",
   build: "Build",
   decide: "Decide",
   own: "OWN",
@@ -78,7 +80,10 @@ export const CEO_FUNCTION_LABEL: Record<CeoBusinessFunction, string> = {
 /** Official name of the sixth function; the UI uses the short label above. */
 export const TRUST_EXPERIENCES_OFFICIAL_NAME = "Workshops, Webinars & Trust-Building Experiences"
 
-/** The Six Business Functions — the only top-level work categories in the planner. */
+/** Official name of the seventh function; the UI uses the short label "Own Work". */
+export const OWN_WORK_OFFICIAL_NAME = "Other — Bring & Create Your Own Work"
+
+/** The Seven Business Functions — the only top-level work categories in the planner. */
 export const BUSINESS_FUNCTIONS: CeoBusinessFunction[] = [
   "client-attraction",
   "sales-conversion",
@@ -86,9 +91,10 @@ export const BUSINESS_FUNCTIONS: CeoBusinessFunction[] = [
   "operations",
   "operations-design",
   "trust-experiences",
+  "own-work",
 ]
 
-/** @deprecated Kept for existing imports; now includes the sixth function. */
+/** @deprecated Kept for existing imports; now includes all seven functions. */
 export const FIVE_BUSINESS_FUNCTIONS = BUSINESS_FUNCTIONS
 
 /** How an assignment's outcome is known. Only `system-verified` may say "Verified". */
@@ -216,7 +222,7 @@ export interface CeoPlanItem {
   completionBasis?: CeoCompletionBasis | null
 }
 
-// ── Plan ────────────────────────────────────────────────────────────────────
+// ── Plan ─���──────────────────────────────────────────────────────────────────
 
 export interface CeoWorkdayPlan {
   id: string

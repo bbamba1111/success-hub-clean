@@ -11,7 +11,7 @@ export type FunctionWorkOption = {
 }
 
 /**
- * Suggested "What needs to happen?" work for each of the Six Business Functions,
+ * Suggested "What needs to happen?" work for each of the Seven Business Functions,
  * written for expertise-based businesses (coaching, consulting, speaking,
  * publishing, programs, memberships, advisory and digital products).
  */
@@ -187,6 +187,16 @@ export const FUNCTION_WORK_OPTIONS: Partial<Record<CeoBusinessFunction, Function
     },
   ],
   "trust-experiences": EXPERIENCE_OPTIONS.map((o) => ({ key: o.key, work: o.work, outcome: o.outcome })),
+  "own-work": [
+    {
+      work: "Work on one of my projects.",
+      outcome: "My project moves forward by one clear step.",
+    },
+    {
+      work: "Start something new of my own.",
+      outcome: "My new idea is written down with a first next step.",
+    },
+  ],
 }
 
 /**
