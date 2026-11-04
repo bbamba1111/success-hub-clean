@@ -2,14 +2,13 @@
 
 import Link from "next/link"
 import { useState } from "react"
-import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { useBoss } from "@/lib/boss/store"
 import { resourceName } from "@/lib/boss/reducer"
-import { AUTH_LEVELS, FUNCTIONS, isClosed } from "@/lib/boss/constants"
+import { FUNCTIONS, isClosed } from "@/lib/boss/constants"
 import { formatDate, formatStamp } from "@/lib/boss/clock"
-import type { AuthLevel, OpportunityStage, PermissionStatus } from "@/lib/boss/types"
+import type { OpportunityStage } from "@/lib/boss/types"
 import {
   DemoTag,
   EmptyState,
@@ -152,112 +151,6 @@ export function OpportunitiesPage() {
           )
         })}
       </div>
-    </>
-  )
-}
-
-export function AuthorityPage() {
-  const { state, dispatch } = useBoss()
-  const [adding, setAdding] = useState(false)
-  const [draft, setDraft] = useState({ resourceId: "", action: "", scope: "", level: "prepare" as AuthLevel, limits: "" })
-  const set = (status: PermissionStatus, id: string, note: string) => dispatch({ type: "PERMISSION_STATUS", id, status, note })
-
-  return (
-    <>
-      <PageHeader
-        eyebrow="Authority & Permissions"
-        title="Who is allowed to do what"
-        description="You choose what each person or tool may do. Saying yes to one task does not mean yes to every task."
-        actions={
-          <Button onClick={() => setAdding((a) => !a)}>
-            <Plus className="h-4 w-4" aria-hidden />
-            Give permission
-          </Button>
-        }
-      />
-      <div className="grid gap-4 md:grid-cols-2">
-        {AUTH_LEVELS.map((l) => (
-          <div key={l.id} className="flex flex-col gap-2 rounded-2xl border border-border bg-card p-5">
-            <LevelBadge level={l.id} />
-            <p className="text-base leading-relaxed text-brand-ink">{l.description}</p>
-          </div>
-        ))}
-      </div>
-      {adding && (
-        <Panel title="Give a new permission">
-          <div className="grid gap-4 md:grid-cols-2">
-            <select className={fieldClass} value={draft.resourceId} onChange={(e) => setDraft({ ...draft, resourceId: e.target.value })} aria-label="Resource">
-              <option value="">Who?</option>
-              {state.resources.filter((r) => r.category !== "founder").map((r) => (
-                <option key={r.id} value={r.id}>{r.name}</option>
-              ))}
-            </select>
-            <input className={fieldClass} placeholder="What may they do? Example: Write emails" value={draft.action} onChange={(e) => setDraft({ ...draft, action: e.target.value })} aria-label="Action" />
-            <input className={fieldClass} placeholder="For what? Example: Client emails only" value={draft.scope} onChange={(e) => setDraft({ ...draft, scope: e.target.value })} aria-label="Scope" />
-            <select className={fieldClass} value={draft.level} onChange={(e) => setDraft({ ...draft, level: e.target.value as AuthLevel })} aria-label="How much may they do?">
-              {AUTH_LEVELS.map((l) => <option key={l.id} value={l.id}>{l.label}</option>)}
-            </select>
-            <Button
-              disabled={!draft.resourceId || !draft.action.trim()}
-              onClick={() => {
-                const r = state.resources.find((x) => x.id === draft.resourceId)!
-                dispatch({
-                  type: "PERMISSION_ADD",
-                  permission: {
-                    resourceId: r.id,
-                    action: draft.action.trim(),
-                    scope: draft.scope.trim() || "Not specified",
-                    functions: r.functions,
-                    level: draft.level,
-                    conditions: "None",
-                    limits: draft.limits || "None",
-                    approver: "Founder",
-                    duration: "Until revoked",
-                    status: "authorized",
-                  },
-                })
-                setDraft({ resourceId: "", action: "", scope: "", level: "prepare", limits: "" })
-                setAdding(false)
-              }}
-            >
-              Save permission
-            </Button>
-          </div>
-        </Panel>
-      )}
-      <ul className="flex flex-col gap-4">
-        {state.permissions.map((p) => (
-          <li key={p.id} className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5">
-            <div className="flex flex-col gap-1">
-              <p className="text-xl font-semibold text-brand-ink">{resourceName(state, p.resourceId)}</p>
-              <p className="text-lg text-brand-ink">{p.action}</p>
-              <p className="text-base text-brand-ink-soft">For: {p.scope}</p>
-            </div>
-            <div className="flex flex-wrap items-center gap-3">
-              <LevelBadge level={p.level} />
-              <PermissionStatusBadge status={p.status} />
-            </div>
-            <div className="flex flex-wrap gap-3">
-              {p.status === "authorized" ? (
-                <button onClick={() => set("suspended", p.id, "Suspended by founder")} className="h-12 rounded-xl border border-border px-5 text-base hover:bg-muted">Pause</button>
-              ) : (
-                <button onClick={() => set("authorized", p.id, "Authorized by founder")} className="h-12 rounded-xl bg-brand-green px-5 text-base font-semibold text-primary-foreground hover:bg-brand-green-dark">Allow</button>
-              )}
-              {p.status !== "not_authorized" && (
-                <button onClick={() => set("not_authorized", p.id, "Revoked by founder")} className="h-12 rounded-xl px-5 text-base text-brand-coral-dark hover:bg-brand-blush">Take away</button>
-              )}
-            </div>
-            <details className="text-base">
-              <summary className="cursor-pointer font-medium text-brand-green-dark">More details</summary>
-              <dl className="mt-3 grid gap-3 sm:grid-cols-3">
-                <div><dt className="font-semibold">Limits</dt><dd className="text-brand-ink-soft">{p.limits}</dd></div>
-                <div><dt className="font-semibold">How long</dt><dd className="text-brand-ink-soft">{p.duration}</dd></div>
-                <div><dt className="font-semibold">Number</dt><dd className="text-brand-ink-soft">{p.id}{p.workId && ` · only ${p.workId}`}</dd></div>
-              </dl>
-            </details>
-          </li>
-        ))}
-      </ul>
     </>
   )
 }

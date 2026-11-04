@@ -26,6 +26,7 @@ function cleanNote(raw: unknown, max: number) {
 
 function done(message?: string): Result {
   revalidatePath("/boss/queue")
+  revalidatePath("/boss/authority")
   return { ok: true, message }
 }
 
