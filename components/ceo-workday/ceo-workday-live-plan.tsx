@@ -19,7 +19,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Check, Clock, Copy, Pencil, Play, RotateCcw } from "lucide-react"
-import { buildWorkProcess } from "@/lib/ceo-workday/work-process"
+import { FunctionSwitcher, ItemWorkforceRow, WorkforceSummary, useWorkdayJobs } from "./workday-workforce"
 import { Button } from "@/components/ui/button"
 
 import { getDateKey } from "@/lib/daily-plan/storage"
@@ -52,6 +52,7 @@ import {
   CEO_TREATMENT_LABEL,
   type CeoNextAction,
   type CeoPlanItem,
+  type CeoBusinessFunction,
   type CeoWorkdayPlan,
 } from "@/lib/ceo-workday/plan-types"
 import {
@@ -156,6 +157,8 @@ export function CeoWorkdayLivePlan() {
   const sectionLayout = useWorkdaySectionLayout()
 
   const activeItems = useMemo(() => plan?.items.filter((i) => i.founderDecision !== "remove") ?? [], [plan])
+  const { jobsById, refreshJobs } = useWorkdayJobs(activeItems)
+  const [functionFilter, setFunctionFilter] = useState<CeoBusinessFunction | "all">("all")
 
   // The designed work populates the four hours: auto-filled by order + time,
   // and reassignable by the founder (override persisted per plan date).
@@ -163,9 +166,12 @@ export function CeoWorkdayLivePlan() {
   const { overrides, setHour } = useHourOverrides(dateKey)
   const itemsByHour = useMemo(() => {
     const groups: Record<HourBlockIndex, CeoPlanItem[]> = { 1: [], 2: [], 3: [], 4: [] }
-    for (const item of activeItems) groups[resolveHour(item.id, autoHours, overrides)].push(item)
+    for (const item of activeItems) {
+      if (functionFilter !== "all" && item.businessFunction !== functionFilter) continue
+      groups[resolveHour(item.id, autoHours, overrides)].push(item)
+    }
     return groups
-  }, [activeItems, autoHours, overrides])
+  }, [activeItems, autoHours, overrides, functionFilter])
 
   const block = currentHourBlock(nowMin)
   const due = blockNeedingCheckin(nowMin, savedBlocks)
@@ -388,6 +394,9 @@ export function CeoWorkdayLivePlan() {
             <span className="font-bold italic text-[#5A7A45]">Expected outcome:</span> {item.expectedEvidence}
           </p>
         )}
+        {!gone && (
+          <ItemWorkforceRow item={item} job={item.jobId ? jobsById.get(item.jobId) : undefined} onChanged={() => void refreshJobs()} />
+        )}
         {!closed && gone && (
           <button
             type="button"
@@ -531,6 +540,8 @@ export function CeoWorkdayLivePlan() {
           protected hours (auto-filled by order + time, and reassignable). Opening an
           hour reveals that work, editable / deferrable / delegable / removable right
           there, followed by the hour's Work Affirmation™ and Copy. */}
+      {plan && activeItems.length > 0 && <WorkforceSummary items={activeItems} jobsById={jobsById} />}
+      {plan && <FunctionSwitcher items={activeItems} value={functionFilter} onChange={setFunctionFilter} />}
       {plan && (
         <div
           ref={whatMustHappenRef}
@@ -547,7 +558,6 @@ export function CeoWorkdayLivePlan() {
           />
         </div>
       )}
-      {plan && <ScheduledExperiencesStrip dateKey={dateKey} onPlaced={() => void refresh()} />}
     </>
   )
 
@@ -650,6 +660,10 @@ export function CeoWorkdayLivePlan() {
     declaration: { title: dayDeclaration ? "My Workday Declaration™" : "My 4-Hour CEO Workday Declaration™", node: declarationSection },
     work: { title: "What Must Happen Today™", node: plan ? workSection : null },
     hours: { title: "Four hours · four check-ins", node: hoursSection },
+    experiences: {
+      title: "Scheduled Experiences™",
+      node: plan ? <ScheduledExperiencesStrip dateKey={dateKey} onPlaced={() => void refresh()} /> : null,
+    },
   }
   const visibleOrder = sectionLayout.order.filter((id) => Boolean(sections[id].node))
 
@@ -674,8 +688,6 @@ export function CeoWorkdayLivePlan() {
   )
 }
 
-/** Step check-offs survive closing and reopening the work surface during the session. */
-const stepProgress = new Map<string, string[]>()
 
 /* ── Work surface ──────��───────────────────────────────────────────────────── */
 
@@ -703,25 +715,6 @@ function CeoPlanItemWorkSurface({
   const asset = item.relatedAssetId ? getBusinessAsset(item.relatedAssetId) : null
   const [withoutTemplate, setWithoutTemplate] = useState(false)
   const [confirming, setConfirming] = useState(false)
-  const workSteps = useMemo(
-    () => buildWorkProcess(item),
-    [item.title, item.treatment, item.estimatedMinutes], // eslint-disable-line react-hooks/exhaustive-deps
-  )
-  const [doneSteps, setDoneSteps] = useState<Set<string>>(
-    () => new Set(item.status === "completed" ? workSteps.map((s) => s.id) : (stepProgress.get(item.id) ?? [])),
-  )
-  const toggleStep = (stepId: string) => {
-    setDoneSteps((prev) => {
-      const next = new Set(prev)
-      if (next.has(stepId)) next.delete(stepId)
-      else next.add(stepId)
-      stepProgress.set(item.id, Array.from(next))
-      return next
-    })
-  }
-  const doneCount = workSteps.filter((s) => doneSteps.has(s.id)).length
-  const allStepsDone = doneCount === workSteps.length
-  const currentIndex = workSteps.findIndex((s) => !doneSteps.has(s.id))
 
   const grouped = useMemo(() => {
     const m = new Map<string, typeof BUSINESS_ASSETS>()
@@ -820,52 +813,14 @@ function CeoPlanItemWorkSurface({
 
   return (
     <div className="mt-3 rounded-2xl border border-[#E8DFE2] bg-[#FAF8F5] px-4 py-4 sm:px-5">
-      <div className="flex items-center justify-between gap-3">
-        <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.16em] text-[#5A7A45]">Your work surface</p>
-        <span className="font-sans text-[15px] font-semibold text-[#6B5860]">
-          {doneCount} of {workSteps.length} steps
-        </span>
-      </div>
+      <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.16em] text-[#5A7A45]">The result you want</p>
       {item.purpose && <p className="mt-2 font-sans text-sm leading-relaxed text-[#3A2E33] text-pretty">{item.purpose}</p>}
-      <p className="mt-2 font-sans text-sm text-[#3A2E33]">
+      <p className="mt-2 font-sans text-base leading-relaxed text-[#2E1F27]">
         <span className="font-semibold text-[#5A7A45]">Done when:</span> {item.expectedEvidence ?? "the outcome you designed exists."}
       </p>
-
-      <p className="mt-4 font-montserrat text-[13px] font-bold uppercase tracking-[0.16em] text-[#6B5860]">How to do it</p>
-      <ol className="mt-2 flex flex-col gap-2">
-        {workSteps.map((step, i) => {
-          const done = doneSteps.has(step.id)
-          const isCurrent = !done && i === currentIndex
-          return (
-            <li
-              key={step.id}
-              className={`flex items-start gap-3 rounded-xl border px-3 py-2.5 transition-colors ${
-                done ? "border-[#E8DFE2] bg-white/60" : isCurrent ? "border-[#8DAE72] bg-white" : "border-[#E8DFE2] bg-white"
-              }`}
-            >
-              <button
-                type="button"
-                onClick={() => toggleStep(step.id)}
-                disabled={item.status === "completed"}
-                aria-pressed={done}
-                aria-label={`${done ? "Unmark" : "Mark"} step ${i + 1} done: ${step.title}`}
-                className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border font-sans text-[13px] font-bold ${
-                  done ? "border-[#5A7A45] bg-[#5A7A45] text-white" : "border-[#5A7A45] text-[#5A7A45] hover:bg-[#5A7A45]/5"
-                }`}
-              >
-                {done ? <Check className="h-3.5 w-3.5" aria-hidden /> : i + 1}
-              </button>
-              <div className="min-w-0 flex-1">
-                <p className={`font-sans text-[15px] font-bold leading-snug ${done ? "text-[#6B5860] line-through" : "text-[#2E1F27]"}`}>
-                  {step.title}
-                </p>
-                {!done && <p className="mt-0.5 font-sans text-sm leading-relaxed text-[#3A2E33] text-pretty">{step.detail}</p>}
-              </div>
-              <span className="shrink-0 font-sans text-sm font-semibold text-[#6B5860]">{step.minutes} min</span>
-            </li>
-          )
-        })}
-      </ol>
+      <p className="mt-2 font-sans text-sm leading-relaxed text-[#6B5860]">
+        Do it yourself, or choose Cherry Blossom™ or an executive above to do it for you.
+      </p>
 
       {item.status !== "completed" && (
         <div className="mt-4 flex flex-wrap items-center gap-2">
@@ -873,17 +828,13 @@ function CeoPlanItemWorkSurface({
             <button
               type="button"
               onClick={() => setConfirming(true)}
-              className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 font-sans text-base font-bold ${
-                allStepsDone
-                  ? "bg-[#5A7A45] text-white hover:opacity-90"
-                  : "border border-[#5A7A45] text-[#5A7A45] hover:bg-[#5A7A45]/5"
-              }`}
+              className="inline-flex items-center gap-1.5 rounded-full bg-[#5A7A45] px-3.5 py-1.5 font-sans text-base font-bold text-white hover:opacity-90"
             >
-              <Check className="h-3 w-3" aria-hidden /> The outcome exists — mark complete
+              <Check className="h-3 w-3" aria-hidden /> It&apos;s done — mark complete
             </button>
           ) : (
             <>
-              <span className="font-sans text-base text-[#6B5860]">Confirm the expected outcome is real and in place?</span>
+              <span className="font-sans text-base text-[#6B5860]">Is the result real and in place?</span>
               <button type="button" onClick={onManualComplete} className="rounded-full bg-[#5A7A45] px-3.5 py-1.5 font-sans text-base font-bold text-white hover:opacity-90">
                 Yes, complete
               </button>

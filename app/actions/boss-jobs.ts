@@ -190,6 +190,85 @@ export async function moveJob(jobId: string, direction: "up" | "down"): Promise<
   return finish(null, "")
 }
 
+/** Give a job to the founder, Cherry Blossom™ or one executive. Only the owner can change it. */
+export async function setJobAssignee(jobId: string, assignee: AssigneeInput): Promise<Result> {
+  const resolved = resolveAssignee(assignee)
+  if (!resolved) return { ok: false, error: "Please choose who should do this." }
+  const result = await patchJob(jobId, resolved, "reassigned", "That change could not be saved.")
+  if (result.ok) revalidatePath("/ceo-workday")
+  return result
+}
+
+export type WorkdayJobView = {
+  id: string
+  title: string
+  assigneeType: AssigneeType
+  assigneeExecutiveId: string | null
+  status: JobStatus
+  paused: boolean
+  stopped: boolean
+  whatsReady: string | null
+  waitingQuestion: string | null
+  decision: JobDecision | null
+  pendingApproval: string | null
+  blockedBy: number
+}
+
+/** Read-only view of the jobs carrying today's CEO Workday™ items. */
+export async function loadWorkdayJobs(jobIds: string[]): Promise<WorkdayJobView[]> {
+  const ids = Array.from(new Set(jobIds.filter((id) => typeof id === "string" && UUID.test(id)))).slice(0, 100)
+  if (ids.length === 0) return []
+  const { supabase, userId } = await requireFounder()
+  if (!userId) return []
+  const [jobsRes, proposalsRes, depsRes] = await Promise.all([
+    supabase
+      .from("boss_jobs")
+      .select("id, title, assignee_type, assignee_executive_id, status, paused, stopped, whats_ready, waiting_question, decision")
+      .eq("user_id", userId)
+      .in("id", ids),
+    supabase
+      .from("boss_job_proposals")
+      .select("job_id, summary, version")
+      .eq("user_id", userId)
+      .eq("status", "pending")
+      .in("job_id", ids)
+      .order("version", { ascending: false }),
+    supabase.from("boss_job_dependencies").select("job_id, depends_on_job_id").eq("user_id", userId).in("job_id", ids),
+  ])
+  if (jobsRes.error) {
+    console.error("[v0] workday jobs load failed:", jobsRes.error.message)
+    return []
+  }
+  const pending = new Map<string, string>()
+  for (const p of proposalsRes.data ?? []) if (!pending.has(p.job_id)) pending.set(p.job_id, p.summary)
+
+  const depIds = Array.from(new Set((depsRes.data ?? []).map((d) => d.depends_on_job_id as string)))
+  const openDeps = new Set<string>()
+  if (depIds.length) {
+    const { data } = await supabase.from("boss_jobs").select("id, status, stopped").eq("user_id", userId).in("id", depIds)
+    for (const d of data ?? []) if (d.status !== "done" && !d.stopped) openDeps.add(d.id as string)
+  }
+  const blockedBy = new Map<string, number>()
+  for (const d of depsRes.data ?? []) {
+    if (openDeps.has(d.depends_on_job_id as string)) blockedBy.set(d.job_id as string, (blockedBy.get(d.job_id as string) ?? 0) + 1)
+  }
+
+  return (jobsRes.data ?? []).map((j) => ({
+    id: j.id,
+    title: j.title,
+    assigneeType: j.assignee_type,
+    assigneeExecutiveId: j.assignee_executive_id,
+    status: j.status,
+    paused: j.paused,
+    stopped: j.stopped,
+    whatsReady: j.whats_ready,
+    waitingQuestion: j.waiting_question,
+    decision: j.decision,
+    pendingApproval: pending.get(j.id) ?? null,
+    blockedBy: blockedBy.get(j.id) ?? 0,
+  }))
+}
+
 export async function setWaitingQuestion(jobId: string, question: string): Promise<Result> {
   const clean = text(question, 2000)
   if (clean === undefined) return { ok: false, error: "That question is too long." }
