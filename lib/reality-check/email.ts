@@ -83,7 +83,7 @@ function renderEmail({
 
 async function send(
   recipient: Recipient,
-  kind: "confirm" | "reminder",
+  kind: "confirm" | "reminder-saturday" | "reminder-sunday-1pm" | "reminder-sunday-final",
   subject: string,
   heading: string,
   intro: string,
@@ -117,12 +117,30 @@ export function sendConfirmationEmail(recipient: Recipient) {
   )
 }
 
-export function sendReminderEmail(recipient: Recipient) {
-  return send(
-    recipient,
-    "reminder",
-    `Today at ${SESSION_TIME_LABEL}: your Reality Check™`,
-    "See you today.",
-    "A quick reminder that your free Weekly Work-Life Balance Reality Check™ is coming up today.",
-  )
+export type ReminderStage = "saturday" | "sunday-1pm" | "sunday-final"
+
+const REMINDER_COPY: Record<ReminderStage, { kind: "reminder-saturday" | "reminder-sunday-1pm" | "reminder-sunday-final"; subject: string; heading: string; intro: string }> = {
+  saturday: {
+    kind: "reminder-saturday",
+    subject: "Tomorrow at 3 PM ET: plan ahead for your Reality Check™",
+    heading: "Your Reality Check is tomorrow.",
+    intro: "Your Weekly Work-Life Balance Reality Check™ is tomorrow at 3:00 PM Eastern. Set aside this time now and come ready to look honestly at how your business and life are working together.",
+  },
+  "sunday-1pm": {
+    kind: "reminder-sunday-1pm",
+    subject: "Today at 3 PM ET: get ready for your Reality Check™",
+    heading: "We're meeting today.",
+    intro: "Your Weekly Work-Life Balance Reality Check™ begins at 3:00 PM Eastern. Take a moment to get comfortable, gather your thoughts, and get ready to join us.",
+  },
+  "sunday-final": {
+    kind: "reminder-sunday-final",
+    subject: "Starting in 20 minutes: your Reality Check™",
+    heading: "We're starting in 20 minutes.",
+    intro: "Your Weekly Work-Life Balance Reality Check™ begins in 20 minutes at 3:00 PM Eastern. Use the Zoom link below to join the room now.",
+  },
+}
+
+export function sendReminderEmail(recipient: Recipient, stage: ReminderStage) {
+  const copy = REMINDER_COPY[stage]
+  return send(recipient, copy.kind, copy.subject, copy.heading, copy.intro)
 }
