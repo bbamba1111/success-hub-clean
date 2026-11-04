@@ -581,3 +581,24 @@
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+/* CEO Workspace — calm, ChatGPT-style reading: one system font, larger text,
+   no tiny all-caps labels. Scoped so the rest of the site is unchanged. */
+.ceo-workspace,
+.ceo-workspace * {
+  font-family: ui-sans-serif, -apple-system, system-ui, "Segoe UI", "Helvetica Neue", Arial, sans-serif !important;
+}
+.ceo-workspace { font-size: 18px; line-height: 1.6; color: #1f1f1f; }
+.ceo-workspace .uppercase { text-transform: none; letter-spacing: normal; }
+.ceo-workspace .italic { font-style: normal; }
+.ceo-workspace .text-xs,
+.ceo-workspace .text-\[13px\],
+.ceo-workspace .text-\[14px\] { font-size: 16px; }
+.ceo-workspace .text-sm,
+.ceo-workspace .text-\[15px\],
+.ceo-workspace .text-\[15\.5px\],
+.ceo-workspace .text-\[16\.5px\] { font-size: 18px; line-height: 1.55; }
+.ceo-workspace .text-base { font-size: 18px; line-height: 1.6; }
+.ceo-workspace .text-lg { font-size: 21px; }
+.ceo-workspace .text-xl { font-size: 24px; }
+.ceo-workspace .font-bold { font-weight: 600; }

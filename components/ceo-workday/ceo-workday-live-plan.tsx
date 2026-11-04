@@ -352,6 +352,8 @@ export function CeoWorkdayLivePlan() {
   const renderPlanItem = (item: CeoPlanItem) => {
     const gone = item.founderDecision === "remove" || item.status === "eliminated"
     const closed = plan?.status === "closed"
+    const job = item.jobId ? jobsById.get(item.jobId) : undefined
+    const aiOwned = job?.assigneeType === "executive" || job?.assigneeType === "cherry"
     return (
       <div className={`rounded-2xl border border-[#E8DFE2] bg-white px-4 py-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#7FB069]/50 hover:bg-[#F7FBF3] hover:shadow-[0_8px_20px_-8px_rgba(95,143,71,0.35)] ${gone ? "opacity-50" : ""}`}>
         <div className="flex flex-wrap items-center gap-2">
@@ -395,7 +397,12 @@ export function CeoWorkdayLivePlan() {
           </p>
         )}
         {!gone && (
-          <ItemWorkforceRow item={item} job={item.jobId ? jobsById.get(item.jobId) : undefined} onChanged={() => void refreshJobs()} />
+          <ItemWorkforceRow
+            item={item}
+            job={item.jobId ? jobsById.get(item.jobId) : undefined}
+            onChanged={() => void refreshJobs()}
+            onFinished={() => void completeItem(item)}
+          />
         )}
         {!closed && gone && (
           <button
@@ -417,7 +424,7 @@ export function CeoWorkdayLivePlan() {
         )}
         {!adjusting && !closed && !gone && (
           <div className="mt-2 flex flex-wrap items-center gap-2">
-            {openItemId !== item.id ? (
+            {aiOwned ? null : openItemId !== item.id ? (
               <button
                 type="button"
                 onClick={() => openWork(item)}
@@ -430,7 +437,7 @@ export function CeoWorkdayLivePlan() {
                 }`}
               >
                 <Play className="h-3 w-3" aria-hidden />
-                {item.status === "planned" ? "Start" : item.status === "completed" ? "Open" : "Continue"}
+                {item.status === "completed" ? "Open" : "Open my work tools"}
               </button>
             ) : (
               <button type="button" onClick={() => setOpenItemId(null)} className="inline-flex items-center gap-1.5 rounded-full border border-[#E8DFE2] bg-white px-3.5 py-1.5 font-sans text-base font-semibold text-[#6B5860] hover:bg-black/[0.03]">
@@ -464,9 +471,10 @@ export function CeoWorkdayLivePlan() {
           </div>
         )}
 
-        {openItemId === item.id && !closed && (
+        {openItemId === item.id && !closed && !aiOwned && (
           <CeoPlanItemWorkSurface
             item={item}
+            finishedByJob={!!item.jobId}
             onLinkAsset={(assetId) => linkAsset(item, assetId)}
             onBuildChange={(build) => {
               if (build && item.status !== "completed") void completeItem(item)
@@ -668,7 +676,7 @@ export function CeoWorkdayLivePlan() {
   const visibleOrder = sectionLayout.order.filter((id) => Boolean(sections[id].node))
 
   return (
-    <div className="space-y-5">
+    <div className="ceo-workspace space-y-5">
       <DayStateSaveNotice />
       {visibleOrder.map((id, i) => (
         <WorkdaySection
@@ -703,11 +711,14 @@ export function CeoWorkdayLivePlan() {
  */
 function CeoPlanItemWorkSurface({
   item,
+  finishedByJob,
   onLinkAsset,
   onBuildChange,
   onManualComplete,
 }: {
   item: CeoPlanItem
+  /** Finishing happens in the work panel, where a real result is required. */
+  finishedByJob: boolean
   onLinkAsset: (assetId: string) => void
   onBuildChange: (build: BusinessAssetBuildRecord | null) => void
   onManualComplete: () => void
@@ -819,10 +830,12 @@ function CeoPlanItemWorkSurface({
         <span className="font-semibold text-[#5A7A45]">Done when:</span> {item.expectedEvidence ?? "the outcome you designed exists."}
       </p>
       <p className="mt-2 font-sans text-sm leading-relaxed text-[#6B5860]">
-        Do it yourself, or choose Cherry Blossom™ or an executive above to do it for you.
+        {finishedByJob
+          ? "When it's done, finish it above by saying where the result is."
+          : "Do it yourself, or choose Cherry Blossom™ or an executive above to do it for you."}
       </p>
 
-      {item.status !== "completed" && (
+      {item.status !== "completed" && !finishedByJob && (
         <div className="mt-4 flex flex-wrap items-center gap-2">
           {!confirming ? (
             <button

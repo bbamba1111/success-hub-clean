@@ -211,6 +211,11 @@ export type WorkdayJobView = {
   waitingQuestion: string | null
   decision: JobDecision | null
   pendingApproval: string | null
+  /** The executive's latest work waiting for the founder (Phase 4 proposal). */
+  pendingWork: { id: string; hash: string; summary: string; text: string | null; proposedBy: string } | null
+  permissionLevel: PermissionLevel
+  /** The real result the founder recorded when finishing (link or where it lives). */
+  finishedResult: string | null
   blockedBy: number
 }
 
@@ -223,12 +228,14 @@ export async function loadWorkdayJobs(jobIds: string[]): Promise<WorkdayJobView[
   const [jobsRes, proposalsRes, depsRes] = await Promise.all([
     supabase
       .from("boss_jobs")
-      .select("id, title, assignee_type, assignee_executive_id, status, paused, stopped, whats_ready, waiting_question, decision")
+      .select(
+        "id, title, assignee_type, assignee_executive_id, status, paused, stopped, whats_ready, waiting_question, decision, permission_level, last_change_action, last_change_note",
+      )
       .eq("user_id", userId)
       .in("id", ids),
     supabase
       .from("boss_job_proposals")
-      .select("job_id, summary, version")
+      .select("id, job_id, summary, version, payload_hash, action_kind, action_payload, proposed_by")
       .eq("user_id", userId)
       .eq("status", "pending")
       .in("job_id", ids)
@@ -240,7 +247,19 @@ export async function loadWorkdayJobs(jobIds: string[]): Promise<WorkdayJobView[
     return []
   }
   const pending = new Map<string, string>()
-  for (const p of proposalsRes.data ?? []) if (!pending.has(p.job_id)) pending.set(p.job_id, p.summary)
+  const pendingWork = new Map<string, NonNullable<WorkdayJobView["pendingWork"]>>()
+  for (const p of proposalsRes.data ?? []) {
+    if (pending.has(p.job_id)) continue
+    pending.set(p.job_id, p.summary)
+    const payload = p.action_payload as { text?: unknown } | null
+    pendingWork.set(p.job_id, {
+      id: p.id,
+      hash: p.payload_hash,
+      summary: p.summary,
+      text: p.action_kind === "job.save_whats_ready" && typeof payload?.text === "string" ? payload.text : null,
+      proposedBy: p.proposed_by,
+    })
+  }
 
   const depIds = Array.from(new Set((depsRes.data ?? []).map((d) => d.depends_on_job_id as string)))
   const openDeps = new Set<string>()
@@ -265,8 +284,63 @@ export async function loadWorkdayJobs(jobIds: string[]): Promise<WorkdayJobView[
     waitingQuestion: j.waiting_question,
     decision: j.decision,
     pendingApproval: pending.get(j.id) ?? null,
+    pendingWork: pendingWork.get(j.id) ?? null,
+    permissionLevel: j.permission_level,
+    finishedResult: j.status === "done" && j.last_change_action === "finished" ? j.last_change_note : null,
     blockedBy: blockedBy.get(j.id) ?? 0,
   }))
+}
+
+/** Founder lets an executive make drafts for this job (Phase 4 "prepare" — nothing goes out). */
+export async function allowJobDrafts(jobId: string): Promise<Result> {
+  const { supabase, userId } = await requireFounder()
+  if (!userId || !UUID.test(jobId)) return { ok: false, error: "Please sign in again." }
+  const { data: job } = await supabase.from("boss_jobs").select("permission_level").eq("id", jobId).eq("user_id", userId).maybeSingle()
+  if (!job) return { ok: false, error: "That work could not be found." }
+  if (job.permission_level !== "research") return { ok: true }
+  return patchJob(jobId, { permission_level: "prepare" }, "changed", "That change could not be saved.")
+}
+
+/** Founder saves her own edits to the executive's draft as the work result. */
+export async function saveEditedWork(jobId: string, proposalId: string, hash: string, edited: string): Promise<Result> {
+  const clean = text(edited, 4000, true)
+  if (!clean) return { ok: false, error: "The work cannot be empty." }
+  const { supabase, userId } = await requireFounder()
+  if (!userId || !UUID.test(jobId) || !UUID.test(proposalId) || !/^[0-9a-f]{64}$/.test(hash)) {
+    return { ok: false, error: "Please sign in again." }
+  }
+  const { error } = await supabase.rpc("boss_decide_proposal", {
+    p_proposal_id: proposalId,
+    p_decision: "change_it",
+    p_expected_hash: hash,
+    p_note: "Founder edited the executive's work and approved her version.",
+  })
+  if (error) return finish(error, "Your edits could not be saved.")
+  const result = await patchJob(jobId, { whats_ready: clean, waiting_question: null }, "ready_updated", "Your edits could not be saved.")
+  if (result.ok) revalidatePath("/ceo-workday")
+  return result
+}
+
+/**
+ * Finish is only possible with a real result: approved work must exist and the
+ * founder records where it now lives (a link, or what happened).
+ */
+export async function finishJobWithResult(jobId: string, resultText: string): Promise<Result> {
+  const clean = text(resultText, 2000, true)
+  if (!clean) return { ok: false, error: "Tell us where the finished work is — paste the link or say what happened." }
+  const { supabase, userId } = await requireFounder()
+  if (!userId || !UUID.test(jobId)) return { ok: false, error: "Please sign in again." }
+  const { data: job } = await supabase
+    .from("boss_jobs")
+    .select("assignee_type, whats_ready")
+    .eq("id", jobId)
+    .eq("user_id", userId)
+    .maybeSingle()
+  if (!job) return { ok: false, error: "That work could not be found." }
+  if (job.assignee_type !== "founder" && !job.whats_ready) {
+    return { ok: false, error: "Approve the work first, then finish it." }
+  }
+  return patchJob(jobId, { status: "done", paused: false, last_change_note: clean }, "finished", "This could not be finished.")
 }
 
 export async function setWaitingQuestion(jobId: string, question: string): Promise<Result> {

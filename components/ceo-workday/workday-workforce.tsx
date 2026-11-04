@@ -2,16 +2,25 @@
 
 /**
  * CEO Workday™ ↔ AI workforce. Every plan item is carried by a `boss_jobs`
- * row; this reads those jobs and lets the founder say who does each piece:
- * herself, Cherry Blossom™, or one executive. Decisions and approvals are
- * never made here — they stay on the Phase 4 job board.
+ * row. The founder chooses who does each piece (herself, Cherry Blossom™ or
+ * one executive). An executive does the real work through
+ * /api/ceo-workday/executive-work, which hands it back as a Phase 4 proposal:
+ * nothing is saved, sent or finished until the founder approves it.
  */
 
 import useSWR from "swr"
-import { useState } from "react"
-import { ArrowUpRight, CheckCircle2, Hourglass, Inbox, Users } from "lucide-react"
-import { loadWorkdayJobs, setJobAssignee, type WorkdayJobView } from "@/app/actions/boss-jobs"
-import { EXECUTIVES, assigneeName, labelFor, JOB_STATUSES, type AssigneeType } from "@/lib/boss/jobs/definitions"
+import { useState, type ReactNode } from "react"
+import { Check, Loader2, MessageCircle, Pencil, RefreshCw, Sparkles } from "lucide-react"
+import {
+  allowJobDrafts,
+  finishJobWithResult,
+  loadWorkdayJobs,
+  saveEditedWork,
+  setJobAssignee,
+  type WorkdayJobView,
+} from "@/app/actions/boss-jobs"
+import { decideProposal } from "@/app/actions/boss-authority"
+import { EXECUTIVES, assigneeName, type AssigneeType } from "@/lib/boss/jobs/definitions"
 import { CEO_FUNCTION_LABEL, type CeoBusinessFunction, type CeoPlanItem } from "@/lib/ceo-workday/plan-types"
 
 export const WORKDAY_FUNCTIONS: CeoBusinessFunction[] = [
@@ -34,8 +43,6 @@ const SUGGESTED_EXECUTIVE: Partial<Record<CeoBusinessFunction, string>> = {
   "own-work": "strategy",
 }
 
-const DECISIONS_PATH = "/boss/queue"
-
 export function useWorkdayJobs(items: CeoPlanItem[]) {
   const ids = items.map((i) => i.jobId).filter((id): id is string => !!id).sort()
   const { data, mutate } = useSWR(ids.length ? ["workday-jobs", ...ids] : null, () => loadWorkdayJobs(ids), {
@@ -45,11 +52,20 @@ export function useWorkdayJobs(items: CeoPlanItem[]) {
   return { jobsById: byId, refreshJobs: mutate }
 }
 
-function needsFounder(job: WorkdayJobView) {
-  return !job.stopped && (job.status === "waiting_for_you" || job.status === "needs_help" || !!job.pendingApproval)
+const isAiJob = (job: WorkdayJobView) => job.assigneeType === "executive" || job.assigneeType === "cherry"
+const whoName = (job: WorkdayJobView) => assigneeName(job.assigneeType, job.assigneeExecutiveId, null, [])
+
+/** What the founder is being asked to choose right now, if anything. */
+function choiceNeeded(job: WorkdayJobView): string | null {
+  if (job.stopped || job.status === "done") return null
+  if (job.pendingWork) return `${whoName(job)} finished a draft. Review it.`
+  if (job.waitingQuestion) return job.waitingQuestion
+  if (job.status === "needs_help") return "Help is needed."
+  if (isAiJob(job) && job.whatsReady) return "Approved. Tell us where it is now to finish."
+  return null
 }
 
-/* ── Function switcher ───────────────────────────────────────────────────── */
+/* ── Business area switcher ──────────────────────────────────────────────── */
 
 export function FunctionSwitcher({
   items,
@@ -62,12 +78,12 @@ export function FunctionSwitcher({
 }) {
   const count = (f: CeoBusinessFunction) => items.filter((i) => i.businessFunction === f).length
   const chip = (active: boolean) =>
-    `inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-sans text-sm font-semibold transition-colors ${
-      active ? "border-[#5A7A45] bg-[#5A7A45] text-white" : "border-[#E8DFE2] bg-white text-[#3A2E33] hover:border-[#5A7A45]/60"
+    `inline-flex items-center gap-2 rounded-full border px-4 py-2 text-base font-medium transition-colors ${
+      active ? "border-[#2F4A2A] bg-[#2F4A2A] text-white" : "border-[#E5E5E5] bg-white text-[#1F1F1F] hover:border-[#2F4A2A]/50"
     }`
   return (
-    <nav aria-label="Business functions" className="flex flex-col gap-2">
-      <p className="font-montserrat text-[13px] font-bold uppercase tracking-[0.16em] text-[#6B5860]">Pick a business area</p>
+    <nav aria-label="Business areas" className="flex flex-col gap-3">
+      <p className="text-lg font-semibold text-[#1F1F1F]">Business areas</p>
       <div className="flex flex-wrap gap-2">
         <button type="button" aria-pressed={value === "all"} onClick={() => onChange("all")} className={chip(value === "all")}>
           All work <span className="opacity-70">{items.length}</span>
@@ -82,98 +98,104 @@ export function FunctionSwitcher({
   )
 }
 
-/* ── Today's workforce summary ───────────────────────────────────────────── */
+/* ── Today at a glance: My Work · My AI Team · My Choices ────────────────── */
 
 export function WorkforceSummary({ items, jobsById }: { items: CeoPlanItem[]; jobsById: Map<string, WorkdayJobView> }) {
-  const linked = items.map((i) => ({ item: i, job: i.jobId ? jobsById.get(i.jobId) : undefined }))
-  const withWorkforce = linked.filter(({ job }) => job && job.assigneeType !== "founder" && job.status !== "done" && !job.stopped)
-  const waiting = linked.filter(({ job }) => job && needsFounder(job))
-  const done = linked.filter(({ item, job }) => item.status === "completed" || job?.status === "done")
+  const linked = items
+    .map((i) => ({ item: i, job: i.jobId ? jobsById.get(i.jobId) : undefined }))
+    .filter((x): x is { item: CeoPlanItem; job: WorkdayJobView } => !!x.job)
+  const open = linked.filter(({ job, item }) => job.status !== "done" && item.status !== "completed" && !job.stopped)
+  const mine = open.filter(({ job }) => job.assigneeType === "founder")
+  const team = open.filter(({ job }) => isAiJob(job))
+  const choices = linked.filter(({ job }) => choiceNeeded(job))
+  const done = linked.filter(({ item, job }) => item.status === "completed" || job.status === "done")
+
+  const teamStatus = (job: WorkdayJobView) =>
+    job.pendingWork ? "Draft ready for you" : job.whatsReady ? "Approved" : "Not started yet"
 
   return (
-    <section aria-labelledby="workforce-today" className="rounded-3xl border border-[#E8DFE2] bg-white px-5 py-5 sm:px-6">
-      <h3 id="workforce-today" className="font-montserrat text-[14px] font-bold uppercase tracking-[0.18em] text-[#5A7A45]">
-        Your team today
-      </h3>
-      <div className="mt-3 grid gap-3 sm:grid-cols-3">
-        <SummaryColumn
-          icon={<Users className="h-4 w-4" aria-hidden />}
-          title="Being worked on for you"
-          empty="Nothing given to Cherry Blossom™ or an executive yet."
-          rows={withWorkforce.map(({ item, job }) => ({
-            id: item.id,
-            title: item.title,
-            sub: `${assigneeName(job!.assigneeType, job!.assigneeExecutiveId, null, [])} · ${labelFor(JOB_STATUSES, job!.status)}`,
-          }))}
+    <section aria-label="Today at a glance" className="flex flex-col gap-4">
+      <div className="grid gap-3 md:grid-cols-3">
+        <Column title="My Work" empty="Nothing for you to do yourself." rows={mine.map(({ item }) => ({ id: item.id, title: item.title, sub: CEO_FUNCTION_LABEL[item.businessFunction] }))} />
+        <Column
+          title="My AI Team"
+          empty="Give work to Cherry Blossom™ or an executive below."
+          rows={team.map(({ item, job }) => ({ id: item.id, title: item.title, sub: `${whoName(job)} · ${teamStatus(job)}` }))}
         />
-        <SummaryColumn
-          icon={<Inbox className="h-4 w-4" aria-hidden />}
-          title="Needs your decision"
-          empty="No decisions or approvals waiting."
-          rows={waiting.map(({ item, job }) => ({
-            id: item.id,
-            title: item.title,
-            sub: job!.pendingApproval ? `Approve: ${job!.pendingApproval}` : job!.waitingQuestion ?? "Needs your help",
-          }))}
-          action={waiting.length > 0 ? { href: DECISIONS_PATH, label: "Decide now" } : undefined}
-        />
-        <SummaryColumn
-          icon={<CheckCircle2 className="h-4 w-4" aria-hidden />}
-          title="Finished today"
-          empty="Finished work shows up here."
-          rows={done.map(({ item, job }) => ({
-            id: item.id,
-            title: item.title,
-            sub: job?.whatsReady ?? item.expectedEvidence ?? "Done",
-          }))}
+        <Column
+          title="My Choices"
+          empty="Nothing needs your choice right now."
+          highlight={choices.length > 0}
+          rows={choices.map(({ item, job }) => ({ id: item.id, title: item.title, sub: choiceNeeded(job)! }))}
         />
       </div>
+      {done.length > 0 && (
+        <div className="rounded-2xl border border-[#E5E5E5] bg-white px-5 py-4">
+          <p className="text-lg font-semibold text-[#1F1F1F]">Finished today</p>
+          <ul className="mt-2 flex flex-col gap-2">
+            {done.map(({ item, job }) => (
+              <li key={item.id} className="text-base leading-relaxed text-[#1F1F1F]">
+                <Check className="mr-2 inline h-4 w-4 text-[#2F4A2A]" aria-hidden />
+                <span className="font-medium">{item.title}</span>
+                {job.finishedResult && <ResultText text={job.finishedResult} />}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </section>
   )
 }
 
-function SummaryColumn({
-  icon,
+function Column({
   title,
   empty,
   rows,
-  action,
+  highlight,
 }: {
-  icon: React.ReactNode
   title: string
   empty: string
   rows: Array<{ id: string; title: string; sub: string }>
-  action?: { href: string; label: string }
+  highlight?: boolean
 }) {
   return (
-    <div className="flex flex-col gap-2 rounded-2xl bg-[#FAF8F5] px-4 py-3">
-      <p className="flex items-center gap-2 font-sans text-sm font-bold text-[#2E1F27]">
-        <span className="text-[#5A7A45]">{icon}</span>
+    <div className={`flex flex-col gap-3 rounded-2xl border px-5 py-4 ${highlight ? "border-[#B5543C]/40 bg-[#FDF6F3]" : "border-[#E5E5E5] bg-white"}`}>
+      <p className="flex items-center justify-between text-lg font-semibold text-[#1F1F1F]">
         {title}
-        <span className="ml-auto rounded-full bg-white px-2 py-0.5 text-[13px] text-[#6B5860]">{rows.length}</span>
+        <span className="rounded-full bg-[#F4F4F4] px-2.5 text-base font-medium text-[#555555]">{rows.length}</span>
       </p>
       {rows.length === 0 ? (
-        <p className="font-sans text-sm leading-relaxed text-[#6B5860]">{empty}</p>
+        <p className="text-base leading-relaxed text-[#555555]">{empty}</p>
       ) : (
-        <ul className="flex flex-col gap-1.5">
-          {rows.slice(0, 5).map((r) => (
-            <li key={r.id} className="font-sans text-sm leading-snug">
-              <span className="font-semibold text-[#2E1F27]">{r.title}</span>
-              <span className="block text-[#6B5860] line-clamp-2">{r.sub}</span>
+        <ul className="flex flex-col gap-2">
+          {rows.slice(0, 6).map((r) => (
+            <li key={r.id} className="text-base leading-snug">
+              <span className="font-medium text-[#1F1F1F]">{r.title}</span>
+              <span className="block text-[#555555]">{r.sub}</span>
             </li>
           ))}
         </ul>
-      )}
-      {action && (
-        <a href={action.href} className="mt-auto inline-flex items-center gap-1 font-sans text-sm font-bold text-[#C0545A] hover:underline">
-          {action.label} <ArrowUpRight className="h-3.5 w-3.5" aria-hidden />
-        </a>
       )}
     </div>
   )
 }
 
-/* ── Per-assignment: who's doing it, progress, results ───────────────────── */
+function ResultText({ text }: { text: string }) {
+  const url = text.match(/https?:\/\/\S+/)?.[0]
+  return (
+    <span className="block pl-6 text-[#555555]">
+      {url ? (
+        <a href={url} target="_blank" rel="noreferrer" className="break-all text-[#2F4A2A] underline underline-offset-2">
+          {text}
+        </a>
+      ) : (
+        text
+      )}
+    </span>
+  )
+}
+
+/* ── One piece of work: who does it, the real work, and finishing ────────── */
 
 type AssigneeChoice = "founder" | "cherry" | `exec:${string}`
 
@@ -182,84 +204,340 @@ function choiceOf(job: WorkdayJobView): AssigneeChoice {
   return job.assigneeType === "cherry" ? "cherry" : "founder"
 }
 
+const primaryBtn =
+  "inline-flex items-center gap-2 rounded-full bg-[#2F4A2A] px-5 py-2.5 text-base font-medium text-white hover:opacity-90 disabled:opacity-50"
+const secondaryBtn =
+  "inline-flex items-center gap-2 rounded-full border border-[#D4D4D4] bg-white px-5 py-2.5 text-base font-medium text-[#1F1F1F] hover:bg-[#F4F4F4] disabled:opacity-50"
+const field =
+  "w-full rounded-xl border border-[#D4D4D4] bg-white px-4 py-3 text-base leading-relaxed text-[#1F1F1F] placeholder:text-[#8A8A8A] focus:outline-none focus:ring-2 focus:ring-[#2F4A2A]/30"
+
 export function ItemWorkforceRow({
   item,
   job,
   onChanged,
+  onFinished,
 }: {
   item: CeoPlanItem
   job: WorkdayJobView | undefined
   onChanged: () => void
+  onFinished: () => void
 }) {
-  const [saving, setSaving] = useState(false)
+  const [busy, setBusy] = useState<null | "assign" | "working" | "asking" | "saving">(null)
   const [error, setError] = useState<string | null>(null)
+  const [mode, setMode] = useState<null | "changes" | "edit" | "ask">(null)
+  const [draft, setDraft] = useState("")
+  const [answer, setAnswer] = useState<string | null>(null)
+  const [result, setResult] = useState("")
+
   if (!item.jobId) return null
-  if (!job) {
-    return <p className="mt-2 font-sans text-sm text-[#6B5860]">Loading who is doing this…</p>
-  }
+  if (!job) return <p className="mt-3 text-base text-[#555555]">Loading…</p>
+
+  const j = job
+  const who = whoName(j)
+  const finished = j.status === "done"
   const suggested = SUGGESTED_EXECUTIVE[item.businessFunction]
 
-  async function change(value: AssigneeChoice) {
-    setSaving(true)
+  async function run<T>(kind: NonNullable<typeof busy>, fn: () => Promise<T>) {
+    setBusy(kind)
     setError(null)
-    const input: { type: AssigneeType; executiveId?: string } = value.startsWith("exec:")
-      ? { type: "executive", executiveId: value.slice(5) }
-      : { type: value as "founder" | "cherry" }
-    const res = await setJobAssignee(job!.id, input)
-    setSaving(false)
-    if (!res.ok) setError(res.error)
-    onChanged()
+    try {
+      return await fn()
+    } finally {
+      setBusy(null)
+    }
   }
 
-  const finished = job.status === "done"
-  return (
-    <div className="mt-3 flex flex-col gap-2 rounded-xl border border-[#E8DFE2] bg-[#FAF8F5] px-3 py-2.5">
-      <div className="flex flex-wrap items-center gap-2">
-        <label className="flex items-center gap-2">
-          <span className="font-sans text-sm font-semibold text-[#6B5860]">Who does this?</span>
-          <select
-            value={choiceOf(job)}
-            disabled={saving || finished || job.stopped}
-            onChange={(e) => void change(e.target.value as AssigneeChoice)}
-            className="rounded-lg border border-[#E8DFE2] bg-white px-2 py-1 font-sans text-sm font-bold text-[#2E1F27] focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30 disabled:opacity-60"
-          >
-            <option value="founder">Me</option>
-            <option value="cherry">Cherry Blossom™ (she picks the right executive)</option>
-            {EXECUTIVES.map((e) => (
-              <option key={e.id} value={`exec:${e.id}`}>
-                {e.name}
-                {e.id === suggested ? " (best fit)" : ""}
-              </option>
-            ))}
-          </select>
-        </label>
-        <span className="ml-auto inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-0.5 font-sans text-sm font-semibold text-[#3A2E33]">
-          {job.paused ? "Paused" : job.stopped ? "Stopped" : labelFor(JOB_STATUSES, job.status)}
-        </span>
-      </div>
+  async function changeAssignee(value: AssigneeChoice) {
+    await run("assign", async () => {
+      const input: { type: AssigneeType; executiveId?: string } = value.startsWith("exec:")
+        ? { type: "executive", executiveId: value.slice(5) }
+        : { type: value as "founder" | "cherry" }
+      const res = await setJobAssignee(j.id, input)
+      if (!res.ok) setError(res.error)
+      onChanged()
+    })
+  }
 
-      {job.blockedBy > 0 && !finished && (
-        <p className="flex items-center gap-1.5 font-sans text-sm text-[#6B5860]">
-          <Hourglass className="h-3.5 w-3.5" aria-hidden />
-          Waiting on {job.blockedBy === 1 ? "one piece of work" : `${job.blockedBy} pieces of work`} to finish first.
+  async function callExecutive(body: { mode: "work" | "ask"; instruction?: string }) {
+    const res = await fetch("/api/ceo-workday/executive-work", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ jobId: j.id, ...body }),
+    })
+    const data = (await res.json().catch(() => ({}))) as { error?: string; answer?: string }
+    if (!res.ok) throw new Error(data.error ?? "That did not work. Please try again.")
+    return data
+  }
+
+  async function startWork(instruction?: string) {
+    await run("working", async () => {
+      try {
+        if (j.permissionLevel === "research") {
+          const allowed = await allowJobDrafts(j.id)
+          if (!allowed.ok) throw new Error(allowed.error)
+        }
+        await callExecutive({ mode: "work", instruction })
+        setMode(null)
+        setDraft("")
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "That did not work.")
+      }
+      onChanged()
+    })
+  }
+
+  async function ask() {
+    if (!draft.trim()) return
+    await run("asking", async () => {
+      try {
+        const data = await callExecutive({ mode: "ask", instruction: draft.trim() })
+        setAnswer(data.answer ?? null)
+        setDraft("")
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "That did not work.")
+      }
+    })
+  }
+
+  async function approve() {
+    const w = j.pendingWork
+    if (!w) return
+    await run("saving", async () => {
+      const res = await decideProposal(w.id, "yes_do_it", w.hash)
+      if (!res.ok) setError(res.error)
+      onChanged()
+    })
+  }
+
+  async function saveEdits() {
+    const w = j.pendingWork
+    if (!w) return
+    await run("saving", async () => {
+      const res = await saveEditedWork(j.id, w.id, w.hash, draft)
+      if (!res.ok) setError(res.error)
+      else {
+        setMode(null)
+        setDraft("")
+      }
+      onChanged()
+    })
+  }
+
+  async function finish() {
+    await run("saving", async () => {
+      const res = await finishJobWithResult(j.id, result)
+      if (!res.ok) setError(res.error)
+      else {
+        setResult("")
+        onFinished()
+      }
+      onChanged()
+    })
+  }
+
+  const finishForm = (prompt: string) => (
+    <div className="flex flex-col gap-2">
+      <label htmlFor={`result-${j.id}`} className="text-base font-medium text-[#1F1F1F]">
+        {prompt}
+      </label>
+      <input
+        id={`result-${j.id}`}
+        value={result}
+        onChange={(e) => setResult(e.target.value)}
+        placeholder="Paste the link, or say where it is (e.g. Posted on Instagram)"
+        className={field}
+      />
+      <div>
+        <button type="button" onClick={finish} disabled={!result.trim() || !!busy} className={primaryBtn}>
+          {busy === "saving" ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <Check className="h-4 w-4" aria-hidden />}
+          Finish
+        </button>
+      </div>
+    </div>
+  )
+
+  let body: ReactNode
+  if (finished) {
+    body = (
+      <div className="flex flex-col gap-1">
+        <p className="text-base font-medium text-[#2F4A2A]">Done.</p>
+        {j.finishedResult && <ResultText text={j.finishedResult} />}
+      </div>
+    )
+  } else if (!isAiJob(j)) {
+    body = finishForm("When it's done, where is the result?")
+  } else if (busy === "working") {
+    body = (
+      <p className="flex items-center gap-2 text-base text-[#1F1F1F]" role="status">
+        <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> {who} is working on it now…
+      </p>
+    )
+  } else if (j.pendingWork) {
+    const w = j.pendingWork
+    body = (
+      <div className="flex flex-col gap-3">
+        <p className="whitespace-pre-line text-base leading-relaxed text-[#1F1F1F]">{w.summary}</p>
+        {w.text && (
+          <div className="rounded-xl border border-[#E5E5E5] bg-[#FAFAFA] px-4 py-3">
+            <p className="text-sm font-medium text-[#555555]">The work</p>
+            <p className="mt-1 whitespace-pre-wrap text-base leading-relaxed text-[#1F1F1F]">{w.text}</p>
+          </div>
+        )}
+        {mode === "edit" ? (
+          <div className="flex flex-col gap-2">
+            <label htmlFor={`edit-${j.id}`} className="sr-only">
+              Edit the work
+            </label>
+            <textarea id={`edit-${j.id}`} rows={8} value={draft} onChange={(e) => setDraft(e.target.value)} className={field} />
+            <div className="flex flex-wrap gap-2">
+              <button type="button" onClick={saveEdits} disabled={!draft.trim() || !!busy} className={primaryBtn}>
+                Save my version
+              </button>
+              <button type="button" onClick={() => setMode(null)} className={secondaryBtn}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        ) : mode === "changes" ? (
+          <div className="flex flex-col gap-2">
+            <label htmlFor={`changes-${j.id}`} className="text-base font-medium text-[#1F1F1F]">
+              What should {who} change?
+            </label>
+            <textarea id={`changes-${j.id}`} rows={3} value={draft} onChange={(e) => setDraft(e.target.value)} className={field} />
+            <div className="flex flex-wrap gap-2">
+              <button type="button" onClick={() => startWork(draft.trim())} disabled={!draft.trim() || !!busy} className={primaryBtn}>
+                <RefreshCw className="h-4 w-4" aria-hidden /> Send changes
+              </button>
+              <button type="button" onClick={() => setMode(null)} className={secondaryBtn}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-wrap gap-2">
+            <button type="button" onClick={approve} disabled={!!busy || !w.text} className={primaryBtn}>
+              <Check className="h-4 w-4" aria-hidden /> Approve
+            </button>
+            <button type="button" onClick={() => { setMode("changes"); setDraft("") }} className={secondaryBtn}>
+              <RefreshCw className="h-4 w-4" aria-hidden /> Make changes
+            </button>
+            {w.text && (
+              <button type="button" onClick={() => { setMode("edit"); setDraft(w.text ?? "") }} className={secondaryBtn}>
+                <Pencil className="h-4 w-4" aria-hidden /> Edit it myself
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+    )
+  } else if (j.whatsReady) {
+    body = (
+      <div className="flex flex-col gap-3">
+        <div className="rounded-xl border border-[#E5E5E5] bg-[#FAFAFA] px-4 py-3">
+          <p className="text-sm font-medium text-[#555555]">Approved work</p>
+          <p className="mt-1 whitespace-pre-wrap text-base leading-relaxed text-[#1F1F1F]">{j.whatsReady}</p>
+        </div>
+        {finishForm("Use it, then tell us where it is now.")}
+        <div>
+          <button type="button" onClick={() => setMode("changes")} className="text-base font-medium text-[#555555] underline underline-offset-2">
+            Ask {who} for a new version
+          </button>
+        </div>
+        {mode === "changes" && (
+          <div className="flex flex-col gap-2">
+            <textarea aria-label={`What should ${who} change?`} rows={3} value={draft} onChange={(e) => setDraft(e.target.value)} className={field} />
+            <div>
+              <button type="button" onClick={() => startWork(draft.trim())} disabled={!draft.trim() || !!busy} className={primaryBtn}>
+                Send changes
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    )
+  } else {
+    body = (
+      <div className="flex flex-col gap-3">
+        <p className="text-base leading-relaxed text-[#555555]">
+          Not started yet. {who} will prepare the work for you to review. Nothing is sent or published without you.
         </p>
-      )}
-      {job.whatsReady && (
-        <p className="font-sans text-sm leading-relaxed text-[#3A2E33]">
-          <span className="font-bold text-[#5A7A45]">What&apos;s ready:</span> {job.whatsReady}
-        </p>
-      )}
-      {needsFounder(job) && (
-        <a
-          href={DECISIONS_PATH}
-          className="inline-flex w-fit items-center gap-1 rounded-full bg-[#C0545A] px-3 py-1 font-sans text-sm font-bold text-white hover:opacity-90"
+        {mode === "changes" && (
+          <textarea
+            aria-label={`Instructions for ${who}`}
+            rows={3}
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            placeholder="Anything they should know? (optional)"
+            className={field}
+          />
+        )}
+        <div className="flex flex-wrap gap-2">
+          <button type="button" onClick={() => startWork(draft.trim() || undefined)} disabled={!!busy || j.blockedBy > 0} className={primaryBtn}>
+            <Sparkles className="h-4 w-4" aria-hidden /> Start Work
+          </button>
+          {mode !== "changes" && (
+            <button type="button" onClick={() => setMode("changes")} className={secondaryBtn}>
+              Give instructions
+            </button>
+          )}
+        </div>
+        {j.blockedBy > 0 && <p className="text-base text-[#555555]">Something else must finish first.</p>}
+      </div>
+    )
+  }
+
+  return (
+    <div className="mt-4 flex flex-col gap-4 rounded-2xl border border-[#E5E5E5] bg-white px-5 py-4">
+      <label className="flex flex-wrap items-center gap-3">
+        <span className="text-base font-medium text-[#1F1F1F]">Who does this?</span>
+        <select
+          value={choiceOf(j)}
+          disabled={!!busy || finished || j.stopped}
+          onChange={(e) => void changeAssignee(e.target.value as AssigneeChoice)}
+          className="rounded-xl border border-[#D4D4D4] bg-white px-3 py-2 text-base text-[#1F1F1F] focus:outline-none focus:ring-2 focus:ring-[#2F4A2A]/30 disabled:opacity-60"
         >
-          {job.pendingApproval ? "Approval needed — review it" : "Your answer is needed"}
-          <ArrowUpRight className="h-3.5 w-3.5" aria-hidden />
-        </a>
+          <option value="founder">Me</option>
+          <option value="cherry">Cherry Blossom™ (she picks the right executive)</option>
+          {EXECUTIVES.map((e) => (
+            <option key={e.id} value={`exec:${e.id}`}>
+              {e.name}
+              {e.id === suggested ? " (best fit)" : ""}
+            </option>
+          ))}
+        </select>
+      </label>
+
+      {j.stopped ? <p className="text-base text-[#555555]">This work is stopped.</p> : body}
+
+      {isAiJob(j) && !finished && !j.stopped && busy !== "working" && (
+        <div className="flex flex-col gap-2 border-t border-[#EEEEEE] pt-3">
+          {mode === "ask" ? (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault()
+                void ask()
+              }}
+              className="flex flex-col gap-2 sm:flex-row"
+            >
+              <label htmlFor={`ask-${j.id}`} className="sr-only">
+                Ask {who} a question
+              </label>
+              <input id={`ask-${j.id}`} value={draft} onChange={(e) => setDraft(e.target.value)} placeholder={`Ask ${who} a question`} className={field} />
+              <button type="submit" disabled={!draft.trim() || !!busy} className={secondaryBtn}>
+                {busy === "asking" ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : "Ask"}
+              </button>
+            </form>
+          ) : (
+            <button type="button" onClick={() => { setMode("ask"); setDraft("") }} className="inline-flex w-fit items-center gap-2 text-base font-medium text-[#555555] hover:text-[#1F1F1F]">
+              <MessageCircle className="h-4 w-4" aria-hidden /> Ask {who} a question
+            </button>
+          )}
+          {answer && <p className="rounded-xl bg-[#F4F4F4] px-4 py-3 text-base leading-relaxed text-[#1F1F1F]">{answer}</p>}
+        </div>
       )}
+
       {error && (
-        <p role="alert" className="font-sans text-sm text-[#C0545A]">
+        <p role="alert" className="text-base text-[#B5543C]">
           {error}
         </p>
       )}
