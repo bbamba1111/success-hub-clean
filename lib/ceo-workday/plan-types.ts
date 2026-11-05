@@ -13,6 +13,12 @@
  */
 
 import type { CeoWorkCategoryId } from "./categories"
+import {
+  LEGACY_BUSINESS_FUNCTIONS,
+  SEVEN_BUSINESS_FUNCTIONS,
+  type LegacyPlanKey,
+  type StandardPlanKey,
+} from "@/lib/business-functions"
 
 // ── Vocabulary ──────────────────────────────────────────────────────────────
 
@@ -40,8 +46,9 @@ export type CeoBusinessFunction =
   | "operations"
   | "operations-design"
   | "trust-experiences"
-  | "own-work"
+  | "thought-leadership"
   // Legacy values kept so previously saved plan items still render.
+  | "own-work"
   | "build"
   | "decide"
   | "own"
@@ -55,14 +62,12 @@ export type CeoBusinessFunction =
   | "deliver"
   | "solve"
 
+const SHARED_FUNCTION_LABELS = Object.fromEntries(
+  [...SEVEN_BUSINESS_FUNCTIONS, ...LEGACY_BUSINESS_FUNCTIONS].map((f) => [f.planKey, f.label]),
+) as Record<StandardPlanKey | LegacyPlanKey, string>
+
 export const CEO_FUNCTION_LABEL: Record<CeoBusinessFunction, string> = {
-  "client-attraction": "Client Attraction",
-  "sales-conversion": "Sales & Conversion",
-  delivery: "Service or Product Delivery",
-  operations: "Business Operations",
-  "operations-design": "Business Operations Design & Redesign",
-  "trust-experiences": "Workshops & Webinars",
-  "own-work": "Own Work",
+  ...SHARED_FUNCTION_LABELS,
   build: "Build",
   decide: "Decide",
   own: "OWN",
@@ -77,22 +82,8 @@ export const CEO_FUNCTION_LABEL: Record<CeoBusinessFunction, string> = {
   solve: "SOLVE",
 }
 
-/** Official name of the sixth function; the UI uses the short label above. */
-export const TRUST_EXPERIENCES_OFFICIAL_NAME = "Workshops, Webinars & Trust-Building Experiences"
-
-/** Official name of the seventh function; the UI uses the short label "Own Work". */
-export const OWN_WORK_OFFICIAL_NAME = "Other — Bring & Create Your Own Work"
-
 /** The Seven Business Functions — the only top-level work categories in the planner. */
-export const BUSINESS_FUNCTIONS: CeoBusinessFunction[] = [
-  "client-attraction",
-  "sales-conversion",
-  "delivery",
-  "operations",
-  "operations-design",
-  "trust-experiences",
-  "own-work",
-]
+export const BUSINESS_FUNCTIONS: CeoBusinessFunction[] = SEVEN_BUSINESS_FUNCTIONS.map((f) => f.planKey)
 
 /** @deprecated Kept for existing imports; now includes all seven functions. */
 export const FIVE_BUSINESS_FUNCTIONS = BUSINESS_FUNCTIONS

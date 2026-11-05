@@ -21,27 +21,14 @@ import {
 } from "@/app/actions/boss-jobs"
 import { decideProposal } from "@/app/actions/boss-authority"
 import { EXECUTIVES, assigneeName, type AssigneeType } from "@/lib/boss/jobs/definitions"
-import { CEO_FUNCTION_LABEL, type CeoBusinessFunction, type CeoPlanItem } from "@/lib/ceo-workday/plan-types"
+import { BUSINESS_FUNCTIONS, CEO_FUNCTION_LABEL, type CeoBusinessFunction, type CeoPlanItem } from "@/lib/ceo-workday/plan-types"
+import { LEGACY_BUSINESS_FUNCTIONS, SEVEN_BUSINESS_FUNCTIONS } from "@/lib/business-functions"
 
-export const WORKDAY_FUNCTIONS: CeoBusinessFunction[] = [
-  "client-attraction",
-  "sales-conversion",
-  "delivery",
-  "operations",
-  "operations-design",
-  "trust-experiences",
-  "own-work",
-]
+export const WORKDAY_FUNCTIONS: CeoBusinessFunction[] = BUSINESS_FUNCTIONS
 
-const SUGGESTED_EXECUTIVE: Partial<Record<CeoBusinessFunction, string>> = {
-  "client-attraction": "marketing-brand",
-  "sales-conversion": "sales",
-  delivery: "client-success",
-  operations: "operations",
-  "operations-design": "operations",
-  "trust-experiences": "growth",
-  "own-work": "strategy",
-}
+const SUGGESTED_EXECUTIVE: Partial<Record<CeoBusinessFunction, string>> = Object.fromEntries(
+  [...SEVEN_BUSINESS_FUNCTIONS, ...LEGACY_BUSINESS_FUNCTIONS].map((f) => [f.planKey, f.executive]),
+)
 
 export function useWorkdayJobs(items: CeoPlanItem[]) {
   const ids = items.map((i) => i.jobId).filter((id): id is string => !!id).sort()

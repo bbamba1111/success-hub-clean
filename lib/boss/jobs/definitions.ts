@@ -1,13 +1,28 @@
-export const JOB_FUNCTIONS = [
-  { key: "attraction", label: "Client Attraction" },
-  { key: "sales", label: "Sales" },
-  { key: "delivery", label: "Delivery" },
-  { key: "operations", label: "Operations" },
-  { key: "design", label: "Design" },
-  { key: "experiences", label: "Workshops & Webinars" },
-  { key: "own_work", label: "Own Work" },
-] as const
-export type JobFunction = (typeof JOB_FUNCTIONS)[number]["key"]
+import {
+  LEGACY_BUSINESS_FUNCTIONS,
+  SEVEN_BUSINESS_FUNCTIONS,
+  type LegacyJobKey,
+  type StandardJobKey,
+} from "@/lib/business-functions"
+
+/** The seven standard functions — the only choices offered for new work. */
+export const JOB_FUNCTIONS: readonly { key: StandardJobKey; label: string }[] = SEVEN_BUSINESS_FUNCTIONS.map((f) => ({
+  key: f.jobKey,
+  label: f.label,
+}))
+
+/** Earlier functions kept so saved jobs and team members still display. */
+export const LEGACY_JOB_FUNCTIONS: readonly { key: LegacyJobKey; label: string }[] = LEGACY_BUSINESS_FUNCTIONS.map(
+  (f) => ({ key: f.jobKey, label: f.label }),
+)
+
+/** Standard + legacy. Use for labels and for accepting values already saved. */
+export const ALL_JOB_FUNCTIONS: readonly { key: StandardJobKey | LegacyJobKey; label: string }[] = [
+  ...JOB_FUNCTIONS,
+  ...LEGACY_JOB_FUNCTIONS,
+]
+
+export type JobFunction = StandardJobKey | LegacyJobKey
 
 export const JOB_STATUSES = [
   { key: "not_started", label: "Not Started" },

@@ -4,7 +4,7 @@ import { useState, useTransition } from "react"
 import { grantPreauthorization, revokePreauthorization } from "@/app/actions/boss-authority"
 import {
   ACTION_KINDS,
-  JOB_FUNCTIONS,
+  ALL_JOB_FUNCTIONS,
   labelFor,
   preauthorizationActive,
   type Job,
@@ -54,7 +54,7 @@ export function PreauthorizationPanel({ job, preauthorizations }: { job: Job; pr
             <li key={p.id} className="flex flex-col gap-2 rounded-lg bg-muted p-3 md:flex-row md:items-center md:justify-between">
               <span className="text-sm leading-relaxed text-brand-ink">
                 {p.actionKinds.map((k) => labelFor(ACTION_KINDS, k)).join(", ")} ·{" "}
-                {p.jobId ? "this job" : `all ${labelFor(JOB_FUNCTIONS, p.businessFunction)} jobs`} · until{" "}
+                {p.jobId ? "this job" : `all ${labelFor(ALL_JOB_FUNCTIONS, p.businessFunction)} jobs`} · until{" "}
                 {formatDate(p.expiresAt)}
                 {p.maxUses ? ` · ${p.uses} of ${p.maxUses} used` : ""}
               </span>
@@ -95,7 +95,7 @@ export function PreauthorizationPanel({ job, preauthorizations }: { job: Job; pr
             Covers
             <select name="scope" defaultValue="job" className={`${fieldClass} h-10 w-auto text-sm`}>
               <option value="job">This job only</option>
-              <option value="area">All {labelFor(JOB_FUNCTIONS, job.businessFunction)} jobs</option>
+              <option value="area">All {labelFor(ALL_JOB_FUNCTIONS, job.businessFunction)} jobs</option>
             </select>
           </label>
           <label className="flex flex-col gap-1 text-sm font-medium text-brand-ink">

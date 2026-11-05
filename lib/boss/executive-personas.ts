@@ -1,4 +1,5 @@
 import { EXECUTIVES } from "@/lib/boss/jobs/definitions"
+import { LEGACY_BUSINESS_FUNCTIONS, SEVEN_BUSINESS_FUNCTIONS } from "@/lib/business-functions"
 
 /** How each AI executive approaches work. Used for real drafting, never for decisions. */
 export const EXECUTIVE_FOCUS: Record<string, string> = {
@@ -14,15 +15,9 @@ export const EXECUTIVE_FOCUS: Record<string, string> = {
 }
 
 /** Which executive Cherry Blossom™ hands work to, by BO$$ job function. */
-export const CHERRY_ROUTES: Record<string, string> = {
-  attraction: "marketing-brand",
-  sales: "sales",
-  delivery: "client-success",
-  operations: "operations",
-  design: "operations",
-  experiences: "growth",
-  own_work: "strategy",
-}
+export const CHERRY_ROUTES: Record<string, string> = Object.fromEntries(
+  [...SEVEN_BUSINESS_FUNCTIONS, ...LEGACY_BUSINESS_FUNCTIONS].map((f) => [f.jobKey, f.executive]),
+)
 
 export function executiveName(id: string) {
   return EXECUTIVES.find((e) => e.id === id)?.name ?? "Executive"

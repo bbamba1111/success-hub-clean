@@ -25,6 +25,8 @@
  *   - Clear                 → sub-action of SOLVE / DELIVER, never its own category
  */
 
+import type { LegacyJobKey, StandardJobKey } from "@/lib/business-functions"
+
 /**
  * The Seven Business Functions are the ONLY top-level categories shown in the
  * CEO Workday™ planner. The older 12 work modes remain in the union only so
@@ -37,6 +39,8 @@ export type BusinessFunctionCategoryId =
   | "OPERATIONS"
   | "OPERATIONS_DESIGN"
   | "TRUST_EXPERIENCES"
+  | "THOUGHT_LEADERSHIP"
+  // Earlier seventh function; kept so saved items still display.
   | "OWN_WORK"
 
 export type CeoWorkCategoryId =
@@ -65,7 +69,7 @@ export interface CeoWorkCategory {
   /** Plain-language examples of work in this function. */
   examples?: string[]
   /** Matching BO$$ business function id, used to open the Business Work Queue filtered. */
-  bossFunction?: "attraction" | "sales" | "delivery" | "operations" | "design" | "experiences" | "own_work"
+  bossFunction?: StandardJobKey | LegacyJobKey
 }
 
 export const CEO_WORK_CATEGORIES: CeoWorkCategory[] = [
@@ -112,13 +116,26 @@ export const CEO_WORK_CATEGORIES: CeoWorkCategory[] = [
   },
   {
     id: "TRUST_EXPERIENCES",
-    label: "Workshops & Webinars",
+    label: "Programs, Events & Experiences",
     definition:
-      "Workshops, Webinars & Trust-Building Experiences: design, host, follow up on and improve live experiences that build trust and invite people into the next step.",
+      "Design, host, follow up on and improve programs, events and live experiences that build trust and invite people into the next step.",
     tangibleOutcome: "A held experience with follow-up and one chosen improvement",
-    examples: ["Monday Redesigned™", "Reality Check™ (live)", "Weekly workshop / webinar", "Masterclass"],
+    examples: ["Monday Redesigned™", "Reality Check™ (live)", "Weekly workshop / webinar", "Masterclass", "Retreat or program"],
     bossFunction: "experiences",
   },
+  {
+    id: "THOUGHT_LEADERSHIP",
+    label: "Thought Leadership & Intellectual Property",
+    definition:
+      "Share your point of view and build the ideas, methods and content you own — articles, talks, books, podcasts, frameworks and courses.",
+    tangibleOutcome: "A published idea or a piece of intellectual property that moves forward",
+    examples: ["Articles & posts", "Podcasts & interviews", "Speaking", "Books", "Frameworks & methods", "Courses"],
+    bossFunction: "thought_leadership",
+  },
+]
+
+/** Pre–Five Functions work modes. Kept only so previously saved items still display. */
+export const LEGACY_CEO_WORK_CATEGORIES: CeoWorkCategory[] = [
   {
     id: "OWN_WORK",
     label: "Own Work",
@@ -128,10 +145,6 @@ export const CEO_WORK_CATEGORIES: CeoWorkCategory[] = [
     examples: ["A course or program", "A book", "A launch", "A cleanup", "Any idea of your own"],
     bossFunction: "own_work",
   },
-]
-
-/** Pre–Five Functions work modes. Kept only so previously saved items still display. */
-export const LEGACY_CEO_WORK_CATEGORIES: CeoWorkCategory[] = [
   {
     id: "BUILD",
     label: "Build",

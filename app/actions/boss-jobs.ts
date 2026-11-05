@@ -2,8 +2,10 @@
 
 import { revalidatePath } from "next/cache"
 import { createClient } from "@/lib/supabase/server"
+import { LEGACY_BUSINESS_FUNCTIONS, SEVEN_BUSINESS_FUNCTIONS } from "@/lib/business-functions"
 import {
   DECISIONS,
+  ALL_JOB_FUNCTIONS,
   EXECUTIVES,
   JOB_FUNCTIONS,
   JOB_STATUSES,
@@ -75,11 +77,12 @@ export type JobInput = {
   permissionLevel?: string
 }
 
-function cleanJobInput(input: JobInput) {
+/** New jobs use the seven standard functions; edits may keep an earlier saved one. */
+function cleanJobInput(input: JobInput, { allowLegacy }: { allowLegacy: boolean }) {
   const title = text(input.title, 200, true)
   const details = text(input.details, 4000)
   if (!title || details === undefined) return null
-  if (!isOneOf(JOB_FUNCTIONS, input.businessFunction)) return null
+  if (!isOneOf(allowLegacy ? ALL_JOB_FUNCTIONS : JOB_FUNCTIONS, input.businessFunction)) return null
   const dueDate = input.dueDate && /^\d{4}-\d{2}-\d{2}$/.test(input.dueDate) ? input.dueDate : null
   const assignee = resolveAssignee(input.assignee)
   if (!assignee) return null
@@ -99,7 +102,7 @@ function cleanJobInput(input: JobInput) {
 export async function createJob(input: JobInput): Promise<Result> {
   const { supabase, userId } = await requireFounder()
   if (!userId) return { ok: false, error: "Please sign in again." }
-  const clean = cleanJobInput(input)
+  const clean = cleanJobInput(input, { allowLegacy: false })
   if (!clean) return { ok: false, error: "Please check the job details." }
 
   const { data: last } = await supabase
@@ -123,7 +126,7 @@ export async function createJob(input: JobInput): Promise<Result> {
 export async function updateJob(jobId: string, input: JobInput): Promise<Result> {
   const { supabase, userId } = await requireFounder()
   if (!userId || !UUID.test(jobId)) return { ok: false, error: "Please sign in again." }
-  const clean = cleanJobInput(input)
+  const clean = cleanJobInput(input, { allowLegacy: true })
   if (!clean) return { ok: false, error: "Please check the job details." }
   const { error } = await supabase
     .from("boss_jobs")
@@ -401,15 +404,9 @@ export async function removeDependency(jobId: string, dependsOnJobId: string): P
   return finish(error, "That link could not be removed.")
 }
 
-const WORKDAY_FUNCTION: Record<string, string> = {
-  attraction: "client-attraction",
-  sales: "sales-conversion",
-  delivery: "delivery",
-  operations: "operations",
-  design: "operations-design",
-  experiences: "trust-experiences",
-  own_work: "own-work",
-}
+const WORKDAY_FUNCTION: Record<string, string> = Object.fromEntries(
+  [...SEVEN_BUSINESS_FUNCTIONS, ...LEGACY_BUSINESS_FUNCTIONS].map((f) => [f.jobKey, f.planKey]),
+)
 
 export async function addJobToTodaysWorkday(jobId: string): Promise<Result> {
   const { supabase, userId } = await requireFounder()
@@ -504,7 +501,7 @@ function cleanTeamInput(input: TeamMemberInput) {
   const note = text(input.note, 1000)
   if (!name || role === undefined || note === undefined) return null
   if (input.memberType !== "employee" && input.memberType !== "contractor") return null
-  const functions = (input.businessFunctions ?? []).filter((f) => isOneOf(JOB_FUNCTIONS, f))
+  const functions = (input.businessFunctions ?? []).filter((f) => isOneOf(ALL_JOB_FUNCTIONS, f))
   return { name, role, note, member_type: input.memberType, business_functions: Array.from(new Set(functions)) }
 }
 

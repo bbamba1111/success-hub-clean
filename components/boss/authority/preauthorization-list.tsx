@@ -4,7 +4,7 @@ import { useState, useTransition } from "react"
 import { revokePreauthorization } from "@/app/actions/boss-authority"
 import {
   ACTION_KINDS,
-  JOB_FUNCTIONS,
+  ALL_JOB_FUNCTIONS,
   labelFor,
   preauthorizationActive,
   type Job,
@@ -32,7 +32,7 @@ export function PreauthorizationList({ preauthorizations, jobs }: { preauthoriza
 
   function scope(p: Preauthorization) {
     if (p.jobId) return `Job: ${jobTitle.get(p.jobId) ?? "a job"}`
-    return `All ${labelFor(JOB_FUNCTIONS, p.businessFunction)} jobs`
+    return `All ${labelFor(ALL_JOB_FUNCTIONS, p.businessFunction)} jobs`
   }
 
   function withdraw(id: string) {
