@@ -176,6 +176,8 @@ function jobFunction(fn: CeoPlanItem["businessFunction"]): string {
       return "design"
     case "trust-experiences":
       return "experiences"
+    case "thought-leadership":
+      return "thought_leadership"
     case "own-work":
       return "own_work"
     default:

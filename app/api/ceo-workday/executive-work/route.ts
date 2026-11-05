@@ -5,7 +5,7 @@ import { guardMemberAi } from "@/lib/ai/guard"
 import { createClient } from "@/lib/supabase/server"
 import { proposeJobAction } from "@/lib/boss/authority"
 import { CHERRY_ROUTES, EXECUTIVE_FOCUS, executiveName } from "@/lib/boss/executive-personas"
-import { labelFor, JOB_FUNCTIONS } from "@/lib/boss/jobs/definitions"
+import { labelFor, ALL_JOB_FUNCTIONS } from "@/lib/boss/jobs/definitions"
 
 /**
  * The executive actually does the work on a CEO Workday™ job.
@@ -83,7 +83,7 @@ You cannot publish, send, pay or contact anyone. You prepare work; the founder r
 Never invent facts about the founder's business (prices, names, results). If you need one, leave a clear [blank] and ask for it.`
 
   const context = `Work: ${job.title}
-Business area: ${labelFor(JOB_FUNCTIONS, job.business_function)}
+Business area: ${labelFor(ALL_JOB_FUNCTIONS, job.business_function)}
 ${job.details ? `What the founder wants: ${clip(job.details, 2000)}` : ""}
 ${lastDraft ? `\nYour last draft:\n${lastDraft}` : ""}`
 

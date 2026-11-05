@@ -45,21 +45,33 @@ export const FUNCTIONS: { id: BusinessFunction; label: string; short: string; pu
   },
   {
     id: "experiences",
-    label: "Workshops & Webinars",
-    short: "Workshops & Webinars",
-    purpose: "Build trust through live experiences.",
+    label: "Programs, Events & Experiences",
+    short: "Programs & Events",
+    purpose: "Build trust through programs, events and live experiences.",
     tone: "bg-brand-blush text-brand-green-dark border-brand-tan/40",
   },
   {
+    id: "thought_leadership",
+    label: "Thought Leadership & Intellectual Property",
+    short: "Thought Leadership",
+    purpose: "Share your ideas and build what you own.",
+    tone: "bg-brand-sage-light text-brand-tan-dark border-brand-tan/40",
+  },
+]
+
+/** Earlier categories kept so saved work still shows its label. */
+export const LEGACY_FUNCTIONS: typeof FUNCTIONS = [
+  {
     id: "own_work",
-    label: "Other — Bring & Create Your Own Work",
+    label: "Own Work",
     short: "Own Work",
     purpose: "Your projects and ideas, done your way.",
     tone: "bg-brand-sage-light text-brand-tan-dark border-brand-tan/40",
   },
 ]
 
-export const fnMeta = (fn: BusinessFunction) => FUNCTIONS.find((f) => f.id === fn) ?? FUNCTIONS[0]
+export const fnMeta = (fn: BusinessFunction) =>
+  FUNCTIONS.find((f) => f.id === fn) ?? LEGACY_FUNCTIONS.find((f) => f.id === fn) ?? FUNCTIONS[0]
 
 export const PRIORITIES: { id: Priority; label: string; weight: number }[] = [
   { id: "critical", label: "Must do", weight: 4 },

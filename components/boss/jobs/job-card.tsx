@@ -17,7 +17,7 @@ import {
 } from "@/app/actions/boss-jobs"
 import {
   DECISIONS,
-  JOB_FUNCTIONS,
+  ALL_JOB_FUNCTIONS,
   JOB_STATUSES,
   PERMISSION_LEVELS,
   assigneeName,
@@ -135,7 +135,7 @@ export function JobCard({
     if (value === null || value === "") return "nothing"
     if (field === "status") return labelFor(JOB_STATUSES, value)
     if (field === "permission_level") return labelFor(PERMISSION_LEVELS, value)
-    if (field === "business_function") return labelFor(JOB_FUNCTIONS, value)
+    if (field === "business_function") return labelFor(ALL_JOB_FUNCTIONS, value)
     if (field === "decision") return labelFor(DECISIONS, value)
     if (field === "paused" || field === "stopped") return value === "true" ? "yes" : "no"
     if (field === "must_happen_first") return allJobs.find((j) => j.id === value)?.title ?? "another job"
@@ -164,7 +164,7 @@ export function JobCard({
             <h3 className="text-pretty text-lg font-semibold leading-snug text-brand-ink">{job.title}</h3>
             <p className="text-base text-muted-foreground">
               {assigneeName(job.assigneeType, job.assigneeExecutiveId, job.assigneeTeamMemberId, team)} ·{" "}
-              {labelFor(JOB_FUNCTIONS, job.businessFunction)}
+              {labelFor(ALL_JOB_FUNCTIONS, job.businessFunction)}
               {job.dueDate ? ` · Due ${job.dueDate}` : ""}
             </p>
           </div>

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import { createClient } from "@/lib/supabase/server"
-import { ACTION_KINDS, DECISIONS, JOB_FUNCTIONS } from "@/lib/boss/jobs/definitions"
+import { ACTION_KINDS, ALL_JOB_FUNCTIONS, DECISIONS } from "@/lib/boss/jobs/definitions"
 
 type Result = { ok: true; message?: string } | { ok: false; error: string }
 
@@ -95,7 +95,7 @@ export async function grantPreauthorization(input: PreauthorizationInput): Promi
   if (!userId) return { ok: false, error: "Please sign in again." }
 
   const jobId = input.jobId && UUID.test(input.jobId) ? input.jobId : null
-  const area = JOB_FUNCTIONS.some((f) => f.key === input.businessFunction) ? input.businessFunction : null
+  const area = ALL_JOB_FUNCTIONS.some((f) => f.key === input.businessFunction) ? input.businessFunction : null
   if (!jobId && !area) return { ok: false, error: "Choose one job or one business area." }
 
   const kinds = Array.from(new Set(input.actionKinds)).filter((k) => ACTION_KINDS.some((a) => a.key === k))

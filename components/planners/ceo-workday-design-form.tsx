@@ -115,6 +115,7 @@ const FUNCTION_ORDER: CeoBusinessFunction[] = [
   "operations",
   "operations-design",
   "trust-experiences",
+  "thought-leadership",
 ]
 
 function newLocalId() {
@@ -1223,6 +1224,7 @@ const CEO_FUNCTION_TO_CATEGORY: Record<CeoBusinessFunction, CeoPlanItem["ceoWork
   operations: "SYSTEMIZE",
   "operations-design": "BUILD",
   "trust-experiences": "COMMUNICATE",
+  "thought-leadership": "COMMUNICATE",
   "own-work": "BUILD",
   build: "BUILD",
   decide: "DECIDE",

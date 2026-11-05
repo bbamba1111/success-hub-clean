@@ -5,6 +5,7 @@ import { createJob, updateJob, type JobInput } from "@/app/actions/boss-jobs"
 import {
   EXECUTIVES,
   JOB_FUNCTIONS,
+  LEGACY_JOB_FUNCTIONS,
   PERMISSION_LEVELS,
   type AssigneeType,
   type Job,
@@ -134,6 +135,11 @@ export function JobForm({
             {JOB_FUNCTIONS.map((f) => (
               <option key={f.key} value={f.key}>
                 {f.label}
+              </option>
+            ))}
+            {LEGACY_JOB_FUNCTIONS.filter((f) => f.key === job?.businessFunction).map((f) => (
+              <option key={f.key} value={f.key}>
+                {f.label} (earlier category)
               </option>
             ))}
           </select>

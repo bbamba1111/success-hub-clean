@@ -8,7 +8,7 @@ import {
   updateTeamMember,
   type TeamMemberInput,
 } from "@/app/actions/boss-jobs"
-import { EXECUTIVES, JOB_FUNCTIONS, labelFor, type TeamMember } from "@/lib/boss/jobs/definitions"
+import { ALL_JOB_FUNCTIONS, EXECUTIVES, JOB_FUNCTIONS, LEGACY_JOB_FUNCTIONS, labelFor, type TeamMember } from "@/lib/boss/jobs/definitions"
 import { fieldClass, labelClass } from "@/components/boss/primitives"
 
 const smallButton =
@@ -82,7 +82,13 @@ function MemberForm({ member, onDone }: { member?: TeamMember; onDone: () => voi
       <fieldset className="flex flex-col gap-3">
         <legend className={labelClass}>Business functions they work in</legend>
         <div className="flex flex-wrap gap-3">
-          {JOB_FUNCTIONS.map((f) => (
+          {[
+            ...JOB_FUNCTIONS,
+            ...LEGACY_JOB_FUNCTIONS.filter((f) => member?.businessFunctions.includes(f.key)).map((f) => ({
+              ...f,
+              label: `${f.label} (earlier category)`,
+            })),
+          ].map((f) => (
             <label key={f.key} className="inline-flex items-center gap-2 text-base text-brand-ink">
               <input
                 type="checkbox"
@@ -154,7 +160,7 @@ function MemberRow({ member, openJobs }: { member: TeamMember; openJobs: number 
         <p className="text-base text-muted-foreground">
           {[member.role, member.memberType === "contractor" ? "Contractor" : "Employee"].filter(Boolean).join(" · ")}
           {member.businessFunctions.length > 0 &&
-            ` · ${member.businessFunctions.map((f) => labelFor(JOB_FUNCTIONS, f)).join(", ")}`}
+            ` · ${member.businessFunctions.map((f) => labelFor(ALL_JOB_FUNCTIONS, f)).join(", ")}`}
         </p>
         <p className="text-sm text-muted-foreground">
           {openJobs} open {openJobs === 1 ? "job" : "jobs"}

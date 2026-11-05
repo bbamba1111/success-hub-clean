@@ -1,4 +1,6 @@
-export type BusinessFunction = "attraction" | "sales" | "delivery" | "operations" | "design" | "experiences" | "own_work"
+import type { LegacyJobKey, StandardJobKey } from "@/lib/business-functions"
+
+export type BusinessFunction = StandardJobKey | LegacyJobKey
 
 export type Priority = "critical" | "high" | "medium" | "low"
 

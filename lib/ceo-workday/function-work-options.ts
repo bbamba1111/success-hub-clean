@@ -187,6 +187,20 @@ export const FUNCTION_WORK_OPTIONS: Partial<Record<CeoBusinessFunction, Function
     },
   ],
   "trust-experiences": EXPERIENCE_OPTIONS.map((o) => ({ key: o.key, work: o.work, outcome: o.outcome })),
+  "thought-leadership": [
+    {
+      work: "Write or record one piece that shares my point of view.",
+      outcome: "One article, post, episode or talk is ready to share.",
+    },
+    {
+      work: "Turn what I know into something I own (a framework, method, course or book).",
+      outcome: "My idea has a clear name, outline and next step.",
+    },
+    {
+      work: "Pitch myself for a podcast, stage, interview or publication.",
+      outcome: "One pitch is sent with a follow-up date.",
+    },
+  ],
   "own-work": [
     {
       work: "Work on one of my projects.",
