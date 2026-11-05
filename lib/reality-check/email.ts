@@ -140,6 +140,27 @@ const REMINDER_COPY: Record<ReminderStage, { kind: "reminder-saturday" | "remind
   },
 }
 
+/**
+ * Renders a reminder for a fictional recipient without sending it. The private
+ * Zoom link is verified to be present, then redacted from the returned text.
+ */
+export function previewReminderEmail(stage: ReminderStage, sessionDate: string) {
+  const copy = REMINDER_COPY[stage]
+  const link = zoomUrl()
+  const recipient: Recipient = { id: "dry-run", fullName: "Test Participant", email: "dry-run@example.invalid", sessionDate }
+  const { html, text } = renderEmail({ heading: copy.heading, intro: copy.intro, recipient, link: link ?? "" })
+  return {
+    subject: copy.subject,
+    sessionDateLabel: formatSessionDate(sessionDate),
+    startTimeInEmail: text.includes(`${SESSION_TIME_LABEL} (Eastern Time)`),
+    zoomConfigured: Boolean(link),
+    zoomLinkInHtml: Boolean(link) && html.includes(`href="${escapeHtml(link!)}"`),
+    zoomLinkInText: Boolean(link) && text.includes(link!),
+    idempotencyKey: `reality-check-${copy.kind}-<registration id>`,
+    textPreview: link ? text.split(link).join("[PRIVATE ZOOM LINK REDACTED]") : text,
+  }
+}
+
 export function sendReminderEmail(recipient: Recipient, stage: ReminderStage) {
   const copy = REMINDER_COPY[stage]
   return send(recipient, copy.kind, copy.subject, copy.heading, copy.intro)
