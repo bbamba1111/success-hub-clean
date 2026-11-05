@@ -122,14 +122,14 @@ export type ReminderStage = "saturday" | "sunday-1pm"
 const REMINDER_COPY: Record<ReminderStage, { kind: "reminder-saturday" | "reminder-sunday-1pm"; subject: string; heading: string; intro: string }> = {
   saturday: {
     kind: "reminder-saturday",
-    subject: "Tomorrow at 3 PM ET: plan ahead for your Reality Check™",
-    heading: "Your Reality Check is tomorrow.",
+    subject: "Plan Ahead for The Work-Life Balance Reality Check",
+    heading: "Plan Ahead for The Work-Life Balance Reality Check",
     intro: "Your Weekly Work-Life Balance Reality Check™ is tomorrow at 3:00 PM Eastern. Set aside this time now and come ready to look honestly at how your business and life are working together.",
   },
   "sunday-1pm": {
     kind: "reminder-sunday-1pm",
-    subject: "Today at 3 PM ET: get ready for your Reality Check™",
-    heading: "We're meeting today.",
+    subject: "Get Ready to Take The Reality Check",
+    heading: "Get Ready to Take The Reality Check",
     intro: "Your Weekly Work-Life Balance Reality Check™ begins at 3:00 PM Eastern. Take a moment to get comfortable, gather your thoughts, and get ready to join us.",
   },
 }
