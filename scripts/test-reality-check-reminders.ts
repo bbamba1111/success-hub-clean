@@ -79,7 +79,7 @@ async function main() {
     }
     check(ok, c.name, detail)
   }
-  check(subjects.size === 3, "three distinct subject lines", [...subjects].join(" | "))
+  check(subjects.size === 3, "three distinct subject lines", Array.from(subjects).join(" | "))
 
   const sample = await (await GET(new Request(`${base}?dryRun=1&at=2026-04-12T18:40:00Z`, { headers: auth }))).json()
   console.log("\n--- Final reminder text (Zoom link redacted) ---\n" + sample.email.textPreview)
