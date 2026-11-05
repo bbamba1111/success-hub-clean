@@ -27,24 +27,23 @@ function currentReminderStage(now: Date): ReminderSchedule | null {
   const get = (type: string) => parts.find((part) => part.type === type)?.value ?? ""
   const weekday = get("weekday")
   const hour = Number(get("hour"))
-  const minute = Number(get("minute"))
 
-  // Each window stays open until its copy would become inaccurate, so a missed
-  // or failed cron tick is retried on the next tick. The per-stage sent_at
-  // column plus the Resend idempotency key keep this at one email per stage.
+  // Vercel Hobby crons are UTC, daily-at-most, and fire anywhere within the
+  // scheduled hour. vercel.json schedules one entry per UTC hour that can map
+  // to each window in EDT or EST; this Eastern-time check decides which of
+  // those runs actually sends. Windows stay open until the copy would be
+  // inaccurate, so a later entry retries anything an earlier one missed. The
+  // per-stage sent_at column plus the Resend idempotency key prevent repeats.
   if (weekday === "Sat" && hour >= 15) {
     return { stage: "saturday", sentColumn: "reminder_1_sent_at", errorColumn: "reminder_1_error", label: "Saturday planning reminder" }
   }
-  if (weekday === "Sun" && (hour === 13 || (hour === 14 && minute < 40))) {
+  if (weekday === "Sun" && (hour === 13 || hour === 14)) {
     return { stage: "sunday-1pm", sentColumn: "reminder_2_sent_at", errorColumn: "reminder_2_error", label: "Sunday preparation reminder" }
-  }
-  if (weekday === "Sun" && hour === 14 && minute >= 40 && minute < 58) {
-    return { stage: "sunday-final", sentColumn: "reminder_3_sent_at", errorColumn: "reminder_3_error", label: "20-minute final reminder" }
   }
   return null
 }
 
-/** Runs every five minutes; sends only during the three Eastern-time reminder windows. */
+/** Invoked by weekly Hobby-compatible crons; sends only inside the two Eastern-time reminder windows. */
 export async function GET(request: Request) {
   const secret = process.env.CRON_SECRET
   if (!secret || request.headers.get("authorization") !== `Bearer ${secret}`) {
@@ -105,8 +104,8 @@ export async function GET(request: Request) {
       ? { [schedule.sentColumn]: new Date().toISOString(), [schedule.errorColumn]: null }
       : { [schedule.errorColumn]: result.error.slice(0, 500) }
 
-    // Keep the original aggregate marker in sync when the final reminder succeeds.
-    if (result.ok && schedule.stage === "sunday-final") {
+    // Keep the original aggregate marker in sync when the last reminder succeeds.
+    if (result.ok && schedule.stage === "sunday-1pm") {
       update.reminder_sent_at = new Date().toISOString()
       update.reminder_error = null
     }

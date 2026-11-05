@@ -1,9 +1,11 @@
 {
   "installCommand": "pnpm install --no-frozen-lockfile",
   "crons": [
-    {
-      "path": "/api/cron/reality-check-reminders",
-      "schedule": "*/5 * * * *"
-    }
+    { "path": "/api/cron/reality-check-reminders", "schedule": "0 19 * * 6" },
+    { "path": "/api/cron/reality-check-reminders", "schedule": "0 20 * * 6" },
+    { "path": "/api/cron/reality-check-reminders", "schedule": "0 21 * * 6" },
+    { "path": "/api/cron/reality-check-reminders", "schedule": "0 17 * * 0" },
+    { "path": "/api/cron/reality-check-reminders", "schedule": "0 18 * * 0" },
+    { "path": "/api/cron/reality-check-reminders", "schedule": "0 19 * * 0" }
   ]
 }

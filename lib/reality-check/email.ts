@@ -83,7 +83,7 @@ function renderEmail({
 
 async function send(
   recipient: Recipient,
-  kind: "confirm" | "reminder-saturday" | "reminder-sunday-1pm" | "reminder-sunday-final",
+  kind: "confirm" | "reminder-saturday" | "reminder-sunday-1pm",
   subject: string,
   heading: string,
   intro: string,
@@ -117,9 +117,9 @@ export function sendConfirmationEmail(recipient: Recipient) {
   )
 }
 
-export type ReminderStage = "saturday" | "sunday-1pm" | "sunday-final"
+export type ReminderStage = "saturday" | "sunday-1pm"
 
-const REMINDER_COPY: Record<ReminderStage, { kind: "reminder-saturday" | "reminder-sunday-1pm" | "reminder-sunday-final"; subject: string; heading: string; intro: string }> = {
+const REMINDER_COPY: Record<ReminderStage, { kind: "reminder-saturday" | "reminder-sunday-1pm"; subject: string; heading: string; intro: string }> = {
   saturday: {
     kind: "reminder-saturday",
     subject: "Tomorrow at 3 PM ET: plan ahead for your Reality Check™",
@@ -131,12 +131,6 @@ const REMINDER_COPY: Record<ReminderStage, { kind: "reminder-saturday" | "remind
     subject: "Today at 3 PM ET: get ready for your Reality Check™",
     heading: "We're meeting today.",
     intro: "Your Weekly Work-Life Balance Reality Check™ begins at 3:00 PM Eastern. Take a moment to get comfortable, gather your thoughts, and get ready to join us.",
-  },
-  "sunday-final": {
-    kind: "reminder-sunday-final",
-    subject: "Starting in 20 minutes: your Reality Check™",
-    heading: "We're starting in 20 minutes.",
-    intro: "Your Weekly Work-Life Balance Reality Check™ begins in 20 minutes at 3:00 PM Eastern. Use the Zoom link below to join the room now.",
   },
 }
 
