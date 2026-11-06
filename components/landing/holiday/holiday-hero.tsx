@@ -109,23 +109,20 @@ export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
           <div className="w-fit max-w-full">
             <h1 className="font-playfair text-balance text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
               <span className="block text-[#F6A9C2]">Make Time For More</span>
-              <span className="block text-[#FFF8F4]">This Holiday Season</span>
+              <span className="mt-1 inline-block -rotate-2 font-[cursive] text-5xl font-normal italic leading-none text-[#FFF8F4] sm:text-7xl">This Holiday Season</span>
             </h1>
-            <svg className="mt-2 h-5 w-full max-w-[34rem] overflow-visible" viewBox="0 0 544 24" preserveAspectRatio="none" aria-hidden="true">
-              <path d="M6 15 C105 2 215 20 323 11 S466 5 538 13" fill="none" stroke="#C51E3A" strokeWidth="9" strokeLinecap="round" />
-              <path d="M16 17 C120 8 235 23 344 13 S477 10 526 15" fill="none" stroke="#E43B50" strokeWidth="2.5" strokeLinecap="round" opacity="0.8" />
+            <svg className="ml-2 mt-1 h-5 w-[min(100%,27rem)] overflow-visible" viewBox="0 0 432 24" preserveAspectRatio="none" aria-hidden="true">
+              <path d="M5 16 C105 2 190 23 278 11 S370 8 425 12" fill="none" stroke="#C51E3A" strokeWidth="8" strokeLinecap="round" />
+              <path d="M12 17 C110 7 200 24 288 13 S378 10 418 14" fill="none" stroke="#E43B50" strokeWidth="2" strokeLinecap="round" opacity="0.85" />
             </svg>
           </div>
           <p className="font-playfair text-balance text-2xl font-semibold leading-tight text-[#F6A9C2] sm:text-3xl">
             Give Yourself the Gift of Work-Life Balance, Time Freedom &amp; Sustainable Success.
           </p>
-          <p className="font-poppins text-pretty text-lg leading-relaxed text-[#FFF8F4] sm:text-xl">
-            Redesign how you enter the workweek. Set work-life balance boundaries in your business—and start living them in real time.
-          </p>
           <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center">
             <a
               href="#register"
-              className="font-poppins inline-flex w-fit items-center justify-center rounded-full bg-[#C13B6B] px-8 py-4 text-sm font-semibold tracking-[0.04em] text-[#FFF8F4] shadow-xl shadow-[#C13B6B]/30 transition-transform hover:scale-[1.03] hover:bg-[#A8305B]"
+              className="font-poppins inline-flex w-full min-w-[min(100%,24rem)] items-center justify-center rounded-full bg-[#C13B6B] px-10 py-5 text-base font-bold tracking-[0.02em] text-[#FFF8F4] shadow-xl shadow-[#C13B6B]/30 transition-transform hover:scale-[1.03] hover:bg-[#A8305B] sm:w-fit sm:min-w-[28rem] sm:px-12 sm:py-6 sm:text-lg"
             >
               Take the Free Work-Life Balance Reality Check™
             </a>
