@@ -44,7 +44,8 @@ Do not convert a proposal or an old audit observation into a current product rul
 | Existing architecture and integration gaps | docs/proactive-start-growth-scale-readiness-architecture-audit.md | Dated technical audit; verify before implementation |
 | Startup assessment questions and status model | docs/startup-business-readiness-assessment-spec.md | Startup founder readiness assessment |
 | Startup foundation routing and deliverables | docs/startup-business-foundations-agent-routing.md | BO$ function and Executive responsibility map |
-| Universal Startup Business Fundamentals™ | docs/startup-business-fundamentals-universal-access-spec.md | Universal access, eight fundamentals, personalized learning/application, workday integration, and acceptance criteria |
+| Universal Startup Business Fundamentals™ product rules | docs/startup-business-fundamentals-universal-access-spec.md | Universal access, eight fundamentals, personalized learning/application, workday integration, and acceptance criteria |
+| Universal Startup Business Fundamentals™ registry | lib/startup-business-fundamentals/registry.ts | Canonical data-only IDs, descriptions, outcomes, existing function keys, Executive IDs, and work modes |
 | Reality Check experience, offer and report | Latest approved Reality Check source-of-truth document and current approved product decisions | Reality Check questions, delivery, offer, report and entitlements |
 
 ## 3. Startup pathway documents added November 6, 2026
