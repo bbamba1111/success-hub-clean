@@ -5,7 +5,7 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion"
 import { HOLIDAY_SCENES as HERO_SCENES, HOLIDAY_SCENE_INTERVAL_MS } from "@/lib/holiday-scenes"
 import { SESSION_TIME_LABEL, nextSessionDate, sessionStartsAt } from "@/lib/reality-check/session"
 
-function SundayCountdown() {
+function SundayCountdown({ sessionLabel }: { sessionLabel: string }) {
   const [remaining, setRemaining] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
 
   useEffect(() => {
@@ -34,7 +34,7 @@ function SundayCountdown() {
   return (
     <div className="flex flex-col gap-2" aria-live="off">
       <p className="font-poppins text-xs font-semibold uppercase tracking-[0.18em] text-[#F6D6E1]">
-        Next Sunday Reality Check · Every Sunday at {SESSION_TIME_LABEL}
+        Next: {sessionLabel} · Every Sunday at {SESSION_TIME_LABEL}
       </p>
       <div className="flex flex-wrap gap-2">
         {units.map((unit) => (
@@ -117,7 +117,7 @@ export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
             Don&apos;t wait for the New Year to start reclaiming your life. Build a successful business. Reclaim your
             freedom. Make time for more life.
           </p>
-          <SundayCountdown />
+          <SundayCountdown sessionLabel={sessionLabel} />
           <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center">
             <a
               href="#register"
