@@ -106,12 +106,13 @@ export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
           <p className="font-poppins w-fit rounded-full border border-[#F6D6E1]/40 bg-[#2E2228]/40 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-[#F6D6E1] backdrop-blur-sm">
             Free Sunday Reality Check™ · Every Sunday · {SESSION_TIME_LABEL}
           </p>
+          <p className="font-poppins text-xs font-semibold uppercase tracking-[0.18em] text-[#C9DDB4]">The Parallel Lane to Hustle Entrepreneurship. The Work-Life Balance Destination.</p>
           <p className="font-playfair text-xl italic text-[#F6A9C2] sm:text-2xl">Make Time For More This Holiday Season</p>
           <h1 className="font-playfair text-balance text-4xl font-bold leading-[1.05] tracking-tight text-[#FFF8F4] sm:text-6xl">
             Redesign Your Entry Into the Workweek™
           </h1>
           <p className="font-poppins text-pretty text-lg leading-relaxed text-[#FFF8F4] sm:text-xl">
-            AI is changing what founders can accomplish. This season, decide what you&apos;ll do with that increased capacity.
+            AI is about to give founders back a lot of time. This season, decide what you&apos;ll do with it.
           </p>
           <p className="font-poppins text-pretty text-base leading-relaxed text-[#E9F0DF]">
             Don&apos;t wait for the New Year to start reclaiming your life. Build a successful business. Reclaim your
