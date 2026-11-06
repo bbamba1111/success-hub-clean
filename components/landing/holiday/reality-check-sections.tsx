@@ -43,6 +43,9 @@ export function FreedomSection() {
             created for more freedom may now demand more of your time, energy, attention, and availability than you intended.
           </p>
           <p className={BODY}>And now AI is changing how business gets done.</p>
+          <p className="font-playfair text-xl font-semibold leading-snug text-[#C13B6B] sm:text-2xl">
+            Without intentional boundaries and a redesigned way of operating, AI could simply automate the very hustle you were trying to escape.
+          </p>
           <p className={`font-playfair text-xl italic leading-snug sm:text-2xl ${INK}`}>
             Before using new technology to increase what your business can produce, consider a different question:
             have you redesigned your business to make room for the life you wanted it to create?
