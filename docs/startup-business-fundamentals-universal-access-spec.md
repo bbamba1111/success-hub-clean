@@ -38,8 +38,9 @@ It is available across the founder journey and connected to the existing Seven B
 | Existing BO$$ element | Responsibility |
 |---|---|
 | Startup Business Fundamentals™ | Universal library and guided application path for core business fundamentals. |
-| Startup Business Readiness Assessment™ | Startup-specific inventory of what is already established, partly established, missing, unclear, or needs improvement. |
-| Established Business Assessment | For established/pivoting founders, assess the current business and identify strengths, gaps, friction, and redesign needs. Reuse existing business context and ESA structures; do not create a duplicate assessment engine. |
+| Startup Business Readiness Assessment™ | Startup-pathway inventory of what is already established, partly established, missing, unclear, or needs improvement. It is designed for founders building from the beginning and should not be imposed as the pivoting founder's default assessment. |
+| Established / Pivoting Business Assessment | Pivoting founders assess the business they actually have: current offers, clients, revenue model, marketing and sales, delivery, operations, tools, team/capacity, founder dependency, and work-life boundary collisions. Reuse existing Business Context, ESA, Business Functions, and other saved evidence; do not create a duplicate assessment engine. |
+| Shared eight-fundamental gap map | Both pathways are evaluated against the same eight Startup Business Fundamentals™. The shared fundamentals are the diagnostic reference and learning/application library—not a requirement to complete a startup questionnaire. For each applicable fundamental, identify whether it is in place, partial, missing, uncertain, needs improvement, or not applicable, and capture evidence separately. |
 | Seven Business Functions™ | Canonical work taxonomy. Fundamentals work is organized into the existing seven functions. |
 | Cherry Blossom™ | Chief of Staff & Executive Conductor™; interprets founder context, coordinates the appropriate Executive(s), proposes priorities, and protects boundaries. |
 | Executive Leadership Team™ | Performs specialist research, analysis, drafting, planning, and authorized work. |
@@ -49,6 +50,37 @@ It is available across the founder journey and connected to the existing Seven B
 | 4-Hour Focused CEO Workday™ | Protected execution window in which founder and AI Executive Team advance the approved work. |
 
 Do not add an eighth business function or a second next-step engine.
+
+## 3A. Which assessment does a pivoting founder take?
+
+A pivoting founder does **not** default to the Startup Business Readiness Assessment™. That assessment is designed for the Startup / Build pathway and asks startup-oriented questions about foundations being established.
+
+A pivoting founder uses an **Established / Pivoting Business Assessment** that begins with the business as it exists today. It examines:
+- Current business model, offers, customers/clients, and revenue streams.
+- Current marketing, client attraction, sales, and conversion practices.
+- Service/product delivery, workflows, tools, technology, and operating systems.
+- Team, support, capacity, delegation, and founder dependency.
+- What is working and should be retained.
+- What is incomplete, inconsistent, or missing.
+- What is no longer aligned with the founder's intended life and boundaries.
+- What should be repaired, replaced, redesigned, systemized, automated, delegated, or eliminated.
+
+The pivoting assessment then maps its findings to the **same eight Startup Business Fundamentals™** used by startup founders. It identifies gaps and improvement opportunities without assuming that the founder must rebuild the entire business from scratch.
+
+### Shared diagnostic treatment
+
+For each applicable fundamental, the BO$ should determine:
+1. **Current state:** in place, partly in place, missing, uncertain, needs improvement, or not applicable.
+2. **Evidence:** founder-reported, existing asset or record supplied, reviewed, founder-approved, or supported by observed operating results.
+3. **Recommended work mode:** Build, Improve, Validate, or Redesign.
+4. **Priority and dependencies:** what matters next, based on the founder's goals, risks, constraints, and existing work.
+5. **Boundary impact:** whether the current business practice supports or conflicts with the founder's chosen work-life boundaries.
+
+Do not confuse a business foundation gap with an operating-model collision. For example, an established business may have a complete offer and pricing model, but delivery may depend on the founder being available every day. The offer and pricing fundamentals may be in place while delivery/operations require redesign.
+
+Reuse saved answers and existing assets. Ask only for missing, changed, or deeper information. A founder can work in Build mode for one fundamental and Redesign mode for another.
+
+The exact question set and UI for the Established / Pivoting Business Assessment must be audited against the current live application and existing data schema before implementation. This specification establishes the pathway logic; it does not claim that a new assessment has already been built.
 
 ## 4. Universal access; personalized starting point
 
