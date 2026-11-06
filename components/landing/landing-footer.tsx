@@ -17,10 +17,10 @@ export function LandingFooter() {
           </Link>
           <div className="font-poppins flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-[#5A4A52]">
             <a href="#reality-check" className="hover:text-[#C13B6B]">Reality Check</a>
-            <a href="#monday" className="hover:text-[#C13B6B]">Monday</a>
-            <a href="#four-day" className="hover:text-[#C13B6B]">Four-Day Week</a>
-            <a href="#community" className="hover:text-[#C13B6B]">Community</a>
-            <a href="#why-now" className="hover:text-[#C13B6B]">Why Now</a>
+            <a href="#monday" className="hover:text-[#C13B6B]">Monday Kickoff</a>
+            <a href="#business-week" className="hover:text-[#C13B6B]">Business Week</a>
+            <a href="#offers" className="hover:text-[#C13B6B]">Weekly & Monthly</a>
+            <a href="#faq" className="hover:text-[#C13B6B]">Questions</a>
             <Link href="/auth/login" className="hover:text-[#C13B6B]">Log In</Link>
           </div>
 
