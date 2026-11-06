@@ -35,6 +35,9 @@ export function FreedomSection() {
         <div className="flex flex-col gap-5">
           <p className={EYEBROW}>Workweek Redesign for Human Sustainability in the Accelerated Age of AI</p>
           <h2 className={H2}>You started your business for freedom. Let&apos;s make room for it again.</h2>
+          <p className="font-poppins text-lg font-semibold leading-relaxed text-[#5A7F46]">
+            Redesign how you enter the workweek. Set work-life balance boundaries in your business—and start living them in real time.
+          </p>
           <p className={BODY}>
             Somewhere along the way, the hustle habits may have followed you into entrepreneurship. The business you
             created for more freedom may now demand more of your time, energy, attention, and availability than you intended.
