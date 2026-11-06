@@ -43,7 +43,8 @@ Do not convert a proposal or an old audit observation into a current product rul
 | Business capability / readiness questions | lib/entrepreneur-success/esa-registry.ts | Existing ESA Operating Pillars and Practices; reuse rather than duplicate |
 | Existing architecture and integration gaps | docs/proactive-start-growth-scale-readiness-architecture-audit.md | Dated technical audit; verify before implementation |
 | Startup assessment questions and status model | docs/startup-business-readiness-assessment-spec.md | Startup founder readiness assessment |
-| Startup foundation routing and deliverables | docs/startup-business-foundations-agent-routing.md | BO$$ function and Executive responsibility map |
+| Startup foundation routing and deliverables | docs/startup-business-foundations-agent-routing.md | BO$ function and Executive responsibility map |
+| Universal Startup Business Fundamentals™ | docs/startup-business-fundamentals-universal-access-spec.md | Universal access, eight fundamentals, personalized learning/application, workday integration, and acceptance criteria |
 | Reality Check experience, offer and report | Latest approved Reality Check source-of-truth document and current approved product decisions | Reality Check questions, delivery, offer, report and entitlements |
 
 ## 3. Startup pathway documents added November 6, 2026
@@ -75,6 +76,21 @@ Defines:
 - Runtime integration gaps.
 
 These documents are the design source of truth for the startup pathway. They do not, by themselves, mean the assessment, agents, or retrieval connections are implemented.
+
+### Startup Business Fundamentals™ — Universal Founder Access
+
+File: docs/startup-business-fundamentals-universal-access-spec.md
+
+Defines:
+- Universal access for startup, established, growth, scale, and pivoting founders.
+- The eight fundamentals, reusing the existing Startup Business Readiness Assessment™ categories.
+- Personalized Build, Improve, Validate, and Redesign work modes.
+- Mapping to the existing Seven Business Functions™ and Executive Leadership Team™.
+- Founder learning, assessment, application, evidence, and persistence expectations.
+- Cherry Blossom™ coordination and Decide & Design / 4-Hour Focused CEO Workday integration.
+- Acceptance criteria and phased implementation sequence.
+
+**Important:** Startup Business Fundamentals™ is not a new Business Function, a startup-only entitlement, or a separate operating system. The word “Startup” describes the foundational disciplines. All founders can access them. Runtime UI, persistence, retrieval, and agent execution remain implementation work until verified.
 
 ## 4. Required agent knowledge behavior
 
