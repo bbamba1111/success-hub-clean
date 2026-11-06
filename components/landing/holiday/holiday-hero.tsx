@@ -106,9 +106,16 @@ export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
           <p className="font-poppins w-fit rounded-full border border-[#F6D6E1]/40 bg-[#2E2228]/40 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-[#F6D6E1] backdrop-blur-sm">
             Free Sunday Reality Check™ · Every Sunday · {SESSION_TIME_LABEL}
           </p>
-          <h1 className="font-playfair text-balance text-4xl font-bold leading-[1.05] tracking-tight text-[#FFF8F4] sm:text-6xl">
-            Make Time For More This Holiday Season
-          </h1>
+          <div className="w-fit max-w-full">
+            <h1 className="font-playfair text-balance text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
+              <span className="block text-[#F6A9C2]">Make Time For More</span>
+              <span className="block text-[#FFF8F4]">This Holiday Season</span>
+            </h1>
+            <svg className="mt-2 h-5 w-full max-w-[34rem] overflow-visible" viewBox="0 0 544 24" preserveAspectRatio="none" aria-hidden="true">
+              <path d="M6 15 C105 2 215 20 323 11 S466 5 538 13" fill="none" stroke="#C51E3A" strokeWidth="9" strokeLinecap="round" />
+              <path d="M16 17 C120 8 235 23 344 13 S477 10 526 15" fill="none" stroke="#E43B50" strokeWidth="2.5" strokeLinecap="round" opacity="0.8" />
+            </svg>
+          </div>
           <p className="font-playfair text-balance text-2xl font-semibold leading-tight text-[#F6A9C2] sm:text-3xl">
             Give Yourself the Gift of Work-Life Balance, Time Freedom &amp; Sustainable Success.
           </p>
@@ -120,9 +127,7 @@ export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
               href="#register"
               className="font-poppins inline-flex w-fit items-center justify-center rounded-full bg-[#C13B6B] px-8 py-4 text-sm font-semibold tracking-[0.04em] text-[#FFF8F4] shadow-xl shadow-[#C13B6B]/30 transition-transform hover:scale-[1.03] hover:bg-[#A8305B]"
             >
-              <span>Reserve Your First</span>
-              <span className="ml-1 font-normal italic opacity-85">(or Next)</span>
-              <span className="ml-1">Work-Life Balance Business Week™</span>
+              Take the Free Work-Life Balance Reality Check™
             </a>
           </div>
           <SundayCountdown sessionLabel={sessionLabel} />
