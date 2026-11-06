@@ -100,7 +100,7 @@ export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          transition={{ duration: 1.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
           className="relative left-0 flex w-full max-w-3xl flex-col items-center gap-5 text-center sm:left-[-96px]"
         >
           <div className="w-full max-w-full">
@@ -135,23 +135,25 @@ export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
           <div className="w-full max-w-[28rem] self-center pt-1">
             <SundayCountdown sessionLabel={sessionLabel} />
           </div>
+          <div className="flex min-h-8 w-full items-center justify-center pt-1 text-center">
+            <AnimatePresence mode="wait">
+              <motion.p
+                key={scene.caption}
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -2 }}
+                transition={{ opacity: { duration: 1.5, ease: "easeInOut" }, y: { duration: 1.5, ease: "easeInOut" } }}
+                className="font-playfair text-base italic text-[#FFF8F4]/90 sm:text-lg"
+                aria-live="polite"
+              >
+                {scene.caption}
+              </motion.p>
+            </AnimatePresence>
+          </div>
         </motion.div>
       </div>
 
-      <div className="absolute inset-x-0 bottom-6 z-10 mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 sm:px-8">
-        <AnimatePresence mode="wait">
-          <motion.p
-            key={scene.caption}
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.5 }}
-            className="font-playfair text-sm italic text-[#FFF8F4]/90 sm:text-base"
-            aria-live="polite"
-          >
-            {scene.caption}
-          </motion.p>
-        </AnimatePresence>
+      <div className="absolute inset-x-0 bottom-6 z-10 mx-auto flex max-w-7xl items-center justify-center gap-4 px-5 sm:px-8">
         <div className="flex items-center gap-1.5" role="tablist" aria-label="Holiday scenes">
           {HERO_SCENES.map((s, i) => (
             <button
