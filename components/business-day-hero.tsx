@@ -10,11 +10,9 @@
  * experience right now?" and renders it.
  */
 
-import { useEffect, useState } from "react"
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
 import type { PartOfDay } from "@/operating-engine"
-import { HOLIDAY_SCENES, HOLIDAY_SCENE_INTERVAL_MS } from "@/lib/holiday-scenes"
 
 /**
  * Maps each block ID → the full "We're Now ___" phrase (plain + italic parts).
@@ -278,72 +276,35 @@ export function BusinessDayHero() {
         </motion.div>
       </div>
 
-      {/* Imagery — holiday scene rotation, same order as /landing */}
-      <HolidaySceneRotation />
+      {/* Imagery follows the same current activity and schedule snapshot as the timeline cards. */}
+      <ActivityBackground src={experience?.theme.backgroundImage} />
     </section>
   )
 }
 
-function HolidaySceneRotation() {
-  const [index, setIndex] = useState(0)
+function ActivityBackground({ src }: { src?: string }) {
   const reduceMotion = useReducedMotion()
-
-  useEffect(() => {
-    const timer = setInterval(() => setIndex((i) => (i + 1) % HOLIDAY_SCENES.length), HOLIDAY_SCENE_INTERVAL_MS)
-    return () => clearInterval(timer)
-  }, [])
-
-  const scene = HOLIDAY_SCENES[index]
+  const image = src || "/images/business-day-hero-bg.png"
 
   return (
     <div className="relative w-full overflow-hidden bg-[#2E2228]">
       <div className="absolute inset-0">
         <AnimatePresence mode="sync">
           <motion.img
-            key={scene.src}
-            src={scene.src}
+            key={image}
+            src={image}
             alt=""
             aria-hidden="true"
-            initial={{ opacity: 0, scale: reduceMotion ? 1 : 1.06 }}
+            initial={{ opacity: 0, scale: reduceMotion ? 1 : 1.04 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ opacity: { duration: 1.6, ease: "easeInOut" }, scale: { duration: 7, ease: "easeOut" } }}
+            transition={{ opacity: { duration: 1.2, ease: "easeInOut" }, scale: { duration: 2, ease: "easeOut" } }}
             className="absolute inset-0 h-full w-full object-cover object-center"
           />
         </AnimatePresence>
         <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#2E2228]/60 to-transparent" />
       </div>
-
       <div className="min-h-[420px] sm:min-h-[500px]" />
-
-      <div className="absolute inset-x-0 bottom-5 z-10 mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 sm:px-8">
-        <AnimatePresence mode="wait">
-          <motion.p
-            key={scene.caption}
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.5 }}
-            className="font-playfair text-sm italic text-[#FFF8F4]/90 sm:text-base"
-            aria-live="polite"
-          >
-            {scene.caption}
-          </motion.p>
-        </AnimatePresence>
-        <div className="flex items-center gap-1.5" role="tablist" aria-label="Holiday scenes">
-          {HOLIDAY_SCENES.map((s, i) => (
-            <button
-              key={s.src}
-              type="button"
-              role="tab"
-              aria-selected={i === index}
-              aria-label={s.caption}
-              onClick={() => setIndex(i)}
-              className={`h-1.5 rounded-full transition-all ${i === index ? "w-6 bg-[#F6A9C2]" : "w-1.5 bg-[#FFF8F4]/50 hover:bg-[#FFF8F4]/80"}`}
-            />
-          ))}
-        </div>
-      </div>
     </div>
   )
 }
