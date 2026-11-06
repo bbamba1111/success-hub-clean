@@ -3,7 +3,52 @@
 import { useEffect, useRef, useState } from "react"
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion"
 import { HOLIDAY_SCENES as HERO_SCENES, HOLIDAY_SCENE_INTERVAL_MS } from "@/lib/holiday-scenes"
-import { SESSION_TIME_LABEL } from "@/lib/reality-check/session"
+import { SESSION_TIME_LABEL, nextSessionDate, sessionStartsAt } from "@/lib/reality-check/session"
+
+function SundayCountdown() {
+  const [remaining, setRemaining] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
+
+  useEffect(() => {
+    const update = () => {
+      const target = sessionStartsAt(nextSessionDate(new Date()))
+      const total = Math.max(0, target.getTime() - Date.now())
+      setRemaining({
+        days: Math.floor(total / 86_400_000),
+        hours: Math.floor((total % 86_400_000) / 3_600_000),
+        minutes: Math.floor((total % 3_600_000) / 60_000),
+        seconds: Math.floor((total % 60_000) / 1_000),
+      })
+    }
+    update()
+    const timer = window.setInterval(update, 1_000)
+    return () => window.clearInterval(timer)
+  }, [])
+
+  const units = [
+    { value: remaining.days, label: "Days" },
+    { value: remaining.hours, label: "Hours" },
+    { value: remaining.minutes, label: "Minutes" },
+    { value: remaining.seconds, label: "Seconds" },
+  ]
+
+  return (
+    <div className="flex flex-col gap-2" aria-live="off">
+      <p className="font-poppins text-xs font-semibold uppercase tracking-[0.18em] text-[#F6D6E1]">
+        Next Sunday Reality Check · Every Sunday at {SESSION_TIME_LABEL}
+      </p>
+      <div className="flex flex-wrap gap-2">
+        {units.map((unit) => (
+          <div key={unit.label} className="min-w-[4.4rem] rounded-xl border border-[#F6D6E1]/25 bg-[#2E2228]/55 px-3 py-2 text-center backdrop-blur-sm">
+            <span className="font-playfair block text-2xl font-bold tabular-nums text-[#FFF8F4]">
+              {String(unit.value).padStart(2, "0")}
+            </span>
+            <span className="font-poppins text-[10px] uppercase tracking-[0.12em] text-[#F6D6E1]">{unit.label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
 
 export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
   const [index, setIndex] = useState(0)
@@ -59,20 +104,20 @@ export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
           className="flex max-w-2xl flex-col gap-5"
         >
           <p className="font-poppins w-fit rounded-full border border-[#F6D6E1]/40 bg-[#2E2228]/40 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-[#F6D6E1] backdrop-blur-sm">
-            Free Weekly Reality Check™ · {sessionLabel} · {SESSION_TIME_LABEL}
+            Free Sunday Reality Check™ · Every Sunday · {SESSION_TIME_LABEL}
           </p>
           <p className="font-playfair text-xl italic text-[#F6A9C2] sm:text-2xl">Make Time For More This Holiday Season</p>
           <h1 className="font-playfair text-balance text-4xl font-bold leading-[1.05] tracking-tight text-[#FFF8F4] sm:text-6xl">
             Redesign Your Entry Into the Workweek™
           </h1>
           <p className="font-poppins text-pretty text-lg leading-relaxed text-[#FFF8F4] sm:text-xl">
-            AI is about to give founders back a lot of time. This season, decide what you&apos;ll do with it.
+            AI is changing what founders can accomplish. This season, decide what you&apos;ll do with that increased capacity.
           </p>
           <p className="font-poppins text-pretty text-base leading-relaxed text-[#E9F0DF]">
             Don&apos;t wait for the New Year to start reclaiming your life. Build a successful business. Reclaim your
             freedom. Make time for more life.
           </p>
-
+          <SundayCountdown />
           <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center">
             <a
               href="#register"
