@@ -31,7 +31,7 @@ function Dot({ className = "bg-[#C13B6B]" }: { className?: string }) {
 export function FreedomSection() {
   return (
     <section className="bg-[#FFF8F4] py-20 sm:py-28">
-      <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-8 lg:grid-cols-[1.5fr_1fr]">
+      <div className="mx-auto grid max-w-6xl items-center gap-8 px-5 sm:px-8 lg:grid-cols-[1.15fr_1fr]">
         <div className="flex flex-col gap-5">
           <p className={EYEBROW}>Workweek Redesign for Human Sustainability in the Accelerated Age of AI</p>
           <h2 className={H2}>You started your business for freedom. Let&apos;s make room for it again.</h2>
@@ -61,7 +61,7 @@ export function FreedomSection() {
         <img
           src="/images/barbara-portrait.png"
           alt="Thought Leader Barbara Bamba, architect of Harmony Lane"
-          className="mx-auto max-h-[620px] w-full rounded-3xl object-contain object-center shadow-xl"
+          className="mx-auto max-h-[780px] w-full scale-[1.04] rounded-3xl object-contain object-center shadow-xl"
           loading="lazy"
         />
       </div>
