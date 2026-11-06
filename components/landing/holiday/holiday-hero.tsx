@@ -101,7 +101,7 @@ export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="relative flex w-full max-w-3xl flex-col items-center gap-5 text-center sm:-translate-x-24"
+          className="relative flex w-full max-w-3xl flex-col items-center gap-5 text-center sm:-translate-x-[72px]"
         >
           <div className="w-full max-w-full">
             <h1 className="font-playfair text-balance text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
