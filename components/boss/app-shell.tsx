@@ -16,6 +16,7 @@ import {
   Menu,
   RotateCcw,
   Settings,
+  Sprout,
   Sparkles,
   UserRound,
   Users,
@@ -29,6 +30,7 @@ import type { ClockMode } from "@/lib/boss/types"
 const NAV = [
   { href: "/boss", label: "My Business Day", hint: "Plan and do today", icon: CalendarClock },
   { href: "/boss/dashboard", label: "Business Dashboard", hint: "See how it is going", icon: Gauge },
+  { href: "/boss/fundamentals", label: "Startup Business Fundamentals", hint: "Build and strengthen the basics", icon: Sprout },
   { href: "/boss/queue", label: "Jobs", hint: "Who is doing what", icon: ListChecks },
   { href: "/boss/opportunities", label: "Opportunities", hint: "Chances to grow", icon: Sparkles, child: true },
   { href: "/boss/register", label: "Work Register", hint: "The record of all work", icon: ClipboardList },
