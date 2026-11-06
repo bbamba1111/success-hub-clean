@@ -104,18 +104,26 @@ export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
           className="relative left-0 flex w-full max-w-3xl flex-col items-center gap-5 text-center sm:left-[-96px]"
         >
           <div className="w-full max-w-full">
-            <h1 className="font-playfair text-balance text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
+            <h1 className="font-playfair text-balance text-[34px] font-bold leading-[1.05] tracking-tight sm:text-[58px]">
               <span className="block text-[#F6A9C2]">Make Time For More</span>
-              <span className="mt-3 inline-block font-[family-name:var(--font-great-vibes)] text-[2.825rem] font-normal leading-[1.25] text-[#FFF8F4] sm:text-[3.825rem]">This Holiday Season</span>
+              <span className="mt-3 inline-block font-[family-name:var(--font-great-vibes)] text-[2.7rem] font-normal leading-[1.25] text-[#FFF8F4] sm:text-[3.7rem]">This Holiday Season</span>
             </h1>
             <svg className="mx-auto -mt-1 h-4 w-[min(80%,20rem)] overflow-visible" viewBox="0 0 432 24" preserveAspectRatio="none" aria-hidden="true">
               <path d="M5 16 C105 2 190 23 278 11 S370 8 425 12" fill="none" stroke="#C51E3A" strokeWidth="8" strokeLinecap="round" />
               <path d="M12 17 C110 7 200 24 288 13 S378 10 418 14" fill="none" stroke="#E43B50" strokeWidth="2" strokeLinecap="round" opacity="0.85" />
             </svg>
           </div>
-          <p className="font-poppins max-w-2xl text-balance text-[19px] font-medium leading-[1.5] text-[#FFF8F4] sm:text-[25px]">
-            Give Yourself the Gift of Work-Life Balance, Time Freedom &amp; Sustainable Success.
-          </p>
+          <div className="flex max-w-2xl flex-col items-center gap-3 text-balance">
+            <p className="font-poppins text-[17px] font-medium leading-[1.5] text-[#FFF8F4] sm:text-[23px]">
+              Give Yourself the Gift of Work-Life Balance, Time Freedom &amp; Sustainable Success.
+            </p>
+            <p className="font-poppins text-[17px] font-semibold leading-[1.4] text-[#FFF8F4] sm:text-[23px]">
+              AI is creating capacity for founders and businesses.
+            </p>
+            <p className="font-poppins text-[19px] font-bold leading-[1.35] text-[#F6A9C2] sm:text-[25px]">
+              Decide What You Will Do With Yours.
+            </p>
+          </div>
           <div className="flex w-full flex-col items-center gap-3 pt-2">
             <a
               href="#register"
