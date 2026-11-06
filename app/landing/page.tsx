@@ -18,13 +18,13 @@ import { formatSessionDate, nextSessionDate } from "@/lib/reality-check/session"
 export const dynamic = "force-dynamic"
 
 export const metadata: Metadata = {
-  title: "Don't Wait for the New Year — Free Weekly Work-Life Balance Reality Check™",
+  title: "Harmony Lane™ — Make Time For More This Holiday Season",
   description:
-    "Start creating and celebrating the life you want now. Join the free, live Weekly Work-Life Balance Reality Check™, then practice real boundaries while doing your real work on Monday.",
+    "Your premium work-life balance destination. Live within work-life balance boundaries while redesigning your business weeks. Join the free Sunday Reality Check every Sunday at 3 PM ET.",
   openGraph: {
-    title: "Don't Wait for the New Year to Start Creating & Celebrating the Life You Want",
+    title: "Harmony Lane™ — Your Work-Life Balance Destination",
     description:
-      "AI is creating capacity. Decide what you'll do with the time it gives you back. Save your free seat — no credit card required.",
+      "Before you deploy AI, set boundaries—so AI doesn't automate your hustle. Start with the free Sunday Reality Check, every Sunday at 3 PM ET.",
     type: "website",
     images: [{ url: "/images/holiday/togetherness-og.jpg", width: 1200, height: 630 }],
   },
@@ -41,11 +41,11 @@ export default function LandingPage() {
     <main className="min-h-screen bg-[#FFF8F4]">
       <LandingNav
         tone="dark"
-        experiencesHref="#register"
-        ctaLabel="Save My Free Seat"
+        experiencesHref="#offers"
+        ctaLabel="Choose Your Experience"
         links={[
           { label: "Reality Check", href: "#reality-check" },
-          { label: "Monday", href: "#monday" },
+          { label: "Monday Kickoff", href: "#monday" },
           { label: "Business Week", href: "#business-week" },
           { label: "Questions", href: "#faq" },
         ]}
