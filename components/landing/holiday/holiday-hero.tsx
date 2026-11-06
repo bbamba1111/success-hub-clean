@@ -101,7 +101,7 @@ export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="relative left-0 flex w-full max-w-3xl flex-col items-center gap-5 text-center sm:left-[-72px]"
+          className="relative left-0 flex w-full max-w-3xl flex-col items-center gap-5 text-center sm:left-[-96px]"
         >
           <div className="w-full max-w-full">
             <h1 className="font-playfair text-balance text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
@@ -119,7 +119,7 @@ export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
           <div className="flex w-full flex-col items-center gap-3 pt-2">
             <a
               href="#register"
-              className="font-poppins inline-flex w-full max-w-[38rem] items-center justify-center rounded-2xl bg-[#C13B6B] px-6 py-3.5 text-center text-base font-bold leading-snug tracking-[0.01em] text-[#FFF8F4] shadow-xl shadow-[#C13B6B]/30 transition-transform hover:scale-[1.03] hover:bg-[#A8305B] sm:px-10 sm:py-4 sm:text-lg"
+              className="font-poppins inline-flex w-full max-w-[35rem] items-center justify-center rounded-2xl bg-[#C13B6B] px-6 py-3.5 text-center text-base font-bold leading-snug tracking-[0.01em] text-[#FFF8F4] shadow-xl shadow-[#C13B6B]/30 transition-transform hover:scale-[1.03] hover:bg-[#A8305B] sm:px-10 sm:py-4 sm:text-lg"
             >
               Take Your Free Work-Life Balance Reality Check™
             </a>
