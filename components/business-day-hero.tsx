@@ -277,12 +277,12 @@ export function BusinessDayHero() {
       </div>
 
       {/* Imagery follows the same current activity and schedule snapshot as the timeline cards. */}
-      <ActivityBackground src={experience?.theme.backgroundImage} />
+      <ActivityBackground src={experience?.theme.backgroundImage} message={experience?.phase.message} activityId={experience?.businessDay.current.id} />
     </section>
   )
 }
 
-function ActivityBackground({ src }: { src?: string }) {
+function ActivityBackground({ src, message, activityId }: { src?: string; message?: string; activityId?: string }) {
   const reduceMotion = useReducedMotion()
   const image = src || "/images/business-day-hero-bg.png"
 
