@@ -63,8 +63,7 @@ export const SCHEDULE: BlockConfig[] = [
     themePeriod: "morning",
     communityOpen: true,
     messages: [
-      "Ease into the holiday season at your own pace. Make room for what matters before the day begins.",
-      "Give yourself a peaceful start. Let the season bring a little more calm, warmth, and possibility.",
+      "Time to wander",
     ],
   },
   // ── Monday-only block ─────────────────────────────────────────────────────
@@ -160,8 +159,7 @@ export const SCHEDULE: BlockConfig[] = [
     themePeriod: "morning",
     communityOpen: true,
     messages: [
-      "Enter the week with clarity. Let what matters most guide the work and leave room for the season.",
-      "Use your Founder GPS™ to choose a clear direction—and give yourself permission to enjoy the season along the way.",
+      "Time to redesign your workweek",
     ],
   },
   {
@@ -186,8 +184,7 @@ export const SCHEDULE: BlockConfig[] = [
     themePeriod: "morning",
     communityOpen: true,
     messages: [
-      "Begin with gratitude for how far you have come, intention for what matters, and space to enjoy the season.",
-      "Give yourself the gift of alignment. Let peace, purpose, and gratitude lead your day.",
+      "Time to be still",
     ],
   },
   {
@@ -212,8 +209,7 @@ export const SCHEDULE: BlockConfig[] = [
     themePeriod: "morning",
     communityOpen: true,
     messages: [
-      "Move, breathe, and enjoy the simple gift of caring for yourself this season.",
-      "Make movement a moment of joy. Your well-being belongs in the celebration, too.",
+      "Time to move, together",
     ],
   },
   {
@@ -238,8 +234,7 @@ export const SCHEDULE: BlockConfig[] = [
     themePeriod: "afternoon",
     communityOpen: true,
     messages: [
-      "Savor your meal, reconnect with the people you love, and let this pause replenish you.",
-      "Take a nourishing pause. The season is meant to be experienced, not rushed through.",
+      "Time to gather",
     ],
   },
   {
@@ -264,8 +259,7 @@ export const SCHEDULE: BlockConfig[] = [
     themePeriod: "afternoon",
     communityOpen: true,
     messages: [
-      "Bring care and focus to what matters today. Build with intention, then make space to celebrate.",
-      "Make meaningful progress without giving the whole day away. Focus, finish, and enjoy the season.",
+      "Time to celebrate the work",
     ],
   },
   {
@@ -296,8 +290,7 @@ export const SCHEDULE: BlockConfig[] = [
     themePeriod: "evening",
     communityOpen: true,
     messages: [
-      "Step away from the work and be present for the people, traditions, and moments that make this season special.",
-      "Celebrate the life your business is here to support. The moments you share are part of your success.",
+      "Time for the people you love",
     ],
   },
   {
@@ -322,8 +315,7 @@ export const SCHEDULE: BlockConfig[] = [
     themePeriod: "night",
     communityOpen: true,
     messages: [
-      "Let the day go. Give yourself the gift of a quiet evening and restorative rest.",
-      "Release the rush of the season. Rest well, knowing you can return tomorrow with fresh energy.",
+      "Time to rest and renew",
     ],
   },
   {
@@ -347,8 +339,7 @@ export const SCHEDULE: BlockConfig[] = [
     themePeriod: "night",
     communityOpen: false,
     messages: [
-      "Unplug from the noise and settle into the stillness. Give yourself the gift of a peaceful night.",
-      "Let the lights dim, the devices rest, and your body restore. Wishing you a peaceful night.",
+      "Time to unplug",
     ],
   },
 ]
