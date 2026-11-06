@@ -32,11 +32,11 @@ function SundayCountdown({ sessionLabel }: { sessionLabel: string }) {
   ]
 
   return (
-    <div className="flex flex-col gap-2" aria-live="off">
-      <p className="font-poppins text-xs font-semibold uppercase tracking-[0.18em] text-[#F6D6E1]">
-        Next: {sessionLabel} · Every Sunday at {SESSION_TIME_LABEL}
+    <div className="flex flex-col items-center gap-3 text-center" aria-live="off">
+      <p className="font-poppins text-base font-semibold uppercase tracking-[0.12em] text-[#FFF8F4] sm:text-lg">
+        Next: {sessionLabel} · {SESSION_TIME_LABEL}
       </p>
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap justify-center gap-2">
         {units.map((unit) => (
           <div key={unit.label} className="min-w-[4.4rem] rounded-xl border border-[#F6D6E1]/25 bg-[#2E2228]/55 px-3 py-2 text-center backdrop-blur-sm">
             <span className="font-playfair block text-2xl font-bold tabular-nums text-[#FFF8F4]">
@@ -103,13 +103,10 @@ export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="flex max-w-2xl flex-col gap-5"
         >
-          <p className="font-poppins w-fit rounded-full border border-[#F6D6E1]/40 bg-[#2E2228]/40 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-[#F6D6E1] backdrop-blur-sm">
-            Free Sunday Reality Check™ · Every Sunday · {SESSION_TIME_LABEL}
-          </p>
           <div className="w-fit max-w-full">
             <h1 className="font-playfair text-balance text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
               <span className="block text-[#F6A9C2]">Make Time For More</span>
-              <span className="mt-1 inline-block -rotate-2 font-[cursive] text-5xl font-normal italic leading-none text-[#FFF8F4] sm:text-7xl">This Holiday Season</span>
+              <span className="mt-1 inline-block -rotate-2 font-[cursive] text-3xl font-normal italic leading-none text-[#FFF8F4] sm:text-5xl">This Holiday Season</span>
             </h1>
             <svg className="ml-2 mt-1 h-5 w-[min(100%,27rem)] overflow-visible" viewBox="0 0 432 24" preserveAspectRatio="none" aria-hidden="true">
               <path d="M5 16 C105 2 190 23 278 11 S370 8 425 12" fill="none" stroke="#C51E3A" strokeWidth="8" strokeLinecap="round" />
@@ -124,10 +121,12 @@ export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
               href="#register"
               className="font-poppins inline-flex w-full min-w-[min(100%,24rem)] items-center justify-center rounded-full bg-[#C13B6B] px-10 py-5 text-base font-bold tracking-[0.02em] text-[#FFF8F4] shadow-xl shadow-[#C13B6B]/30 transition-transform hover:scale-[1.03] hover:bg-[#A8305B] sm:w-fit sm:min-w-[28rem] sm:px-12 sm:py-6 sm:text-lg"
             >
-              Take the Free Work-Life Balance Reality Check™
+              Take Your Free Work-Life Balance Reality Check™
             </a>
           </div>
-          <SundayCountdown sessionLabel={sessionLabel} />
+          <div className="w-full max-w-[28rem] self-center pt-1">
+            <SundayCountdown sessionLabel={sessionLabel} />
+          </div>
         </motion.div>
       </div>
 
