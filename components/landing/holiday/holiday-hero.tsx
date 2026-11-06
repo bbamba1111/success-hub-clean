@@ -101,25 +101,25 @@ export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="flex max-w-2xl flex-col gap-5"
+          className="flex w-full max-w-3xl flex-col items-center gap-5 text-center"
         >
-          <div className="w-fit max-w-full">
+          <div className="w-full max-w-full">
             <h1 className="font-playfair text-balance text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
               <span className="block text-[#F6A9C2]">Make Time For More</span>
-              <span className="mt-1 inline-block -rotate-2 font-[cursive] text-3xl font-normal italic leading-none text-[#FFF8F4] sm:text-5xl">This Holiday Season</span>
+              <span className="mt-3 inline-block -rotate-3 font-[family-name:var(--font-great-vibes)] text-[2.7rem] font-normal leading-[1.25] text-[#FFF8F4] sm:text-[3.7rem]">This Holiday Season</span>
             </h1>
-            <svg className="ml-2 mt-1 h-5 w-[min(100%,27rem)] overflow-visible" viewBox="0 0 432 24" preserveAspectRatio="none" aria-hidden="true">
+            <svg className="mx-auto -mt-1 h-4 w-[min(80%,20rem)] overflow-visible" viewBox="0 0 432 24" preserveAspectRatio="none" aria-hidden="true">
               <path d="M5 16 C105 2 190 23 278 11 S370 8 425 12" fill="none" stroke="#C51E3A" strokeWidth="8" strokeLinecap="round" />
               <path d="M12 17 C110 7 200 24 288 13 S378 10 418 14" fill="none" stroke="#E43B50" strokeWidth="2" strokeLinecap="round" opacity="0.85" />
             </svg>
           </div>
-          <p className="font-playfair text-balance text-2xl font-semibold leading-tight text-[#F6A9C2] sm:text-3xl">
+          <p className="font-poppins max-w-2xl text-balance text-[21px] font-medium leading-[1.5] text-[#FFF8F4] sm:text-[27px]">
             Give Yourself the Gift of Work-Life Balance, Time Freedom &amp; Sustainable Success.
           </p>
-          <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center">
+          <div className="flex w-full flex-col items-center gap-3 pt-2">
             <a
               href="#register"
-              className="font-poppins inline-flex w-full min-w-[min(100%,24rem)] items-center justify-center rounded-full bg-[#C13B6B] px-10 py-5 text-base font-bold tracking-[0.02em] text-[#FFF8F4] shadow-xl shadow-[#C13B6B]/30 transition-transform hover:scale-[1.03] hover:bg-[#A8305B] sm:w-fit sm:min-w-[28rem] sm:px-12 sm:py-6 sm:text-lg"
+              className="font-poppins inline-flex w-full max-w-[44rem] items-center justify-center rounded-2xl bg-[#C13B6B] px-6 py-3.5 text-center text-base font-bold leading-snug tracking-[0.01em] text-[#FFF8F4] shadow-xl shadow-[#C13B6B]/30 transition-transform hover:scale-[1.03] hover:bg-[#A8305B] sm:px-10 sm:py-4 sm:text-lg"
             >
               Take Your Free Work-Life Balance Reality Check™
             </a>
