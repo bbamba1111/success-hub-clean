@@ -45,6 +45,7 @@ Do not convert a proposal or an old audit observation into a current product rul
 | Startup assessment questions and status model | docs/startup-business-readiness-assessment-spec.md | Startup founder readiness assessment |
 | Startup foundation routing and deliverables | docs/startup-business-foundations-agent-routing.md | BO$ function and Executive responsibility map |
 | Universal Startup Business Fundamentals™ product rules | docs/startup-business-fundamentals-universal-access-spec.md | Universal access, eight fundamentals, personalized learning/application, workday integration, and acceptance criteria |
+| Established & Pivoting Founder Business Assessment™ | docs/established-pivoting-founder-business-assessment-spec.md | Pivot-context questions, reuse of ESA's existing 20 questions and eight Operating Pillars, conditional gap exploration, evidence, work modes, and BO$ planning integration |
 | Universal Startup Business Fundamentals™ registry | lib/startup-business-fundamentals/registry.ts | Canonical data-only IDs, descriptions, outcomes, existing function keys, Executive IDs, and work modes |
 | Reality Check experience, offer and report | Latest approved Reality Check source-of-truth document and current approved product decisions | Reality Check questions, delivery, offer, report and entitlements |
 
