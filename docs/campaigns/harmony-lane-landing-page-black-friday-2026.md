@@ -11,7 +11,13 @@
 
 # Make Time For More This Holiday Season
 
-**Redesign Your Entry Into the Workweek. Build a Business That Makes Room for More Life.**
+**Give Yourself the Gift of Work-Life Balance, Time Freedom & Sustainable Success.**
+
+**AI is creating capacity for founders and businesses. Decide What You Will Do With Yours.**
+
+**Primary CTA:** Take Your Free Work-Life Balance Reality Check™ (button directly beneath the AI capacity message).
+
+**Hero typography:** Reduce the current hero headline and supporting gift-statement text sizes by 1.5 points. Keep the CTA immediately below the new AI capacity message.
 
 AI is changing what founders can accomplish. The world is changing. And as we enter a new holiday season, there's an opportunity to reconsider what success should make possible.
 
