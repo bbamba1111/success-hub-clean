@@ -305,6 +305,23 @@ function ActivityBackground({ src, message, activityId }: { src?: string; messag
         <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#2E2228]/60 to-transparent" />
       </div>
       <div className="min-h-[420px] sm:min-h-[500px]" />
+      <div className="absolute inset-x-0 bottom-5 z-10 mx-auto max-w-7xl px-5 sm:px-8">
+        <AnimatePresence mode="wait">
+          {message && (
+            <motion.p
+              key={activityId || message}
+              initial={{ opacity: 0, y: 18, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 8 }}
+              transition={{ duration: 0.65, ease: "easeOut" }}
+              className="max-w-2xl rounded-2xl border border-white/35 bg-white/20 px-5 py-3 font-playfair text-sm italic leading-relaxed text-white shadow-lg backdrop-blur-md sm:px-6 sm:py-4 sm:text-base"
+              aria-live="polite"
+            >
+              {message}
+            </motion.p>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   )
 }
