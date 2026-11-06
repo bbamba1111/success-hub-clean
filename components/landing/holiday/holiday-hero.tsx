@@ -101,25 +101,25 @@ export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="flex w-full max-w-3xl flex-col items-center gap-5 text-center"
+          className="relative -translate-x-12 flex w-full max-w-3xl flex-col items-center gap-5 text-center"
         >
           <div className="w-full max-w-full">
             <h1 className="font-playfair text-balance text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
               <span className="block text-[#F6A9C2]">Make Time For More</span>
-              <span className="mt-3 inline-block -rotate-3 font-[family-name:var(--font-great-vibes)] text-[2.7rem] font-normal leading-[1.25] text-[#FFF8F4] sm:text-[3.7rem]">This Holiday Season</span>
+              <span className="mt-3 inline-block font-[family-name:var(--font-great-vibes)] text-[2.825rem] font-normal leading-[1.25] text-[#FFF8F4] sm:text-[3.825rem]">This Holiday Season</span>
             </h1>
             <svg className="mx-auto -mt-1 h-4 w-[min(80%,20rem)] overflow-visible" viewBox="0 0 432 24" preserveAspectRatio="none" aria-hidden="true">
               <path d="M5 16 C105 2 190 23 278 11 S370 8 425 12" fill="none" stroke="#C51E3A" strokeWidth="8" strokeLinecap="round" />
               <path d="M12 17 C110 7 200 24 288 13 S378 10 418 14" fill="none" stroke="#E43B50" strokeWidth="2" strokeLinecap="round" opacity="0.85" />
             </svg>
           </div>
-          <p className="font-poppins max-w-2xl text-balance text-[21px] font-medium leading-[1.5] text-[#FFF8F4] sm:text-[27px]">
+          <p className="font-poppins max-w-2xl text-balance text-[19px] font-medium leading-[1.5] text-[#FFF8F4] sm:text-[25px]">
             Give Yourself the Gift of Work-Life Balance, Time Freedom &amp; Sustainable Success.
           </p>
           <div className="flex w-full flex-col items-center gap-3 pt-2">
             <a
               href="#register"
-              className="font-poppins inline-flex w-full max-w-[44rem] items-center justify-center rounded-2xl bg-[#C13B6B] px-6 py-3.5 text-center text-base font-bold leading-snug tracking-[0.01em] text-[#FFF8F4] shadow-xl shadow-[#C13B6B]/30 transition-transform hover:scale-[1.03] hover:bg-[#A8305B] sm:px-10 sm:py-4 sm:text-lg"
+              className="font-poppins inline-flex w-full max-w-[38rem] items-center justify-center rounded-2xl bg-[#C13B6B] px-6 py-3.5 text-center text-base font-bold leading-snug tracking-[0.01em] text-[#FFF8F4] shadow-xl shadow-[#C13B6B]/30 transition-transform hover:scale-[1.03] hover:bg-[#A8305B] sm:px-10 sm:py-4 sm:text-lg"
             >
               Take Your Free Work-Life Balance Reality Check™
             </a>
