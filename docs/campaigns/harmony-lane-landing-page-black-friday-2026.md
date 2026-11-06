@@ -38,6 +38,8 @@ The business you created for more freedom may now demand more of your time, ener
 
 And now AI is changing how business gets done.
 
+**Without intentional boundaries and a redesigned way of operating, AI could simply automate the very hustle you were trying to escape.**
+
 Before using new technology to increase what your business can produce, consider a different question:
 
 **Have you redesigned your business to make room for the life you wanted it to create?**
