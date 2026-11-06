@@ -110,28 +110,22 @@ export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
             Make Time For More This Holiday Season
           </h1>
           <p className="font-playfair text-balance text-2xl font-semibold leading-tight text-[#F6A9C2] sm:text-3xl">
-            Give Yourself the Gift of Freedom.
+            Give Yourself the Gift of Work-Life Balance, Time Freedom &amp; Sustainable Success.
           </p>
           <p className="font-poppins text-pretty text-lg leading-relaxed text-[#FFF8F4] sm:text-xl">
-            Set and live your work-life balance boundaries during the Work-Life Balance Business Week™ — in real time.
+            Redesign how you enter the workweek. Set work-life balance boundaries in your business—and start living them in real time.
           </p>
-          <p className="font-poppins text-pretty text-base leading-relaxed text-[#E9F0DF]">
-            AI is about to give founders back a lot of time. This season, decide what you&apos;ll do with it.
-          </p>
-          <p className="font-poppins text-pretty text-base leading-relaxed text-[#E9F0DF]">
-            Don&apos;t wait for the New Year to start reclaiming your life. Build a successful business. Reclaim your
-            freedom. Make time for more life.
-          </p>
-          <SundayCountdown sessionLabel={sessionLabel} />
           <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center">
             <a
               href="#register"
-              className="font-poppins inline-flex w-fit items-center justify-center rounded-full bg-[#C13B6B] px-8 py-4 text-sm font-semibold uppercase tracking-[0.12em] text-[#FFF8F4] shadow-xl shadow-[#C13B6B]/30 transition-transform hover:scale-[1.03] hover:bg-[#A8305B]"
+              className="font-poppins inline-flex w-fit items-center justify-center rounded-full bg-[#C13B6B] px-8 py-4 text-sm font-semibold tracking-[0.04em] text-[#FFF8F4] shadow-xl shadow-[#C13B6B]/30 transition-transform hover:scale-[1.03] hover:bg-[#A8305B]"
             >
-              Save My Free Seat
+              <span>Reserve Your First</span>
+              <span className="ml-1 font-normal italic opacity-85">(or Next)</span>
+              <span className="ml-1">Work-Life Balance Business Week™</span>
             </a>
-            <span className="font-poppins text-sm text-[#F6D6E1]">FREE · No credit card required</span>
           </div>
+          <SundayCountdown sessionLabel={sessionLabel} />
         </motion.div>
       </div>
 
