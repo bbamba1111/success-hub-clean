@@ -33,7 +33,7 @@ function SundayCountdown({ sessionLabel }: { sessionLabel: string }) {
 
   return (
     <div className="flex flex-col items-center gap-3 text-center" aria-live="off">
-      <p className="font-poppins text-base font-semibold uppercase tracking-[0.12em] text-[#FFF8F4] sm:text-lg">
+      <p className="font-poppins text-base font-semibold uppercase tracking-[0.12em] text-[#FFF8F4] sm:text-[16px]">
         Next: {sessionLabel} · {SESSION_TIME_LABEL}
       </p>
       <div className="flex flex-wrap justify-center gap-2">
@@ -104,9 +104,9 @@ export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
           className="relative left-0 flex w-full max-w-3xl flex-col items-center gap-5 text-center sm:left-[-96px]"
         >
           <div className="w-full max-w-full">
-            <h1 className="font-playfair text-balance text-[34px] font-bold leading-[1.05] tracking-tight sm:text-[58px]">
+            <h1 className="font-playfair text-balance text-[31.33px] font-bold leading-[1.05] tracking-tight sm:text-[55.33px]">
               <span className="block text-[#F6A9C2]">Make Time For More</span>
-              <span className="mt-3 inline-block font-[family-name:var(--font-great-vibes)] text-[2.7rem] font-normal leading-[1.25] text-[#FFF8F4] sm:text-[3.7rem]">This Holiday Season</span>
+              <span className="mt-3 inline-block font-[family-name:var(--font-great-vibes)] text-[2.533rem] font-normal leading-[1.25] text-[#FFF8F4] sm:text-[3.533rem]">This Holiday Season</span>
             </h1>
             <svg className="mx-auto -mt-1 h-4 w-[min(80%,20rem)] overflow-visible" viewBox="0 0 432 24" preserveAspectRatio="none" aria-hidden="true">
               <path d="M5 16 C105 2 190 23 278 11 S370 8 425 12" fill="none" stroke="#C51E3A" strokeWidth="8" strokeLinecap="round" />
@@ -114,20 +114,20 @@ export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
             </svg>
           </div>
           <div className="flex max-w-2xl flex-col items-center gap-3 text-balance">
-            <p className="font-poppins text-[17px] font-medium leading-[1.5] text-[#FFF8F4] sm:text-[23px]">
+            <p className="font-poppins text-[14.33px] font-medium leading-[1.5] text-[#FFF8F4] sm:text-[20.33px]">
               Give Yourself the Gift of Work-Life Balance, Time Freedom &amp; Sustainable Success.
             </p>
-            <p className="font-poppins text-[17px] font-semibold leading-[1.4] text-[#FFF8F4] sm:text-[23px]">
-              AI is creating capacity for founders and businesses.
+            <p className="font-poppins text-[14.33px] font-semibold leading-[1.4] text-[#FFF8F4] sm:text-[23px]">
+              Don't Let AI Automate Your Hustle.
             </p>
-            <p className="font-poppins text-[19px] font-bold leading-[1.35] text-[#F6A9C2] sm:text-[25px]">
-              Decide What You Will Do With Yours.
+            <p className="font-poppins text-[16.33px] font-bold leading-[1.35] text-[#F6A9C2] sm:text-[22.33px]">
+              Set Non-Negotiable Human Sustainability Boundaries Before You Deploy.
             </p>
           </div>
           <div className="flex w-full flex-col items-center gap-3 pt-2">
             <a
               href="#register"
-              className="font-poppins inline-flex w-full max-w-[35rem] items-center justify-center rounded-2xl bg-[#C13B6B] px-6 py-3.5 text-center text-base font-bold leading-snug tracking-[0.01em] text-[#FFF8F4] shadow-xl shadow-[#C13B6B]/30 transition-transform hover:scale-[1.03] hover:bg-[#A8305B] sm:px-10 sm:py-4 sm:text-lg"
+              className="font-poppins inline-flex w-full max-w-[35rem] items-center justify-center rounded-2xl bg-[#C13B6B] px-6 py-3.5 text-center text-[13.33px] font-bold leading-snug tracking-[0.01em] text-[#FFF8F4] shadow-xl shadow-[#C13B6B]/30 transition-transform hover:scale-[1.03] hover:bg-[#A8305B] sm:px-10 sm:py-4 sm:text-lg"
             >
               Take Your Free Work-Life Balance Reality Check™
             </a>
