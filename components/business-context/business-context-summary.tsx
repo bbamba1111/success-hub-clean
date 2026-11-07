@@ -41,7 +41,7 @@ export function BusinessContextSummary({ data, onEditSection, onContinue, contin
   continueLabel?: string
 }) {
   return <div className="flex flex-col gap-5">
-    <div className="flex flex-wrap items-center justify-between gap-3"><div><span className="font-montserrat text-xs font-bold uppercase tracking-[0.18em] text-[#5B835F]">Combined Business Context & Current Business™</span><p className="mt-1 font-playfair text-xl font-medium text-[#3A2E33]">Complete · 10 questions</p></div>
+    <div className="flex flex-wrap items-center justify-between gap-3"><div><span className="font-montserrat text-xs font-bold uppercase tracking-[0.18em] text-[#5B835F]">Business Context</span><p className="mt-1 font-playfair text-xl font-medium text-[#3A2E33]">Complete · 10 questions</p></div>
       <div className="flex items-center gap-2.5"><button type="button" onClick={() => onEditSection(100)} className="inline-flex items-center gap-1.5 rounded-full border border-[#E8E0D5] bg-white px-4 py-2.5 font-montserrat text-sm font-bold text-[#3A2E33]"><Pencil className="h-3.5 w-3.5" aria-hidden />Edit Full Profile</button>
       {onContinue && <button type="button" onClick={onContinue} className="inline-flex items-center gap-1.5 rounded-full bg-[#5B835F] px-5 py-2.5 font-montserrat text-sm font-bold text-white">{continueLabel}<ChevronRight className="h-3.5 w-3.5" aria-hidden /></button>}</div>
     </div>
