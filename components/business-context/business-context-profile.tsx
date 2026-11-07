@@ -553,11 +553,11 @@ export function BusinessContextProfile({
       capitalStrategy,
       growthVision: growthVision!,
       exitVision: exitVision!,
-      businessCredit: businessCredit!,
-      businessBanking: businessBanking!,
+      businessCredit: businessCredit ?? "not-sure",
+      businessBanking: businessBanking ?? "not-sure",
       financialFoundation,
       wealthBuildingInterests: wealthBuilding,
-      communicationLevel: commLevel!,
+      communicationLevel: commLevel ?? "foundation",
       learningInterests,
       offerStatement: offerStatement || undefined,
       idealClientDefinition: idealClientDefinition || undefined,
@@ -579,7 +579,7 @@ export function BusinessContextProfile({
 
     saveFounderLearning({
       completedAt: new Date().toISOString(),
-      communicationLevel: commLevel!,
+      communicationLevel: commLevel ?? "foundation",
       learningInterests,
       learningQueue,
       completedLessons: [],
