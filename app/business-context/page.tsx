@@ -19,7 +19,7 @@ export default async function BusinessContextPage() {
       {/* ── Scene: Executive garden — introduces the business layer ───── */}
       <CherryBlossomScene variant="workspace" minHeight="min-h-[70vh]">
         <CherryBlossomSceneCard
-          title="Combined Business Context & Current Business™"
+          title="Business Context"
           time="Approx. 10 mins"
           step="Step 2 of 3"
           scrollPrompt="Build My Business Profile™"
