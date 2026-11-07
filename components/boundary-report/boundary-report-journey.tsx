@@ -38,7 +38,6 @@ import { buildStartConsiderations } from "@/lib/boundary-report/start-considerat
 import {
   CURRENT_BUSINESS_QUESTIONS,
   EMPTY_CURRENT_BUSINESS,
-  isCurrentBusinessQuestionComplete,
   type CurrentBusiness,
 } from "@/lib/boundary-report/current-business"
 import type {
