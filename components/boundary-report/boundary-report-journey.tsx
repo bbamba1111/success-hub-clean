@@ -27,10 +27,12 @@ import {
   saveBoundaryReport,
   setBoundaryReportPath,
 } from "@/lib/boundary-report/actions"
-import { CurrentBusinessStep } from "@/components/boundary-report/current-business-step"
 import { PersonalRealityStep } from "@/components/boundary-report/personal-reality-step"
 import { StartConsiderationsBlock } from "@/components/boundary-report/start-considerations-block"
 import { personalRealityById } from "@/lib/boundary-report/personal-reality"
+import { getBusinessContext } from "@/lib/business-context/business-context-store"
+import { getBusinessContextFromDb } from "@/utils/business-context-storage"
+import type { BusinessContextProfile } from "@/lib/business-context/types"
 import { buildStartConsiderations } from "@/lib/boundary-report/start-considerations"
 import {
   CURRENT_BUSINESS_QUESTIONS,
@@ -55,7 +57,6 @@ type Stage =
   | "summary"
   | "intro"
   | "intention"
-  | "currentBusiness"
   | "requirements"
   | "personalReality"
   | "audit"
@@ -68,7 +69,6 @@ type Stage =
 const STAGE_ORDER: Stage[] = [
   "intro",
   "intention",
-  "currentBusiness",
   "requirements",
   "personalReality",
   "audit",
@@ -176,7 +176,7 @@ function NavRow({
 
 const CATEGORIES: { label: string; stages: Stage[] }[] = [
   { label: "Your Intention™", stages: ["intention"] },
-  { label: "Your Business™", stages: ["currentBusiness", "requirements"] },
+  { label: "Your Business™", stages: ["requirements"] },
   { label: "Your Life™", stages: ["personalReality", "audit", "baseline", "priority"] },
   { label: "Your Alignment™", stages: ["alignment"] },
 ]
@@ -264,10 +264,15 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
   // Priority focus areas (keys)
   const [priority, setPriority] = useState<string[]>([])
 
-  // Your Current Business™ (stage is Question 1)
+  // Legacy Current Business™ answers remain loadable for historical drafts/reports.
   const [currentBusiness, setCurrentBusiness] = useState<CurrentBusiness>(EMPTY_CURRENT_BUSINESS)
   const [currentBusinessIndex, setCurrentBusinessIndex] = useState(0)
-  const stageChoice: BusinessStage | null = currentBusiness.stage
+  // The single current business profile is completed at /business-context.
+  const [businessContext, setBusinessContext] = useState<BusinessContextProfile | null>(null)
+  const stageChoice: BusinessStage | null = businessContext
+    ? (["idea", "pre-revenue", "early-revenue"].includes(businessContext.businessStage) ? "start"
+      : ["growth", "established", "pivoting"].includes(businessContext.businessStage) ? "grow" : "scale")
+    : null
 
   // Business Reality™ (requirement ids)
   const [requirements, setRequirements] = useState<string[]>([])
@@ -294,6 +299,11 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
     const data = getAuditResults()
     if (data) setBaseline(toBaseline(data))
     setBaselineLoaded(true)
+    const cachedProfile = getBusinessContext()
+    if (cachedProfile) setBusinessContext(cachedProfile)
+    getBusinessContextFromDb().then((record) => {
+      if (record) setBusinessContext(record)
+    })
   }, [])
 
   // Restore saved progress once, then autosave every change.
@@ -330,6 +340,7 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
     )
     setSomethingElse(data.originalIntention?.somethingElse ?? "")
     if (data.currentBusiness) setCurrentBusiness(data.currentBusiness)
+    if (data.businessContext) setBusinessContext(data.businessContext)
     setRequirements((data.businessRequirements ?? []).map((r) => r.id))
     setPersonalReality((data.personalReality ?? []).map((p) => p.id))
     setPriority(data.priorityFocusAreas ?? [])
@@ -341,6 +352,7 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
   }
 
   function editSection(target: Stage) {
+    if (target === "currentBusiness") target = "requirements"
     if (latest) {
       loadFromReport(latest.data)
       setReportId(latest.id)
@@ -356,7 +368,7 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
       setReportId(latest.id)
       setStage("summary")
     } else if (d) {
-      if (RESUMABLE.has(d.stage)) setStage(d.stage as Stage)
+      if (RESUMABLE.has(d.stage)) setStage(d.stage === "currentBusiness" ? "requirements" : d.stage as Stage)
       setCurrentBusinessIndex(Math.min(d.currentBusinessIndex ?? 0, CURRENT_BUSINESS_QUESTIONS.length - 1))
       setIntentionChoices(d.intentionChoices ?? {})
       setSomethingElse(d.somethingElse ?? "")
@@ -477,7 +489,8 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
       stage,
       stageConsiderations: STAGE_CONSIDERATIONS[stage].considerations,
       selectedPath: path,
-      currentBusiness: { ...currentBusiness, updatedAt: new Date().toISOString() },
+      ...(currentBusiness.stage || currentBusiness.services ? { currentBusiness: { ...currentBusiness, updatedAt: new Date().toISOString() } } : {}),
+      businessContext: businessContext ?? undefined,
       personalReality: personalReality.map((id) => ({ id, label: personalRealityById(id)?.label ?? id })),
       startConsiderations: buildStartConsiderations({
         intentionChoices,
@@ -652,40 +665,8 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
           </div>
           <NavRow
             onBack={goBack}
-            onNext={() => setStage("currentBusiness")}
+            onNext={() => setStage("requirements")}
             nextDisabled={selections.length === 0 && !somethingElse.trim()}
-          />
-        </StageShell>
-      )}
-
-      {stage === "currentBusiness" && (
-        <StageShell
-          eyebrow="Your Current Business™"
-          title="What your business actually looks like today"
-          intro={
-            saved?.previousCurrentBusiness && !saved.draft
-              ? "We've filled in what you told us last time. Update anything that has changed — your earlier answers stay saved with your previous report."
-              : "Nine quick questions about how your business runs right now. You answer these once and update them when your circumstances change."
-          }
-        >
-          <CurrentBusinessStep
-            index={currentBusinessIndex}
-            value={currentBusiness}
-            onChange={(next) => setCurrentBusiness((prev) => ({ ...prev, ...next }))}
-          />
-          <NavRow
-            onBack={() => {
-              if (currentBusinessIndex === 0) goBack()
-              else setCurrentBusinessIndex((i) => i - 1)
-            }}
-            onNext={() => {
-              if (currentBusinessIndex < CURRENT_BUSINESS_QUESTIONS.length - 1) setCurrentBusinessIndex((i) => i + 1)
-              else setStage("requirements")
-            }}
-            nextLabel={
-              currentBusinessIndex === CURRENT_BUSINESS_QUESTIONS.length - 1 ? "Continue to Business Reality" : "Continue"
-            }
-            nextDisabled={!isCurrentBusinessQuestionComplete(currentBusinessIndex, currentBusiness)}
           />
         </StageShell>
       )}
