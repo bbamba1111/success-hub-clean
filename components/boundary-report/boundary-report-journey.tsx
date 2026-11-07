@@ -1420,7 +1420,7 @@ function RealityCheckSummary({
         <SummaryField label="Original Entrepreneurial Intention™" value={data.originalIntention?.summary || undefined} />
       </SummaryCard>
 
-      <SummaryCard title="Combined Business Context & Current Business™" onEdit={() => onEdit("requirements")} wide>
+      <SummaryCard title="Combined Business Context & Current Business™" onEdit={() => { window.location.href = "/business-context" }} wide>
         <SummaryField label="Business name" value={data.businessContext?.businessName} />
         <SummaryField label="Industry" value={data.businessContext?.industry} />
         <SummaryField label="Primary product or service" value={data.businessContext?.offerStatement} />
