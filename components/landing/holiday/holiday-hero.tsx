@@ -3,54 +3,9 @@
 import { useEffect, useRef, useState } from "react"
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion"
 import { HOLIDAY_SCENES as HERO_SCENES, HOLIDAY_SCENE_INTERVAL_MS } from "@/lib/holiday-scenes"
-import { SESSION_TIME_LABEL, nextSessionDate, sessionStartsAt } from "@/lib/reality-check/session"
 
-function SundayCountdown({ sessionLabel }: { sessionLabel: string }) {
-  const [remaining, setRemaining] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
 
-  useEffect(() => {
-    const update = () => {
-      const target = sessionStartsAt(nextSessionDate(new Date()))
-      const total = Math.max(0, target.getTime() - Date.now())
-      setRemaining({
-        days: Math.floor(total / 86_400_000),
-        hours: Math.floor((total % 86_400_000) / 3_600_000),
-        minutes: Math.floor((total % 3_600_000) / 60_000),
-        seconds: Math.floor((total % 60_000) / 1_000),
-      })
-    }
-    update()
-    const timer = window.setInterval(update, 1_000)
-    return () => window.clearInterval(timer)
-  }, [])
-
-  const units = [
-    { value: remaining.days, label: "Days" },
-    { value: remaining.hours, label: "Hours" },
-    { value: remaining.minutes, label: "Minutes" },
-    { value: remaining.seconds, label: "Seconds" },
-  ]
-
-  return (
-    <div className="flex flex-col items-center gap-3 text-center" aria-live="off">
-      <p className="font-poppins text-base font-semibold uppercase tracking-[0.12em] text-[#FFF8F4] sm:text-[16px]">
-        Next: {sessionLabel} · {SESSION_TIME_LABEL}
-      </p>
-      <div className="flex flex-wrap justify-center gap-2">
-        {units.map((unit) => (
-          <div key={unit.label} className="min-w-[4.4rem] rounded-xl border border-[#F6D6E1]/25 bg-[#2E2228]/55 px-3 py-2 text-center backdrop-blur-sm">
-            <span className="font-playfair block text-2xl font-bold tabular-nums text-[#FFF8F4]">
-              {String(unit.value).padStart(2, "0")}
-            </span>
-            <span className="font-poppins text-[10px] uppercase tracking-[0.12em] text-[#F6D6E1]">{unit.label}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
+export function HolidayHero() {
   const [index, setIndex] = useState(0)
   const [inView, setInView] = useState(true)
   const sectionRef = useRef<HTMLElement>(null)
@@ -126,14 +81,11 @@ export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
           </div>
           <div className="flex w-full flex-col items-center gap-3 pt-2">
             <a
-              href="#register"
+              href="#reality-check"
               className="font-poppins inline-flex w-full max-w-[35rem] items-center justify-center rounded-2xl bg-[#C13B6B] px-6 py-3.5 text-center text-[13.33px] font-bold leading-snug tracking-[0.01em] text-[#FFF8F4] shadow-xl shadow-[#C13B6B]/30 transition-transform hover:scale-[1.03] hover:bg-[#A8305B] sm:px-10 sm:py-4 sm:text-lg"
             >
-              Take Your Free Work-Life Balance Reality Check™
+              Explore the $197 Work-Life Balance Reality Check™
             </a>
-          </div>
-          <div className="w-full max-w-[28rem] self-center pt-1">
-            <SundayCountdown sessionLabel={sessionLabel} />
           </div>
           <div className="flex min-h-8 w-full items-center justify-center pt-1 text-center">
             <AnimatePresence mode="wait">
