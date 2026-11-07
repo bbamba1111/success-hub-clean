@@ -15,7 +15,6 @@ import {
 } from "@/lib/boundary-report/business-intelligence"
 import {
   ALIGNMENT_CHOICES,
-  ALIGNMENT_FINAL,
   ALIGNMENT_QUESTIONS,
   TOUR_MODULES,
 } from "@/lib/boundary-report/alignment"
@@ -481,7 +480,7 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
       priorityFocusAreas: priority,
       priorityAreas: priorityAreas.map((a) => ({ key: a.key, label: a.label, score: a.score })),
       alignmentResponses,
-      finalAlignment: alignment[ALIGNMENT_FINAL.id],
+      finalAlignment: alignment[ALIGNMENT_QUESTIONS[ALIGNMENT_QUESTIONS.length - 1].id],
       boundaryCollisions: requirements.map((id) => requirementById(id)?.label ?? id),
       businessRequirements: requirements.map((id) => {
         const opt = requirementById(id)
@@ -892,7 +891,7 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
             else setAlignmentIndex((i) => i - 1)
           }}
           onNext={() => {
-            const total = ALIGNMENT_QUESTIONS.length + 1
+            const total = ALIGNMENT_QUESTIONS.length
             if (alignmentIndex < total - 1) setAlignmentIndex((i) => i + 1)
             else generateReport()
           }}
@@ -939,9 +938,9 @@ function AlignmentStep({
   onBack: () => void
   onNext: () => void
 }) {
-  const total = ALIGNMENT_QUESTIONS.length + 1
-  const isFinal = index >= ALIGNMENT_QUESTIONS.length
-  const q = isFinal ? ALIGNMENT_FINAL : ALIGNMENT_QUESTIONS[index]
+  const total = ALIGNMENT_QUESTIONS.length
+  const isFinal = index === total - 1
+  const q = ALIGNMENT_QUESTIONS[index]
   const current = choices[q.id]
 
   return (
@@ -951,9 +950,9 @@ function AlignmentStep({
       </p>
       {index === 0 && (
         <p className="font-sans text-sm text-brand-ink-soft leading-relaxed text-pretty mb-6">
-          Eleven short questions, one for each part of your Work-Life Balance Business Week™ — from how you start
-          your day to how you end it. Answer &ldquo;Yes&rdquo; or &ldquo;Not sure yet.&rdquo; There are no wrong
-          answers.
+          Three focused questions about the daily rhythm you want, the boundaries that protect what matters, and your
+          willingness to experience the Work-Life Balance Business Week™. Answer “Yes” or “Not sure yet.” There are no
+          wrong answers.
         </p>
       )}
 
@@ -1005,7 +1004,7 @@ function AlignmentStep({
         onBack={onBack}
         onNext={onNext}
         nextDisabled={!current}
-        nextLabel={isFinal ? "See the Business Day™" : "Continue"}
+        nextLabel={isFinal ? "Complete Alignment" : "Continue"}
       />
     </div>
   )
