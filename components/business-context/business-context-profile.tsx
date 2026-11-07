@@ -251,7 +251,7 @@ function ProgressBar({ step, total }: { step: number; total: number }) {
     <div className="mb-6">
       <div className="flex items-center justify-between mb-2">
         <span className="font-montserrat text-xs font-bold uppercase tracking-[0.18em] text-[#5B835F]">
-          Combined Business Context & Current Business™
+          Business Context
         </span>
         <span className="font-montserrat text-xs text-[#6B5860]/60">
           {step} of {total} complete
