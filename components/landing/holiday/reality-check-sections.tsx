@@ -372,119 +372,122 @@ export function MondaySection() {
   )
 }
 
-const TWENTY_EIGHT_DAYS = [
-  {
-    week: "Week 1",
-    title: "7-Day Reset",
-    body: "Interrupt old hustle patterns. Establish your work-life boundaries and begin practicing a different way to work and live.",
-  },
-  {
-    week: "Week 2",
-    title: "14-Day Momentum Builder",
-    body: "Strengthen the new practices through repeated Monday–Thursday experiences and a protected three-day weekend.",
-  },
-  {
-    week: "Week 3",
-    title: "21-Day Habit Builder",
-    body: "Reinforce the new behaviors until the operating rhythm feels familiar and sustainable.",
-  },
-  {
-    week: "Week 4",
-    title: "Solo Integration Week",
-    body: "Run the full seven-day rhythm on your own, Monday–Thursday business days and a Friday–Sunday weekend.",
-  },
-]
-
 export function BusinessWeekSection() {
-  const week = getPlanByLevel("business-week")
-  const founderOpen = isFounderPricingOpen()
-  const noWait = [
-    "Your business is fully built.",
-    "You reach a particular revenue milestone.",
-    "Every business problem is solved.",
+  const weekExperience = [
+    {
+      title: "Bring your real business",
+      body: "Bring the work, responsibilities, client commitments, team realities, and operating conditions that make up your actual business. This is not a hypothetical exercise.",
+    },
+    {
+      title: "Experience the Business Day rhythm",
+      body: "Move through the guided Work-Life Balance Business Day™ rhythm: morning alignment, movement, an extended lunch break, a focused CEO workday, and a deliberate power-down. The operating model centers on a four-day workweek, Monday through Thursday, with a three-day weekend.",
+    },
+    {
+      title: "Work on real priorities",
+      body: "Use the 1:00–5:00 PM ET 4-Hour Focused CEO Workday™ to work on meaningful business priorities within a defined work window—not to add another layer of work to your day.",
+    },
+    {
+      title: "Examine the collisions",
+      body: "Use your Reality Check™ and Boundary Report™ to examine where business demands collide with the life you want to protect: availability, workload, decisions, delegation, communication, systems, workflows, technology, and more.",
+    },
+    {
+      title: "Select and begin developing a boundary",
+      body: "Choose a business boundary to work on and begin translating it into practical decisions about how the business operates. Depending on the boundary, that may involve communication expectations, work assignments, operating hours, workflows, or a Sustainable Operating Procedure™.",
+    },
+    {
+      title: "Reflect and decide what comes next",
+      body: "Notice what the experience reveals, what you can begin changing, and what needs continued attention. One week is a beginning—not a promise that every collision or operating procedure will be fully resolved.",
+    },
   ]
-  const continues = [
-    "A Monday–Thursday workweek, with the rest reclaimed as Time Freedom™.",
-    "Ongoing coworking and community support.",
-    "Reflection and accountability each week.",
-    "Continued practice of your personal and business boundaries.",
-    "Room to recognize patterns and adjust over time.",
-  ]
+
   return (
     <section id="business-week" className="scroll-mt-20 bg-[#FFF8F4] py-20 sm:py-28">
-      <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 sm:px-8 lg:grid-cols-2">
-        <img
-          src="/images/holiday/team-celebration.webp"
-          alt="A team in holiday sweaters sharing a high five around a festive table"
-          className="w-full rounded-3xl object-cover shadow-xl"
-          loading="lazy"
-        />
+      <div className="mx-auto flex max-w-6xl flex-col gap-12 px-5 sm:px-8">
+        <div className="grid items-center gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+          <img
+            src="/images/holiday/team-celebration.webp"
+            alt="A team sharing a moment of connection and celebration"
+            className="w-full rounded-3xl object-cover shadow-xl"
+            loading="lazy"
+          />
+          <div className="flex flex-col gap-5">
+            <p className={EYEBROW}>A one-week guided intensive · One-time purchase</p>
+            <h2 className={H2}>The Work-Life Balance Business Week™</h2>
+            <p className={BODY}>
+              Don't just assess your work-life balance. Experience a different way to operate your business. Bring your actual business into a guided, immersive week where you practice the Work-Life Balance Business Day™ rhythm, work on real priorities, and see where the way your business operates supports—or conflicts with—the life you want it to make possible.
+            </p>
+            <p className={BODY}>
+              Your Reality Check™ and Work-Life Balance Boundary Report™ give you a starting point. During the Week™, you use that insight to examine your operating reality, choose a boundary to develop, and begin designing how the business can respect it.
+            </p>
+            <p className="font-playfair text-xl italic leading-snug text-[#4A3A42]">
+              The day creates the space. The boundaries contain the work. The operating procedures protect the boundaries.
+            </p>
+          </div>
+        </div>
+
         <div className="flex flex-col gap-5">
-          <p className={EYEBROW}>Offer Two · The monthly flagship</p>
-          <h2 className={H2}>The Full 4-Day Work-Life Balance Business Week™</h2>
-          <p className={BODY}>
-            A 28-day installation of the Work-Life Balance Business Model: three guided weekly cycles and one solo
-            integration week. Four business days, three protected days of time freedom, and a four-hour focused CEO
-            workday, built and practiced inside your actual business.
-          </p>
-          <ol className="flex flex-col divide-y divide-[#F2E4E8] border-y border-[#F2E4E8]">
-            {TWENTY_EIGHT_DAYS.map((w) => (
-              <li key={w.week} className="flex flex-col gap-1 py-4">
-                <p className="font-poppins text-sm font-semibold uppercase tracking-[0.16em] text-[#C13B6B]">{w.week}</p>
-                <h3 className={`font-playfair text-xl font-bold ${INK}`}>{w.title}</h3>
-                <p className={BODY_SM}>{w.body}</p>
+          <h3 className="font-poppins text-base font-semibold uppercase tracking-[0.18em] text-[#C13B6B]">
+            What you'll do during the week
+          </h3>
+          <ol className="grid gap-4 md:grid-cols-2">
+            {weekExperience.map((item, index) => (
+              <li key={item.title} className="flex gap-4 rounded-2xl bg-white p-6 ring-1 ring-[#F2E4E8]">
+                <span className="font-playfair shrink-0 text-2xl font-bold text-[#C13B6B]">{index + 1}</span>
+                <div className="flex flex-col gap-2">
+                  <h4 className={`font-playfair text-xl font-bold ${INK}`}>{item.title}</h4>
+                  <p className={BODY_SM}>{item.body}</p>
+                </div>
               </li>
             ))}
           </ol>
-          <p className={BODY_SM}>
-            Week four isn&apos;t a week off. It&apos;s a deliberate test of what has become sustainable: which habits
-            stuck, which boundaries you can hold on your own, and what still needs adjustment.
-          </p>
-          <div className="flex flex-col gap-2">
-            <p className={`font-poppins text-base font-semibold ${INK}`}>You don&apos;t need to wait until:</p>
-            <ul className="flex flex-col gap-1.5">
-              {noWait.map((n) => (
-                <li key={n} className={`${BODY} flex gap-3 text-base`}>
-                  <Dot />
-                  {n}
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-3">
+          {[
+            { title: "The day creates the space", body: "A defined daily rhythm and focused work window give the work a container." },
+            { title: "The boundaries contain the work", body: "You identify what the business can and cannot demand of your time, energy, availability, and attention." },
+            { title: "The operating procedures protect the boundaries", body: "You begin translating the boundary into the communication practices, assignments, workflows, and procedures that help it hold." },
+          ].map((item) => (
+            <div key={item.title} className="flex flex-col gap-3 rounded-2xl bg-[#EEF3E8] p-6">
+              <h3 className={`font-playfair text-xl font-bold ${INK}`}>{item.title}</h3>
+              <p className={BODY_SM}>{item.body}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="grid gap-8 rounded-3xl bg-[#2E2228] p-8 sm:p-10 lg:grid-cols-2">
+          <div className="flex flex-col gap-4">
+            <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#C9DDB4]">After your one-week experience</p>
+            <h3 className="font-playfair text-2xl font-bold text-[#FFF8F4]">Keep applying what you've begun—or choose continued support.</h3>
+            <p className="font-poppins text-base leading-relaxed text-[#F6D6E1]">
+              The Work-Life Balance Business Week™ is a complete one-time purchase. You can take what you've learned and continue applying it independently. If you want ongoing access and support as you develop, review, and strengthen your business boundaries, you may choose to upgrade to the monthly membership.
+            </p>
+          </div>
+          <div className="flex flex-col gap-4 rounded-2xl border border-[#FFF8F4]/15 bg-[#FFF8F4]/5 p-6">
+            <h3 className="font-playfair text-xl font-bold text-[#FFF8F4]">If you choose the monthly membership</h3>
+            <ul className="flex flex-col gap-3">
+              {[
+                "Continue with Weekly Business Boundary Focus™.",
+                "Use Monthly Business Boundary Focus™ to review and develop your operating boundaries.",
+                "Continue redesigning business operations so the boundaries can be supported in practice.",
+                "Carry your selected Business Week boundary forward. It remains active; upgrading does not reset or replace it.",
+              ].map((item) => (
+                <li key={item} className="font-poppins flex gap-3 text-base leading-relaxed text-[#F6D6E1]">
+                  <Dot className="mt-2 bg-[#C9DDB4]" />
+                  {item}
                 </li>
               ))}
             </ul>
           </div>
-          <div className="flex flex-col gap-2">
-            <p className={`font-poppins text-base font-semibold ${INK}`}>What continues after Monday:</p>
-            <ul className="flex flex-col gap-1.5">
-              {continues.map((c) => (
-                <li key={c} className={`${BODY} flex gap-3 text-base`}>
-                  <Dot className="bg-[#5A7F46]" />
-                  {c}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="flex flex-col gap-3 border-t border-[#F2E4E8] pt-5">
-            <p className={`font-playfair text-3xl font-bold ${INK}`}>
-              {week?.priceLabel ?? "$1,997"}{" "}
-              <span className="font-poppins text-base font-medium text-[#5A4A52]">· your $997 Monday is credited when you upgrade</span>
-            </p>
-            {founderOpen && (
-              <p className="font-poppins text-base font-semibold text-[#5A7F46]">
-                Founder pricing is open through {FOUNDER_PRICING_DEADLINE}, 2026.
-              </p>
-            )}
-            <OfferCta
-              href={week?.checkoutUrl || undefined}
-              label="Join the Full 4-Day Business Week™"
-              variant="secondary"
-            />
-            <p className={BODY_XS}>
-              Monday introduces the recurring Business Day. The Full Business Week installs it over 28 days.
-            </p>
-          </div>
-          <p className={`${BODY_XS}`}>
-            Community support helps you keep practicing. It doesn&apos;t replace your own business decisions and
-            leadership.
+        </div>
+
+        <div className="flex flex-col items-center gap-4 text-center">
+          <h3 className={`font-playfair text-2xl font-bold ${INK}`}>Ready to experience a different way to operate your business?</h3>
+          <p className={`max-w-3xl ${BODY}`}>
+            Begin with the Work-Life Balance Reality Check™. Then bring your completed Boundary Report™ into the one-week Work-Life Balance Business Week™ and start putting your priorities into practice.
           </p>
+          <OfferCta label="Join the Work-Life Balance Business Week™" variant="secondary" />
+          <p className={BODY_XS}>One-week intensive · One-time purchase · Monthly membership is optional</p>
         </div>
       </div>
     </section>
