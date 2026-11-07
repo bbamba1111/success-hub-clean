@@ -63,8 +63,8 @@ export const SCHEDULE: BlockConfig[] = [
     themePeriod: "morning",
     communityOpen: true,
     messages: [
-      "Today is a fresh opportunity to intentionally design your day before the world begins making demands on your time.",
-      "Before the noise begins, take this quiet space to prepare your mind, your priorities, and your presence.",
+      "Time to wander",
+      "Time to wander",
     ],
   },
   // ── Monday-only block ─────────────────────────────────────────────────────
@@ -160,8 +160,8 @@ export const SCHEDULE: BlockConfig[] = [
     themePeriod: "morning",
     communityOpen: true,
     messages: [
-      "This week's data is already yours. Let it guide today's focus instead of starting from zero.",
-      "Your Founder GPS™ turns this week's numbers into today's next right step.",
+      "Time to redesign your workweek",
+      "Time to redesign your workweek",
     ],
   },
   {
@@ -186,8 +186,8 @@ export const SCHEDULE: BlockConfig[] = [
     themePeriod: "morning",
     communityOpen: true,
     messages: [
-      "Today begins with gratitude, purpose, and intention. Before leading your business, lead yourself.",
-      "Align your mind, body, and spirit first. Everything you build today flows from this alignment.",
+      "Time to be still",
+      "Time to be still",
     ],
   },
   {
@@ -212,8 +212,8 @@ export const SCHEDULE: BlockConfig[] = [
     themePeriod: "morning",
     communityOpen: true,
     messages: [
-      "Small moments of movement create lasting energy. Care for your body so it can support your vision.",
-      "Move with intention. Your body is the vehicle for everything you're here to create.",
+      "Time to move, together",
+      "Time to move, together",
     ],
   },
   {
@@ -238,8 +238,8 @@ export const SCHEDULE: BlockConfig[] = [
     themePeriod: "afternoon",
     communityOpen: true,
     messages: [
-      "Nourishment is productive. Step into nature, reconnect, and return refreshed for meaningful work.",
-      "Rest is not a reward for finishing — it's the fuel that makes great work possible.",
+      "Time to gather",
+      "Time to gather",
     ],
   },
   {
@@ -264,8 +264,8 @@ export const SCHEDULE: BlockConfig[] = [
     themePeriod: "afternoon",
     communityOpen: true,
     messages: [
-      "Protect your focus. Every intentional decision today moves your business closer to the future you're creating.",
-      "This is your protected execution window. Do the deep work only you can do.",
+      "Time to celebrate the work",
+      "Time to celebrate the work",
     ],
   },
   {
@@ -296,8 +296,8 @@ export const SCHEDULE: BlockConfig[] = [
     themePeriod: "evening",
     communityOpen: true,
     messages: [
-      "You earned this time. Be fully present with the people and experiences that matter most.",
-      "Enjoy the life you built your business to support. Presence is the real success.",
+      "Time for the people you love",
+      "Time for the people you love",
     ],
   },
   {
@@ -322,8 +322,8 @@ export const SCHEDULE: BlockConfig[] = [
     themePeriod: "night",
     communityOpen: true,
     messages: [
-      "Success also means knowing when to stop. Rest is part of tomorrow's performance.",
-      "Slow your mind, reflect on today, and prepare tomorrow with intention.",
+      "Time to rest and renew",
+      "Time to rest and renew",
     ],
   },
   {
@@ -347,8 +347,8 @@ export const SCHEDULE: BlockConfig[] = [
     themePeriod: "night",
     communityOpen: false,
     messages: [
-      "Your devices are resting. Now let your mind and body do the same.",
-      "Tomorrow's success begins tonight. Give yourself the gift of restorative sleep.",
+      "Time to unplug",
+      "Time to unplug",
     ],
   },
 ]
