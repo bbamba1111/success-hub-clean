@@ -19,72 +19,24 @@ export interface AlignmentQuestion {
 
 export const ALIGNMENT_QUESTIONS: AlignmentQuestion[] = [
   {
-    id: "enter-workweek",
-    title: "Enter the Workweek Differently",
+    id: "healthier-daily-rhythm",
+    title: "A Healthier Daily Rhythm",
     question:
-      "Would you be willing to redesign how you enter your workweek rather than beginning Monday by immediately reacting to your business?",
+      "Would you be willing to adopt a healthier daily rhythm that makes room for your well-being while allowing you to lead and operate your business effectively?",
   },
   {
-    id: "start-intentionally",
-    title: "Start With Gratitude",
+    id: "protect-what-matters",
+    title: "Protect What Matters",
     question:
-      "Would you be willing to begin your day with gratitude, set an intention, visualize the life you want to create, embody the emotions of that vision, and nurture it through your daily choices before moving into business activity?",
+      "Would you be willing to establish and honor boundaries that protect your time, energy, relationships, and overall well-being—even when business demands compete for them?",
   },
   {
-    id: "protect-body",
-    title: "Start Your Day with Movement",
+    id: "experience-business-week",
+    title: "Ready to Experience the Business Week?",
     question:
-      "Would you be willing to move your body before your workday to boost your energy and well-being, with the support and accountability of a co-working community?",
-  },
-  {
-    id: "protect-nourishment",
-    title: "Nourish, Connect & Recharge",
-    question:
-      "Would you be willing to protect time for a real lunch break to nourish your body, connect with others, celebrate personal or business wins, enjoy nature, and recharge before starting your business day?",
-  },
-  {
-    id: "contain-work",
-    title: "Contain Your Work",
-    question:
-      "Would you be willing to bring your actual CEO work into a 4-Hour Focused Workday™ that starts at 1:00 PM and ends at 5:00 PM rather than allowing your work to expand across the entire day and into your evening?",
-  },
-  {
-    id: "let-life-have-space",
-    title: "Let Life Have Space",
-    question:
-      "Would you be willing to protect Time Freedom™ for the parts of life that matter to you without automatically giving that time back to your business?",
-  },
-  {
-    id: "end-workday",
-    title: "End the Workday",
-    question:
-      "Would you be willing to Power Down™ rather than continuing to carry unfinished work into your evening?",
-  },
-  {
-    id: "disconnect",
-    title: "Unplug & Get Some Sleep",
-    question:
-      "Would you be willing to unplug from blue-light technology and digital demands at your designated time each evening to make room for eight hours of sleep?",
-  },
-  {
-    id: "redesign-workweek",
-    title: "Redesign the Workweek",
-    question:
-      "Would you be willing to experience a 4-Day Workweek™ with a 3-Day Weekend™ rather than assuming every business week requires five days of work?",
-  },
-  {
-    id: "honor-boundaries",
-    title: "Honor the Boundaries",
-    question:
-      "Would you be willing to let these boundaries remain boundaries—even when your business tries to pull you beyond them?",
+      "Are you willing to experience the Work-Life Balance Business Week™ and practice a different way of working and living?",
   },
 ]
-
-export const ALIGNMENT_FINAL: AlignmentQuestion = {
-  id: "ready-to-experience",
-  title: "Ready to Experience It?",
-  question: "Are you willing to experience a Work-Life Balance Business Week™ built around these boundaries?",
-}
 
 export const ALIGNMENT_CHOICES: { value: AlignmentChoice; label: string }[] = [
   { value: "willing", label: "Yes, I'm Willing" },
