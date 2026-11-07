@@ -1,7 +1,7 @@
 "use client"
 
 /**
- * Combined Business Context & Current Business™ — ten-question onboarding wizard.
+ * Business Context — ten-question onboarding wizard.
  *
  * Collects the approved business identity, operating model, vision, delivery,
  * AI use, client connection, and 90-day goal in one profile. Hero-first UX:
