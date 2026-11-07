@@ -64,65 +64,160 @@ export function FreedomSection() {
   )
 }
 
-export function RealityCheckSection({ sessionLabel }: { sessionLabel: string }) {
-  const outcomes = [
-    "Where business demands may be interfering with the life you want.",
-    "Which boundaries are being challenged or overlooked.",
-    "Where the business may depend too heavily on you.",
-    "What deserves a closer look.",
-    "Where you might begin making changes.",
+export function RealityCheckSection() {
+  const steps = [
+    {
+      number: "01",
+      title: "Complete your Founder Profile™",
+      body: "First, tell us about you: who you are, your circumstances, and the life you want your business to support. Every field is optional. This profile helps Harmony Lane™ understand how to guide you from day one.",
+      detail: "About 3–5 minutes",
+    },
+    {
+      number: "02",
+      title: "Complete your Business Context Profile™",
+      body: "Now tell us about the business you're building: its current stage, how it operates, the work you carry, the people and tools involved, and what you're working toward. No scores and no right answers—just the context needed to make recommendations relevant to your real business.",
+      detail: "About 10 minutes",
+    },
+    {
+      number: "03",
+      title: "Reconnect with your Original Entrepreneurial Intention™",
+      body: "Choose everything you hoped your business would make possible when you started. Explore the life you wanted across time and freedom, health and rest, relationships and family, community and giving, play and creativity, home and inner life, financial autonomy, and the deeper reasons you chose entrepreneurship.",
+      detail: "Select all that apply",
+    },
+    {
+      number: "04",
+      title: "Explore your Business Reality™",
+      body: "Identify the conditions in your operating environment that may collide with the life you described: founder dependency, meetings, interruptions, client expectations, availability, decision ownership, delegation, team capacity, workload, deadlines, communication, technology, notifications, systems, workflows, automation, AI support, operating hours, and escalation. These are not scored. They help identify what the Business Week™ can help you examine and design.",
+      detail: "Select every condition that applies",
+    },
+    {
+      number: "05",
+      title: "Describe your Personal & Work-From-Home Reality™",
+      body: "Share the personal responsibilities and work-from-home circumstances your business needs to make room for. This context helps distinguish what the business demands from what your life requires.",
+      detail: "Select what applies right now",
+    },
+    {
+      number: "06",
+      title: "Complete your 30-Day Work-Life Balance Audit™",
+      body: "Answer 15 quick questions about the last 30 days across your 15 Core Value Areas™. Your answers establish your 30-Day Work-Life Balance Baseline™—a starting point for understanding how life has really been operating alongside your business.",
+      detail: "15 questions · 15 Core Value Areas™",
+    },
+    {
+      number: "07",
+      title: "Review your Results & Priority Focus Areas™",
+      body: "See your overall Work-Life Balance Score™ and how each area is showing up in your baseline. Areas at 60% or below may need more protected time, space, attention, or capacity. Then choose one, two, or three priority areas to focus on during your first or next Work-Life Balance Business Week™.",
+      detail: "Choose 1–3 priority areas",
+    },
   ]
-  const path = [
-    { title: "Sunday Reality Check™", tag: "Free", body: "See your current reality and where to begin." },
-    { title: "Monday Business Day™", tag: "$997", body: "Live a full guided Work-Life Balance Business Day™ with your real work." },
-    { title: "Work-Life Balance Business Week™", tag: "$1,997", body: "Keep practicing Monday to Thursday, with community support." },
+
+  const lifeAreas = [
+    "Time & Freedom",
+    "Health & Rest",
+    "Relationships & Family",
+    "Community & Giving",
+    "Play, Travel & Creativity",
+    "Home, Self & Inner Life",
+    "Financial & Life Autonomy",
+    "The Deeper Intent",
   ]
+
   return (
     <section id="reality-check" className="relative scroll-mt-20 overflow-hidden bg-[#2E2228] py-20 sm:py-28">
-      <img src="/images/holiday/kwanzaa-rest.webp" alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-25" loading="lazy" />
-      <div className="relative mx-auto grid max-w-6xl gap-12 px-5 sm:px-8 lg:grid-cols-2">
-        <div className="flex flex-col gap-5">
+      <img src="/images/holiday/kwanzaa-rest.webp" alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-20" loading="lazy" />
+      <div className="relative mx-auto flex max-w-6xl flex-col gap-14 px-5 sm:px-8">
+        <div className="mx-auto flex max-w-4xl flex-col items-center gap-5 text-center">
           <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">
-            Every Sunday · Next: {sessionLabel} · {SESSION_TIME_LABEL} · {SESSION_DURATION_LABEL} · Free
+            Your first step in Harmony Lane™
           </p>
-          <h2 className="font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-4xl">
-            Start with the free Weekly Work-Life Balance Reality Check™
+          <h2 className="font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl">
+            The Work-Life Balance Reality Check™
           </h2>
-          <p className="font-poppins text-pretty leading-relaxed text-[#F6D6E1]">
-            Before you redesign your week, see the one you have. You&apos;ll walk away understanding:
+          <p className="font-playfair text-balance text-xl italic leading-relaxed text-[#F6D6E1] sm:text-2xl">
+            An interactive experience designed to connect what you built your business for with how your life is really operating today—and uncover what your business needs to protect so you can make time for more life.
           </p>
-          <ul className="flex flex-col gap-3">
-            {outcomes.map((o) => (
-              <li key={o} className="font-poppins flex gap-3 leading-relaxed text-[#FFF8F4]">
-                <Dot className="bg-[#F6A9C2]" />
-                {o}
+          <p className="font-poppins max-w-3xl text-base leading-relaxed text-[#FFF8F4] sm:text-lg">
+            First, we'd love to get to know you and the business you're building. You'll complete your Founder Profile™ and Business Context Profile™, then take the Reality Check™. Together, they help Harmony Lane™ personalize the guidance and experience that follow.
+          </p>
+        </div>
+
+        <div className="grid gap-5 md:grid-cols-2">
+          {steps.map((step) => (
+            <article key={step.number} className="flex gap-4 rounded-2xl border border-[#FFF8F4]/15 bg-[#2E2228]/70 p-6 backdrop-blur-sm">
+              <span className="font-playfair shrink-0 text-3xl font-bold text-[#F6A9C2]">{step.number}</span>
+              <div className="flex flex-col gap-2">
+                <h3 className="font-playfair text-xl font-bold text-[#FFF8F4]">{step.title}</h3>
+                <p className="font-poppins text-base leading-relaxed text-[#F6D6E1]">{step.body}</p>
+                <p className="font-poppins text-sm font-semibold text-[#C9DDB4]">{step.detail}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <div className="grid gap-8 rounded-3xl bg-[#FFF8F4] p-7 sm:p-10 lg:grid-cols-2">
+          <div className="flex flex-col gap-4">
+            <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#5A7F46]">What you'll reconnect with</p>
+            <h3 className={`font-playfair text-2xl font-bold ${INK}`}>The life you wanted your business to make possible.</h3>
+            <p className={BODY_SM}>Your Original Entrepreneurial Intention™ invites you to choose all that apply—not just one answer—from the areas that matter in a whole life.</p>
+          </div>
+          <ul className="grid gap-3 sm:grid-cols-2">
+            {lifeAreas.map((area) => (
+              <li key={area} className="font-poppins flex items-center gap-3 rounded-xl bg-white px-4 py-3 text-base font-medium text-[#4A3A42]">
+                <Dot className="mt-0 bg-[#5A7F46]" />
+                {area}
               </li>
             ))}
           </ul>
-          <p className="font-poppins text-base italic leading-relaxed text-[#F6D6E1]">
-            Your results are a starting point for reflection, not a judgment of you or your business.
-          </p>
-          <CtaLink />
         </div>
-        <div className="flex flex-col gap-4">
-          <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">How the path works</p>
-          <ol className="flex flex-col gap-4">
-            {path.map((p, i) => (
-              <li key={p.title} className="flex gap-4 rounded-2xl border border-[#FFF8F4]/15 bg-[#2E2228]/60 p-5 backdrop-blur-sm">
-                <span className="font-playfair text-3xl font-bold text-[#F6A9C2]">{i + 1}</span>
-                <div className="flex flex-1 flex-col gap-1">
-                  <div className="flex flex-wrap items-baseline justify-between gap-2">
-                    <h3 className="font-playfair text-lg font-bold text-[#FFF8F4]">{p.title}</h3>
-                    <span className="font-poppins text-sm font-semibold uppercase tracking-[0.16em] text-[#C9DDB4]">{p.tag}</span>
-                  </div>
-                  <p className="font-poppins text-base leading-relaxed text-[#F6D6E1]">{p.body}</p>
-                </div>
+
+        <div className="grid gap-8 lg:grid-cols-2">
+          <div className="flex flex-col gap-4">
+            <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#C9DDB4]">Your baseline</p>
+            <h3 className="font-playfair text-2xl font-bold text-[#FFF8F4]">A clearer picture of your last 30 days.</h3>
+            <p className="font-poppins text-base leading-relaxed text-[#F6D6E1]">
+              The 15-question audit looks across your 15 Core Value Areas™ and establishes your 30-Day Work-Life Balance Baseline™. Your score is a starting point—not a verdict about you or your business.
+            </p>
+          </div>
+          <div className="flex flex-col gap-4 rounded-2xl border border-[#FFF8F4]/15 bg-[#2E2228]/70 p-6">
+            <h3 className="font-playfair text-xl font-bold text-[#FFF8F4]">Your Priority Focus Areas™</h3>
+            <p className="font-poppins text-base leading-relaxed text-[#F6D6E1]">
+              Review the areas that may need more protected time, space, attention, or capacity. Choose one, two, or three that matter most now. These become the focus of your first or next Work-Life Balance Business Week™.
+            </p>
+          </div>
+        </div>
+
+        <div className="grid gap-8 rounded-3xl bg-[#FCEEF2] p-7 sm:p-10 lg:grid-cols-[1fr_1.1fr]">
+          <div className="flex flex-col gap-3">
+            <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#5A7F46]">What you'll receive</p>
+            <h3 className="font-playfair text-2xl font-bold text-[#4A3A42]">Your Work-Life Balance Boundary Report™</h3>
+            <p className="font-poppins text-base leading-relaxed text-[#5A4A52]">
+              Your completed profiles, answers, baseline, business conditions, and selected priorities come together in a personalized report you can use as your starting point for boundary design.
+            </p>
+          </div>
+          <ul className="flex flex-col gap-3">
+            {[
+              "A record of the life you originally wanted your business to support.",
+              "Your Business Context Profile™ and the operating conditions you identified.",
+              "Your 30-Day Work-Life Balance Baseline™ across the 15 Core Value Areas™.",
+              "Your Priority Focus Areas™—the one, two, or three areas you selected.",
+              "A clearer starting point for deciding what your business needs to protect and what to work on next.",
+            ].map((item) => (
+              <li key={item} className="font-poppins flex gap-3 text-base leading-relaxed text-[#4A3A42]">
+                <Dot className="mt-2 bg-[#5A7F46]" />
+                {item}
               </li>
             ))}
-          </ol>
-          <p className="font-poppins text-base leading-relaxed text-[#F6D6E1]">
-            The Reality Check is free and stands on its own. Monday is a separate, paid experience.
+          </ul>
+        </div>
+
+        <div className="mx-auto flex max-w-4xl flex-col items-center gap-4 text-center">
+          <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#C9DDB4]">Your next step is yours to choose</p>
+          <h3 className="font-playfair text-balance text-2xl font-bold text-[#FFF8F4] sm:text-3xl">Bring your Boundary Report™ into the Work-Life Balance Business Week™.</h3>
+          <p className="font-poppins text-base leading-relaxed text-[#F6D6E1] sm:text-lg">
+            The Reality Check helps you understand your starting point. The one-week Business Week is where you bring your real business into the experience, practice the Work-Life Balance Business Day™ rhythm, examine the collisions you identified, and begin designing boundaries that help your business make room for the life you want.
           </p>
+          <a href="#business-week" className="font-poppins inline-flex w-fit items-center justify-center rounded-full bg-[#C13B6B] px-7 py-4 text-base font-semibold uppercase tracking-[0.12em] text-[#FFF8F4] shadow-lg shadow-[#C13B6B]/25 transition-colors hover:bg-[#A8305B]">
+            Explore the Work-Life Balance Business Week™
+          </a>
         </div>
       </div>
     </section>
