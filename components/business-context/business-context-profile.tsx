@@ -250,7 +250,7 @@ function ProgressBar({ step, total }: { step: number; total: number }) {
     <div className="mb-6">
       <div className="flex items-center justify-between mb-2">
         <span className="font-montserrat text-xs font-bold uppercase tracking-[0.18em] text-[#5B835F]">
-          Business Context Profile™
+          Combined Business Context & Current Business™
         </span>
         <span className="font-montserrat text-xs text-[#6B5860]/60">
           {step} of {total} complete
@@ -639,38 +639,18 @@ export function BusinessContextProfile({
             businessName,
             businessStage,
             businessModel,
-            industry,
+            industry: industry === "Other" ? customIndustry || "Other" : industry,
             founderRole,
             teamSize,
             revenueStage,
-            biggestGoals,
-            biggestChallenges,
-            operatingEnvironment,
-            supportNetwork,
-            biggestOpportunities,
-            vision,
             biggestGoalText,
-            biggestChallengeText,
             successVision,
-            capitalStrategy,
             growthVision,
             exitVision,
-            businessCredit,
-            businessBanking,
-            financialFoundation,
-            wealthBuilding,
-            commLevel,
-            learningInterests,
             offerStatement,
-            idealClientDefinition,
-            acquisitionChannel,
-            conversionMechanism,
-            hasOnboarding,
             deliveryModel,
-            hasProofTestimonials,
-            referralMechanism,
             currentAiToolUse,
-            clientConnectionExperienceStatus,
+            acquisitionChannel,
           }}
           onEditSection={jumpToStep}
         />
