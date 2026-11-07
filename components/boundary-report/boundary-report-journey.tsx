@@ -377,7 +377,7 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
       setPersonalReality(d.personalReality ?? [])
       setPriority(d.priority ?? [])
       setAlignment(d.alignment ?? {})
-      setAlignmentIndex(d.alignmentIndex ?? 0)
+      setAlignmentIndex(Math.min(d.alignmentIndex ?? 0, ALIGNMENT_QUESTIONS.length - 1))
     } else if (saved.previousCurrentBusiness) {
       setCurrentBusiness(saved.previousCurrentBusiness)
     }
