@@ -281,9 +281,9 @@ function ProgressBar({ step, total }: { step: number; total: number }) {
 //   Your Vision™           13 90-day goal · 14 #1 in the way · 15 winning picture
 //   Growth & Capital™      17 growth vision · 18 exit vision
 //   Business Reality™      30 delivery model · 33 current AI tools · 34 Client Connection Experience™
-const VISIBLE_STEPS = [0, 1, 2, 3, 4, 5, 6, 10, 13, 14, 15, 17, 18, 30, 33, 34] as const
+const VISIBLE_STEPS = [100, 101, 102, 103, 104, 105, 106, 107, 108, 109] as const
 
-const TOTAL_STEPS = 35
+const TOTAL_STEPS = 110
 /** Count shown to the member — the approved question count, not the full 35. */
 const VISIBLE_TOTAL = VISIBLE_STEPS.length
 /** Index of a raw step within the visible walk, or -1 if hidden. */
@@ -331,13 +331,13 @@ export function BusinessContextProfile({
     wasAlreadyComplete.current ? "summary" : "wizard",
   )
 
-  const [step, setStep] = useState(0)
+  const [step, setStep] = useState(100)
   // Highest step the member has actually reached with a saved answer — lets
   // Forward re-advance after using Back without ever skipping ahead of a
   // question that hasn't been answered yet on a first-time pass through the
   // wizard. Once the whole profile is complete this is raised to the last
   // step so summary → Edit can freely page anywhere.
-  const [maxStepReached, setMaxStepReached] = useState(0)
+  const [maxStepReached, setMaxStepReached] = useState(100)
 
   // Business Identity™
   const [businessName, setBusinessName] = useState("")
@@ -446,7 +446,8 @@ export function BusinessContextProfile({
       setBusinessName(record.businessName)
       setBusinessStage(record.businessStage)
       setBusinessModel(record.businessModel)
-      setIndustry(record.industry)
+      setIndustry(INDUSTRY_OPTIONS.includes(record.industry) ? record.industry : "Other")
+      setCustomIndustry(INDUSTRY_OPTIONS.includes(record.industry) ? "" : record.industry)
       setFounderRole(record.founderRole)
       setTeamSize(record.teamSize)
       setRevenueStage(record.revenueStage)
@@ -1348,6 +1349,82 @@ export function BusinessContextProfile({
           />
         </StepCard>
       )}
+
+      {/* Approved combined assessment — exactly ten questions */}
+      {step === 100 && <StepCard>
+        <StepLabel label="Business Identity™" step={completedSteps + 1} total={VISIBLE_TOTAL} />
+        <StepQuestion>1. What is your business name, industry, and primary product or service?</StepQuestion>
+        <div className="flex flex-col gap-4">
+          <div><label className="mb-2 block font-montserrat text-sm font-semibold text-[#3A2E33]">Business name</label>
+            <input value={businessName} onChange={(e) => setBusinessName(e.target.value)} placeholder="Enter your business name" className="w-full rounded-2xl border border-[#E8E0D5] bg-white px-4 py-3 font-montserrat text-sm text-[#3A2E33]" /></div>
+          <div><label className="mb-2 block font-montserrat text-sm font-semibold text-[#3A2E33]">Industry</label>
+            <select value={industry ?? ""} onChange={(e) => { setIndustry(e.target.value || null); if (e.target.value !== "Other") setCustomIndustry("") }} className="w-full rounded-2xl border border-[#E8E0D5] bg-white px-4 py-3 font-montserrat text-sm text-[#3A2E33]">
+              <option value="">Choose your industry</option>{INDUSTRY_OPTIONS.map((o) => <option key={o} value={o}>{o}</option>)}
+            </select>
+            {industry === "Other" && <input value={customIndustry} onChange={(e) => setCustomIndustry(e.target.value)} placeholder="Describe your industry" className="mt-3 w-full rounded-2xl border border-[#E8E0D5] bg-white px-4 py-3 font-montserrat text-sm text-[#3A2E33]" />}</div>
+          <div><label className="mb-2 block font-montserrat text-sm font-semibold text-[#3A2E33]">Primary product or service</label>
+            <textarea value={offerStatement} onChange={(e) => setOfferStatement(e.target.value)} rows={3} placeholder="What do you sell or provide?" className="w-full rounded-2xl border border-[#E8E0D5] bg-white px-4 py-3 font-montserrat text-sm text-[#3A2E33]" /></div>
+        </div>
+        <ContinueButton onClick={advance} disabled={!businessName.trim() || !industry || (industry === "Other" && !customIndustry.trim()) || !offerStatement.trim()} />
+      </StepCard>}
+      {step === 101 && <StepCard>
+        <StepLabel label="Business Stage™" step={completedSteps + 1} total={VISIBLE_TOTAL} />
+        <StepQuestion>2. What stage is your business in today?</StepQuestion>
+        <SingleChoice options={STAGE_OPTIONS} value={businessStage} onChange={(v) => autoAdvanceSingle(setBusinessStage, v)} />
+      </StepCard>}
+      {step === 102 && <StepCard>
+        <StepLabel label="Founder Role & Team™" step={completedSteps + 1} total={VISIBLE_TOTAL} />
+        <StepQuestion>3. What is your role in the business, and how many people—including employees and contractors—are involved?</StepQuestion>
+        <div className="flex flex-col gap-5"><div><StepHint>Your role</StepHint><SingleChoice options={ROLE_OPTIONS} value={founderRole} onChange={setFounderRole} /></div>
+          <div><StepHint>People involved in the business</StepHint><SingleChoice options={TEAM_OPTIONS} value={teamSize} onChange={setTeamSize} /></div></div>
+        <ContinueButton onClick={advance} disabled={!founderRole || !teamSize} />
+      </StepCard>}
+      {step === 103 && <StepCard>
+        <StepLabel label="Revenue Model™" step={completedSteps + 1} total={VISIBLE_TOTAL} />
+        <StepQuestion>4. How does your business generate revenue, and what is your approximate annual revenue range?</StepQuestion>
+        <div className="flex flex-col gap-5"><div><StepHint>How your business earns revenue · Select all that apply</StepHint><MultiChoice options={MODEL_OPTIONS} values={businessModel} onChange={setBusinessModel} /></div>
+          <div><StepHint>Approximate annual revenue</StepHint><SingleChoice options={REVENUE_OPTIONS} value={revenueStage} onChange={setRevenueStage} /></div></div>
+        <ContinueButton onClick={advance} disabled={!businessModel.length || !revenueStage} />
+      </StepCard>}
+      {step === 104 && <StepCard>
+        <StepLabel label="Desired Life & Growth Vision™" step={completedSteps + 1} total={VISIBLE_TOTAL} />
+        <StepQuestion>5. What kind of life do you want your business to support, and how do you envision growing it?</StepQuestion>
+        <div className="flex flex-col gap-4"><div><StepHint>Describe the life you want your business to make possible.</StepHint>
+          <textarea value={successVision} onChange={(e) => setSuccessVision(e.target.value)} rows={4} placeholder="What do you want more time, energy, and room for in your life?" className="w-full rounded-2xl border border-[#E8E0D5] bg-white px-4 py-3 font-montserrat text-sm text-[#3A2E33]" /></div>
+          <div><StepHint>How do you envision growing the business?</StepHint><SingleChoice options={GROWTH_OPTIONS} value={growthVision} onChange={setGrowthVision} /></div></div>
+        <ContinueButton onClick={advance} disabled={!successVision.trim() || !growthVision} />
+      </StepCard>}
+      {step === 105 && <StepCard>
+        <StepLabel label="Long-Term Exit Vision™" step={completedSteps + 1} total={VISIBLE_TOTAL} />
+        <StepQuestion>6. What is your long-term vision for your role in the business—continue leading, step back, transfer ownership, sell, or something else?</StepQuestion>
+        <SingleChoice options={EXIT_OPTIONS} value={exitVision} onChange={(v) => autoAdvanceSingle(setExitVision, v)} />
+      </StepCard>}
+      {step === 106 && <StepCard>
+        <StepLabel label="Product & Service Delivery™" step={completedSteps + 1} total={VISIBLE_TOTAL} />
+        <StepQuestion>7. How are your products or services delivered to customers or clients?</StepQuestion>
+        <SingleChoice options={DELIVERY_MODEL_OPTIONS} value={deliveryModel} onChange={(v) => autoAdvanceSingle(setDeliveryModel, v)} />
+      </StepCard>}
+      {step === 107 && <StepCard>
+        <StepLabel label="AI Tools & Automation™" step={completedSteps + 1} total={VISIBLE_TOTAL} />
+        <StepQuestion>8. What AI tools or automations do you currently use, and what do they help you accomplish?</StepQuestion>
+        <StepHint>If you are not using any yet, enter “None yet.”</StepHint>
+        <textarea value={currentAiToolUse} onChange={(e) => setCurrentAiToolUse(e.target.value)} rows={4} placeholder="List the tools or automations and what you use them to do." className="w-full rounded-2xl border border-[#E8E0D5] bg-white px-4 py-3 font-montserrat text-sm text-[#3A2E33]" />
+        <ContinueButton onClick={advance} disabled={!currentAiToolUse.trim()} />
+      </StepCard>}
+      {step === 108 && <StepCard>
+        <StepLabel label="Client Connection Experiences™" step={completedSteps + 1} total={VISIBLE_TOTAL} />
+        <StepQuestion>9. How do you currently attract and connect with prospective clients—for example, workshops, webinars, challenges, speaking, or referrals?</StepQuestion>
+        <StepHint>Include the ways people discover you and the experiences or conversations that help them get to know your work.</StepHint>
+        <textarea value={acquisitionChannel} onChange={(e) => setAcquisitionChannel(e.target.value)} rows={4} placeholder="e.g. Speaking, referrals, LinkedIn, workshops, webinars, challenges, or networking." className="w-full rounded-2xl border border-[#E8E0D5] bg-white px-4 py-3 font-montserrat text-sm text-[#3A2E33]" />
+        <ContinueButton onClick={advance} disabled={!acquisitionChannel.trim()} />
+      </StepCard>}
+      {step === 109 && <StepCard>
+        <StepLabel label="90-Day Business Goal™" step={completedSteps + 1} total={VISIBLE_TOTAL} />
+        <StepQuestion>10. What is your most important business goal for the next 90 days?</StepQuestion>
+        <textarea value={biggestGoalText} onChange={(e) => setBiggestGoalText(e.target.value)} rows={4} placeholder="What is the one business result that matters most over the next 90 days?" className="w-full rounded-2xl border border-[#E8E0D5] bg-white px-4 py-3 font-montserrat text-sm text-[#3A2E33]" />
+        <ContinueButton onClick={handleFinish} disabled={!biggestGoalText.trim()} label="Complete My Business Profile™" />
+      </StepCard>}
+
     </div>
   )
 }
