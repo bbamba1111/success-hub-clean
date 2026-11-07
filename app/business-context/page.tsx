@@ -5,7 +5,7 @@ import { OnboardingProgressBanner } from "@/components/onboarding/onboarding-pro
 import { getOnboardingProgressServer } from "@/lib/onboarding/onboarding-progress"
 
 export const metadata = {
-  title: "Combined Business Context & Current Business™ | Harmony Lane™",
+  title: "Business Context | Harmony Lane™",
   description:
     "Complete one ten-question business profile covering your business identity, revenue model, vision, delivery, AI use, client connections, and 90-day goal.",
 }
