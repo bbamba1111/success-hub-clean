@@ -2,32 +2,79 @@ import { createServerClient } from "@supabase/ssr"
 import { NextResponse, type NextRequest } from "next/server"
 
 // Routes that are publicly accessible without any authentication
+// NOTE: "/" is intentionally NOT public — it is the authenticated daily
+// Work-Life Balance Business Day experience and must require a paid membership.
 const PUBLIC_ROUTES = [
-  "/",
   "/auth",
   "/api",
   "/_next",
   "/images",
   "/marketing",
+  "/landing",
+  // "/1day" — the $1,997 live group "Make Time For More on Mondays™"
+  // offer landing page. Public because it's a pre-purchase
+  // marketing/checkout page, not gated app content.
+  "/1day",
   "/sunday-shift",
   "/garden",
   "/audit",
   "/focus-areas",
   "/my-results",
   "/preview-results",
+  // /pricing no longer has its own page — it's a thin redirect to
+  // /experiences (the one canonical pricing page) and must stay public so
+  // that redirect resolves before the auth check below runs.
   "/pricing",
+  // /welcome is the brand-new customer's FIRST visit after purchase — they
+  // have no session yet, so it must be reachable pre-login. Its security is
+  // enforced independently by the one-time onboarding_token required by
+  // /api/auth/send-confirmation (see that route for details), not by
+  // Supabase session auth.
+  "/welcome",
+  // /linkedin-header is a public, shareable preview of Barbara's LinkedIn
+  // banner — no gated app content, so it stays reachable without a session.
+  "/linkedin-header",
 ]
 
 // Routes that require authentication but NOT paid membership (free access after login)
 const AUTH_ONLY_ROUTES = [
-  "/welcome",
+  "/installation",
   "/human-zone-of-genius-team",
   "/ai-executive-team",
+  // "Make Time For More Experiences™" is the upgrade/continuation decision
+  // point itself — every logged-in member (paid or not) must be able to
+  // reach it, otherwise non-paid members bounce straight back to the same
+  // page and never see it.
+  "/experiences",
 ]
 
-// Valid paid membership tiers (from database constraint)
-// 'free' is explicitly NOT in this list - only paying members get access
-const PAID_TIERS = ["monday_only", "7_day", "21_day", "monthly", "annual", "premium"]
+// Tiers with full Success Hub access. 'free' is explicitly NOT in this list.
+// Legacy tiers (7_day, 21_day, monthly, annual, premium) keep their existing
+// access until their mappings are deliberately reviewed.
+// Level 1 'premium_member' and Level 2 'monthly_member' both get hub access,
+// including the Monday Weekly 7-Day Work-Life Balance Audit™. Only Level 2
+// unlocks Monthly Business Boundary Focus™, enforced by has_active_entitlement().
+const PAID_TIERS = [
+  "monday_only",
+  "business_week",
+  "premium_member",
+  "monthly_member",
+  "7_day",
+  "21_day",
+  "monthly",
+  "annual",
+  "premium",
+]
+
+// 'reality_check' buys the standalone Weekly Work-Life Balance Reality Check™:
+// the diagnostic, saved results, the report, and its follow-up blueprint.
+// It must not unlock the Monday–Thursday experience.
+const REALITY_CHECK_TIERS = ["reality_check"]
+const REALITY_CHECK_ROUTES = ["/reality-check", "/boundary-report", "/my-report", "/harmony-blueprint"]
+
+function isRealityCheckRoute(pathname: string): boolean {
+  return REALITY_CHECK_ROUTES.some(route => pathname === route || pathname.startsWith(route + "/"))
+}
 
 function isPublicRoute(pathname: string): boolean {
   return PUBLIC_ROUTES.some(route => 
@@ -71,6 +118,15 @@ export async function updateSession(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname
 
+  // DEVELOPMENT-ONLY: lets the "/dev-preview" fixture routes render without a
+  // real paid account so the live 4-Hour CEO Workday™ UI can be visually
+  // verified with realistic seeded data. The route itself also 404s outside
+  // development (see app/dev-preview/workday/page.tsx) — this is a second,
+  // independent guard so production auth/paywall behavior never changes.
+  if (process.env.NODE_ENV !== "production" && pathname.startsWith("/dev-preview")) {
+    return supabaseResponse
+  }
+
   // Allow public routes without any checks
   if (isPublicRoute(pathname)) {
     return supabaseResponse
@@ -97,17 +153,22 @@ export async function updateSession(request: NextRequest) {
   // For all other routes (protected hub routes), check for paid membership
   const { data: profile } = await supabase
     .from("user_profiles")
-    .select("membership_tier")
+    .select("membership_tier, role")
     .eq("id", user.id)
     .single()
 
   const membershipTier = profile?.membership_tier?.toLowerCase() || "free"
-  const isPaid = PAID_TIERS.includes(membershipTier)
+  // Platform admins can open every paid area so they can support and review any member's experience.
+  const isPlatformAdmin = profile?.role === "platform_admin"
+  const isPaid =
+    isPlatformAdmin ||
+    PAID_TIERS.includes(membershipTier) ||
+    (REALITY_CHECK_TIERS.includes(membershipTier) && isRealityCheckRoute(pathname))
 
   if (!isPaid) {
-    // Redirect non-paid users to pricing/upgrade page
+    // Redirect non-paid users to the one canonical upgrade page.
     const url = request.nextUrl.clone()
-    url.pathname = "/pricing"
+    url.pathname = "/experiences"
     url.searchParams.set("upgrade", "true")
     return NextResponse.redirect(url)
   }
