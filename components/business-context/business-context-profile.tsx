@@ -1,10 +1,11 @@
 "use client"
 
 /**
- * Business Context Profile™ — multi-step onboarding wizard (Phase 10.1)
+ * Combined Business Context & Current Business™ — ten-question onboarding wizard.
  *
- * 21-step wizard that collects the founder's Business Context Profile™ and
- * Founder Learning Profile™. Hero-first UX: the CherryBlossomScene is rendered
+ * Collects the approved business identity, operating model, vision, delivery,
+ * AI use, client connection, and 90-day goal in one profile. Hero-first UX:
+ * the CherryBlossomScene is rendered
  * by the parent page; this component begins at the first question.
  *
  * UX rules (matching Design My Week™):
@@ -268,19 +269,10 @@ function ProgressBar({ step, total }: { step: number; total: number }) {
 
 // ─── Main wizard ─────────────────────────────────────────────────────────────
 
-// Every question block still lives below (steps 0–34) and every state field +
-// DB write is untouched — hidden questions simply keep their default/empty
-// values exactly as when a member skips optional inputs. The onboarding
-// presentation now walks ONLY the approved subset, in the existing order,
-// under the existing categories. To bring a hidden question back later, add
-// its step index here.
-//
-// Approved 16 (by category):
-//   Business Identity™     0 name · 1 stage · 2 revenue model · 3 industry · 4 role · 5 team size
-//   Founder Support Net™   6 annual revenue · 10 who supports your business
-//   Your Vision™           13 90-day goal · 14 #1 in the way · 15 winning picture
-//   Growth & Capital™      17 growth vision · 18 exit vision
-//   Business Reality™      30 delivery model · 33 current AI tools · 34 Client Connection Experience™
+// The approved assessment presents ten grouped questions. Legacy state fields,
+// storage columns, and saved profile records remain in place for compatibility.
+// The ten visible steps use a separate range so old raw step IDs are never
+// accidentally reinterpreted as the new question sequence.
 const VISIBLE_STEPS = [100, 101, 102, 103, 104, 105, 106, 107, 108, 109] as const
 
 const TOTAL_STEPS = 110
