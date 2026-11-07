@@ -13,18 +13,17 @@ import {
   RealityCheckSection,
   RegisterSection,
 } from "@/components/landing/holiday/reality-check-sections"
-import { formatSessionDate, nextSessionDate } from "@/lib/reality-check/session"
 
 export const dynamic = "force-dynamic"
 
 export const metadata: Metadata = {
   title: "Harmony Lane™ — Make Time For More This Holiday Season",
   description:
-    "Your premium work-life balance destination. Live within work-life balance boundaries while redesigning your business weeks. Join the free Sunday Reality Check every Sunday at 3 PM ET.",
+    "Your premium work-life balance destination. Live within work-life balance boundaries while redesigning your business weeks. Start with the $197 Work-Life Balance Reality Check™.",
   openGraph: {
     title: "Harmony Lane™ — Your Work-Life Balance Destination",
     description:
-      "Before you deploy AI, set boundaries—so AI doesn't automate your hustle. Start with the free Sunday Reality Check, every Sunday at 3 PM ET.",
+      "Before you deploy AI, set boundaries—so AI doesn't automate your hustle. Start with the $197 Work-Life Balance Reality Check™.",
     type: "website",
     images: [{ url: "/images/holiday/togetherness-og.jpg", width: 1200, height: 630 }],
   },
@@ -35,7 +34,6 @@ export const viewport = {
 }
 
 export default function LandingPage() {
-  const sessionLabel = formatSessionDate(nextSessionDate())
 
   return (
     <main className="min-h-screen bg-[#FFF8F4]">
@@ -50,15 +48,15 @@ export default function LandingPage() {
           { label: "Questions", href: "#faq" },
         ]}
       />
-      <HolidayHero sessionLabel={sessionLabel} />
+      <HolidayHero />
       <FreedomSection />
-      <RealityCheckSection sessionLabel={sessionLabel} />
+      <RealityCheckSection />
       <MondaySection />
       <BusinessWeekSection />
       <NewYearSection />
       <AboutBarbaraSection />
       <FaqSection />
-      <RegisterSection sessionLabel={sessionLabel} />
+      <RegisterSection />
       <DisclaimerFooter />
       <LandingFooter />
     </main>
