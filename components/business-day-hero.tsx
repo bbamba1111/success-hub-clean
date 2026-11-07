@@ -10,6 +10,7 @@
  * experience right now?" and renders it.
  */
 
+import { useEffect, useState } from "react"
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
 import type { PartOfDay } from "@/operating-engine"
@@ -279,53 +280,87 @@ export function BusinessDayHero() {
       {/* The image and frosted-glass message follow the Operating Engine current schedule block. */}
       <ScheduleHeroScene
         src={experience?.theme.backgroundImage ?? "/images/holiday/winter-stroll.webp"}
-        message={experience?.phase.message ?? "Make Time For More™"}
+        blockId={experience?.businessDay.current.id ?? "fallback"}
+        messages={experience?.businessDay.current.messages ?? ["Make Time For More™"]}
       />
     </section>
   )
 }
 
-function ScheduleHeroScene({ src, message }: { src: string; message: string }) {
+function ScheduleHeroScene({
+  src,
+  blockId,
+  messages,
+}: {
+  src: string
+  blockId: string
+  messages: string[]
+}) {
   const reduceMotion = useReducedMotion()
+  const captions = messages.length > 0 ? messages : ["Make Time For More™"]
+  const [index, setIndex] = useState(0)
+
+  // Restart the message sequence whenever the Operating Engine changes blocks.
+  useEffect(() => {
+    setIndex(0)
+    if (captions.length < 2) return
+    const timer = setInterval(() => {
+      setIndex((current) => (current + 1) % captions.length)
+    }, 5200)
+    return () => clearInterval(timer)
+  }, [blockId, captions.length])
+
+  const message = captions[index] ?? captions[0]
 
   return (
     <div className="relative w-full overflow-hidden bg-[#2E2228]">
       <div className="absolute inset-0">
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="sync">
           <motion.img
             key={src}
             src={src}
             alt=""
             aria-hidden="true"
             decoding="async"
-            initial={{ opacity: 0, scale: reduceMotion ? 1 : 1.04 }}
+            initial={{ opacity: 0, scale: reduceMotion ? 1 : 1.06 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ opacity: { duration: 1.1, ease: "easeInOut" }, scale: { duration: 1.8, ease: "easeOut" } }}
+            transition={{ opacity: { duration: 1.6, ease: "easeInOut" }, scale: { duration: 7, ease: "easeOut" } }}
             className="absolute inset-0 h-full w-full object-cover object-center"
           />
         </AnimatePresence>
-        <div className="absolute inset-0 bg-gradient-to-t from-[#2E2228]/45 via-transparent to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#2E2228]/60 to-transparent" />
       </div>
-
       <div className="min-h-[420px] sm:min-h-[500px]" />
-
-      <div className="absolute inset-x-0 bottom-5 z-10 mx-auto max-w-7xl px-5 sm:px-8">
+      <div className="absolute inset-x-0 bottom-5 z-10 mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 sm:px-8">
         <AnimatePresence mode="wait">
-          <motion.div
-            key={message}
-            initial={{ opacity: 0, y: 8 }}
+          <motion.p
+            key={blockId + "-" + index}
+            initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -5 }}
-            transition={{ duration: 0.45 }}
-            className="inline-flex max-w-xl items-center rounded-2xl border border-white/25 bg-white/15 px-5 py-3 shadow-lg backdrop-blur-md"
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.5 }}
+            className="font-playfair text-sm italic text-[#FFF8F4]/90 sm:text-base"
             aria-live="polite"
           >
-            <p className="font-playfair text-base italic text-[#FFF8F4] sm:text-lg">
-              {message}
-            </p>
-          </motion.div>
+            {message}
+          </motion.p>
         </AnimatePresence>
+        {captions.length > 1 && (
+          <div className="flex items-center gap-1.5" role="tablist" aria-label="Hero messages">
+            {captions.map((caption, i) => (
+              <button
+                key={i + "-" + caption}
+                type="button"
+                role="tab"
+                aria-selected={i === index}
+                aria-label={caption}
+                onClick={() => setIndex(i)}
+                className={`h-1.5 rounded-full transition-all ${i === index ? "w-6 bg-[#F6A9C2]" : "w-1.5 bg-[#FFF8F4]/50 hover:bg-[#FFF8F4]/80"}`}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )
