@@ -427,6 +427,11 @@ export function CeoWorkdayDesignForm() {
   if (missingTitle.length) readiness.push("give every kept piece of work a title")
   if (missingOutcome.length) readiness.push("add an expected outcome to every kept piece of work")
   const canBuild = !saving && week !== null
+  const weeklyBoundaryText = weeklyBoundaryFocus.boundaryText?.trim() || null
+  const planConstraintSummary = [
+    design?.constraintSummary?.trim(),
+    weeklyBoundaryText ? `Weekly boundary to protect: ${weeklyBoundaryText}` : null,
+  ].filter(Boolean).join("\n\n") || null
 
   // ── build ─────────────────────────────────────────────────────────────────
   async function handleBuild() {
@@ -444,7 +449,7 @@ export function CeoWorkdayDesignForm() {
       businessAreaId: week.business.businessAreaId,
       bottleneckEgaEntryIds: week.business.bottleneckEgaEntryIds,
       primaryAssetId: design?.relatedAssetId ?? null,
-      constraintSummary: design?.constraintSummary ?? null,
+      constraintSummary: planConstraintSummary,
       interventionSummary: design?.interventionSummary ?? null,
       identityStatement: identity,
       declaration:
@@ -594,7 +599,27 @@ export function CeoWorkdayDesignForm() {
         </p>
       </div>
 
-        {/* Supporting context from this week's decisions */}
+        {/* The founder's weekly boundary is carried into the saved CEO Workday plan. */}
+      <div className="rounded-2xl border border-[#7FB069]/35 bg-[#F3F8ED] p-4">
+        <p className="font-montserrat text-xs font-bold uppercase tracking-[0.16em] text-[#5B835F]">
+          This week&apos;s boundary
+        </p>
+        {weeklyBoundaryText ? (
+          <p className="mt-2 font-sans text-base font-semibold leading-relaxed text-[#2E1F27]">
+            {weeklyBoundaryText}
+          </p>
+        ) : (
+          <p className="mt-2 font-sans text-sm leading-relaxed text-[#6B5860]">
+            No weekly boundary has been selected yet. Your CEO Workday plan will still be available, but it will not
+            include a specific boundary instruction until you choose one.
+          </p>
+        )}
+        <p className="mt-2 font-sans text-xs text-[#6B5860]">
+          This boundary is included in the saved plan context for the 1:00–5:00 PM workday.
+        </p>
+      </div>
+
+      {/* Supporting context from this week's decisions */}
       {(design?.relatedAssetName || design?.constraintSummary) && (
         <div className="grid gap-3 rounded-2xl border border-[#E8DFE2] bg-[#FAF8F5] p-4 sm:grid-cols-2">
           {design?.relatedAssetName && <SourceCell label="Related Business Asset™" value={design.relatedAssetName} />}
