@@ -76,7 +76,7 @@ export interface BoundaryReportData {
   selectedPath?: SelectedPath
   /** Your Current Business™ responses as they stood when this report was completed. */
   currentBusiness?: CurrentBusiness
-  /** Consolidated 10-question Business Context & Current Business™ snapshot. */
+  /** 10-question Business Context profile snapshot. */
   businessContext?: BusinessContextProfile
   /** Personal & Work-From-Home Reality™ selections (unscored). */
   personalReality?: { id: string; label: string }[]
