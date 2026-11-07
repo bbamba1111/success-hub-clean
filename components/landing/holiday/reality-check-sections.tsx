@@ -1,10 +1,3 @@
-import { RegistrationForm } from "./registration-form"
-import {
-  FOUNDER_PRICING_DEADLINE,
-  SESSION_DURATION_LABEL,
-  SESSION_TIME_LABEL,
-  isFounderPricingOpen,
-} from "@/lib/reality-check/session"
 
 const INK = "text-[#4A3A42]"
 const BODY_BASE = "font-poppins text-pretty leading-relaxed text-[#5A4A52]"
@@ -13,7 +6,7 @@ const BODY_SM = `${BODY_BASE} text-base`
 const EYEBROW = "font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#5A7F46]"
 const H2 = `font-playfair text-balance text-3xl font-bold leading-tight sm:text-5xl ${INK}`
 
-function CtaLink({ label = "Save My Free Seat" }: { label?: string }) {
+function CtaLink({ label = "Explore the $197 Reality Check" }: { label?: string }) {
   return (
     <a
       href="#register"
@@ -69,36 +62,38 @@ export function FreedomSection() {
   )
 }
 
-export function RealityCheckSection({ sessionLabel }: { sessionLabel: string }) {
+export function RealityCheckSection() {
   const outcomes = [
-    "Where business demands may be interfering with the life you want.",
-    "Which boundaries are being challenged or overlooked.",
-    "Where the business may depend too heavily on you.",
-    "What deserves a closer look.",
-    "Where you might begin making changes.",
+    "How your original entrepreneurial intention compares with your current business reality.",
+    "Where business demands collide with your personal life and desired way of living.",
+    "Your 30-Day Work-Life Balance Baseline™ across 15 Core Life Value Areas™.",
+    "The priority focus areas and business boundary collisions that deserve attention.",
+    "A personalized Work-Life Balance Boundary Report™ with recommendations and practical first steps.",
   ]
   const steps = [
-    "Welcome and orientation to Harmony Lane™.",
-    "Complete your Founder Profile.",
-    "Explore your Business Context Profile.",
-    "Complete your initial Work-Life Balance Audit, measuring the previous 30 days.",
-    "Receive your individual results and recommendations.",
-    "Explore the weekly and monthly ways to experience Harmony Lane.",
+    "Complete your Founder Profile™.",
+    "Answer 10 questions in Business Context™.",
+    "Identify relevant conditions in Business Boundary Collisions™.",
+    "Describe your Personal & Work-From-Home Reality™.",
+    "Complete the 15-question 30-Day Work-Life Balance Audit™.",
+    "Answer the 3 Work-Life Balance Alignment™ questions.",
+    "Receive your results, priority focus areas, and personalized Boundary Report™.",
   ]
   return (
     <section id="reality-check" className="relative scroll-mt-20 overflow-hidden bg-[#2E2228] py-20 sm:py-28">
       <img src="/images/holiday/kwanzaa-rest.webp" alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-25" loading="lazy" />
       <div className="relative mx-auto grid max-w-6xl gap-12 px-5 sm:px-8 lg:grid-cols-2">
         <div className="flex flex-col gap-5">
-          <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">
-            Every Sunday · Next: {sessionLabel} · {SESSION_TIME_LABEL} · {SESSION_DURATION_LABEL} · Free
-          </p>
+          <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">A complete standalone diagnostic experience</p>
           <h2 className="font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-4xl">
-            Start with the FREE Sunday Reality Check™
+            Work-Life Balance Reality Check™
           </h2>
+          <div className="flex items-end gap-3">
+            <span className="font-playfair text-5xl font-bold text-[#FFF8F4]">$197</span>
+            <span className="font-poppins pb-1 text-sm text-[#F6D6E1]">one-time · $497 stated value</span>
+          </div>
           <p className="font-poppins text-pretty leading-relaxed text-[#F6D6E1]">
-            Before you redesign your workweek, take an honest look at the one you have. During this facilitated group
-            experience, you will discover:
+            You built your business for a reason. Let&apos;s find out if it is still giving you that life. Take an honest look at your original intention, the way your business operates today, and the personal reality you are living.
           </p>
           <ul className="flex flex-col gap-3">
             {outcomes.map((o) => (
@@ -109,15 +104,13 @@ export function RealityCheckSection({ sessionLabel }: { sessionLabel: string }) 
             ))}
           </ul>
           <p className="font-poppins text-base italic leading-relaxed text-[#F6D6E1]">
-            Your results establish your starting point. They are a tool for reflection, not a judgment of you or your business.
+            This is a complete paid experience—not a free event, a certification, or a judgment of you or your business. You keep your completed Reality Check and Boundary Report whether or not you continue into implementation.
           </p>
-          <CtaLink />
-          <p className="font-poppins text-sm text-[#F6D6E1]">Free · No credit card required</p>
+          <CtaLink label="See the two Harmony Lane offers" />
+          <p className="font-poppins text-sm text-[#F6D6E1]">The $197 Reality Check is not charged again when you upgrade to the Business Week.</p>
         </div>
         <div className="flex flex-col gap-5 rounded-3xl border border-[#FFF8F4]/15 bg-[#2E2228]/65 p-7 backdrop-blur-sm">
-          <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">
-            Your 90-minute Sunday experience
-          </p>
+          <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">What the Reality Check includes</p>
           <ol className="flex flex-col gap-4">
             {steps.map((step, i) => (
               <li key={step} className="flex gap-4">
@@ -127,9 +120,7 @@ export function RealityCheckSection({ sessionLabel }: { sessionLabel: string }) 
             ))}
           </ol>
           <p className="font-poppins border-t border-[#FFF8F4]/15 pt-4 text-sm leading-relaxed text-[#F6D6E1]">
-            The Sunday event recurs every week. Each person completes the initial Founder Profile, Business Context
-            Profile, and 30-day baseline once. Your original results are saved so you do not have to start over.
-            Individual answers and results remain private.
+            Your Alignment answers measure willingness and readiness. They do not determine whether you receive your completed results or Boundary Report™.
           </p>
         </div>
       </div>
@@ -230,37 +221,28 @@ export function MondaySection() {
 }
 
 export function BusinessWeekSection() {
-  const founderOpen = isFounderPricingOpen()
+  const durations = [
+    { weeks: 4, price: "$1,988" },
+    { weeks: 8, price: "$3,976" },
+    { weeks: 12, price: "$5,964" },
+  ]
   return (
     <section id="business-week" className="scroll-mt-20 bg-[#FFF8F4] py-20 sm:py-28">
       <div className="mx-auto flex max-w-6xl flex-col gap-12 px-5 sm:px-8">
         <div className="grid items-center gap-12 lg:grid-cols-2">
-          <img
-            src="/images/holiday/team-celebration.webp"
-            alt="A team celebrating together around a festive table"
-            className="w-full rounded-3xl object-cover shadow-xl"
-            loading="lazy"
-          />
+          <img src="/images/holiday/team-celebration.webp" alt="A team celebrating together around a festive table" className="w-full rounded-3xl object-cover shadow-xl" loading="lazy" />
           <div className="flex flex-col gap-5">
-            <p className={EYEBROW}>The signature experience inside Harmony Lane™</p>
+            <p className={EYEBROW}>The implementation experience</p>
             <h2 className={H2}>The Work-Life Balance Business Week™</h2>
-            <p className={BODY}>
-              Live, Work, Lead &amp; Operate Within Your Work-Life Balance Boundaries — In Real Time.
-            </p>
-            <p className={BODY}>
-              This is where the redesign becomes real. Practice your boundaries while doing your actual business work.
-              Notice what challenges them, identify what needs to change, and redesign the way your business week works.
-            </p>
-            <p className={BODY}>
-              Monday–Thursday is your four-day workweek. Friday–Sunday is your protected three-day weekend. Your
-              four-hour Focused CEO Workday™ runs from 1 PM–5 PM ET, Monday through Thursday.
-            </p>
+            <p className={BODY}>Practice work-life balance boundaries while doing your actual business work—not by stepping away from the business, but by redesigning how it operates.</p>
+            <p className={BODY}>The Business Week builds on your Reality Check. You bring your findings into your real workweek, choose a priority boundary, notice what collides with it, and begin translating that boundary into business practices, communication, workflows, and Sustainable Operating Procedures™ where appropriate.</p>
+            <p className={BODY}>The operating rhythm is Monday–Thursday, with a 4-Hour Focused CEO Workday™ from 1 PM–5 PM ET, and a protected Friday–Sunday three-day weekend.</p>
           </div>
         </div>
         <div className="grid gap-6 md:grid-cols-3">
           {[
             { title: "Four-day workweek", body: "Monday–Thursday. Practice operating your business within the boundaries you choose." },
-            { title: "Four-hour CEO workday", body: "1 PM–5 PM ET, Monday–Thursday. Focus on the business priorities that matter." },
+            { title: "Four-hour CEO workday", body: "1 PM–5 PM ET, Monday–Thursday. Focus on real business priorities." },
             { title: "Three-day weekend", body: "Friday–Sunday. Practice protecting time outside the business." },
           ].map((item) => (
             <div key={item.title} className="rounded-2xl bg-white p-6 ring-1 ring-[#F2E4E8]">
@@ -269,67 +251,27 @@ export function BusinessWeekSection() {
             </div>
           ))}
         </div>
-        <p className={BODY_SM}>
-          The rhythm creates 16 scheduled CEO work hours per week and 152 hours outside those scheduled business hours.
-          The 152 hours are not a promise that every hour is obligation-free; they describe the time outside the
-          scheduled CEO workweek.
-        </p>
+        <p className={BODY_SM}>The rhythm creates 16 scheduled CEO work hours per week. Time outside those scheduled hours is not automatically obligation-free; it is protected through deliberate boundaries and operating design.</p>
         <div id="offers" className="scroll-mt-24 flex flex-col gap-6">
           <div className="max-w-3xl">
-            <p className={EYEBROW}>Choose your Harmony Lane experience</p>
-            <h3 className={`font-playfair mt-2 text-3xl font-bold ${INK}`}>One signature experience. Two ways to participate.</h3>
-            <p className={BODY_SM}>
-              Begin with one complete seven-day experience, or choose four consecutive weeks to practice, evaluate,
-              refine, and build sustainable habits.
-            </p>
+            <p className={EYEBROW}>The second step</p>
+            <h3 className={`font-playfair mt-2 text-3xl font-bold ${INK}`}>Continue from insight into implementation.</h3>
+            <p className={BODY_SM}>Choose the implementation duration that fits the work ahead. The Work-Life Balance Business Day™ is part of this experience—not a separate offer.</p>
           </div>
-          <div className="grid gap-6 lg:grid-cols-2">
-            <article className="flex flex-col gap-4 rounded-3xl bg-white p-8 ring-1 ring-[#F2E4E8]">
-              <p className={EYEBROW}>Weekly experience</p>
-              <h4 className={`font-playfair text-2xl font-bold ${INK}`}>One complete seven-day Business Week™</h4>
-              <p className={BODY_SM}>Regular price <strong>$2,499.25 per week</strong></p>
-              <div className="rounded-2xl bg-[#FCEEF2] p-5">
-                <p className="font-poppins text-xs font-semibold uppercase tracking-[0.18em] text-[#8A4B61]">Black Friday Founder Rate</p>
-                <p className="font-playfair text-4xl font-bold text-[#4A3A42]">$997 <span className="font-poppins text-base font-medium">/ week</span></p>
-              </div>
-              <p className={BODY_SM}>Experience the rhythm, practice your boundaries, and discover what changes when you operate your business differently.</p>
-              <CtaLink label="Start with the Free Sunday Reality Check" />
-            </article>
-            <article className="flex flex-col gap-4 rounded-3xl bg-[#2E2228] p-8 text-[#FFF8F4]">
-              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">Monthly habit-building cycle</p>
-              <h4 className="font-playfair text-2xl font-bold text-[#FFF8F4]">Four consecutive Business Weeks™</h4>
-              <p className="font-poppins text-base text-[#F6D6E1]">Regular price <strong className="text-white">$9,997</strong></p>
-              <div className="rounded-2xl bg-[#FFF8F4] p-5">
-                <p className="font-poppins text-xs font-semibold uppercase tracking-[0.18em] text-[#8A4B61]">Black Friday Founder Rate</p>
-                <p className="font-playfair text-4xl font-bold text-[#4A3A42]">$3,988</p>
-                <p className="font-poppins text-sm text-[#5A4A52]">Four consecutive weeks · $997 per week</p>
-              </div>
-              <p className="font-poppins text-base leading-relaxed text-[#F6D6E1]">
-                Continue practicing the rhythm, retaking your seven-day Work-Life Balance Audit each Monday, reviewing
-                your priorities, and strengthening the habits that support your boundaries.
-              </p>
-              <a href="#register" className="font-poppins inline-flex w-fit items-center justify-center rounded-full bg-[#C13B6B] px-7 py-4 text-base font-semibold uppercase tracking-[0.12em] text-white hover:bg-[#A8305B]">
-                Start with the Free Sunday Reality Check
-              </a>
-            </article>
+          <div className="grid gap-6 lg:grid-cols-3">
+            {durations.map((item) => (
+              <article key={item.weeks} className="flex flex-col gap-4 rounded-3xl bg-white p-8 ring-1 ring-[#F2E4E8]">
+                <p className={EYEBROW}>{item.weeks}-week implementation</p>
+                <h4 className={`font-playfair text-2xl font-bold ${INK}`}>Work-Life Balance Business Week™</h4>
+                <p className="font-playfair text-4xl font-bold text-[#4A3A42]">{item.price}</p>
+                <p className={BODY_SM}>497 per week · {item.weeks} consecutive weeks</p>
+                <p className={BODY_SM}>Practice your chosen boundaries in your actual business, observe collisions, and begin redesigning the operating practices that need to support them.</p>
+                <p className="font-poppins text-sm font-semibold text-[#5A7F46]">Your $197 Reality Check is included—no second charge.</p>
+                <a href="#enrollment" className="font-poppins inline-flex w-fit items-center justify-center rounded-full bg-[#C13B6B] px-6 py-3 text-sm font-semibold uppercase tracking-[0.08em] text-white hover:bg-[#A8305B]">Enrollment details</a>
+              </article>
+            ))}
           </div>
-          <p className={BODY_SM}>
-            The monthly founder rate is four weekly founder-rate payments of $997. There is no additional pay-in-full
-            discount. Enroll by December 31, 2026 to secure the applicable Black Friday Founder Rate. Qualifying
-            founders are grandfathered at that rate under the published membership-continuity terms. New enrollments
-            beginning January 1, 2027 are subject to regular pricing.
-          </p>
-          {founderOpen && (
-            <p className="font-poppins text-sm font-semibold text-[#5A7F46]">
-              Black Friday Founder Offer ends December 31, {new Date().getFullYear()}.
-            </p>
-          )}
-          <p className={BODY_SM}>
-            Three consecutive regular monthly cycles represent 12 weeks and a combined regular value of $29,991,
-            approximately $30,000 over a quarter. At the Black Friday monthly founder rate, three cycles total $11,964.
-            This is an illustrative journey, not a separate required quarterly package. Participation remains weekly
-            or monthly.
-          </p>
+          <p className={BODY_SM}>Enrollment checkout links are being connected. Pricing is shown here for clarity; online payment is not yet open from this page.</p>
         </div>
       </div>
     </section>
@@ -372,7 +314,7 @@ export function NewYearSection() {
               tempting to wait until January to make a change. But you don&apos;t have to wait.
             </p>
             <p className={BODY}>
-              This holiday season, begin with the FREE Sunday Reality Check™ and start redesigning the way you work,
+              This holiday season, begin with the $197 Work-Life Balance Reality Check™ and start redesigning the way you work,
               lead, and operate your business, so you can build sustainable success in the AI age and make room for more
               of the life you started your business to create. By the New Year you can have:
             </p>
@@ -381,7 +323,7 @@ export function NewYearSection() {
                 <li key={o} className={`${BODY} flex gap-3`}><Dot />{o}</li>
               ))}
             </ul>
-            <CtaLink />
+            <CtaLink label="Explore the $197 Reality Check" />
           </div>
         </div>
         <div className="grid gap-6 md:grid-cols-2">
@@ -440,46 +382,15 @@ export function AboutBarbaraSection() {
 }
 
 const FAQS = [
-  {
-    q: "What is Harmony Lane™?",
-    a: "Harmony Lane is the premium work-life balance destination where founders live within work-life balance boundaries while redesigning their business weeks.",
-  },
-  {
-    q: "What happens during the free Sunday Reality Check™?",
-    a: "It's a free, facilitated 90-minute event every Sunday at 3 PM ET. During the event you complete your Founder Profile, Business Context Profile, and initial 30-day Work-Life Balance Audit, then review your individual results and recommendations.",
-  },
-  {
-    q: "Do I complete the initial Reality Check more than once?",
-    a: "No. Each person completes the initial Founder Profile, Business Context Profile, and 30-day baseline once. Your original results are saved. The Sunday event recurs every week for new prospects.",
-  },
-  {
-    q: "What is the Work-Life Balance Business Week™?",
-    a: "It is the complete seven-day signature experience inside Harmony Lane. You practice your boundaries while redesigning how your business week operates: Monday–Thursday workdays and a protected Friday–Sunday weekend.",
-  },
-  {
-    q: "Is Monday a separate paid offer?",
-    a: "No. Monday is the kickoff inside the complete Work-Life Balance Business Week. Make Time For More on Mondays™ is the featured Monday experience, not a separate product.",
-  },
-  {
-    q: "What is the difference between weekly and monthly participation?",
-    a: "Weekly participation is one complete seven-day Work-Life Balance Business Week. Monthly participation is four consecutive weeks, with a seven-day Work-Life Balance Audit each Monday to review priorities and strengthen habits.",
-  },
-  {
-    q: "What does it cost?",
-    a: "The Sunday Reality Check is free. Regular pricing is $2,499.25 for one week and $9,997 for four consecutive weeks. The Black Friday Founder Rates through December 31, 2026 are $997 per week and $3,988 for the four-week monthly cycle.",
-  },
-  {
-    q: "How long is the Black Friday Founder Offer available?",
-    a: "Enroll by December 31, 2026 to secure the applicable founder rate. Qualifying founders are grandfathered under the published membership-continuity terms. New enrollments beginning January 1, 2027 are subject to regular pricing.",
-  },
-  {
-    q: "Do I need AI experience?",
-    a: "No. This is about how you live, work, lead, and operate your business. The focus is on setting boundaries before deploying technology so it supports your intended way of working.",
-  },
-  {
-    q: "Are my Reality Check results private?",
-    a: "Yes. Your individual answers and results are private. Your initial baseline is saved so you can measure your progress over time.",
-  },
+  { q: "What is the Work-Life Balance Reality Check™?", a: "It is a complete standalone diagnostic experience priced at $197 one-time, with a stated value of $497. It includes your Founder Profile™, Business Context™, Business Boundary Collisions™, Personal & Work-From-Home Reality™, 30-Day Work-Life Balance Baseline™, Results & Priority Focus Areas™, and personalized Work-Life Balance Boundary Report™." },
+  { q: "Do I keep my Reality Check if I do not continue?", a: "Yes. Your completed Reality Check and Boundary Report™ are yours to keep and use whether or not you purchase the Business Week." },
+  { q: "What is the Work-Life Balance Business Week™?", a: "It is the implementation experience where you practice boundaries in your actual business week, observe collisions, and begin translating a chosen boundary into operating practices, communication, workflows, and Sustainable Operating Procedures™ where appropriate." },
+  { q: "How much does the Business Week cost?", a: "The current price is $497 per week. Choose 4 weeks for $1,988, 8 weeks for $3,976, or 12 weeks for $5,964." },
+  { q: "Is the Reality Check charged again when I upgrade?", a: "No. When a Reality Check buyer upgrades to the Work-Life Balance Business Week™, the Reality Check is included and is not charged a second time." },
+  { q: "Is Monday a separate offer?", a: "No. Make Time For More on Mondays™ is part of the Business Week experience. The Work-Life Balance Business Day™ is also part of the week, not a separate standalone offer." },
+  { q: "What is the weekly operating rhythm?", a: "The intended rhythm is a Monday–Thursday workweek, a 4-Hour Focused CEO Workday™ from 1 PM–5 PM ET, and a Friday–Sunday three-day weekend. Boundaries and operating practices are used to protect that rhythm." },
+  { q: "Is this an AI readiness certification?", a: "No. The Reality Check is a work-life balance and business operating diagnostic. It helps you understand your current reality and the boundaries that need attention; it is not an AI certification." },
+  { q: "Are my answers and results private?", a: "Your individual answers and results are private. Your original baseline is retained so you can compare future progress." },
 ]
 
 export function FaqSection() {
@@ -503,23 +414,16 @@ export function FaqSection() {
   )
 }
 
-export function RegisterSection({ sessionLabel }: { sessionLabel: string }) {
+export function RegisterSection() {
   return (
-    <section id="register" className="relative scroll-mt-20 overflow-hidden bg-[#2E2228] py-20 sm:py-28">
+    <section id="enrollment" className="relative scroll-mt-20 overflow-hidden bg-[#2E2228] py-20 sm:py-28">
       <img src="/images/holiday/togetherness.webp" alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-30" loading="lazy" />
-      <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-8 lg:grid-cols-2">
-        <div className="flex flex-col gap-4">
-          <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">Save your free seat</p>
-          <h2 className="font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl">
-            Start creating the life you want now, not in January.
-          </h2>
-          <p className="font-poppins text-lg text-[#F6D6E1]">Every Sunday · {sessionLabel} · {SESSION_TIME_LABEL} · Live online</p>
-          <p className="font-poppins text-base text-[#F6D6E1]">Free · 90 minutes · No credit card required</p>
-          <p className="font-playfair text-xl italic text-[#FFF8F4]">We Don&apos;t Hustle — We Harmonize.™</p>
-        </div>
-        <div className="rounded-3xl bg-[#FFFDFB] p-6 shadow-2xl sm:p-8">
-          <RegistrationForm />
-        </div>
+      <div className="relative mx-auto flex max-w-4xl flex-col items-center gap-5 px-5 text-center sm:px-8">
+        <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">Your next step</p>
+        <h2 className="font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl">Start with clarity. Then decide what you want to change.</h2>
+        <p className="font-poppins max-w-2xl text-lg leading-relaxed text-[#F6D6E1]">The Work-Life Balance Reality Check™ is $197 one-time. The Work-Life Balance Business Week™ is $497 per week, with 4-, 8-, and 12-week implementation options. Checkout links will be activated after the correct products are verified.</p>
+        <p className="font-playfair text-xl italic text-[#FFF8F4]">We Don&apos;t Hustle — We Harmonize.™</p>
+        <a href="#reality-check" className="font-poppins inline-flex w-fit items-center justify-center rounded-full bg-[#C13B6B] px-7 py-4 text-base font-semibold uppercase tracking-[0.12em] text-[#FFF8F4] shadow-lg shadow-[#C13B6B]/25 transition-colors hover:bg-[#A8305B]">Review the Reality Check</a>
       </div>
     </section>
   )
