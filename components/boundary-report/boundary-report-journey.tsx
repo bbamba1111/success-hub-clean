@@ -31,6 +31,7 @@ import { PersonalRealityStep } from "@/components/boundary-report/personal-reali
 import { StartConsiderationsBlock } from "@/components/boundary-report/start-considerations-block"
 import { personalRealityById } from "@/lib/boundary-report/personal-reality"
 import { getBusinessContext } from "@/lib/business-context/business-context-store"
+import { labelFor, labelsFor, STAGE_OPTIONS as BUSINESS_STAGE_OPTIONS, MODEL_OPTIONS, ROLE_OPTIONS, TEAM_OPTIONS, REVENUE_OPTIONS, GROWTH_OPTIONS, EXIT_OPTIONS, DELIVERY_MODEL_OPTIONS } from "@/lib/business-context/options"
 import { getBusinessContextFromDb } from "@/utils/business-context-storage"
 import type { BusinessContextProfile } from "@/lib/business-context/types"
 import { buildStartConsiderations } from "@/lib/boundary-report/start-considerations"
@@ -368,7 +369,8 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
       setReportId(latest.id)
       setStage("summary")
     } else if (d) {
-      if (RESUMABLE.has(d.stage)) setStage(d.stage === "currentBusiness" ? "requirements" : d.stage as Stage)
+      if (d.stage === "currentBusiness") setStage("requirements")
+      else if (RESUMABLE.has(d.stage)) setStage(d.stage as Stage)
       setCurrentBusinessIndex(Math.min(d.currentBusinessIndex ?? 0, CURRENT_BUSINESS_QUESTIONS.length - 1))
       setIntentionChoices(d.intentionChoices ?? {})
       setSomethingElse(d.somethingElse ?? "")
@@ -1131,6 +1133,28 @@ function BoundaryReport({
           <p className="font-sans text-sm leading-relaxed text-brand-ink italic">{intentionSummary || "—"}</p>
         </ReportBlock>
 
+        {data.businessContext && (
+          <ReportBlock label="Combined Business Context & Current Business™">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <SummaryField label="Business" value={data.businessContext.businessName} />
+              <SummaryField label="Industry" value={data.businessContext.industry} />
+              <SummaryField label="Primary product or service" value={data.businessContext.offerStatement} />
+              <SummaryField label="Business stage" value={labelFor(BUSINESS_STAGE_OPTIONS, data.businessContext.businessStage)} />
+              <SummaryField label="Founder role" value={labelFor(ROLE_OPTIONS, data.businessContext.founderRole)} />
+              <SummaryField label="Team size" value={labelFor(TEAM_OPTIONS, data.businessContext.teamSize)} />
+              <SummaryField label="Revenue model" value={labelsFor(MODEL_OPTIONS, data.businessContext.businessModel)} />
+              <SummaryField label="Annual revenue" value={labelFor(REVENUE_OPTIONS, data.businessContext.revenueStage)} />
+              <SummaryField label="Desired life" value={data.businessContext.successVision} />
+              <SummaryField label="Growth vision" value={labelFor(GROWTH_OPTIONS, data.businessContext.growthVision)} />
+              <SummaryField label="Exit vision" value={labelFor(EXIT_OPTIONS, data.businessContext.exitVision)} />
+              <SummaryField label="Delivery model" value={labelFor(DELIVERY_MODEL_OPTIONS, data.businessContext.deliveryModel)} />
+              <SummaryField label="AI tools & automations" value={data.businessContext.currentAiToolUse} />
+              <SummaryField label="Client connection experiences" value={data.businessContext.acquisitionChannel} />
+              <SummaryField label="90-day business goal" value={data.businessContext.biggestGoalText} />
+            </div>
+          </ReportBlock>
+        )}
+
         <ReportBlock label="30-Day Work-Life Balance Baseline™">
           <p className="font-sans text-sm text-brand-ink">
             Overall Work-Life Balance Score™:{" "}
@@ -1397,9 +1421,23 @@ function RealityCheckSummary({
         <SummaryField label="Original Entrepreneurial Intention™" value={data.originalIntention?.summary || undefined} />
       </SummaryCard>
 
-      <SummaryCard title="Your Current Business™" onEdit={() => onEdit("currentBusiness")}>
-        <SummaryField label="Stage" value={stage ? STAGE_LABELS[stage] : undefined} />
-        <SummaryField label="Services" value={data.currentBusiness?.services || undefined} />
+      <SummaryCard title="Combined Business Context & Current Business™" onEdit={() => onEdit("requirements")} wide>
+        <SummaryField label="Business name" value={data.businessContext?.businessName} />
+        <SummaryField label="Industry" value={data.businessContext?.industry} />
+        <SummaryField label="Primary product or service" value={data.businessContext?.offerStatement} />
+        <SummaryField label="Business stage" value={labelFor(BUSINESS_STAGE_OPTIONS, data.businessContext?.businessStage)} />
+        <SummaryField label="Founder role" value={labelFor(ROLE_OPTIONS, data.businessContext?.founderRole)} />
+        <SummaryField label="People involved" value={labelFor(TEAM_OPTIONS, data.businessContext?.teamSize)} />
+        <SummaryField label="Revenue model" value={labelsFor(MODEL_OPTIONS, data.businessContext?.businessModel)} />
+        <SummaryField label="Annual revenue" value={labelFor(REVENUE_OPTIONS, data.businessContext?.revenueStage)} />
+        <SummaryField label="Life you want your business to support" value={data.businessContext?.successVision} />
+        <SummaryField label="Growth vision" value={labelFor(GROWTH_OPTIONS, data.businessContext?.growthVision)} />
+        <SummaryField label="Long-term exit vision" value={labelFor(EXIT_OPTIONS, data.businessContext?.exitVision)} />
+        <SummaryField label="Delivery model" value={labelFor(DELIVERY_MODEL_OPTIONS, data.businessContext?.deliveryModel)} />
+        <SummaryField label="AI tools and automations" value={data.businessContext?.currentAiToolUse} />
+        <SummaryField label="Client connection experiences" value={data.businessContext?.acquisitionChannel} />
+        <SummaryField label="90-day business goal" value={data.businessContext?.biggestGoalText} />
+        {!data.businessContext && <SummaryField label="Legacy business information" value={data.currentBusiness?.services || (stage ? STAGE_LABELS[stage] : undefined)} />}
       </SummaryCard>
 
       <SummaryCard title="Business Reality™" onEdit={() => onEdit("requirements")} wide>
