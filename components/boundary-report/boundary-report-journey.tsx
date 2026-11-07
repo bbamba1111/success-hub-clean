@@ -1133,7 +1133,7 @@ function BoundaryReport({
         </ReportBlock>
 
         {data.businessContext && (
-          <ReportBlock label="Combined Business Context & Current Business™">
+          <ReportBlock label="Business Context">
             <div className="grid gap-3 sm:grid-cols-2">
               <SummaryField label="Business" value={data.businessContext.businessName} />
               <SummaryField label="Industry" value={data.businessContext.industry} />
