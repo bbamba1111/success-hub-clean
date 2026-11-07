@@ -176,7 +176,7 @@ export const SCHEDULE: BlockConfig[] = [
       "This is where you align mind, body, spirit, and priorities before work begins.",
     emoji: "🌸",
     tint: "252 240 238",
-    backgroundImage: "/images/holiday/garden-meditation.webp",
+    backgroundImage: "/images/block-morning-given.png",
     cta: "Join Morning GIV•EN™",
     href: "https://join.butter.us/make-time-for-more/morning-routine",
     engagement: "live-room",
