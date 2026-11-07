@@ -9,7 +9,7 @@ const H2 = `font-playfair text-balance text-3xl font-bold leading-tight sm:text-
 function CtaLink({ label = "Explore the $197 Reality Check" }: { label?: string }) {
   return (
     <a
-      href="#register"
+      href="#enrollment"
       className="font-poppins inline-flex w-fit items-center justify-center rounded-full bg-[#C13B6B] px-7 py-4 text-base font-semibold uppercase tracking-[0.12em] text-[#FFF8F4] shadow-lg shadow-[#C13B6B]/25 transition-colors hover:bg-[#A8305B]"
     >
       {label}
