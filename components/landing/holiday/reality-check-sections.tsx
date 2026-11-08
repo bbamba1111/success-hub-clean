@@ -116,55 +116,10 @@ export function FreedomSection() {
         </div>
       </section>
 
-      <section className="bg-[#FFF8F4] py-20 sm:py-28">
-        <div className="mx-auto max-w-6xl px-5 sm:px-8">
-          <div className="mb-12 flex flex-col items-center gap-3 rounded-3xl bg-[#123B2A] px-6 py-10 text-center sm:px-12 sm:py-14">
-            <h2 className="font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl">
-              This Is Why We Don&apos;t Automate and Accelerate the Hustle.
-            </h2>
-            <p className="font-poppins text-lg font-medium leading-relaxed text-[#F6D6E1] sm:text-xl">
-              We help you establish human boundaries first.
-            </p>
-          </div>
-          <div className="grid items-center gap-10 lg:grid-cols-[1fr_1.2fr]">
-          <div className="flex flex-col gap-5">
-            <p className={EYEBROW}>The opportunity is already here</p>
-            <h2 className={H2}>Before AI Accelerates Your Business, Redesign the Workweek.</h2>
-            <p className={BODY}>
-              If AI can help your business complete work that once took an eight-hour day in less time, where should the time it saves go?
-            </p>
-            <p className={BODY}>
-              Does it automatically become more work—or can you intentionally reclaim that time?
-            </p>
-            <p className={BODY}>
-              What if you established a four-hour focused workday as a design target, then figured out how to operate your business successfully within that boundary using AI?
-            </p>
-            <p className={BODY}>
-              The opportunity is already here. The work is figuring out how to make it possible inside your company.
-            </p>
-          </div>
-          <div className="flex flex-col gap-5 rounded-3xl bg-white p-8 shadow-sm ring-1 ring-[#F2E4E8]">
-            <ol className="flex flex-col gap-4">
-              {[
-                ["Define the human boundaries", "Set intentional limits for the workday, availability, recovery, and time away from work."],
-                ["Identify the work that matters", "Clarify what must get done to serve customers and operate the business successfully."],
-                ["Decide what belongs with AI and people", "Determine what can be automated or assisted, and what requires human judgment, relationships, and accountability."],
-                ["Redesign the workflows", "Rework responsibilities, processes, and handoffs so the work can fit within the boundaries."],
-                ["Test and refine the operating model", "Measure what gets completed, where work gets stuck, and what needs to change to make the shorter workday viable."],
-              ].map(([title, body], i) => (
-                <li key={title} className="flex gap-4">
-                  <span className="font-playfair text-2xl font-bold text-[#C13B6B]">{i + 1}</span>
-                  <div className="flex flex-col gap-1">
-                    <h4 className={`font-playfair text-lg font-bold ${INK}`}>{title}</h4>
-                    <p className={BODY_SM}>{body}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-
-          </div>
-          </div>
-        </div>
+      <section className="bg-[#FFF8F4] px-5 py-14 text-center sm:px-8 sm:py-16">
+        <h2 className="mx-auto max-w-5xl font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">
+          This Is Why We Don&apos;t Automate &amp; Accelerate the Hustle.
+        </h2>
       </section>
     </>
   )
