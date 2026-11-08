@@ -154,8 +154,7 @@ export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
               Don&apos;t Let AI Automate Your Hustle.
             </p>
             <p className="font-poppins text-[14.33px] font-bold leading-[1.25] text-[#F6A9C2] sm:text-[20.33px]">
-              Discover Where You Can Make More Time for the Life You Built Your Business For and Set Non-Negotiable
-              Human Sustainability Boundaries—Before You Deploy.
+              And now, AI is adding a new reality to navigate—and integrate.
             </p>
           </div>
           <div className="flex w-full flex-col items-center gap-3 pt-2">
