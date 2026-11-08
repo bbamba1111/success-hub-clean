@@ -32,14 +32,8 @@ export function FreedomSection() {
           <h2 className={H2}>You started your business for freedom.</h2>
           <p className={BODY}>But somewhere along the way, the hustle habits may have followed you into entrepreneurship—or become the very habits you&apos;re building your business around.</p>
           <h3 className="font-playfair text-2xl font-bold leading-tight text-[#4A3A42] sm:text-3xl">
-            The Hustle Habit Can Become the Business Operating System
+            When Your Hustle Habit Becomes the Business Operating System
           </h3>
-          <p className={BODY}>
-            Whether you&apos;re starting from the ground up or growing a business you&apos;ve already built, the way you operate matters.
-          </p>
-          <p className={BODY}>
-            Many entrepreneurs leave demanding corporate environments only to recreate the patterns they wanted to leave behind. Others unknowingly build those same patterns into their businesses from day one.
-          </p>
           <ul className="flex flex-col gap-3">
             {[
               "Work expands into personal time.",
