@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { LandingNav } from "@/components/landing/landing-nav"
 import { LandingFooter } from "@/components/landing/landing-footer"
 import { HolidayHero } from "@/components/landing/holiday/holiday-hero"
+import { formatSessionDate, nextSessionDate } from "@/lib/reality-check/session"
 import {
   AboutBarbaraSection,
   BusinessWeekSection,
@@ -34,6 +35,7 @@ export const viewport = {
 }
 
 export default function LandingPage() {
+  const sessionLabel = formatSessionDate(nextSessionDate())
 
   return (
     <main className="min-h-screen bg-[#FFF8F4]">
@@ -48,7 +50,7 @@ export default function LandingPage() {
           { label: "Questions", href: "#faq" },
         ]}
       />
-      <HolidayHero />
+      <HolidayHero sessionLabel={sessionLabel} />
       <FreedomSection />
       <RealityCheckSection />
       <MondaySection />
