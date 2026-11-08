@@ -49,8 +49,8 @@ export default function LandingPage() {
         ]}
       />
       <HolidayHero />
-      <WeMakeTimeForMoreSection />
       <FreedomSection />
+      <WeMakeTimeForMoreSection />
       <BusinessWeekSection />
       <RealityCheckSection />
       <MondaySection />
