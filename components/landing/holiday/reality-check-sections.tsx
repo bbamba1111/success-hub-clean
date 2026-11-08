@@ -93,7 +93,7 @@ export function FreedomSection() {
                 "Figuring out which tools your business needs.",
                 "Finding time to learn how to use them effectively.",
                 "Deciding what to automate and what should remain human-led.",
-                "Managing new tools, workflows, and risks while continuing to run your business.",
+                "Navigating the demands of AI adoption while already carrying the responsibilities of running an overextended business.",
               ].map((item) => (
                 <li key={item} className="font-poppins flex items-start gap-3 text-lg leading-relaxed text-[#FFF8F4]">
                   <Dot className="bg-[#F6A9C2]" />
@@ -118,7 +118,7 @@ export function FreedomSection() {
 
       <section className="bg-[#FFF8F4] px-5 py-14 text-center sm:px-8 sm:py-16">
         <h2 className="mx-auto max-w-5xl font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">
-          This Is Why We Don&apos;t Automate &amp; Accelerate the Hustle.
+          This Is Why We Make Time For More™—And Why We Don&apos;t Automate &amp; Accelerate the Hustle.
         </h2>
       </section>
     </>
