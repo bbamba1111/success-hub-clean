@@ -42,7 +42,7 @@ export function FreedomSection() {
       <section className="bg-white py-20 sm:py-28">
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-8 lg:grid-cols-[2fr_1fr]">
           <div className="flex flex-col gap-5">
-            <h2 className={H2}>The Freedom You Intended to Create.</h2>
+            <h2 className={H2}>Experience The Freedom You Intended to Create.</h2>
             <p className={BODY}>You started your business for more freedom.</p>
             <p className={BODY}>You wanted to build a business that supported the life you wanted.</p>
             <p className={BODY}>
@@ -62,7 +62,7 @@ export function FreedomSection() {
                 </li>
               ))}
             </ul>
-            <p className={BODY}>Your business may be growing, but is your freedom growing with it?</p>
+            <CtaLink label="Your business may be growing, but is your freedom growing with it?" />
           </div>
           <img
             src="/images/barbara-portrait.png"
