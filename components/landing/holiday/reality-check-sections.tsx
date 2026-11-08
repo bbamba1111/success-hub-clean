@@ -21,6 +21,66 @@ function Dot({ className = "bg-[#C13B6B]" }: { className?: string }) {
   return <span aria-hidden="true" className={`mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full ${className}`} />
 }
 
+export function WeMakeTimeForMoreSection() {
+  const stages = [
+    {
+      day: "Sunday",
+      title: "See Your Reality",
+      body: "Begin with the free Sunday Work-Life Balance Reality Check™. Examine your entrepreneurial intention, current business demands, life priorities, and the boundaries that need attention.",
+      detail: "Start with clarity",
+    },
+    {
+      day: "Monday",
+      title: "Redesign Your Entry Into the Workweek",
+      body: "Experience Make Time For More on Mondays™ and the Work-Life Balance Business Day™. Personalize your boundaries, decide what matters, design your business day, and practice working within the boundaries you choose.",
+      detail: "Design a different business day",
+    },
+    {
+      day: "Tuesday–Sunday",
+      title: "Experience the Work-Life Balance Business Week™",
+      body: "Practice your new rhythm with actual business priorities. Work within your focused work container, notice boundary collisions, make adjustments, close your workweek, and experience intentional Time Freedom™.",
+      detail: "Practice the rhythm and make room for life",
+    },
+  ]
+
+  return (
+    <section id="destination" className="scroll-mt-20 bg-[#FFF8F4] py-20 sm:py-28">
+      <div className="mx-auto flex max-w-6xl flex-col gap-10 px-5 sm:px-8">
+        <div className="mx-auto flex max-w-4xl flex-col items-center gap-5 text-center">
+          <p className={EYEBROW}>Your virtual Work-Life Balance destination</p>
+          <h2 className={H2}>We Make Time For More.</h2>
+          <p className={BODY}>
+            A guided online experience where you bring your actual business and experience a different way to work, operate, and make room for more life.
+          </p>
+          <p className={BODY}>
+            This is not about stepping away from your business. It is about experiencing what becomes possible when you redesign how your business works around the life you intended to create.
+          </p>
+          <p className="font-poppins text-base leading-relaxed text-[#5A4A52]">
+            Participate virtually from wherever you work and live, with guided experiences, structured work sessions, and support throughout your destination week.
+          </p>
+        </div>
+
+        <div className="grid gap-5 md:grid-cols-3">
+          {stages.map((stage, i) => (
+            <article key={stage.day} className="flex flex-col gap-4 rounded-3xl bg-white p-7 ring-1 ring-[#F2E4E8] shadow-sm">
+              <div className="flex items-center justify-between gap-3">
+                <p className={EYEBROW}>{stage.day}</p>
+                <span className="font-playfair text-2xl font-bold text-[#C13B6B]">0{i + 1}</span>
+              </div>
+              <h3 className={`font-playfair text-2xl font-bold leading-tight ${INK}`}>{stage.title}</h3>
+              <p className={BODY_SM}>{stage.body}</p>
+              <p className="mt-auto border-t border-[#F2E4E8] pt-4 font-poppins text-sm font-semibold text-[#5A7F46]">{stage.detail}</p>
+            </article>
+          ))}
+        </div>
+        <p className="mx-auto max-w-3xl text-center font-playfair text-xl font-semibold leading-snug text-[#4A3A42] sm:text-2xl">
+          You don&apos;t just learn about work-life balance. You practice it inside your actual business.
+        </p>
+      </div>
+    </section>
+  )
+}
+
 export function FreedomSection() {
   return (
     <>
