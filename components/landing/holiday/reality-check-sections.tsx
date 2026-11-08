@@ -27,9 +27,10 @@ export function FreedomSection() {
       <section className="bg-[#FFF8F4] py-16 sm:py-20">
         <div className="mx-auto flex max-w-5xl flex-col gap-5 px-5 text-center sm:px-8">
           <p className={EYEBROW}>The Work-Life Balance Destination</p>
-          <h2 className="font-playfair whitespace-nowrap text-[clamp(0.72rem,2.4vw,2.25rem)] font-bold leading-tight text-[#4A3A42]">
-            Reserve Your First (or Next) Work-Life Balance Business Week™
-          </h2>
+          <h2 className={H2}>Reserve Your First (or Next)</h2>
+          <p className="font-playfair text-xl font-light italic leading-tight text-[#5A4A52] sm:text-2xl">
+            Work-Life Balance Business Week™
+          </p>
           <p className={BODY}>
             A one-week immersive founder experience where you bring your actual business, experience a different operating rhythm, and begin redesigning how work fits into your life.
           </p>
@@ -42,7 +43,7 @@ export function FreedomSection() {
       <section className="bg-white py-20 sm:py-28">
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-8 lg:grid-cols-[2fr_1fr]">
           <div className="flex flex-col gap-5">
-            <h2 className={H2}>Experience The Freedom You Intended to Create.</h2>
+            <h2 className="font-playfair text-balance text-2xl font-bold leading-tight text-[#4A3A42] sm:text-3xl">Experience The Freedom You Intended to Create.</h2>
             <p className={BODY}>You started your business for more freedom.</p>
             <p className={BODY}>You wanted to build a business that supported the life you wanted.</p>
             <p className={BODY}>
@@ -62,7 +63,9 @@ export function FreedomSection() {
                 </li>
               ))}
             </ul>
-            <CtaLink label="Your business may be growing, but is your freedom growing with it?" />
+            <p className="font-playfair text-xl font-semibold italic leading-snug text-[#C13B6B] sm:text-2xl">
+              Imagine what your business—and your life—could look like when they finally support each other.
+            </p>
           </div>
           <img
             src="/images/barbara-portrait.png"
