@@ -19,11 +19,11 @@ export const dynamic = "force-dynamic"
 export const metadata: Metadata = {
   title: "Harmony Lane™ — Make Time For More This Holiday Season",
   description:
-    "Your premium work-life balance destination. Live within work-life balance boundaries while redesigning your business weeks. Start with the $197 Work-Life Balance Reality Check™.",
+    "Your premium work-life balance destination. Live within work-life balance boundaries while redesigning your business weeks. Start with the free Sunday Work-Life Balance Reality Check™.",
   openGraph: {
     title: "Harmony Lane™ — Your Work-Life Balance Destination",
     description:
-      "Before you deploy AI, set boundaries—so AI doesn't automate your hustle. Start with the $197 Work-Life Balance Reality Check™.",
+      "Before you deploy AI, set boundaries—so AI doesn't automate your hustle. Start with the free Sunday Work-Life Balance Reality Check™.",
     type: "website",
     images: [{ url: "/images/holiday/togetherness-og.jpg", width: 1200, height: 630 }],
   },
@@ -40,7 +40,7 @@ export default function LandingPage() {
       <LandingNav
         tone="dark"
         experiencesHref="#offers"
-        ctaLabel="Choose Your Experience"
+        ctaLabel="Join the Free Sunday Reality Check"
         links={[
           { label: "Reality Check", href: "#reality-check" },
           { label: "Monday Kickoff", href: "#monday" },
