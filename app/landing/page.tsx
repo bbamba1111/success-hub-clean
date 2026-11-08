@@ -12,6 +12,7 @@ import {
   NewYearSection,
   RealityCheckSection,
   RegisterSection,
+  WeMakeTimeForMoreSection,
 } from "@/components/landing/holiday/reality-check-sections"
 
 export const dynamic = "force-dynamic"
@@ -48,10 +49,11 @@ export default function LandingPage() {
         ]}
       />
       <HolidayHero />
+      <WeMakeTimeForMoreSection />
       <FreedomSection />
+      <BusinessWeekSection />
       <RealityCheckSection />
       <MondaySection />
-      <BusinessWeekSection />
       <NewYearSection />
       <AboutBarbaraSection />
       <FaqSection />
