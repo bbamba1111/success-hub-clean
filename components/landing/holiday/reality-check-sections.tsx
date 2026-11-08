@@ -86,7 +86,7 @@ export function FreedomSection() {
     <>
       <section className="bg-[#FFF8F4] py-16 sm:py-20">
         <div className="mx-auto flex max-w-5xl flex-col gap-5 px-5 text-center sm:px-8">
-          <p className={EYEBROW}>Your Virtual Work-Life Balance Destination</p>
+          <p className={EYEBROW}>We Help You Build Work-Life Balance Boundaries Into Your Business.</p>
           <p className="font-playfair text-balance text-2xl font-bold leading-tight text-[#4A3A42] sm:text-4xl">
             Reserve Your First <span className="font-light italic">(or Next)</span>
           </p>
@@ -182,11 +182,7 @@ export function FreedomSection() {
         </h2>
       </section>
 
-      <section className="bg-white px-5 py-14 text-center sm:px-8 sm:py-16">
-        <h2 className="mx-auto max-w-5xl font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">
-          We Help You Build Work-Life Balance Boundaries Into Your Business.
-        </h2>
-      </section>
+
     </>
   )
 }
