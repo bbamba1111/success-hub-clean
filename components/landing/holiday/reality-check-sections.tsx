@@ -75,7 +75,7 @@ export function FreedomSection() {
         </div>
       </section>
 
-      <section className="bg-[#2E2228] py-20 sm:py-28">
+      <section className="bg-[#3F5B49] py-20 sm:py-28">
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-8 lg:grid-cols-[1.4fr_1fr]">
           <div className="flex flex-col gap-5">
             <h2 className="font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl">
@@ -102,18 +102,15 @@ export function FreedomSection() {
             <p className="font-poppins text-pretty text-lg leading-relaxed text-[#F6D6E1]">
               It&apos;s to decide what you want the time and capacity AI creates to make possible.
             </p>
-            <p className="font-poppins text-pretty text-lg leading-relaxed text-[#F6D6E1]">
-              Before you deploy AI, consider the boundaries your business needs:
-            </p>
-            <p className="font-poppins text-pretty text-lg leading-relaxed text-[#F6D6E1]">
-              AI can accelerate how work gets done. But it shouldn&apos;t determine how much of your life work gets to occupy.
-            </p>
           </div>
-          <div className="flex flex-col items-center gap-4 rounded-3xl border border-[#FFF8F4]/15 bg-[#FFF8F4]/5 p-8 text-center">
-            <p className="font-playfair text-2xl font-bold text-[#FFF8F4]">Don't automate the hustle.</p>
-            <p className="font-playfair text-xl italic text-[#F6A9C2]">Establish the boundaries.</p>
-            <p className="font-playfair text-xl italic text-[#F6A9C2]">Redesign how your business operates.</p>
-          </div>
+          <blockquote className="flex flex-col items-center gap-5 rounded-3xl border border-[#FFF8F4]/15 bg-[#FFF8F4]/5 p-8 text-center">
+            <p className="font-playfair text-2xl font-semibold italic leading-relaxed text-[#FFF8F4] sm:text-3xl">
+              “Don&apos;t automate the hustle. Establish the boundaries. Redesign how your business operates.”
+            </p>
+            <footer className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C9DDB4]">
+              — Thought Leader Barbara
+            </footer>
+          </blockquote>
         </div>
       </section>
     </>
@@ -137,7 +134,7 @@ export function RealityCheckSection() {
     "Review your results and priority focus areas. You may choose to explore a personalized Boundary Report™.",
   ]
   return (
-    <section id="reality-check" className="relative scroll-mt-20 overflow-hidden bg-[#2E2228] py-20 sm:py-28">
+    <section id="reality-check" className="relative scroll-mt-20 overflow-hidden bg-[#3F5B49] py-20 sm:py-28">
       <img src="/images/holiday/kwanzaa-rest.webp" alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-25" loading="lazy" />
       <div className="relative mx-auto grid max-w-6xl gap-12 px-5 sm:px-8 lg:grid-cols-2">
         <div className="flex flex-col gap-5">
@@ -166,7 +163,7 @@ export function RealityCheckSection() {
           <CtaLink label="Join the Free Sunday Reality Check" />
           <p className="font-poppins text-sm text-[#F6D6E1]">One Sunday can help you see what needs attention before you redesign the way you work.</p>
         </div>
-        <div className="flex flex-col gap-5 rounded-3xl border border-[#FFF8F4]/15 bg-[#2E2228]/65 p-7 backdrop-blur-sm">
+        <div className="flex flex-col gap-5 rounded-3xl border border-[#FFF8F4]/15 bg-[#3F5B49]/65 p-7 backdrop-blur-sm">
           <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">What the Reality Check includes</p>
           <ol className="flex flex-col gap-4">
             {steps.map((step, i) => (
@@ -256,7 +253,7 @@ export function MondaySection() {
               ))}
             </ol>
           </div>
-          <aside className="flex flex-col gap-5 rounded-3xl bg-[#2E2228] p-7 lg:col-span-2">
+          <aside className="flex flex-col gap-5 rounded-3xl bg-[#3F5B49] p-7 lg:col-span-2">
             <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#C9DDB4]">Five-Minute Work-Life Balance Boundary Check-in™</p>
             <p className="font-playfair text-xl font-bold text-[#F6A9C2]">Notice · Identify · Consider</p>
             <p className="font-poppins text-base leading-relaxed text-[#FFF8F4]">Where is work colliding with the boundaries you want to protect? What is creating that collision? What could change?</p>
@@ -313,7 +310,7 @@ export function BusinessWeekSection() {
               ))}
             </ol>
           </div>
-          <div className="flex flex-col justify-center gap-5 rounded-3xl bg-[#2E2228] p-8">
+          <div className="flex flex-col justify-center gap-5 rounded-3xl bg-[#3F5B49] p-8">
             <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#C9DDB4]">The two Harmony Lane experiences</p>
             <div>
               <h3 className="font-playfair text-2xl font-bold text-[#FFF8F4]">1. Work-Life Balance Business Day™</h3>
@@ -452,7 +449,7 @@ export function FaqSection() {
 
 export function RegisterSection() {
   return (
-    <section id="enrollment" className="relative scroll-mt-20 overflow-hidden bg-[#2E2228] py-20 sm:py-28">
+    <section id="enrollment" className="relative scroll-mt-20 overflow-hidden bg-[#3F5B49] py-20 sm:py-28">
       <img src="/images/holiday/togetherness.webp" alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-30" loading="lazy" />
       <div className="relative mx-auto flex max-w-4xl flex-col items-center gap-5 px-5 text-center sm:px-8">
         <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">Your next step</p>
