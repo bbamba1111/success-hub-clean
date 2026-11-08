@@ -42,9 +42,22 @@ export function FreedomSection() {
       <section className="bg-white py-20 sm:py-28">
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-8 lg:grid-cols-[2fr_1fr]">
           <div className="flex flex-col gap-5">
-            <h2 className={H2}>Practice the Freedom You Built Your Business For.</h2>
-            <p className={BODY}>You started your business for more freedom.</p>
-            <p className={BODY}>You wanted to build a business that supported the life you wanted.</p>
+            <h2 className={H2}>The Freedom You Intended to Create.</h2>
+            <p className={BODY}>You started your business for:</p>
+            <ul className="flex flex-col gap-3">
+              {[
+                "More freedom.",
+                "More control.",
+                "More flexibility.",
+                "More opportunity.",
+                "More time for life.",
+              ].map((item) => (
+                <li key={item} className={`flex items-start gap-3 ${BODY}`}>
+                  <Dot />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
             <p className={BODY}>
               But somewhere along the way, you unintentionally brought the hustle with you. You left a demanding corporate environment only to recreate those same demands inside your own business.
             </p>
@@ -54,6 +67,7 @@ export function FreedomSection() {
                 "The constant availability.",
                 "The pressure to do more.",
                 "The feeling that everything depends on you.",
+                "Work expanding into your personal time.",
               ].map((item) => (
                 <li key={item} className={`flex items-start gap-3 ${BODY}`}>
                   <Dot />
@@ -62,9 +76,6 @@ export function FreedomSection() {
               ))}
             </ul>
             <p className={BODY}>Your business may be growing, but is your freedom growing with it?</p>
-            <p className="font-playfair text-xl font-semibold leading-snug text-[#C13B6B] sm:text-2xl">
-              It&apos;s time to practice the freedom you built your business to have.
-            </p>
           </div>
           <img
             src="/images/barbara-portrait.png"
@@ -79,28 +90,33 @@ export function FreedomSection() {
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-8 lg:grid-cols-[1.4fr_1fr]">
           <div className="flex flex-col gap-5">
             <h2 className="font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl">
-              Don&apos;t Let AI Accelerate the Hustle You&apos;re Trying to Escape.
+              And Now, AI Is Adding a New Reality.
             </h2>
             <p className="font-poppins text-pretty text-lg leading-relaxed text-[#F6D6E1]">
-              AI can automate tasks, increase productivity, save time, and create capacity you didn&apos;t have before.
+              AI brings the possibility of getting work done faster, automating tasks, increasing capacity, and creating opportunities that once required more time, people, or resources.
             </p>
             <p className="font-poppins text-pretty text-lg leading-relaxed text-[#F6D6E1]">
-              But there&apos;s something important to consider:
-            </p>
-            <p className="font-playfair text-xl font-semibold leading-snug text-[#F6A9C2] sm:text-2xl">
-              What happens when AI gives you time back—and you automatically fill that time with more work?
+              But adopting AI also brings another set of demands—often on top of the demands you are already carrying.
             </p>
             <ul className="flex flex-col gap-3">
-              <li className="font-poppins flex items-start gap-3 text-lg leading-relaxed text-[#FFF8F4]">
-                <Dot className="bg-[#F6A9C2]" />
-                How will you prevent increased capacity from becoming unlimited work?
-              </li>
+              {[
+                "Keeping up with rapidly changing technology.",
+                "Figuring out which tools your business needs.",
+                "Finding time to learn how to use them effectively.",
+                "Deciding what to automate and what should remain human-led.",
+                "Managing new tools, workflows, and risks while continuing to run your business.",
+              ].map((item) => (
+                <li key={item} className="font-poppins flex items-start gap-3 text-lg leading-relaxed text-[#FFF8F4]">
+                  <Dot className="bg-[#F6A9C2]" />
+                  {item}
+                </li>
+              ))}
             </ul>
             <p className="font-poppins text-pretty text-lg leading-relaxed text-[#F6D6E1]">
-              The opportunity isn&apos;t simply to use AI to do more.
+              More opportunity can bring more pressure. More technology can bring more complexity. And more capacity can become even more work.
             </p>
             <p className="font-poppins text-pretty text-lg leading-relaxed text-[#F6D6E1]">
-              It&apos;s to decide what you want the time and capacity AI creates to make possible.
+              We cannot keep adding demands without considering what human beings can sustainably carry. Attention, energy, and recovery are not unlimited resources.
             </p>
           </div>
           <blockquote className="flex flex-col items-center gap-5 rounded-3xl border border-[#FFF8F4]/15 bg-[#FFF8F4]/5 p-8 text-center">
@@ -111,6 +127,51 @@ export function FreedomSection() {
               — Thought Leader Barbara
             </footer>
           </blockquote>
+        </div>
+      </section>
+
+      <section className="bg-[#FFF8F4] py-20 sm:py-28">
+        <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-8 lg:grid-cols-[1fr_1.2fr]">
+          <div className="flex flex-col gap-5">
+            <p className={EYEBROW}>The opportunity is already here</p>
+            <h2 className={H2}>Before AI Accelerates Your Business, Redesign the Workweek.</h2>
+            <p className={BODY}>
+              If AI can help your business complete work that once took an eight-hour day in less time, where should the time it saves go?
+            </p>
+            <p className={BODY}>
+              Does it automatically become more work—or can you intentionally reclaim that time?
+            </p>
+            <p className={BODY}>
+              What if you established a four-hour focused workday as a design target, then figured out how to operate your business successfully within that boundary using AI?
+            </p>
+            <p className={BODY}>
+              The opportunity is already here. The work is figuring out how to make it possible inside your company.
+            </p>
+          </div>
+          <div className="flex flex-col gap-5 rounded-3xl bg-white p-8 shadow-sm ring-1 ring-[#F2E4E8]">
+            <h3 className={`font-playfair text-2xl font-bold ${INK}`}>Put Human Sustainability Boundaries in Place First.</h3>
+            <p className={BODY_SM}>Before choosing tools or accelerating workflows, decide what the business must protect for the people doing the work.</p>
+            <ol className="flex flex-col gap-4">
+              {[
+                ["Define the human boundaries", "Set intentional limits for the workday, availability, recovery, and time away from work."],
+                ["Identify the work that matters", "Clarify what must get done to serve customers and operate the business successfully."],
+                ["Decide what belongs with AI and people", "Determine what can be automated or assisted, and what requires human judgment, relationships, and accountability."],
+                ["Redesign the workflows", "Rework responsibilities, processes, and handoffs so the work can fit within the boundaries."],
+                ["Test and refine the operating model", "Measure what gets completed, where work gets stuck, and what needs to change to make the shorter workday viable."],
+              ].map(([title, body], i) => (
+                <li key={title} className="flex gap-4">
+                  <span className="font-playfair text-2xl font-bold text-[#C13B6B]">{i + 1}</span>
+                  <div className="flex flex-col gap-1">
+                    <h4 className={`font-playfair text-lg font-bold ${INK}`}>{title}</h4>
+                    <p className={BODY_SM}>{body}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+            <p className="font-playfair text-lg font-semibold leading-snug text-[#C13B6B]">
+              Don't automate the hustle. Establish the human boundaries first.
+            </p>
+          </div>
         </div>
       </section>
     </>
