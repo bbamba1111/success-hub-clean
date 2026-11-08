@@ -65,8 +65,8 @@ export function FreedomSection() {
                 </li>
               ))}
             </ul>
-            <p className="font-playfair text-xl font-semibold italic leading-snug text-[#C13B6B] sm:text-2xl">
-              Imagine what your business—and your life—could look like when they finally support each other.
+            <p className="font-playfair text-xl font-semibold leading-snug text-[#C13B6B] sm:text-2xl">
+              And now, AI is adding a new reality to navigate and integrate.
             </p>
           </div>
           <img
@@ -82,13 +82,10 @@ export function FreedomSection() {
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-8 lg:grid-cols-[1.4fr_1fr]">
           <div className="flex flex-col gap-5">
             <h2 className="font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl">
-              And Now, AI Is Adding a New Reality.
+              More Opportunity Can Bring More Pressure.
             </h2>
             <p className="font-poppins text-pretty text-lg leading-relaxed text-[#F6D6E1]">
-              AI brings the possibility of getting work done faster, automating tasks, increasing capacity, and creating opportunities that once required more time, people, or resources.
-            </p>
-            <p className="font-poppins text-pretty text-lg leading-relaxed text-[#F6D6E1]">
-              But adopting AI also brings another set of demands—often on top of the demands you are already carrying.
+              More technology can bring more complexity. And more capacity can become even more work.
             </p>
             <ul className="flex flex-col gap-3">
               {[
@@ -104,9 +101,6 @@ export function FreedomSection() {
                 </li>
               ))}
             </ul>
-            <p className="font-poppins text-pretty text-lg leading-relaxed text-[#F6D6E1]">
-              More opportunity can bring more pressure. More technology can bring more complexity. And more capacity can become even more work.
-            </p>
             <p className="font-poppins text-pretty text-lg leading-relaxed text-[#F6D6E1]">
               We cannot keep adding demands without considering what human beings can sustainably carry. Attention, energy, and recovery are not unlimited resources.
             </p>
