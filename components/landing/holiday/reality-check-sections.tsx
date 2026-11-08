@@ -26,29 +26,38 @@ export function FreedomSection() {
     <section className="bg-[#FFF8F4] py-20 sm:py-28">
       <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-8 lg:grid-cols-[2fr_1fr]">
         <div className="flex flex-col gap-5">
-          <p className={EYEBROW}>Workweek Redesign for Human Sustainability in the Accelerated Age of AI</p>
-          <h2 className={H2}>You started your business for freedom. Let&apos;s make room for it again.</h2>
-          <p className="font-poppins text-lg font-semibold leading-relaxed text-[#5A7F46]">
-            Redesign how you enter the workweek. Set work-life balance boundaries in your business—and start living them in real time.
-          </p>
-          <p className={BODY}>
-            Somewhere along the way, the hustle habits may have followed you into entrepreneurship. The business you
-            created for more freedom may now demand more of your time, energy, attention, and availability than you intended.
-          </p>
-          <p className={BODY}>And now AI is changing how business gets done.</p>
           <p className="font-playfair text-xl font-semibold leading-snug text-[#C13B6B] sm:text-2xl">
-            Without intentional boundaries and a redesigned way of operating, AI could simply automate the very hustle you were trying to escape.
+            AI is creating capacity. What will you do with the time it gives you back?
           </p>
-          <p className={`font-playfair text-xl italic leading-snug sm:text-2xl ${INK}`}>
-            Before using new technology to increase what your business can produce, consider a different question:
-            have you redesigned your business to make room for the life you wanted it to create?
+          <h2 className={H2}>You started your business for freedom.</h2>
+          <p className={BODY}>But somewhere along the way, the hustle habits may have followed you into entrepreneurship—or become the very habits you&apos;re building your business around.</p>
+          <h3 className="font-playfair text-2xl font-bold leading-tight text-[#4A3A42] sm:text-3xl">
+            The Hustle Habit Can Become the Business Operating System
+          </h3>
+          <p className={BODY}>
+            Whether you&apos;re starting from the ground up or growing a business you&apos;ve already built, the way you operate matters.
           </p>
           <p className={BODY}>
-            Welcome to Harmony Lane™ — the parallel lane to hustle entrepreneurship and the place you live within
-            work-life balance boundaries while redesigning your business weeks.
+            Many entrepreneurs leave demanding corporate environments only to recreate the patterns they wanted to leave behind. Others unknowingly build those same patterns into their businesses from day one.
           </p>
-          <p className="font-poppins text-lg font-semibold leading-relaxed text-[#5A7F46]">
-            Experience work-life balance in real time. Discover what needs to change. Make time for more life.
+          <ul className="flex flex-col gap-3">
+            {[
+              "Work expands into personal time.",
+              "The founder becomes the bottleneck.",
+              "Business decisions depend on the founder's constant availability.",
+              "Time saved is automatically filled with more work.",
+              "Work-life balance becomes something to pursue later.",
+            ].map((item) => (
+              <li key={item} className={`flex items-start gap-3 ${BODY}`}>
+                <Dot />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+          <p className={BODY}>Now AI can accelerate how work gets done.</p>
+          <p className={BODY}>But faster work does not automatically create more freedom.</p>
+          <p className="font-playfair text-xl font-semibold leading-snug text-[#C13B6B] sm:text-2xl">
+            Before you automate your hustle, redesign how your business operates.
           </p>
         </div>
         <img
