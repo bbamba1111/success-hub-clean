@@ -61,26 +61,36 @@ export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
           <p className="font-poppins w-fit rounded-full border border-[#F6D6E1]/40 bg-[#2E2228]/40 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-[#F6D6E1] backdrop-blur-sm">
             Free Weekly Reality Check™ · {sessionLabel} · {SESSION_TIME_LABEL}
           </p>
-          <p className="font-playfair text-xl italic text-[#F6A9C2] sm:text-2xl">Make Time For More This Holiday Season</p>
+
+          <p className="font-playfair text-xl italic text-[#F6A9C2] sm:text-2xl">Make Time For More™</p>
           <h1 className="font-playfair text-balance text-4xl font-bold leading-[1.05] tracking-tight text-[#FFF8F4] sm:text-6xl">
-            Redesign Your Entry Into the Workweek™
+            This Holiday Season
           </h1>
-          <p className="font-poppins text-pretty text-lg leading-relaxed text-[#FFF8F4] sm:text-xl">
-            AI is about to give founders back a lot of time. This season, decide what you&apos;ll do with it.
+
+          <p className="font-poppins text-pretty text-xl font-semibold leading-snug text-[#FFF8F4] sm:text-2xl">
+            Don&apos;t Let AI Automate Your Hustle.
           </p>
-          <p className="font-poppins text-pretty text-base leading-relaxed text-[#E9F0DF]">
-            Don&apos;t wait for the New Year to start reclaiming your life. Build a successful business. Reclaim your
-            freedom. Make time for more life.
+
+          <p className="font-poppins text-pretty text-lg leading-relaxed text-[#FFF8F4] sm:text-xl">
+            Give Yourself &amp; Your People the Gift of Work-Life Balance, Time Freedom &amp; Sustainable Success.
+          </p>
+
+          <p className="font-poppins text-pretty text-base font-medium leading-relaxed text-[#F6D6E1] sm:text-lg">
+            AI is creating capacity. What will you do with the time it gives you back?
+          </p>
+
+          <p className="font-poppins text-pretty text-base leading-relaxed text-[#E9F0DF] sm:text-lg">
+            Discover Where You Can Make More Time for the Life You Built Your Business For and Set Non-Negotiable
+            Human Sustainability Boundaries—Before You Deploy.
           </p>
 
           <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center">
             <a
-              href="#register"
+              href="#reality-check"
               className="font-poppins inline-flex w-fit items-center justify-center rounded-full bg-[#C13B6B] px-8 py-4 text-sm font-semibold uppercase tracking-[0.12em] text-[#FFF8F4] shadow-xl shadow-[#C13B6B]/30 transition-transform hover:scale-[1.03] hover:bg-[#A8305B]"
             >
-              Save My Free Seat
+              Take Your FREE Work-Life Balance Reality Check
             </a>
-            <span className="font-poppins text-sm text-[#F6D6E1]">FREE · No credit card required</span>
           </div>
         </motion.div>
       </div>
