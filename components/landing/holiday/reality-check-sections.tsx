@@ -66,7 +66,7 @@ export function FreedomSection() {
               ))}
             </ul>
             <p className="font-playfair text-xl font-semibold leading-snug text-[#C13B6B] sm:text-2xl">
-              And now, AI is adding a new reality to navigate and integrate.
+              And now, with AI adding a new reality to navigate and integrate...
             </p>
           </div>
           <img
