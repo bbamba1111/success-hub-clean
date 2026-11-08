@@ -5,6 +5,76 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion"
 import { HOLIDAY_SCENES as HERO_SCENES, HOLIDAY_SCENE_INTERVAL_MS } from "@/lib/holiday-scenes"
 
 
+function SundayCountdown() {
+  const [remaining, setRemaining] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
+  useEffect(() => {
+    const getNextSunday = () => {
+      const now = new Date()
+      const parts = new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/New_York", weekday: "short", year: "numeric", month: "numeric", day: "numeric",
+        hour: "numeric", minute: "numeric", second: "numeric", hour12: false,
+      }).formatToParts(now)
+      const values = Object.fromEntries(parts.map((p) => [p.type, p.value]))
+      const weekday = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(values.weekday)
+      const daysUntil = (7 - weekday) % 7
+      const targetDay = new Date(Date.UTC(Number(values.year), Number(values.month) - 1, Number(values.day) + daysUntil, 13))
+      const targetParts = new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/New_York", year: "numeric", month: "numeric", day: "numeric",
+        hour: "numeric", minute: "numeric", second: "numeric", hour12: false,
+      }).formatToParts(targetDay)
+      const targetValues = Object.fromEntries(targetParts.map((p) => [p.type, p.value]))
+      const targetUtcGuess = Date.UTC(Number(targetValues.year), Number(targetValues.month) - 1, Number(targetValues.day), 13)
+      const targetOffsetParts = new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/New_York", timeZoneName: "shortOffset",
+      }).formatToParts(targetDay)
+      const offset = targetOffsetParts.find((p) => p.type === "timeZoneName")?.value ?? "GMT-5"
+      const match = offset.match(/GMT([+-])(\\d{1,2})(?::(\\d{2}))?/)
+      const offsetMinutes = match ? (match[1] === "+" ? 1 : -1) * (Number(match[2]) * 60 + Number(match[3] ?? 0)) : -300
+      let target = targetUtcGuess - offsetMinutes * 60000
+      if (target <= now.getTime()) {
+        const next = new Date(target + 7 * 86400000)
+        target = next.getTime()
+      }
+      return target
+    }
+    let target = getNextSunday()
+    const tick = () => {
+      const diff = Math.max(0, target - Date.now())
+      if (diff === 0) target = getNextSunday()
+      const seconds = Math.floor(diff / 1000)
+      setRemaining({
+        days: Math.floor(seconds / 86400),
+        hours: Math.floor((seconds % 86400) / 3600),
+        minutes: Math.floor((seconds % 3600) / 60),
+        seconds: seconds % 60,
+      })
+    }
+    tick()
+    const timer = window.setInterval(tick, 1000)
+    return () => window.clearInterval(timer)
+  }, [])
+  const units = [
+    { label: "Days", value: remaining.days },
+    { label: "Hours", value: remaining.hours },
+    { label: "Minutes", value: remaining.minutes },
+    { label: "Seconds", value: remaining.seconds },
+  ]
+  return (
+    <div className="mt-3 flex w-full max-w-[35rem] flex-col items-center gap-2" aria-live="off">
+      <p className="font-poppins text-xs font-semibold uppercase tracking-[0.18em] text-[#FFF8F4]">Next Sunday Shift™ Begins In</p>
+      <div className="grid w-full grid-cols-4 gap-2">
+        {units.map((unit) => (
+          <div key={unit.label} className="rounded-xl border border-white/25 bg-[#2E2228]/75 px-2 py-2 text-center backdrop-blur-sm">
+            <span className="font-playfair block text-2xl font-bold tabular-nums text-[#FFF8F4] sm:text-3xl">{String(unit.value).padStart(2, "0")}</span>
+            <span className="font-poppins text-[10px] uppercase tracking-wider text-[#F6D6E1]">{unit.label}</span>
+          </div>
+        ))}
+      </div>
+      <p className="font-poppins text-xs text-[#FFF8F4]/90">Every Sunday · 1:00 PM Eastern Time</p>
+    </div>
+  )
+}
+
 export function HolidayHero() {
   const [index, setIndex] = useState(0)
   const [inView, setInView] = useState(true)
