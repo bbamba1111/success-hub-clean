@@ -117,7 +117,16 @@ export function FreedomSection() {
       </section>
 
       <section className="bg-[#FFF8F4] py-20 sm:py-28">
-        <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-8 lg:grid-cols-[1fr_1.2fr]">
+        <div className="mx-auto max-w-6xl px-5 sm:px-8">
+          <div className="mb-12 flex flex-col items-center gap-3 rounded-3xl bg-[#123B2A] px-6 py-10 text-center sm:px-12 sm:py-14">
+            <h2 className="font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl">
+              This Is Why We Don&apos;t Automate and Accelerate the Hustle.
+            </h2>
+            <p className="font-poppins text-lg font-medium leading-relaxed text-[#F6D6E1] sm:text-xl">
+              We help you establish human boundaries first.
+            </p>
+          </div>
+          <div className="grid items-center gap-10 lg:grid-cols-[1fr_1.2fr]">
           <div className="flex flex-col gap-5">
             <p className={EYEBROW}>The opportunity is already here</p>
             <h2 className={H2}>Before AI Accelerates Your Business, Redesign the Workweek.</h2>
@@ -135,8 +144,6 @@ export function FreedomSection() {
             </p>
           </div>
           <div className="flex flex-col gap-5 rounded-3xl bg-white p-8 shadow-sm ring-1 ring-[#F2E4E8]">
-            <h3 className={`font-playfair text-2xl font-bold ${INK}`}>This Is Why We Don&apos;t Automate and Accelerate the Hustle.</h3>
-            <p className={BODY_SM}>We establish the human boundaries first.</p>
             <ol className="flex flex-col gap-4">
               {[
                 ["Define the human boundaries", "Set intentional limits for the workday, availability, recovery, and time away from work."],
@@ -155,6 +162,7 @@ export function FreedomSection() {
               ))}
             </ol>
 
+          </div>
           </div>
         </div>
       </section>
