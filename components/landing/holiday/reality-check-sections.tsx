@@ -43,21 +43,8 @@ export function FreedomSection() {
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-8 lg:grid-cols-[2fr_1fr]">
           <div className="flex flex-col gap-5">
             <h2 className={H2}>The Freedom You Intended to Create.</h2>
-            <p className={BODY}>You started your business for:</p>
-            <ul className="flex flex-col gap-3">
-              {[
-                "More freedom.",
-                "More control.",
-                "More flexibility.",
-                "More opportunity.",
-                "More time for life.",
-              ].map((item) => (
-                <li key={item} className={`flex items-start gap-3 ${BODY}`}>
-                  <Dot />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
+            <p className={BODY}>You started your business for more freedom.</p>
+            <p className={BODY}>You wanted to build a business that supported the life you wanted.</p>
             <p className={BODY}>
               But somewhere along the way, you unintentionally brought the hustle with you. You left a demanding corporate environment only to recreate those same demands inside your own business.
             </p>
