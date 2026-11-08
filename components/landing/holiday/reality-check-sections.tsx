@@ -86,7 +86,7 @@ export function FreedomSection() {
     <>
       <section className="bg-[#FFF8F4] py-16 sm:py-20">
         <div className="mx-auto flex max-w-5xl flex-col gap-5 px-5 text-center sm:px-8">
-          <p className={EYEBROW}>The Work-Life Balance Destination</p>
+          <p className={EYEBROW}>Your Virtual Work-Life Balance Destination</p>
           <p className="font-playfair text-balance text-2xl font-bold leading-tight text-[#4A3A42] sm:text-4xl">
             Reserve Your First <span className="font-light italic">(or Next)</span>
           </p>
