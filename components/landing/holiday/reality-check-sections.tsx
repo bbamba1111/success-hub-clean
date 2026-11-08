@@ -64,20 +64,19 @@ export function FreedomSection() {
 
 export function RealityCheckSection() {
   const outcomes = [
-    "How your original entrepreneurial intention compares with your current business reality.",
-    "Where business demands collide with your personal life and desired way of living.",
+    "A clearer picture of your original entrepreneurial intention and current business reality.",
+    "Where business demands collide with the personal life and workweek you want.",
     "Your 30-Day Work-Life Balance Baseline™ across 15 Core Life Value Areas™.",
     "The priority focus areas and business boundary collisions that deserve attention.",
-    "Your results, priority focus areas, and boundary collisions that deserve attention.",
   ]
   const steps = [
     "Complete your Founder Profile™.",
-    "Answer 10 questions in Business Context™.",
+    "Answer the 10 questions in Business Context™.",
     "Identify relevant conditions in Business Boundary Collisions™.",
     "Describe your Personal & Work-From-Home Reality™.",
     "Complete the 15-question 30-Day Work-Life Balance Audit™.",
     "Answer the 3 Work-Life Balance Alignment™ questions.",
-    "Review your free results and priority focus areas; optionally purchase the $97 personalized Boundary Report™.",
+    "Review your results and priority focus areas. You may choose to explore a personalized Boundary Report™.",
   ]
   return (
     <section id="reality-check" className="relative scroll-mt-20 overflow-hidden bg-[#2E2228] py-20 sm:py-28">
@@ -93,7 +92,7 @@ export function RealityCheckSection() {
             <span className="font-poppins pb-1 text-sm text-[#F6D6E1]">guided Sunday experience</span>
           </div>
           <p className="font-poppins text-pretty leading-relaxed text-[#F6D6E1]">
-            You built your business for a reason. Join us on Sunday for a guided look at your entrepreneurial intention, current business reality, and the personal life you want your business to support.
+            Start your week with clarity. This guided experience helps you examine why you started your business, what your business asks of you today, and whether the way you work supports the life you want to live.
           </p>
           <ul className="flex flex-col gap-3">
             {outcomes.map((o) => (
@@ -104,10 +103,10 @@ export function RealityCheckSection() {
             ))}
           </ul>
           <p className="font-poppins text-base italic leading-relaxed text-[#F6D6E1]">
-            The Sunday Reality Check™ is free. Your assessment results and priority focus areas are included. The optional $97 Work-Life Balance Boundary Report™ provides deeper personalized findings, recommendations, and practical next steps. There is no obligation to purchase the report or continue into either Harmony Lane experience.
+            Your Reality Check, assessment results, and priority focus areas are free. After reviewing your results, you can decide whether you want a deeper personalized Boundary Report™ or to continue into a paid Harmony Lane™ experience. There is no obligation to purchase.
           </p>
           <CtaLink label="Join the Free Sunday Reality Check" />
-          <p className="font-poppins text-sm text-[#F6D6E1]">Sunday is your opportunity to get clarity before deciding what you want to change.</p>
+          <p className="font-poppins text-sm text-[#F6D6E1]">One Sunday can help you see what needs attention before you redesign the way you work.</p>
         </div>
         <div className="flex flex-col gap-5 rounded-3xl border border-[#FFF8F4]/15 bg-[#2E2228]/65 p-7 backdrop-blur-sm">
           <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">What the Reality Check includes</p>
@@ -120,7 +119,7 @@ export function RealityCheckSection() {
             ))}
           </ol>
           <p className="font-poppins border-t border-[#FFF8F4]/15 pt-4 text-sm leading-relaxed text-[#F6D6E1]">
-            Your Alignment answers measure willingness and readiness. They do not determine whether you receive your free results. The personalized Boundary Report™ is optional and costs $97.
+            The Alignment questions help clarify your willingness and readiness. They do not determine whether you receive your free results.
           </p>
         </div>
       </div>
@@ -152,23 +151,20 @@ export function MondaySection() {
         <div className="grid items-end gap-10 lg:grid-cols-2">
           <div className="flex flex-col gap-4">
             <p className={EYEBROW}>Harmony Lane Experience One · Make Time For More on Mondays™</p>
-            <h2 className={H2}>Redesign Your Entry Into the Workweek™</h2>
+            <h2 className={H2}>The Work-Life Balance Business Day™</h2>
             <p className={BODY}>
-              The Work-Life Balance Business Day™ is a distinct Harmony Lane experience. It gives you a guided opportunity to redesign your entry into the workweek, establish priorities, and practice a more intentional business day.
+              A distinct, paid guided experience—not simply a preview or a free kickoff. Redesign your entry into the workweek, reconnect with your entrepreneurial intention, establish the boundaries you want to protect, and practice a more intentional business day.
             </p>
           </div>
           <div className="flex flex-col gap-3">
             <h3 className={`font-playfair text-2xl font-bold ${INK}`}>Bring your real work. Practice a different way to work.</h3>
             <p className={BODY}>
-              You are not stepping away from your business to learn about work-life balance. You are practicing it
-              while doing your actual business work and noticing what needs to change.
+              You are not stepping away from your business to learn about work-life balance. You bring real priorities into a guided day and practice working within the boundaries you choose.
             </p>
           </div>
         </div>
         <div className="flex flex-col gap-5">
-          <h3 className="font-poppins text-base font-semibold uppercase tracking-[0.18em] text-[#C13B6B]">
-            The boundaries you&apos;ll practice
-          </h3>
+          <h3 className="font-poppins text-base font-semibold uppercase tracking-[0.18em] text-[#C13B6B]">The boundaries you will personalize</h3>
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {BOUNDARY_AREAS.map((b) => (
               <li key={b.title} className="flex flex-col gap-2 rounded-2xl bg-[#FFF8F4] p-6 ring-1 ring-[#F2E4E8]">
@@ -178,17 +174,20 @@ export function MondaySection() {
             ))}
           </ul>
           <p className="max-w-3xl italic text-base text-[#5A4A52]">
-            These are areas to explore, not a rigid rulebook. You choose the boundaries that reflect your life, values,
-            responsibilities, and business.
+            Your boundaries reflect your life, values, responsibilities, and business. This is a guided practice—not a one-size-fits-all rulebook.
           </p>
         </div>
         <div className="grid gap-10 lg:grid-cols-5">
           <div className="flex flex-col gap-5 lg:col-span-3">
-            <h3 className="font-poppins text-base font-semibold uppercase tracking-[0.18em] text-[#C13B6B]">
-              Your Monday kickoff
-            </h3>
+            <h3 className="font-poppins text-base font-semibold uppercase tracking-[0.18em] text-[#C13B6B]">Your Business Day experience</h3>
             <ol className="flex flex-col divide-y divide-[#F2E4E8] border-y border-[#F2E4E8]">
-              {MONDAY_SEQUENCE.map((s, i) => (
+              {[
+                { title: "Reconnect with intention", body: "Remember why you became an entrepreneur and what you wanted your business to make possible." },
+                { title: "Review your current reality", body: "Notice where the way you work supports—or competes with—the life you want." },
+                { title: "Personalize your boundaries", body: "Choose the non-negotiables and work-life balance boundaries you want to practice." },
+                { title: "Decide & Design My Business Day™", body: "Set meaningful priorities and plan your actual business work inside your chosen boundaries." },
+                { title: "Practice and reflect", body: "Work on real priorities, use Five-Minute Work-Life Balance Boundary Check-ins™, and close the day intentionally." },
+              ].map((s, i) => (
                 <li key={s.title} className="flex gap-5 py-5">
                   <span className="font-playfair w-6 shrink-0 text-2xl font-bold text-[#C13B6B]">{i + 1}</span>
                   <div className="flex flex-col gap-1">
@@ -200,18 +199,10 @@ export function MondaySection() {
             </ol>
           </div>
           <aside className="flex flex-col gap-5 rounded-3xl bg-[#2E2228] p-7 lg:col-span-2">
-            <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#C9DDB4]">
-              Five-Minute Work-Life Balance Boundary Check-in™
-            </p>
+            <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#C9DDB4]">Five-Minute Work-Life Balance Boundary Check-in™</p>
             <p className="font-playfair text-xl font-bold text-[#F6A9C2]">Notice · Identify · Consider</p>
-            <p className="font-poppins text-base leading-relaxed text-[#FFF8F4]">
-              Where is work colliding with the boundaries you want to protect? What is creating that collision? What
-              could change?
-            </p>
-            <p className="font-poppins text-base leading-relaxed text-[#F6D6E1]">
-              A practical reflection and decision tool—not a score or a judgment. You decide what to change first and
-              what can wait.
-            </p>
+            <p className="font-poppins text-base leading-relaxed text-[#FFF8F4]">Where is work colliding with the boundaries you want to protect? What is creating that collision? What could change?</p>
+            <p className="font-poppins text-base leading-relaxed text-[#F6D6E1]">A practical reflection and decision tool—not a score or a judgment. You decide what to change first and what can wait.</p>
           </aside>
         </div>
       </div>
@@ -220,10 +211,15 @@ export function MondaySection() {
 }
 
 export function BusinessWeekSection() {
-  const durations = [
-    { weeks: 4, price: "$1,988" },
-    { weeks: 8, price: "$3,976" },
-    { weeks: 12, price: "$5,964" },
+  const days = [
+    { day: "Monday", title: "Redesign your entry", body: "Experience the Work-Life Balance Business Day™: reconnect with intention, personalize boundaries, set priorities, and practice your redesigned business day." },
+    { day: "Tuesday & Wednesday", title: "Practice your rhythm", body: "Bring real business priorities into your focused work container. Practice your boundaries and notice where the business pushes against them." },
+    { day: "Thursday", title: "Close your workweek", body: "Complete your scheduled work, close out priorities, and make an intentional transition away from business." },
+    { day: "Friday–Sunday", title: "Experience Time Freedom™", body: "Make room for relationships, rest, recreation, and personal priorities. Time off is not another productivity project." },
+  ]
+  const boundaries = [
+    "Flex Time™", "Morning GIV•EN™ Routine", "Workout & Movement Window™", "Extended Healthy Hybrid Lunch Break™",
+    "4-Hour Focused CEO Workday™", "Time Freedom™", "Power Down™", "Unplug™",
   ]
   return (
     <section id="business-week" className="scroll-mt-20 bg-[#FFF8F4] py-20 sm:py-28">
@@ -233,44 +229,44 @@ export function BusinessWeekSection() {
           <div className="flex flex-col gap-5">
             <p className={EYEBROW}>Harmony Lane Experience Two · The Full-Week Experience</p>
             <h2 className={H2}>The Work-Life Balance Business Week™</h2>
-            <p className={BODY}>Practice work-life balance boundaries while doing your actual business work—not by stepping away from the business, but by redesigning how it operates.</p>
-            <p className={BODY}>Monday is the redesign entry. Tuesday and Wednesday are for practicing your intended rhythm with real business priorities. Thursday is your closeout and transition into Friday–Sunday Time Freedom™. You observe what holds, where work pushes against your boundaries, and what your business may need to change.</p>
-            <p className={BODY}>The operating rhythm is Monday–Thursday, with a 4-Hour Focused CEO Workday™ from 1 PM–5 PM ET, and a protected Friday–Sunday three-day weekend.</p>
+            <p className={BODY}>A complete seven-day guided experience for founders who want to practice work-life balance while doing their actual business work—not by stepping away from the business, but by redesigning how they enter, operate, and close their workweek.</p>
+            <p className={BODY}>The Business Week includes the Work-Life Balance Business Day™ on Monday. The Business Day is also available as a distinct, standalone paid experience.</p>
           </div>
         </div>
-        <div className="grid gap-6 md:grid-cols-3">
-          {[
-            { title: "Four-day workweek", body: "Monday–Thursday. Practice operating your business within the boundaries you choose." },
-            { title: "Four-hour CEO workday", body: "1 PM–5 PM ET, Monday–Thursday. Focus on real business priorities." },
-            { title: "Three-day weekend", body: "Friday–Sunday. Practice protecting time outside the business." },
-          ].map((item) => (
-            <div key={item.title} className="rounded-2xl bg-white p-6 ring-1 ring-[#F2E4E8]">
-              <h3 className={`font-playfair text-xl font-bold ${INK}`}>{item.title}</h3>
-              <p className={`${BODY_SM} mt-2`}>{item.body}</p>
-            </div>
+        <div className="grid gap-5 md:grid-cols-2">
+          {days.map((item) => (
+            <article key={item.day} className="rounded-2xl bg-white p-6 ring-1 ring-[#F2E4E8]">
+              <p className={EYEBROW}>{item.day}</p>
+              <h3 className={`font-playfair mt-2 text-xl font-bold ${INK}`}>{item.title}</h3>
+              <p className={`mt-2 ${BODY_SM}`}>{item.body}</p>
+            </article>
           ))}
         </div>
-        <p className={BODY_SM}>The rhythm creates 16 scheduled CEO work hours per week. Time outside those scheduled hours is not automatically obligation-free; it is protected through deliberate boundaries and operating design.</p>
-        <div id="offers" className="scroll-mt-24 flex flex-col gap-6">
-          <div className="max-w-3xl">
-            <p className={EYEBROW}>The second step</p>
-            <h3 className={`font-playfair mt-2 text-3xl font-bold ${INK}`}>Continue from insight into implementation.</h3>
-            <p className={BODY_SM}>Choose the implementation duration that fits the work ahead. The Work-Life Balance Business Day™ is part of this experience—not a separate offer.</p>
+        <div className="grid gap-10 lg:grid-cols-2">
+          <div className="flex flex-col gap-4">
+            <h3 className={`font-playfair text-2xl font-bold ${INK}`}>Eight Non-Negotiable Human Work-Life Balance Time & Space Boundaries™</h3>
+            <p className={BODY_SM}>These provide a practical structure. Each founder personalizes them around their intentions, priorities, responsibilities, and business needs.</p>
+            <ol className="grid gap-3 sm:grid-cols-2">
+              {boundaries.map((item, i) => (
+                <li key={item} className="flex gap-3 rounded-xl bg-white p-4 ring-1 ring-[#F2E4E8]">
+                  <span className="font-playfair text-xl font-bold text-[#C13B6B]">{i + 1}</span>
+                  <span className="font-poppins text-sm font-semibold text-[#4A3A42]">{item}</span>
+                </li>
+              ))}
+            </ol>
           </div>
-          <div className="grid gap-6 lg:grid-cols-3">
-            {durations.map((item) => (
-              <article key={item.weeks} className="flex flex-col gap-4 rounded-3xl bg-white p-8 ring-1 ring-[#F2E4E8]">
-                <p className={EYEBROW}>{item.weeks}-week implementation</p>
-                <h4 className={`font-playfair text-2xl font-bold ${INK}`}>Work-Life Balance Business Week™</h4>
-                <p className="font-playfair text-4xl font-bold text-[#4A3A42]">{item.price}</p>
-                <p className={BODY_SM}>497 per week · {item.weeks} consecutive weeks</p>
-                <p className={BODY_SM}>Practice your chosen boundaries in your actual business, observe collisions, and begin redesigning the operating practices that need to support them.</p>
-                <p className="font-poppins text-sm font-semibold text-[#5A7F46]">Your $197 Reality Check is included—no second charge.</p>
-                <a href="#enrollment" className="font-poppins inline-flex w-fit items-center justify-center rounded-full bg-[#C13B6B] px-6 py-3 text-sm font-semibold uppercase tracking-[0.08em] text-white hover:bg-[#A8305B]">Enrollment details</a>
-              </article>
-            ))}
+          <div className="flex flex-col justify-center gap-5 rounded-3xl bg-[#2E2228] p-8">
+            <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#C9DDB4]">The two Harmony Lane experiences</p>
+            <div>
+              <h3 className="font-playfair text-2xl font-bold text-[#FFF8F4]">1. Work-Life Balance Business Day™</h3>
+              <p className="mt-2 font-poppins text-base leading-relaxed text-[#F6D6E1]">A standalone paid guided day to redesign your entry into the workweek and practice your chosen boundaries.</p>
+            </div>
+            <div className="border-t border-white/15 pt-5">
+              <h3 className="font-playfair text-2xl font-bold text-[#FFF8F4]">2. Work-Life Balance Business Week™</h3>
+              <p className="mt-2 font-poppins text-base leading-relaxed text-[#F6D6E1]">The full seven-day paid experience, including the Business Day, practice across the workweek, and intentional Time Freedom™.</p>
+            </div>
+            <p className="font-poppins text-sm leading-relaxed text-[#F6D6E1]">Experience details and enrollment information will be provided when registration opens.</p>
           </div>
-          <p className={BODY_SM}>Enrollment checkout links are being connected. Pricing is shown here for clarity; online payment is not yet open from this page.</p>
         </div>
       </div>
     </section>
@@ -280,47 +276,31 @@ export function BusinessWeekSection() {
 export function NewYearSection() {
   const outcomes = [
     "Greater clarity about what needs to change.",
-    "Boundaries you've identified and want to protect.",
+    "Boundaries you have identified and want to protect.",
     "A different way of working already in practice.",
-    "Adjustments underway in your actual business.",
-    "A support structure to help you continue.",
+    "Priority areas to address in your actual business.",
   ]
   const come = [
-    "You started your business for freedom and want to feel it.",
-    "You're adopting AI and want to decide what to do with the time it gives back.",
-    "You want a practice, not another productivity system.",
+    "You started your business for freedom and want to experience more of it.",
+    "You are adopting AI and want to decide what to do with the capacity it creates.",
+    "You want to practice a more sustainable way to work—not add another productivity system.",
   ]
   const skip = [
-    "You want to automate more hustle.",
-    "You want a quick fix or a guaranteed result.",
-    "You aren't ready to look honestly at your current week.",
+    "You want to automate more hustle without reconsidering how work is designed.",
+    "You expect a quick fix or guaranteed business result.",
+    "You are not ready to look honestly at your current workweek.",
   ]
   return (
     <section className="bg-[#FFFDFB] py-20 sm:py-28">
       <div className="mx-auto flex max-w-6xl flex-col gap-14 px-5 sm:px-8">
         <div className="grid items-center gap-10 lg:grid-cols-5">
-          <img
-            src="/images/holiday/winter-stroll.webp"
-            alt="A smiling woman strolling a festive winter street"
-            className="w-full rounded-3xl object-cover shadow-xl lg:col-span-2"
-            loading="lazy"
-          />
+          <img src="/images/holiday/winter-stroll.webp" alt="A smiling woman strolling a festive winter street" className="w-full rounded-3xl object-cover shadow-xl lg:col-span-2" loading="lazy" />
           <div className="flex flex-col gap-5 lg:col-span-3">
-            <p className={EYEBROW}>Before January arrives</p>
-            <h2 className={H2}>Don&apos;t Wait for the New Year to Start Creating &amp; Celebrating the Life You Want.</h2>
-            <p className={BODY}>
-              AI is creating new possibilities. The world is changing. And uncertainty about what comes next can make it
-              tempting to wait until January to make a change. But you don&apos;t have to wait.
-            </p>
-            <p className={BODY}>
-              This holiday season, begin with the free Sunday Work-Life Balance Reality Check™. Get clear about your current reality, identify your priority focus areas, and decide whether you want to take the next step toward redesigning your workweek.
-              lead, and operate your business, so you can build sustainable success in the AI age and make room for more
-              of the life you started your business to create. By the New Year you can have:
-            </p>
+            <p className={EYEBROW}>Start before the calendar changes</p>
+            <h2 className={H2}>Don’t wait for a new year to make room for more life.</h2>
+            <p className={BODY}>AI is creating new possibilities. But more capacity does not have to become more work. Begin with the free Sunday Work-Life Balance Reality Check™ and get clear about the business you have, the life you want, and the boundaries that need attention.</p>
             <ul className="flex flex-col gap-2">
-              {outcomes.map((o) => (
-                <li key={o} className={`${BODY} flex gap-3`}><Dot />{o}</li>
-              ))}
+              {outcomes.map((o) => <li key={o} className={`${BODY} flex gap-3`}><Dot />{o}</li>)}
             </ul>
             <CtaLink label="Join the Free Sunday Reality Check" />
           </div>
@@ -331,7 +311,7 @@ export function NewYearSection() {
             <ul className="flex flex-col gap-3">{come.map((c) => <li key={c} className={BODY_SM}>{c}</li>)}</ul>
           </div>
           <div className="flex flex-col gap-4 rounded-3xl bg-[#FCEEF2] p-8">
-            <h3 className={`font-playfair text-2xl font-bold ${INK}`}>Skip it if…</h3>
+            <h3 className={`font-playfair text-2xl font-bold ${INK}`}>This may not be for you if…</h3>
             <ul className="flex flex-col gap-3">{skip.map((s) => <li key={s} className={BODY_SM}>{s}</li>)}</ul>
           </div>
         </div>
@@ -381,15 +361,14 @@ export function AboutBarbaraSection() {
 }
 
 const FAQS = [
-  { q: "What is the Work-Life Balance Reality Check™?", a: "It is a complete standalone diagnostic experience priced at $197 one-time, with a stated value of $497. It includes your Founder Profile™, Business Context™, Business Boundary Collisions™, Personal & Work-From-Home Reality™, 30-Day Work-Life Balance Baseline™, Results & Priority Focus Areas™, and personalized Work-Life Balance Boundary Report™." },
-  { q: "Do I keep my Reality Check if I do not continue?", a: "Yes. Your completed Reality Check and Boundary Report™ are yours to keep and use whether or not you purchase the Business Week." },
-  { q: "What is the Work-Life Balance Business Week™?", a: "It is the implementation experience where you practice boundaries in your actual business week, observe collisions, and begin translating a chosen boundary into operating practices, communication, workflows, and Sustainable Operating Procedures™ where appropriate." },
-  { q: "How much does the Business Week cost?", a: "The current price is $497 per week. Choose 4 weeks for $1,988, 8 weeks for $3,976, or 12 weeks for $5,964." },
-  { q: "Is the Reality Check charged again when I upgrade?", a: "No. When a Reality Check buyer upgrades to the Work-Life Balance Business Week™, the Reality Check is included and is not charged a second time." },
-  { q: "Is Monday a separate offer?", a: "No. Make Time For More on Mondays™ is part of the Business Week experience. The Work-Life Balance Business Day™ is also part of the week, not a separate standalone offer." },
-  { q: "What is the weekly operating rhythm?", a: "The intended rhythm is a Monday–Thursday workweek, a 4-Hour Focused CEO Workday™ from 1 PM–5 PM ET, and a Friday–Sunday three-day weekend. Boundaries and operating practices are used to protect that rhythm." },
+  { q: "Is the Sunday Work-Life Balance Reality Check™ free?", a: "Yes. The Sunday Reality Check, assessment results, and priority focus areas are free. You can decide afterward whether you want a deeper personalized Boundary Report™ or a paid Harmony Lane experience." },
+  { q: "What does the Reality Check include?", a: "It includes your Founder Profile™, 10-question Business Context™, Business Boundary Collisions™, Personal & Work-From-Home Reality™, 15-question 30-Day Work-Life Balance Audit™, results and priority focus areas, and 3 Work-Life Balance Alignment™ questions." },
+  { q: "What is the Work-Life Balance Business Day™?", a: "It is the first distinct, paid Harmony Lane experience: a guided day to reconnect with your entrepreneurial intention, review your current reality, personalize boundaries, design your business day, and practice those boundaries while doing real business work." },
+  { q: "What is the Work-Life Balance Business Week™?", a: "It is the second, full seven-day paid Harmony Lane experience. It includes the Business Day on Monday, guided practice during the workweek, a Thursday closeout, and intentional Friday–Sunday Time Freedom™." },
+  { q: "Is the Business Day included in the Business Week?", a: "Yes. The Work-Life Balance Business Day™ is included as the Monday experience in the full Work-Life Balance Business Week™. It is also available as its own standalone paid experience." },
+  { q: "Do I have to purchase anything after the free Reality Check?", a: "No. You receive your free results and priority focus areas without purchasing a report or either Harmony Lane experience." },
   { q: "Is this an AI readiness certification?", a: "No. The Reality Check is a work-life balance and business operating diagnostic. It helps you understand your current reality and the boundaries that need attention; it is not an AI certification." },
-  { q: "Are my answers and results private?", a: "Your individual answers and results are private. Your original baseline is retained so you can compare future progress." },
+  { q: "Who is Harmony Lane for?", a: "New and established founders who want to build work-life balance into the way they start, grow, and operate their businesses—including founders who want to avoid recreating hustle culture or automating it with AI." },
 ]
 
 export function FaqSection() {
