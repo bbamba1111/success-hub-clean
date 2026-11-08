@@ -6,7 +6,7 @@ const BODY_SM = `${BODY_BASE} text-base`
 const EYEBROW = "font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#5A7F46]"
 const H2 = `font-playfair text-balance text-3xl font-bold leading-tight sm:text-5xl ${INK}`
 
-function CtaLink({ label = "Explore the $197 Reality Check" }: { label?: string }) {
+function CtaLink({ label = "Join the Free Sunday Reality Check" }: { label?: string }) {
   return (
     <a
       href="#enrollment"
@@ -68,7 +68,7 @@ export function RealityCheckSection() {
     "Where business demands collide with your personal life and desired way of living.",
     "Your 30-Day Work-Life Balance Baseline™ across 15 Core Life Value Areas™.",
     "The priority focus areas and business boundary collisions that deserve attention.",
-    "A personalized Work-Life Balance Boundary Report™ with recommendations and practical first steps.",
+    "Your results, priority focus areas, and boundary collisions that deserve attention.",
   ]
   const steps = [
     "Complete your Founder Profile™.",
@@ -77,23 +77,23 @@ export function RealityCheckSection() {
     "Describe your Personal & Work-From-Home Reality™.",
     "Complete the 15-question 30-Day Work-Life Balance Audit™.",
     "Answer the 3 Work-Life Balance Alignment™ questions.",
-    "Receive your results, priority focus areas, and personalized Boundary Report™.",
+    "Review your free results and priority focus areas; optionally purchase the $97 personalized Boundary Report™.",
   ]
   return (
     <section id="reality-check" className="relative scroll-mt-20 overflow-hidden bg-[#2E2228] py-20 sm:py-28">
       <img src="/images/holiday/kwanzaa-rest.webp" alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-25" loading="lazy" />
       <div className="relative mx-auto grid max-w-6xl gap-12 px-5 sm:px-8 lg:grid-cols-2">
         <div className="flex flex-col gap-5">
-          <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">A complete standalone diagnostic experience</p>
+          <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">Your free Sunday starting point</p>
           <h2 className="font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-4xl">
-            Work-Life Balance Reality Check™
+            Free Sunday Work-Life Balance Reality Check™
           </h2>
           <div className="flex items-end gap-3">
-            <span className="font-playfair text-5xl font-bold text-[#FFF8F4]">$197</span>
-            <span className="font-poppins pb-1 text-sm text-[#F6D6E1]">one-time · $497 stated value</span>
+            <span className="font-playfair text-5xl font-bold text-[#FFF8F4]">FREE</span>
+            <span className="font-poppins pb-1 text-sm text-[#F6D6E1]">guided Sunday experience</span>
           </div>
           <p className="font-poppins text-pretty leading-relaxed text-[#F6D6E1]">
-            You built your business for a reason. Let&apos;s find out if it is still giving you that life. Take an honest look at your original intention, the way your business operates today, and the personal reality you are living.
+            You built your business for a reason. Join us on Sunday for a guided look at your entrepreneurial intention, current business reality, and the personal life you want your business to support.
           </p>
           <ul className="flex flex-col gap-3">
             {outcomes.map((o) => (
@@ -104,10 +104,10 @@ export function RealityCheckSection() {
             ))}
           </ul>
           <p className="font-poppins text-base italic leading-relaxed text-[#F6D6E1]">
-            This is a complete paid experience—not a free event, a certification, or a judgment of you or your business. You keep your completed Reality Check and Boundary Report whether or not you continue into implementation.
+            The Sunday Reality Check™ is free. Your assessment results and priority focus areas are included. The optional $97 Work-Life Balance Boundary Report™ provides deeper personalized findings, recommendations, and practical next steps. There is no obligation to purchase the report or continue into either Harmony Lane experience.
           </p>
-          <CtaLink label="See the two Harmony Lane offers" />
-          <p className="font-poppins text-sm text-[#F6D6E1]">The $197 Reality Check is not charged again when you upgrade to the Business Week.</p>
+          <CtaLink label="Join the Free Sunday Reality Check" />
+          <p className="font-poppins text-sm text-[#F6D6E1]">Sunday is your opportunity to get clarity before deciding what you want to change.</p>
         </div>
         <div className="flex flex-col gap-5 rounded-3xl border border-[#FFF8F4]/15 bg-[#2E2228]/65 p-7 backdrop-blur-sm">
           <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">What the Reality Check includes</p>
@@ -120,7 +120,7 @@ export function RealityCheckSection() {
             ))}
           </ol>
           <p className="font-poppins border-t border-[#FFF8F4]/15 pt-4 text-sm leading-relaxed text-[#F6D6E1]">
-            Your Alignment answers measure willingness and readiness. They do not determine whether you receive your completed results or Boundary Report™.
+            Your Alignment answers measure willingness and readiness. They do not determine whether you receive your free results. The personalized Boundary Report™ is optional and costs $97.
           </p>
         </div>
       </div>
@@ -151,11 +151,10 @@ export function MondaySection() {
       <div className="mx-auto flex max-w-6xl flex-col gap-12 px-5 sm:px-8">
         <div className="grid items-end gap-10 lg:grid-cols-2">
           <div className="flex flex-col gap-4">
-            <p className={EYEBROW}>Monday Kickoff · Make Time For More on Mondays™</p>
+            <p className={EYEBROW}>Harmony Lane Experience One · Make Time For More on Mondays™</p>
             <h2 className={H2}>Redesign Your Entry Into the Workweek™</h2>
             <p className={BODY}>
-              Monday is the kickoff inside the complete Work-Life Balance Business Week™. It is where you begin
-              practicing your boundaries and redesigning how your business week operates.
+              The Work-Life Balance Business Day™ is a distinct Harmony Lane experience. It gives you a guided opportunity to redesign your entry into the workweek, establish priorities, and practice a more intentional business day.
             </p>
           </div>
           <div className="flex flex-col gap-3">
@@ -232,10 +231,10 @@ export function BusinessWeekSection() {
         <div className="grid items-center gap-12 lg:grid-cols-2">
           <img src="/images/holiday/team-celebration.webp" alt="A team celebrating together around a festive table" className="w-full rounded-3xl object-cover shadow-xl" loading="lazy" />
           <div className="flex flex-col gap-5">
-            <p className={EYEBROW}>The implementation experience</p>
+            <p className={EYEBROW}>Harmony Lane Experience Two · The Full-Week Experience</p>
             <h2 className={H2}>The Work-Life Balance Business Week™</h2>
             <p className={BODY}>Practice work-life balance boundaries while doing your actual business work—not by stepping away from the business, but by redesigning how it operates.</p>
-            <p className={BODY}>The Business Week builds on your Reality Check. You bring your findings into your real workweek, choose a priority boundary, notice what collides with it, and begin translating that boundary into business practices, communication, workflows, and Sustainable Operating Procedures™ where appropriate.</p>
+            <p className={BODY}>Monday is the redesign entry. Tuesday and Wednesday are for practicing your intended rhythm with real business priorities. Thursday is your closeout and transition into Friday–Sunday Time Freedom™. You observe what holds, where work pushes against your boundaries, and what your business may need to change.</p>
             <p className={BODY}>The operating rhythm is Monday–Thursday, with a 4-Hour Focused CEO Workday™ from 1 PM–5 PM ET, and a protected Friday–Sunday three-day weekend.</p>
           </div>
         </div>
@@ -314,7 +313,7 @@ export function NewYearSection() {
               tempting to wait until January to make a change. But you don&apos;t have to wait.
             </p>
             <p className={BODY}>
-              This holiday season, begin with the $197 Work-Life Balance Reality Check™ and start redesigning the way you work,
+              This holiday season, begin with the free Sunday Work-Life Balance Reality Check™. Get clear about your current reality, identify your priority focus areas, and decide whether you want to take the next step toward redesigning your workweek.
               lead, and operate your business, so you can build sustainable success in the AI age and make room for more
               of the life you started your business to create. By the New Year you can have:
             </p>
@@ -323,7 +322,7 @@ export function NewYearSection() {
                 <li key={o} className={`${BODY} flex gap-3`}><Dot />{o}</li>
               ))}
             </ul>
-            <CtaLink label="Explore the $197 Reality Check" />
+            <CtaLink label="Join the Free Sunday Reality Check" />
           </div>
         </div>
         <div className="grid gap-6 md:grid-cols-2">
@@ -421,9 +420,9 @@ export function RegisterSection() {
       <div className="relative mx-auto flex max-w-4xl flex-col items-center gap-5 px-5 text-center sm:px-8">
         <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">Your next step</p>
         <h2 className="font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl">Start with clarity. Then decide what you want to change.</h2>
-        <p className="font-poppins max-w-2xl text-lg leading-relaxed text-[#F6D6E1]">The Work-Life Balance Reality Check™ is $197 one-time. The Work-Life Balance Business Week™ is $497 per week, with 4-, 8-, and 12-week implementation options. Checkout links will be activated after the correct products are verified.</p>
+        <p className="font-poppins max-w-2xl text-lg leading-relaxed text-[#F6D6E1]">Join the free Sunday Work-Life Balance Reality Check™. Review your results and priority focus areas, then decide whether the optional $97 personalized Boundary Report™ or either Harmony Lane experience is right for you.</p>
         <p className="font-playfair text-xl italic text-[#FFF8F4]">We Don&apos;t Hustle — We Harmonize.™</p>
-        <a href="#reality-check" className="font-poppins inline-flex w-fit items-center justify-center rounded-full bg-[#C13B6B] px-7 py-4 text-base font-semibold uppercase tracking-[0.12em] text-[#FFF8F4] shadow-lg shadow-[#C13B6B]/25 transition-colors hover:bg-[#A8305B]">Review the Reality Check</a>
+        <a href="#reality-check" className="font-poppins inline-flex w-fit items-center justify-center rounded-full bg-[#C13B6B] px-7 py-4 text-base font-semibold uppercase tracking-[0.12em] text-[#FFF8F4] shadow-lg shadow-[#C13B6B]/25 transition-colors hover:bg-[#A8305B]">Join the Free Sunday Reality Check</a>
       </div>
     </section>
   )
