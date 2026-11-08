@@ -6,12 +6,45 @@ import { HOLIDAY_SCENES as HERO_SCENES, HOLIDAY_SCENE_INTERVAL_MS } from "@/lib/
 import { SESSION_TIME_LABEL, nextSessionDate, sessionStartsAt } from "@/lib/reality-check/session"
 
 
-function SundayCountdown({ sessionLabel }: { sessionLabel: string }) {
+function getNextMonthlySundaySession() {
+  const now = new Date()
+  const dateParts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/New_York", year: "numeric", month: "numeric", day: "numeric",
+    weekday: "short", hour: "numeric", hour12: false,
+  }).formatToParts(now)
+  const values = Object.fromEntries(dateParts.map((part) => [part.type, part.value]))
+  const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+  const weekday = weekdays.indexOf(values.weekday)
+  let date = new Date(Date.UTC(Number(values.year), Number(values.month) - 1, Number(values.day)))
+  let daysUntilSunday = (7 - weekday) % 7
+  if (daysUntilSunday === 0 && Number(values.hour) >= 13) daysUntilSunday = 7
+  date.setUTCDate(date.getUTCDate() + daysUntilSunday)
+
+  const sundayOrdinal = (d: Date) => Math.floor((d.getUTCDate() - 1 + new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1)).getUTCDay()) / 7) + 1
+  if (sundayOrdinal(date) >= 4) {
+    date = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 1))
+    while (date.getUTCDay() !== 0) date.setUTCDate(date.getUTCDate() + 1)
+  }
+
+  const year = date.getUTCFullYear(), month = date.getUTCMonth(), day = date.getUTCDate()
+  const localNoonGuess = new Date(Date.UTC(year, month, day, 13))
+  const offsetParts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/New_York", timeZoneName: "shortOffset",
+  }).formatToParts(localNoonGuess)
+  const offset = offsetParts.find((part) => part.type === "timeZoneName")?.value ?? "GMT-5"
+  const match = offset.match(/GMT([+-])(\\d{1,2})(?::(\\d{2}))?/)
+  const offsetMinutes = match ? (match[1] === "+" ? 1 : -1) * (Number(match[2]) * 60 + Number(match[3] ?? 0)) : -300
+  return new Date(Date.UTC(year, month, day, 13) - offsetMinutes * 60_000)
+}
+
+function SundayCountdown() {
   const [remaining, setRemaining] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
+  const [petalsActive, setPetalsActive] = useState(true)
+  const petalsRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const update = () => {
-      const target = sessionStartsAt(nextSessionDate(new Date()))
+      const target = getNextMonthlySundaySession()
       const total = Math.max(0, target.getTime() - Date.now())
       setRemaining({
         days: Math.floor(total / 86_400_000),
@@ -25,6 +58,37 @@ function SundayCountdown({ sessionLabel }: { sessionLabel: string }) {
     return () => window.clearInterval(timer)
   }, [])
 
+  useEffect(() => {
+    if (!petalsActive || !petalsRef.current) return
+    const host = petalsRef.current
+    const colors = ["#FBCFE8", "#F472B6", "#E26C73", "#F9A8D4"]
+    const timers: number[] = []
+    const makePetal = () => {
+      if (!petalsRef.current || !petalsActive) return
+      const petal = document.createElement("span")
+      const size = 9 + Math.random() * 12
+      const duration = 4 + Math.random() * 4
+      const drift = Math.random() * 100 - 50
+      petal.className = "pointer-events-none absolute top-0 rounded-full opacity-80"
+      petal.style.left = `${Math.random() * 100}%`
+      petal.style.width = `${size}px`
+      petal.style.height = `${size * 1.3}px`
+      petal.style.background = colors[Math.floor(Math.random() * colors.length)]
+      petal.style.borderRadius = "100% 0 100% 0"
+      petal.style.animation = `petal-fall ${duration}s linear forwards`
+      petal.style.setProperty("--petal-drift", `${drift}px`)
+      host.appendChild(petal)
+      window.setTimeout(() => petal.remove(), duration * 1000)
+    }
+    for (let i = 0; i < 15; i++) timers.push(window.setTimeout(makePetal, i * 200))
+    const interval = window.setInterval(makePetal, 650)
+    return () => {
+      timers.forEach(window.clearTimeout)
+      window.clearInterval(interval)
+      host.replaceChildren()
+    }
+  }, [petalsActive])
+
   const units = [
     { value: remaining.days, label: "Days" },
     { value: remaining.hours, label: "Hours" },
@@ -33,20 +97,36 @@ function SundayCountdown({ sessionLabel }: { sessionLabel: string }) {
   ]
 
   return (
-    <div className="flex flex-col items-center gap-2 text-center" aria-live="off">
+    <div className="flex w-full max-w-[35rem] flex-col items-center gap-2">
       <p className="font-poppins text-sm font-semibold uppercase tracking-[0.12em] text-[#FFF8F4] sm:text-[16px]">
-        Next Sunday Shift™: {sessionLabel} · 3:00 PM ET
+        Countdown to Your Next Work-Life Balance Sunday · 1:00 PM ET
       </p>
       <div className="flex flex-wrap justify-center gap-2">
         {units.map((unit) => (
-          <div key={unit.label} className="min-w-[4.4rem] rounded-xl border border-[#F6D6E1]/25 bg-[#2E2228]/55 px-3 py-2 text-center backdrop-blur-sm">
-            <span className="font-playfair block text-2xl font-bold tabular-nums text-[#FFF8F4]">
-              {String(unit.value).padStart(2, "0")}
-            </span>
+          <div key={unit.label} className="min-w-[4.4rem] rounded-xl border border-[#F6D6E1]/25 bg-[#2E2228]/65 px-3 py-2 text-center backdrop-blur-sm">
+            <span className="font-playfair block text-2xl font-bold tabular-nums text-[#FFF8F4]">{String(unit.value).padStart(2, "0")}</span>
             <span className="font-poppins text-[10px] uppercase tracking-[0.12em] text-[#F6D6E1]">{unit.label}</span>
           </div>
         ))}
       </div>
+      <div className="relative mt-1 h-28 w-full overflow-hidden rounded-2xl border border-[#F6D6E1]/25 bg-[url('/images/design-mode/1akick.png')] bg-cover bg-center shadow-lg">
+        <div className="absolute inset-0 bg-[#2E2228]/10" />
+        <div ref={petalsRef} className="absolute inset-0 overflow-hidden" />
+        <button
+          type="button"
+          onClick={() => setPetalsActive((active) => !active)}
+          className="absolute bottom-2 right-2 z-10 rounded-full border border-white/60 bg-white/80 px-3 py-1 text-xs font-semibold text-[#A8305B] shadow-sm"
+        >
+          {petalsActive ? "Stop Petals" : "Start Petals"}
+        </button>
+      </div>
+      <style jsx>{`
+        @keyframes petal-fall {
+          0% { transform: translate3d(0, -18px, 0) rotate(0deg); opacity: 0; }
+          10% { opacity: .85; }
+          100% { transform: translate3d(var(--petal-drift), 130px, 0) rotate(360deg); opacity: 0; }
+        }
+      `}</style>
     </div>
   )
 }
