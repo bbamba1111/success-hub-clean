@@ -3,79 +3,55 @@
 import { useEffect, useRef, useState } from "react"
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion"
 import { HOLIDAY_SCENES as HERO_SCENES, HOLIDAY_SCENE_INTERVAL_MS } from "@/lib/holiday-scenes"
+import { SESSION_TIME_LABEL, nextSessionDate, sessionStartsAt } from "@/lib/reality-check/session"
 
 
-function SundayCountdown() {
+function SundayCountdown({ sessionLabel }: { sessionLabel: string }) {
   const [remaining, setRemaining] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
+
   useEffect(() => {
-    const getNextSunday = () => {
-      const now = new Date()
-      const parts = new Intl.DateTimeFormat("en-US", {
-        timeZone: "America/New_York", weekday: "short", year: "numeric", month: "numeric", day: "numeric",
-        hour: "numeric", minute: "numeric", second: "numeric", hour12: false,
-      }).formatToParts(now)
-      const values = Object.fromEntries(parts.map((p) => [p.type, p.value]))
-      const weekday = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(values.weekday)
-      const daysUntil = (7 - weekday) % 7
-      const targetDay = new Date(Date.UTC(Number(values.year), Number(values.month) - 1, Number(values.day) + daysUntil, 13))
-      const targetParts = new Intl.DateTimeFormat("en-US", {
-        timeZone: "America/New_York", year: "numeric", month: "numeric", day: "numeric",
-        hour: "numeric", minute: "numeric", second: "numeric", hour12: false,
-      }).formatToParts(targetDay)
-      const targetValues = Object.fromEntries(targetParts.map((p) => [p.type, p.value]))
-      const targetUtcGuess = Date.UTC(Number(targetValues.year), Number(targetValues.month) - 1, Number(targetValues.day), 13)
-      const targetOffsetParts = new Intl.DateTimeFormat("en-US", {
-        timeZone: "America/New_York", timeZoneName: "shortOffset",
-      }).formatToParts(targetDay)
-      const offset = targetOffsetParts.find((p) => p.type === "timeZoneName")?.value ?? "GMT-5"
-      const match = offset.match(/GMT([+-])(\\d{1,2})(?::(\\d{2}))?/)
-      const offsetMinutes = match ? (match[1] === "+" ? 1 : -1) * (Number(match[2]) * 60 + Number(match[3] ?? 0)) : -300
-      let target = targetUtcGuess - offsetMinutes * 60000
-      if (target <= now.getTime()) {
-        const next = new Date(target + 7 * 86400000)
-        target = next.getTime()
-      }
-      return target
-    }
-    let target = getNextSunday()
-    const tick = () => {
-      const diff = Math.max(0, target - Date.now())
-      if (diff === 0) target = getNextSunday()
-      const seconds = Math.floor(diff / 1000)
+    const update = () => {
+      const target = sessionStartsAt(nextSessionDate(new Date()))
+      const total = Math.max(0, target.getTime() - Date.now())
       setRemaining({
-        days: Math.floor(seconds / 86400),
-        hours: Math.floor((seconds % 86400) / 3600),
-        minutes: Math.floor((seconds % 3600) / 60),
-        seconds: seconds % 60,
+        days: Math.floor(total / 86_400_000),
+        hours: Math.floor((total % 86_400_000) / 3_600_000),
+        minutes: Math.floor((total % 3_600_000) / 60_000),
+        seconds: Math.floor((total % 60_000) / 1_000),
       })
     }
-    tick()
-    const timer = window.setInterval(tick, 1000)
+    update()
+    const timer = window.setInterval(update, 1_000)
     return () => window.clearInterval(timer)
   }, [])
+
   const units = [
-    { label: "Days", value: remaining.days },
-    { label: "Hours", value: remaining.hours },
-    { label: "Minutes", value: remaining.minutes },
-    { label: "Seconds", value: remaining.seconds },
+    { value: remaining.days, label: "Days" },
+    { value: remaining.hours, label: "Hours" },
+    { value: remaining.minutes, label: "Minutes" },
+    { value: remaining.seconds, label: "Seconds" },
   ]
+
   return (
-    <div className="mt-3 flex w-full max-w-[35rem] flex-col items-center gap-2" aria-live="off">
-      <p className="font-poppins text-xs font-semibold uppercase tracking-[0.18em] text-[#FFF8F4]">Next Sunday Shift™ Begins In</p>
-      <div className="grid w-full grid-cols-4 gap-2">
+    <div className="flex flex-col items-center gap-2 text-center" aria-live="off">
+      <p className="font-poppins text-sm font-semibold uppercase tracking-[0.12em] text-[#FFF8F4] sm:text-[16px]">
+        Next Sunday Shift™: {sessionLabel} · 3:00 PM ET
+      </p>
+      <div className="flex flex-wrap justify-center gap-2">
         {units.map((unit) => (
-          <div key={unit.label} className="rounded-xl border border-white/25 bg-[#2E2228]/75 px-2 py-2 text-center backdrop-blur-sm">
-            <span className="font-playfair block text-2xl font-bold tabular-nums text-[#FFF8F4] sm:text-3xl">{String(unit.value).padStart(2, "0")}</span>
-            <span className="font-poppins text-[10px] uppercase tracking-wider text-[#F6D6E1]">{unit.label}</span>
+          <div key={unit.label} className="min-w-[4.4rem] rounded-xl border border-[#F6D6E1]/25 bg-[#2E2228]/55 px-3 py-2 text-center backdrop-blur-sm">
+            <span className="font-playfair block text-2xl font-bold tabular-nums text-[#FFF8F4]">
+              {String(unit.value).padStart(2, "0")}
+            </span>
+            <span className="font-poppins text-[10px] uppercase tracking-[0.12em] text-[#F6D6E1]">{unit.label}</span>
           </div>
         ))}
       </div>
-      <p className="font-poppins text-xs text-[#FFF8F4]/90">Every Sunday · 1:00 PM Eastern Time</p>
     </div>
   )
 }
 
-export function HolidayHero() {
+export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
   const [index, setIndex] = useState(0)
   const [inView, setInView] = useState(true)
   const sectionRef = useRef<HTMLElement>(null)
@@ -126,7 +102,7 @@ export function HolidayHero() {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-          className="relative left-0 flex w-full max-w-3xl flex-col items-center gap-5 text-center sm:left-[-96px]"
+          className="relative left-0 flex w-full max-w-3xl flex-col items-center gap-3 text-center sm:left-[-96px]"
         >
           <div className="w-full max-w-full">
             <h1 className="font-playfair text-balance text-[31.33px] font-bold leading-[1.05] tracking-tight sm:text-[55.33px]">
@@ -138,24 +114,27 @@ export function HolidayHero() {
               <path d="M12 17 C110 7 200 24 288 13 S378 10 418 14" fill="none" stroke="#E43B50" strokeWidth="2" strokeLinecap="round" opacity="0.85" />
             </svg>
           </div>
-          <div className="flex max-w-2xl flex-col items-center gap-3 text-balance">
-            <p className="font-poppins text-[14.33px] font-medium leading-[1.5] text-[#FFF8F4] sm:text-[20.33px]">
+          <div className="flex max-w-2xl flex-col items-center gap-1 text-balance">
+            <p className="font-poppins text-[14.33px] font-medium leading-[1.25] text-[#FFF8F4] sm:text-[20.33px]">
               Give Yourself the Gift of Work-Life Balance, Time Freedom &amp; Sustainable Success.
             </p>
-            <p className="font-poppins text-[14.33px] font-semibold leading-[1.4] text-[#FFF8F4] sm:text-[23px]">
+            <p className="font-poppins text-[14.33px] font-semibold leading-[1.2] text-[#FFF8F4] sm:text-[23px]">
               Don't Let AI Automate Your Hustle.
             </p>
-            <p className="font-poppins text-[16.33px] font-bold leading-[1.35] text-[#F6A9C2] sm:text-[22.33px]">
+            <p className="font-poppins text-[16.33px] font-bold leading-[1.2] text-[#F6A9C2] sm:text-[22.33px]">
               Set Non-Negotiable Human Sustainability Boundaries Before You Deploy.
             </p>
           </div>
           <div className="flex w-full flex-col items-center gap-3 pt-2">
             <a
               href="#reality-check"
-              className="font-poppins inline-flex w-full max-w-[35rem] items-center justify-center rounded-2xl bg-[#C13B6B] px-6 py-3.5 text-center text-[13.33px] font-bold leading-snug tracking-[0.01em] text-[#FFF8F4] shadow-xl shadow-[#C13B6B]/30 transition-transform hover:scale-[1.03] hover:bg-[#A8305B] sm:px-10 sm:py-4 sm:text-lg"
+              className="font-poppins inline-flex w-full max-w-[35rem] items-center justify-center rounded-2xl bg-[#C13B6B] px-6 py-3.5 text-center text-[10.33px] font-bold leading-snug tracking-[0.01em] text-[#FFF8F4] shadow-xl shadow-[#C13B6B]/30 transition-transform hover:scale-[1.03] hover:bg-[#A8305B] sm:px-10 sm:py-4 sm:text-[15px]"
             >
               Join the Free Sunday Work-Life Balance Reality Check™
             </a>
+          </div>
+          <div className="w-full max-w-[28rem] self-center pt-1">
+            <SundayCountdown sessionLabel={sessionLabel} />
           </div>
           <div className="flex min-h-8 w-full items-center justify-center pt-1 text-center">
             <AnimatePresence mode="wait">
