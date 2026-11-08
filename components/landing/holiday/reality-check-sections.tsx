@@ -107,7 +107,7 @@ export function FreedomSection() {
           </div>
           <blockquote className="flex flex-col items-center gap-5 rounded-3xl border border-[#FFF8F4]/15 bg-[#FFF8F4]/5 p-8 text-center">
             <p className="font-playfair text-2xl font-semibold italic leading-relaxed text-[#FFF8F4] sm:text-3xl">
-              “How will you prevent increased capacity from becoming unlimited work?”
+              “Attention, energy, and recovery are not unlimited resources.”
             </p>
             <footer className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C9DDB4]">
               — Thought Leader Barbara
