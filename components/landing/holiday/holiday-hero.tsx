@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react"
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion"
 import { HOLIDAY_SCENES as HERO_SCENES, HOLIDAY_SCENE_INTERVAL_MS } from "@/lib/holiday-scenes"
-import { SESSION_TIME_LABEL, nextSessionDate, sessionStartsAt } from "@/lib/reality-check/session"
 
 
 function getNextMonthlySundaySession() {
@@ -214,7 +213,7 @@ export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
             </a>
           </div>
           <div className="w-full max-w-[28rem] self-center pt-1">
-            <SundayCountdown sessionLabel={sessionLabel} />
+            <SundayCountdown />
           </div>
           <div className="flex min-h-8 w-full items-center justify-center pt-1 text-center">
             <AnimatePresence mode="wait">
