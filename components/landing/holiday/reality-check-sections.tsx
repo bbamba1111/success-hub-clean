@@ -118,7 +118,8 @@ export function FreedomSection() {
 
       <section className="bg-[#FFF8F4] px-5 py-14 text-center sm:px-8 sm:py-16">
         <h2 className="mx-auto max-w-5xl font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">
-          This Is Why We Make Time For More™—And Why We Don&apos;t Automate &amp; Accelerate the Hustle.
+          <span className="block">This Is Why We Make Time For More™</span>
+          <span className="block">—And Why We Don&apos;t Automate &amp; Accelerate the Hustle.</span>
         </h2>
       </section>
     </>
