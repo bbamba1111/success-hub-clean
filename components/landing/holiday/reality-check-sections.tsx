@@ -27,12 +27,12 @@ export function FreedomSection() {
       <section className="bg-[#FFF8F4] py-16 sm:py-20">
         <div className="mx-auto flex max-w-5xl flex-col gap-5 px-5 text-center sm:px-8">
           <p className={EYEBROW}>The Work-Life Balance Destination</p>
+          <p className="font-playfair text-2xl font-bold leading-tight text-[#4A3A42] sm:text-3xl">
+            Reserve Your First <span className="font-light italic">(or Next)</span>
+          </p>
           <h2 className="font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">
             Work-Life Balance Business Week™
           </h2>
-          <p className="font-playfair text-xl font-normal leading-tight text-[#5A4A52] sm:text-2xl">
-            Reserve Your First <span className="font-light italic">(or Next)</span>
-          </p>
           <p className={BODY}>
             A one-week immersive founder experience where you bring your actual business, experience a different operating rhythm, and begin redesigning how work fits into your life.
           </p>
