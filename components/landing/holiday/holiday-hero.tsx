@@ -146,15 +146,16 @@ export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
               <path d="M12 17 C110 7 200 24 288 13 S378 10 418 14" fill="none" stroke="#E43B50" strokeWidth="2" strokeLinecap="round" opacity="0.85" />
             </svg>
           </div>
-          <div className="flex max-w-2xl flex-col items-center gap-1 text-balance">
+          <div className="flex max-w-2xl flex-col items-center gap-2 text-balance">
             <p className="font-poppins text-[14.33px] font-medium leading-[1.25] text-[#FFF8F4] sm:text-[20.33px]">
-              Give Yourself the Gift of Work-Life Balance, Time Freedom &amp; Sustainable Success.
+              Give Yourself &amp; Your People the Gift of Work-Life Balance, Time Freedom &amp; Sustainable Success.
             </p>
             <p className="font-poppins text-[14.33px] font-semibold leading-[1.2] text-[#FFF8F4] sm:text-[23px]">
-              Don't Let AI Automate Your Hustle.
+              Don&apos;t Let AI Automate Your Hustle.
             </p>
-            <p className="font-poppins text-[16.33px] font-bold leading-[1.2] text-[#F6A9C2] sm:text-[22.33px]">
-              Set Non-Negotiable Human Sustainability Boundaries Before You Deploy.
+            <p className="font-poppins text-[14.33px] font-bold leading-[1.25] text-[#F6A9C2] sm:text-[20.33px]">
+              Discover Where You Can Make More Time for the Life You Built Your Business For and Set Non-Negotiable
+              Human Sustainability Boundaries—Before You Deploy.
             </p>
           </div>
           <div className="flex w-full flex-col items-center gap-3 pt-2">
