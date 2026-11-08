@@ -135,8 +135,8 @@ export function FreedomSection() {
             </p>
           </div>
           <div className="flex flex-col gap-5 rounded-3xl bg-white p-8 shadow-sm ring-1 ring-[#F2E4E8]">
-            <h3 className={`font-playfair text-2xl font-bold ${INK}`}>Put Human Sustainability Boundaries in Place First.</h3>
-            <p className={BODY_SM}>Before choosing tools or accelerating workflows, decide what the business must protect for the people doing the work.</p>
+            <h3 className={`font-playfair text-2xl font-bold ${INK}`}>This Is Why We Don&apos;t Automate and Accelerate the Hustle.</h3>
+            <p className={BODY_SM}>We establish the human boundaries first.</p>
             <ol className="flex flex-col gap-4">
               {[
                 ["Define the human boundaries", "Set intentional limits for the workday, availability, recovery, and time away from work."],
@@ -154,9 +154,7 @@ export function FreedomSection() {
                 </li>
               ))}
             </ol>
-            <p className="font-playfair text-lg font-semibold leading-snug text-[#C13B6B]">
-              Don't automate the hustle. Establish the human boundaries first.
-            </p>
+
           </div>
         </div>
       </section>
