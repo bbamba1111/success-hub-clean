@@ -35,7 +35,6 @@ export function WeMakeTimeForMoreSection() {
         <div className="mx-auto max-w-6xl px-5 text-center sm:px-8">
           <div className="mx-auto mb-10 max-w-5xl">
             <h2 className="font-playfair text-balance text-4xl font-bold leading-tight text-[#4A3A42] sm:text-6xl lg:text-7xl">The Work-Life Balance Business Week™</h2>
-            <p className="mt-4 font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#5A7F46] sm:text-base">We Help You Build Work-Life Balance Boundaries Into Your Business.</p>
             <p className="mt-3 font-playfair text-lg italic text-[#4A3A42] sm:text-xl">A different way to live, work and lead your week.</p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
