@@ -22,12 +22,7 @@ function Dot({ className = "bg-[#C13B6B]" }: { className?: string }) {
 }
 
 export function WeMakeTimeForMoreSection() {
-  const model = [
-    { value: "4 Day", title: "Workweek", detail: "Monday–Thursday" },
-    { value: "4 Hour", title: "Focused CEO Workday", detail: "Dedicated time for priority business work" },
-    { value: "5 Hours", title: "Time Freedom", detail: "After 5:00 PM" },
-    { value: "3 Day", title: "Weekend", detail: "Friday–Sunday" },
-  ];
+  const model = [{ value: "4 Day", title: "Workweek", detail: "Monday–Thursday" }, { value: "4 Hour", title: "Focused CEO Workday", detail: "Dedicated time for priority business work" }, { value: "5 Hours", title: "Time Freedom", detail: "After 5:00 PM" }, { value: "3 Day", title: "Weekend", detail: "Friday–Sunday" }]
 
   return (
     <>
