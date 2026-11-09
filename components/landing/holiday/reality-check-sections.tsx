@@ -52,8 +52,8 @@ export function WeMakeTimeForMoreSection() {
       <section id="business-day" className="scroll-mt-20 bg-[#FFF8F4] py-20 sm:py-24">
         <div className="mx-auto flex max-w-5xl flex-col gap-12 px-5 sm:px-8">
           <header className="mx-auto max-w-4xl text-center">
-            <h2 className="font-playfair text-balance text-4xl font-bold leading-tight text-[#4A3A42] sm:text-6xl">Make Time For More On Monday</h2>
-            <p className="mt-3 font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#5A7F46] sm:text-base">Redesign Your Entry Into The Work-Week</p>
+            <h2 className="whitespace-nowrap font-playfair text-3xl font-bold leading-tight text-[#4A3A42] sm:text-6xl">Make Time For More On Monday</h2>
+            <p className="mt-3 font-poppins text-lg font-medium leading-relaxed text-[#5A7F46] sm:text-xl">Monday is the intentional entry point into the Work-Life Balance Business Week™.</p>
           </header>
           <div className="flex flex-col gap-5">
             <h3 className="font-playfair text-balance text-2xl font-bold leading-tight text-[#4A3A42] sm:text-3xl">Why Harmony Lane — The Parallel Lane to Hustle Entrepreneurship — Redesigned Monday</h3>
@@ -67,11 +67,6 @@ export function WeMakeTimeForMoreSection() {
             <p className={BODY}>We bring work-life balance into the workday and workweek—not as something founders hope to experience after work, but as part of how they operate their businesses.</p>
           </div>
           <div className="flex flex-col gap-5 border-t border-[#EAD5DC] pt-10">
-            <div>
-              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#5A7F46]">2. Monday: Make Time For More™</p>
-              <h3 className="mt-2 font-playfair text-2xl font-bold leading-tight text-[#4A3A42] sm:text-3xl">Redesign Your Entry Into The Work-Week</h3>
-            </div>
-            <p className={BODY}>Monday is the intentional entry point into the Work-Life Balance Business Week™.</p>
             <p className={BODY}>It is where founders:</p>
             <ul className="flex flex-col gap-3">
               {[
