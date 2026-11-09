@@ -72,16 +72,16 @@ export function WeMakeTimeForMoreSection() {
             <p className={BODY}>That is why we decided to <strong>Make Time For More on Monday.</strong></p>
           </div>
           <div className="flex flex-col gap-5 border-t border-[#EAD5DC] pt-10">
-            <p className="font-playfair text-xl font-semibold leading-snug text-[#C13B6B] sm:text-2xl">Monday is the intentional entry point into the Work-Life Balance Business Week™.</p>
-            <p className={BODY}>It is where founders:</p>
+            <p className="font-playfair text-xl font-semibold leading-snug text-[#C13B6B] sm:text-2xl">Monday is your intentional entry point into the Work-Life Balance Business Week™.</p>
+            <p className={BODY}>It is where you:</p>
             <ul className="flex flex-col gap-3">
               {[
-                "Reconnect with the life they are building their business to support.",
-                "Establish their intentions for the week.",
-                "Identify what matters most in their business and personal lives.",
-                "Bring their priorities into the Work-Life Balance Business Day™.",
-                "Establish the boundaries that will contain work and protect time for life.",
-                "Begin the week with a different operating experience.",
+                "Reconnect with the life you are building your business to support.",
+                "Set your intentions for the week ahead.",
+                "Identify what matters most in your business and personal life.",
+                "Bring those priorities into your Work-Life Balance Business Day™.",
+                "Establish the boundaries that contain work and protect time for life.",
+                "Begin the week with a different way to operate, work and lead.",
               ].map((item) => (
                 <li key={item} className={`flex items-start gap-3 ${BODY}`}>
                   <Dot />
@@ -89,7 +89,8 @@ export function WeMakeTimeForMoreSection() {
                 </li>
               ))}
             </ul>
-            <p className="font-playfair text-xl font-semibold leading-snug text-[#C13B6B] sm:text-2xl">Monday is not about preparing to hustle harder. It is about entering the workweek differently.</p>
+            <p className="font-playfair text-xl font-semibold leading-snug text-[#C13B6B] sm:text-2xl">Monday is not about preparing to hustle harder. It is about choosing how you will enter and lead your workweek.</p>
+          </div>
           </div>
         </div>
       </section>
