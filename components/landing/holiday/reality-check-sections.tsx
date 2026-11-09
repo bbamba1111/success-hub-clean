@@ -118,7 +118,7 @@ export function WeMakeTimeForMoreSection() {
 export function FreedomSection() {
   return (
     <>
-      <section className="bg-[#FFF8F4] py-16 sm:py-20">
+      <section className="bg-[#F7DCE5] py-16 sm:py-20">
         <div className="mx-auto flex max-w-5xl flex-col gap-5 px-5 text-center sm:px-8">
           <p className={EYEBROW}>Your Virtual Work-Life Balance Destination</p>
           <p className="font-playfair text-balance text-2xl font-bold leading-tight text-[#4A3A42] sm:text-4xl">
