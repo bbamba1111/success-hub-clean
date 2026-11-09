@@ -89,57 +89,6 @@ export function WeMakeTimeForMoreSection() {
         </div>
       </section>
 
-      <section className="bg-[#FCEEF2] py-16 sm:py-20">
-        <div className="mx-auto max-w-6xl px-5 sm:px-8">
-          <div className="mx-auto mb-10 max-w-3xl text-center">
-            <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#C13B6B]">The daily experience · Monday–Thursday</p>
-            <h2 className="mt-3 font-playfair text-3xl font-bold leading-tight text-[#4A3A42] sm:text-4xl">The Eight Non-Negotiable Human Work-Life Balance Time &amp; Space Boundaries™</h2>
-            <p className="mt-4 font-poppins text-base leading-relaxed text-[#5A4A52]">These built-in boundaries provide the structure for your Work-Life Balance Business Day™. You personalize them around your intentions, priorities, responsibilities, and business needs—and practice honoring them throughout the week.</p>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              "Flex Time™",
-              "Morning GIV•EN™ Routine",
-              "Workout & Movement Window™",
-              "Extended Healthy Hybrid Lunch Break™",
-              "4-Hour Focused CEO Workday™",
-              "Time Freedom™",
-              "Power Down™",
-              "Unplug™",
-            ].map((item, i) => (
-              <article key={item} className="flex min-h-40 flex-col justify-between rounded-2xl bg-white p-6 shadow-sm">
-                <span className="font-playfair text-3xl font-bold text-[#C13B6B]">0{i + 1}</span>
-                <h3 className="mt-6 font-playfair text-xl font-bold leading-snug text-[#4A3A42]">{item}</h3>
-              </article>
-            ))}
-          </div>
-          <div className="mt-14">
-            <div className="mx-auto mb-8 max-w-3xl text-center">
-              <h3 className="font-playfair text-2xl font-bold leading-tight text-[#4A3A42] sm:text-3xl">The Boundaries You Will Personalize</h3>
-              <p className="mt-3 font-poppins text-base leading-relaxed text-[#5A4A52]">Make the built-in boundaries work for your life, values, responsibilities, and business.</p>
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {[
-                { title: "Time Boundaries", body: "Decide when work begins and ends, and what fits into the time available." },
-                { title: "Personal Life Boundaries", body: "Protect time for relationships, family, personal interests, and life outside the business." },
-                { title: "Breaks Boundaries", body: "Make room for movement, meals, rest, and transitions instead of working straight through." },
-                { title: "Availability Boundaries", body: "Decide when clients, colleagues, team members, and business demands can access your time." },
-                { title: "Workload Boundaries", body: "Recognize when too much rests on you, and decide what to prioritize, delegate, defer, or redesign." },
-                { title: "Digital Boundaries", body: "Establish when to disconnect from business communications and technology." },
-              ].map((item) => (
-                <article key={item.title} className="rounded-2xl bg-white p-6 shadow-sm">
-                  <h4 className="font-playfair text-xl font-bold text-[#4A3A42]">{item.title}</h4>
-                  <p className="mt-2 font-poppins text-sm leading-relaxed text-[#5A4A52]">{item.body}</p>
-                </article>
-              ))}
-            </div>
-            <p className="mx-auto mt-7 max-w-3xl text-center font-poppins text-sm italic leading-relaxed text-[#5A4A52]">
-              Your boundaries reflect your life, values, responsibilities, and business. This is a guided practice—not a one-size-fits-all rulebook.
-            </p>
-          </div>
-        </div>
-      </section>
-
       <section className="bg-[#FFF8F4] px-5 py-14 text-center sm:px-8 sm:py-16">
         <p className="mx-auto max-w-3xl font-playfair text-2xl font-bold leading-snug text-[#4A3A42] sm:text-3xl">
           You don't just learn about work-life balance. You practice it inside your actual business.
@@ -464,12 +413,6 @@ export function BusinessWeekSection() {
 }
 
 export function NewYearSection() {
-  const outcomes = [
-    "Greater clarity about what needs to change.",
-    "Boundaries you have identified and want to protect.",
-    "A different way of working already in practice.",
-    "Priority areas to address in your actual business.",
-  ]
   const come = [
     "You started your business for freedom and want to experience more of it.",
     "You are adopting AI and want to decide what to do with the capacity it creates.",
@@ -488,10 +431,6 @@ export function NewYearSection() {
           <div className="flex flex-col gap-5 lg:col-span-3">
             <p className={EYEBROW}>Start before the calendar changes</p>
             <h2 className={H2}>Don’t wait for a new year to make room for more life.</h2>
-            <p className={BODY}>AI is creating new possibilities. But more capacity does not have to become more work. Begin with the free Sunday Work-Life Balance Reality Check™ and get clear about the business you have, the life you want, and the boundaries that need attention.</p>
-            <ul className="flex flex-col gap-2">
-              {outcomes.map((o) => <li key={o} className={`${BODY} flex gap-3`}><Dot />{o}</li>)}
-            </ul>
             <CtaLink label="Join the Free Sunday Reality Check" />
           </div>
         </div>
