@@ -83,7 +83,7 @@ export function WeMakeTimeForMoreSection() {
       <section className="bg-[#FCEEF2] py-16 sm:py-20">
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <div className="mx-auto mb-10 max-w-3xl text-center">
-            <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#C13B6B]">Built into your experience</p>
+            <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#C13B6B]">We Help You Build Work-Life Balance Boundaries Into Your Business.</p>
             <h2 className="mt-3 font-playfair text-3xl font-bold leading-tight text-[#4A3A42] sm:text-4xl">Eight Non-Negotiable Human Work-Life Balance Time &amp; Space Boundaries™</h2>
             <p className="mt-4 font-poppins text-base leading-relaxed text-[#5A4A52]">These provide a practical structure. Each founder personalizes them around their intentions, priorities, responsibilities, and business needs.</p>
           </div>
