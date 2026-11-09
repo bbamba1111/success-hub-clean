@@ -45,7 +45,7 @@ export function WeMakeTimeForMoreSection() {
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <div className="mx-auto mb-10 max-w-3xl text-center">
             <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#5A7F46]">The Work-Life Balance Business Week™</p>
-            <h2 className="mt-3 font-playfair text-3xl font-bold leading-tight text-[#4A3A42] sm:text-4xl">A different way to work. More room for life.</h2>
+            <h2 className="mt-3 font-playfair text-3xl font-bold leading-tight text-[#4A3A42] sm:text-4xl">A different way to live, work and lead your week.</h2>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {model.map((item) => (
