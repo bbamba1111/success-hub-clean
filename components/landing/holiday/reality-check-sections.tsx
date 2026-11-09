@@ -57,26 +57,31 @@ export function WeMakeTimeForMoreSection() {
           </header>
           <div className="flex flex-col gap-5">
             <h3 className="font-playfair text-balance text-2xl font-bold leading-tight text-[#4A3A42] sm:text-3xl">Why Harmony Lane — The Parallel Lane to Hustle Entrepreneurship — Redesigned Monday</h3>
-            <p className={BODY}>The traditional workweek often begins before Monday morning.</p>
-            <p className={BODY}>Sunday evening arrives, and many people are already thinking about the demands waiting for them: the workload, the meetings, the pressure, the responsibilities, and the lack of control over their time.</p>
-            <p className={BODY}>For some, Sunday night is when the decision to leave their job becomes final. They may have been considering it for weeks or months, but the thought of returning to another week of the same conditions becomes the tipping point.</p>
-            <p className={BODY}>Harmony Lane looked at that experience and asked a different question:</p>
-            <p className="font-playfair text-xl font-semibold leading-snug text-[#C13B6B] sm:text-2xl">What if we didn't simply help people get through another workweek? What if we redesigned how they enter it?</p>
+            <p className={BODY}>Your workweek may begin long before Monday morning.</p>
+            <p className={BODY}>By Sunday evening, you're already thinking about everything waiting for you: the workload, the meetings, the pressure, the responsibilities, and how much of the business still depends on you.</p>
+            <p className={BODY}>You know the long hours. The constant availability. The pressure to do more. The feeling that everything depends on you. And how easily work expands into the personal time you intended to protect.</p>
+            <p className={BODY}>But there's another part of this reality you may not see as clearly.</p>
+            <p className={BODY}>Your operating environment doesn't just affect your time. It affects the people you depend on to help run and grow your business.</p>
+            <p className={BODY}>When meetings crowd out focus, interruptions become routine, decisions keep coming back to you, workloads exceed capacity, and everyone is expected to remain available, even your best people can reach a point where they've had enough.</p>
+            <p className="font-playfair text-xl font-semibold leading-snug text-[#C13B6B] sm:text-2xl">Sunday night may be when your most valued people make the decision to leave. Monday may be when they submit their resignation.</p>
+            <p className={BODY}>They may love their work. They may believe in your business. They may be talented, committed people who have contributed significantly to its success. But they may no longer be willing to sacrifice their personal lives to keep operating inside the conditions your business has created.</p>
+            <p className={BODY}>And now, with AI adding a new reality to navigate and integrate, the pressure to do more, move faster, and keep up can create even more demands on an already strained operating environment.</p>
+            <p className={BODY}>That's why Harmony Lane asked a different question:</p>
+            <p className="font-playfair text-xl font-semibold leading-snug text-[#C13B6B] sm:text-2xl">What if you could redesign the way your business operates before the demands cost you the life you intended to create—or the good people who help you build it?</p>
+            <p className={BODY}>What if you didn't simply help yourself and your team get through another workweek? What if you redesigned how you enter, live, work and lead it?</p>
             <p className={BODY}>That is why we decided to <strong>Make Time For More on Monday.</strong></p>
-            <p className={BODY}>Rather than beginning the week by adding more demands, we introduce work-life balance at the point where the workweek begins.</p>
-            <p className={BODY}>We bring work-life balance into the workday and workweek—not as something founders hope to experience after work, but as part of how they operate their businesses.</p>
           </div>
-          <div className="flex flex-col gap-5 border-t border-[#EAD5DC] pt-10">
-            <p className="font-playfair text-xl font-semibold leading-snug text-[#C13B6B] sm:text-2xl">Monday is the intentional entry point into the Work-Life Balance Business Week™.</p>
-            <p className={BODY}>It is where founders:</p>
+<div className="flex flex-col gap-5 border-t border-[#EAD5DC] pt-10">
+            <p className="font-playfair text-xl font-semibold leading-snug text-[#C13B6B] sm:text-2xl">Monday is your intentional entry point into the Work-Life Balance Business Week™.</p>
+            <p className={BODY}>It is where you:</p>
             <ul className="flex flex-col gap-3">
               {[
-                "Reconnect with the life they are building their business to support.",
-                "Establish their intentions for the week.",
-                "Identify what matters most in their business and personal lives.",
-                "Bring their priorities into the Work-Life Balance Business Day™.",
-                "Establish the boundaries that will contain work and protect time for life.",
-                "Begin the week with a different operating experience.",
+                "Reconnect with the life you are building your business to support.",
+                "Set your intentions for the week ahead.",
+                "Identify what matters most in your business and personal life.",
+                "Bring those priorities into your Work-Life Balance Business Day™.",
+                "Establish the boundaries that contain work and protect time for life.",
+                "Begin the week with a different way to operate, work and lead.",
               ].map((item) => (
                 <li key={item} className={`flex items-start gap-3 ${BODY}`}>
                   <Dot />
@@ -84,7 +89,8 @@ export function WeMakeTimeForMoreSection() {
                 </li>
               ))}
             </ul>
-            <p className="font-playfair text-xl font-semibold leading-snug text-[#C13B6B] sm:text-2xl">Monday is not about preparing to hustle harder. It is about entering the workweek differently.</p>
+            <p className="font-playfair text-xl font-semibold leading-snug text-[#C13B6B] sm:text-2xl">Monday is not about preparing to hustle harder. It is about choosing how you will enter and lead your workweek.</p>
+          </div>
           </div>
         </div>
       </section>
