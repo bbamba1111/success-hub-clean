@@ -89,6 +89,24 @@ export function WeMakeTimeForMoreSection() {
         </div>
       </section>
 
+      <section className="bg-[#FCEEF2] py-16 sm:py-20">
+        <div className="mx-auto max-w-6xl px-5 sm:px-8">
+          <div className="mx-auto mb-10 max-w-3xl text-center">
+            <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#C13B6B]">Built into your experience</p>
+            <h2 className="mt-3 font-playfair text-3xl font-bold leading-tight text-[#4A3A42] sm:text-4xl">Eight Non-Negotiable Human Work-Life Balance Time &amp; Space Boundaries™</h2>
+            <p className="mt-4 font-poppins text-base leading-relaxed text-[#5A4A52]">These provide a practical structure. Each founder personalizes them around their intentions, priorities, responsibilities, and business needs.</p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {["Flex Time™","Morning GIV•EN™ Routine","Workout & Movement Window™","Extended Healthy Hybrid Lunch Break™","4-Hour Focused CEO Workday™","Time Freedom™","Power Down™","Unplug™"].map((item,i)=>(
+              <article key={item} className="flex min-h-40 flex-col justify-between rounded-2xl bg-white p-6 shadow-sm">
+                <span className="font-playfair text-3xl font-bold text-[#C13B6B]">0{i+1}</span>
+                <h3 className="mt-6 font-playfair text-xl font-bold leading-snug text-[#4A3A42]">{item}</h3>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="bg-[#FFF8F4] px-5 py-14 text-center sm:px-8 sm:py-16">
         <p className="mx-auto max-w-3xl font-playfair text-2xl font-bold leading-snug text-[#4A3A42] sm:text-3xl">
           You don't just learn about work-life balance. You practice it inside your actual business.
