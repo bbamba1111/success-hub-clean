@@ -305,21 +305,6 @@ export function MondaySection() {
   return (
     <section id="monday" className="scroll-mt-20 bg-[#FFFDFB] py-20 sm:py-28">
       <div className="mx-auto flex max-w-6xl flex-col gap-12 px-5 sm:px-8">
-        <div className="grid items-end gap-10 lg:grid-cols-2">
-          <div className="flex flex-col gap-4">
-            <p className={EYEBROW}>Harmony Lane Experience One · Make Time For More on Mondays™</p>
-            <h2 className={H2}>The Work-Life Balance Business Day™</h2>
-            <p className={BODY}>
-              A distinct, paid guided experience—not simply a preview or a free kickoff. Redesign your entry into the workweek, reconnect with your entrepreneurial intention, establish the boundaries you want to protect, and practice a more intentional business day.
-            </p>
-          </div>
-          <div className="flex flex-col gap-3">
-            <h3 className={`font-playfair text-2xl font-bold ${INK}`}>Bring your real work. Practice a different way to work.</h3>
-            <p className={BODY}>
-              You are not stepping away from your business to learn about work-life balance. You bring real priorities into a guided day and practice working within the boundaries you choose.
-            </p>
-          </div>
-        </div>
         <div className="flex flex-col gap-5">
           <h3 className="font-poppins text-base font-semibold uppercase tracking-[0.18em] text-[#C13B6B]">The boundaries you will personalize</h3>
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
