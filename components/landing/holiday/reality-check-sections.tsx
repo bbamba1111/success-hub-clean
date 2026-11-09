@@ -41,7 +41,7 @@ export function WeMakeTimeForMoreSection() {
         </div>
       </section>
 
-      <section className="bg-[#EEF3E8] py-16 sm:py-20">
+      <section className="bg-[#FCEEF2] py-16 sm:py-20">
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <div className="mx-auto mb-10 max-w-3xl text-center">
             <h2 className="font-playfair text-3xl font-bold leading-tight text-[#4A3A42] sm:text-4xl">The Work-Life Balance Business Week™</h2>
