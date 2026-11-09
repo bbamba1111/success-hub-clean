@@ -49,6 +49,50 @@ export function WeMakeTimeForMoreSection() {
         </div>
       </section>
 
+      <section id="business-day" className="scroll-mt-20 bg-[#FFF8F4] py-20 sm:py-24">
+        <div className="mx-auto flex max-w-5xl flex-col gap-12 px-5 sm:px-8">
+          <header className="mx-auto max-w-4xl text-center">
+            <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#5A7F46]">The Work-Life Balance Business Day™</p>
+            <h2 className="mt-3 font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">Redesign Your Entry Into The Work-Week</h2>
+          </header>
+          <div className="flex flex-col gap-5">
+            <h3 className="font-playfair text-balance text-2xl font-bold leading-tight text-[#4A3A42] sm:text-3xl">Why Harmony Lane — The Parallel Lane to Hustle Entrepreneurship — Redesigned Monday</h3>
+            <p className={BODY}>The traditional workweek often begins before Monday morning.</p>
+            <p className={BODY}>Sunday evening arrives, and many people are already thinking about the demands waiting for them: the workload, the meetings, the pressure, the responsibilities, and the lack of control over their time.</p>
+            <p className={BODY}>For some, Sunday night is when the decision to leave their job becomes final. They may have been considering it for weeks or months, but the thought of returning to another week of the same conditions becomes the tipping point.</p>
+            <p className={BODY}>Harmony Lane looked at that experience and asked a different question:</p>
+            <p className="font-playfair text-xl font-semibold leading-snug text-[#C13B6B] sm:text-2xl">What if we didn't simply help people get through another workweek? What if we redesigned how they enter it?</p>
+            <p className={BODY}>That is why we decided to <strong>Make Time For More on Monday.</strong></p>
+            <p className={BODY}>Rather than beginning the week by adding more demands, we introduce work-life balance at the point where the workweek begins.</p>
+            <p className={BODY}>We bring work-life balance into the workday and workweek—not as something founders hope to experience after work, but as part of how they operate their businesses.</p>
+          </div>
+          <div className="flex flex-col gap-5 border-t border-[#EAD5DC] pt-10">
+            <div>
+              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#5A7F46]">2. Monday: Make Time For More™</p>
+              <h3 className="mt-2 font-playfair text-2xl font-bold leading-tight text-[#4A3A42] sm:text-3xl">Redesign Your Entry Into The Work-Week</h3>
+            </div>
+            <p className={BODY}>Monday is the intentional entry point into the Work-Life Balance Business Week™.</p>
+            <p className={BODY}>It is where founders:</p>
+            <ul className="flex flex-col gap-3">
+              {[
+                "Reconnect with the life they are building their business to support.",
+                "Establish their intentions for the week.",
+                "Identify what matters most in their business and personal lives.",
+                "Bring their priorities into the Work-Life Balance Business Day™.",
+                "Establish the boundaries that will contain work and protect time for life.",
+                "Begin the week with a different operating experience.",
+              ].map((item) => (
+                <li key={item} className={`flex items-start gap-3 ${BODY}`}>
+                  <Dot />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="font-playfair text-xl font-semibold leading-snug text-[#C13B6B] sm:text-2xl">Monday is not about preparing to hustle harder. It is about entering the workweek differently.</p>
+          </div>
+        </div>
+      </section>
+
       <section className="bg-[#123B2A] py-16 sm:py-20">
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <div className="mx-auto mb-10 max-w-3xl text-center">
