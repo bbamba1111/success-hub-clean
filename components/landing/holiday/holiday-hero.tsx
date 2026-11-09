@@ -83,7 +83,7 @@ function SundayCountdown() {
   )
 }
 
-export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
+export function HolidayHero({ sessionLabel }: { sessionLabel?: string } = {}) {
   const [index, setIndex] = useState(0)
   const [inView, setInView] = useState(true)
   const sectionRef = useRef<HTMLElement>(null)
@@ -139,7 +139,7 @@ export function HolidayHero({ sessionLabel }: { sessionLabel: string }) {
           <div className="w-full max-w-full">
             <h1 className="w-full text-center font-playfair text-balance text-[31.33px] font-bold leading-[1.05] tracking-tight sm:text-[55.33px]">
               <span className="block text-[#F6A9C2]">Make Time For More</span>
-              <span className="mx-auto mt-3 block w-full text-center font-[family-name:var(--font-great-vibes)] text-[2.533rem] font-normal leading-[1.25] text-[#FFF8F4] sm:text-[3.533rem]">This Holiday Season</span>
+              <span className="mx-auto mt-3 block w-full text-center font-[family-name:var(--font-great-vibes)] text-[2.533rem] font-normal leading-[1.25] text-[#FFF8F4] sm:text-[3.533rem]">Starting This Week</span>
             </h1>
             <svg className="mx-auto -mt-1 h-4 w-[min(80%,20rem)] overflow-visible" viewBox="0 0 432 24" preserveAspectRatio="none" aria-hidden="true">
               <path d="M5 16 C105 2 190 23 278 11 S370 8 425 12" fill="none" stroke="#C51E3A" strokeWidth="8" strokeLinecap="round" />
