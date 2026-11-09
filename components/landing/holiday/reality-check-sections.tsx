@@ -50,7 +50,7 @@ export function WeMakeTimeForMoreSection() {
           <p className={EYEBROW}>We Help You Build Work-Life Balance Boundaries Into Your Business.</p>
           <h2 className={H2}>We Make Time For More.</h2>
           <p className={BODY}>
-            This is not about stepping away from your business. You bring it with you. It is about experiencing what becomes possible when you redesign your workday and workweek around the life you intended to create.
+            This is not about stepping away from your business. You bring it with you. It is about experiencing what becomes possible when you redesign your workday, workweek, and business around the life you intended to create.
           </p>
         </div>
 
