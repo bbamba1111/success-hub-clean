@@ -22,56 +22,109 @@ function Dot({ className = "bg-[#C13B6B]" }: { className?: string }) {
 }
 
 export function WeMakeTimeForMoreSection() {
-  const stages = [
-    {
-      day: "Sunday",
-      title: "See Your Reality",
-      body: "Begin with the free Sunday Work-Life Balance Reality Check™. Examine your entrepreneurial intention, current business demands, life priorities, and the boundaries that need attention.",
-      detail: "Start with clarity",
-    },
-    {
-      day: "Monday",
-      title: "Redesign Your Entry Into the Workweek",
-      body: "Experience Make Time For More on Mondays™ and the Work-Life Balance Business Day™. Personalize your boundaries, decide what matters, design your business day, and practice working within the boundaries you choose.",
-      detail: "Design a different business day",
-    },
-    {
-      day: "Tuesday–Sunday",
-      title: "Experience the Work-Life Balance Business Week™",
-      body: "Practice your new rhythm with actual business priorities. Work within your focused work container, notice boundary collisions, make adjustments, close your workweek, and experience intentional Time Freedom™.",
-      detail: "Practice the rhythm and make room for life",
-    },
+  const model = [
+    { value: "4 Days", title: "A Workweek", detail: "Monday–Thursday" },
+    { value: "4 Hours", title: "Focused CEO Workday", detail: "Dedicated time for priority business work" },
+    { value: "5 Hours", title: "Time Freedom", detail: "After your focused workday" },
+    { value: "3 Days", title: "A Weekend", detail: "Friday–Sunday" },
+  ]
+
+  const dailyRhythm = [
+    { time: "MORNING", title: "Align", detail: "GIV•EN™ routine and movement" },
+    { time: "MIDDAY", title: "Recharge", detail: "Extended Healthy Hybrid Lunch Break™" },
+    { time: "PLAN", title: "Decide & Design", detail: "Choose priorities and plan your business day" },
+    { time: "FOCUS", title: "Do the Work", detail: "4-Hour Focused CEO Workday™" },
   ]
 
   return (
-    <section id="destination" className="scroll-mt-20 bg-[#FFF8F4] py-20 sm:py-28">
-      <div className="mx-auto flex max-w-6xl flex-col gap-10 px-5 sm:px-8">
-        <div className="mx-auto flex max-w-4xl flex-col items-center gap-5 text-center">
+    <>
+      <section id="destination" className="scroll-mt-20 bg-[#FFF8F4] py-20 sm:py-24">
+        <div className="mx-auto flex max-w-5xl flex-col items-center gap-6 px-5 text-center sm:px-8">
           <p className={EYEBROW}>We Help You Build Work-Life Balance Boundaries Into Your Business.</p>
           <h2 className={H2}>We Make Time For More.</h2>
-          <p className={BODY}>
-            This is not about stepping away from your business. You bring it with you. It is about experiencing what becomes possible when you redesign your workday, workweek, and business around the life you intended to create.
+          <p className="max-w-3xl font-poppins text-pretty text-lg leading-relaxed text-[#5A4A52] sm:text-xl">
+            This is not about stepping away from your business. You bring it with you. Redesign your workday, workweek, and business around the life you intended to create.
           </p>
         </div>
+      </section>
 
-        <div className="grid gap-5 md:grid-cols-3">
-          {stages.map((stage, i) => (
-            <article key={stage.day} className="flex flex-col gap-4 rounded-3xl bg-white p-7 ring-1 ring-[#F2E4E8] shadow-sm">
-              <div className="flex items-center justify-between gap-3">
-                <p className={EYEBROW}>{stage.day}</p>
-                <span className="font-playfair text-2xl font-bold text-[#C13B6B]">0{i + 1}</span>
-              </div>
-              <h3 className={`font-playfair text-2xl font-bold leading-tight ${INK}`}>{stage.title}</h3>
-              <p className={BODY_SM}>{stage.body}</p>
-              <p className="mt-auto border-t border-[#F2E4E8] pt-4 font-poppins text-sm font-semibold text-[#5A7F46]">{stage.detail}</p>
-            </article>
-          ))}
+      <section className="bg-[#EEF3E8] py-16 sm:py-20">
+        <div className="mx-auto max-w-6xl px-5 sm:px-8">
+          <div className="mx-auto mb-10 max-w-3xl text-center">
+            <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#5A7F46]">The Work-Life Balance Business Week™</p>
+            <h2 className="mt-3 font-playfair text-3xl font-bold leading-tight text-[#4A3A42] sm:text-4xl">A different way to work. More room for life.</h2>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {model.map((item) => (
+              <article key={item.title} className="flex min-h-44 flex-col items-center justify-center rounded-2xl bg-white px-5 py-7 text-center shadow-sm">
+                <p className="font-playfair text-4xl font-bold text-[#C13B6B] sm:text-5xl">{item.value}</p>
+                <h3 className="mt-2 font-poppins text-base font-bold text-[#4A3A42]">{item.title}</h3>
+                <p className="mt-1 font-poppins text-sm leading-relaxed text-[#5A4A52]">{item.detail}</p>
+              </article>
+            ))}
+          </div>
+          <p className="mt-8 text-center font-playfair text-xl font-semibold text-[#4A3A42] sm:text-2xl">Contain work. Make room for life.</p>
         </div>
-        <p className="mx-auto max-w-3xl text-center font-playfair text-xl font-semibold leading-snug text-[#4A3A42] sm:text-2xl">
-          You don&apos;t just learn about work-life balance. You practice it inside your actual business.
+      </section>
+
+      <section className="bg-[#123B2A] py-16 sm:py-20">
+        <div className="mx-auto max-w-6xl px-5 sm:px-8">
+          <div className="mx-auto mb-10 max-w-3xl text-center">
+            <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#C9DDB4]">Sunday through Sunday</p>
+            <h2 className="mt-3 font-playfair text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-4xl">See the rhythm of your week.</h2>
+          </div>
+          <div className="grid gap-4 md:grid-cols-3">
+            <article className="rounded-2xl border border-white/15 bg-white/5 p-6 sm:p-7">
+              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#F6A9C2]">Sunday · Start here</p>
+              <h3 className="mt-3 font-playfair text-2xl font-bold text-[#FFF8F4]">See Your Reality</h3>
+              <p className="mt-3 font-poppins text-base leading-relaxed text-[#F6D6E1]">Begin with the free Work-Life Balance Reality Check™. Get clear on your business, life priorities, and the boundaries that need attention.</p>
+              <p className="mt-4 font-poppins text-sm font-semibold text-[#C9DDB4]">Start with clarity.</p>
+            </article>
+            <article className="rounded-2xl border border-white/15 bg-white/5 p-6 sm:p-7">
+              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#F6A9C2]">Monday–Thursday · Repeat</p>
+              <h3 className="mt-3 font-playfair text-2xl font-bold text-[#FFF8F4]">Live Your Business Day</h3>
+              <p className="mt-3 font-poppins text-base leading-relaxed text-[#F6D6E1]">Practice the Work-Life Balance Business Day™ each workday. Bring your real business priorities and work within the boundaries built into the environment.</p>
+              <p className="mt-4 font-poppins text-sm font-semibold text-[#C9DDB4]">Four days of guided practice.</p>
+            </article>
+            <article className="rounded-2xl border border-white/15 bg-white/5 p-6 sm:p-7">
+              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#F6A9C2]">Friday–Sunday · Time Freedom™</p>
+              <h3 className="mt-3 font-playfair text-2xl font-bold text-[#FFF8F4]">Make Room for Life</h3>
+              <p className="mt-3 font-poppins text-base leading-relaxed text-[#F6D6E1]">Step away from scheduled business work. Reclaim space for rest, relationships, recreation, and the life your business was meant to support.</p>
+              <p className="mt-4 font-poppins text-sm font-semibold text-[#C9DDB4]">Enjoy your three-day weekend.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#FCEEF2] py-16 sm:py-20">
+        <div className="mx-auto max-w-6xl px-5 sm:px-8">
+          <div className="mx-auto mb-10 max-w-3xl text-center">
+            <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#C13B6B]">The daily experience · Monday–Thursday</p>
+            <h2 className="mt-3 font-playfair text-3xl font-bold leading-tight text-[#4A3A42] sm:text-4xl">The Work-Life Balance Business Day™</h2>
+            <p className="mt-3 font-poppins text-base leading-relaxed text-[#5A4A52]">The same guided rhythm is practiced each of the four workdays—using your actual business priorities.</p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {dailyRhythm.map((item, i) => (
+              <article key={item.time} className="rounded-2xl bg-white p-6 shadow-sm">
+                <span className="font-playfair text-3xl font-bold text-[#C13B6B]">0{i + 1}</span>
+                <p className="mt-4 font-poppins text-xs font-bold uppercase tracking-[0.18em] text-[#5A7F46]">{item.time}</p>
+                <h3 className="mt-1 font-playfair text-xl font-bold text-[#4A3A42]">{item.title}</h3>
+                <p className="mt-2 font-poppins text-sm leading-relaxed text-[#5A4A52]">{item.detail}</p>
+              </article>
+            ))}
+          </div>
+          <div className="mt-8 rounded-2xl bg-white/80 px-6 py-5 text-center">
+            <p className="font-poppins text-sm leading-relaxed text-[#5A4A52]"><strong>Built into the environment:</strong> Flex Time™, movement, a nourishing lunch break, focused work, Time Freedom™, Power Down™, and Unplug™. You personalize and honor the non-negotiable boundaries.</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#FFF8F4] px-5 py-14 text-center sm:px-8 sm:py-16">
+        <p className="mx-auto max-w-3xl font-playfair text-2xl font-bold leading-snug text-[#4A3A42] sm:text-3xl">
+          You don't just learn about work-life balance. You practice it inside your actual business.
         </p>
-      </div>
-    </section>
+      </section>
+    </>
   )
 }
 
