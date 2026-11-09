@@ -1,5 +1,6 @@
-import { convertToModelMessages, streamText, tool, type UIMessage } from "ai"
-import { z } from "zod"
+import { guardMemberAi } from "@/lib/ai/guard"
+import { streamText, type CoreMessage, type LanguageModel } from "ai"
+import { getGatewayOpenAI } from "@/lib/ai/gateway"
 
 export const maxDuration = 30
 
@@ -44,104 +45,68 @@ GUIDANCE PRINCIPLES:
 CLIENT CONTEXT:
 You'll receive the client's business audit data, monthly intention, and learning level in the conversation.`
 
-const planWorkdayTool = tool({
-  description: "Plan today's 4-hour CEO workday across the 4 business pillars",
-  inputSchema: z.object({
-    monthlyIntention: z.string().describe("Their current monthly work-lifestyle intention"),
-    businessStage: z.enum(["starting", "growing", "scaling"]),
-    urgentPriorities: z.array(z.string()).optional(),
-  }),
-  execute: async ({ monthlyIntention, businessStage, urgentPriorities }) => {
-    return {
-      workday: {
-        "1-2 PM": "AI & Automation",
-        "2-3 PM": "Zone of Genius",
-        "3-4 PM": "Visibility & Growth",
-        "4-5 PM": "Revenue & Delivery",
-      },
-      todaysFocus: "Based on your monthly intention and business stage",
-      tasks: urgentPriorities || [],
-      boundaryReminder: "Stop at 5 PM - Time Freedom hours begin!",
-    }
-  },
-})
+const MAX_MESSAGES = 20
+const MAX_MESSAGE_CHARS = 4000
+const MAX_CONTEXT_CHARS = 200
 
-const teachConceptTool = tool({
-  description: "Teach a business or life science concept at the client's comprehension level",
-  inputSchema: z.object({
-    topic: z.string().describe("What concept to teach"),
-    level: z.enum(["elementary", "middle-school", "high-school", "college", "graduate", "phd"]),
-    applicationContext: z.string().describe("How this applies to their business/life"),
-  }),
-  execute: async ({ topic, level, applicationContext }) => {
-    return {
-      concept: topic,
-      explanation: `Teaching ${topic} at ${level} level`,
-      realWorldApplication: applicationContext,
-      nextSteps: "Practice exercises and implementation plan",
-      scienceBacking: "Research and studies supporting this concept",
-    }
-  },
-})
+function contextField(value: unknown, fallback: string) {
+  return typeof value === "string" && value.trim() ? value.trim().slice(0, MAX_CONTEXT_CHARS) : fallback
+}
 
-const practice1ToManySkillTool = tool({
-  description: "Help client practice 1-to-many marketing skills in a safe environment",
-  inputSchema: z.object({
-    skill: z.enum(["public-speaking", "interview", "partnership-pitch", "networking", "publicity"]),
-    scenario: z.string().describe("The specific scenario to practice"),
-  }),
-  execute: async ({ skill, scenario }) => {
-    return {
-      skill,
-      practiceScenario: scenario,
-      feedback: "Detailed feedback on performance",
-      improvements: "Specific areas to refine",
-      readyToGoLive: "Assessment of preparation level",
-    }
-  },
-})
-
-const trackProgressTool = tool({
-  description: "Track progress in work AND life goals",
-  inputSchema: z.object({
-    category: z.enum(["business", "wellness", "relationships", "time-freedom"]),
-    metric: z.string(),
-  }),
-  execute: async ({ category, metric }) => {
-    return {
-      category,
-      currentProgress: "Tracking data",
-      streak: "Consecutive days of completion",
-      insights: "Patterns and recommendations",
-    }
-  },
-})
+function sanitizeMessages(raw: unknown): CoreMessage[] {
+  if (!Array.isArray(raw)) return []
+  return raw
+    .filter(
+      (m): m is { role: "user" | "assistant"; content: string } =>
+        !!m &&
+        typeof m === "object" &&
+        (m.role === "user" || m.role === "assistant") &&
+        typeof m.content === "string" &&
+        m.content.trim().length > 0,
+    )
+    .slice(-MAX_MESSAGES)
+    .map((m) => ({ role: m.role, content: m.content.slice(0, MAX_MESSAGE_CHARS) }))
+}
 
 export async function POST(req: Request) {
-  const { messages, clientContext }: { messages: UIMessage[]; clientContext?: any } = await req.json()
+  const aiGuard = await guardMemberAi(req, "client-co-guide")
+  if (!aiGuard.ok) return aiGuard.response
 
-  const enhancedPrompt = clientContext
+  let body: { messages?: unknown; clientContext?: Record<string, unknown> }
+  try {
+    body = await req.json()
+  } catch {
+    return Response.json({ error: "Invalid request." }, { status: 400 })
+  }
+
+  const messages = sanitizeMessages(body.messages)
+  if (messages.length === 0 || messages[messages.length - 1].role !== "user") {
+    return Response.json({ error: "Please send a message." }, { status: 400 })
+  }
+
+  const ctx = body.clientContext && typeof body.clientContext === "object" ? body.clientContext : null
+  const enhancedPrompt = ctx
     ? `${CLIENT_CO_GUIDE_SYSTEM_PROMPT}
 
 CURRENT CLIENT CONTEXT:
-- Business Type: ${clientContext.businessType || "Not specified"}
-- Monthly Intention: ${clientContext.monthlyIntention || "Not set"}
-- Learning Level: ${clientContext.learningLevel || "Adaptive"}
-- Business Stage: ${clientContext.businessStage || "Starting"}`
+- Business Type: ${contextField(ctx.businessType, "Not specified")}
+- Monthly Intention: ${contextField(ctx.monthlyIntention, "Not set")}
+- Learning Level: ${contextField(ctx.learningLevel, "Adaptive")}
+- Business Stage: ${contextField(ctx.businessStage, "Starting")}`
     : CLIENT_CO_GUIDE_SYSTEM_PROMPT
 
-  const result = streamText({
-    model: "openai/gpt-5-mini",
-    system: enhancedPrompt,
-    messages: convertToModelMessages(messages),
-    tools: {
-      planWorkday: planWorkdayTool,
-      teachConcept: teachConceptTool,
-      practice1ToManySkill: practice1ToManySkillTool,
-      trackProgress: trackProgressTool,
-    },
-    maxOutputTokens: 2000,
-  })
-
-  return result.toUIMessageStreamResponse()
+  try {
+    const gateway = await getGatewayOpenAI()
+    const result = await streamText({
+      // The repo pins two @ai-sdk/provider versions; cast to the model type
+      // `ai` expects to bridge the nominal mismatch (runtime is unaffected).
+      model: gateway("openai/gpt-4o-mini") as unknown as LanguageModel,
+      system: enhancedPrompt,
+      messages,
+      maxTokens: 2000,
+    })
+    return result.toAIStreamResponse()
+  } catch {
+    return Response.json({ error: "The Co-Guide could not answer right now. Please try again." }, { status: 502 })
+  }
 }

@@ -1,3 +1,4 @@
+import { guardMemberAi } from "@/lib/ai/guard"
 import { type NextRequest, NextResponse } from "next/server"
 import { isWithinBusinessHours } from "@/lib/utils/business-hours"
 
@@ -678,6 +679,9 @@ Tell me:
 const DEFAULT_CONTEXT = "ceo-workday"
 
 export async function POST(req: NextRequest) {
+  const aiGuard = await guardMemberAi(req, "chat-cherry-blossom")
+  if (!aiGuard.ok) return aiGuard.response
+
   try {
     if (!isWithinBusinessHours()) {
       return NextResponse.json(
