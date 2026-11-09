@@ -67,6 +67,7 @@ export function WeMakeTimeForMoreSection() {
             <p className={BODY}>We bring work-life balance into the workday and workweek—not as something founders hope to experience after work, but as part of how they operate their businesses.</p>
           </div>
           <div className="flex flex-col gap-5 border-t border-[#EAD5DC] pt-10">
+            <p className={BODY}>Monday is the intentional entry point into the Work-Life Balance Business Week™.</p>
             <p className={BODY}>It is where founders:</p>
             <ul className="flex flex-col gap-3">
               {[
