@@ -23,10 +23,10 @@ function Dot({ className = "bg-[#C13B6B]" }: { className?: string }) {
 
 export function WeMakeTimeForMoreSection() {
   const model = [
-    { value: "4 Days", title: "A Workweek", detail: "Monday–Thursday" },
-    { value: "4 Hours", title: "Focused CEO Workday", detail: "Dedicated time for priority business work" },
-    { value: "5 Hours", title: "Time Freedom", detail: "After your focused workday" },
-    { value: "3 Days", title: "A Weekend", detail: "Friday–Sunday" },
+    { value: "4 Day", title: "Workweek", detail: "Monday–Thursday" },
+    { value: "4 Hour", title: "Focused CEO Workday", detail: "Dedicated time for priority business work" },
+    { value: "5 Hours", title: "Time Freedom", detail: "After 5:00 PM" },
+    { value: "3 Day", title: "Weekend", detail: "Friday–Sunday" },
   ]
 
   return (
@@ -36,7 +36,6 @@ export function WeMakeTimeForMoreSection() {
           <div className="mx-auto mb-10 max-w-5xl">
             <p className="mb-3 font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#5A7F46] sm:text-base">We Make Time For More</p>
             <h2 className="font-playfair text-balance text-4xl font-bold leading-tight text-[#4A3A42] sm:text-6xl lg:text-7xl">The Work-Life Balance Business Week™</h2>
-            <p className="mt-3 font-playfair text-lg italic text-[#4A3A42] sm:text-xl">A different way to live, work and lead your week.</p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {model.map((item) => (
@@ -44,7 +43,6 @@ export function WeMakeTimeForMoreSection() {
                 <p className="font-playfair text-4xl font-bold text-[#C13B6B] sm:text-5xl">{item.value}</p>
                 <h3 className="mt-2 font-poppins text-base font-bold text-[#4A3A42]">{item.title}</h3>
                 <p className="mt-1 font-poppins text-sm leading-relaxed text-[#5A4A52]">{item.detail}</p>
-                {item.value === "4 Days" && <p className="mt-3 font-playfair text-sm italic text-[#4A3A42]">A different way to live, work and lead your week.</p>}
               </article>
             ))}
           </div>
