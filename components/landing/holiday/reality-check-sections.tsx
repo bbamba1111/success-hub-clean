@@ -50,13 +50,7 @@ export function WeMakeTimeForMoreSection() {
           <p className={EYEBROW}>We Help You Build Work-Life Balance Boundaries Into Your Business.</p>
           <h2 className={H2}>We Make Time For More.</h2>
           <p className={BODY}>
-            A guided online experience where you bring your actual business and experience a different way to work, operate, and make room for more life.
-          </p>
-          <p className={BODY}>
-            This is not about stepping away from your business. It is about experiencing what becomes possible when you redesign how your business works around the life you intended to create.
-          </p>
-          <p className="font-poppins text-base leading-relaxed text-[#5A4A52]">
-            Participate virtually from wherever you work and live, with guided experiences, structured work sessions, and support throughout your destination week.
+            This is not about stepping away from your business. You bring it with you. It is about experiencing what becomes possible when you redesign your workday and workweek around the life you intended to create.
           </p>
         </div>
 
