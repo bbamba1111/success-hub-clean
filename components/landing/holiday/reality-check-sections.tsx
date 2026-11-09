@@ -382,7 +382,7 @@ export function BusinessWeekSection() {
             <p className={EYEBROW}>Harmony Lane Experience Two · The Full-Week Experience</p>
             <h2 className={H2}>The Work-Life Balance Business Week™</h2>
             <p className={BODY}>A complete seven-day guided experience for founders who want to practice work-life balance while doing their actual business work—not by stepping away from the business, but by redesigning how they enter, operate, and close their workweek.</p>
-            <p className={BODY}>The Business Week includes the Work-Life Balance Business Day™ on Monday. The Business Day is also available as a distinct, standalone paid experience.</p>
+            <p className={BODY}>The Work-Life Balance Business Day™ is the guided Monday experience within the Business Week. You can also choose the Business Day as a standalone experience, but you do not need to purchase it separately when you join the Business Week.</p>
           </div>
         </div>
         <div className="grid gap-5 md:grid-cols-2">
@@ -442,8 +442,8 @@ export function NewYearSection() {
         <div className="grid items-center gap-10 lg:grid-cols-5">
           <img src="/images/holiday/winter-stroll.webp" alt="A smiling woman strolling a festive winter street" className="w-full rounded-3xl object-cover shadow-xl lg:col-span-2" loading="lazy" />
           <div className="flex flex-col gap-5 lg:col-span-3">
-            <p className={EYEBROW}>Start before the calendar changes</p>
-            <h2 className={H2}>Don’t wait for a new year to make room for more life.</h2>
+            <p className={EYEBROW}>A different way to begin your week</p>
+            <h2 className={H2}>Make room for more life—starting with the week ahead.</h2>
             <CtaLink label="Join the Free Sunday Reality Check" />
           </div>
         </div>
@@ -505,9 +505,9 @@ export function AboutBarbaraSection() {
 const FAQS = [
   { q: "Is the Sunday Work-Life Balance Reality Check™ free?", a: "Yes. The Sunday Reality Check, assessment results, and priority focus areas are free. You can decide afterward whether you want a deeper personalized Boundary Report™ or a paid Harmony Lane experience." },
   { q: "What does the Reality Check include?", a: "It includes your Founder Profile™, 10-question Business Context™, Business Boundary Collisions™, Personal & Work-From-Home Reality™, 15-question 30-Day Work-Life Balance Audit™, results and priority focus areas, and 3 Work-Life Balance Alignment™ questions." },
-  { q: "What is the Work-Life Balance Business Day™?", a: "It is the first distinct, paid Harmony Lane experience: a guided day to reconnect with your entrepreneurial intention, review your current reality, personalize boundaries, design your business day, and practice those boundaries while doing real business work." },
-  { q: "What is the Work-Life Balance Business Week™?", a: "It is the second, full seven-day paid Harmony Lane experience. It includes the Business Day on Monday, guided practice during the workweek, a Thursday closeout, and intentional Friday–Sunday Time Freedom™." },
-  { q: "Is the Business Day included in the Business Week?", a: "Yes. The Work-Life Balance Business Day™ is included as the Monday experience in the full Work-Life Balance Business Week™. It is also available as its own standalone paid experience." },
+  { q: "What is the Work-Life Balance Business Day™?", a: "It is the guided Monday experience within the Work-Life Balance Business Week™. It helps you reconnect with your entrepreneurial intention, review your current reality, personalize boundaries, design your business day, and practice those boundaries while doing real business work. It can also be experienced on its own as a standalone offering." },
+  { q: "What is the Work-Life Balance Business Week™?", a: "It is the complete seven-day guided experience. It includes the Work-Life Balance Business Day™ on Monday, guided boundary practice during the workweek, a Thursday closeout, and intentional Friday–Sunday Time Freedom™." },
+  { q: "Do I need to buy the Business Day separately to join the Business Week?", a: "No. The Work-Life Balance Business Day™ is already included as the Monday experience in the Work-Life Balance Business Week™. A separate purchase is only relevant if you choose the standalone Business Day instead of the full-week experience." },
   { q: "Do I have to purchase anything after the free Reality Check?", a: "No. You receive your free results and priority focus areas without purchasing a report or either Harmony Lane experience." },
   { q: "Is this an AI readiness certification?", a: "No. The Reality Check is a work-life balance and business operating diagnostic. It helps you understand your current reality and the boundaries that need attention; it is not an AI certification." },
   { q: "Who is Harmony Lane for?", a: "New and established founders who want to build work-life balance into the way they start, grow, and operate their businesses—including founders who want to avoid recreating hustle culture or automating it with AI." },
