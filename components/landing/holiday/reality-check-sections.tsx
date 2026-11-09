@@ -47,7 +47,7 @@ export function WeMakeTimeForMoreSection() {
     <section id="destination" className="scroll-mt-20 bg-[#FFF8F4] py-20 sm:py-28">
       <div className="mx-auto flex max-w-6xl flex-col gap-10 px-5 sm:px-8">
         <div className="mx-auto flex max-w-4xl flex-col items-center gap-5 text-center">
-          <p className={EYEBROW}>Your Virtual Work-Life Balance Destination</p>
+          <p className={EYEBROW}>We Help You Build Work-Life Balance Boundaries Into Your Business.</p>
           <h2 className={H2}>We Make Time For More.</h2>
           <p className={BODY}>
             A guided online experience where you bring your actual business and experience a different way to work, operate, and make room for more life.
@@ -86,7 +86,7 @@ export function FreedomSection() {
     <>
       <section className="bg-[#FFF8F4] py-16 sm:py-20">
         <div className="mx-auto flex max-w-5xl flex-col gap-5 px-5 text-center sm:px-8">
-          <p className={EYEBROW}>We Help You Build Work-Life Balance Boundaries Into Your Business.</p>
+          <p className={EYEBROW}>Your Virtual Work-Life Balance Destination</p>
           <p className="font-playfair text-balance text-2xl font-bold leading-tight text-[#4A3A42] sm:text-4xl">
             Reserve Your First <span className="font-light italic">(or Next)</span>
           </p>
