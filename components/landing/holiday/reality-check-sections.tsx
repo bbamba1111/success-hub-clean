@@ -97,10 +97,20 @@ export function WeMakeTimeForMoreSection() {
             <p className="mt-4 font-poppins text-base leading-relaxed text-[#5A4A52]">These provide a practical structure. Each founder personalizes them around their intentions, priorities, responsibilities, and business needs.</p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {["Flex Time™","Morning GIV•EN™ Routine","Workout & Movement Window™","Extended Healthy Hybrid Lunch Break™","4-Hour Focused CEO Workday™","Time Freedom™","Power Down™","Unplug™"].map((item,i)=>(
-              <article key={item} className="flex min-h-40 flex-col justify-between rounded-2xl bg-white p-6 shadow-sm">
-                <span className="font-playfair text-3xl font-bold text-[#C13B6B]">0{i+1}</span>
-                <h3 className="mt-6 font-playfair text-xl font-bold leading-snug text-[#4A3A42]">{item}</h3>
+            {[
+              { title: "Flex Time™", description: "Choose a work rhythm that makes room for the needs of your day." },
+              { title: "Morning GIV•EN™ Routine", description: "Begin with gratitude, intention, vision, emotional embodiment, and nurture." },
+              { title: "Workout & Movement Window™", description: "Protect time for daily movement and care for your physical well-being." },
+              { title: "Extended Healthy Hybrid Lunch Break™", description: "Make space for a nourishing meal, restoration, and a real midday pause." },
+              { title: "4-Hour Focused CEO Workday™", description: "Concentrate on your highest-priority business work in a focused work block." },
+              { title: "Time Freedom™", description: "Keep time beyond scheduled work available for life, relationships, and joy." },
+              { title: "Power Down™", description: "Create an evening transition that brings the business day to a close." },
+              { title: "Unplug™", description: "Disconnect from business devices and communications to support restorative rest." },
+            ].map((item, i) => (
+              <article key={item.title} className="flex min-h-44 flex-col rounded-2xl bg-white p-6 shadow-sm">
+                <span className="font-playfair text-3xl font-bold text-[#C13B6B]">0{i + 1}</span>
+                <h3 className="mt-4 font-playfair text-xl font-bold leading-snug text-[#4A3A42]">{item.title}</h3>
+                <p className="mt-2 font-poppins text-sm leading-relaxed text-[#5A4A52]">{item.description}</p>
               </article>
             ))}
           </div>
