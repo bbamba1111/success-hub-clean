@@ -47,7 +47,7 @@ export function WeMakeTimeForMoreSection() {
     <section id="destination" className="scroll-mt-20 bg-[#FFF8F4] py-20 sm:py-28">
       <div className="mx-auto flex max-w-6xl flex-col gap-10 px-5 sm:px-8">
         <div className="mx-auto flex max-w-4xl flex-col items-center gap-5 text-center">
-          <p className={EYEBROW}>Your virtual Work-Life Balance destination</p>
+          <p className={EYEBROW}>Your Virtual Work-Life Balance Destination</p>
           <h2 className={H2}>We Make Time For More.</h2>
           <p className={BODY}>
             A guided online experience where you bring your actual business and experience a different way to work, operate, and make room for more life.
