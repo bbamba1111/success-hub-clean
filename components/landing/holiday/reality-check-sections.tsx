@@ -113,6 +113,30 @@ export function WeMakeTimeForMoreSection() {
               </article>
             ))}
           </div>
+          <div className="mt-14">
+            <div className="mx-auto mb-8 max-w-3xl text-center">
+              <h3 className="font-playfair text-2xl font-bold leading-tight text-[#4A3A42] sm:text-3xl">The Boundaries You Will Personalize</h3>
+              <p className="mt-3 font-poppins text-base leading-relaxed text-[#5A4A52]">Make the built-in boundaries work for your life, values, responsibilities, and business.</p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {[
+                { title: "Time Boundaries", body: "Decide when work begins and ends, and what fits into the time available." },
+                { title: "Personal Life Boundaries", body: "Protect time for relationships, family, personal interests, and life outside the business." },
+                { title: "Breaks Boundaries", body: "Make room for movement, meals, rest, and transitions instead of working straight through." },
+                { title: "Availability Boundaries", body: "Decide when clients, colleagues, team members, and business demands can access your time." },
+                { title: "Workload Boundaries", body: "Recognize when too much rests on you, and decide what to prioritize, delegate, defer, or redesign." },
+                { title: "Digital Boundaries", body: "Establish when to disconnect from business communications and technology." },
+              ].map((item) => (
+                <article key={item.title} className="rounded-2xl bg-white p-6 shadow-sm">
+                  <h4 className="font-playfair text-xl font-bold text-[#4A3A42]">{item.title}</h4>
+                  <p className="mt-2 font-poppins text-sm leading-relaxed text-[#5A4A52]">{item.body}</p>
+                </article>
+              ))}
+            </div>
+            <p className="mx-auto mt-7 max-w-3xl text-center font-poppins text-sm italic leading-relaxed text-[#5A4A52]">
+              Your boundaries reflect your life, values, responsibilities, and business. This is a guided practice—not a one-size-fits-all rulebook.
+            </p>
+          </div>
         </div>
       </section>
 
