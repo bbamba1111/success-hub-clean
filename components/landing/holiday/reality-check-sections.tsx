@@ -33,13 +33,10 @@ export function WeMakeTimeForMoreSection() {
     <>
       <section id="destination" className="scroll-mt-20 bg-[#F7DCE5] py-20 sm:py-24">
         <div className="mx-auto max-w-6xl px-5 text-center sm:px-8">
-          <div className="mx-auto mb-8 max-w-4xl">
-            <p className={EYEBROW}>We Help You Build Work-Life Balance Boundaries Into Your Business.</p>
-            <h2 className="mt-3 font-playfair text-2xl font-bold leading-tight text-[#4A3A42] sm:text-3xl">We Make Time For More.</h2>
-          </div>
           <div className="mx-auto mb-10 max-w-5xl">
             <h2 className="font-playfair text-balance text-4xl font-bold leading-tight text-[#4A3A42] sm:text-6xl lg:text-7xl">The Work-Life Balance Business Week™</h2>
-            <p className="mt-4 font-poppins text-base font-semibold uppercase tracking-[0.2em] text-[#5A7F46] sm:text-lg">A different way to live, work and lead your week.</p>
+            <p className="mt-4 font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#5A7F46] sm:text-base">We Help You Build Work-Life Balance Boundaries Into Your Business.</p>
+            <p className="mt-3 font-playfair text-lg italic text-[#4A3A42] sm:text-xl">A different way to live, work and lead your week.</p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {model.map((item) => (
@@ -47,10 +44,10 @@ export function WeMakeTimeForMoreSection() {
                 <p className="font-playfair text-4xl font-bold text-[#C13B6B] sm:text-5xl">{item.value}</p>
                 <h3 className="mt-2 font-poppins text-base font-bold text-[#4A3A42]">{item.title}</h3>
                 <p className="mt-1 font-poppins text-sm leading-relaxed text-[#5A4A52]">{item.detail}</p>
+                {item.value === "4 Days" && <p className="mt-3 font-playfair text-sm italic text-[#4A3A42]">A different way to live, work and lead your week.</p>}
               </article>
             ))}
           </div>
-          <p className="mt-8 text-center font-playfair text-xl font-semibold text-[#4A3A42] sm:text-2xl">Contain work. Make room for life.</p>
         </div>
       </section>
 
