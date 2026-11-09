@@ -27,7 +27,7 @@ export function WeMakeTimeForMoreSection() {
     { value: "4 Hour", title: "Focused CEO Workday", detail: "Dedicated time for priority business work" },
     { value: "5 Hours", title: "Time Freedom", detail: "After 5:00 PM" },
     { value: "3 Day", title: "Weekend", detail: "Friday–Sunday" },
-  ]
+  ];
 
   return (
     <>
