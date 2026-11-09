@@ -38,8 +38,8 @@ export default function LandingPage() {
     <main className="min-h-screen bg-[#FFF8F4]">
       <LandingNav
         tone="dark"
-        experiencesHref="#offers"
-        ctaLabel="Join the Free Sunday Reality Check"
+        experiencesHref="#destination"
+        ctaLabel="Explore Business Week"
         links={[
           { label: "Reality Check", href: "#reality-check" },
           { label: "Business Week", href: "#destination" },
