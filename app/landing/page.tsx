@@ -4,11 +4,9 @@ import { LandingFooter } from "@/components/landing/landing-footer"
 import { HolidayHero } from "@/components/landing/holiday/holiday-hero"
 import {
   AboutBarbaraSection,
-  BusinessWeekSection,
   DisclaimerFooter,
   FaqSection,
   FreedomSection,
-  MondaySection,
   NewYearSection,
   RealityCheckSection,
   RegisterSection,
@@ -43,17 +41,14 @@ export default function LandingPage() {
         ctaLabel="Join the Free Sunday Reality Check"
         links={[
           { label: "Reality Check", href: "#reality-check" },
-          { label: "Monday Kickoff", href: "#monday" },
-          { label: "Business Week", href: "#business-week" },
+          { label: "Business Week", href: "#destination" },
           { label: "Questions", href: "#faq" },
         ]}
       />
       <HolidayHero />
       <FreedomSection />
       <WeMakeTimeForMoreSection />
-      <BusinessWeekSection />
       <RealityCheckSection />
-      <MondaySection />
       <NewYearSection />
       <AboutBarbaraSection />
       <FaqSection />
