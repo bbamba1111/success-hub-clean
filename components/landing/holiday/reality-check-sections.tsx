@@ -94,7 +94,7 @@ export function FreedomSection() {
             Work-Life Balance Business Week™
           </h2>
           <p className={BODY}>
-            A one-week immersive founder experience, offered weekly, where you step into a Work-Life Balance environment with boundaries already built in and live, work, lead, and operate your actual business while containing work so life has space to expand.
+            A one-week immersive founder experience, offered weekly, where you step into a Work-Life Balance environment with boundaries already built in and live, work, lead, and operate your actual business while containing work—<em>in real time</em>—so life has space to expand.
           </p>
         </div>
       </section>
