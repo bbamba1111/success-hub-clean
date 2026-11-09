@@ -207,7 +207,7 @@ export function FreedomSection() {
         </div>
       </section>
 
-      <section className="bg-[#EEF3E8] px-5 py-14 text-center sm:px-8 sm:py-16">
+      <section className="bg-white px-5 py-14 text-center sm:px-8 sm:py-16">
         <h2 className="mx-auto max-w-5xl font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">
           This Is Why We Don&apos;t Automate &amp; Accelerate the Hustle.
         </h2>
