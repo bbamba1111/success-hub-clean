@@ -7,6 +7,7 @@ import {
   DisclaimerFooter,
   FaqSection,
   FreedomSection,
+  MondaySection,
   NewYearSection,
   RealityCheckSection,
   RegisterSection,
@@ -49,6 +50,7 @@ export default function LandingPage() {
       <FreedomSection />
       <WeMakeTimeForMoreSection />
       <RealityCheckSection />
+      <MondaySection />
       <NewYearSection />
       <AboutBarbaraSection />
       <FaqSection />
