@@ -358,21 +358,23 @@ export function FreedomSection() {
                   The outcome: Work has boundaries. Life has room to expand.
                 </p>
               </div>
-              <div className="rounded-xl border border-[#C9DDB4]/15 bg-[#F7F5EF]/[0.04] p-5">
-                <p className="font-playfair text-lg font-semibold leading-relaxed text-[#FFF8F4]">
-                  Human Sustainability™ is a business operating principle—not just a personal wellness message.
-                </p>
-                <p className="mt-2 font-poppins text-sm leading-relaxed text-[#D9E4D7]">
-                  It means designing how a business operates around the sustainable capacity of the people who build, lead, and work within it. We cannot keep adding demands without considering what human beings can sustainably carry. Attention, energy, and recovery are not unlimited resources.
-                </p>
-              </div>
-              <blockquote className="border-l-2 border-[#F6A9C2] pl-5">
-                <p className="font-playfair text-xl font-semibold italic leading-relaxed text-[#FFF8F4] sm:text-2xl">
-                  “Attention, energy, and recovery are not unlimited resources.”
-                </p>
-                <footer className="mt-3 font-mono text-[10px] uppercase tracking-[0.2em] text-[#C9DDB4]">— Thought Leader Barbara</footer>
-              </blockquote>
             </div>
+          </div>
+          <div className="mt-12 grid items-center gap-8 lg:grid-cols-[1.1fr_.9fr]">
+            <div className="rounded-2xl border border-[#9DBF9A]/25 bg-[#F7F5EF]/[0.045] p-6 sm:p-8">
+              <p className="font-playfair text-xl font-semibold leading-relaxed text-[#FFF8F4] sm:text-2xl">
+                Human Sustainability™ is a business operating principle—not just a personal wellness message.
+              </p>
+              <p className="mt-3 font-poppins text-base leading-relaxed text-[#D9E4D7]">
+                It means designing how a business operates around the sustainable capacity of the people who build, lead, and work within it. We cannot keep adding demands without considering what human beings can sustainably carry. Attention, energy, and recovery are not unlimited resources.
+              </p>
+            </div>
+            <blockquote className="border-l-2 border-[#F6A9C2] py-2 pl-6 sm:pl-8">
+              <p className="font-playfair text-2xl font-semibold italic leading-relaxed text-[#FFF8F4] sm:text-3xl">
+                “Attention, energy, and recovery are not unlimited resources.”
+              </p>
+              <footer className="mt-4 font-mono text-[10px] uppercase tracking-[0.2em] text-[#C9DDB4]">— Thought Leader Barbara</footer>
+            </blockquote>
           </div>
         </div>
       </section>
