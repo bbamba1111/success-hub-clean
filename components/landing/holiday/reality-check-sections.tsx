@@ -274,8 +274,8 @@ export function FreedomSection() {
             <p className="font-mono text-xs uppercase tracking-[0.24em] text-[#C9DDB4]">Human Sustainability™ // Operating Principle 01</p>
             <p className="font-mono text-xs uppercase tracking-[0.18em] text-[#F6A9C2]">AI era · Human-led by design</p>
           </div>
-          <div className="grid items-start gap-12 lg:grid-cols-[1.05fr_.95fr] lg:gap-16">
-            <div className="flex flex-col gap-6">
+          <div className="grid items-stretch gap-12 lg:grid-cols-[1.05fr_.95fr] lg:gap-16">
+            <div className="flex h-full flex-col gap-6">
               <div className="inline-flex w-fit items-center gap-2 rounded-full border border-[#9DBF9A]/30 bg-[#9DBF9A]/10 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-[#C9DDB4]">
                 <span className="h-2 w-2 rounded-full bg-[#A9D69C] shadow-[0_0_12px_rgba(169,214,156,.9)]" />
                 Capacity ≠ Unlimited Demand
@@ -300,7 +300,7 @@ export function FreedomSection() {
                   </div>
                 ))}
               </div>
-              <div className="rounded-2xl border border-[#F6A9C2]/35 bg-[#F6A9C2]/[0.07] p-5 sm:p-6">
+              <div className="flex flex-1 flex-col justify-center rounded-2xl border border-[#F6A9C2]/35 bg-[#F6A9C2]/[0.07] p-5 sm:p-6">
                 <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.22em] text-[#F6A9C2]">The critical design question</p>
                 <p className="font-playfair text-xl font-semibold leading-relaxed text-[#FFF8F4] sm:text-2xl">
                   How will you prevent the time and capacity AI creates from simply being absorbed by more work?
