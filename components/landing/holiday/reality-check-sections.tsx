@@ -121,16 +121,16 @@ export function WeMakeTimeForMoreSection() {
         </div>
       </section>
 
-      <section id="weekly-rhythm" className="scroll-mt-20 bg-[#123B2A] py-20 sm:py-24">
+      <section id="weekly-rhythm" className="scroll-mt-20 bg-[#F7DCE5] py-20 sm:py-24">
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <header className="mx-auto mb-12 max-w-4xl text-center">
-            <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#C9DDB4]">The Work-Life Balance Business Week™</p>
-            <h2 className="mt-3 font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl">See How Your Week Works.</h2>
-            <p className="mt-5 font-poppins text-lg leading-relaxed text-[#F6D6E1]">We Don't Hustle — We Harmonize Work &amp; Life.™ We contain work, so life has space to expand. Here's how you put that into practice—starting on Day 1.</p>
+            <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#5A7F46]">The Work-Life Balance Business Week™</p>
+            <h2 className="mt-3 font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">See How Your Week Works.</h2>
+            <p className="mt-5 font-poppins text-lg leading-relaxed text-[#5A4A52]">We Don't Hustle — We Harmonize Work &amp; Life.™ We contain work, so life has space to expand. Here's how you put that into practice—starting on Day 1.</p>
           </header>
 
           <div className="grid gap-5 md:grid-cols-2">
-            <article className="rounded-2xl border border-white/15 bg-white/5 p-6 sm:p-8">
+            <article className="rounded-2xl border border-[#2D6348]/30 bg-[#123B2A] p-6 sm:p-8">
               <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#F6A9C2]">Sunday · See your reality</p>
               <h3 className="mt-3 font-playfair text-2xl font-bold text-[#FFF8F4]">Start with the Reality Check™</h3>
               <p className="mt-3 font-poppins text-base leading-relaxed text-[#F6D6E1]">Look at where business demands and life priorities are competing. Identify the boundaries that need attention. Sunday is your reflection and transition point—not another scheduled business workday.</p>
@@ -164,23 +164,23 @@ export function WeMakeTimeForMoreSection() {
           </div>
 
           <div className="mt-8 grid gap-5 md:grid-cols-2">
-            <article className="rounded-2xl bg-[#F7DCE5] p-6 sm:p-8">
-              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#8F3155]">5:00–10:00 PM ET</p>
-              <h3 className="mt-2 font-playfair text-2xl font-bold text-[#4A3A42]">Time Freedom™</h3>
-              <p className="mt-3 font-poppins text-base leading-relaxed text-[#5A4A52]">The business day is finished at 5:00 PM. These five hours belong to life—not business catch-up. Make room for relationships, dinner, interests, and whatever you choose to enjoy.</p>
+            <article className="rounded-2xl border border-[#2D6348]/30 bg-[#123B2A] p-6 sm:p-8">
+              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C9DDB4]">5:00–10:00 PM ET</p>
+              <h3 className="mt-2 font-playfair text-2xl font-bold text-[#FFF8F4]">Time Freedom™</h3>
+              <p className="mt-3 font-poppins text-base leading-relaxed text-[#F6D6E1]">The business day is finished at 5:00 PM. These five hours belong to life—not business catch-up. Make room for relationships, dinner, interests, and whatever you choose to enjoy.</p>
             </article>
-            <article className="rounded-2xl bg-white p-6 sm:p-8">
-              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C13B6B]">10:00–11:00 PM ET · Live Zoom</p>
-              <h3 className="mt-2 font-playfair text-2xl font-bold text-[#4A3A42]">Power Down™</h3>
-              <p className="mt-3 font-poppins text-base leading-relaxed text-[#5A4A52]">Join the community to release a day that is already complete, acknowledge accomplishments, and co-work on your bedtime routine. The goal: pajamas on, in bed, ready to unplug when the community closes at 11:00 PM.</p>
+            <article className="rounded-2xl border border-[#2D6348]/30 bg-[#123B2A] p-6 sm:p-8">
+              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C9DDB4]">10:00–11:00 PM ET · Live Zoom</p>
+              <h3 className="mt-2 font-playfair text-2xl font-bold text-[#FFF8F4]">Power Down™</h3>
+              <p className="mt-3 font-poppins text-base leading-relaxed text-[#F6D6E1]">Join the community to release a day that is already complete, acknowledge accomplishments, and co-work on your bedtime routine. The goal: pajamas on, in bed, ready to unplug when the community closes at 11:00 PM.</p>
             </article>
           </div>
-          <div className="mt-5 rounded-2xl border border-white/20 bg-white/5 p-6 text-center sm:p-8">
+          <div className="mt-5 rounded-2xl border border-[#2D6348]/30 bg-[#123B2A] p-6 text-center sm:p-8">
             <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#F6A9C2]">11:00 PM ET · Community closes</p>
             <h3 className="mt-2 font-playfair text-2xl font-bold text-[#FFF8F4]">Unplug™</h3>
             <p className="mx-auto mt-3 max-w-3xl font-poppins text-base leading-relaxed text-[#F6D6E1]">Disconnect from devices and social media. Protect your overnight sleep—no all-night scrolling, no letting the digital world take over the hours reserved for rest.</p>
           </div>
-          <p className="mx-auto mt-10 max-w-4xl text-center font-playfair text-xl font-semibold leading-relaxed text-[#FFF8F4] sm:text-2xl">Repeat the rhythm. Build the habit. Integrate the boundaries you choose—or adopt the full Work-Life Balance Business Model™ through the monthly membership.</p>
+          <p className="mx-auto mt-10 max-w-4xl text-center font-playfair text-xl font-semibold leading-relaxed text-[#4A3A42] sm:text-2xl">Repeat the rhythm. Build the habit. Integrate the boundaries you choose—or adopt the full Work-Life Balance Business Model™ through the monthly membership.</p>
         </div>
       </section>
 
