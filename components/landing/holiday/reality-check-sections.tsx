@@ -120,6 +120,31 @@ export function WeMakeTimeForMoreSection() {
           </div>        </div>
       </section>
 
+      <section className="bg-white py-16 sm:py-20">
+        <div className="mx-auto max-w-6xl px-5 sm:px-8">
+          <header className="mx-auto mb-10 max-w-4xl text-center">
+            <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#C13B6B]">Your boundaries. Your business. Your life.</p>
+            <h2 className="mt-3 font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">The Boundaries Already Built In &amp; the Ones You Set</h2>
+          </header>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              { title: "Time boundaries", description: "Decide when work begins and ends, and what fits into the time available." },
+              { title: "Personal life boundaries", description: "Protect time for relationships, family, personal interests, and life outside the business." },
+              { title: "Breaks boundaries", description: "Make room for movement, meals, rest, and transitions instead of working straight through." },
+              { title: "Availability boundaries", description: "Decide when clients, colleagues, team members, and business demands can access your time." },
+              { title: "Workload boundaries", description: "Recognize when too much rests on you, and decide what to prioritize, delegate, defer, or redesign." },
+              { title: "Digital boundaries", description: "Establish when to disconnect from business communications and technology." },
+            ].map((item) => (
+              <article key={item.title} className="rounded-2xl border border-[#E8C6D2] bg-[#FFF8FA] p-6 shadow-sm">
+                <h3 className="font-playfair text-xl font-bold text-[#4A3A42]">{item.title}</h3>
+                <p className="mt-3 font-poppins text-sm leading-relaxed text-[#5A4A52]">{item.description}</p>
+              </article>
+            ))}
+          </div>
+          <p className="mx-auto mt-8 max-w-4xl text-center font-poppins text-base leading-relaxed text-[#5A4A52]">Your boundaries reflect your life, values, responsibilities, and business. This is a guided practice—not a one-size-fits-all rulebook.</p>
+        </div>
+      </section>
+
       <section id="weekly-rhythm" className="scroll-mt-20 bg-[#FCEEF2] py-20 sm:py-24">
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <header className="mx-auto mb-12 max-w-4xl text-center">
