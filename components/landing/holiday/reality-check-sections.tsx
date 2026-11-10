@@ -94,7 +94,7 @@ export function WeMakeTimeForMoreSection() {
           <header className="mx-auto mb-12 max-w-4xl text-center">
             <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">Experience Your Work-Life Balance Business Day™</p>
             <h2 className="mt-3 font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl">Practice Your Human Sustainability Boundaries™</h2>
-            <p className="mt-5 font-poppins text-pretty text-lg leading-relaxed text-[#F6D6E1]">Set boundaries that make room for your life while giving your business the structure and focused attention it needs.</p>
+            <p className="mt-5 font-poppins text-pretty text-lg leading-relaxed text-[#F6D6E1]">Set boundaries to contain work so the life you're building it for can expand.</p>
           </header>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {[
