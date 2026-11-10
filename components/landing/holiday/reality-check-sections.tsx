@@ -314,38 +314,48 @@ export function FreedomSection() {
               <div className="rounded-2xl border border-[#9DBF9A]/25 bg-[#102C28]/90 p-5 shadow-[0_24px_80px_rgba(0,0,0,.28)] sm:p-7">
                 <div className="mb-6 flex items-center justify-between gap-3 border-b border-[#C9DDB4]/15 pb-4">
                   <div>
-                    <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#9DBF9A]">Business operating architecture</p>
+                    <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#9DBF9A]">Human-centered business design</p>
                     <h3 className="mt-1 font-playfair text-2xl font-semibold text-[#FFF8F4]">Human Sustainability™</h3>
                   </div>
-                  <span className="rounded-md border border-[#A9D69C]/30 bg-[#A9D69C]/10 px-2 py-1 font-mono text-[9px] uppercase tracking-wider text-[#C9DDB4]">Guardrails first</span>
+                  <span className="rounded-md border border-[#A9D69C]/30 bg-[#A9D69C]/10 px-2 py-1 font-mono text-[9px] uppercase tracking-wider text-[#C9DDB4]">Human first</span>
                 </div>
-                <div className="space-y-3">
-                  <div className="rounded-xl border border-[#83B7C4]/30 bg-[#83B7C4]/[0.08] p-4">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#A9D4DE]">Layer 03 · Technology</span>
-                      <span className="font-mono text-[9px] text-[#A9D4DE]">AI + AUTOMATION</span>
-                    </div>
-                    <p className="mt-2 font-poppins text-sm text-[#F7F5EF]">Tools, agents, workflows, and increased execution capacity</p>
+                <div className="rounded-xl border border-[#A9D69C]/45 bg-[#A9D69C]/[0.12] p-4">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#C9DDB4]">The governing principle</span>
+                    <span className="font-mono text-[9px] text-[#C9DDB4]">FOUNDATION</span>
                   </div>
-                  <div className="mx-auto h-5 w-px bg-gradient-to-b from-[#83B7C4] to-[#F6A9C2]" />
-                  <div className="rounded-xl border border-[#F6A9C2]/35 bg-[#F6A9C2]/[0.08] p-4">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#F6A9C2]">Layer 02 · Governance</span>
-                      <span className="font-mono text-[9px] text-[#F6A9C2]">HUMAN GUARDRAILS</span>
-                    </div>
-                    <p className="mt-2 font-poppins text-sm text-[#F7F5EF]">Authority, boundaries, decision rights, and operating rules</p>
+                  <h4 className="mt-2 font-playfair text-xl font-semibold text-[#FFF8F4]">Design the business around human capacity.</h4>
+                  <p className="mt-2 font-poppins text-sm leading-relaxed text-[#E4EBDD]">Attention, energy, recovery, values, and life beyond work matter in how the business is designed and operated.</p>
+                </div>
+                <div className="mx-auto h-5 w-px bg-gradient-to-b from-[#A9D69C] to-[#83B7C4]" />
+                <div className="rounded-xl border border-[#83B7C4]/30 bg-[#83B7C4]/[0.08] p-4">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#A9D4DE]">01 · Reentry</span>
+                    <span className="font-mono text-[9px] text-[#A9D4DE]">THE WORKWEEK</span>
                   </div>
-                  <div className="mx-auto h-5 w-px bg-gradient-to-b from-[#F6A9C2] to-[#A9D69C]" />
-                  <div className="rounded-xl border border-[#A9D69C]/40 bg-[#A9D69C]/[0.1] p-4">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#C9DDB4]">Layer 01 · Human capacity</span>
-                      <span className="font-mono text-[9px] text-[#C9DDB4]">THE FOUNDATION</span>
-                    </div>
-                    <p className="mt-2 font-poppins text-sm text-[#F7F5EF]">Attention, energy, recovery, values, and life beyond work</p>
+                  <h4 className="mt-2 font-playfair text-lg font-semibold text-[#FFF8F4]">Redesign Your Entry Into the Workweek.</h4>
+                  <p className="mt-1 font-poppins text-sm leading-relaxed text-[#D9E4D7]">Begin intentionally. Reconsider how you enter, organize, and experience your business week.</p>
+                </div>
+                <div className="mx-auto h-5 w-px bg-gradient-to-b from-[#83B7C4] to-[#F6A9C2]" />
+                <div className="rounded-xl border border-[#F6A9C2]/35 bg-[#F6A9C2]/[0.08] p-4">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#F6A9C2]">02 · Daily practice</span>
+                    <span className="font-mono text-[9px] text-[#F6A9C2]">NON-NEGOTIABLES</span>
                   </div>
+                  <h4 className="mt-2 font-playfair text-lg font-semibold text-[#FFF8F4]">Establish and Practice Human Boundaries.</h4>
+                  <p className="mt-1 font-poppins text-sm leading-relaxed text-[#E5DCE0]">Set non-negotiable time and space boundaries. Practice working, leading, and living within them.</p>
+                </div>
+                <div className="mx-auto h-5 w-px bg-gradient-to-b from-[#F6A9C2] to-[#A9D69C]" />
+                <div className="rounded-xl border border-[#A9D69C]/35 bg-[#A9D69C]/[0.08] p-4">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#C9DDB4]">03 · Business redesign</span>
+                    <span className="font-mono text-[9px] text-[#C9DDB4]">INTEGRATION</span>
+                  </div>
+                  <h4 className="mt-2 font-playfair text-lg font-semibold text-[#FFF8F4]">Integrate Boundaries Into How Business Operates.</h4>
+                  <p className="mt-1 font-poppins text-sm leading-relaxed text-[#D9E4D7]">Notice boundary collisions. Develop business rules and operating practices that help protect the boundaries you choose.</p>
                 </div>
                 <p className="mt-5 border-t border-[#C9DDB4]/15 pt-4 font-mono text-[10px] uppercase tracking-[0.15em] leading-relaxed text-[#C9DDB4]">
-                  Design sequence: Human boundaries → Business guardrails → Technology acceleration
+                  The outcome: Work has boundaries. Life has room to expand.
                 </p>
               </div>
               <div className="rounded-xl border border-[#C9DDB4]/15 bg-[#F7F5EF]/[0.04] p-5">
