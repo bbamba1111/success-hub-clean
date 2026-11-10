@@ -121,32 +121,66 @@ export function WeMakeTimeForMoreSection() {
         </div>
       </section>
 
-      <section className="bg-[#123B2A] py-16 sm:py-20">
+      <section id="weekly-rhythm" className="scroll-mt-20 bg-[#123B2A] py-20 sm:py-24">
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
-          <div className="mx-auto mb-10 max-w-3xl text-center">
-            <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#C9DDB4]">Sunday through Sunday</p>
-            <h2 className="mt-3 font-playfair text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-4xl">See the rhythm of your week.</h2>
+          <header className="mx-auto mb-12 max-w-4xl text-center">
+            <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#C9DDB4]">The Work-Life Balance Business Week™</p>
+            <h2 className="mt-3 font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl">See How Your Week Works.</h2>
+            <p className="mt-5 font-poppins text-lg leading-relaxed text-[#F6D6E1]">We Don't Hustle — We Harmonize Work &amp; Life.™ We contain work, so life has space to expand. Here's how you put that into practice—starting on Day 1.</p>
+          </header>
+
+          <div className="grid gap-5 md:grid-cols-2">
+            <article className="rounded-2xl border border-white/15 bg-white/5 p-6 sm:p-8">
+              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#F6A9C2]">Sunday · See your reality</p>
+              <h3 className="mt-3 font-playfair text-2xl font-bold text-[#FFF8F4]">Start with the Reality Check™</h3>
+              <p className="mt-3 font-poppins text-base leading-relaxed text-[#F6D6E1]">Look at where business demands and life priorities are competing. Identify the boundaries that need attention. Sunday is your reflection and transition point—not another scheduled business workday.</p>
+            </article>
+            <article className="rounded-2xl border border-white/15 bg-white/5 p-6 sm:p-8">
+              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#F6A9C2]">Monday–Thursday · Repeat each day</p>
+              <h3 className="mt-3 font-playfair text-2xl font-bold text-[#FFF8F4]">Decide. Design. Live Your Day.</h3>
+              <p className="mt-3 font-poppins text-base leading-relaxed text-[#F6D6E1]">Each business day, decide what matters in work and life. Personalize that day's time-and-space boundaries in their dropdown spaces; your choices populate that day's schedule. Then begin living, working, leading, and operating within those boundaries—starting Monday, Day 1.</p>
+              <p className="mt-4 font-poppins text-sm font-semibold text-[#C9DDB4]">Join live Zoom co-working for community, support, and accountability.</p>
+            </article>
+            <article className="rounded-2xl border border-white/15 bg-white/5 p-6 sm:p-8">
+              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#F6A9C2]">At the end of each boundary</p>
+              <h3 className="mt-3 font-playfair text-2xl font-bold text-[#FFF8F4]">Five Minutes to Notice and Record.</h3>
+              <p className="mt-3 font-poppins text-base leading-relaxed text-[#F6D6E1]">Record whether a collision occurred, what interfered, and what you observed. These brief check-ins help reveal patterns across the four business days.</p>
+            </article>
+            <article className="rounded-2xl border border-white/15 bg-white/5 p-6 sm:p-8">
+              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#F6A9C2]">1:00–5:00 PM ET · Focused CEO Workday™</p>
+              <h3 className="mt-3 font-playfair text-2xl font-bold text-[#FFF8F4]">Choose the Work That Moves Your Business.</h3>
+              <p className="mt-3 font-poppins text-base leading-relaxed text-[#F6D6E1]">Choose an assignment from your own business priorities or from the business functions—Client Attraction, Sales &amp; Conversion, Service/Product Delivery, or Business Operations. Use this time to execute business work or redesign how the business operates.</p>
+            </article>
+            <article className="rounded-2xl border border-white/15 bg-white/5 p-6 sm:p-8">
+              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#F6A9C2]">After practicing the four-day rhythm</p>
+              <h3 className="mt-3 font-playfair text-2xl font-bold text-[#FFF8F4]">Turn a Boundary Into a Business Rule.</h3>
+              <p className="mt-3 font-poppins text-base leading-relaxed text-[#F6D6E1]">Choose a Non-Negotiable Boundary to integrate into your actual business. Use the guided Boundary Builder and Communicate + Delegate process to begin creating a Business Operating Rule / SOP that helps protect it.</p>
+            </article>
+            <article className="rounded-2xl border border-white/15 bg-white/5 p-6 sm:p-8">
+              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#F6A9C2]">Friday–Sunday · Three-day weekend</p>
+              <h3 className="mt-3 font-playfair text-2xl font-bold text-[#FFF8F4]">Practice Being Present in Your Life.</h3>
+              <p className="mt-3 font-poppins text-base leading-relaxed text-[#F6D6E1]">No scheduled business work. Enjoy relationships, personal priorities, rest, and experiences. The weekend is a boundary, too: practice being away from the business without feeling compelled to return to work.</p>
+            </article>
           </div>
-          <div className="grid gap-4 md:grid-cols-3">
-            <article className="rounded-2xl border border-white/15 bg-white/5 p-6 sm:p-7">
-              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#F6A9C2]">Sunday · Start here</p>
-              <h3 className="mt-3 font-playfair text-2xl font-bold text-[#FFF8F4]">See Your Reality</h3>
-              <p className="mt-3 font-poppins text-base leading-relaxed text-[#F6D6E1]">Begin with the free Work-Life Balance Reality Check™. Get clear on your business, life priorities, and the boundaries that need attention.</p>
-              <p className="mt-4 font-poppins text-sm font-semibold text-[#C9DDB4]">Start with clarity.</p>
+
+          <div className="mt-8 grid gap-5 md:grid-cols-2">
+            <article className="rounded-2xl bg-[#F7DCE5] p-6 sm:p-8">
+              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#8F3155]">5:00–10:00 PM ET</p>
+              <h3 className="mt-2 font-playfair text-2xl font-bold text-[#4A3A42]">Time Freedom™</h3>
+              <p className="mt-3 font-poppins text-base leading-relaxed text-[#5A4A52]">The business day is finished at 5:00 PM. These five hours belong to life—not business catch-up. Make room for relationships, dinner, interests, and whatever you choose to enjoy.</p>
             </article>
-            <article className="rounded-2xl border border-white/15 bg-white/5 p-6 sm:p-7">
-              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#F6A9C2]">Monday–Thursday · Repeat</p>
-              <h3 className="mt-3 font-playfair text-2xl font-bold text-[#FFF8F4]">Live Your Business Day</h3>
-              <p className="mt-3 font-poppins text-base leading-relaxed text-[#F6D6E1]">Practice the Work-Life Balance Business Day™ each workday. Bring your real business priorities and work within the boundaries built into the environment.</p>
-              <p className="mt-4 font-poppins text-sm font-semibold text-[#C9DDB4]">Four days of guided practice.</p>
-            </article>
-            <article className="rounded-2xl border border-white/15 bg-white/5 p-6 sm:p-7">
-              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#F6A9C2]">Friday–Sunday · Time Freedom™</p>
-              <h3 className="mt-3 font-playfair text-2xl font-bold text-[#FFF8F4]">Make Room for Life</h3>
-              <p className="mt-3 font-poppins text-base leading-relaxed text-[#F6D6E1]">Step away from scheduled business work. Reclaim space for rest, relationships, recreation, and the life your business was meant to support.</p>
-              <p className="mt-4 font-poppins text-sm font-semibold text-[#C9DDB4]">Enjoy your three-day weekend.</p>
+            <article className="rounded-2xl bg-white p-6 sm:p-8">
+              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C13B6B]">10:00–11:00 PM ET · Live Zoom</p>
+              <h3 className="mt-2 font-playfair text-2xl font-bold text-[#4A3A42]">Power Down™</h3>
+              <p className="mt-3 font-poppins text-base leading-relaxed text-[#5A4A52]">Join the community to release a day that is already complete, acknowledge accomplishments, and co-work on your bedtime routine. The goal: pajamas on, in bed, ready to unplug when the community closes at 11:00 PM.</p>
             </article>
           </div>
+          <div className="mt-5 rounded-2xl border border-white/20 bg-white/5 p-6 text-center sm:p-8">
+            <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#F6A9C2]">11:00 PM ET · Community closes</p>
+            <h3 className="mt-2 font-playfair text-2xl font-bold text-[#FFF8F4]">Unplug™</h3>
+            <p className="mx-auto mt-3 max-w-3xl font-poppins text-base leading-relaxed text-[#F6D6E1]">Disconnect from devices and social media. Protect your overnight sleep—no all-night scrolling, no letting the digital world take over the hours reserved for rest.</p>
+          </div>
+          <p className="mx-auto mt-10 max-w-4xl text-center font-playfair text-xl font-semibold leading-relaxed text-[#FFF8F4] sm:text-2xl">Repeat the rhythm. Build the habit. Integrate the boundaries you choose—or adopt the full Work-Life Balance Business Model™ through the monthly membership.</p>
         </div>
       </section>
 
