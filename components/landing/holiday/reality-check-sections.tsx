@@ -92,13 +92,9 @@ export function WeMakeTimeForMoreSection() {
       <section className="scroll-mt-20 bg-[#123B2A] py-20 sm:py-24">
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <header className="mx-auto mb-12 max-w-4xl text-center">
-            <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">The daily experience</p>
-            <h2 className="mt-3 font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl">Experience Your Work-Life Balance Business Day™</h2>
-            <p className="mt-5 font-poppins text-pretty text-lg leading-relaxed text-[#F6D6E1]">A different way to prepare, plan, work, and make time for life. Your day makes room for personal priorities while giving your business the focused attention it needs.</p>
-            <div className="mx-auto mt-8 max-w-3xl">
-              <h3 className="font-playfair text-2xl font-bold text-[#FFF8F4] sm:text-3xl">Eight Work-Life Balance Human Sustainability Boundaries™</h3>
-              <p className="mt-3 font-poppins text-base leading-relaxed text-[#F6D6E1]">You decide what these boundaries look like in your life and business. Personalize them around your priorities, responsibilities, and the time and space you need to thrive.</p>
-            </div>
+            <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">Experience Your Work-Life Balance Business Day™</p>
+            <h2 className="mt-3 font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl">Practice Your Human Sustainability Boundaries™</h2>
+            <p className="mt-5 font-poppins text-pretty text-lg leading-relaxed text-[#F6D6E1]">Set boundaries that make room for your life while giving your business the structure and focused attention it needs.</p>
           </header>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {[
