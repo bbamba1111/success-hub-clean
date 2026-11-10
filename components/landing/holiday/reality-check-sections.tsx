@@ -281,10 +281,10 @@ export function FreedomSection() {
                 Capacity ≠ Unlimited Demand
               </div>
               <h2 className="font-playfair text-balance text-4xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl lg:text-6xl">
-                More Opportunity Can Bring More Pressure.
+                AI Adoption Requires a Different Work Environment.
               </h2>
               <p className="font-poppins text-pretty text-lg leading-relaxed text-[#D9E4D7]">
-                More technology can bring more complexity. And more capacity can become even more work.
+                AI is changing how businesses operate. But introducing new technology into an already demanding work environment does not automatically make work better.
               </p>
               <div className="grid gap-3 sm:grid-cols-2">
                 {[
@@ -303,10 +303,10 @@ export function FreedomSection() {
               <div className="flex min-h-[260px] flex-1 flex-col justify-center rounded-2xl border border-[#F6A9C2]/35 bg-[#F6A9C2]/[0.07] p-5 sm:p-6">
                 <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.22em] text-[#F6A9C2]">The critical design question</p>
                 <p className="font-playfair text-xl font-semibold leading-relaxed text-[#FFF8F4] sm:text-2xl">
-                  How will you prevent the time and capacity AI creates from simply being absorbed by more work?
+                  You cannot expect people to embrace a new way of working while forcing it into an old work environment that is already overwhelming them.
                 </p>
                 <p className="mt-3 font-poppins text-sm leading-relaxed text-[#E5DCE0]">
-                  As AI changes what your business can do, what will happen to the time and capacity it creates?
+                  If people are expected to adapt to technology, the work environment must also adapt to support people.
                 </p>
               </div>
             </div>
@@ -314,18 +314,18 @@ export function FreedomSection() {
               <div className="rounded-2xl border border-[#9DBF9A]/25 bg-[#102C28]/90 p-5 shadow-[0_24px_80px_rgba(0,0,0,.28)] sm:p-7">
                 <div className="mb-6 flex items-center justify-between gap-3 border-b border-[#C9DDB4]/15 pb-4">
                   <div>
-                    <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#9DBF9A]">AI adoption pressure map</p>
-                    <h3 className="mt-1 font-playfair text-2xl font-semibold text-[#FFF8F4]">The Complexity Load</h3>
+                    <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#9DBF9A]">Reciprocity in AI adoption</p>
+                    <h3 className="mt-1 font-playfair text-2xl font-semibold text-[#FFF8F4]">The Work Environment Must Adapt, Too.</h3>
                   </div>
-                  <span className="rounded-md border border-[#F6A9C2]/30 bg-[#F6A9C2]/10 px-2 py-1 font-mono text-[9px] uppercase tracking-wider text-[#F6A9C2]">Pressure points</span>
+                  <span className="rounded-md border border-[#F6A9C2]/30 bg-[#F6A9C2]/10 px-2 py-1 font-mono text-[9px] uppercase tracking-wider text-[#F6A9C2]">People + technology</span>
                 </div>
                 <div className="space-y-3">
                   {[
-                    ["01", "Technology velocity", "Constant changes in tools and capabilities"],
-                    ["02", "Tool selection", "More options, comparisons, and decisions"],
-                    ["03", "Learning curve", "Time and attention required to keep up"],
-                    ["04", "Automation choices", "Deciding what changes and what stays human-led"],
-                    ["05", "Operating workload", "Existing responsibilities that do not disappear"],
+                    ["01", "Make room to learn", "Time and space to understand, practice, and become comfortable with new technology."],
+                    ["02", "Reduce competing demands", "Do not layer training and adoption onto an already overloaded workweek."],
+                    ["03", "Redesign the workweek", "Make room for learning, experimentation, adjustment, and integration."],
+                    ["04", "Reconsider expectations", "Do not automatically turn every efficiency gain into a demand for greater output."],
+                    ["05", "Share the benefit", "Let AI-created capacity mean less pressure, more manageable work, and more room for life."],
                   ].map(([number, title, detail]) => (
                     <div key={number} className="flex items-start gap-4 rounded-xl border border-[#C9DDB4]/15 bg-[#F7F5EF]/[0.045] p-4">
                       <span className="pt-0.5 font-mono text-xs text-[#F6A9C2]">{number}</span>
@@ -342,9 +342,9 @@ export function FreedomSection() {
                   ))}
                 </div>
                 <div className="mt-5 rounded-xl border border-[#F6A9C2]/30 bg-[#F6A9C2]/[0.07] p-4">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#F6A9C2]">Cumulative effect</p>
-                  <p className="mt-2 font-playfair text-xl font-semibold leading-relaxed text-[#FFF8F4]">More to evaluate. More to learn. More to manage.</p>
-                  <p className="mt-1 font-poppins text-sm leading-relaxed text-[#D9E4D7]">All while the day-to-day demands of running a business continue.</p>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#F6A9C2]">The reciprocity principle</p>
+                  <p className="mt-2 font-playfair text-xl font-semibold leading-relaxed text-[#FFF8F4]">If people are expected to adapt, the work environment must adapt, too.</p>
+                  <p className="mt-1 font-poppins text-sm leading-relaxed text-[#D9E4D7]">AI adoption should not be forced into an already demanding workweek.</p>
                 </div>
               </div>
             </div>
@@ -355,7 +355,7 @@ export function FreedomSection() {
                 Human Sustainability™ is a business operating principle—not just a personal wellness message.
               </p>
               <p className="mt-3 font-poppins text-base leading-relaxed text-[#D9E4D7]">
-                It means designing how a business operates around the sustainable capacity of the people who build, lead, and work within it. We cannot keep adding demands without considering what human beings can sustainably carry. Attention, energy, and recovery are not unlimited resources.
+                It means designing work around the sustainable capacity of the people who build, lead, and operate the business. AI adoption should not add another demand to an already demanding workweek. The work environment must make room for people to learn, adapt, and share in the capacity new technology creates.
               </p>
             </div>
             <blockquote className="flex h-full min-h-[230px] flex-col justify-center border-l-2 border-[#F6A9C2] py-6 pl-6 sm:pl-8">
