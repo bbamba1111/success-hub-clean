@@ -398,27 +398,7 @@ const MONDAY_SEQUENCE = [
 ]
 
 export function MondaySection() {
-  return (
-    <section id="monday" className="scroll-mt-20 bg-[#FFFDFB] py-20 sm:py-28">
-      <div className="mx-auto flex max-w-6xl flex-col gap-12 px-5 sm:px-8">
-        <div className="flex flex-col gap-5">
-          <h3 className="font-poppins text-base font-semibold uppercase tracking-[0.18em] text-[#C13B6B]">The boundaries you will personalize</h3>
-          <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {BOUNDARY_AREAS.map((b) => (
-              <li key={b.title} className="flex flex-col gap-2 rounded-2xl bg-[#FFF8F4] p-6 ring-1 ring-[#F2E4E8]">
-                <h4 className={`font-playfair text-xl font-bold ${INK}`}>{b.title} boundaries</h4>
-                <p className={BODY_SM}>{b.body}</p>
-              </li>
-            ))}
-          </ul>
-          <p className="max-w-3xl italic text-base text-[#5A4A52]">
-            Your boundaries reflect your life, values, responsibilities, and business. This is a guided practice—not a one-size-fits-all rulebook.
-          </p>
-        </div>
-
-      </div>
-    </section>
-  )
+  return null
 }
 
 export function BusinessWeekSection() {
