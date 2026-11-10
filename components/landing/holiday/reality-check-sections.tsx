@@ -145,7 +145,7 @@ export function WeMakeTimeForMoreSection() {
         </div>
       </section>
 
-      <section id="weekly-rhythm" className="scroll-mt-20 bg-[#FCEEF2] py-20 sm:py-24">
+      <section id="weekly-rhythm" className="scroll-mt-20 bg-[#EEF3E8] py-20 sm:py-24">
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <header className="mx-auto mb-12 max-w-4xl text-center">
             <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#5A7F46]">The Work-Life Balance Business Week™</p>
