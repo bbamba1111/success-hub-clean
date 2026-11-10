@@ -182,39 +182,7 @@ export function WeMakeTimeForMoreSection() {
         </div>
       </section>
 
-      <section className="bg-[#FCEEF2] py-16 sm:py-20">
-        <div className="mx-auto max-w-6xl px-5 sm:px-8">
-          <div className="mx-auto mb-10 max-w-3xl text-center">
-            <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#C13B6B]">We Help You Build Work-Life Balance Boundaries Into Your Business.</p>
-            <h2 className="mt-3 font-playfair text-3xl font-bold leading-tight text-[#4A3A42] sm:text-4xl">Eight Non-Negotiable Human Work-Life Balance Time &amp; Space Boundaries™</h2>
-            <p className="mt-4 font-poppins text-base leading-relaxed text-[#5A4A52]">These provide a practical structure. Each founder personalizes them around their intentions, priorities, responsibilities, and business needs.</p>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              { title: "Flex Time™", description: "Choose a work rhythm that makes room for the needs of your day." },
-              { title: "Morning GIV•EN™ Routine", description: "Begin with gratitude, intention, vision, emotional embodiment, and nurture." },
-              { title: "Workout & Movement Window™", description: "Protect time for daily movement and care for your physical well-being." },
-              { title: "Extended Healthy Hybrid Lunch Break™", description: "Make space for a nourishing meal, restoration, and a real midday pause." },
-              { title: "4-Hour Focused CEO Workday™", description: "Concentrate on your highest-priority business work in a focused work block." },
-              { title: "Time Freedom™", description: "Keep time beyond scheduled work available for life, relationships, and joy." },
-              { title: "Power Down™", description: "Create an evening transition that brings the business day to a close." },
-              { title: "Unplug™", description: "Disconnect from business devices and communications to support restorative rest." },
-            ].map((item, i) => (
-              <article key={item.title} className="flex min-h-44 flex-col rounded-2xl bg-white p-6 shadow-sm">
-                <span className="font-playfair text-3xl font-bold text-[#C13B6B]">0{i + 1}</span>
-                <h3 className="mt-4 font-playfair text-xl font-bold leading-snug text-[#4A3A42]">{item.title}</h3>
-                <p className="mt-2 font-poppins text-sm leading-relaxed text-[#5A4A52]">{item.description}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      <section className="bg-[#FFF8F4] px-5 py-14 text-center sm:px-8 sm:py-16">
-        <p className="mx-auto max-w-3xl font-playfair text-2xl font-bold leading-snug text-[#4A3A42] sm:text-3xl">
-          You don't just learn about work-life balance. You practice it inside your actual business.
-        </p>
-      </section>
     </>
   )
 }
