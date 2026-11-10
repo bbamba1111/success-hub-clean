@@ -435,10 +435,6 @@ export function BusinessWeekSection() {
     { day: "Thursday", title: "Close your workweek", body: "Complete your scheduled work, close out priorities, and make an intentional transition away from business." },
     { day: "Friday–Sunday", title: "Experience Time Freedom™", body: "Make room for relationships, rest, recreation, and personal priorities. Time off is not another productivity project." },
   ]
-  const boundaries = [
-    "Flex Time™", "Morning GIV•EN™ Routine", "Workout & Movement Window™", "Extended Healthy Hybrid Lunch Break™",
-    "4-Hour Focused CEO Workday™", "Time Freedom™", "Power Down™", "Unplug™",
-  ]
   return (
     <section id="business-week" className="scroll-mt-20 bg-[#FFF8F4] py-20 sm:py-28">
       <div className="mx-auto flex max-w-6xl flex-col gap-12 px-5 sm:px-8">
@@ -464,14 +460,6 @@ export function BusinessWeekSection() {
           <div className="flex flex-col gap-4">
             <h3 className={`font-playfair text-2xl font-bold ${INK}`}>Eight Non-Negotiable Human Work-Life Balance Time & Space Boundaries™</h3>
             <p className={BODY_SM}>These provide a practical structure. Each founder personalizes them around their intentions, priorities, responsibilities, and business needs.</p>
-            <ol className="grid gap-3 sm:grid-cols-2">
-              {boundaries.map((item, i) => (
-                <li key={item} className="flex gap-3 rounded-xl bg-white p-4 ring-1 ring-[#F2E4E8]">
-                  <span className="font-playfair text-xl font-bold text-[#C13B6B]">{i + 1}</span>
-                  <span className="font-poppins text-sm font-semibold text-[#4A3A42]">{item}</span>
-                </li>
-              ))}
-            </ol>
           </div>
           <div className="flex flex-col justify-center gap-5 rounded-3xl bg-[#123B2A] p-8">
             <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#C9DDB4]">The two Harmony Lane experiences</p>
