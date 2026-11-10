@@ -173,7 +173,7 @@ export function WeMakeTimeForMoreSection() {
             <article className="rounded-2xl border border-[#2D6348]/30 bg-[#123B2A] p-6 sm:p-8">
               <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C9DDB4]">04 · 1:00–5:00 PM ET — Focused CEO Workday™</p>
               <h3 className="mt-3 font-playfair text-2xl font-bold text-[#F6A9C2]">Choose Assignments That Move Your Business Forward.</h3>
-              <p className="mt-3 font-poppins text-base leading-relaxed text-[#F6D6E1]">Choose an assignment from your own business priorities or from the business functions—Client Attraction, Sales &amp; Conversion, Service/Product Delivery, or Business Operations. Use this time to execute business work or redesign how the business operates.</p>
+              <p className="mt-3 font-poppins text-base leading-relaxed text-[#F6D6E1]">Choose assignments from your own business priorities or from the business functions—Client Attraction, Sales &amp; Conversion, Service/Product Delivery, Business Operations, and others. Use this time to execute business work or redesign how the business operates.</p>
             </article>
             <article className="rounded-2xl border border-[#2D6348]/30 bg-[#123B2A] p-6 sm:p-8">
               <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C9DDB4]">05 · During the four-day rhythm</p>
