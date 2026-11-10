@@ -175,15 +175,10 @@ export function WeMakeTimeForMoreSection() {
               <p className="mt-3 font-poppins text-base leading-relaxed text-[#F6D6E1]">Join the community to release a day that is already complete, acknowledge accomplishments, and co-work on your bedtime routine. The goal: pajamas on, in bed, ready to unplug when the community closes at 11:00 PM.</p>
             </article>
           </div>
-          <div className="relative mt-5 overflow-hidden rounded-2xl border border-[#2D6348]/30 text-center shadow-lg">
-            <img src="/images/holiday/digital-detox-sign.webp" alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
-            <div className="absolute inset-0 bg-[#123B2A]/75" aria-hidden="true" />
-            <div className="relative p-6 sm:p-8">
-              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#F6A9C2]">11:00 PM ET · Community closes</p>
-              <h3 className="mt-2 font-playfair text-2xl font-bold text-white">Unplug™</h3>
-              <p className="mx-auto mt-3 max-w-3xl font-poppins text-base leading-relaxed text-white">Disconnect from devices and social media. Protect your overnight sleep—no all-night scrolling, no letting the digital world take over the hours reserved for rest.</p>
-            </div>
+          <div className="mt-5 overflow-hidden rounded-2xl shadow-lg">
+            <img src="/images/holiday/digital-detox-sign.webp" alt="Unplug Close card" className="h-auto w-full object-cover" loading="lazy" />
           </div>
+          <p className="mx-auto mt-4 max-w-3xl text-center font-poppins text-base leading-relaxed text-[#4A3A42]">Yes, we do close at night—and we strive to get 8 hours of sleep.</p>
           <p className="mx-auto mt-10 max-w-4xl text-center font-playfair text-xl font-semibold leading-relaxed text-[#4A3A42] sm:text-2xl">Repeat the rhythm. Build the habit. Integrate the boundaries you choose—or adopt the full Work-Life Balance Business Model™ through the monthly membership.</p>
         </div>
       </section>
