@@ -33,6 +33,10 @@ export function WeMakeTimeForMoreSection() {
     <>
       <section id="destination" className="scroll-mt-20 bg-[#F7DCE5] py-20 sm:py-24">
         <div className="mx-auto max-w-6xl px-5 text-center sm:px-8">
+          <div className="mx-auto mb-8 max-w-5xl">
+            <p className="mb-3 font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#5A7F46] sm:text-base">We Make Time For More</p>
+            <h2 className="font-playfair text-balance text-4xl font-bold leading-tight text-[#4A3A42] sm:text-6xl lg:text-7xl">The Work-Life Balance Business Week™</h2>
+          </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {model.map((item) => (
               <article key={item.title} className="flex min-h-44 flex-col items-center justify-center rounded-2xl bg-white px-5 py-7 text-center shadow-sm">
@@ -47,10 +51,6 @@ export function WeMakeTimeForMoreSection() {
 
       <section id="business-day" className="scroll-mt-20 bg-[#FFF8F4] py-20 sm:py-24">
         <div className="mx-auto flex max-w-5xl flex-col gap-12 px-5 sm:px-8">
-          <div className="mx-auto mb-8 max-w-5xl">
-            <p className="mb-3 font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#5A7F46] sm:text-base">We Make Time For More</p>
-            <h2 className="font-playfair text-balance text-4xl font-bold leading-tight text-[#4A3A42] sm:text-6xl lg:text-7xl">The Work-Life Balance Business Week™</h2>
-          </div>
           <header className="mx-auto max-w-4xl text-center">
             <h2 className="whitespace-nowrap font-playfair text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">Make Time For More On Monday</h2>
             <p className="mt-3 font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#5A7F46] sm:text-base">Redesign Your Entry Into The Workweek</p>
