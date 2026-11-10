@@ -128,9 +128,9 @@ export function WeMakeTimeForMoreSection() {
           </header>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {[
-              { title: "Time boundaries", description: "Decide when work begins and ends, and what fits into the time available." },
-              { title: "Personal life boundaries", description: "Protect time for relationships, family, personal interests, and life outside the business." },
-              { title: "Breaks boundaries", description: "Make room for movement, meals, rest, and transitions instead of working straight through." },
+              { title: "Time boundaries", description: "We’ve decided when work begins and ends. You decide what fits into the time available." },
+              { title: "Personal life boundaries", description: "We’ve protected time for relationships, family, personal interests, and life outside the business. You decide how to make that time meaningful in your own life." },
+              { title: "Breaks boundaries", description: "We’ve made room for movement, meals, rest, and transitions instead of working straight through. You decide how to use those breaks to care for yourself and recharge." },
               { title: "Availability boundaries", description: "Decide when clients, colleagues, team members, and business demands can access your time." },
               { title: "Workload boundaries", description: "Recognize when too much rests on you, and decide what to prioritize, delegate, defer, or redesign." },
               { title: "Digital boundaries", description: "Establish when to disconnect from business communications and technology." },
