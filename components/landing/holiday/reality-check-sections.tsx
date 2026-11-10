@@ -135,7 +135,7 @@ export function WeMakeTimeForMoreSection() {
               { title: "Workload boundaries", description: "Recognize when too much rests on you, and decide what to prioritize, delegate, defer, or redesign." },
               { title: "Digital boundaries", description: "Establish when to disconnect from business communications and technology." },
             ].map((item) => (
-              <article key={item.title} className="rounded-2xl border border-[#E8C6D2] bg-[#FFF8FA] p-6 shadow-sm">
+              <article key={item.title} className="rounded-2xl border border-[#E8C6D2] bg-[#EEF3E8] p-6 shadow-sm">
                 <h3 className="font-playfair text-xl font-bold text-[#4A3A42]">{item.title}</h3>
                 <p className="mt-3 font-poppins text-sm leading-relaxed text-[#5A4A52]">{item.description}</p>
               </article>
