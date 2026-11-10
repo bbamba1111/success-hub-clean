@@ -145,6 +145,27 @@ export function WeMakeTimeForMoreSection() {
         </div>
       </section>
 
+      <section className="bg-[#071D1B] py-16 text-[#F7F5EF] sm:py-20">
+        <div className="mx-auto max-w-5xl px-5 sm:px-8">
+          <header className="mx-auto max-w-4xl text-center">
+            <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#C9DDB4]">Human Sustainability™ in the AI Era</p>
+            <h2 className="mt-3 font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl">A More Sustainable Workweek Can Make Room for AI Adoption.</h2>
+            <p className="mt-5 font-poppins text-lg leading-relaxed text-[#D9E4D7]">AI adoption brings new decisions, learning, experimentation, and adjustment. But when the current work environment already demands more time and attention than people can sustainably give, adding AI adoption can feel like one more pressure.</p>
+          </header>
+          <div className="mt-10 grid gap-5 md:grid-cols-2">
+            <article className="rounded-2xl border border-[#9DBF9A]/25 bg-[#F7F5EF]/[0.045] p-6 sm:p-8">
+              <h3 className="font-playfair text-xl font-bold text-[#F6A9C2]">The Work-Life Balance Business Week™ changes the conditions.</h3>
+              <p className="mt-3 font-poppins text-base leading-relaxed text-[#D9E4D7]">By containing work within a more intentional weekly rhythm and practicing boundaries around time, workload, availability, breaks, and digital demands, founders can begin to create more control over where their time and attention go.</p>
+            </article>
+            <article className="rounded-2xl border border-[#9DBF9A]/25 bg-[#F7F5EF]/[0.045] p-6 sm:p-8">
+              <h3 className="font-playfair text-xl font-bold text-[#F6A9C2]">That can mean less pressure to absorb change on top of everything else.</h3>
+              <p className="mt-3 font-poppins text-base leading-relaxed text-[#D9E4D7]">A four-day business rhythm, a contained focused workday, protected breaks, and time away from business give founders a different starting point for making room to learn, experiment, adjust, and decide how AI fits into their operations.</p>
+            </article>
+          </div>
+          <p className="mx-auto mt-8 max-w-4xl text-center font-playfair text-xl font-semibold leading-relaxed text-[#FFF8F4] sm:text-2xl">The Work-Life Balance Business Week™ does not implement AI. It helps founders begin changing the work environment so AI adoption does not simply become another demand placed on an already demanding workweek.</p>
+        </div>
+      </section>
+
       <section id="weekly-rhythm" className="scroll-mt-20 bg-[#EEF3E8] py-20 sm:py-24">
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <header className="mx-auto mb-12 max-w-4xl text-center">
