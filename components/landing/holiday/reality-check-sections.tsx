@@ -98,10 +98,18 @@ export function WeMakeTimeForMoreSection() {
           </header>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {[
+              { title: "Flex-Time™", lead: "Prepare for Your Day.", body: "Make room for personal preparation and competing priorities before stepping into your business day. Take care of what matters in your life so everything doesn't have to compete with your work.", image: "/images/holiday/winter-stroll.webp", alt: "A woman enjoying a festive winter stroll with a warm drink." },
               { title: "Decide & Design™", lead: "Redesign Your Entry Into the Workweek.", body: "Decide what matters and personalize your Work-Life Balance Business Day. Plan your business priorities, account for your personal priorities, and design how you want your day to work.", image: "/images/holiday/holiday-decide-design.webp", alt: "Decide & Design banner reading Your Work-Life Balance Business Day: Redesign Your Entry Into the Workweek, framed by cherry blossoms, a holiday candle, and a pink planner." },
+              { title: "Morning GIV•EN™", lead: "Begin With Intention and Alignment.", body: "Practice Gratitude, Intention, Vision & Visualization, Emotional Embodiment, and Nurture to bring clarity and intention to your day.", image: "/images/holiday/holiday-morning-given.webp", alt: "A man meditating on a cushion, facing a snowy Japanese garden with cherry blossoms and a red bridge at sunrise." },
+              { title: "Movement Window™", lead: "Make Room for Movement.", body: "Give your body the opportunity to move. Make physical activity part of your day instead of something you continually put off.", image: "/images/holiday/hanukkah-tai-chi.webp", alt: "A mother and daughter practicing movement together at home." },
+              { title: "Extended Healthy Hybrid Lunch™", lead: "Step Away, Recharge, and Enjoy a Real Break.", body: "Make room for nourishment, rest, connection, and personal priorities. Give yourself permission to step away from business.", image: "/images/holiday/cafe-gathering.webp", alt: "Two friends enjoying a meal together in a welcoming café." },
+              { title: "4-Hour Focused CEO Workday™", lead: "Focus on the Business Priorities That Matter.", body: "Give your business focused attention. Work on the priorities you selected during Decide & Design and move your business forward without allowing work to consume your entire day.", image: "/images/holiday/team-celebration.webp", alt: "A team sharing a moment of connection around their work." },
+              { title: "Time Freedom™", lead: "Reclaim Your Personal Time.", body: "Close out your focused work and make room for the life your business was intended to support—your relationships, interests, experiences, and personal priorities.", image: "/images/holiday/togetherness.webp", alt: "Family and friends enjoying time together outdoors." },
+              { title: "Power Down™", lead: "Close the Day Together.", body: "Join the live community Zoom from 10:00–11:00 PM ET to acknowledge the completed day, reflect, and prepare for bedtime. This is not a time to catch up on business work.", image: "/images/holiday/kwanzaa-rest.webp", alt: "A quiet evening moment of rest and renewal." },
+              { title: "Unplug™", lead: "Disconnect and Rest.", body: "At 11:00 PM ET, the community closes. Step away from devices and business communications, begin your overnight digital detox, and make room for a full night's sleep.", image: "/images/holiday/digital-detox-sign.webp", alt: "A sign announcing the community's nightly digital detox." },
             ].map((item) => (
-              <article key={item.title} className="mx-auto w-full max-w-4xl overflow-hidden rounded-2xl bg-white shadow-[0_10px_30px_rgba(255,255,255,0.72)] ring-1 ring-white/70">
-                <img src={item.image} alt={item.alt} className="h-auto w-full object-cover" loading="lazy" />
+              <article key={item.title} className="overflow-hidden rounded-2xl bg-white shadow-[0_10px_30px_rgba(255,255,255,0.72)] ring-1 ring-white/70 transition-[transform,box-shadow] duration-300 ease-out hover:-translate-y-1 hover:scale-[1.02] hover:shadow-[0_20px_44px_rgba(255,255,255,0.95)] motion-reduce:transition-none motion-reduce:hover:transform-none">
+                <img src={item.image} alt={item.alt} className="h-56 w-full object-cover" loading="lazy" />
                 <div className="flex flex-col gap-2 p-7">
                   <h3 className="font-playfair text-xl font-bold text-[#4A3A42]">{item.title}</h3>
                   <p className="font-poppins text-sm font-semibold text-[#C13B6B]">{item.lead}</p>
@@ -109,8 +117,7 @@ export function WeMakeTimeForMoreSection() {
                 </div>
               </article>
             ))}
-          </div>
-        </div>
+          </div>        </div>
       </section>
 
       <section id="weekly-rhythm" className="scroll-mt-20 bg-white py-20 sm:py-24">
