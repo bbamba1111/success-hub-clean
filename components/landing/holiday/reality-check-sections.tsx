@@ -209,41 +209,6 @@ export function WeMakeTimeForMoreSection() {
 
       <section className="bg-[#071D1B] py-16 text-[#F7F5EF] sm:py-20">
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
-          <div className="grid items-center gap-10 lg:grid-cols-[1.15fr_.85fr] lg:gap-14">
-            <div className="flex flex-col gap-6">
-              <h2 className="max-w-3xl font-playfair text-balance text-4xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl lg:text-6xl">
-                More Opportunity Can Bring More Pressure.
-              </h2>
-              <p className="font-poppins text-lg leading-relaxed text-[#D9E4D7]">
-                More technology can bring more complexity. And more capacity can become even more work.
-              </p>
-              <ul className="space-y-3">
-                {[
-                  "Keeping up with rapidly changing technology.",
-                  "Figuring out which tools your business needs.",
-                  "Finding time to learn how to use them effectively.",
-                  "Deciding what to automate and what should remain human-led.",
-                  "Navigating the demands of AI adoption while already carrying the responsibilities of running an overextended business.",
-                ].map((item) => (
-                  <li key={item} className="flex items-start gap-3">
-                    <span aria-hidden="true" className="mt-2.5 h-2 w-2 shrink-0 rounded-full bg-[#F6A9C2]" />
-                    <p className="font-poppins text-base leading-relaxed text-[#F7F5EF] sm:text-lg">{item}</p>
-                  </li>
-                ))}
-              </ul>
-              <p className="font-poppins text-base leading-relaxed text-[#D9E4D7] sm:text-lg">
-                We cannot keep adding demands without considering what human beings can sustainably carry. Attention, energy, and recovery are not unlimited resources.
-              </p>
-            </div>
-            <blockquote className="rounded-3xl border border-[#9DBF9A]/25 bg-[#F7F5EF]/[0.055] px-7 py-10 text-center shadow-sm sm:px-10 sm:py-12">
-              <p className="font-playfair text-3xl font-semibold italic leading-tight text-[#FFF8F4] sm:text-4xl">
-                “Attention, energy, and recovery are not unlimited resources.”
-              </p>
-              <footer className="mt-6 font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#C9DDB4]">
-                — Thought Leader Barbara
-              </footer>
-            </blockquote>
-          </div>
           <header className="mx-auto mt-14 max-w-4xl text-center">
             <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#C9DDB4]">Human Sustainability™ in the AI Era</p>
             <h2 className="mt-3 font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl">A More Sustainable Workweek Can Make Room for AI Adoption.</h2>
@@ -360,6 +325,48 @@ export function FreedomSection() {
           />
         </div>
       </section>
+
+      <section className="bg-[#071D1B] py-16 text-[#F7F5EF] sm:py-20">
+        <div className="mx-auto max-w-6xl px-5 sm:px-8">
+          <div className="grid items-center gap-10 lg:grid-cols-[1.15fr_.85fr] lg:gap-14">
+            <div className="flex flex-col gap-6">
+              <h2 className="max-w-3xl font-playfair text-balance text-4xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl lg:text-6xl">
+                More Opportunity Can Bring More Pressure.
+              </h2>
+              <p className="font-poppins text-lg leading-relaxed text-[#D9E4D7]">
+                More technology can bring more complexity. And more capacity can become even more work.
+              </p>
+              <ul className="space-y-3">
+                {[
+                  "Keeping up with rapidly changing technology.",
+                  "Figuring out which tools your business needs.",
+                  "Finding time to learn how to use them effectively.",
+                  "Deciding what to automate and what should remain human-led.",
+                  "Navigating the demands of AI adoption while already carrying the responsibilities of running an overextended business.",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-3">
+                    <span aria-hidden="true" className="mt-2.5 h-2 w-2 shrink-0 rounded-full bg-[#F6A9C2]" />
+                    <p className="font-poppins text-base leading-relaxed text-[#F7F5EF] sm:text-lg">{item}</p>
+                  </li>
+                ))}
+              </ul>
+              <p className="font-poppins text-base leading-relaxed text-[#D9E4D7] sm:text-lg">
+                We cannot keep adding demands without considering what human beings can sustainably carry. Attention, energy, and recovery are not unlimited resources.
+              </p>
+            </div>
+            <blockquote className="rounded-3xl border border-[#9DBF9A]/25 bg-[#F7F5EF]/[0.055] px-7 py-10 text-center shadow-sm sm:px-10 sm:py-12">
+              <p className="font-playfair text-3xl font-semibold italic leading-tight text-[#FFF8F4] sm:text-4xl">
+                “Attention, energy, and recovery are not unlimited resources.”
+              </p>
+              <footer className="mt-6 font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#C9DDB4]">
+                — Thought Leader Barbara
+              </footer>
+            </blockquote>
+          </div>
+        </div>
+      </section>
+
+
 
       <section className="bg-white px-5 py-14 text-center sm:px-8 sm:py-16">
         <h2 className="mx-auto max-w-5xl font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">
