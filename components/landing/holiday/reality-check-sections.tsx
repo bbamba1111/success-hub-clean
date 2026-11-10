@@ -89,12 +89,12 @@ export function WeMakeTimeForMoreSection() {
         </div>
       </section>
 
-      <section className="scroll-mt-20 bg-[#FFF8F4] py-20 sm:py-24">
+      <section className="scroll-mt-20 bg-[#123B2A] py-20 sm:py-24">
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <header className="mx-auto mb-12 max-w-4xl text-center">
-            <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#5A7F46]">The daily experience</p>
-            <h2 className="mt-3 font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">Experience Your Work-Life Balance Business Day™</h2>
-            <p className="mt-5 font-poppins text-pretty text-lg leading-relaxed text-[#5A4A52]">A different way to prepare, plan, work, and make time for life. Your day makes room for personal priorities while giving your business the focused attention it needs.</p>
+            <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">The daily experience</p>
+            <h2 className="mt-3 font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl">Experience Your Work-Life Balance Business Day™</h2>
+            <p className="mt-5 font-poppins text-pretty text-lg leading-relaxed text-[#F6D6E1]">A different way to prepare, plan, work, and make time for life. Your day makes room for personal priorities while giving your business the focused attention it needs.</p>
           </header>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {[
@@ -108,7 +108,7 @@ export function WeMakeTimeForMoreSection() {
               { title: "Power Down™", lead: "Release the Day.", body: "Consciously bring the business day to a close. Acknowledge what you accomplished, release the pressure of unfinished work, and transition out of work mode.", image: "/images/holiday/kwanzaa-rest.webp", alt: "A quiet evening moment of rest and renewal." },
               { title: "Unplug™", lead: "Disconnect. Begin Your Digital Detox.", body: "When the community closes for the night, step away from the digital environment. Put your devices aside, begin your overnight digital detox, and prepare for a restful night's sleep.", image: "/images/holiday/digital-detox-sign.webp", alt: "A sign announcing the community's nightly digital detox." },
             ].map((item) => (
-              <article key={item.title} className="overflow-hidden rounded-2xl bg-white shadow-[0_10px_28px_rgba(18,59,42,0.18)] ring-1 ring-[#DCE8DF] transition-[transform,box-shadow] duration-300 ease-out hover:-translate-y-1 hover:scale-[1.02] hover:shadow-[0_20px_42px_rgba(18,59,42,0.34)] motion-reduce:transition-none motion-reduce:hover:transform-none">
+              <article key={item.title} className="overflow-hidden rounded-2xl bg-white shadow-[0_10px_30px_rgba(255,255,255,0.72)] ring-1 ring-white/70 transition-[transform,box-shadow] duration-300 ease-out hover:-translate-y-1 hover:scale-[1.02] hover:shadow-[0_20px_44px_rgba(255,255,255,0.95)] motion-reduce:transition-none motion-reduce:hover:transform-none">
                 <img src={item.image} alt={item.alt} className="h-56 w-full object-cover" loading="lazy" />
                 <div className="flex flex-col gap-2 p-7">
                   <h3 className="font-playfair text-xl font-bold text-[#4A3A42]">{item.title}</h3>
