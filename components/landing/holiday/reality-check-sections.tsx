@@ -266,47 +266,104 @@ export function FreedomSection() {
         </div>
       </section>
 
-      <section className="bg-[#123B2A] py-20 sm:py-28">
-        <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-8 lg:grid-cols-[1.4fr_1fr]">
-          <div className="flex flex-col gap-5">
-            <h2 className="font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl">
-              More Opportunity Can Bring More Pressure.
-            </h2>
-            <p className="font-poppins text-pretty text-lg leading-relaxed text-[#F6D6E1]">
-              More technology can bring more complexity. And more capacity can become even more work.
-            </p>
-            <ul className="flex flex-col gap-3">
-              {[
-                "Keeping up with rapidly changing technology.",
-                "Figuring out which tools your business needs.",
-                "Finding time to learn how to use them effectively.",
-                "Deciding what to automate and what should remain human-led.",
-                "Navigating the demands of AI adoption while already carrying the responsibilities of running an overextended business.",
-              ].map((item) => (
-                <li key={item} className="font-poppins flex items-start gap-3 text-lg leading-relaxed text-[#FFF8F4]">
-                  <Dot className="bg-[#F6A9C2]" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <p className="font-poppins text-pretty text-lg leading-relaxed text-[#F6D6E1]">
-              The question is: how will you prevent the time and capacity AI creates from simply being absorbed by more work? That requires intentional Human Sustainability Boundaries™ and business guardrails—established before you accelerate.
-            </p>
-            <p className="font-poppins text-pretty text-lg leading-relaxed text-[#F6D6E1]">
-              Human Sustainability™ is a business operating principle—not just a personal wellness message. It means designing how a business operates around the sustainable capacity of the people who build, lead, and work within it.
-            </p>
-            <p className="font-poppins text-pretty text-lg leading-relaxed text-[#F6D6E1]">
-              We cannot keep adding demands without considering what human beings can sustainably carry. Attention, energy, and recovery are not unlimited resources.
-            </p>
+      <section className="relative isolate overflow-hidden bg-[#071D1B] py-20 text-[#F7F5EF] sm:py-28">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 opacity-30" style={{ backgroundImage: "linear-gradient(rgba(201,221,180,.12) 1px, transparent 1px), linear-gradient(90deg, rgba(201,221,180,.12) 1px, transparent 1px)", backgroundSize: "42px 42px" }} />
+        <div aria-hidden="true" className="pointer-events-none absolute -right-40 -top-40 -z-10 h-[34rem] w-[34rem] rounded-full border border-[#9DBF9A]/20 shadow-[0_0_0_45px_rgba(157,191,154,0.035),0_0_0_90px_rgba(157,191,154,0.025)]" />
+        <div className="mx-auto max-w-7xl px-5 sm:px-8">
+          <div className="mb-10 flex flex-wrap items-center justify-between gap-3 border-b border-[#C9DDB4]/20 pb-4">
+            <p className="font-mono text-xs uppercase tracking-[0.24em] text-[#C9DDB4]">Human Sustainability™ // Operating Principle 01</p>
+            <p className="font-mono text-xs uppercase tracking-[0.18em] text-[#F6A9C2]">AI era · Human-led by design</p>
           </div>
-          <blockquote className="flex flex-col items-center gap-5 rounded-3xl border border-[#FFF8F4]/15 bg-[#FFF8F4]/5 p-8 text-center">
-            <p className="font-playfair text-2xl font-semibold italic leading-relaxed text-[#FFF8F4] sm:text-3xl">
-              “Attention, energy, and recovery are not unlimited resources.”
-            </p>
-            <footer className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C9DDB4]">
-              — Thought Leader Barbara
-            </footer>
-          </blockquote>
+          <div className="grid items-start gap-12 lg:grid-cols-[1.05fr_.95fr] lg:gap-16">
+            <div className="flex flex-col gap-6">
+              <div className="inline-flex w-fit items-center gap-2 rounded-full border border-[#9DBF9A]/30 bg-[#9DBF9A]/10 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-[#C9DDB4]">
+                <span className="h-2 w-2 rounded-full bg-[#A9D69C] shadow-[0_0_12px_rgba(169,214,156,.9)]" />
+                Capacity ≠ Unlimited Demand
+              </div>
+              <h2 className="font-playfair text-balance text-4xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl lg:text-6xl">
+                More Opportunity Can Bring More Pressure.
+              </h2>
+              <p className="font-poppins text-pretty text-lg leading-relaxed text-[#D9E4D7]">
+                More technology can bring more complexity. And more capacity can become even more work.
+              </p>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {[
+                  ["01", "Technology shifts faster than most businesses can adapt."],
+                  ["02", "Choosing the right tools creates another layer of decisions."],
+                  ["03", "Learning and integrating AI takes time and attention."],
+                  ["04", "Automation requires decisions about what stays human-led."],
+                  ["05", "AI adoption adds pressure to already overextended operators."],
+                ].map(([number, item]) => (
+                  <div key={number} className="flex items-start gap-3 rounded-xl border border-[#C9DDB4]/15 bg-[#F7F5EF]/[0.045] p-4 sm:last:col-span-2">
+                    <span className="font-mono text-xs text-[#F6A9C2]">{number}</span>
+                    <p className="font-poppins text-sm leading-relaxed text-[#F7F5EF]">{item}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="rounded-2xl border border-[#F6A9C2]/35 bg-[#F6A9C2]/[0.07] p-5 sm:p-6">
+                <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.22em] text-[#F6A9C2]">The critical design question</p>
+                <p className="font-playfair text-xl font-semibold leading-relaxed text-[#FFF8F4] sm:text-2xl">
+                  How will you prevent the time and capacity AI creates from simply being absorbed by more work?
+                </p>
+                <p className="mt-3 font-poppins text-sm leading-relaxed text-[#E5DCE0]">
+                  Establish intentional Human Sustainability Boundaries™ and business guardrails before you accelerate.
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-col gap-5">
+              <div className="rounded-2xl border border-[#9DBF9A]/25 bg-[#102C28]/90 p-5 shadow-[0_24px_80px_rgba(0,0,0,.28)] sm:p-7">
+                <div className="mb-6 flex items-center justify-between gap-3 border-b border-[#C9DDB4]/15 pb-4">
+                  <div>
+                    <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#9DBF9A]">Business operating architecture</p>
+                    <h3 className="mt-1 font-playfair text-2xl font-semibold text-[#FFF8F4]">Human Sustainability™</h3>
+                  </div>
+                  <span className="rounded-md border border-[#A9D69C]/30 bg-[#A9D69C]/10 px-2 py-1 font-mono text-[9px] uppercase tracking-wider text-[#C9DDB4]">Guardrails first</span>
+                </div>
+                <div className="space-y-3">
+                  <div className="rounded-xl border border-[#83B7C4]/30 bg-[#83B7C4]/[0.08] p-4">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#A9D4DE]">Layer 03 · Technology</span>
+                      <span className="font-mono text-[9px] text-[#A9D4DE]">AI + AUTOMATION</span>
+                    </div>
+                    <p className="mt-2 font-poppins text-sm text-[#F7F5EF]">Tools, agents, workflows, and increased execution capacity</p>
+                  </div>
+                  <div className="mx-auto h-5 w-px bg-gradient-to-b from-[#83B7C4] to-[#F6A9C2]" />
+                  <div className="rounded-xl border border-[#F6A9C2]/35 bg-[#F6A9C2]/[0.08] p-4">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#F6A9C2]">Layer 02 · Governance</span>
+                      <span className="font-mono text-[9px] text-[#F6A9C2]">HUMAN GUARDRAILS</span>
+                    </div>
+                    <p className="mt-2 font-poppins text-sm text-[#F7F5EF]">Authority, boundaries, decision rights, and operating rules</p>
+                  </div>
+                  <div className="mx-auto h-5 w-px bg-gradient-to-b from-[#F6A9C2] to-[#A9D69C]" />
+                  <div className="rounded-xl border border-[#A9D69C]/40 bg-[#A9D69C]/[0.1] p-4">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#C9DDB4]">Layer 01 · Human capacity</span>
+                      <span className="font-mono text-[9px] text-[#C9DDB4]">THE FOUNDATION</span>
+                    </div>
+                    <p className="mt-2 font-poppins text-sm text-[#F7F5EF]">Attention, energy, recovery, values, and life beyond work</p>
+                  </div>
+                </div>
+                <p className="mt-5 border-t border-[#C9DDB4]/15 pt-4 font-mono text-[10px] uppercase tracking-[0.15em] leading-relaxed text-[#C9DDB4]">
+                  Design sequence: Human boundaries → Business guardrails → Technology acceleration
+                </p>
+              </div>
+              <div className="rounded-xl border border-[#C9DDB4]/15 bg-[#F7F5EF]/[0.04] p-5">
+                <p className="font-playfair text-lg font-semibold leading-relaxed text-[#FFF8F4]">
+                  Human Sustainability™ is a business operating principle—not just a personal wellness message.
+                </p>
+                <p className="mt-2 font-poppins text-sm leading-relaxed text-[#D9E4D7]">
+                  It means designing how a business operates around the sustainable capacity of the people who build, lead, and work within it. We cannot keep adding demands without considering what human beings can sustainably carry. Attention, energy, and recovery are not unlimited resources.
+                </p>
+              </div>
+              <blockquote className="border-l-2 border-[#F6A9C2] pl-5">
+                <p className="font-playfair text-xl font-semibold italic leading-relaxed text-[#FFF8F4] sm:text-2xl">
+                  “Attention, energy, and recovery are not unlimited resources.”
+                </p>
+                <footer className="mt-3 font-mono text-[10px] uppercase tracking-[0.2em] text-[#C9DDB4]">— Thought Leader Barbara</footer>
+              </blockquote>
+            </div>
+          </div>
         </div>
       </section>
 
