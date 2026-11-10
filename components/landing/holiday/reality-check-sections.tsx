@@ -98,18 +98,10 @@ export function WeMakeTimeForMoreSection() {
           </header>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {[
-              { title: "Flex-Time™", lead: "Prepare for Your Day.", body: "Make room for personal preparation and competing priorities before stepping into your business day. Take care of what matters in your life so everything doesn't have to compete with your work.", image: "/images/holiday/winter-stroll.webp", alt: "A woman enjoying a festive winter stroll with a warm drink." },
               { title: "Decide & Design™", lead: "Redesign Your Entry Into the Workweek.", body: "Decide what matters and personalize your Work-Life Balance Business Day. Plan your business priorities, account for your personal priorities, and design how you want your day to work.", image: "/images/holiday/holiday-decide-design.webp", alt: "Decide & Design banner reading Your Work-Life Balance Business Day: Redesign Your Entry Into the Workweek, framed by cherry blossoms, a holiday candle, and a pink planner." },
-              { title: "Morning GIV•EN™", lead: "Begin With Intention and Alignment.", body: "Practice Gratitude, Intention, Vision & Visualization, Emotional Embodiment, and Nurture to bring clarity and intention to your day.", image: "/images/holiday/holiday-morning-given.webp", alt: "A man meditating on a cushion, facing a snowy Japanese garden with cherry blossoms and a red bridge at sunrise." },
-              { title: "Movement Window™", lead: "Make Room for Movement.", body: "Give your body the opportunity to move. Make physical activity part of your day instead of something you continually put off.", image: "/images/holiday/hanukkah-tai-chi.webp", alt: "A mother and daughter practicing movement together at home." },
-              { title: "Extended Healthy Hybrid Lunch™", lead: "Step Away, Recharge, and Enjoy a Real Break.", body: "Make room for nourishment, rest, connection, and personal priorities. Give yourself permission to step away from business.", image: "/images/holiday/cafe-gathering.webp", alt: "Two friends enjoying a meal together in a welcoming café." },
-              { title: "4-Hour Focused CEO Workday™", lead: "Focus on the Business Priorities That Matter.", body: "Give your business focused attention. Work on the priorities you selected during Decide & Design and move your business forward without allowing work to consume your entire day.", image: "/images/holiday/team-celebration.webp", alt: "A team sharing a moment of connection around their work." },
-              { title: "Time Freedom™", lead: "Reclaim Your Personal Time.", body: "Close out your focused work and make room for the life your business was intended to support—your relationships, interests, experiences, and personal priorities.", image: "/images/holiday/togetherness.webp", alt: "Family and friends enjoying time together outdoors." },
-              { title: "Power Down™", lead: "Release the Day.", body: "Consciously bring the business day to a close. Acknowledge what you accomplished, release the pressure of unfinished work, and transition out of work mode.", image: "/images/holiday/kwanzaa-rest.webp", alt: "A quiet evening moment of rest and renewal." },
-              { title: "Unplug™", lead: "Disconnect. Begin Your Digital Detox.", body: "When the community closes for the night, step away from the digital environment. Put your devices aside, begin your overnight digital detox, and prepare for a restful night's sleep.", image: "/images/holiday/digital-detox-sign.webp", alt: "A sign announcing the community's nightly digital detox." },
             ].map((item) => (
-              <article key={item.title} className="overflow-hidden rounded-2xl bg-white shadow-[0_10px_30px_rgba(255,255,255,0.72)] ring-1 ring-white/70 transition-[transform,box-shadow] duration-300 ease-out hover:-translate-y-1 hover:scale-[1.02] hover:shadow-[0_20px_44px_rgba(255,255,255,0.95)] motion-reduce:transition-none motion-reduce:hover:transform-none">
-                <img src={item.image} alt={item.alt} className="h-56 w-full object-cover" loading="lazy" />
+              <article key={item.title} className="mx-auto w-full max-w-4xl overflow-hidden rounded-2xl bg-white shadow-[0_10px_30px_rgba(255,255,255,0.72)] ring-1 ring-white/70">
+                <img src={item.image} alt={item.alt} className="h-auto w-full object-cover" loading="lazy" />
                 <div className="flex flex-col gap-2 p-7">
                   <h3 className="font-playfair text-xl font-bold text-[#4A3A42]">{item.title}</h3>
                   <p className="font-poppins text-sm font-semibold text-[#C13B6B]">{item.lead}</p>
@@ -423,34 +415,7 @@ export function MondaySection() {
             Your boundaries reflect your life, values, responsibilities, and business. This is a guided practice—not a one-size-fits-all rulebook.
           </p>
         </div>
-        <div className="grid gap-10 lg:grid-cols-5">
-          <div className="flex flex-col gap-5 lg:col-span-3">
-            <h3 className="font-poppins text-base font-semibold uppercase tracking-[0.18em] text-[#C13B6B]">Your Business Day experience</h3>
-            <ol className="flex flex-col divide-y divide-[#F2E4E8] border-y border-[#F2E4E8]">
-              {[
-                { title: "Reconnect with intention", body: "Remember why you became an entrepreneur and what you wanted your business to make possible." },
-                { title: "Review your current reality", body: "Notice where the way you work supports—or competes with—the life you want." },
-                { title: "Personalize your boundaries", body: "Choose the non-negotiables and work-life balance boundaries you want to practice." },
-                { title: "Decide & Design My Business Day™", body: "Set meaningful priorities and plan your actual business work inside your chosen boundaries." },
-                { title: "Practice and reflect", body: "Work on real priorities, use Five-Minute Work-Life Balance Boundary Check-ins™, and close the day intentionally." },
-              ].map((s, i) => (
-                <li key={s.title} className="flex gap-5 py-5">
-                  <span className="font-playfair w-6 shrink-0 text-2xl font-bold text-[#C13B6B]">{i + 1}</span>
-                  <div className="flex flex-col gap-1">
-                    <h4 className={`font-playfair text-lg font-bold ${INK}`}>{s.title}</h4>
-                    <p className={BODY_SM}>{s.body}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </div>
-          <aside className="flex flex-col gap-5 rounded-3xl bg-[#123B2A] p-7 lg:col-span-2">
-            <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#C9DDB4]">Five-Minute Work-Life Balance Boundary Check-in™</p>
-            <p className="font-playfair text-xl font-bold text-[#F6A9C2]">Notice · Identify · Consider</p>
-            <p className="font-poppins text-base leading-relaxed text-[#FFF8F4]">Where is work colliding with the boundaries you want to protect? What is creating that collision? What could change?</p>
-            <p className="font-poppins text-base leading-relaxed text-[#F6D6E1]">A practical reflection and decision tool—not a score or a judgment. You decide what to change first and what can wait.</p>
-          </aside>
-        </div>
+
       </div>
     </section>
   )
@@ -533,13 +498,8 @@ export function NewYearSection() {
   return (
     <section className="bg-[#FFFDFB] py-20 sm:py-28">
       <div className="mx-auto flex max-w-6xl flex-col gap-14 px-5 sm:px-8">
-        <div className="grid items-center gap-10 lg:grid-cols-5">
-          <img src="/images/holiday/winter-stroll.webp" alt="A smiling woman strolling a festive winter street" className="w-full rounded-3xl object-cover shadow-xl lg:col-span-2" loading="lazy" />
-          <div className="flex flex-col gap-5 lg:col-span-3">
-            <p className={EYEBROW}>A different way to begin your week</p>
-            <h2 className={H2}>Make room for more life—starting with the week ahead.</h2>
-            <CtaLink label="Join the Free Sunday Reality Check" />
-          </div>
+        <div className="flex justify-center">
+          <CtaLink label="Join the Free Sunday Reality Check" />
         </div>
         <div className="grid gap-6 md:grid-cols-2">
           <div className="flex flex-col gap-4 rounded-3xl bg-[#EEF3E8] p-8">
