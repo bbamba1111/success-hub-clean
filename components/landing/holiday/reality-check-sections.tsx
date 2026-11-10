@@ -300,7 +300,7 @@ export function FreedomSection() {
                   </div>
                 ))}
               </div>
-              <div className="flex flex-1 flex-col justify-center rounded-2xl border border-[#F6A9C2]/35 bg-[#F6A9C2]/[0.07] p-5 sm:p-6">
+              <div className="flex min-h-[260px] flex-1 flex-col justify-center rounded-2xl border border-[#F6A9C2]/35 bg-[#F6A9C2]/[0.07] p-5 sm:p-6">
                 <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.22em] text-[#F6A9C2]">The critical design question</p>
                 <p className="font-playfair text-xl font-semibold leading-relaxed text-[#FFF8F4] sm:text-2xl">
                   How will you prevent the time and capacity AI creates from simply being absorbed by more work?
@@ -360,7 +360,7 @@ export function FreedomSection() {
               </div>
             </div>
           </div>
-          <div className="mt-12 grid items-stretch gap-8 lg:grid-cols-[1.1fr_.9fr]">
+          <div className="mt-12 grid items-stretch gap-8 lg:grid-cols-[1.05fr_.95fr]">
             <div className="flex h-full min-h-[260px] flex-col justify-center rounded-2xl border border-[#9DBF9A]/25 bg-[#F7F5EF]/[0.045] p-6 sm:p-8">
               <p className="font-playfair text-xl font-semibold leading-relaxed text-[#FFF8F4] sm:text-2xl">
                 Human Sustainability™ is a business operating principle—not just a personal wellness message.
