@@ -319,7 +319,7 @@ export function FreedomSection() {
                   </div>
                   <span className="rounded-md border border-[#A9D69C]/30 bg-[#A9D69C]/10 px-2 py-1 font-mono text-[9px] uppercase tracking-wider text-[#C9DDB4]">Human first</span>
                 </div>
-                <div className="rounded-xl border border-[#A9D69C]/45 bg-[#A9D69C]/[0.12] p-4">
+                <div className="flex min-h-[154px] flex-col rounded-xl border border-[#A9D69C]/45 bg-[#A9D69C]/[0.12] p-4">
                   <div className="flex items-center justify-between gap-2">
                     <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#C9DDB4]">The governing principle</span>
                     <span className="font-mono text-[9px] text-[#C9DDB4]">FOUNDATION</span>
@@ -346,7 +346,7 @@ export function FreedomSection() {
                   <p className="mt-1 font-poppins text-sm leading-relaxed text-[#E5DCE0]">Set non-negotiable time and space boundaries. Practice working, leading, and living within them.</p>
                 </div>
                 <div className="mx-auto h-5 w-px bg-gradient-to-b from-[#F6A9C2] to-[#A9D69C]" />
-                <div className="rounded-xl border border-[#A9D69C]/35 bg-[#A9D69C]/[0.08] p-4">
+                <div className="flex min-h-[154px] flex-col rounded-xl border border-[#A9D69C]/35 bg-[#A9D69C]/[0.08] p-4">
                   <div className="flex items-center justify-between gap-2">
                     <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#C9DDB4]">03 · Business redesign</span>
                     <span className="font-mono text-[9px] text-[#C9DDB4]">INTEGRATION</span>
@@ -361,7 +361,7 @@ export function FreedomSection() {
             </div>
           </div>
           <div className="mt-12 grid items-stretch gap-8 lg:grid-cols-[1.1fr_.9fr]">
-            <div className="flex h-full min-h-[230px] flex-col justify-center rounded-2xl border border-[#9DBF9A]/25 bg-[#F7F5EF]/[0.045] p-6 sm:p-8">
+            <div className="flex h-full min-h-[260px] flex-col justify-center rounded-2xl border border-[#9DBF9A]/25 bg-[#F7F5EF]/[0.045] p-6 sm:p-8">
               <p className="font-playfair text-xl font-semibold leading-relaxed text-[#FFF8F4] sm:text-2xl">
                 Human Sustainability™ is a business operating principle—not just a personal wellness message.
               </p>
