@@ -290,6 +290,12 @@ export function FreedomSection() {
               ))}
             </ul>
             <p className="font-poppins text-pretty text-lg leading-relaxed text-[#F6D6E1]">
+              The question is: how will you prevent the time and capacity AI creates from simply being absorbed by more work? That requires intentional Human Sustainability Boundaries™ and business guardrails—established before you accelerate.
+            </p>
+            <p className="font-poppins text-pretty text-lg leading-relaxed text-[#F6D6E1]">
+              Human Sustainability™ is a business operating principle—not just a personal wellness message. It means designing how a business operates around the sustainable capacity of the people who build, lead, and work within it.
+            </p>
+            <p className="font-poppins text-pretty text-lg leading-relaxed text-[#F6D6E1]">
               We cannot keep adding demands without considering what human beings can sustainably carry. Attention, energy, and recovery are not unlimited resources.
             </p>
           </div>
