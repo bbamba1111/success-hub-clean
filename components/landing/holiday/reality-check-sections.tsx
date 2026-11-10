@@ -207,65 +207,6 @@ export function WeMakeTimeForMoreSection() {
         </div>
       </section>
 
-
-    </>
-  )
-}
-
-export function FreedomSection() {
-  return (
-    <>
-      <section className="bg-[#F7DCE5] py-16 sm:py-20">
-        <div className="mx-auto flex max-w-5xl flex-col gap-5 px-5 text-center sm:px-8">
-          <p className={EYEBROW}>Your Virtual Work-Life Balance Destination</p>
-          <p className="font-playfair text-balance text-2xl font-bold leading-tight text-[#4A3A42] sm:text-4xl">
-            Reserve Your First <span className="font-light italic">(or Next)</span>
-          </p>
-          <h2 className="font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">
-            Work-Life Balance Business Week™
-          </h2>
-          <p className={BODY}>
-            A one-week immersive founder experience, offered weekly, where you step into a Work-Life Balance environment with non-negotiable boundaries already built in and live, work, lead, and operate your actual business while containing work so life has space to expand—<em>in real time</em>.
-          </p>
-        </div>
-      </section>
-
-      <section className="bg-white py-20 sm:py-28">
-        <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-8 lg:grid-cols-[2fr_1fr]">
-          <div className="flex flex-col gap-5">
-            <h2 className="font-playfair text-balance text-2xl font-bold leading-tight text-[#4A3A42] sm:text-4xl">Experience The Freedom You Intended to Create.</h2>
-            <p className={BODY}>You started your business for more freedom.</p>
-            <p className={BODY}>You wanted to build a business that supported the life you wanted.</p>
-            <p className={BODY}>
-              But somewhere along the way, you unintentionally brought the hustle with you. You left a demanding corporate environment only to recreate those same demands inside your own business.
-            </p>
-            <ul className="flex flex-col gap-3">
-              {[
-                "The long hours.",
-                "The constant availability.",
-                "The pressure to do more.",
-                "The feeling that everything depends on you.",
-                "Work expanding into your personal time.",
-              ].map((item) => (
-                <li key={item} className={`flex items-start gap-3 ${BODY}`}>
-                  <Dot />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-            <p className="font-playfair text-xl font-semibold leading-snug text-[#C13B6B] sm:text-2xl">
-              And now, with AI adding a new reality to navigate and integrate...
-            </p>
-          </div>
-          <img
-            src="/images/barbara-portrait.png"
-            alt="Thought Leader Barbara Bamba, architect of Harmony Lane"
-            className="mx-auto max-h-[780px] w-full rounded-3xl object-contain object-center shadow-xl"
-            loading="lazy"
-          />
-        </div>
-      </section>
-
       <section className="bg-[#071D1B] py-16 text-[#F7F5EF] sm:py-20">
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <div className="grid items-center gap-10 lg:grid-cols-[1.15fr_.85fr] lg:gap-14">
@@ -358,6 +299,65 @@ export function FreedomSection() {
             </article>
           </div>
           <p className="mx-auto mt-8 max-w-4xl text-center font-playfair text-xl font-semibold leading-relaxed text-[#FFF8F4] sm:text-2xl">The Work-Life Balance Business Week™ does not implement AI. It helps founders begin changing the work environment so AI adoption does not simply become another demand placed on an already demanding workweek.</p>
+        </div>
+      </section>
+
+
+    </>
+  )
+}
+
+export function FreedomSection() {
+  return (
+    <>
+      <section className="bg-[#F7DCE5] py-16 sm:py-20">
+        <div className="mx-auto flex max-w-5xl flex-col gap-5 px-5 text-center sm:px-8">
+          <p className={EYEBROW}>Your Virtual Work-Life Balance Destination</p>
+          <p className="font-playfair text-balance text-2xl font-bold leading-tight text-[#4A3A42] sm:text-4xl">
+            Reserve Your First <span className="font-light italic">(or Next)</span>
+          </p>
+          <h2 className="font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">
+            Work-Life Balance Business Week™
+          </h2>
+          <p className={BODY}>
+            A one-week immersive founder experience, offered weekly, where you step into a Work-Life Balance environment with non-negotiable boundaries already built in and live, work, lead, and operate your actual business while containing work so life has space to expand—<em>in real time</em>.
+          </p>
+        </div>
+      </section>
+
+      <section className="bg-white py-20 sm:py-28">
+        <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-8 lg:grid-cols-[2fr_1fr]">
+          <div className="flex flex-col gap-5">
+            <h2 className="font-playfair text-balance text-2xl font-bold leading-tight text-[#4A3A42] sm:text-4xl">Experience The Freedom You Intended to Create.</h2>
+            <p className={BODY}>You started your business for more freedom.</p>
+            <p className={BODY}>You wanted to build a business that supported the life you wanted.</p>
+            <p className={BODY}>
+              But somewhere along the way, you unintentionally brought the hustle with you. You left a demanding corporate environment only to recreate those same demands inside your own business.
+            </p>
+            <ul className="flex flex-col gap-3">
+              {[
+                "The long hours.",
+                "The constant availability.",
+                "The pressure to do more.",
+                "The feeling that everything depends on you.",
+                "Work expanding into your personal time.",
+              ].map((item) => (
+                <li key={item} className={`flex items-start gap-3 ${BODY}`}>
+                  <Dot />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="font-playfair text-xl font-semibold leading-snug text-[#C13B6B] sm:text-2xl">
+              And now, with AI adding a new reality to navigate and integrate...
+            </p>
+          </div>
+          <img
+            src="/images/barbara-portrait.png"
+            alt="Thought Leader Barbara Bamba, architect of Harmony Lane"
+            className="mx-auto max-h-[780px] w-full rounded-3xl object-contain object-center shadow-xl"
+            loading="lazy"
+          />
         </div>
       </section>
 
