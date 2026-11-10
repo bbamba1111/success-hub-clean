@@ -108,9 +108,9 @@ export function WeMakeTimeForMoreSection() {
               { title: "Power Down™", lead: "Release the Day.", body: "Consciously bring the business day to a close. Acknowledge what you accomplished, release the pressure of unfinished work, and transition out of work mode.", image: "/images/holiday/kwanzaa-rest.webp", alt: "A quiet evening moment of rest and renewal." },
               { title: "Unplug™", lead: "Disconnect. Begin Your Digital Detox.", body: "When the community closes for the night, step away from the digital environment. Put your devices aside, begin your overnight digital detox, and prepare for a restful night's sleep.", image: "/images/holiday/digital-detox-sign.webp", alt: "A sign announcing the community's nightly digital detox." },
             ].map((item) => (
-              <article key={item.title} className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-[#F2E4E8] transition-[transform,box-shadow] duration-300 ease-out hover:-translate-y-1 hover:shadow-xl motion-reduce:transition-none motion-reduce:hover:transform-none">
-                <img src={item.image} alt={item.alt} className="h-52 w-full object-cover" loading="lazy" />
-                <div className="flex flex-col gap-2 p-6">
+              <article key={item.title} className="overflow-hidden rounded-2xl bg-white shadow-[0_10px_28px_rgba(18,59,42,0.18)] ring-1 ring-[#DCE8DF] transition-[transform,box-shadow] duration-300 ease-out hover:-translate-y-1 hover:scale-[1.02] hover:shadow-[0_20px_42px_rgba(18,59,42,0.34)] motion-reduce:transition-none motion-reduce:hover:transform-none">
+                <img src={item.image} alt={item.alt} className="h-56 w-full object-cover" loading="lazy" />
+                <div className="flex flex-col gap-2 p-7">
                   <h3 className="font-playfair text-xl font-bold text-[#4A3A42]">{item.title}</h3>
                   <p className="font-poppins text-sm font-semibold text-[#C13B6B]">{item.lead}</p>
                   <p className="font-poppins text-sm leading-relaxed text-[#5A4A52]">{item.body}</p>
