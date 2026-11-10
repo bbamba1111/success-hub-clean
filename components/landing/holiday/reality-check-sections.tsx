@@ -146,8 +146,36 @@ export function WeMakeTimeForMoreSection() {
       </section>
 
       <section className="bg-[#071D1B] py-16 text-[#F7F5EF] sm:py-20">
-        <div className="mx-auto max-w-5xl px-5 sm:px-8">
-          <header className="mx-auto max-w-4xl text-center">
+        <div className="mx-auto max-w-6xl px-5 sm:px-8">
+          <div className="mx-auto max-w-4xl border-b border-[#C9DDB4]/20 pb-10 text-center">
+            <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#F6A9C2]">The pressure behind AI adoption</p>
+            <h2 className="mt-3 font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl">More Opportunity Can Bring More Pressure.</h2>
+            <p className="mt-5 font-poppins text-lg leading-relaxed text-[#D9E4D7]">More technology can bring more complexity. And more capacity can become even more work.</p>
+          </div>
+          <div className="mx-auto mt-8 max-w-4xl">
+            <ul className="grid gap-3 sm:grid-cols-2">
+              {[
+                "Keeping up with rapidly changing technology.",
+                "Figuring out which tools your business needs.",
+                "Finding time to learn how to use them effectively.",
+                "Deciding what to automate and what should remain human-led.",
+                "Navigating the demands of AI adoption while already carrying the responsibilities of running an overextended business.",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-3 rounded-xl border border-[#C9DDB4]/15 bg-[#F7F5EF]/[0.045] p-4">
+                  <span aria-hidden="true" className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#F6A9C2]" />
+                  <p className="font-poppins text-sm leading-relaxed text-[#F7F5EF]">{item}</p>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-5 rounded-2xl border border-[#9DBF9A]/25 bg-[#F7F5EF]/[0.045] p-5 sm:p-6">
+              <p className="font-poppins text-base leading-relaxed text-[#FFF8F4]">We cannot keep adding demands without considering what human beings can sustainably carry. Attention, energy, and recovery are not unlimited resources.</p>
+              <blockquote className="mt-4 border-l-2 border-[#F6A9C2] pl-4">
+                <p className="font-playfair text-xl font-semibold italic leading-relaxed text-[#FFF8F4]">“Attention, energy, and recovery are not unlimited resources.”</p>
+                <footer className="mt-2 font-mono text-[10px] uppercase tracking-[0.2em] text-[#C9DDB4]">— Thought Leader Barbara</footer>
+              </blockquote>
+            </div>
+          </div>
+          <header className="mx-auto mt-14 max-w-4xl text-center">
             <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#C9DDB4]">Human Sustainability™ in the AI Era</p>
             <h2 className="mt-3 font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl">A More Sustainable Workweek Can Make Room for AI Adoption.</h2>
             <p className="mt-5 font-poppins text-lg leading-relaxed text-[#D9E4D7]">AI adoption brings new decisions, learning, experimentation, and adjustment. But when the current work environment already demands more time and attention than people can sustainably give, adding AI adoption can feel like one more pressure.</p>
@@ -160,6 +188,45 @@ export function WeMakeTimeForMoreSection() {
             <article className="rounded-2xl border border-[#9DBF9A]/25 bg-[#F7F5EF]/[0.045] p-6 sm:p-8">
               <h3 className="font-playfair text-xl font-bold text-[#F6A9C2]">That can mean less pressure to absorb change on top of everything else.</h3>
               <p className="mt-3 font-poppins text-base leading-relaxed text-[#D9E4D7]">A four-day business rhythm, a contained focused workday, protected breaks, and time away from business give founders a different starting point for making room to learn, experiment, adjust, and decide how AI fits into their operations.</p>
+            </article>
+          </div>
+          <div className="mt-8 rounded-2xl border border-[#9DBF9A]/25 bg-[#102C28]/90 p-6 sm:p-8">
+            <div className="mb-6 border-b border-[#C9DDB4]/15 pb-4">
+              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#9DBF9A]">Reciprocity in AI adoption · People + technology</p>
+              <h3 className="mt-1 font-playfair text-2xl font-semibold text-[#FFF8F4]">The Work Environment Must Adapt, Too.</h3>
+            </div>
+            <div className="grid gap-3 md:grid-cols-2">
+              {[
+                ["01", "Make room to learn", "Time and space to understand, practice, and become comfortable with new technology."],
+                ["02", "Reduce competing demands", "Do not layer training and adoption onto an already overloaded workweek."],
+                ["03", "Redesign the workweek", "Make room for learning, experimentation, adjustment, and integration."],
+                ["04", "Reconsider expectations", "Do not automatically turn every efficiency gain into a demand for greater output."],
+                ["05", "Share the benefit", "Let AI-created capacity mean less pressure, more manageable work, and more room for life."],
+              ].map(([number, title, detail]) => (
+                <div key={number} className="flex items-start gap-4 rounded-xl border border-[#C9DDB4]/15 bg-[#F7F5EF]/[0.045] p-4">
+                  <span className="pt-0.5 font-mono text-xs text-[#F6A9C2]">{number}</span>
+                  <div className="min-w-0 flex-1">
+                    <h4 className="font-playfair text-lg font-semibold text-[#FFF8F4]">{title}</h4>
+                    <p className="mt-1 font-poppins text-sm leading-relaxed text-[#D9E4D7]">{detail}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-5 rounded-xl border border-[#F6A9C2]/30 bg-[#F6A9C2]/[0.07] p-4">
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#F6A9C2]">The reciprocity principle</p>
+              <p className="mt-2 font-playfair text-xl font-semibold leading-relaxed text-[#FFF8F4]">If people are expected to adapt, the work environment must adapt, too.</p>
+              <p className="mt-1 font-poppins text-sm leading-relaxed text-[#D9E4D7]">AI adoption should not be forced into an already demanding workweek.</p>
+            </div>
+          </div>
+          <div className="mt-8 grid gap-5 lg:grid-cols-2">
+            <article className="rounded-2xl border border-[#F6A9C2]/35 bg-[#F6A9C2]/[0.07] p-6 sm:p-8">
+              <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.22em] text-[#F6A9C2]">The critical design question</p>
+              <p className="font-playfair text-xl font-semibold leading-relaxed text-[#FFF8F4] sm:text-2xl">You cannot expect people to embrace a new way of working while forcing it into an old work environment that is already overwhelming them.</p>
+              <p className="mt-3 font-poppins text-sm leading-relaxed text-[#E5DCE0]">If people are expected to adapt to technology, the work environment must also adapt to support people.</p>
+            </article>
+            <article className="rounded-2xl border border-[#9DBF9A]/25 bg-[#F7F5EF]/[0.045] p-6 sm:p-8">
+              <p className="font-playfair text-xl font-semibold leading-relaxed text-[#FFF8F4] sm:text-2xl">Human Sustainability™ is a business operating principle—not just a personal wellness message.</p>
+              <p className="mt-3 font-poppins text-base leading-relaxed text-[#D9E4D7]">It means designing work around the sustainable capacity of the people who build, lead, and operate the business. AI adoption should not add another demand to an already demanding workweek. The work environment must make room for people to learn, adapt, and share in the capacity new technology creates.</p>
             </article>
           </div>
           <p className="mx-auto mt-8 max-w-4xl text-center font-playfair text-xl font-semibold leading-relaxed text-[#FFF8F4] sm:text-2xl">The Work-Life Balance Business Week™ does not implement AI. It helps founders begin changing the work environment so AI adoption does not simply become another demand placed on an already demanding workweek.</p>
@@ -284,114 +351,6 @@ export function FreedomSection() {
             className="mx-auto max-h-[780px] w-full rounded-3xl object-contain object-center shadow-xl"
             loading="lazy"
           />
-        </div>
-      </section>
-
-      <section className="relative isolate overflow-hidden bg-[#071D1B] py-20 text-[#F7F5EF] sm:py-28">
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 opacity-30" style={{ backgroundImage: "linear-gradient(rgba(201,221,180,.12) 1px, transparent 1px), linear-gradient(90deg, rgba(201,221,180,.12) 1px, transparent 1px)", backgroundSize: "42px 42px" }} />
-        <div aria-hidden="true" className="pointer-events-none absolute -right-40 -top-40 -z-10 h-[34rem] w-[34rem] rounded-full border border-[#9DBF9A]/20 shadow-[0_0_0_45px_rgba(157,191,154,0.035),0_0_0_90px_rgba(157,191,154,0.025)]" />
-        <div className="mx-auto max-w-7xl px-5 sm:px-8">
-          <div className="mb-10 flex flex-wrap items-center justify-between gap-3 border-b border-[#C9DDB4]/20 pb-4">
-            <p className="font-mono text-xs uppercase tracking-[0.24em] text-[#C9DDB4]">AI adoption // operating environment</p>
-            <p className="font-mono text-xs uppercase tracking-[0.18em] text-[#F6A9C2]">Technology shifts · Human impact</p>
-          </div>
-          <div className="grid items-stretch gap-12 lg:grid-cols-[1.05fr_.95fr] lg:gap-16">
-            <div className="flex h-full flex-col gap-6">
-              <div className="inline-flex w-fit items-center gap-2 rounded-full border border-[#9DBF9A]/30 bg-[#9DBF9A]/10 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-[#C9DDB4]">
-                <span className="h-2 w-2 rounded-full bg-[#A9D69C] shadow-[0_0_12px_rgba(169,214,156,.9)]" />
-                Capacity ≠ Unlimited Demand
-              </div>
-              <h2 className="font-playfair text-balance text-4xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl lg:text-6xl">
-                More Opportunity Can Bring More Pressure.
-              </h2>
-              <p className="font-poppins text-pretty text-lg leading-relaxed text-[#D9E4D7]">
-                More technology can bring more complexity. And more capacity can become even more work.
-              </p>
-              <ul className="space-y-3">
-                {[
-                  "Keeping up with rapidly changing technology.",
-                  "Figuring out which tools your business needs.",
-                  "Finding time to learn how to use them effectively.",
-                  "Deciding what to automate and what should remain human-led.",
-                  "Navigating the demands of AI adoption while already carrying the responsibilities of running an overextended business.",
-                ].map((item) => (
-                  <li key={item} className="flex items-start gap-3 rounded-xl border border-[#C9DDB4]/15 bg-[#F7F5EF]/[0.045] p-4">
-                    <span aria-hidden="true" className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#F6A9C2]" />
-                    <p className="font-poppins text-sm leading-relaxed text-[#F7F5EF]">{item}</p>
-                  </li>
-                ))}
-              </ul>
-              <div className="rounded-2xl border border-[#9DBF9A]/25 bg-[#F7F5EF]/[0.045] p-5 sm:p-6">
-                <p className="font-poppins text-base leading-relaxed text-[#FFF8F4]">
-                  We cannot keep adding demands without considering what human beings can sustainably carry. Attention, energy, and recovery are not unlimited resources.
-                </p>
-                <blockquote className="mt-4 border-l-2 border-[#F6A9C2] pl-4">
-                  <p className="font-playfair text-xl font-semibold italic leading-relaxed text-[#FFF8F4]">
-                    “Attention, energy, and recovery are not unlimited resources.”
-                  </p>
-                  <footer className="mt-2 font-mono text-[10px] uppercase tracking-[0.2em] text-[#C9DDB4]">— Thought Leader Barbara</footer>
-                </blockquote>
-              </div>
-              <div className="flex min-h-[260px] flex-1 flex-col justify-center rounded-2xl border border-[#F6A9C2]/35 bg-[#F6A9C2]/[0.07] p-5 sm:p-6">
-                <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.22em] text-[#F6A9C2]">The critical design question</p>
-                <p className="font-playfair text-xl font-semibold leading-relaxed text-[#FFF8F4] sm:text-2xl">
-                  You cannot expect people to embrace a new way of working while forcing it into an old work environment that is already overwhelming them.
-                </p>
-                <p className="mt-3 font-poppins text-sm leading-relaxed text-[#E5DCE0]">
-                  If people are expected to adapt to technology, the work environment must also adapt to support people.
-                </p>
-              </div>
-            </div>
-            <div className="flex flex-col justify-center">
-              <div className="rounded-2xl border border-[#9DBF9A]/25 bg-[#102C28]/90 p-5 shadow-[0_24px_80px_rgba(0,0,0,.28)] sm:p-7">
-                <div className="mb-6 flex items-center justify-between gap-3 border-b border-[#C9DDB4]/15 pb-4">
-                  <div>
-                    <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#9DBF9A]">Reciprocity in AI adoption</p>
-                    <h3 className="mt-1 font-playfair text-2xl font-semibold text-[#FFF8F4]">The Work Environment Must Adapt, Too.</h3>
-                  </div>
-                  <span className="rounded-md border border-[#F6A9C2]/30 bg-[#F6A9C2]/10 px-2 py-1 font-mono text-[9px] uppercase tracking-wider text-[#F6A9C2]">People + technology</span>
-                </div>
-                <div className="space-y-3">
-                  {[
-                    ["01", "Make room to learn", "Time and space to understand, practice, and become comfortable with new technology."],
-                    ["02", "Reduce competing demands", "Do not layer training and adoption onto an already overloaded workweek."],
-                    ["03", "Redesign the workweek", "Make room for learning, experimentation, adjustment, and integration."],
-                    ["04", "Reconsider expectations", "Do not automatically turn every efficiency gain into a demand for greater output."],
-                    ["05", "Share the benefit", "Let AI-created capacity mean less pressure, more manageable work, and more room for life."],
-                  ].map(([number, title, detail]) => (
-                    <div key={number} className="flex items-start gap-4 rounded-xl border border-[#C9DDB4]/15 bg-[#F7F5EF]/[0.045] p-4">
-                      <span className="pt-0.5 font-mono text-xs text-[#F6A9C2]">{number}</span>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex flex-wrap items-center justify-between gap-2">
-                          <h4 className="font-playfair text-lg font-semibold text-[#FFF8F4]">{title}</h4>
-                          <span className="h-1.5 w-16 overflow-hidden rounded-full bg-[#F7F5EF]/10">
-                            <span className="block h-full w-full rounded-full bg-[#F6A9C2]/70" />
-                          </span>
-                        </div>
-                        <p className="mt-1 font-poppins text-sm leading-relaxed text-[#D9E4D7]">{detail}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-5 rounded-xl border border-[#F6A9C2]/30 bg-[#F6A9C2]/[0.07] p-4">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#F6A9C2]">The reciprocity principle</p>
-                  <p className="mt-2 font-playfair text-xl font-semibold leading-relaxed text-[#FFF8F4]">If people are expected to adapt, the work environment must adapt, too.</p>
-                  <p className="mt-1 font-poppins text-sm leading-relaxed text-[#D9E4D7]">AI adoption should not be forced into an already demanding workweek.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="mt-12 grid items-stretch gap-8 lg:grid-cols-[1.05fr_.95fr]">
-            <div className="flex h-full min-h-[260px] flex-col justify-center rounded-2xl border border-[#9DBF9A]/25 bg-[#F7F5EF]/[0.045] p-6 sm:p-8">
-              <p className="font-playfair text-xl font-semibold leading-relaxed text-[#FFF8F4] sm:text-2xl">
-                Human Sustainability™ is a business operating principle—not just a personal wellness message.
-              </p>
-              <p className="mt-3 font-poppins text-base leading-relaxed text-[#D9E4D7]">
-                It means designing work around the sustainable capacity of the people who build, lead, and operate the business. AI adoption should not add another demand to an already demanding workweek. The work environment must make room for people to learn, adapt, and share in the capacity new technology creates.
-              </p>
-            </div>
-
-          </div>
         </div>
       </section>
 
