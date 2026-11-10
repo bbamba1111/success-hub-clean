@@ -328,7 +328,7 @@ export function FreedomSection() {
                   <p className="mt-2 font-poppins text-sm leading-relaxed text-[#E4EBDD]">Attention, energy, recovery, values, and life beyond work matter in how the business is designed and operated.</p>
                 </div>
                 <div className="mx-auto h-5 w-px bg-gradient-to-b from-[#A9D69C] to-[#83B7C4]" />
-                <div className="rounded-xl border border-[#83B7C4]/30 bg-[#83B7C4]/[0.08] p-4">
+                <div className="flex min-h-[154px] flex-col rounded-xl border border-[#83B7C4]/30 bg-[#83B7C4]/[0.08] p-4">
                   <div className="flex items-center justify-between gap-2">
                     <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#A9D4DE]">01 · Reentry</span>
                     <span className="font-mono text-[9px] text-[#A9D4DE]">THE WORKWEEK</span>
@@ -337,7 +337,7 @@ export function FreedomSection() {
                   <p className="mt-1 font-poppins text-sm leading-relaxed text-[#D9E4D7]">Begin intentionally. Reconsider how you enter, organize, and experience your business week.</p>
                 </div>
                 <div className="mx-auto h-5 w-px bg-gradient-to-b from-[#83B7C4] to-[#F6A9C2]" />
-                <div className="rounded-xl border border-[#F6A9C2]/35 bg-[#F6A9C2]/[0.08] p-4">
+                <div className="flex min-h-[154px] flex-col rounded-xl border border-[#F6A9C2]/35 bg-[#F6A9C2]/[0.08] p-4">
                   <div className="flex items-center justify-between gap-2">
                     <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#F6A9C2]">02 · Daily practice</span>
                     <span className="font-mono text-[9px] text-[#F6A9C2]">NON-NEGOTIABLES</span>
@@ -360,8 +360,8 @@ export function FreedomSection() {
               </div>
             </div>
           </div>
-          <div className="mt-12 grid items-center gap-8 lg:grid-cols-[1.1fr_.9fr]">
-            <div className="rounded-2xl border border-[#9DBF9A]/25 bg-[#F7F5EF]/[0.045] p-6 sm:p-8">
+          <div className="mt-12 grid items-stretch gap-8 lg:grid-cols-[1.1fr_.9fr]">
+            <div className="flex h-full min-h-[230px] flex-col justify-center rounded-2xl border border-[#9DBF9A]/25 bg-[#F7F5EF]/[0.045] p-6 sm:p-8">
               <p className="font-playfair text-xl font-semibold leading-relaxed text-[#FFF8F4] sm:text-2xl">
                 Human Sustainability™ is a business operating principle—not just a personal wellness message.
               </p>
@@ -369,7 +369,7 @@ export function FreedomSection() {
                 It means designing how a business operates around the sustainable capacity of the people who build, lead, and work within it. We cannot keep adding demands without considering what human beings can sustainably carry. Attention, energy, and recovery are not unlimited resources.
               </p>
             </div>
-            <blockquote className="border-l-2 border-[#F6A9C2] py-2 pl-6 sm:pl-8">
+            <blockquote className="flex h-full min-h-[230px] flex-col justify-center border-l-2 border-[#F6A9C2] py-6 pl-6 sm:pl-8">
               <p className="font-playfair text-2xl font-semibold italic leading-relaxed text-[#FFF8F4] sm:text-3xl">
                 “Attention, energy, and recovery are not unlimited resources.”
               </p>
