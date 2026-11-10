@@ -302,24 +302,35 @@ export function FreedomSection() {
                 Capacity ≠ Unlimited Demand
               </div>
               <h2 className="font-playfair text-balance text-4xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl lg:text-6xl">
-                AI Adoption Requires a Different Work Environment.
+                More Opportunity Can Bring More Pressure.
               </h2>
               <p className="font-poppins text-pretty text-lg leading-relaxed text-[#D9E4D7]">
-                AI is changing how businesses operate. But introducing new technology into an already demanding work environment does not automatically make work better.
+                More technology can bring more complexity. And more capacity can become even more work.
               </p>
-              <div className="grid gap-3 sm:grid-cols-2">
+              <ul className="space-y-3">
                 {[
-                  ["01", "Technology shifts faster than most businesses can adapt."],
-                  ["02", "Choosing the right tools creates another layer of decisions."],
-                  ["03", "Learning and integrating AI takes time and attention."],
-                  ["04", "Automation requires decisions about what stays human-led."],
-                  ["05", "AI adoption adds pressure to already overextended operators."],
-                ].map(([number, item]) => (
-                  <div key={number} className="flex items-start gap-3 rounded-xl border border-[#C9DDB4]/15 bg-[#F7F5EF]/[0.045] p-4 sm:last:col-span-2">
-                    <span className="font-mono text-xs text-[#F6A9C2]">{number}</span>
+                  "Keeping up with rapidly changing technology.",
+                  "Figuring out which tools your business needs.",
+                  "Finding time to learn how to use them effectively.",
+                  "Deciding what to automate and what should remain human-led.",
+                  "Navigating the demands of AI adoption while already carrying the responsibilities of running an overextended business.",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-3 rounded-xl border border-[#C9DDB4]/15 bg-[#F7F5EF]/[0.045] p-4">
+                    <span aria-hidden="true" className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#F6A9C2]" />
                     <p className="font-poppins text-sm leading-relaxed text-[#F7F5EF]">{item}</p>
-                  </div>
+                  </li>
                 ))}
+              </ul>
+              <div className="rounded-2xl border border-[#9DBF9A]/25 bg-[#F7F5EF]/[0.045] p-5 sm:p-6">
+                <p className="font-poppins text-base leading-relaxed text-[#FFF8F4]">
+                  We cannot keep adding demands without considering what human beings can sustainably carry. Attention, energy, and recovery are not unlimited resources.
+                </p>
+                <blockquote className="mt-4 border-l-2 border-[#F6A9C2] pl-4">
+                  <p className="font-playfair text-xl font-semibold italic leading-relaxed text-[#FFF8F4]">
+                    “Attention, energy, and recovery are not unlimited resources.”
+                  </p>
+                  <footer className="mt-2 font-mono text-[10px] uppercase tracking-[0.2em] text-[#C9DDB4]">— Thought Leader Barbara</footer>
+                </blockquote>
               </div>
               <div className="flex min-h-[260px] flex-1 flex-col justify-center rounded-2xl border border-[#F6A9C2]/35 bg-[#F6A9C2]/[0.07] p-5 sm:p-6">
                 <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.22em] text-[#F6A9C2]">The critical design question</p>
@@ -379,12 +390,7 @@ export function FreedomSection() {
                 It means designing work around the sustainable capacity of the people who build, lead, and operate the business. AI adoption should not add another demand to an already demanding workweek. The work environment must make room for people to learn, adapt, and share in the capacity new technology creates.
               </p>
             </div>
-            <blockquote className="flex h-full min-h-[230px] flex-col justify-center border-l-2 border-[#F6A9C2] py-6 pl-6 sm:pl-8">
-              <p className="font-playfair text-2xl font-semibold italic leading-relaxed text-[#FFF8F4] sm:text-3xl">
-                “Attention, energy, and recovery are not unlimited resources.”
-              </p>
-              <footer className="mt-4 font-mono text-[10px] uppercase tracking-[0.2em] text-[#C9DDB4]">— Thought Leader Barbara</footer>
-            </blockquote>
+
           </div>
         </div>
       </section>
