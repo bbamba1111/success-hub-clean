@@ -214,22 +214,7 @@ export function WeMakeTimeForMoreSection() {
             <h2 className="mt-3 font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl">A More Sustainable Workweek Can Make Room for AI Adoption.</h2>
             <p className="mt-5 font-poppins text-lg leading-relaxed text-[#D9E4D7]">AI adoption brings new decisions, learning, experimentation, and adjustment. But when the current work environment already demands more time and attention than people can sustainably give, adding AI adoption can feel like one more pressure.</p>
           </header>
-          <div className="mt-10 grid gap-5 md:grid-cols-2">
-            <article className="rounded-2xl border border-[#9DBF9A]/25 bg-[#F7F5EF]/[0.045] p-6 sm:p-8">
-              <h3 className="font-playfair text-xl font-bold text-[#F6A9C2]">The Work-Life Balance Business Week™ changes the conditions.</h3>
-              <p className="mt-3 font-poppins text-base leading-relaxed text-[#D9E4D7]">By containing work within a more intentional weekly rhythm and practicing boundaries around time, workload, availability, breaks, and digital demands, founders can begin to create more control over where their time and attention go.</p>
-            </article>
-            <article className="rounded-2xl border border-[#9DBF9A]/25 bg-[#F7F5EF]/[0.045] p-6 sm:p-8">
-              <h3 className="font-playfair text-xl font-bold text-[#F6A9C2]">That can mean less pressure to absorb change on top of everything else.</h3>
-              <p className="mt-3 font-poppins text-base leading-relaxed text-[#D9E4D7]">A four-day business rhythm, a contained focused workday, protected breaks, and time away from business give founders a different starting point for making room to learn, experiment, adjust, and decide how AI fits into their operations.</p>
-            </article>
-          </div>
           <div className="mt-8 grid gap-5 lg:grid-cols-2">
-            <article className="rounded-2xl border border-[#F6A9C2]/35 bg-[#F6A9C2]/[0.07] p-6 sm:p-8">
-              <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.22em] text-[#F6A9C2]">The critical design question</p>
-              <p className="font-playfair text-xl font-semibold leading-relaxed text-[#FFF8F4] sm:text-2xl">You cannot expect people to embrace a new way of working while forcing it into an old work environment that is already overwhelming them.</p>
-              <p className="mt-3 font-poppins text-sm leading-relaxed text-[#E5DCE0]">If people are expected to adapt to technology, the work environment must also adapt to support people.</p>
-            </article>
             <article className="rounded-2xl border border-[#9DBF9A]/25 bg-[#F7F5EF]/[0.045] p-6 sm:p-8">
               <p className="font-playfair text-xl font-semibold leading-relaxed text-[#FFF8F4] sm:text-2xl">Human Sustainability™ is a business operating principle—not just a personal wellness message.</p>
               <p className="mt-3 font-poppins text-base leading-relaxed text-[#D9E4D7]">It means designing work around the sustainable capacity of the people who build, lead, and operate the business. AI adoption should not add another demand to an already demanding workweek. The work environment must make room for people to learn, adapt, and share in the capacity new technology creates.</p>
