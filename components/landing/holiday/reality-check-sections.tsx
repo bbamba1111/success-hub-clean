@@ -1,3 +1,5 @@
+import { RegistrationForm } from "@/components/landing/holiday/registration-form"
+
 
 const INK = "text-[#4A3A42]"
 const BODY_BASE = "font-poppins text-pretty leading-relaxed text-[#5A4A52]"
@@ -571,6 +573,10 @@ export function RegisterSection() {
         <h2 className="font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl">Start with clarity. Then decide what you want to change.</h2>
         <p className="font-poppins max-w-2xl text-lg leading-relaxed text-[#F6D6E1]">Join the free Sunday Work-Life Balance Reality Check™. Review your results and priority focus areas, then decide whether the optional $97 personalized Boundary Report™ or either Harmony Lane experience is right for you.</p>
         <p className="font-playfair text-xl italic text-[#FFF8F4]">We Don&apos;t Hustle — We Harmonize.™</p>
+        <div className="w-full max-w-xl rounded-3xl border border-white/20 bg-[#FFF8F4] p-6 text-left shadow-2xl sm:p-8">
+          <h3 className="mb-5 text-center font-playfair text-2xl font-bold text-[#4A3A42]">Reserve Your Free Sunday Seat</h3>
+          <RegistrationForm />
+        </div>
         <a href="#reality-check" className="font-poppins inline-flex w-fit items-center justify-center rounded-full bg-[#C13B6B] px-7 py-4 text-base font-semibold uppercase tracking-[0.12em] text-[#FFF8F4] shadow-lg shadow-[#C13B6B]/25 transition-colors hover:bg-[#A8305B]">Join Us Sunday @ 3:PM ET ON ZOOM</a>
       </div>
     </section>
