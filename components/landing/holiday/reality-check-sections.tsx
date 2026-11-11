@@ -465,18 +465,38 @@ export function BusinessWeekSection() {
 export function NewYearSection() {
   return (
     <section className="bg-[#FFFDFB] py-20 sm:py-24">
-      <div className="mx-auto flex max-w-4xl flex-col items-center gap-5 px-5 text-center sm:px-8">
+      <div className="mx-auto flex max-w-5xl flex-col items-center gap-6 px-5 text-center sm:px-8">
         <p className="font-poppins text-sm font-semibold uppercase tracking-[0.22em] text-[#5A7F46]">
-          Your First Step
+          An Invitation for Founders
         </p>
         <h2 className="font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">
-          Ready to Take the First Step?
+          You’re Invited!
         </h2>
         <p className="max-w-3xl font-poppins text-lg leading-relaxed text-[#5A4A52] sm:text-xl">
-          If you’d like to take the first step toward experiencing the Work-Life Balance Business Week™, join me on Sunday at 3:00 PM ET for the FREE Work-Life Balance Reality Check™.
+          Join me for the Work-Life Balance Business Week™ if you’re ready to build and grow your business without sacrificing the life you built it for.
         </p>
-        <p className="max-w-3xl font-poppins text-base leading-relaxed text-[#5A4A52] sm:text-lg">
-          We’ll begin by looking at your current reality—where business demands and life priorities are competing—and identify the boundaries that deserve your attention.
+        <div className="grid w-full gap-4 text-left md:grid-cols-3">
+          <div className="rounded-2xl border border-[#DCE5D5] bg-[#EEF3E8] p-6">
+            <h3 className="font-playfair text-2xl font-bold text-[#4A3A42]">STARTING</h3>
+            <p className="mt-2 font-poppins text-base leading-relaxed text-[#5A4A52]">
+              You’re starting a business and want to build it with work-life balance boundaries from day one.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-[#EAD5DC] bg-[#FCEEF2] p-6">
+            <h3 className="font-playfair text-2xl font-bold text-[#4A3A42]">GROWING</h3>
+            <p className="mt-2 font-poppins text-base leading-relaxed text-[#5A4A52]">
+              You’re growing an established business and want success without letting work take over your life.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-[#DCE5D5] bg-[#EEF3E8] p-6">
+            <h3 className="font-playfair text-2xl font-bold text-[#4A3A42]">SCALING</h3>
+            <p className="mt-2 font-poppins text-base leading-relaxed text-[#5A4A52]">
+              You’re scaling your business and want sustainable boundaries as responsibilities and demands expand.
+            </p>
+          </div>
+        </div>
+        <p className="max-w-3xl font-poppins text-lg font-semibold leading-relaxed text-[#4A3A42] sm:text-xl">
+          If one of these describes you, take the first step with me.
         </p>
         <p className="font-playfair text-xl font-semibold text-[#4A3A42] sm:text-2xl">
           Sunday · 3:00 PM ET · Live on Zoom
@@ -485,7 +505,7 @@ export function NewYearSection() {
           href="#enrollment"
           className="font-poppins inline-flex w-fit items-center justify-center rounded-full bg-[#C13B6B] px-8 py-4 text-base font-semibold uppercase tracking-[0.1em] text-[#FFF8F4] shadow-lg shadow-[#C13B6B]/25 transition-colors hover:bg-[#A8305B]"
         >
-          Reserve Your Free Sunday Seat
+          Join Me Sunday for the Free Reality Check
         </a>
       </div>
     </section>
