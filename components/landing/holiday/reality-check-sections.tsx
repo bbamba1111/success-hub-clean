@@ -367,7 +367,11 @@ export function RealityCheckSection() {
           <p className="mx-auto mt-6 max-w-3xl font-poppins text-base leading-relaxed text-[#5A4A52] sm:text-lg">Before you enter the Work-Life Balance Business Week™, begin by looking at your current reality. The Reality Check starts your reservation journey. It helps establish your founder and business context, identify where business demands collide with life, and clarify the areas you want to address during your Work-Life Balance experience.</p>
         </header>
 
-        <div className="mt-12 grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+        <div className="mt-8 flex justify-center">
+          <CtaLink />
+        </div>
+
+        <div className="mx-auto mt-10 max-w-4xl">
           <div className="rounded-3xl border border-[#E8C6D2] bg-white/85 p-6 shadow-xl shadow-[#C13B6B]/10 backdrop-blur-sm sm:p-8">
             <h3 className="font-playfair text-2xl font-bold text-[#4A3A42]">Your first step includes</h3>
             <ol className="mt-6 flex flex-col gap-5">
@@ -381,17 +385,6 @@ export function RealityCheckSection() {
                 </li>
               ))}
             </ol>
-          </div>
-
-          <div className="flex flex-col gap-5 rounded-3xl border border-[#FFF8F4]/15 bg-[#071D1B]/85 p-6 backdrop-blur-sm sm:p-8">
-            <h3 className="font-playfair text-2xl font-bold text-[#FFF8F4]">After you complete the Reality Check</h3>
-            <p className="font-poppins text-base leading-relaxed text-[#F6D6E1]">Review your results, your 30-Day Work-Life Balance Baseline™, and the priority focus areas that deserve attention.</p>
-            <p className="font-poppins text-base leading-relaxed text-[#F6D6E1]">Then decide how you want to proceed toward reserving your place in the Work-Life Balance Business Week™. You may also choose to explore the optional personalized Boundary Report™.</p>
-            <div className="rounded-2xl bg-[#FFFFFF12] p-5">
-              <p className="font-playfair text-lg font-semibold leading-relaxed text-[#FFF8F4]">Your Reality Check, assessment results, and priority focus areas are free.</p>
-              <p className="mt-2 font-poppins text-sm leading-relaxed text-[#F6D6E1]">Completing this first step begins your reservation journey. It does not confirm a paid reservation or require you to purchase a report or experience.</p>
-            </div>
-            <CtaLink />
           </div>
         </div>
       </div>
