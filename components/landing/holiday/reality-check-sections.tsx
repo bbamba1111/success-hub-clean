@@ -332,29 +332,44 @@ export function RealityCheckSection() {
     { title: "Work-Life Balance Alignment™", detail: "Answer 3 questions about your willingness and readiness to make changes. These questions do not determine access to your free results." },
   ]
   return (
-    <section id="reality-check" className="relative scroll-mt-20 overflow-hidden bg-[#123B2A] py-20 sm:py-28">
-      <img src="/images/holiday/kwanzaa-rest.webp" alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-100" loading="lazy" />
+    <section
+      id="reality-check"
+      className="relative isolate scroll-mt-20 overflow-hidden py-20 sm:py-28"
+      style={{
+        backgroundColor: "#FCEBF0",
+        backgroundImage:
+          "radial-gradient(ellipse at 8% 8%, rgba(255,255,255,.96) 0, rgba(255,255,255,0) 34%), radial-gradient(ellipse at 92% 18%, rgba(246,169,194,.55) 0, rgba(246,169,194,0) 38%), radial-gradient(ellipse at 50% 100%, rgba(238,243,232,.9) 0, rgba(238,243,232,0) 45%), linear-gradient(135deg, #F9DDE7 0%, #FFF8F4 48%, #F4D8E2 100%)",
+      }}
+    >
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -left-24 -top-28 h-80 w-80 rounded-full border-[34px] border-[#315C3B]/10 blur-[1px]" />
+        <div className="absolute -right-24 -top-24 h-96 w-96 rounded-full border-[42px] border-[#315C3B]/10 blur-[1px]" />
+        <div className="absolute bottom-0 left-0 h-40 w-full bg-gradient-to-t from-white/35 to-transparent" />
+        <div className="absolute left-[8%] top-[18%] h-3 w-3 rounded-full bg-white/80 shadow-[0_0_24px_8px_rgba(255,255,255,.7)]" />
+        <div className="absolute right-[12%] top-[32%] h-2 w-2 rounded-full bg-white/90 shadow-[0_0_22px_8px_rgba(255,255,255,.8)]" />
+        <div className="absolute bottom-[18%] right-[22%] h-2.5 w-2.5 rounded-full bg-[#C13B6B]/30 shadow-[0_0_20px_7px_rgba(193,59,107,.16)]" />
+      </div>
       <div className="relative mx-auto max-w-6xl px-5 sm:px-8">
         <header className="mx-auto max-w-4xl text-center">
-          <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">Your first step toward reserving your place</p>
-          <h2 className="mt-3 font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl">Begin with the Free Sunday Work-Life Balance Reality Check™</h2>
+          <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#5A7F46]">Your first step toward reserving your place</p>
+          <h2 className="mt-3 font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">Begin with the Free Sunday Work-Life Balance Reality Check™</h2>
           <div className="mt-5 flex items-center justify-center gap-3">
-            <span className="font-playfair text-4xl font-bold text-[#FFF8F4] sm:text-5xl">FREE</span>
-            <span className="font-poppins text-sm text-[#F6D6E1]">Your first step toward the Work-Life Balance Business Week™</span>
+            <span className="font-playfair text-4xl font-bold text-[#C13B6B] sm:text-5xl">FREE</span>
+            <span className="font-poppins text-sm text-[#5A4A52]">Your first step toward the Work-Life Balance Business Week™</span>
           </div>
-          <p className="mx-auto mt-6 max-w-3xl font-poppins text-base leading-relaxed text-[#F6D6E1] sm:text-lg">Before you enter the Work-Life Balance Business Week™, begin by looking at your current reality. The Reality Check starts your reservation journey. It helps establish your founder and business context, identify where business demands collide with life, and clarify the areas you want to address during your Work-Life Balance experience.</p>
+          <p className="mx-auto mt-6 max-w-3xl font-poppins text-base leading-relaxed text-[#5A4A52] sm:text-lg">Before you enter the Work-Life Balance Business Week™, begin by looking at your current reality. The Reality Check starts your reservation journey. It helps establish your founder and business context, identify where business demands collide with life, and clarify the areas you want to address during your Work-Life Balance experience.</p>
         </header>
 
         <div className="mt-12 grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
-          <div className="rounded-3xl border border-[#FFF8F4]/15 bg-[#123B2A]/75 p-6 backdrop-blur-sm sm:p-8">
-            <h3 className="font-playfair text-2xl font-bold text-[#FFF8F4]">Your first step includes</h3>
+          <div className="rounded-3xl border border-[#E8C6D2] bg-white/85 p-6 shadow-xl shadow-[#C13B6B]/10 backdrop-blur-sm sm:p-8">
+            <h3 className="font-playfair text-2xl font-bold text-[#4A3A42]">Your first step includes</h3>
             <ol className="mt-6 flex flex-col gap-5">
               {steps.map((step, i) => (
                 <li key={step.title} className="flex gap-4">
-                  <span className="font-playfair text-2xl font-bold text-[#F6A9C2]">{i + 1}</span>
+                  <span className="font-playfair text-2xl font-bold text-[#C13B6B]">{i + 1}</span>
                   <div className="flex flex-col gap-1">
-                    <h4 className="font-poppins text-base font-semibold text-[#FFF8F4]">{step.title}</h4>
-                    <p className="font-poppins text-sm leading-relaxed text-[#F6D6E1]">{step.detail}</p>
+                    <h4 className="font-poppins text-base font-semibold text-[#4A3A42]">{step.title}</h4>
+                    <p className="font-poppins text-sm leading-relaxed text-[#5A4A52]">{step.detail}</p>
                   </div>
                 </li>
               ))}
