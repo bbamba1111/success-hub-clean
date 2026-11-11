@@ -305,7 +305,7 @@ export function FreedomSection() {
               <h2 className="max-w-3xl font-playfair text-balance text-4xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl lg:text-6xl">
                 More Opportunity Can Bring More Pressure.
               </h2>
-              <p className="font-poppins text-lg leading-relaxed text-[#D9E4D7]">
+              <p className="font-poppins text-lg leading-relaxed text-[#F6A9C2]">
                 More technology can bring more complexity. And more capacity can become even more work.
               </p>
               <ul className="space-y-3">
@@ -322,7 +322,7 @@ export function FreedomSection() {
                   </li>
                 ))}
               </ul>
-              <p className="font-poppins text-base leading-relaxed text-[#D9E4D7] sm:text-lg">
+              <p className="font-poppins text-base leading-relaxed text-[#F6A9C2] sm:text-lg">
                 We cannot keep adding demands without considering what human beings can sustainably carry. Attention, energy, and recovery are not unlimited resources.
               </p>
             </div>
