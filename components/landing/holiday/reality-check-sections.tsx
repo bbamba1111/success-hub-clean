@@ -463,29 +463,30 @@ export function BusinessWeekSection() {
 }
 
 export function NewYearSection() {
-  const come = [
-    "You started your business for freedom and want to experience more of it.",
-    "You are adopting AI and want to decide what to do with the capacity it creates.",
-    "You want to practice a more sustainable way to work—not add another productivity system.",
-  ]
-  const skip = [
-    "You want to automate more hustle without reconsidering how work is designed.",
-    "You expect a quick fix or guaranteed business result.",
-    "You are not ready to look honestly at your current workweek.",
-  ]
   return (
-    <section className="bg-[#FFFDFB] py-20 sm:py-28">
-      <div className="mx-auto flex max-w-6xl flex-col gap-14 px-5 sm:px-8">
-        <div className="grid gap-6 md:grid-cols-2">
-          <div className="flex flex-col gap-4 rounded-3xl bg-[#EEF3E8] p-8">
-            <h3 className={`font-playfair text-2xl font-bold ${INK}`}>Come if…</h3>
-            <ul className="flex flex-col gap-3">{come.map((c) => <li key={c} className={BODY_SM}>{c}</li>)}</ul>
-          </div>
-          <div className="flex flex-col gap-4 rounded-3xl bg-[#FCEEF2] p-8">
-            <h3 className={`font-playfair text-2xl font-bold ${INK}`}>This may not be for you if…</h3>
-            <ul className="flex flex-col gap-3">{skip.map((s) => <li key={s} className={BODY_SM}>{s}</li>)}</ul>
-          </div>
-        </div>
+    <section className="bg-[#FFFDFB] py-20 sm:py-24">
+      <div className="mx-auto flex max-w-4xl flex-col items-center gap-5 px-5 text-center sm:px-8">
+        <p className="font-poppins text-sm font-semibold uppercase tracking-[0.22em] text-[#5A7F46]">
+          Your First Step
+        </p>
+        <h2 className="font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">
+          Ready to Take the First Step?
+        </h2>
+        <p className="max-w-3xl font-poppins text-lg leading-relaxed text-[#5A4A52] sm:text-xl">
+          If you’d like to take the first step toward experiencing the Work-Life Balance Business Week™, join me on Sunday at 3:00 PM ET for the FREE Work-Life Balance Reality Check™.
+        </p>
+        <p className="max-w-3xl font-poppins text-base leading-relaxed text-[#5A4A52] sm:text-lg">
+          We’ll begin by looking at your current reality—where business demands and life priorities are competing—and identify the boundaries that deserve your attention.
+        </p>
+        <p className="font-playfair text-xl font-semibold text-[#4A3A42] sm:text-2xl">
+          Sunday · 3:00 PM ET · Live on Zoom
+        </p>
+        <a
+          href="#enrollment"
+          className="font-poppins inline-flex w-fit items-center justify-center rounded-full bg-[#C13B6B] px-8 py-4 text-base font-semibold uppercase tracking-[0.1em] text-[#FFF8F4] shadow-lg shadow-[#C13B6B]/25 transition-colors hover:bg-[#A8305B]"
+        >
+          Reserve Your Free Sunday Seat
+        </a>
       </div>
     </section>
   )
