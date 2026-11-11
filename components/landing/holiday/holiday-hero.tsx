@@ -159,7 +159,7 @@ export function HolidayHero({ sessionLabel }: { sessionLabel?: string } = {}) {
           </div>
           <div className="flex w-full flex-col items-center gap-3 pt-2">
             <a
-              href="#reality-check"
+              href="#enrollment"
               className="font-poppins inline-flex w-full max-w-[35rem] items-center justify-center rounded-2xl bg-[#C13B6B] px-6 py-3.5 text-center text-[12.33px] font-bold leading-snug tracking-[0.01em] text-[#FFF8F4] shadow-xl shadow-[#C13B6B]/30 transition-transform hover:scale-[1.03] hover:bg-[#A8305B] sm:px-10 sm:py-4 sm:text-[17px]"
             >
               Take Your FREE Work-Life Balance Reality Check
