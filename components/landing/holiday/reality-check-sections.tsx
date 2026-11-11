@@ -467,13 +467,13 @@ export function NewYearSection() {
     <section className="bg-[#FFFDFB] py-20 sm:py-24">
       <div className="mx-auto flex max-w-5xl flex-col items-center gap-6 px-5 text-center sm:px-8">
         <p className="font-poppins text-sm font-semibold uppercase tracking-[0.22em] text-[#5A7F46]">
-          An Invitation for Founders
+          For Founders & Independent Professionals
         </p>
         <h2 className="font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">
           You’re Invited!
         </h2>
         <p className="max-w-3xl font-poppins text-lg leading-relaxed text-[#5A4A52] sm:text-xl">
-          Join me for the Work-Life Balance Business Week™ if you’re ready to build and grow your business without sacrificing the life you built it for.
+          Whether you’re a founder, coach, consultant, service professional, expert, speaker, author, or personal development entrepreneur, you’re invited to attend the Work-Life Balance Business Week™. If you’re starting, growing, or scaling a business, this experience is designed to help you build and operate it without sacrificing the life you built it for.
         </p>
         <div className="grid w-full gap-4 text-left md:grid-cols-3">
           <div className="rounded-2xl border border-[#DCE5D5] bg-[#EEF3E8] p-6">
