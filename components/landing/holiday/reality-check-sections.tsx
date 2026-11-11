@@ -273,12 +273,22 @@ export function FreedomSection() {
               And now, with AI adding a new reality to navigate and integrate...
             </p>
           </div>
-          <img
-            src="/images/barbara-portrait.png"
-            alt="Thought Leader Barbara Bamba, architect of Harmony Lane"
-            className="mx-auto max-h-[780px] w-full rounded-3xl object-contain object-center shadow-xl"
-            loading="lazy"
-          />
+          <div className="relative -top-[72px] mx-auto w-full max-w-xl">
+            <img
+              src="/images/barbara-portrait.png"
+              alt="Thought Leader Barbara Bamba"
+              className="mx-auto max-h-[780px] w-full rounded-3xl object-contain object-center shadow-xl"
+              loading="lazy"
+            />
+            <div className="mt-5 rounded-2xl bg-[#123B2A] px-5 py-5 text-center shadow-lg">
+              <h3 className="font-playfair text-2xl font-bold text-[#FFF8F4] sm:text-3xl">Thought Leader Barbara</h3>
+              <ul className="mt-3 flex flex-col gap-2 font-poppins text-sm font-medium leading-relaxed text-[#F6D6E1] sm:text-base">
+                <li>Architect, Harmony Lane™</li>
+                <li>Creator, Make Time For More™</li>
+                <li>Guide of The Work-Life Balance Business Week™</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </section>
 
