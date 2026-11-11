@@ -381,7 +381,7 @@ export function RealityCheckSection() {
               <p className="font-playfair text-lg font-semibold leading-relaxed text-[#FFF8F4]">Your Reality Check, assessment results, and priority focus areas are free.</p>
               <p className="mt-2 font-poppins text-sm leading-relaxed text-[#F6D6E1]">Completing this first step begins your reservation journey. It does not confirm a paid reservation or require you to purchase a report or experience.</p>
             </div>
-            <CtaLink label="Begin Your Free Reality Check" />
+            <CtaLink />
           </div>
         </div>
       </div>
@@ -475,7 +475,7 @@ export function NewYearSection() {
     <section className="bg-[#FFFDFB] py-20 sm:py-28">
       <div className="mx-auto flex max-w-6xl flex-col gap-14 px-5 sm:px-8">
         <div className="flex justify-center">
-          <CtaLink label="Join the Free Sunday Reality Check" />
+          <CtaLink />
         </div>
         <div className="grid gap-6 md:grid-cols-2">
           <div className="flex flex-col gap-4 rounded-3xl bg-[#EEF3E8] p-8">
@@ -577,7 +577,7 @@ export function RegisterSection() {
           <h3 className="mb-5 text-center font-playfair text-2xl font-bold text-[#4A3A42]">Reserve Your Free Sunday Seat</h3>
           <RegistrationForm />
         </div>
-        <a href="#reality-check" className="font-poppins inline-flex w-fit items-center justify-center rounded-full bg-[#C13B6B] px-7 py-4 text-base font-semibold uppercase tracking-[0.12em] text-[#FFF8F4] shadow-lg shadow-[#C13B6B]/25 transition-colors hover:bg-[#A8305B]">Join Us Sunday @ 3:PM ET ON ZOOM</a>
+        <a href="#enrollment" className="font-poppins inline-flex w-fit items-center justify-center rounded-full bg-[#C13B6B] px-7 py-4 text-base font-semibold uppercase tracking-[0.12em] text-[#FFF8F4] shadow-lg shadow-[#C13B6B]/25 transition-colors hover:bg-[#A8305B]">Join Us Sunday @ 3:PM ET On ZOOM</a>
       </div>
     </section>
   )
