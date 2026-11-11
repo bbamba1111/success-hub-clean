@@ -476,9 +476,6 @@ export function NewYearSection() {
   return (
     <section className="bg-[#FFFDFB] py-20 sm:py-28">
       <div className="mx-auto flex max-w-6xl flex-col gap-14 px-5 sm:px-8">
-        <div className="flex justify-center">
-          <CtaLink />
-        </div>
         <div className="grid gap-6 md:grid-cols-2">
           <div className="flex flex-col gap-4 rounded-3xl bg-[#EEF3E8] p-8">
             <h3 className={`font-playfair text-2xl font-bold ${INK}`}>Come if…</h3>
