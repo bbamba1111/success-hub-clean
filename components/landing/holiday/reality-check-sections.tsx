@@ -214,14 +214,6 @@ export function WeMakeTimeForMoreSection() {
             <h2 className="mt-3 font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl">A More Sustainable Workweek Can Make Room for AI Adoption.</h2>
           </header>
 
-          <div className="mx-auto mt-8 max-w-4xl space-y-5 text-center">
-            <p className="font-playfair text-xl font-semibold leading-relaxed text-[#FFF8F4] sm:text-2xl">Human Sustainability™ is a business operating principle—not simply a personal wellness message.</p>
-            <p className="font-poppins text-base leading-relaxed text-[#D9E4D7] sm:text-lg">It means designing work around the sustainable capacity of the people who build, lead, and operate a business.</p>
-            <p className="font-poppins text-base leading-relaxed text-[#D9E4D7] sm:text-lg">AI adoption brings learning, experimentation, and change. Those activities need time and attention. They cannot simply be added to a workweek that is already stretched beyond what people can sustainably carry.</p>
-            <p className="font-playfair text-xl font-semibold leading-relaxed text-[#FFF8F4] sm:text-2xl">The work environment must evolve, too.</p>
-            <p className="font-poppins text-base leading-relaxed text-[#D9E4D7] sm:text-lg">That means making intentional room for focused work, learning, adjustment, and the human capacity needed to put new technology to meaningful use.</p>
-          </div>
-
           <div className="mx-auto mt-9 max-w-4xl border-t border-[#C9DDB4]/30 pt-7 text-center">
             <p className="font-poppins text-base leading-relaxed text-[#D9E4D7] sm:text-lg">The Work-Life Balance Business Week™ gives founders an opportunity to begin changing their work environment through an intentional workweek, focused work time, and boundaries around business demands—making more room for both business and life as technology evolves.</p>
             <p className="mt-4 font-playfair text-base italic leading-relaxed text-[#FFF8F4] sm:text-lg">The Work-Life Balance Business Week™ does not implement AI. It helps founders rethink the work environment in which AI adoption takes place.</p>
