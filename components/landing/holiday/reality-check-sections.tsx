@@ -293,20 +293,9 @@ export function FreedomSection() {
               <p className="font-poppins text-lg leading-relaxed text-[#F6A9C2]">
                 More technology can bring more complexity. And more capacity can become even more work.
               </p>
-              <ul className="space-y-3">
-                {[
-                  "Keeping up with rapidly changing technology.",
-                  "Figuring out which tools your business needs.",
-                  "Finding time to learn how to use them effectively.",
-                  "Deciding what to automate and what should remain human-led.",
-                  "Navigating the demands of AI adoption while already carrying the responsibilities of running an overextended business.",
-                ].map((item) => (
-                  <li key={item} className="flex items-start gap-3">
-                    <span aria-hidden="true" className="mt-2.5 h-2 w-2 shrink-0 rounded-full bg-[#F6A9C2]" />
-                    <p className="font-poppins text-base leading-relaxed text-[#F7F5EF] sm:text-lg">{item}</p>
-                  </li>
-                ))}
-              </ul>
+              <p className="font-poppins text-base leading-relaxed text-[#D9E4D7] sm:text-lg">
+                AI adoption brings new decisions, learning, experimentation, and adjustment. But when the current work environment already demands more time and attention than people can sustainably give, adding AI adoption can feel like one more pressure.
+              </p>
               <p className="font-poppins text-base leading-relaxed text-[#F6A9C2] sm:text-lg">
                 We cannot keep adding demands without considering what human beings can sustainably carry. Attention, energy, and recovery are not unlimited resources.
               </p>
