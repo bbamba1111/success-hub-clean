@@ -50,8 +50,8 @@ export default function LandingPage() {
       <FreedomSection />
       <WeMakeTimeForMoreSection />
       <MondaySection />
-      <RealityCheckSection />
       <NewYearSection />
+      <RealityCheckSection />
       <AboutBarbaraSection />
       <FaqSection />
       <RegisterSection />
