@@ -212,15 +212,13 @@ export function WeMakeTimeForMoreSection() {
           <header className="mx-auto mt-14 max-w-4xl text-center">
             <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#C9DDB4]">Human Sustainability™ in the AI Era</p>
             <h2 className="mt-3 font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl">A More Sustainable Workweek Can Make Room for AI Adoption.</h2>
-            <p className="mt-5 font-poppins text-lg leading-relaxed text-[#D9E4D7]">AI adoption brings new decisions, learning, experimentation, and adjustment. But when the current work environment already demands more time and attention than people can sustainably give, adding AI adoption can feel like one more pressure.</p>
-          </header>
-          <div className="mt-8 grid gap-5 lg:grid-cols-2">
-            <article className="rounded-2xl border border-[#9DBF9A]/25 bg-[#F7F5EF]/[0.045] p-6 sm:p-8">
+            <div className="mt-5 flex flex-col gap-3">
               <p className="font-playfair text-xl font-semibold leading-relaxed text-[#FFF8F4] sm:text-2xl">Human Sustainability™ is a business operating principle—not just a personal wellness message.</p>
-              <p className="mt-3 font-poppins text-base leading-relaxed text-[#D9E4D7]">It means designing work around the sustainable capacity of the people who build, lead, and operate the business. AI adoption should not add another demand to an already demanding workweek. The work environment must make room for people to learn, adapt, and share in the capacity new technology creates.</p>
-            </article>
-          </div>
-          <p className="mx-auto mt-8 max-w-4xl text-center font-playfair text-xl font-semibold leading-relaxed text-[#FFF8F4] sm:text-2xl">The Work-Life Balance Business Week™ does not implement AI. It helps founders begin changing the work environment so AI adoption does not simply become another demand placed on an already demanding workweek.</p>
+              <p className="font-poppins text-base leading-relaxed text-[#D9E4D7] sm:text-lg">It means designing work around the sustainable capacity of the people who build, lead, and operate the business. AI adoption should not add another demand to an already demanding workweek. The work environment must make room for people to learn, adapt, and share in the capacity new technology creates.</p>
+            </div>
+          </header>
+
+          <p className="mx-auto mt-8 max-w-4xl text-center font-playfair text-base font-semibold leading-relaxed text-[#FFF8F4] sm:text-lg">The Work-Life Balance Business Week™ does not implement AI. It helps founders begin changing the work environment so AI adoption does not simply become another demand placed on an already demanding workweek.</p>
         </div>
       </section>
 
