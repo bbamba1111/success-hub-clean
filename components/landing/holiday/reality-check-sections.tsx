@@ -323,70 +323,59 @@ export function FreedomSection() {
 }
 
 export function RealityCheckSection() {
-  const outcomes = [
-    "A clearer picture of your original entrepreneurial intention and current business reality.",
-    "Where business demands collide with the personal life and workweek you want.",
-    "Your 30-Day Work-Life Balance Baseline™ across 15 Core Life Value Areas™.",
-    "The priority focus areas and business boundary collisions that deserve attention.",
-  ]
   const steps = [
-    "Complete your Founder Profile™.",
-    "Answer the 10 questions in Business Context™.",
-    "Identify relevant conditions in Business Boundary Collisions™.",
-    "Describe your Personal & Work-From-Home Reality™.",
-    "Complete the 15-question 30-Day Work-Life Balance Audit™.",
-    "Answer the 3 Work-Life Balance Alignment™ questions.",
-    "Review your results and priority focus areas. You may choose to explore a personalized Boundary Report™.",
+    { title: "Founder Profile™", detail: "Establish your founder context and reconnect with what you intended to create." },
+    { title: "Business Context™", detail: "Answer 10 questions about your business and how it operates today." },
+    { title: "Business Boundary Collisions™", detail: "Identify where business demands and responsibilities compete with the boundaries you want to maintain." },
+    { title: "Personal & Work-From-Home Reality™", detail: "Describe the conditions, responsibilities, and personal circumstances that shape your working reality." },
+    { title: "30-Day Work-Life Balance Audit™", detail: "Answer 15 questions across 15 Core Life Value Areas™ to establish your 30-Day Work-Life Balance Baseline™." },
+    { title: "Work-Life Balance Alignment™", detail: "Answer 3 questions about your willingness and readiness to make changes. These questions do not determine access to your free results." },
   ]
   return (
     <section id="reality-check" className="relative scroll-mt-20 overflow-hidden bg-[#123B2A] py-20 sm:py-28">
       <img src="/images/holiday/kwanzaa-rest.webp" alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-100" loading="lazy" />
-      <div className="relative mx-auto grid max-w-6xl gap-12 px-5 sm:px-8 lg:grid-cols-2">
-        <div className="flex flex-col gap-5">
-          <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">Your free Sunday starting point</p>
-          <h2 className="font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-4xl">
-            Free Sunday Work-Life Balance Reality Check™
-          </h2>
-          <div className="flex items-end gap-3">
-            <span className="font-playfair text-5xl font-bold text-[#FFF8F4]">FREE</span>
-            <span className="font-poppins pb-1 text-sm text-[#F6D6E1]">guided Sunday experience</span>
+      <div className="relative mx-auto max-w-6xl px-5 sm:px-8">
+        <header className="mx-auto max-w-4xl text-center">
+          <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">Your first step toward reserving your place</p>
+          <h2 className="mt-3 font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl">Begin with the Free Sunday Work-Life Balance Reality Check™</h2>
+          <div className="mt-5 flex items-center justify-center gap-3">
+            <span className="font-playfair text-4xl font-bold text-[#FFF8F4] sm:text-5xl">FREE</span>
+            <span className="font-poppins text-sm text-[#F6D6E1]">Your first step toward the Work-Life Balance Business Week™</span>
           </div>
-          <p className="font-poppins text-pretty leading-relaxed text-[#F6D6E1]">
-            Start your week with clarity. This guided experience helps you examine why you started your business, what your business asks of you today, and whether the way you work supports the life you want to live.
-          </p>
-          <ul className="flex flex-col gap-3">
-            {outcomes.map((o) => (
-              <li key={o} className="font-poppins flex gap-3 leading-relaxed text-[#FFF8F4]">
-                <Dot className="bg-[#F6A9C2]" />
-                {o}
-              </li>
-            ))}
-          </ul>
-          <p className="font-poppins text-base italic leading-relaxed text-[#F6D6E1]">
-            Your Reality Check, assessment results, and priority focus areas are free. After reviewing your results, you can decide whether you want a deeper personalized Boundary Report™ or to continue into a paid Harmony Lane™ experience. There is no obligation to purchase.
-          </p>
-          <CtaLink label="Join the Free Sunday Reality Check" />
-          <p className="font-poppins text-sm text-[#F6D6E1]">One Sunday can help you see what needs attention before you redesign the way you work.</p>
-        </div>
-        <div className="flex flex-col gap-5 rounded-3xl border border-[#FFF8F4]/15 bg-[#123B2A]/65 p-7 backdrop-blur-sm">
-          <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">What the Reality Check includes</p>
-          <ol className="flex flex-col gap-4">
-            {steps.map((step, i) => (
-              <li key={step} className="flex gap-4">
-                <span className="font-playfair text-2xl font-bold text-[#F6A9C2]">{i + 1}</span>
-                <p className="font-poppins pt-1 text-base leading-relaxed text-[#FFF8F4]">{step}</p>
-              </li>
-            ))}
-          </ol>
-          <p className="font-poppins border-t border-[#FFF8F4]/15 pt-4 text-sm leading-relaxed text-[#F6D6E1]">
-            The Alignment questions help clarify your willingness and readiness. They do not determine whether you receive your free results.
-          </p>
+          <p className="mx-auto mt-6 max-w-3xl font-poppins text-base leading-relaxed text-[#F6D6E1] sm:text-lg">Before you enter the Work-Life Balance Business Week™, begin by looking at your current reality. The Reality Check starts your reservation journey. It helps establish your founder and business context, identify where business demands collide with life, and clarify the areas you want to address during your Work-Life Balance experience.</p>
+        </header>
+
+        <div className="mt-12 grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+          <div className="rounded-3xl border border-[#FFF8F4]/15 bg-[#123B2A]/75 p-6 backdrop-blur-sm sm:p-8">
+            <h3 className="font-playfair text-2xl font-bold text-[#FFF8F4]">Your first step includes</h3>
+            <ol className="mt-6 flex flex-col gap-5">
+              {steps.map((step, i) => (
+                <li key={step.title} className="flex gap-4">
+                  <span className="font-playfair text-2xl font-bold text-[#F6A9C2]">{i + 1}</span>
+                  <div className="flex flex-col gap-1">
+                    <h4 className="font-poppins text-base font-semibold text-[#FFF8F4]">{step.title}</h4>
+                    <p className="font-poppins text-sm leading-relaxed text-[#F6D6E1]">{step.detail}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          <div className="flex flex-col gap-5 rounded-3xl border border-[#FFF8F4]/15 bg-[#071D1B]/85 p-6 backdrop-blur-sm sm:p-8">
+            <h3 className="font-playfair text-2xl font-bold text-[#FFF8F4]">After you complete the Reality Check</h3>
+            <p className="font-poppins text-base leading-relaxed text-[#F6D6E1]">Review your results, your 30-Day Work-Life Balance Baseline™, and the priority focus areas that deserve attention.</p>
+            <p className="font-poppins text-base leading-relaxed text-[#F6D6E1]">Then decide how you want to proceed toward reserving your place in the Work-Life Balance Business Week™. You may also choose to explore the optional personalized Boundary Report™.</p>
+            <div className="rounded-2xl bg-[#FFFFFF12] p-5">
+              <p className="font-playfair text-lg font-semibold leading-relaxed text-[#FFF8F4]">Your Reality Check, assessment results, and priority focus areas are free.</p>
+              <p className="mt-2 font-poppins text-sm leading-relaxed text-[#F6D6E1]">Completing this first step begins your reservation journey. It does not confirm a paid reservation or require you to purchase a report or experience.</p>
+            </div>
+            <CtaLink label="Begin Your Free Reality Check" />
+          </div>
         </div>
       </div>
     </section>
   )
 }
-
 const BOUNDARY_AREAS = [
   { title: "Time", body: "Decide when work begins and ends, and what fits into the time available." },
   { title: "Personal life", body: "Protect time for relationships, family, personal interests, and life outside the business." },
