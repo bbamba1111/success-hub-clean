@@ -224,34 +224,6 @@ export function WeMakeTimeForMoreSection() {
               <p className="mt-3 font-poppins text-base leading-relaxed text-[#D9E4D7]">A four-day business rhythm, a contained focused workday, protected breaks, and time away from business give founders a different starting point for making room to learn, experiment, adjust, and decide how AI fits into their operations.</p>
             </article>
           </div>
-          <div className="mt-8 rounded-2xl border border-[#9DBF9A]/25 bg-[#102C28]/90 p-6 sm:p-8">
-            <div className="mb-6 border-b border-[#C9DDB4]/15 pb-4">
-              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#9DBF9A]">Reciprocity in AI adoption · People + technology</p>
-              <h3 className="mt-1 font-playfair text-2xl font-semibold text-[#FFF8F4]">The Work Environment Must Adapt, Too.</h3>
-            </div>
-            <div className="grid gap-3 md:grid-cols-2">
-              {[
-                ["01", "Make room to learn", "Time and space to understand, practice, and become comfortable with new technology."],
-                ["02", "Reduce competing demands", "Do not layer training and adoption onto an already overloaded workweek."],
-                ["03", "Redesign the workweek", "Make room for learning, experimentation, adjustment, and integration."],
-                ["04", "Reconsider expectations", "Do not automatically turn every efficiency gain into a demand for greater output."],
-                ["05", "Share the benefit", "Let AI-created capacity mean less pressure, more manageable work, and more room for life."],
-              ].map(([number, title, detail]) => (
-                <div key={number} className="flex items-start gap-4 rounded-xl border border-[#C9DDB4]/15 bg-[#F7F5EF]/[0.045] p-4">
-                  <span className="pt-0.5 font-mono text-xs text-[#F6A9C2]">{number}</span>
-                  <div className="min-w-0 flex-1">
-                    <h4 className="font-playfair text-lg font-semibold text-[#FFF8F4]">{title}</h4>
-                    <p className="mt-1 font-poppins text-sm leading-relaxed text-[#D9E4D7]">{detail}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="mt-5 rounded-xl border border-[#F6A9C2]/30 bg-[#F6A9C2]/[0.07] p-4">
-              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#F6A9C2]">The reciprocity principle</p>
-              <p className="mt-2 font-playfair text-xl font-semibold leading-relaxed text-[#FFF8F4]">If people are expected to adapt, the work environment must adapt, too.</p>
-              <p className="mt-1 font-poppins text-sm leading-relaxed text-[#D9E4D7]">AI adoption should not be forced into an already demanding workweek.</p>
-            </div>
-          </div>
           <div className="mt-8 grid gap-5 lg:grid-cols-2">
             <article className="rounded-2xl border border-[#F6A9C2]/35 bg-[#F6A9C2]/[0.07] p-6 sm:p-8">
               <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.22em] text-[#F6A9C2]">The critical design question</p>
