@@ -351,12 +351,7 @@ export function RealityCheckSection() {
       </div>
       <div className="relative mx-auto max-w-6xl px-5 sm:px-8">
         <header className="mx-auto max-w-4xl text-center">
-          <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#5A7F46]">Your first step toward reserving your place</p>
-          <h2 className="mt-3 font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">Begin with the Free Sunday Work-Life Balance Reality Check™</h2>
-          <div className="mt-5 flex items-center justify-center gap-3">
-            <span className="font-playfair text-4xl font-bold text-[#C13B6B] sm:text-5xl">FREE</span>
-            <span className="font-poppins text-sm text-[#5A4A52]">Your first step toward the Work-Life Balance Business Week™</span>
-          </div>
+          <h2 className="font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">Take Your FREE Work-Life Balance Reality Check</h2>
           <p className="mx-auto mt-6 max-w-3xl font-poppins text-base leading-relaxed text-[#5A4A52] sm:text-lg">Before you enter the Work-Life Balance Business Week™, begin by looking at your current reality. The Reality Check starts your reservation journey. It helps establish your founder and business context, identify where business demands collide with life, and clarify the areas you want to address during your Work-Life Balance experience.</p>
         </header>
 
