@@ -4,11 +4,13 @@ import type { AssessmentType } from "@/lib/assessment-cadence"
 /**
  * Weekly Work-Life Balance Audit snapshot persistence (legacy table: reality_checks).
  *
- * Guiding principle: the Reality Check is a *weekly snapshot* of the member's
- * current state. There is ONE living record per member per week, keyed by
- * (user_id, week_key). It is created when the audit is scored and then
- * progressively enriched as the member selects priority areas, saves their
- * Weekly Operating Declaration, and completes their Weekly Reflection.
+ * Guiding principle: the Work-Life Balance Audit™ is an optional *7-day
+ * snapshot* of the member's current state. There is ONE living record per
+ * member per week, keyed by (user_id, week_key). It is created when the audit
+ * is scored and then progressively enriched as the member selects priority
+ * areas, saves their Weekly Operating Declaration, and completes their Weekly
+ * Reflection. This is separate from the one-time Work-Life Balance Reality
+ * Check™ and its permanent 30-day baseline in public.boundary_reports.
  *
  * localStorage remains the source of truth for instant UX. These functions
  * mirror the completed data to Supabase so Cherry Blossom can remember it.
@@ -172,9 +174,9 @@ export async function getLatestRealityCheck(): Promise<RealityCheckRecord | null
 
 /**
  * Loads every weekly Work-Life Balance Audit™ snapshot the member has (newest first).
- * Used by the Work-Life Harmony Blueprint™ calendar to show "Week of…" cards
- * for the whole month at a glance and to build the Archive once a week rolls
- * out of the current calendar month. Returns [] for anonymous sessions.
+ * Used by My Blueprint™ to show the optional 7-day Work-Life Balance Audit
+ * history. The initial 30-day baseline and My Boundary Report™ are stored
+ * separately in boundary_reports. Returns [] for anonymous sessions.
  */
 export async function getRealityChecksHistory(): Promise<RealityCheckRecord[]> {
   const userId = await getUserId()
@@ -285,7 +287,8 @@ export async function getOperatingCenterData(): Promise<OperatingCenterData> {
 
 /**
  * Decides where a member lands right after login. Checks required onboarding
- * gates in order before falling back to the recurring measurement/daily logic.
+ * gates in order, then sends returning members to the normal daily front door.
+ * The optional weekly 7-day Audit™ never blocks sign-in or post-login access.
  *
  * Production on-ramp (every real member must complete ALL steps — there is
  * no skip path):
