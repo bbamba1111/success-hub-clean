@@ -83,6 +83,12 @@ export interface BoundaryReportData {
 
 /** In-progress assessment answers, autosaved to the member's single draft row. */
 export interface BoundaryReportDraft {
+  /** In-progress 30-Day Baseline, preserved even if the founder leaves before completing the report. */
+  baseline?: {
+    overall: number
+    date: string
+    areas: BaselineArea[]
+  } | null
   stage: string
   currentBusinessIndex: number
   intentionChoices: Record<string, string[]>
