@@ -7,7 +7,7 @@ export type BusinessStage = "start" | "grow" | "scale"
 
 export type SelectedPath = "JOINED_WEEK" | "GO_IT_ALONE"
 
-export type AlignmentChoice = "willing" | "unsure"
+export type AlignmentChoice = "willing" | "unsure" | "ready" | "interested" | "not_at_this_time"
 
 /** One stored answer to a Work-Life Balance Alignment™ willingness question. */
 export interface AlignmentResponse {
