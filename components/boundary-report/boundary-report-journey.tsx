@@ -1325,9 +1325,9 @@ function BoundaryReport({
   )
 }
 
-// ── Saved Reality Check™ editor (shown once a report exists) ─────────────────
-// Mirrors the Business Context Profile™ completed summary: a "Complete" header
-// with Edit Full / Continue, then one card per section with its own Edit.
+// ── Saved one-time Reality Check™ summary (read-only after completion) ────────
+// The 30-day baseline and My Boundary Report™ are completed once. Weekly
+// Work-Life Balance Audit™ check-ins are handled separately.
 
 function SummaryField({ label, value }: { label: string; value: string | undefined }) {
   if (!value) return null
