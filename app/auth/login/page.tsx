@@ -32,8 +32,9 @@ export default function LoginPage() {
 
       if (error) throw error
 
-      // Returning-member routing: if this week's Weekly Reality Check™ isn't
-      // done, open the onboarding ritual (/begin); otherwise land on Live Today™.
+      // Returning members complete only required onboarding gates here.
+      // The weekly 7-day Work-Life Balance Audit™ is optional and is not a
+      // condition of signing in or reaching Live Today™.
       const destination = await getPostLoginDestination()
       window.location.href = destination
     } catch (error: unknown) {
