@@ -300,9 +300,9 @@ export async function getOperatingCenterData(): Promise<OperatingCenterData> {
  *      /entrepreneur-success-assessment but is no longer part of onboarding.)
  *   4. All three complete but the Cherry Blossom Thank-You™ transition hasn't
  *      been shown yet → /welcome/cherry-blossom/complete.
- *   5. On-ramp fully complete → fall back to the recurring measurement/daily
- *      logic: this week's Weekly Reality Check™ NOT done → /begin; otherwise
- *      → "/", the daily Work-Life Balance Business Day™ front door.
+ *   5. On-ramp fully complete → "/", the daily Work-Life Balance Business Day™
+ *      front door. The optional 7-day Work-Life Balance Audit™ is available
+ *      from My Blueprint™ and the weekly entry experience; it never blocks login.
  *
  * IMPORTANT — localStorage is a fast cache, NOT the source of truth. Founder
  * Profile™, Business Context™, and the EGA onboarding signal all persist to
@@ -381,6 +381,7 @@ export async function getPostLoginDestination(): Promise<string> {
     }
   }
 
-  const done = await hasCompletedThisWeeksRealityCheck()
-  return done ? "/" : "/begin"
+  // The weekly 7-day Audit™ is optional. A missing weekly result must never
+  // hold a returning member at the login/onboarding gate.
+  return "/"
 }
