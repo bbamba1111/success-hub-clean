@@ -521,15 +521,6 @@ export function NewYearSection() {
         <p className="max-w-3xl font-poppins text-lg font-semibold leading-relaxed text-[#4A3A42] sm:text-xl">
           If one of these describes you, take the first step with me.
         </p>
-        <p className="font-playfair text-xl font-semibold text-[#4A3A42] sm:text-2xl">
-          Sunday · 3:00 PM ET · Live on Zoom
-        </p>
-        <a
-          href="#enrollment"
-          className="font-poppins inline-flex w-fit items-center justify-center rounded-full bg-[#C13B6B] px-8 py-4 text-base font-semibold uppercase tracking-[0.1em] text-[#FFF8F4] shadow-lg shadow-[#C13B6B]/25 transition-colors hover:bg-[#A8305B]"
-        >
-          Join Me Sunday for the Free Reality Check
-        </a>
       </div>
     </section>
   )
