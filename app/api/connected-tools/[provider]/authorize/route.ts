@@ -43,7 +43,7 @@ export async function GET(request: NextRequest, context: { params: { provider: s
     ? process.env.GOOGLE_CLIENT_ID!
     : process.env.MICROSOFT_CLIENT_ID!
   const redirectUri = connectedToolsRedirectUri(provider, request.url)
-  const state = randomBytes(32).toString("hex")
+  const returnTo = request.nextUrl.searchParams.get("returnTo") || "/?openSpace=ceo-workday"\n  const safeReturnTo = returnTo.startsWith("/") && !returnTo.startsWith("//") && !returnTo.includes("\\\\") ? returnTo : "/?openSpace=ceo-workday"\n  const state = randomBytes(32).toString("hex")
   const verifier = randomBytes(32).toString("base64url")
   const challenge = createHash("sha256").update(verifier).digest("base64url")
 
@@ -71,6 +71,6 @@ export async function GET(request: NextRequest, context: { params: { provider: s
 
   const response = NextResponse.redirect(authorizationUrl)
   response.cookies.set(COOKIE_PREFIX + "_state_" + provider, state, cookieOptions())
-  response.cookies.set(COOKIE_PREFIX + "_verifier_" + provider, verifier, cookieOptions())
+  response.cookies.set(COOKIE_PREFIX + "_verifier_" + provider, verifier, cookieOptions())\n  response.cookies.set(COOKIE_PREFIX + "_return_" + provider, safeReturnTo, cookieOptions())
   return response
 }
