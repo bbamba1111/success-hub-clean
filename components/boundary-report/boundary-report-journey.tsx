@@ -1193,25 +1193,24 @@ function BoundaryReport({
         {(data.alignmentResponses?.length ?? 0) > 0 && (
           <ReportBlock label="Work-Life Balance Alignment™">
             <p className="font-sans text-sm text-brand-ink mb-3">
-              You told us you&apos;re willing to operate differently in{" "}
-              <span className="font-bold text-brand-green">
-                {data.alignmentResponses.filter((r) => r.choice === "willing").length}
-              </span>{" "}
-              of {data.alignmentResponses.length} areas this week.
+              Your responses to the three Alignment™ questions are recorded below.
             </p>
             <div className="space-y-1.5">
-              {data.alignmentResponses.map((r) => (
-                <div key={r.id} className="flex items-center justify-between gap-3 rounded-xl bg-brand-cream/60 px-4 py-2.5">
-                  <span className="font-sans text-sm font-medium text-brand-ink">{r.title}</span>
-                  <span
-                    className={`shrink-0 rounded-full px-2.5 py-0.5 font-montserrat text-[9px] font-bold uppercase tracking-wider ${
-                      r.choice === "willing" ? "bg-brand-green/15 text-brand-green" : "bg-brand-sage-medium/10 text-brand-sage-medium"
-                    }`}
-                  >
-                    {r.choice === "willing" ? "Willing" : "Not sure yet"}
-                  </span>
-                </div>
-              ))}
+              {data.alignmentResponses.map((r) => {
+                const positive = r.choice === "willing" || r.choice === "ready"
+                return (
+                  <div key={r.id} className="flex items-center justify-between gap-3 rounded-xl bg-brand-cream/60 px-4 py-2.5">
+                    <span className="font-sans text-sm font-medium text-brand-ink">{r.title}</span>
+                    <span
+                      className={`shrink-0 rounded-full px-2.5 py-0.5 font-montserrat text-[9px] font-bold uppercase tracking-wider ${
+                        positive ? "bg-brand-green/15 text-brand-green" : "bg-brand-sage-medium/10 text-brand-sage-medium"
+                      }`}
+                    >
+                      {formatAlignmentChoice(r.choice)}
+                    </span>
+                  </div>
+                )
+              })}
             </div>
           </ReportBlock>
         )}
