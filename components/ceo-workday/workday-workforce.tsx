@@ -22,7 +22,7 @@ import {
 import { decideProposal } from "@/app/actions/boss-authority"
 import { EXECUTIVES, assigneeName, type AssigneeType } from "@/lib/boss/jobs/definitions"
 import { BUSINESS_FUNCTIONS, CEO_FUNCTION_LABEL, type CeoBusinessFunction, type CeoPlanItem } from "@/lib/ceo-workday/plan-types"
-import { LEGACY_BUSINESS_FUNCTIONS, SEVEN_BUSINESS_FUNCTIONS } from "@/lib/business-functions"
+import { LEGACY_BUSINESS_FUNCTIONS, SEVEN_BUSINESS_FUNCTIONS } from "@/lib/business-functions"\nimport { ConnectedServicesPanel } from "./connected-services-panel"
 
 export const WORKDAY_FUNCTIONS: CeoBusinessFunction[] = BUSINESS_FUNCTIONS
 
@@ -214,7 +214,7 @@ export function ItemWorkforceRow({
   const [mode, setMode] = useState<null | "changes" | "edit" | "ask">(null)
   const [draft, setDraft] = useState("")
   const [answer, setAnswer] = useState<string | null>(null)
-  const [result, setResult] = useState("")
+  const [result, setResult] = useState("")\n  const [useConnectedMail, setUseConnectedMail] = useState(false)
 
   if (!item.jobId) return null
   if (!job) return <p className="mt-3 text-base text-[#555555]">Loading…</p>
@@ -245,7 +245,7 @@ export function ItemWorkforceRow({
     })
   }
 
-  async function callExecutive(body: { mode: "work" | "ask"; instruction?: string }) {
+  async function callExecutive(body: { mode: "work" | "ask"; instruction?: string; useConnectedMail?: boolean }) {
     const res = await fetch("/api/ceo-workday/executive-work", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -263,7 +263,7 @@ export function ItemWorkforceRow({
           const allowed = await allowJobDrafts(j.id)
           if (!allowed.ok) throw new Error(allowed.error)
         }
-        await callExecutive({ mode: "work", instruction })
+        await callExecutive({ mode: "work", instruction, useConnectedMail })
         setMode(null)
         setDraft("")
       } catch (e) {
