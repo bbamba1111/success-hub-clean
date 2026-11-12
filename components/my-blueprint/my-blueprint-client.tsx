@@ -1,24 +1,13 @@
 "use client"
 
 /**
- * My Blueprint™ — the founder's central Work-Life Harmony Blueprint™.
+ * My Work-Life Harmony Blueprint™ — the founder's focused home for:
+ * the one-time Reality Check and My Boundary Report™, optional weekly
+ * Work-Life Balance Audit™ records, ESA results, Founder Profile™,
+ * Business Context™, the Business Week experience, and completed assets.
  *
- * A new VIEW over five already-existing member systems — it creates no new
- * data, scoring, or assessment logic. Every score, label, and record here is
- * read directly from the same storage layers the rest of the app already
- * writes to:
- *
- *   1. Weekly Reality Check™        → utils/reality-check-storage.ts (Supabase)
- *   2. Work-Life Balance Audit™     → utils/audit-storage.ts (localStorage)
- *   3. Entrepreneur Success Assessment™ → lib/entrepreneur-success/esa-storage.ts (localStorage)
- *   4. Founder Profile™             → lib/founder-profile/founder-profile-store.ts (localStorage)
- *   5. Business Context™            → lib/business-context/business-context-store.ts (localStorage)
- *
- * Section 07 (Phase 7) is a sixth view, not a sixth data source: it reads the
- * canonical Founder GPS™ / Next Best Move™ (`deriveNextBestMove`, already
- * built in Phases 5–6) through the existing Harmony Context Engine™
- * (`useHarmonyContext()` → `snapshot`), via `<HarmonyProvider>` now wrapping
- * this page. No new recommendation logic is added here.
+ * This page is a read-only view over existing data sources. It does not
+ * create a second assessment system or delete previous results.
  */
 
 import { useEffect, useRef, useState } from "react"
