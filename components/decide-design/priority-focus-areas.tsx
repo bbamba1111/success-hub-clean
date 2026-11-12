@@ -35,7 +35,7 @@ export function PriorityFocusAreas() {
           <p className="font-sans text-sm text-[#3A2E33] leading-relaxed text-pretty">
             {focus.source === "weekly_7_day"
               ? `From your Weekly 7-Day Work-Life Balance Audit™, completed ${formatAuditDate(focus.date)}.`
-              : `From your Work-Life Balance Reality Check™, completed ${formatAuditDate(focus.date)}. Retake your audit to update them for this week.`}
+              : `From your 30-Day Work-Life Balance Reality Check™, completed ${formatAuditDate(focus.date)}. Your Weekly 7-Day Audit™ can refresh these priorities as your focus changes.`}
           </p>
           <ul className="flex flex-wrap gap-2">
             {areas.map((a) => (
@@ -69,14 +69,14 @@ export function PriorityFocusAreas() {
       ) : (
         <div className="space-y-3">
           <p className="font-sans text-sm text-[#3A2E33] leading-relaxed text-pretty">
-            You haven&apos;t chosen Priority Focus Areas™ yet. Take your Weekly 7-Day Work-Life Balance Audit™ on Monday,
-            and the one to three areas you choose will appear here to anchor your week.
+            Complete your 30-Day Work-Life Balance Reality Check™ and choose one to three Priority Focus Areas™.
+            They will appear here to anchor your week. Your Weekly 7-Day Audit™ can refresh them as your priorities change.
           </p>
           <a
-            href="/audit"
+            href="/boundary-report"
             className="inline-flex w-fit items-center rounded-full bg-brand-sage-dark px-5 py-2.5 font-sans text-sm font-semibold text-white hover:opacity-90"
           >
-            Take My 7-Day Audit™
+            Complete My Reality Check™
           </a>
         </div>
       )}
