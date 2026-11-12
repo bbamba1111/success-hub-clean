@@ -1,6 +1,6 @@
 # Founder Connected Tools — Product and Technical Requirements
 
-Status: isolated Preview and Phase 4 authority foundation configured and smoke-tested; connected-tool implementation not yet started  
+Status: Phase 6 connected-account backend and CEO Workday integration committed on the development branch; provider app credentials and Preview build verification remain outstanding  
 Scope: The BO$$ / Harmony Lane  
 Initial providers: Gmail and Outlook
 
@@ -45,14 +45,19 @@ The founder experiences plug-and-play AI, not an AI setup project. The AI workfo
 
 The founder should not have to select an executive, configure an agent, write prompts, or connect the same account repeatedly.
 
-## Founder experience
+## Founder experience — placement is inside the Four-Hour CEO Workday™
 
-1. A single Connected Tools area lists available services and their connection status.
-2. The founder connects Gmail or Outlook through the provider's OAuth consent flow.
-3. The founder sees, in plain language, what the connection allows: for example, read email, prepare drafts, or send email.
-4. The founder can disconnect or reconnect an account and review recent AI activity involving it.
-5. The founder gives Cherry Blossom an outcome in ordinary language. Cherry Blossom coordinates the appropriate executive and existing BO$$ job workflow.
-6. If a required connection or permission is missing, the app explains the missing step at the moment it is needed.
+The founder does not go to a separate Connected Tools page. The execution surface is the Four-Hour CEO Workday™ space, where work designed in Decide & Design™ appears in its assigned hour.
+
+Inside each CEO Workday assignment card:
+1. The founder chooses herself, Cherry Blossom™, or one of the nine AI executives under Who does this?
+2. The card contains an embedded Connected Services panel. The founder can connect Gmail or Outlook there, see account status, and disconnect an account.
+3. Account connections belong to the founder, not to an individual task or executive. Connect once; authorized capabilities can be reused by the founder, Cherry Blossom™, and the assigned executive in other CEO Workday tasks.
+4. For the current first release, the founder must explicitly enable Let the assigned AI executive search connected email for this task. That choice is per task and read-only.
+5. The executive receives only a small set of matching subject lines and message snippets as work context. Provider credentials remain server-side.
+6. OAuth returns the founder to the CEO Workday™ space and shows the connection result in the embedded panel.
+
+The existing Decide & Design™ process is not changed. Its work item remains the source of the assignment and expected outcome. The existing hour-by-hour CEO Workday card is the integration point.
 
 ## Architecture
 
@@ -80,17 +85,19 @@ Any preauthorization for sending must be narrow, visible, revocable, and limited
 
 **Current implementation boundary:** `lib/boss/jobs/definitions.ts` still allows only `job.save_whats_ready` and `job.set_status`. Email send is intentionally not an approved action yet. No email-send proposal or provider execution path has been added.
 
-## Initial provider plan
+## Initial provider release — read-only email
 
 ### Gmail
-- Google OAuth 2.0 authorization-code flow with server-side token exchange.
-- Gmail API access through the centralized tool broker.
-- Begin with the smallest scope set needed for the first supported capability; do not request send scope merely to support reading or drafting.
+- Google OAuth 2.0 authorization-code flow with PKCE and server-side token exchange.
+- Gmail API message search and metadata/snippet retrieval through the centralized server-side broker.
+- Scope is read-only (gmail.readonly); the first release does not send, compose, delete, or modify messages.
 
 ### Outlook
-- Microsoft identity platform OAuth authorization-code flow.
-- Microsoft Graph access through the same centralized tool broker.
-- Use equivalent least-privilege capabilities and authority checks.
+- Microsoft identity platform OAuth authorization-code flow with PKCE.
+- Microsoft Graph message search and short preview retrieval through the same broker.
+- Scope is read-only (Mail.Read); the first release does not send, compose, delete, or modify messages.
+
+Provider OAuth app registrations and branch Preview credentials still need to be configured before a founder can complete either consent flow.
 
 ## Existing BO$$ systems to reuse
 
@@ -110,13 +117,21 @@ The communications draft endpoint currently creates a draft response only; it is
 - Do not auto-send email merely because an account is connected.
 - Do not make Production database, environment, or deployment changes as part of initial implementation.
 
-## Delivery sequence
+## Delivery status and remaining sequence
 
-1. Confirm the development branch and isolated Preview database/environment. This is complete; the Preview target is branch-scoped and the test database is verified.
-2. Inspect current database migrations, RLS policies, authority RPCs, and deployment configuration. The Phase 4 authority baseline is applied and the founder approval/preauthorization paths have passed targeted rollback-only smoke tests.
-3. Implement the shared connection registry, secure token handling, OAuth callback foundations, and Connected Tools UI.
-4. Implement Gmail read/draft capabilities.
-5. Add an explicit email action kind and route send proposals through the existing BO$$ authority gate and audit trail. Do not enable send until end-to-end authority tests pass.
-6. Add Outlook through the same provider interface.
-7. Run the full acceptance suite and test account isolation, scope enforcement, refresh/revocation, approval, auditability, and failure handling.
-8. Open a reviewable pull request. No Production merge or deployment without explicit approval.
+Completed on feature/founder-connected-tools:
+1. Confirmed branch-scoped Preview environment and the isolated boss-phase2-test database. No Production database or environment changes were made.
+2. Applied the Phase 4 authority baseline and Phase 6 connected-account migration to the isolated test project. Targeted rollback-only approval and preauthorization smoke tests passed.
+3. Added server-only AES-256-GCM credential encryption, per-founder account storage, ownership-checked token retrieval, disconnect support, and Google/Microsoft OAuth callback foundations.
+4. Added the Connected Services panel inside each CEO Workday assignment card. The connection flow returns to the CEO Workday rather than a standalone tool page.
+5. Added read-only Gmail and Outlook message search through a server-side broker, with an explicit per-task opt-in and untrusted-email-content handling in the executive prompt.
+6. Existing executive drafting still returns through the BO$$ proposal/review pathway. No send or publish capability was introduced.
+
+Still required:
+1. Configure and verify the Google and Microsoft OAuth app registrations and their exact Preview redirect URIs; add the provider client IDs/secrets as branch-scoped Preview variables.
+2. Authorize Vercel team access for this connection, then verify the latest Preview deployment and inspect build logs. The Vercel access request has not yet been approved.
+3. Run lint/typecheck/build and end-to-end tests for OAuth consent, account ownership, read-only scopes, token refresh, disconnect/reconnect, and per-task opt-in.
+4. Test provider APIs with real consenting test accounts. The implementation has not yet been verified against live Gmail or Outlook accounts.
+5. Expand to additional connected services only after the founder-facing task-card pattern and security controls are validated.
+6. Add sending or other write capabilities only as separate capabilities with an explicit BO$$ action kind, founder approval, and audited execution. Do not enable them in this read-only release.
+7. Open a reviewable pull request. No Production merge or deployment without explicit approval.
