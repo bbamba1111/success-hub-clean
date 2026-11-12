@@ -1,8 +1,18 @@
 # Founder Connected Tools — Product and Technical Requirements
 
-Status: implementation foundation  
+Status: development branch and isolated Preview Supabase target configured; deployment refresh pending  
 Scope: The BO$$ / Harmony Lane  
 Initial providers: Gmail and Outlook
+
+## Environment verification
+
+- Development branch: `feature/founder-connected-tools`.
+- Isolated Supabase project: `boss-phase2-test` (`uuvcpijrjbiyhikmcgsj`), active and healthy in `us-east-1`.
+- Branch-scoped Vercel Preview variables have been configured: `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+- The value stored in the existing `NEXT_PUBLIC_SUPABASE_ANON_KEY` variable is the project's modern publishable key. The variable name is retained because the current app helper reads that name.
+- The current `lib/supabase/server.ts` uses these two public variables for its SSR and API client helpers; repository search found no `SUPABASE_SERVICE_ROLE_KEY` reference. Do not add a service-role key unless a specific server operation is demonstrated to require it.
+- These values are restricted to the Vercel Preview environment for `feature/founder-connected-tools`. No Production environment variables or Production Supabase project settings were changed.
+- A new Preview build must run before the application can be verified against the newly configured variables.
 
 ## Product principle
 
@@ -75,7 +85,7 @@ The communications draft endpoint currently creates a draft response only; it is
 
 ## Delivery sequence
 
-1. Confirm the development branch and isolated Preview database/environment.
+1. Confirm the development branch and isolated Preview database/environment. The branch and Preview database target are now configured; validate them with a fresh Preview build.
 2. Inspect current database migrations, RLS policies, authority RPCs, and deployment configuration.
 3. Implement the shared connection registry, secure token handling, OAuth callback foundations, and Connected Tools UI.
 4. Implement Gmail read/draft capabilities.
