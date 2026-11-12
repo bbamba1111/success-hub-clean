@@ -37,6 +37,7 @@ export function ConnectedServicesPanel({
   const [accounts, setAccounts] = useState<Account[]>([])
   const [providers, setProviders] = useState<Record<Provider, ProviderConfig> | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [notice, setNotice] = useState<string | null>(null)
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -57,6 +58,29 @@ export function ConnectedServicesPanel({
   useEffect(() => {
     if (open) void load()
   }, [open, load])
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const status = params.get("connectedTool")
+    const provider = params.get("provider") as Provider | null
+    if (!status) return
+
+    setOpen(true)
+    if (status === "success") {
+      setNotice((provider ? label[provider] : "Your account") + " connected. You can use it for this work.")
+    } else if (status === "cancelled") {
+      setNotice("The connection was cancelled. Nothing was connected.")
+    } else if (status === "setup") {
+      setNotice("This service is not ready to connect yet.")
+    } else {
+      setNotice("The connection did not finish. Please try again.")
+    }
+
+    params.delete("connectedTool")
+    params.delete("provider")
+    const query = params.toString()
+    window.history.replaceState({}, "", query ? window.location.pathname + "?" + query : window.location.pathname)
+  }, [])
 
   async function disconnect(id: string) {
     setSavingId(id)
@@ -101,6 +125,7 @@ export function ConnectedServicesPanel({
 
       {open && (
         <div className="flex flex-col gap-3 border-t border-[#DCE7D5] px-4 py-4">
+          {notice && <p role="status" className="rounded-lg bg-white px-3 py-2 text-sm font-medium text-[#315B2D]">{notice}</p>}
           <p className="text-sm leading-relaxed text-[#52604D]">
             Connect an account once. Its approved services can then be used by you, Cherry Blossom™, or an executive when a task needs them.
           </p>
