@@ -81,7 +81,7 @@ export function PriorityFocusAreas() {
             previous week and refresh your focus areas for the week ahead.
           </p>
           <a
-            href="/boundary-report"
+            href="/welcome/cherry-blossom"
             className="inline-flex w-fit items-center rounded-full bg-brand-sage-dark px-5 py-2.5 font-sans text-sm font-semibold text-white hover:opacity-90"
           >
             Complete My Reality Check™
