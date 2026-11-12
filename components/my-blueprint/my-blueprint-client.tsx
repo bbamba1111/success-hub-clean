@@ -2,7 +2,7 @@
 
 /**
  * My Work-Life Harmony Blueprint™ — the founder's focused home for:
- * the one-time Reality Check and My Boundary Report™, optional weekly
+ * the one-time Reality Check and My Boundary Report™, weekly
  * Work-Life Balance Audit™ records, ESA results, Founder Profile™,
  * Business Context™, the Business Week experience, and completed assets.
  *
@@ -358,24 +358,25 @@ export function MyBlueprintClient({
           </BlueprintSection>
         </div>
 
-        {/* 02 — Optional weekly Work-Life Balance Audit */}
+        {/* 02 — Weekly Work-Life Balance Audit */}
         <BlueprintSection
-          eyebrow="02 — Optional Weekly Check-In"
+          eyebrow="02 — Weekly Priority Refresh"
           icon={Heart}
           title="Work-Life Balance Audit™"
-          subtitle="Your one-time 30-day baseline stays in My Boundary Report™. The 7-day audit is optional and can be completed when you choose to review the past week."
+          subtitle="Your 1–3 priorities carry forward from your 30-day baseline or most recent weekly audit. On Monday, review the past seven days and refresh them for the week ahead."
           accent="#E26C73"
         >
           <p className="font-sans text-sm leading-relaxed text-brand-ink-soft text-pretty">
-            Your 30-day starting point is preserved in My Boundary Report™. This is a separate, optional check-in
-            for the previous seven days; it does not replace or restart your one-time Reality Check™.
+            Your one-time 30-day starting point is preserved in My Boundary Report™. Keep working on the 1–3
+            priorities already selected. On Monday, use the 7-Day Audit™ to review the past week and choose the
+            priorities you will carry into the week ahead. The weekly audit never replaces your original baseline.
           </p>
 
           <Link
             href="/audit"
             className="inline-flex w-fit items-center gap-1.5 rounded-full border border-[#C9545B]/30 bg-[#C9545B]/5 px-4 py-2.5 font-sans text-xs font-semibold text-[#C9545B] hover:bg-[#C9545B]/10"
           >
-            Take the Optional 7-Day Audit™
+            Retake the Monday 7-Day Audit™
             <ArrowRight className="h-3.5 w-3.5" aria-hidden />
           </Link>
 
