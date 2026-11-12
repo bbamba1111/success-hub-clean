@@ -1,17 +1,11 @@
 import { redirect } from "next/navigation"
 
 /**
- * /begin — optional weekly 7-day Work-Life Balance Audit™ entry point.
+ * /begin — legacy entry point for the optional weekly 7-day Work-Life Balance Audit™.
  *
- * Reached from getPostLoginDestination() when the founder's one-time
- * Founder Profile™ + Business Context™ on-ramp is already complete but
- * this week's optional weekly 7-day Work-Life Balance Audit™ (the Work-Life Balance Audit™) hasn't
- * been done yet. /founder-profile is a REQUIRED ONE-TIME on-ramp gate —
- * completed members must never be sent back through it here.
- *
- * /begin redirects to /audit so any existing links or email campaigns that
- * point to /begin continue to work. The audit is optional and can be opened
- * directly from My Blueprint™ when the founder wants a fresh weekly measure.
+ * Returning members are no longer routed here automatically after login.
+ * My Blueprint™ offers the optional audit whenever a founder chooses to take
+ * a fresh weekly measurement. Existing links to /begin continue to work.
  */
 export default function BeginPage() {
   redirect("/audit")
