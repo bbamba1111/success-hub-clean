@@ -137,11 +137,11 @@ function CategoryBlock({
 
       {reference.length > 0 && (
         <details className="group/ref">
-          <summary className="cursor-pointer list-none font-sans text-sm font-semibold text-[#5B835F] [&::-webkit-details-marker]:hidden">
-            <span className="group-open/ref:hidden">Show reference-only items ({reference.length})</span>
-            <span className="hidden group-open/ref:inline">Hide reference-only items</span>
+          <summary className="cursor-pointer list-none font-sans text-sm font-semibold text-[#5B835F] underline underline-offset-4 decoration-1 [&::-webkit-details-marker]:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B835F]/40 focus-visible:ring-offset-2 rounded-sm">
+            <span className="group-open/ref:hidden">Click Here to show reference-only items ({reference.length})</span>
+            <span className="hidden group-open/ref:inline">Click Here to hide reference-only items</span>
           </summary>
-          <p className="mt-2 font-sans text-xs text-[#6B5860]">Glossary reference — not recorded in your history.</p>
+          <p className="mt-2 font-sans text-xs text-[#6B5860]">Glossary reference only — these items were not recorded in your check-ins for this period.</p>
           <ul className="mt-1.5 flex flex-col gap-1.5">
             {reference.map((o) => (
               <li key={o.id} className="font-sans text-[15px] leading-relaxed text-[#6B5860]">
