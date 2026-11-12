@@ -5,9 +5,9 @@ import { OnboardingProgressBanner } from "@/components/onboarding/onboarding-pro
 import { getOnboardingProgressServer } from "@/lib/onboarding/onboarding-progress"
 
 export const metadata = {
-  title: "Business Context Profile™ | Harmony Lane™",
+  title: "Business Context | Harmony Lane™",
   description:
-    "Tell me about the business you are building so every recommendation Harmony Lane™ makes is personalized to your actual context.",
+    "Complete one ten-question business profile covering your business identity, revenue model, vision, delivery, AI use, client connections, and 90-day goal.",
 }
 
 export default async function BusinessContextPage() {
@@ -19,10 +19,10 @@ export default async function BusinessContextPage() {
       {/* ── Scene: Executive garden — introduces the business layer ───── */}
       <CherryBlossomScene variant="workspace" minHeight="min-h-[70vh]">
         <CherryBlossomSceneCard
-          title="Business Context Profile™"
+          title="Business Context"
           time="Approx. 10 mins"
           step="Step 2 of 3"
-          scrollPrompt="Build My Business Context Profile™"
+          scrollPrompt="Build My Business Profile™"
         >
           <p>
             Now tell me about <strong>the business</strong> you&apos;re building, so every
