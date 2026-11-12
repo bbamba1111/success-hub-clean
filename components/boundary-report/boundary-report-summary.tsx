@@ -2,7 +2,6 @@ import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { StartConsiderationsBlock } from "@/components/boundary-report/start-considerations-block"
 import { getLatestBoundaryReport } from "@/lib/boundary-report/actions"
-import { WeeklyHistoryList } from "@/components/weekly-audit/weekly-history-list"
 import { formatAlignmentChoice } from "@/lib/boundary-report/alignment"
 
 function scoreColor(score: number): string {
@@ -138,8 +137,6 @@ export async function BoundaryReportSummary() {
           <StartConsiderationsBlock considerations={data.startConsiderations} fallback={data.stageConsiderations} />
         </Section>
       )}
-
-      <WeeklyHistoryList />
     </div>
   )
 }
