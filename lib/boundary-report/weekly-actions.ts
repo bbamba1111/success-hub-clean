@@ -417,14 +417,30 @@ export async function getCurrentPriorityFocus(): Promise<CurrentPriorityFocus | 
   }
 
   const full = fullRow?.report as BoundaryReportData | null
-  if (fullRow && (full?.priorityAreas?.length ?? 0) > 0) {
-    return {
-      source: "full_30_day",
-      reportId: fullRow.id,
-      date: fullRow.completed_at ?? fullRow.created_at,
-      periodStart: null,
-      periodEnd: null,
-      priorityAreas: full!.priorityAreas,
+  if (fullRow && full) {
+    // Prefer the report's pre-shaped area list. Rebuild it from the selected keys
+    // and stored baseline when reading a report created by an older app version.
+    const selectedKeys = Array.isArray(full.priorityFocusAreas) ? full.priorityFocusAreas : []
+    const baselineAreas = Array.isArray(full.baseline?.areas) ? full.baseline.areas : []
+    const baselineByKey = new Map(baselineAreas.map((area) => [area.key, area]))
+    const reportAreas = Array.isArray(full.priorityAreas) ? full.priorityAreas : []
+    const priorityAreas =
+      reportAreas.length > 0
+        ? reportAreas
+        : selectedKeys.flatMap((key) => {
+            const area = baselineByKey.get(key)
+            return area ? [{ key: area.key, label: area.label, score: area.score }] : []
+          })
+
+    if (priorityAreas.length > 0) {
+      return {
+        source: "full_30_day",
+        reportId: fullRow.id,
+        date: fullRow.completed_at ?? fullRow.created_at,
+        periodStart: null,
+        periodEnd: null,
+        priorityAreas,
+      }
     }
   }
   return null
