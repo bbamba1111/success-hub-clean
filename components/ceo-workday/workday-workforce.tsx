@@ -215,7 +215,8 @@ export function ItemWorkforceRow({
   const [mode, setMode] = useState<null | "changes" | "edit" | "ask">(null)
   const [draft, setDraft] = useState("")
   const [answer, setAnswer] = useState<string | null>(null)
-  const [result, setResult] = useState("")\n  const [useConnectedMail, setUseConnectedMail] = useState(false)
+  const [result, setResult] = useState("")
+  const [useConnectedMail, setUseConnectedMail] = useState(false)
 
   if (!item.jobId) return null
   if (!job) return <p className="mt-3 text-base text-[#555555]">Loading…</p>
