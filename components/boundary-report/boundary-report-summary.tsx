@@ -26,14 +26,14 @@ export async function BoundaryReportSummary() {
     return (
       <div className="flex flex-col items-center gap-4 rounded-2xl border border-dashed border-brand-tan-light px-6 py-9 text-center">
         <p className="max-w-sm font-sans text-sm leading-relaxed text-brand-ink-soft text-pretty">
-          Your Work-Life Balance Boundary Report™ appears here once you complete the Reality Check™. Your first
-          baseline is saved permanently and never overwritten.
+          Your one-time Reality Check™ and My Boundary Report™ appear here once you complete the assessment.
+          Your 30-day baseline stays saved; optional weekly audits are recorded separately.
         </p>
         <Link
           href="/boundary-report"
           className="inline-flex items-center gap-1.5 rounded-full bg-brand-green px-5 py-2.5 font-sans text-xs font-bold text-white transition-colors hover:bg-brand-green-dark"
         >
-          Begin the Reality Check™
+          Complete My Reality Check™
           <ArrowRight className="h-3.5 w-3.5" aria-hidden />
         </Link>
       </div>
