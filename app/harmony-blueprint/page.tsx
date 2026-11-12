@@ -1,11 +1,10 @@
-import { Metadata } from "next"
-import { HarmonyBlueprintClient } from "@/components/harmony-blueprint/harmony-blueprint-client"
+import { redirect } from "next/navigation"
 
-export const metadata: Metadata = {
-  title: "Your Harmony Blueprint™ | Harmony Lane™",
-  description: "Your personal Harmony Blueprint™ — the foundation of your Work-Life Balance Operating System™.",
-}
-
+/**
+ * The canonical assessments, reports, and business-building history now live
+ * in My Work-Life Harmony Blueprint™.
+ * Keep this legacy URL as a safe redirect for existing links.
+ */
 export default function HarmonyBlueprintPage() {
-  return <HarmonyBlueprintClient />
+  redirect("/my-blueprint")
 }
