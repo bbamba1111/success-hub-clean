@@ -120,7 +120,7 @@ Never invent facts about the founder's business (prices, names, results). If you
     const { object } = await generateObject({
       model: model(),
       schema: WorkSchema,
-      system,
+      system: safeSystem,
       prompt: `${context}
 ${instruction ? `\nThe founder's instructions: ${instruction}` : ""}
 
