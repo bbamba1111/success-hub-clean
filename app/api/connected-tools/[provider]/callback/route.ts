@@ -52,11 +52,11 @@ async function readJson<T>(response: Response): Promise<T> {
 
 export async function GET(request: NextRequest, context: { params: { provider: string } }) {
   const provider = asConnectedProvider(context.params.provider)
-  if (!provider) return NextResponse.redirect(new URL("/boss/connected-tools?connect=unsupported", request.url))
+  if (!provider) return NextResponse.redirect(new URL("/?openSpace=ceo-workday", request.url))
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.redirect(new URL("/auth/login?redirect=/boss/connected-tools", request.url))
+  if (!user) return NextResponse.redirect(new URL("/auth/login?redirect=%2F%3FopenSpace%3Dceo-workday", request.url))
 
   const stateCookie = request.cookies.get(COOKIE_PREFIX + "_state_" + provider)?.value
   const verifier = request.cookies.get(COOKIE_PREFIX + "_verifier_" + provider)?.value
