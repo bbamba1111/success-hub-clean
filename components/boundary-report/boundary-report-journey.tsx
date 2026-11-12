@@ -938,6 +938,7 @@ function AlignmentStep({
   onNext: () => void
 }) {
   const total = ALIGNMENT_QUESTIONS.length
+  const isFinal = index === total - 1
   const question = ALIGNMENT_QUESTIONS[index]
   const isReadinessQuestion = question.id === "experience-business-week"
   const current = choices[question.id]
