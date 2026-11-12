@@ -103,21 +103,21 @@ function SundayInvitation({ day }: { day: DayDefinition }) {
             🌸
           </span>
           <span>
-            Sunday is still yours. In about twenty intentional minutes we&apos;ll design the week ahead — a Weekly
-            Reality Check, your Human Intention, and your Business Focus — and then you get right back to your Time
-            Freedom™.
+            Sunday is still yours. You may take the optional 7-day Work-Life Balance Audit™ to review the past week
+            and refresh your priorities. Your one-time 30-day Reality Check™ and My Boundary Report™ remain saved in
+            My Blueprint™. You can skip this check-in and return to your Time Freedom™.
           </span>
         </p>
       </div>
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         <Button asChild className="bg-[#78AD7D] px-6 font-semibold text-white hover:bg-[#6a9c6f]">
           <Link href="/begin">
-            Design My Week™
+            Take the Optional 7-Day Audit™
             <ArrowRight className="ml-1.5 h-4 w-4" aria-hidden />
           </Link>
         </Button>
         <Button asChild variant="outline" className="border-[#78AD7D]/40 bg-transparent font-semibold text-[#3A6845] hover:bg-[#78AD7D]/10">
-          <Link href="/">Not Today</Link>
+          <Link href="/my-blueprint">Not Today</Link>
         </Button>
       </div>
     </section>
