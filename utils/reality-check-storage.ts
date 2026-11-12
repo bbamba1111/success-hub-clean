@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/client"
 import type { AssessmentType } from "@/lib/assessment-cadence"
 
 /**
- * Reality Check persistence layer (Phase 1 memory layer).
+ * Weekly Work-Life Balance Audit snapshot persistence (legacy table: reality_checks).
  *
  * Guiding principle: the Reality Check is a *weekly snapshot* of the member's
  * current state. There is ONE living record per member per week, keyed by
@@ -65,7 +65,7 @@ async function getUserId(): Promise<string | null> {
 }
 
 /**
- * Creates (or refreshes) this week's Reality Check record with the scored
+ * Creates (or refreshes) this week's Work-Life Balance Audit snapshot with the scored
  * audit snapshot. Called when the Work-Life Balance Audit is scored and the
  * Results Dashboard is generated. This is the official weekly snapshot.
  */
@@ -98,7 +98,7 @@ export async function saveRealityCheckSnapshot(snapshot: AuditSnapshot): Promise
 }
 
 /**
- * Progressively enriches THIS week's existing Reality Check record. Used after
+ * Progressively enriches THIS week's existing Work-Life Balance Audit snapshot. Used after
  * the member selects Priority Focus Areas, saves their Operating Declaration,
  * or completes their Weekly Reflection. Never creates a duplicate weekly row.
  */
@@ -143,7 +143,7 @@ interface RealityCheckRecord {
 }
 
 /**
- * Loads the member's most recent Reality Check record (this week if present,
+ * Loads the member's most recent weekly Work-Life Balance Audit snapshot (this week if present,
  * otherwise the latest prior week). Used by Cherry Blossom to open already
  * knowing the member's current state — no copy/paste required.
  */
@@ -171,7 +171,7 @@ export async function getLatestRealityCheck(): Promise<RealityCheckRecord | null
 }
 
 /**
- * Loads every weekly Reality Check™ record the member has (newest first).
+ * Loads every weekly Work-Life Balance Audit™ snapshot the member has (newest first).
  * Used by the Work-Life Harmony Blueprint™ calendar to show "Week of…" cards
  * for the whole month at a glance and to build the Archive once a week rolls
  * out of the current calendar month. Returns [] for anonymous sessions.
@@ -197,7 +197,7 @@ export async function getRealityChecksHistory(): Promise<RealityCheckRecord[]> {
   }
 }
 
-/** True if THIS week's Reality Check has been scored (the snapshot exists). */
+/** True if THIS week's 7-day Work-Life Balance Audit has been scored (the snapshot exists). */
 export async function hasCompletedThisWeeksRealityCheck(): Promise<boolean> {
   const userId = await getUserId()
   if (!userId) return false
@@ -231,7 +231,7 @@ export interface OperatingCenterData {
 
 /**
  * Loads everything the Weekly Operating Center™ dashboard needs in one call:
- * the member's name, this week's Reality Check (or latest), the prior week for
+ * the member's name, this week's optional Work-Life Balance Audit (or latest), the prior week for
  * trend comparison, and the computed score delta. Returns safe empties for
  * anonymous sessions so the page can still render a friendly empty state.
  */
