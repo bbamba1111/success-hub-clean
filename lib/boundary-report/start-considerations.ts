@@ -56,7 +56,7 @@ const THEMES: Theme[] = [
     business: ["availability", "operating-hours", "client-expectations", "communication", "notifications"],
     personal: ["work-intrudes", "cant-disconnect", "no-separation", "assumed-available"],
     intentionGroups: ["time-freedom", "home-self"],
-    alignmentIds: ["contain-work", "end-workday", "disconnect"],
+    alignmentIds: ["healthier-daily-rhythm", "protect-what-matters"],
     protects: "the hours that belong to your life rather than the business",
     businessImplication:
       "The business may need defined working hours, a stated response time, and notification settings that match them, so clients and the team know when you are and aren't reachable.",
@@ -74,7 +74,7 @@ const THEMES: Theme[] = [
     business: ["meetings", "interruptions", "deadlines"],
     personal: ["household-interruptions", "home-maintenance", "workspace-limits"],
     intentionGroups: ["time-freedom"],
-    alignmentIds: ["start-intentionally", "redesign-workweek"],
+    alignmentIds: ["healthier-daily-rhythm"],
     protects: "uninterrupted time to do your most important work within shorter hours",
     businessImplication:
       "The business may need set windows for when meetings can and can't happen, and a way to batch reactive requests instead of handling them as they arrive.",
@@ -92,7 +92,7 @@ const THEMES: Theme[] = [
     business: ["founder-dependency", "delegation", "decision-ownership", "team-capacity", "workload", "escalation"],
     personal: ["no-support", "household-mental-load", "entrepreneurial-loneliness"],
     intentionGroups: ["time-freedom", "financial"],
-    alignmentIds: ["contain-work", "honor-boundaries"],
+    alignmentIds: ["protect-what-matters"],
     protects: "a business that can keep moving without needing you for everything",
     businessImplication:
       "The business may need clearer ownership of decisions and tasks, a defined way to escalate issues, and a realistic look at whether the current workload fits the hours you want to work.",
@@ -110,7 +110,7 @@ const THEMES: Theme[] = [
     business: ["workflows", "systems", "automation", "ai", "technology"],
     personal: ["tasks-unfinished"],
     intentionGroups: ["time-freedom"],
-    alignmentIds: ["redesign-workweek"],
+    alignmentIds: ["healthier-daily-rhythm"],
     protects: "work that runs the same way every time without depending on your memory and effort",
     businessImplication:
       "The business may need a few documented, repeatable workflows, and possibly automation or AI support for work that follows the same steps each time.",
@@ -129,7 +129,7 @@ const THEMES: Theme[] = [
     personal: ["appointments-postponed", "health-competes", "routines-displaced"],
     auditPattern: /physical|sleep|nutrition|health|fitness|rest|movement|exercise/i,
     intentionGroups: ["health-rest"],
-    alignmentIds: ["protect-body", "protect-nourishment"],
+    alignmentIds: ["healthier-daily-rhythm"],
     protects: "time for appointments, meals, movement, sleep, and recovery",
     businessImplication:
       "The business calendar may need to treat health appointments and recovery time as fixed commitments instead of the first things to move.",
@@ -148,7 +148,7 @@ const THEMES: Theme[] = [
     personal: ["childcare", "elder-care", "assumed-available", "family-interrupts"],
     auditPattern: /family|parent/i,
     intentionGroups: ["relationships"],
-    alignmentIds: ["let-life-have-space"],
+    alignmentIds: ["protect-what-matters"],
     protects: "the time and attention your family and caregiving responsibilities require",
     businessImplication:
       "The business may need working hours and meeting windows designed around caregiving commitments rather than the other way around.",
@@ -193,7 +193,7 @@ const THEMES: Theme[] = [
     personal: ["household-chores", "household-into-workday", "household-mental-load", "always-productive", "guilt", "no-separation", "workspace-limits"],
     auditPattern: /environment|home/i,
     intentionGroups: ["home-self"],
-    alignmentIds: ["end-workday", "disconnect"],
+    alignmentIds: ["protect-what-matters"],
     protects: "a home that supports both focused work and real rest",
     businessImplication:
       "The business day may need a clear start and end so household tasks and business tasks stop competing for the same hours.",
