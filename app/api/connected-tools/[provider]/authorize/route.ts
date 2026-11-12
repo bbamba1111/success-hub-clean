@@ -23,27 +23,35 @@ function cookieOptions() {
   }
 }
 
+function workdayReturn(request: NextRequest) {
+  const value = request.nextUrl.searchParams.get("returnTo") || "/?openSpace=ceo-workday"
+  // Only same-origin relative paths are accepted; this cookie is returned after OAuth.
+  return value.startsWith("/") && !value.startsWith("//") && !value.includes("\\") && !/[\u0000-\u001f\u007f]/.test(value)
+    ? value
+    : "/?openSpace=ceo-workday"
+}
+
 export async function GET(request: NextRequest, context: { params: { provider: string } }) {
   const provider = asConnectedProvider(context.params.provider)
   if (!provider) {
-    return NextResponse.redirect(new URL("/boss/connected-tools?connect=unsupported", request.url))
+    return NextResponse.redirect(new URL("/?openSpace=ceo-workday&connectedTool=unsupported", request.url))
   }
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
-    return NextResponse.redirect(new URL("/auth/login?redirect=/boss/connected-tools", request.url))
+    return NextResponse.redirect(new URL("/auth/login?redirect=%2F%3FopenSpace%3Dceo-workday", request.url))
   }
 
   if (!providerIsConfigured(provider)) {
-    return NextResponse.redirect(new URL("/boss/connected-tools?connect=setup&provider=" + provider, request.url))
+    return NextResponse.redirect(new URL("/?openSpace=ceo-workday&connectedTool=setup&provider=" + provider, request.url))
   }
 
   const clientId = provider === "google"
     ? process.env.GOOGLE_CLIENT_ID!
     : process.env.MICROSOFT_CLIENT_ID!
   const redirectUri = connectedToolsRedirectUri(provider, request.url)
-  const returnTo = request.nextUrl.searchParams.get("returnTo") || "/?openSpace=ceo-workday"\n  const safeReturnTo = returnTo.startsWith("/") && !returnTo.startsWith("//") && !returnTo.includes("\\\\") ? returnTo : "/?openSpace=ceo-workday"\n  const state = randomBytes(32).toString("hex")
+  const state = randomBytes(32).toString("hex")
   const verifier = randomBytes(32).toString("base64url")
   const challenge = createHash("sha256").update(verifier).digest("base64url")
 
@@ -71,6 +79,7 @@ export async function GET(request: NextRequest, context: { params: { provider: s
 
   const response = NextResponse.redirect(authorizationUrl)
   response.cookies.set(COOKIE_PREFIX + "_state_" + provider, state, cookieOptions())
-  response.cookies.set(COOKIE_PREFIX + "_verifier_" + provider, verifier, cookieOptions())\n  response.cookies.set(COOKIE_PREFIX + "_return_" + provider, safeReturnTo, cookieOptions())
+  response.cookies.set(COOKIE_PREFIX + "_verifier_" + provider, verifier, cookieOptions())
+  response.cookies.set(COOKIE_PREFIX + "_return_" + provider, workdayReturn(request), cookieOptions())
   return response
 }
