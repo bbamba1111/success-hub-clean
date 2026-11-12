@@ -47,7 +47,8 @@ export function WeeklyRealityCheckSection() {
             Redesign Your Entry Into The Workweek
           </h3>
           <p className="mt-1 font-sans text-sm leading-relaxed text-[#6B5860] text-pretty">
-            Retake your 7-day audit, then choose 1–3 Priority Focus Areas™ for the week ahead.
+            Keep working on your current 1–3 Priority Focus Areas™, or retake your 7-day audit to review the past week
+            and refresh your focus areas for the week ahead.
           </p>
         </div>
 
