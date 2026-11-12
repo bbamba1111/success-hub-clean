@@ -230,8 +230,13 @@ export function buildStartConsiderations(input: ConsiderationInputs): StartConsi
       : []
     const priorityAreas = lowAreas.filter((a) => input.priorityFocusAreas.includes(a.key))
     const intentionItems = theme.intentionGroups.flatMap((g) => input.intentionChoices[g] ?? [])
-    const unsureAlignment = theme.alignmentIds.filter((id) => input.alignment[id] === "unsure")
-    const willingAlignment = theme.alignmentIds.filter((id) => input.alignment[id] === "willing")
+    const unsureAlignment = theme.alignmentIds.filter((id) => {
+      const choice = input.alignment[id]
+      return Boolean(choice) && choice !== "willing" && choice !== "ready"
+    })
+    const willingAlignment = theme.alignmentIds.filter((id) =>
+      input.alignment[id] === "willing" || input.alignment[id] === "ready",
+    )
 
     const directSignals = business.length + personal.length + lowAreas.length
     const score = directSignals === 0 ? 0 : directSignals + priorityAreas.length * 2 + (intentionItems.length > 0 ? 1 : 0)
@@ -257,7 +262,7 @@ export function buildStartConsiderations(input: ConsiderationInputs): StartConsi
       if (willingAlignment.length)
         evidence.push({ source: "provided", text: "In Work-Life Balance Alignment™ you said you're willing to operate differently here." })
       if (unsureAlignment.length)
-        evidence.push({ source: "provided", text: "In Work-Life Balance Alignment™ you said you're not sure yet about changing this." })
+        evidence.push({ source: "provided", text: "In Work-Life Balance Alignment™ you indicated you may need more information or are not ready to commit to a change here yet." })
 
       const findingParts: string[] = []
       if (business.length) findingParts.push(`your business operating environment includes ${listLabels(business).toLowerCase()}`)
