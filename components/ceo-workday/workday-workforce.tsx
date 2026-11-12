@@ -496,6 +496,14 @@ export function ItemWorkforceRow({
         </select>
       </label>
 
+      {isAiJob(j) && !finished && !j.stopped && (
+        <ConnectedServicesPanel
+          useConnectedMail={useConnectedMail}
+          onUseConnectedMailChange={setUseConnectedMail}
+          canUseWithExecutive={isAiJob(j)}
+        />
+      )}
+
       {j.stopped ? <p className="text-base text-[#555555]">This work is stopped.</p> : body}
 
       {isAiJob(j) && !finished && !j.stopped && busy !== "working" && (
