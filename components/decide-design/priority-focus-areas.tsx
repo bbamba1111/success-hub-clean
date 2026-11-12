@@ -3,9 +3,10 @@
 /**
  * MY 3 PRIORITY FOCUS AREAS™ — at the top of Decide & Design™.
  *
- * Shows the priorities chosen in the latest Weekly 7-Day Work-Life Balance
- * Audit™; if none have been chosen yet, falls back to the full Work-Life
- * Balance Reality Check™. The source and date are always shown.
+ * Carries forward the founder's current 1–3 priorities from the latest completed
+ * Weekly 7-Day Work-Life Balance Audit™, falling back to the one-time 30-Day
+ * Reality Check™ baseline. These priorities remain active until a later Monday
+ * audit updates them. The source and date are always shown.
  */
 
 import { RotateCcw, Target } from "lucide-react"
@@ -32,11 +33,17 @@ export function PriorityFocusAreas() {
         <p className="font-sans text-sm text-[#6B5860]">Loading your Priority Focus Areas™…</p>
       ) : focus && areas.length > 0 ? (
         <>
-          <p className="font-sans text-sm text-[#3A2E33] leading-relaxed text-pretty">
-            {focus.source === "weekly_7_day"
-              ? `From your Weekly 7-Day Work-Life Balance Audit™, completed ${formatAuditDate(focus.date)}.`
-              : `From your 30-Day Work-Life Balance Reality Check™, completed ${formatAuditDate(focus.date)}. Your Weekly 7-Day Audit™ can refresh these priorities as your focus changes.`}
-          </p>
+          <div className="space-y-1">
+            <p className="font-sans text-sm text-[#3A2E33] leading-relaxed text-pretty">
+              {focus.source === "weekly_7_day"
+                ? `Carried forward from your most recent Weekly 7-Day Work-Life Balance Audit™, completed ${formatAuditDate(focus.date)}.`
+                : `Carried forward from your 30-Day Work-Life Balance Reality Check™, completed ${formatAuditDate(focus.date)}.`}
+            </p>
+            <p className="font-sans text-sm text-[#3A2E33] leading-relaxed text-pretty">
+              Keep working on these 1–3 priorities this week. On Monday, retake the 7-Day Audit™ to review the past
+              week and refresh your focus areas for the week ahead.
+            </p>
+          </div>
           <ul className="flex flex-wrap gap-2">
             {areas.map((a) => (
               <li
@@ -62,15 +69,16 @@ export function PriorityFocusAreas() {
               className="inline-flex w-fit items-center gap-1.5 font-sans text-sm font-semibold text-[#C0545A] underline-offset-4 hover:underline"
             >
               <RotateCcw className="h-3.5 w-3.5" aria-hidden />
-              Retake Audit
+              Retake Monday Audit
             </a>
           </div>
         </>
       ) : (
         <div className="space-y-3">
           <p className="font-sans text-sm text-[#3A2E33] leading-relaxed text-pretty">
-            Complete your 30-Day Work-Life Balance Reality Check™ and choose one to three Priority Focus Areas™.
-            They will appear here to anchor your week. Your Weekly 7-Day Audit™ can refresh them as your priorities change.
+            Complete your one-time 30-Day Work-Life Balance Reality Check™ and choose one to three Priority Focus Areas™.
+            They will stay here as your working priorities. On Monday, retake the Weekly 7-Day Audit™ to review the
+            previous week and refresh your focus areas for the week ahead.
           </p>
           <a
             href="/boundary-report"
