@@ -6,8 +6,8 @@
  * It answers one question: "Given today and this member's access level, what
  * should the CEO Dashboard show right now?"
  *
- *   • Sunday        → Sunday Design Day™ invitation (still Time Freedom™; a
- *                     short optional ritual, not a workday). Open to everyone.
+ *   • Sunday        → Sunday Design Day™ invitation (still Time Freedom™;
+ *                     a short planning ritual, not a workday). Open to everyone.
  *   • Mon–Thu       → the full Business Day workspaces (the {children}) IF the
  *                     day is unlocked for this member; otherwise the
  *                     "inspirationally locked" preview (Monday members, Tue–Thu).
@@ -84,7 +84,7 @@ function TimeFreedomRest({ day }: { day: DayDefinition }) {
   )
 }
 
-/** Sunday — Design Day™: a short, optional ritual inside Time Freedom™. */
+/** Sunday — Design Day™: a short planning ritual inside Time Freedom™. */
 function SundayInvitation({ day }: { day: DayDefinition }) {
   return (
     <section className="mx-auto w-full max-w-3xl px-4 py-16 text-center">
@@ -103,16 +103,17 @@ function SundayInvitation({ day }: { day: DayDefinition }) {
             🌸
           </span>
           <span>
-            Sunday is still yours. You may take the optional 7-day Work-Life Balance Audit™ to review the past week
-            and refresh your priorities. Your one-time 30-day Reality Check™ and My Boundary Report™ remain saved in
-            My Blueprint™. You can skip this check-in and return to your Time Freedom™.
+            Your current 1–3 Priority Focus Areas™ carry forward into the week ahead. Keep working on them in Decide
+            & Design™. On Monday, use the 7-Day Work-Life Balance Audit™ to review the previous week and refresh your
+            focus areas for the new week. Your original 30-day Reality Check™ and My Boundary Report™ remain saved in
+            My Blueprint™.
           </span>
         </p>
       </div>
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         <Button asChild className="bg-[#78AD7D] px-6 font-semibold text-white hover:bg-[#6a9c6f]">
-          <Link href="/begin">
-            Take the Optional 7-Day Audit™
+          <Link href="/my-blueprint">
+            Review My Priority Focus Areas™
             <ArrowRight className="ml-1.5 h-4 w-4" aria-hidden />
           </Link>
         </Button>
