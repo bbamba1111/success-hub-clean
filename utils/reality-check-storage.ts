@@ -288,7 +288,8 @@ export async function getOperatingCenterData(): Promise<OperatingCenterData> {
 /**
  * Decides where a member lands right after login. Checks required onboarding
  * gates in order, then sends returning members to the normal daily front door.
- * The optional weekly 7-day Audit™ never blocks sign-in or post-login access.
+ * The weekly 7-day Audit™ is a Monday priority-refresh step, not a sign-in
+ * requirement; existing priorities remain available between weekly reviews.
  *
  * Production on-ramp (every real member must complete ALL steps — there is
  * no skip path):
@@ -304,8 +305,8 @@ export async function getOperatingCenterData(): Promise<OperatingCenterData> {
  *   4. All three complete but the Cherry Blossom Thank-You™ transition hasn't
  *      been shown yet → /welcome/cherry-blossom/complete.
  *   5. On-ramp fully complete → "/", the daily Work-Life Balance Business Day™
- *      front door. The optional 7-day Work-Life Balance Audit™ is available
- *      from My Blueprint™ and the weekly entry experience; it never blocks login.
+ *      front door. The Monday 7-day Work-Life Balance Audit™ refreshes the
+ *      coming week's priorities; it never blocks login or access to current focus areas.
  *
  * IMPORTANT — localStorage is a fast cache, NOT the source of truth. Founder
  * Profile™, Business Context™, and the EGA onboarding signal all persist to
@@ -384,7 +385,7 @@ export async function getPostLoginDestination(): Promise<string> {
     }
   }
 
-  // The weekly 7-day Audit™ is optional. A missing weekly result must never
-  // hold a returning member at the login/onboarding gate.
+  // A missing weekly result must never hold a returning member at the
+  // login/onboarding gate. Current focus areas carry forward until refreshed.
   return "/"
 }
