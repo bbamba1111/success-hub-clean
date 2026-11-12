@@ -358,15 +358,6 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
     setChosenPath(data.selectedPath ?? null)
   }
 
-  function editSection(target: Stage) {
-    if (target === "currentBusiness") target = "requirements"
-    if (latest) {
-      loadFromReport(latest.data)
-      setReportId(latest.id)
-    }
-    setStage(target)
-  }
-
   useEffect(() => {
     if (!saved || latest === undefined || hydrated) return
     const d = saved.draft
@@ -558,9 +549,7 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
         <RealityCheckSummary
           data={latest.data}
           onboarding={onboarding}
-          onEdit={editSection}
           onViewReport={() => setStage("report")}
-          onRetake={() => editSection("intro")}
         />
       )}
 
@@ -1128,10 +1117,10 @@ function BoundaryReport({
     <div className="mx-auto w-full max-w-3xl px-4 py-12">
       <div className="mb-8 text-center">
         <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.22em] text-brand-sage-medium mb-2">
-          Your Boundary Report Is Ready
+          My Boundary Report™ Is Ready
         </p>
         <h1 className="font-playfair text-4xl font-bold text-brand-ink text-balance">
-          Your Work-Life Balance Boundary Report™
+          My Boundary Report™
         </h1>
         {onboarding && !saveError && (
           <Link
@@ -1260,7 +1249,7 @@ function BoundaryReport({
         <h2 className="font-playfair text-3xl sm:text-4xl font-bold text-brand-ink leading-tight text-balance">
           Your reality.
           <br />
-          Your Harmony Blueprint™.
+          Your Boundary Report™.
           <br />
           Your next step.
         </h2>
@@ -1276,17 +1265,17 @@ function BoundaryReport({
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Link
-              href="/my-report"
+              href="/my-blueprint#boundary-report"
               className="inline-flex items-center gap-1.5 rounded-full bg-brand-ink px-5 py-2.5 font-sans text-sm font-bold text-white transition-all hover:brightness-110"
             >
-              Get My Report
+              View My Boundary Report™
               <ArrowRight className="h-4 w-4" aria-hidden />
             </Link>
             <Link
-              href="/harmony-blueprint"
+              href="/my-blueprint"
               className="inline-flex items-center gap-1.5 rounded-full border border-brand-green/40 px-5 py-2.5 font-sans text-sm font-bold text-brand-green transition-colors hover:bg-brand-green/5"
             >
-              Harmony Blueprint™
+              Open My Blueprint™
             </Link>
           </div>
         </div>
@@ -1309,24 +1298,24 @@ function BoundaryReport({
             </button>
           </div>
           <div className="rounded-3xl border border-brand-tan-light bg-white px-6 py-7 flex flex-col">
-            <p className="font-playfair text-xl font-bold text-brand-ink mb-2">Get my report</p>
+            <p className="font-playfair text-xl font-bold text-brand-ink mb-2">My Boundary Report™</p>
             <p className="font-sans text-sm text-brand-ink-soft leading-relaxed flex-1 text-pretty">
-              Your report is yours whether or not you join — no purchase required. Keep it and work from it on your
-              own, and revisit your Harmony Blueprint™ anytime.
+              Your report is yours whether or not you join — no purchase required. It is saved with your onboarding
+              assessments and results in My Blueprint™.
             </p>
             <div className="mt-5 flex flex-col gap-2.5">
               <Link
-                href="/my-report"
+                href="/my-blueprint#boundary-report"
                 onClick={() => onChoosePath("GO_IT_ALONE")}
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-brand-ink/15 px-6 py-3 font-sans text-sm font-bold text-brand-ink transition-colors hover:bg-brand-cream"
               >
-                {saving ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : "Get My Report"}
+                {saving ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : "View My Boundary Report™"}
               </Link>
               <Link
-                href="/harmony-blueprint"
+                href="/my-blueprint"
                 className="inline-flex items-center justify-center gap-1.5 rounded-full px-6 py-2 font-sans text-sm font-semibold text-brand-green transition-colors hover:underline"
               >
-                View Harmony Blueprint™
+                Open My Blueprint™
               </Link>
             </div>
           </div>
@@ -1352,28 +1341,17 @@ function SummaryField({ label, value }: { label: string; value: string | undefin
 
 function SummaryCard({
   title,
-  onEdit,
   wide,
   children,
 }: {
   title: string
-  onEdit: () => void
   wide?: boolean
   children: React.ReactNode
 }) {
   return (
     <section className="rounded-3xl border border-[#E8E0D5] bg-white px-6 py-6 shadow-sm sm:px-8">
-      <div className="mb-4 flex items-center justify-between gap-4">
+      <div className="mb-4">
         <h3 className="font-playfair text-base font-semibold text-[#3A2E33]">{title}</h3>
-        <button
-          type="button"
-          onClick={onEdit}
-          className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-[#E8E0D5] bg-white px-3.5 py-1.5 font-montserrat text-xs font-semibold text-[#6B5860] transition-colors hover:border-[#5B835F]/40 hover:text-[#3A2E33]"
-        >
-          <Pencil className="h-3 w-3" aria-hidden />
-          Edit
-          <span className="sr-only">{title}</span>
-        </button>
       </div>
       <div className={wide ? "flex flex-col gap-3.5" : "grid gap-3.5 sm:grid-cols-2"}>{children}</div>
     </section>
@@ -1387,15 +1365,11 @@ function joinOrUndefined(items: string[]) {
 function RealityCheckSummary({
   data,
   onboarding,
-  onEdit,
   onViewReport,
-  onRetake,
 }: {
   data: BoundaryReportData
   onboarding: boolean
-  onEdit: (stage: Stage) => void
   onViewReport: () => void
-  onRetake: () => void
 }) {
   const stage = data.currentBusiness?.stage
   const alignmentSummary = (data.alignmentResponses ?? [])
@@ -1417,14 +1391,6 @@ function RealityCheckSummary({
           <p className="mt-1 font-playfair text-xl font-medium text-[#3A2E33]">Complete</p>
         </div>
         <div className="flex flex-wrap items-center gap-2.5">
-          <button
-            type="button"
-            onClick={() => onEdit("intention")}
-            className="inline-flex items-center gap-1.5 rounded-full border border-[#E8E0D5] bg-white px-4 py-2.5 font-montserrat text-sm font-bold text-[#3A2E33] transition-colors hover:border-[#5B835F]/40"
-          >
-            <Pencil className="h-3.5 w-3.5" aria-hidden />
-            Edit Full Reality Check
-          </button>
           {onboarding ? (
             <Link href="/welcome/cherry-blossom/complete" className={continueClass}>
               Continue
@@ -1439,11 +1405,11 @@ function RealityCheckSummary({
         </div>
       </div>
 
-      <SummaryCard title="Your Intention™" onEdit={() => onEdit("intention")} wide>
+      <SummaryCard title="Your Intention™" wide>
         <SummaryField label="Original Entrepreneurial Intention™" value={data.originalIntention?.summary || undefined} />
       </SummaryCard>
 
-      <SummaryCard title="Business Context" onEdit={() => { window.location.href = "/business-context" }} wide>
+      <SummaryCard title="Business Context" wide>
         <SummaryField label="Business name" value={data.businessContext?.businessName} />
         <SummaryField label="Industry" value={data.businessContext?.industry} />
         <SummaryField label="Primary product or service" value={data.businessContext?.offerStatement} />
@@ -1462,21 +1428,21 @@ function RealityCheckSummary({
         {!data.businessContext && <SummaryField label="Legacy business information" value={data.currentBusiness?.services || (stage ? STAGE_LABELS[stage] : undefined)} />}
       </SummaryCard>
 
-      <SummaryCard title="Business Reality™" onEdit={() => onEdit("requirements")} wide>
+      <SummaryCard title="Business Reality™" wide>
         <SummaryField
           label="What Needs Attention"
           value={joinOrUndefined((data.businessRequirements ?? []).map((r) => r.label))}
         />
       </SummaryCard>
 
-      <SummaryCard title="Business & Personal Reality™" onEdit={() => onEdit("personalReality")} wide>
+      <SummaryCard title="Business & Personal Reality™" wide>
         <SummaryField
           label="What Collides With Your Life"
           value={joinOrUndefined((data.personalReality ?? []).map((p) => p.label))}
         />
       </SummaryCard>
 
-      <SummaryCard title="30-Day Work-Life Balance Baseline™" onEdit={() => onEdit("audit")}>
+      <SummaryCard title="30-Day Work-Life Balance Baseline™">
         <SummaryField
           label="Overall Work-Life Balance Score™"
           value={data.baseline ? `${data.baseline.overall} / 100` : undefined}
@@ -1484,19 +1450,12 @@ function RealityCheckSummary({
         <SummaryField label="Priority Focus Areas™" value={joinOrUndefined(priorityLabels)} />
       </SummaryCard>
 
-      <SummaryCard title="Work-Life Balance Alignment™" onEdit={() => onEdit("alignment")} wide>
+      <SummaryCard title="Work-Life Balance Alignment™" wide>
         <SummaryField label="Responses" value={alignmentSummary || undefined} />
       </SummaryCard>
 
-      <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
-        <button
-          type="button"
-          onClick={onRetake}
-          className="font-montserrat text-sm font-semibold text-[#6B5860] underline-offset-4 hover:text-[#3A2E33] hover:underline"
-        >
-          Retake from the beginning
-        </button>
-        {onboarding && (
+      {onboarding && (
+        <div className="flex justify-end pt-2">
           <button
             type="button"
             onClick={onViewReport}
@@ -1504,8 +1463,8 @@ function RealityCheckSummary({
           >
             View My Boundary Report™
           </button>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   )
 }
