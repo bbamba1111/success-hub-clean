@@ -99,7 +99,7 @@ export function ReviewRealityCheck() {
           discover will appear here to review before you redesign your week.
         </p>
         <a
-          href="/reality-check"
+          href="/welcome/cherry-blossom"
           className="inline-flex w-fit items-center rounded-full bg-[#5B835F] px-5 py-2.5 font-sans text-sm font-semibold text-white hover:opacity-90"
         >
           Take My Reality Check™
