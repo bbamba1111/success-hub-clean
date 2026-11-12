@@ -1,101 +1,115 @@
 import type { AlignmentChoice } from "@/lib/boundary-report/types"
 
 /**
- * Work-Life Balance Alignment™ — Step 5 of the Reality Check.
- *
- * This replaces the old "Life Boundary Discovery" step. It is a WILLINGNESS
- * exercise, not a scored assessment: the founder is asked, one question at a
- * time, whether they are willing to operate differently this week. Every
- * response ("Yes, I'm Willing" / "I'm Not Sure Yet") is stored. "I'm Not Sure
- * Yet" never disqualifies — the tour that follows is what informs the decision.
+ * Work-Life Balance Alignment™ — the final three-question section of the
+ * Reality Check. It measures willingness and implementation readiness; it
+ * does not gate access to the Boundary Report™.
  */
 
 export interface AlignmentQuestion {
   id: string
-  /** Short section label, e.g. "Start Intentionally". */
   title: string
   question: string
 }
 
 export const ALIGNMENT_QUESTIONS: AlignmentQuestion[] = [
   {
-    id: "enter-workweek",
-    title: "Enter the Workweek Differently",
+    id: "healthier-daily-rhythm",
+    title: "A Healthier Daily Rhythm",
     question:
-      "Would you be willing to redesign how you enter your workweek rather than beginning Monday by immediately reacting to your business?",
+      "Are you willing to establish a healthier daily rhythm for yourself and your business?",
   },
   {
-    id: "start-intentionally",
-    title: "Start With Gratitude",
+    id: "protect-what-matters",
+    title: "Protect What Matters",
     question:
-      "Would you be willing to begin your day with gratitude, set an intention, visualize the life you want to create, embody the emotions of that vision, and nurture it through your daily choices before moving into business activity?",
+      "Are you willing to establish and honor boundaries that protect your time, energy, relationships, and well-being?",
   },
   {
-    id: "protect-body",
-    title: "Start Your Day with Movement",
+    id: "experience-business-week",
+    title: "Implementation Readiness",
     question:
-      "Would you be willing to move your body before your workday to boost your energy and well-being, with the support and accountability of a co-working community?",
-  },
-  {
-    id: "protect-nourishment",
-    title: "Nourish, Connect & Recharge",
-    question:
-      "Would you be willing to protect time for a real lunch break to nourish your body, connect with others, celebrate personal or business wins, enjoy nature, and recharge before starting your business day?",
-  },
-  {
-    id: "contain-work",
-    title: "Contain Your Work",
-    question:
-      "Would you be willing to bring your actual CEO work into a 4-Hour Focused Workday™ that starts at 1:00 PM and ends at 5:00 PM rather than allowing your work to expand across the entire day and into your evening?",
-  },
-  {
-    id: "let-life-have-space",
-    title: "Let Life Have Space",
-    question:
-      "Would you be willing to protect Time Freedom™ for the parts of life that matter to you without automatically giving that time back to your business?",
-  },
-  {
-    id: "end-workday",
-    title: "End the Workday",
-    question:
-      "Would you be willing to Power Down™ rather than continuing to carry unfinished work into your evening?",
-  },
-  {
-    id: "disconnect",
-    title: "Unplug & Get Some Sleep",
-    question:
-      "Would you be willing to unplug from blue-light technology and digital demands at your designated time each evening to make room for eight hours of sleep?",
-  },
-  {
-    id: "redesign-workweek",
-    title: "Redesign the Workweek",
-    question:
-      "Would you be willing to experience a 4-Day Workweek™ with a 3-Day Weekend™ rather than assuming every business week requires five days of work?",
-  },
-  {
-    id: "honor-boundaries",
-    title: "Honor the Boundaries",
-    question:
-      "Would you be willing to let these boundaries remain boundaries—even when your business tries to pull you beyond them?",
+      "Are you ready to experience the Work-Life Balance Business Week™ and practice these changes inside your business?",
   },
 ]
 
-export const ALIGNMENT_FINAL: AlignmentQuestion = {
-  id: "ready-to-experience",
-  title: "Ready to Experience It?",
-  question: "Are you willing to experience a Work-Life Balance Business Week™ built around these boundaries?",
-}
-
+/** Responses for the first two willingness questions. */
 export const ALIGNMENT_CHOICES: { value: AlignmentChoice; label: string }[] = [
   { value: "willing", label: "Yes, I'm Willing" },
   { value: "unsure", label: "I'm Not Sure Yet" },
 ]
 
+/** The final readiness question deliberately preserves all four levels of intent. */
+export const ALIGNMENT_READINESS_CHOICES: { value: AlignmentChoice; label: string }[] = [
+  { value: "ready", label: "Yes, I'm ready" },
+  { value: "interested", label: "I'm interested, but I have questions" },
+  { value: "unsure", label: "I'm not sure yet" },
+  { value: "not_at_this_time", label: "Not at this time" },
+]
+
+export function formatAlignmentChoice(choice: AlignmentChoice): string {
+  switch (choice) {
+    case "willing":
+      return "Yes, I'm Willing"
+    case "ready":
+      return "Yes, I'm ready"
+    case "interested":
+      return "I'm interested, but I have questions"
+    case "not_at_this_time":
+      return "Not at this time"
+    case "unsure":
+    default:
+      return "I'm Not Sure Yet"
+  }
+}
+
+/**
+ * Map an older in-progress draft into the three-question structure without
+ * discarding its existing answers. A grouped answer is marked willing only
+ * when every recorded legacy answer in that group was willing.
+ */
+export function normalizeAlignmentChoices(
+  raw: Record<string, AlignmentChoice> | null | undefined,
+  legacyFinal?: AlignmentChoice,
+): Record<string, AlignmentChoice> {
+  const source = raw ?? {}
+  const ids = ALIGNMENT_QUESTIONS.map((q) => q.id)
+  const hasCurrentAnswers = ids.some((id) => source[id] !== undefined)
+  if (hasCurrentAnswers) {
+    return Object.fromEntries(ids.flatMap((id) => source[id] ? [[id, source[id]]] : []))
+  }
+
+  const consolidate = (legacyIds: string[]): AlignmentChoice | undefined => {
+    const answers = legacyIds.map((id) => source[id]).filter(Boolean)
+    if (answers.length === 0) return undefined
+    return answers.every((answer) => answer === "willing") ? "willing" : "unsure"
+  }
+
+  const migrated: Record<string, AlignmentChoice> = {}
+  const rhythm = consolidate([
+    "enter-workweek",
+    "start-intentionally",
+    "protect-body",
+    "protect-nourishment",
+    "contain-work",
+  ])
+  const boundaries = consolidate([
+    "let-life-have-space",
+    "end-workday",
+    "disconnect",
+    "redesign-workweek",
+    "honor-boundaries",
+  ])
+  if (rhythm) migrated["healthier-daily-rhythm"] = rhythm
+  if (boundaries) migrated["protect-what-matters"] = boundaries
+
+  const oldReadiness = source["ready-to-experience"] ?? legacyFinal
+  if (oldReadiness) migrated["experience-business-week"] = oldReadiness === "willing" ? "ready" : "unsure"
+  return migrated
+}
+
 /**
  * Tour of the actual Work-Life Balance Business Day™ — shown after Alignment.
- * These are the existing operating modules (times mirror the canonical
- * schedule), revealed one at a time so the founder can experience the
- * architecture before their final decision. No separate public replica.
  */
 export interface TourModule {
   name: string
