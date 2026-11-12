@@ -9,10 +9,10 @@ export async function WeeklyHistoryList() {
   return (
     <section aria-labelledby="weekly-history-title" className="mt-8 flex flex-col gap-3">
       <h2 id="weekly-history-title" className="font-playfair text-2xl font-bold text-brand-ink">
-        Weekly 7-Day Audit History
+        Saved Weekly 7-Day Reports
       </h2>
       <p className="font-sans text-sm text-brand-ink-soft text-pretty">
-        Each Monday audit is saved as its own record. Your 30-day baseline above is never changed.
+        Detailed weekly reports from the optional 7-day audit are kept here. Your one-time 30-day baseline remains in My Boundary Report™.
       </p>
       <ul className="flex flex-col gap-2">
         {history.map((h) => (
