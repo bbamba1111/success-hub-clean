@@ -112,7 +112,6 @@ export function ReviewRealityCheck() {
   const focusAreas = report?.priorityAreas ?? []
   const requirements = report?.businessRequirements ?? []
   const alignment = report?.alignmentResponses ?? []
-  const willingCount = alignment.filter((a) => a.choice === "willing").length
 
   return (
     <div className="rounded-3xl border border-[#7FB069]/30 bg-[#F3F8ED] shadow-sm transition-shadow duration-700 hover:shadow-[0_24px_50px_-12px_rgba(28,22,26,0.35)] px-6 py-6 sm:px-8 sm:py-7 space-y-5">
@@ -207,22 +206,14 @@ export function ReviewRealityCheck() {
 
           <ReviewRow label="Work-Life Balance Alignment™">
             {alignment.length > 0 ? (
-              <p>
-                <span className="font-semibold text-[#2E1F27]">
-                  {willingCount} of {alignment.length}
-                </span>{" "}
-                willingness questions answered “willing.”
-                {report.finalAlignment && (
-                  <>
-                    {" "}
-                    You said you were{" "}
-                    <span className="font-semibold text-[#2E1F27]">
-                      {report.finalAlignment === "willing" ? "ready to experience it" : "still unsure"}
-                    </span>
-                    .
-                  </>
-                )}
-              </p>
+              <ul className="space-y-1.5">
+                {alignment.map((answer) => (
+                  <li key={answer.id} className="flex flex-wrap items-center justify-between gap-2">
+                    <span>{answer.title}</span>
+                    <span className="font-semibold">{formatAlignmentChoice(answer.choice)}</span>
+                  </li>
+                ))}
+              </ul>
             ) : (
               <p className="text-[#6B5860]">No alignment answers were recorded.</p>
             )}
