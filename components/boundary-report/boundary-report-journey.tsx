@@ -29,15 +29,17 @@ import {
   saveBoundaryReport,
   setBoundaryReportPath,
 } from "@/lib/boundary-report/actions"
-import { CurrentBusinessStep } from "@/components/boundary-report/current-business-step"
 import { PersonalRealityStep } from "@/components/boundary-report/personal-reality-step"
 import { StartConsiderationsBlock } from "@/components/boundary-report/start-considerations-block"
 import { personalRealityById } from "@/lib/boundary-report/personal-reality"
+import { getBusinessContext } from "@/lib/business-context/business-context-store"
+import { labelFor, labelsFor, STAGE_OPTIONS as BUSINESS_STAGE_OPTIONS, MODEL_OPTIONS, ROLE_OPTIONS, TEAM_OPTIONS, REVENUE_OPTIONS, GROWTH_OPTIONS, EXIT_OPTIONS, DELIVERY_MODEL_OPTIONS } from "@/lib/business-context/options"
+import { getBusinessContextFromDb } from "@/utils/business-context-storage"
+import type { BusinessContextProfile } from "@/lib/business-context/types"
 import { buildStartConsiderations } from "@/lib/boundary-report/start-considerations"
 import {
   CURRENT_BUSINESS_QUESTIONS,
   EMPTY_CURRENT_BUSINESS,
-  isCurrentBusinessQuestionComplete,
   type CurrentBusiness,
 } from "@/lib/boundary-report/current-business"
 import type {
@@ -57,7 +59,6 @@ type Stage =
   | "summary"
   | "intro"
   | "intention"
-  | "currentBusiness"
   | "requirements"
   | "personalReality"
   | "audit"
@@ -70,7 +71,6 @@ type Stage =
 const STAGE_ORDER: Stage[] = [
   "intro",
   "intention",
-  "currentBusiness",
   "requirements",
   "personalReality",
   "audit",
@@ -178,7 +178,7 @@ function NavRow({
 
 const CATEGORIES: { label: string; stages: Stage[] }[] = [
   { label: "Your Intention™", stages: ["intention"] },
-  { label: "Your Business™", stages: ["currentBusiness", "requirements"] },
+  { label: "Your Business™", stages: ["requirements"] },
   { label: "Your Life™", stages: ["personalReality", "audit", "baseline", "priority"] },
   { label: "Your Alignment™", stages: ["alignment"] },
 ]
@@ -266,10 +266,15 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
   // Priority focus areas (keys)
   const [priority, setPriority] = useState<string[]>([])
 
-  // Your Current Business™ (stage is Question 1)
+  // Legacy Current Business™ answers remain loadable for historical drafts/reports.
   const [currentBusiness, setCurrentBusiness] = useState<CurrentBusiness>(EMPTY_CURRENT_BUSINESS)
   const [currentBusinessIndex, setCurrentBusinessIndex] = useState(0)
-  const stageChoice: BusinessStage | null = currentBusiness.stage
+  // The single current business profile is completed at /business-context.
+  const [businessContext, setBusinessContext] = useState<BusinessContextProfile | null>(null)
+  const stageChoice: BusinessStage | null = businessContext
+    ? (["idea", "pre-revenue", "early-revenue"].includes(businessContext.businessStage) ? "start"
+      : ["growth", "established", "pivoting"].includes(businessContext.businessStage) ? "grow" : "scale")
+    : null
 
   // Business Reality™ (requirement ids)
   const [requirements, setRequirements] = useState<string[]>([])
@@ -296,6 +301,11 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
     const data = getAuditResults()
     if (data) setBaseline(toBaseline(data))
     setBaselineLoaded(true)
+    const cachedProfile = getBusinessContext()
+    if (cachedProfile) setBusinessContext(cachedProfile)
+    getBusinessContextFromDb().then((record) => {
+      if (record) setBusinessContext(record)
+    })
   }, [])
 
   // Restore saved progress once, then autosave every change.
@@ -332,6 +342,7 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
     )
     setSomethingElse(data.originalIntention?.somethingElse ?? "")
     if (data.currentBusiness) setCurrentBusiness(data.currentBusiness)
+    if (data.businessContext) setBusinessContext(data.businessContext)
     setRequirements((data.businessRequirements ?? []).map((r) => r.id))
     setPersonalReality((data.personalReality ?? []).map((p) => p.id))
     setPriority(data.priorityFocusAreas ?? [])
@@ -348,6 +359,7 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
   }
 
   function editSection(target: Stage) {
+    if (target === "currentBusiness") target = "requirements"
     if (latest) {
       loadFromReport(latest.data)
       setReportId(latest.id)
@@ -363,7 +375,8 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
       setReportId(latest.id)
       setStage("summary")
     } else if (d) {
-      if (RESUMABLE.has(d.stage)) setStage(d.stage as Stage)
+      if (d.stage === "currentBusiness") setStage("requirements")
+      else if (RESUMABLE.has(d.stage)) setStage(d.stage as Stage)
       setCurrentBusinessIndex(Math.min(d.currentBusinessIndex ?? 0, CURRENT_BUSINESS_QUESTIONS.length - 1))
       setIntentionChoices(d.intentionChoices ?? {})
       setSomethingElse(d.somethingElse ?? "")
@@ -373,8 +386,6 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
       if (d.baseline) setBaseline(d.baseline)
       setPriority(d.priority ?? [])
       setAlignment(normalizeAlignmentChoices(d.alignment))
-      // Older drafts may have stored eleven steps. Resume at the matching
-      // position in the new three-question flow without skipping past it.
       setAlignmentIndex(Math.min(d.alignmentIndex ?? 0, ALIGNMENT_QUESTIONS.length - 1))
     } else if (saved.previousCurrentBusiness) {
       setCurrentBusiness(saved.previousCurrentBusiness)
@@ -488,7 +499,8 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
       stage,
       stageConsiderations: STAGE_CONSIDERATIONS[stage].considerations,
       selectedPath: path,
-      currentBusiness: { ...currentBusiness, updatedAt: new Date().toISOString() },
+      ...(currentBusiness.stage || currentBusiness.services ? { currentBusiness: { ...currentBusiness, updatedAt: new Date().toISOString() } } : {}),
+      businessContext: businessContext ?? undefined,
       personalReality: personalReality.map((id) => ({ id, label: personalRealityById(id)?.label ?? id })),
       startConsiderations: buildStartConsiderations({
         intentionChoices,
@@ -663,40 +675,8 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
           </div>
           <NavRow
             onBack={goBack}
-            onNext={() => setStage("currentBusiness")}
+            onNext={() => setStage("requirements")}
             nextDisabled={selections.length === 0 && !somethingElse.trim()}
-          />
-        </StageShell>
-      )}
-
-      {stage === "currentBusiness" && (
-        <StageShell
-          eyebrow="Your Current Business™"
-          title="What your business actually looks like today"
-          intro={
-            saved?.previousCurrentBusiness && !saved.draft
-              ? "We've filled in what you told us last time. Update anything that has changed — your earlier answers stay saved with your previous report."
-              : "Nine quick questions about how your business runs right now. You answer these once and update them when your circumstances change."
-          }
-        >
-          <CurrentBusinessStep
-            index={currentBusinessIndex}
-            value={currentBusiness}
-            onChange={(next) => setCurrentBusiness((prev) => ({ ...prev, ...next }))}
-          />
-          <NavRow
-            onBack={() => {
-              if (currentBusinessIndex === 0) goBack()
-              else setCurrentBusinessIndex((i) => i - 1)
-            }}
-            onNext={() => {
-              if (currentBusinessIndex < CURRENT_BUSINESS_QUESTIONS.length - 1) setCurrentBusinessIndex((i) => i + 1)
-              else setStage("requirements")
-            }}
-            nextLabel={
-              currentBusinessIndex === CURRENT_BUSINESS_QUESTIONS.length - 1 ? "Continue to Business Reality" : "Continue"
-            }
-            nextDisabled={!isCurrentBusinessQuestionComplete(currentBusinessIndex, currentBusiness)}
           />
         </StageShell>
       )}
@@ -921,7 +901,8 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
             else setAlignmentIndex((i) => i - 1)
           }}
           onNext={() => {
-            if (alignmentIndex < ALIGNMENT_QUESTIONS.length - 1) setAlignmentIndex((i) => i + 1)
+            const total = ALIGNMENT_QUESTIONS.length
+            if (alignmentIndex < total - 1) setAlignmentIndex((i) => i + 1)
             else generateReport()
           }}
         />
@@ -1047,7 +1028,7 @@ function AlignmentStep({
         onBack={onBack}
         onNext={onNext}
         nextDisabled={!current}
-        nextLabel={index === total - 1 ? "See the Business Day™" : "Continue"}
+        nextLabel={isFinal ? "Complete Alignment" : "Continue"}
       />
     </div>
   )
@@ -1173,6 +1154,28 @@ function BoundaryReport({
         <ReportBlock label="Original Entrepreneurial Intention™">
           <p className="font-sans text-sm leading-relaxed text-brand-ink italic">{intentionSummary || "—"}</p>
         </ReportBlock>
+
+        {data.businessContext && (
+          <ReportBlock label="Business Context">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <SummaryField label="Business" value={data.businessContext.businessName} />
+              <SummaryField label="Industry" value={data.businessContext.industry} />
+              <SummaryField label="Primary product or service" value={data.businessContext.offerStatement} />
+              <SummaryField label="Business stage" value={labelFor(BUSINESS_STAGE_OPTIONS, data.businessContext.businessStage)} />
+              <SummaryField label="Founder role" value={labelFor(ROLE_OPTIONS, data.businessContext.founderRole)} />
+              <SummaryField label="Team size" value={labelFor(TEAM_OPTIONS, data.businessContext.teamSize)} />
+              <SummaryField label="Revenue model" value={labelsFor(MODEL_OPTIONS, data.businessContext.businessModel)} />
+              <SummaryField label="Annual revenue" value={labelFor(REVENUE_OPTIONS, data.businessContext.revenueStage)} />
+              <SummaryField label="Desired life" value={data.businessContext.successVision} />
+              <SummaryField label="Growth vision" value={labelFor(GROWTH_OPTIONS, data.businessContext.growthVision)} />
+              <SummaryField label="Exit vision" value={labelFor(EXIT_OPTIONS, data.businessContext.exitVision)} />
+              <SummaryField label="Delivery model" value={labelFor(DELIVERY_MODEL_OPTIONS, data.businessContext.deliveryModel)} />
+              <SummaryField label="AI tools & automations" value={data.businessContext.currentAiToolUse} />
+              <SummaryField label="Client connection experiences" value={data.businessContext.acquisitionChannel} />
+              <SummaryField label="90-day business goal" value={data.businessContext.biggestGoalText} />
+            </div>
+          </ReportBlock>
+        )}
 
         <ReportBlock label="30-Day Work-Life Balance Baseline™">
           <p className="font-sans text-sm text-brand-ink">
@@ -1395,8 +1398,9 @@ function RealityCheckSummary({
   onRetake: () => void
 }) {
   const stage = data.currentBusiness?.stage
-  const willing = (data.alignmentResponses ?? []).filter((r) => r.choice === "willing").length
-  const total = data.alignmentResponses?.length ?? 0
+  const alignmentSummary = (data.alignmentResponses ?? [])
+    .map((answer) => `${answer.title}: ${formatAlignmentChoice(answer.choice)}`)
+    .join("; ")
   const priorityLabels = (data.priorityFocusAreas ?? []).map(
     (key) => data.baseline?.areas?.find((a) => a.key === key)?.label ?? CATEGORY_LABELS[key] ?? key,
   )
@@ -1439,9 +1443,23 @@ function RealityCheckSummary({
         <SummaryField label="Original Entrepreneurial Intention™" value={data.originalIntention?.summary || undefined} />
       </SummaryCard>
 
-      <SummaryCard title="Your Current Business™" onEdit={() => onEdit("currentBusiness")}>
-        <SummaryField label="Stage" value={stage ? STAGE_LABELS[stage] : undefined} />
-        <SummaryField label="Services" value={data.currentBusiness?.services || undefined} />
+      <SummaryCard title="Business Context" onEdit={() => { window.location.href = "/business-context" }} wide>
+        <SummaryField label="Business name" value={data.businessContext?.businessName} />
+        <SummaryField label="Industry" value={data.businessContext?.industry} />
+        <SummaryField label="Primary product or service" value={data.businessContext?.offerStatement} />
+        <SummaryField label="Business stage" value={labelFor(BUSINESS_STAGE_OPTIONS, data.businessContext?.businessStage)} />
+        <SummaryField label="Founder role" value={labelFor(ROLE_OPTIONS, data.businessContext?.founderRole)} />
+        <SummaryField label="People involved" value={labelFor(TEAM_OPTIONS, data.businessContext?.teamSize)} />
+        <SummaryField label="Revenue model" value={labelsFor(MODEL_OPTIONS, data.businessContext?.businessModel)} />
+        <SummaryField label="Annual revenue" value={labelFor(REVENUE_OPTIONS, data.businessContext?.revenueStage)} />
+        <SummaryField label="Life you want your business to support" value={data.businessContext?.successVision} />
+        <SummaryField label="Growth vision" value={labelFor(GROWTH_OPTIONS, data.businessContext?.growthVision)} />
+        <SummaryField label="Long-term exit vision" value={labelFor(EXIT_OPTIONS, data.businessContext?.exitVision)} />
+        <SummaryField label="Delivery model" value={labelFor(DELIVERY_MODEL_OPTIONS, data.businessContext?.deliveryModel)} />
+        <SummaryField label="AI tools and automations" value={data.businessContext?.currentAiToolUse} />
+        <SummaryField label="Client connection experiences" value={data.businessContext?.acquisitionChannel} />
+        <SummaryField label="90-day business goal" value={data.businessContext?.biggestGoalText} />
+        {!data.businessContext && <SummaryField label="Legacy business information" value={data.currentBusiness?.services || (stage ? STAGE_LABELS[stage] : undefined)} />}
       </SummaryCard>
 
       <SummaryCard title="Business Reality™" onEdit={() => onEdit("requirements")} wide>
@@ -1467,7 +1485,7 @@ function RealityCheckSummary({
       </SummaryCard>
 
       <SummaryCard title="Work-Life Balance Alignment™" onEdit={() => onEdit("alignment")} wide>
-        <SummaryField label="Willingness" value={total ? `Willing on ${willing} of ${total}` : undefined} />
+        <SummaryField label="Responses" value={alignmentSummary || undefined} />
       </SummaryCard>
 
       <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
