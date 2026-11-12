@@ -109,7 +109,10 @@ async function searchGoogle(token: string, account: string, query: string, limit
   const ids = (list.messages ?? []).map((m) => m.id).filter(Boolean).slice(0, limit)
   const messages = await Promise.all(ids.map(async (id) => {
     const url = new URL("https://gmail.googleapis.com/gmail/v1/users/me/messages/" + encodeURIComponent(id))
-    url.search = new URLSearchParams({ format: "metadata", metadataHeaders: "From", metadataHeaders2: "Subject", metadataHeaders3: "Date" }).toString()
+    url.searchParams.set("format", "metadata")
+    url.searchParams.append("metadataHeaders", "From")
+    url.searchParams.append("metadataHeaders", "Subject")
+    url.searchParams.append("metadataHeaders", "Date")
     const message = await responseJson<{ snippet?: string; payload?: { headers?: Array<{ name?: string; value?: string }> } }>(await fetch(url, {
       headers: { Authorization: "Bearer " + token },
       cache: "no-store",
