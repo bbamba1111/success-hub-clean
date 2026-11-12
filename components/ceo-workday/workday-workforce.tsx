@@ -22,7 +22,8 @@ import {
 import { decideProposal } from "@/app/actions/boss-authority"
 import { EXECUTIVES, assigneeName, type AssigneeType } from "@/lib/boss/jobs/definitions"
 import { BUSINESS_FUNCTIONS, CEO_FUNCTION_LABEL, type CeoBusinessFunction, type CeoPlanItem } from "@/lib/ceo-workday/plan-types"
-import { LEGACY_BUSINESS_FUNCTIONS, SEVEN_BUSINESS_FUNCTIONS } from "@/lib/business-functions"\nimport { ConnectedServicesPanel } from "./connected-services-panel"
+import { LEGACY_BUSINESS_FUNCTIONS, SEVEN_BUSINESS_FUNCTIONS } from "@/lib/business-functions"
+import { ConnectedServicesPanel } from "./connected-services-panel"
 
 export const WORKDAY_FUNCTIONS: CeoBusinessFunction[] = BUSINESS_FUNCTIONS
 
