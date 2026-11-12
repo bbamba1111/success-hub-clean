@@ -523,7 +523,7 @@ const BARBARA_ROLES = [
 
 export function AboutBarbaraSection() {
   return (
-    <section id="about" className="scroll-mt-20 bg-[#D74750] py-20 sm:py-28">
+    <section id="about" className="scroll-mt-20 bg-[#123B2A] py-20 sm:py-28">
       <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 sm:px-8 lg:grid-cols-[0.8fr_1.2fr]">
         <img
           src="/images/barbara-portrait.png"
