@@ -30,19 +30,29 @@ function sameSecret(left: string, right: string): boolean {
 
 function callbackRedirect(request: NextRequest, status: string, provider?: string) {
   const base = connectedToolsBaseUrl(request.url)
-  const target = new URL("/boss/connected-tools", base)
-  target.searchParams.set("connect", status)
+  const candidate = provider
+    ? request.cookies.get(COOKIE_PREFIX + "_return_" + provider)?.value
+    : null
+  const returnTo = candidate && candidate.startsWith("/") && !candidate.startsWith("//") &&
+    !candidate.includes("\\") && !/[\u0000-\u001f\u007f]/.test(candidate)
+    ? candidate
+    : "/?openSpace=ceo-workday"
+  const target = new URL(returnTo, base)
+  target.searchParams.set("connectedTool", status)
   if (provider) target.searchParams.set("provider", provider)
   return NextResponse.redirect(target)
 }
 
 function clearFlowCookies(response: NextResponse, provider: string) {
-  response.cookies.set(COOKIE_PREFIX + "_state_" + provider, "", {
-    httpOnly: true, secure: true, sameSite: "lax", path: "/api/connected-tools", maxAge: 0,
-  })
-  response.cookies.set(COOKIE_PREFIX + "_verifier_" + provider, "", {
-    httpOnly: true, secure: true, sameSite: "lax", path: "/api/connected-tools", maxAge: 0,
-  })
+  for (const suffix of ["_state_", "_verifier_", "_return_"]) {
+    response.cookies.set(COOKIE_PREFIX + suffix + provider, "", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "lax",
+      path: "/api/connected-tools",
+      maxAge: 0,
+    })
+  }
 }
 
 async function readJson<T>(response: Response): Promise<T> {
@@ -105,7 +115,9 @@ export async function GET(request: NextRequest, context: { params: { provider: s
       cache: "no-store",
     })
     const tokens = await readJson<TokenResponse>(tokenResponse)
-    if (!tokens.access_token) throw new Error("Provider did not return an access token.")
+    if (!tokens.access_token || !tokens.refresh_token) {
+      throw new Error("Provider did not return durable offline access.")
+    }
 
     let providerAccountId = ""
     let email = ""
@@ -147,7 +159,7 @@ export async function GET(request: NextRequest, context: { params: { provider: s
       p_display_name: displayName,
       p_granted_scopes: grantedScopes,
       p_access_token_ciphertext: encryptConnectedSecret(tokens.access_token),
-      p_refresh_token_ciphertext: tokens.refresh_token ? encryptConnectedSecret(tokens.refresh_token) : null,
+      p_refresh_token_ciphertext: encryptConnectedSecret(tokens.refresh_token),
       p_access_token_expires_at: expiresAt,
     })
     if (error) throw new Error("The connected account could not be saved.")
