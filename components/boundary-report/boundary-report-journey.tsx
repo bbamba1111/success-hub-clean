@@ -370,6 +370,7 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
       setCurrentBusiness(d.currentBusiness ?? EMPTY_CURRENT_BUSINESS)
       setRequirements(d.requirements ?? [])
       setPersonalReality(d.personalReality ?? [])
+      if (d.baseline) setBaseline(d.baseline)
       setPriority(d.priority ?? [])
       setAlignment(normalizeAlignmentChoices(d.alignment))
       // Older drafts may have stored eleven steps. Resume at the matching
@@ -392,6 +393,7 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
       currentBusiness,
       requirements,
       personalReality,
+      baseline,
       priority,
       alignment,
       alignmentIndex,
@@ -411,6 +413,7 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
     currentBusiness,
     requirements,
     personalReality,
+    baseline,
     priority,
     alignment,
     alignmentIndex,
