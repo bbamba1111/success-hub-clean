@@ -31,7 +31,6 @@ import {
 } from "@/components/my-blueprint/boundary-workflow"
 import {
   ArrowRight,
-  Compass,
   Heart,
   BarChart2,
   User,
@@ -40,7 +39,6 @@ import {
   ShieldCheck,
 } from "lucide-react"
 
-import { getAuditResults, type AuditData } from "@/utils/audit-storage"
 import { getEsaResults, getEsaHistory, type EsaHistoryEntry } from "@/lib/entrepreneur-success/esa-storage"
 import { getBusinessContext, saveBusinessContext } from "@/lib/business-context/business-context-store"
 import { getFounderProfile, saveFounderProfile } from "@/lib/founder-profile/founder-profile-store"
@@ -49,11 +47,11 @@ import { getFounderProfileFromDb } from "@/utils/founder-profile-storage"
 import { getFounderDestination } from "@/lib/founder-destination/founder-destination-store"
 import { getFounderDestinationFromDb } from "@/utils/founder-destination-storage"
 
-import { CADENCES } from "@/lib/assessment-cadence"
 import type { EsaResults } from "@/lib/entrepreneur-success/types"
 import type { BusinessContextProfile } from "@/lib/business-context/types"
 import type { FounderDestinationProfile } from "@/lib/founder-destination/types"
 import { InPlaceResultsReview } from "@/components/my-blueprint/in-place-results-review"
+import { WeeklyAuditHistory } from "@/components/my-blueprint/weekly-audit-history"
 import {
   getAllCompletedBusinessAssetBuilds,
   type BusinessAssetBuildRecord,
@@ -117,18 +115,6 @@ function ScoreRing({ score, size = 96, stroke = 8 }: { score: number; size?: num
         <span className="font-sans text-[10px] text-brand-ink-soft">/ 100</span>
       </div>
     </div>
-  )
-}
-
-// ── Cadence badge ("30-Day Baseline" / "7-Day Check-In") ───────────────────
-
-function CadenceBadge({ assessmentType }: { assessmentType?: keyof typeof CADENCES }) {
-  const cadence = assessmentType ? CADENCES[assessmentType] : undefined
-  if (!cadence) return null
-  return (
-    <span className="inline-block rounded-full bg-brand-ink/[0.05] px-2.5 py-1 font-sans text-[11px] font-semibold uppercase tracking-wider text-brand-ink-soft">
-      {cadence.window === "30-day" ? "30-Day Baseline" : "7-Day Check-In"}
-    </span>
   )
 }
 
@@ -240,24 +226,23 @@ export function MyBlueprintClient({
   weeklyAuditHistory?: React.ReactNode
 }) {
 
-  const [lifeData, setLifeData] = useState<AuditData | null>(null)
   const [bizData, setBizData] = useState<EsaResults | null>(null)
   const [esaHistory, setEsaHistory] = useState<EsaHistoryEntry[]>([])
   const [founder, setFounder] = useState<Record<string, unknown> | null>(null)
   const [bizContext, setBizContext] = useState<BusinessContextProfile | null>(null)
   const [destination, setDestination] = useState<FounderDestinationProfile | null>(null)
   const [completedBuilds, setCompletedBuilds] = useState<BusinessAssetBuildRecord[]>([])
-  const [ready, setReady] = useState(false)
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" })
-    setLifeData(getAuditResults())
     setBizData(getEsaResults())
     setEsaHistory(getEsaHistory())
     // My Blueprint History™ — every real, saved Business Asset™ build the
     // founder has completed, across every asset and build mode. Read-only
     // view over the existing business_asset_builds table; no new data.
-    getAllCompletedBusinessAssetBuilds().then(setCompletedBuilds)
+    getAllCompletedBusinessAssetBuilds()
+      .then(setCompletedBuilds)
+      .catch(() => setCompletedBuilds([]))
     // Instant paint from the local cache, then reconcile with the database —
     // the account's canonical Founder Profile™ / Business Context Profile™ /
     // Founder Destination™ — once each resolves.
@@ -281,7 +266,6 @@ export function MyBlueprintClient({
       const { completedAt: _completedAt, ...profile } = record
       setDestination(profile)
     })
-    setReady(true)
   }, [])
 
   // Which of the four Founder Destination™ layers have been started —
@@ -393,49 +377,25 @@ export function MyBlueprintClient({
           subtitle="Your one-time 30-day baseline stays in My Boundary Report™. The 7-day audit is optional and can be completed when you choose to review the past week."
           accent="#E26C73"
         >
-          {lifeData?.assessmentType === "weekly_7_day" ? (
-            <div className="space-y-4">
-              <div className="flex items-center gap-4">
-                <ScoreRing score={lifeData.overallScore} />
-                <div>
-                  <p className="font-sans text-sm font-semibold text-brand-ink">{scoreBand(lifeData.overallScore)}</p>
-                  <CadenceBadge assessmentType="weekly_7_day" />
-                  <p className="mt-1 font-sans text-xs text-brand-ink-soft">
-                    Latest saved weekly check-in · {formatDate(new Date(lifeData.timestamp).toISOString()) ?? "recently"}
-                  </p>
-                </div>
-              </div>
-              {Array.isArray(lifeData.results) && lifeData.results.length > 0 && (
-                <div className="grid grid-cols-1 gap-2">
-                  {lifeData.results.slice(0, 4).map((r) => (
-                    <div key={r.category} className="flex items-center justify-between font-sans text-sm text-brand-ink">
-                      <span className="text-brand-ink-soft">{fmt(r.category)}</span>
-                      <span className="font-semibold">{r.percentage} / 100</span>
-                    </div>
-                  ))}
-                  <InPlaceResultsReview
-                    rows={lifeData.results.map((r) => ({ key: r.category, label: fmt(r.category), percentage: r.percentage }))}
-                    accent="#C9545B"
-                  />
-                </div>
-              )}
-            </div>
-          ) : (
-            <p className="font-sans text-sm leading-relaxed text-brand-ink-soft text-pretty">
-              No weekly 7-day result is shown here yet. Your initial 30-day baseline is part of My Boundary Report™.
-              A weekly audit is optional — use it when you want a fresh view of the previous seven days.
-            </p>
-          )}
+          <p className="font-sans text-sm leading-relaxed text-brand-ink-soft text-pretty">
+            Your 30-day starting point is preserved in My Boundary Report™. This is a separate, optional check-in
+            for the previous seven days; it does not replace or restart your one-time Reality Check™.
+          </p>
 
           <Link
             href="/audit"
-            className="mt-4 inline-flex items-center gap-1.5 font-sans text-xs font-semibold text-[#C9545B] hover:underline"
+            className="inline-flex w-fit items-center gap-1.5 rounded-full border border-[#C9545B]/30 bg-[#C9545B]/5 px-4 py-2.5 font-sans text-xs font-semibold text-[#C9545B] hover:bg-[#C9545B]/10"
           >
-            Open the Optional Weekly Audit™
+            Take the Optional 7-Day Audit™
             <ArrowRight className="h-3.5 w-3.5" aria-hidden />
           </Link>
 
-          {weeklyAuditHistory}
+          <WeeklyAuditHistory />
+          {weeklyAuditHistory && (
+            <div className="mt-5 border-t border-brand-blush/60 pt-4">
+              {weeklyAuditHistory}
+            </div>
+          )}
         </BlueprintSection>
 
         {/* 03 — Entrepreneur Success Assessment */}
