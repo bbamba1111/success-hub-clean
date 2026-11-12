@@ -13,6 +13,7 @@
 import { createClient } from "@/lib/supabase/server"
 import type { BoundaryReportData, BoundaryReportDraft, SelectedPath } from "@/lib/boundary-report/types"
 import { normalizeCurrentBusiness, type CurrentBusiness } from "@/lib/boundary-report/current-business"
+import { ALIGNMENT_QUESTIONS, normalizeAlignmentChoices } from "@/lib/boundary-report/alignment"
 
 interface SaveResult {
   ok: boolean
@@ -234,5 +235,20 @@ export async function getLatestBoundaryReport(): Promise<{ id: string; data: Bou
     .maybeSingle()
 
   if (error || !data?.report) return null
-  return { id: data.id, data: data.report as BoundaryReportData }
+  const report = data.report as BoundaryReportData
+  const migratedChoices = normalizeAlignmentChoices(
+    Object.fromEntries((report.alignmentResponses ?? []).map((answer) => [answer.id, answer.choice])),
+    report.finalAlignment,
+  )
+  const alignmentResponses = ALIGNMENT_QUESTIONS.flatMap((question) => {
+    const choice = migratedChoices[question.id]
+    return choice
+      ? [{ id: question.id, title: question.title, question: question.question, choice }]
+      : []
+  })
+
+  return {
+    id: data.id,
+    data: { ...report, alignmentResponses },
+  }
 }
