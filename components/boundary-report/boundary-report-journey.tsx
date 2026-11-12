@@ -15,8 +15,10 @@ import {
 } from "@/lib/boundary-report/business-intelligence"
 import {
   ALIGNMENT_CHOICES,
-  ALIGNMENT_FINAL,
+  ALIGNMENT_READINESS_CHOICES,
   ALIGNMENT_QUESTIONS,
+  formatAlignmentChoice,
+  normalizeAlignmentChoices,
   TOUR_MODULES,
 } from "@/lib/boundary-report/alignment"
 import useSWR from "swr"
@@ -333,7 +335,12 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
     setRequirements((data.businessRequirements ?? []).map((r) => r.id))
     setPersonalReality((data.personalReality ?? []).map((p) => p.id))
     setPriority(data.priorityFocusAreas ?? [])
-    setAlignment(Object.fromEntries((data.alignmentResponses ?? []).map((r) => [r.id, r.choice])))
+    setAlignment(
+      normalizeAlignmentChoices(
+        Object.fromEntries((data.alignmentResponses ?? []).map((r) => [r.id, r.choice])),
+        data.finalAlignment,
+      ),
+    )
     setAlignmentIndex(0)
     setCurrentBusinessIndex(0)
     if (!getAuditResults() && data.baseline?.areas?.length) setBaseline(data.baseline)
@@ -364,8 +371,10 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
       setRequirements(d.requirements ?? [])
       setPersonalReality(d.personalReality ?? [])
       setPriority(d.priority ?? [])
-      setAlignment(d.alignment ?? {})
-      setAlignmentIndex(d.alignmentIndex ?? 0)
+      setAlignment(normalizeAlignmentChoices(d.alignment))
+      // Older drafts may have stored eleven steps. Resume at the matching
+      // position in the new three-question flow without skipping past it.
+      setAlignmentIndex(Math.min(d.alignmentIndex ?? 0, ALIGNMENT_QUESTIONS.length - 1))
     } else if (saved.previousCurrentBusiness) {
       setCurrentBusiness(saved.previousCurrentBusiness)
     }
@@ -468,7 +477,6 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
       priorityFocusAreas: priority,
       priorityAreas: priorityAreas.map((a) => ({ key: a.key, label: a.label, score: a.score })),
       alignmentResponses,
-      finalAlignment: alignment[ALIGNMENT_FINAL.id],
       boundaryCollisions: requirements.map((id) => requirementById(id)?.label ?? id),
       businessRequirements: requirements.map((id) => {
         const opt = requirementById(id)
@@ -528,7 +536,7 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
       <p aria-live="polite" className="mx-auto h-5 w-full max-w-3xl px-4 pt-2 text-right font-sans text-xs text-brand-ink-soft">
         {saveStatus === "saving" && "Saving your progress…"}
         {saveStatus === "saved" && "Progress saved"}
-        {saveStatus === "error" && "Sign in to keep your progress"}
+        {saveStatus === "error" && "We couldn't save your progress. Your answers are still on this screen; please try again."}
       </p>
 
       {stage === "summary" && latest && (
@@ -910,8 +918,7 @@ export function BoundaryReportJourney({ onboarding = false }: { onboarding?: boo
             else setAlignmentIndex((i) => i - 1)
           }}
           onNext={() => {
-            const total = ALIGNMENT_QUESTIONS.length + 1
-            if (alignmentIndex < total - 1) setAlignmentIndex((i) => i + 1)
+            if (alignmentIndex < ALIGNMENT_QUESTIONS.length - 1) setAlignmentIndex((i) => i + 1)
             else generateReport()
           }}
         />
@@ -957,58 +964,72 @@ function AlignmentStep({
   onBack: () => void
   onNext: () => void
 }) {
-  const total = ALIGNMENT_QUESTIONS.length + 1
-  const isFinal = index >= ALIGNMENT_QUESTIONS.length
-  const q = isFinal ? ALIGNMENT_FINAL : ALIGNMENT_QUESTIONS[index]
-  const current = choices[q.id]
+  const total = ALIGNMENT_QUESTIONS.length
+  const question = ALIGNMENT_QUESTIONS[index]
+  const isReadinessQuestion = question.id === "experience-business-week"
+  const current = choices[question.id]
+  const options = isReadinessQuestion ? ALIGNMENT_READINESS_CHOICES : ALIGNMENT_CHOICES
+
+  const supportingDetails: Record<string, string[]> = {
+    "healthier-daily-rhythm": [
+      "Beginning your day with intention.",
+      "Making time for movement and nourishment.",
+      "Creating a focused workday rather than allowing work to consume the day.",
+      "Protecting personal time and space.",
+    ],
+    "protect-what-matters": [
+      "Protecting your non-working hours.",
+      "Powering Down™ and disconnecting from digital demands.",
+      "Prioritizing adequate sleep.",
+      "Creating a four-day workweek with a three-day weekend.",
+    ],
+  }
 
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-10 sm:py-16">
       <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.22em] text-brand-green mb-2">
-        Work-Life Balance Alignment™ · {Math.min(index + 1, total)} of {total}
+        Work-Life Balance Alignment™ · {index + 1} of {total}
       </p>
       {index === 0 && (
         <p className="font-sans text-sm text-brand-ink-soft leading-relaxed text-pretty mb-6">
-          Eleven short questions, one for each part of your Work-Life Balance Business Week™ — from how you start
-          your day to how you end it. Answer &ldquo;Yes&rdquo; or &ldquo;Not sure yet.&rdquo; There are no wrong
-          answers.
+          Three focused questions about the daily rhythm you want, the boundaries that protect what matters, and your
+          readiness to experience the Work-Life Balance Business Week™.
         </p>
       )}
 
       <div className="rounded-3xl border border-brand-green/30 bg-white px-6 py-8 sm:px-8 sm:py-10 shadow-sm">
         <p className="font-montserrat text-[11px] font-bold uppercase tracking-[0.16em] text-brand-green mb-3">
-          {q.title}
+          {question.title}
         </p>
-        <h1
-          className={`font-playfair font-bold text-brand-ink text-balance ${isFinal ? "text-3xl sm:text-4xl" : "text-2xl sm:text-[28px] leading-snug"}`}
-        >
-          {q.question}
+        <h1 className="font-playfair text-2xl sm:text-[28px] leading-snug font-bold text-brand-ink text-balance">
+          {question.question}
         </h1>
 
+        {supportingDetails[question.id] && (
+          <ul className="mt-4 list-disc space-y-1 pl-5 font-sans text-sm leading-relaxed text-brand-ink-soft">
+            {supportingDetails[question.id].map((detail) => <li key={detail}>{detail}</li>)}
+          </ul>
+        )}
+
         <div className="mt-8 grid gap-3">
-          {ALIGNMENT_CHOICES.map((c) => {
-            const active = current === c.value
+          {options.map((option) => {
+            const active = current === option.value
             return (
               <button
-                key={c.value}
+                key={option.value}
                 type="button"
-                onClick={() => onChoose(q.id, c.value)}
+                onClick={() => onChoose(question.id, option.value)}
+                aria-pressed={active}
                 className={`flex items-center justify-between gap-3 rounded-2xl border px-5 py-4 text-left transition-colors ${
                   active
-                    ? c.value === "willing"
-                      ? "border-brand-green bg-brand-green/10"
-                      : "border-brand-sage-medium bg-brand-sage-medium/5"
+                    ? "border-brand-green bg-brand-green/10"
                     : "border-brand-tan-light bg-white hover:border-brand-green/50"
                 }`}
               >
-                <span className="font-sans text-base font-semibold text-brand-ink">{c.label}</span>
+                <span className="font-sans text-base font-semibold text-brand-ink">{option.label}</span>
                 <span
                   className={`flex h-5 w-5 items-center justify-center rounded-full border-2 ${
-                    active
-                      ? c.value === "willing"
-                        ? "border-brand-green bg-brand-green"
-                        : "border-brand-sage-medium bg-brand-sage-medium"
-                      : "border-brand-tan-light"
+                    active ? "border-brand-green bg-brand-green" : "border-brand-tan-light"
                   }`}
                 >
                   {active && <Check className="h-3 w-3 text-white" aria-hidden />}
@@ -1023,7 +1044,7 @@ function AlignmentStep({
         onBack={onBack}
         onNext={onNext}
         nextDisabled={!current}
-        nextLabel={isFinal ? "See the Business Day™" : "Continue"}
+        nextLabel={index === total - 1 ? "See the Business Day™" : "Continue"}
       />
     </div>
   )
