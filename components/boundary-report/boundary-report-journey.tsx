@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react"
 import Link from "next/link"
-import { ArrowRight, ArrowLeft, Check, Loader2, Lock, Pencil, ShieldCheck, Sparkles } from "lucide-react"
+import { ArrowRight, ArrowLeft, Check, Loader2, Lock, ShieldCheck, Sparkles } from "lucide-react"
 import { getAuditResults, type AuditData } from "@/utils/audit-storage"
 import WorkLifeBalanceAudit from "@/components/work-life-balance-audit"
 import { CATEGORY_LABELS } from "@/utils/life-value-categories"
