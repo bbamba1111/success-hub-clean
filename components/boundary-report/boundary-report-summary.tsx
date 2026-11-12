@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react"
 import { StartConsiderationsBlock } from "@/components/boundary-report/start-considerations-block"
 import { getLatestBoundaryReport } from "@/lib/boundary-report/actions"
 import { WeeklyHistoryList } from "@/components/weekly-audit/weekly-history-list"
+import { formatAlignmentChoice } from "@/lib/boundary-report/alignment"
 
 function scoreColor(score: number): string {
   if (score > 60) return "#5B835F"
@@ -41,7 +42,6 @@ export async function BoundaryReportSummary() {
   }
 
   const data = latest.data
-  const willing = data.alignmentResponses?.filter((r) => r.choice === "willing").length ?? 0
   const totalAlignment = data.alignmentResponses?.length ?? 0
 
   return (
@@ -95,25 +95,27 @@ export async function BoundaryReportSummary() {
       {totalAlignment > 0 && (
         <Section label="Work-Life Balance Alignment™">
           <p className="font-sans text-sm text-brand-ink mb-3">
-            Willing to operate differently in <span className="font-bold text-brand-green">{willing}</span> of{" "}
-            {totalAlignment} areas this week.
+            Your responses to the three Alignment™ questions are recorded below.
           </p>
           <div className="flex flex-col gap-1.5">
-            {data.alignmentResponses.map((r) => (
-              <div
-                key={r.id}
-                className="flex items-center justify-between gap-3 rounded-xl bg-brand-cream/60 px-4 py-2.5"
-              >
-                <span className="font-sans text-sm font-medium text-brand-ink">{r.title}</span>
-                <span
-                  className={`shrink-0 rounded-full px-2.5 py-0.5 font-montserrat text-[9px] font-bold uppercase tracking-wider ${
-                    r.choice === "willing" ? "bg-brand-green/15 text-brand-green" : "bg-brand-sage-medium/10 text-brand-sage-medium"
-                  }`}
+            {data.alignmentResponses.map((r) => {
+              const positive = r.choice === "willing" || r.choice === "ready"
+              return (
+                <div
+                  key={r.id}
+                  className="flex items-center justify-between gap-3 rounded-xl bg-brand-cream/60 px-4 py-2.5"
                 >
-                  {r.choice === "willing" ? "Willing" : "Not sure yet"}
-                </span>
-              </div>
-            ))}
+                  <span className="font-sans text-sm font-medium text-brand-ink">{r.title}</span>
+                  <span
+                    className={`shrink-0 rounded-full px-2.5 py-0.5 font-montserrat text-[9px] font-bold uppercase tracking-wider ${
+                      positive ? "bg-brand-green/15 text-brand-green" : "bg-brand-sage-medium/10 text-brand-sage-medium"
+                    }`}
+                  >
+                    {formatAlignmentChoice(r.choice)}
+                  </span>
+                </div>
+              )
+            })}
           </div>
         </Section>
       )}
