@@ -1,6 +1,7 @@
 /** Work-Life Balance Boundary Report™ — the persisted output of the $97 diagnostic. */
 
 import type { CurrentBusiness } from "@/lib/boundary-report/current-business"
+import type { BusinessContextProfile } from "@/lib/business-context/types"
 import type { StartConsideration } from "@/lib/boundary-report/start-considerations"
 
 export type BusinessStage = "start" | "grow" | "scale"
@@ -73,8 +74,10 @@ export interface BoundaryReportData {
   stage: BusinessStage
   stageConsiderations: string[]
   selectedPath?: SelectedPath
-  /** Your Current Business™ responses as they stood when this report was completed. */
+  /** Legacy Current Business™ answers from older Reality Check versions. */
   currentBusiness?: CurrentBusiness
+  /** Snapshot of the approved 10-question Business Context profile. */
+  businessContext?: BusinessContextProfile
   /** Personal & Work-From-Home Reality™ selections (unscored). */
   personalReality?: { id: string; label: string }[]
   /** Personalized Relevant Considerations for Start™ built from the saved answers. */
