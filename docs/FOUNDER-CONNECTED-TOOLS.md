@@ -1,6 +1,6 @@
 # Founder Connected Tools — Product and Technical Requirements
 
-Status: development branch and isolated Preview Supabase target configured; deployment refresh pending  
+Status: isolated Preview and Phase 4 authority foundation configured and smoke-tested; connected-tool implementation not yet started  
 Scope: The BO$$ / Harmony Lane  
 Initial providers: Gmail and Outlook
 
@@ -8,11 +8,36 @@ Initial providers: Gmail and Outlook
 
 - Development branch: `feature/founder-connected-tools`.
 - Isolated Supabase project: `boss-phase2-test` (`uuvcpijrjbiyhikmcgsj`), active and healthy in `us-east-1`.
-- Branch-scoped Vercel Preview variables have been configured: `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+- Branch-scoped Vercel Preview variables are configured: `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
 - The value stored in the existing `NEXT_PUBLIC_SUPABASE_ANON_KEY` variable is the project's modern publishable key. The variable name is retained because the current app helper reads that name.
 - The current `lib/supabase/server.ts` uses these two public variables for its SSR and API client helpers; repository search found no `SUPABASE_SERVICE_ROLE_KEY` reference. Do not add a service-role key unless a specific server operation is demonstrated to require it.
 - These values are restricted to the Vercel Preview environment for `feature/founder-connected-tools`. No Production environment variables or Production Supabase project settings were changed.
-- A new Preview build must run before the application can be verified against the newly configured variables.
+- Preview build for commit `9e461c3998277a4a9de511d0d207004db2e8c4ae` completed successfully. Later commits on this branch trigger subsequent Preview builds.
+
+## Phase 4 authority foundation — applied to the test project
+
+The following repository SQL scripts are now recorded in the `boss-phase2-test` migration history:
+
+1. `scripts/phase4_authority_and_ai_security.sql` — creates the authority RPCs, proposal/preauthorization structures, immutable history behavior, AI shutdown and quota controls.
+2. `scripts/phase4_fix_execute_approved.sql` — fixes the approved (non-preauthorized) execution path. The first rollback-only smoke test exposed the original unassigned-record defect; this repository fix uses a nullable UUID for the optional preauthorization ID.
+3. `scripts/phase4_harden_service_only_tables.sql` — removes `anon` and `authenticated` table privileges on `app_settings` and `ai_usage_events`, retaining service-role access.
+4. `scripts/phase4_restrict_internal_definer_functions.sql` — prevents direct execution of internal `SECURITY DEFINER` helpers and trigger functions by `anon` or `authenticated`.
+
+Verified database behavior:
+- `boss_create_proposal`, `boss_decide_proposal`, `boss_grant_preauthorization`, `boss_revoke_preauthorization`, and `boss_execute_proposal` exist and are executable by `authenticated`, not `anon`.
+- The internal `boss_ai_enabled`, `boss_job_unfinished_prereqs`, and trigger-only definer functions are not directly executable by `anon` or `authenticated`.
+- `app_settings` and `ai_usage_events` have RLS enabled, no end-user policies, and no table privileges for `anon` or `authenticated`. The service role retains access.
+- `app_settings.ai_enabled` is currently `true` in the isolated test project.
+- Phase 4 approval and preauthorization smoke tests passed in rollback-only transactions. The tests verified: an exact approved proposal can execute; an uncovered preauthorized action is refused; a scoped grant enables the action; and the use counter increments.
+- Post-test checks confirmed the test account's original `free` membership tier was restored and no QA jobs, proposals, grants, or history rows remained.
+- The full repository Phase 4 acceptance suite has not yet been run. It requires a dedicated test runner with the isolated project's service-role credential; that credential has not been added to Vercel or exposed in chat.
+
+Security advisor findings still to review before Production use:
+- Five authenticated `SECURITY DEFINER` authority RPCs remain intentionally callable by signed-in users; each is the existing founder authority gate and must retain its `auth.uid()` ownership checks.
+- Two service-only tables are flagged as RLS-enabled with no policies. This is intentional; table-level grants have also been removed for end-user roles.
+- Six existing functions still have mutable `search_path` warnings: `handle_updated_at`, `set_ceo_workday_updated_at`, `boss_action_required_level`, `boss_payload_hash`, `boss_job_history_immutable`, and `boss_job_proposals_immutable`.
+- Supabase Auth leaked-password protection is disabled in the test project.
+- Existing trigger functions remain installed after their direct RPC execute privileges were revoked. The trigger definitions were verified after the change.
 
 ## Product principle
 
@@ -53,6 +78,8 @@ Drafting must not send. Sending must pass through the existing BO$$ proposal/app
 
 Any preauthorization for sending must be narrow, visible, revocable, and limited by scope, time, and/or use count. If no valid authority exists, the action remains a proposal for the founder.
 
+**Current implementation boundary:** `lib/boss/jobs/definitions.ts` still allows only `job.save_whats_ready` and `job.set_status`. Email send is intentionally not an approved action yet. No email-send proposal or provider execution path has been added.
+
 ## Initial provider plan
 
 ### Gmail
@@ -85,11 +112,11 @@ The communications draft endpoint currently creates a draft response only; it is
 
 ## Delivery sequence
 
-1. Confirm the development branch and isolated Preview database/environment. The branch and Preview database target are now configured; validate them with a fresh Preview build.
-2. Inspect current database migrations, RLS policies, authority RPCs, and deployment configuration.
+1. Confirm the development branch and isolated Preview database/environment. This is complete; the Preview target is branch-scoped and the test database is verified.
+2. Inspect current database migrations, RLS policies, authority RPCs, and deployment configuration. The Phase 4 authority baseline is applied and the founder approval/preauthorization paths have passed targeted rollback-only smoke tests.
 3. Implement the shared connection registry, secure token handling, OAuth callback foundations, and Connected Tools UI.
 4. Implement Gmail read/draft capabilities.
-5. Route send proposals through the existing BO$$ authority gate and audit trail.
+5. Add an explicit email action kind and route send proposals through the existing BO$$ authority gate and audit trail. Do not enable send until end-to-end authority tests pass.
 6. Add Outlook through the same provider interface.
-7. Test account isolation, scope enforcement, refresh/revocation, approval, auditability, and failure handling.
+7. Run the full acceptance suite and test account isolation, scope enforcement, refresh/revocation, approval, auditability, and failure handling.
 8. Open a reviewable pull request. No Production merge or deployment without explicit approval.
