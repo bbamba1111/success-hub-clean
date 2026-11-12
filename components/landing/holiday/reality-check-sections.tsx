@@ -359,6 +359,29 @@ export function RealityCheckSection() {
         <div className="absolute left-[8%] top-[18%] h-3 w-3 rounded-full bg-white/80 shadow-[0_0_24px_8px_rgba(255,255,255,.7)]" />
         <div className="absolute right-[12%] top-[32%] h-2 w-2 rounded-full bg-white/90 shadow-[0_0_22px_8px_rgba(255,255,255,.8)]" />
         <div className="absolute bottom-[18%] right-[22%] h-2.5 w-2.5 rounded-full bg-[#C13B6B]/30 shadow-[0_0_20px_7px_rgba(193,59,107,.16)]" />
+        <svg className="absolute -left-5 top-8 h-44 w-44 opacity-45 sm:left-4 sm:top-10 sm:h-56 sm:w-56" viewBox="0 0 220 220" fill="none">
+          <path d="M16 194C54 157 79 116 105 48" stroke="#8A6B58" strokeWidth="3" strokeLinecap="round"/>
+          <path d="M62 143C39 125 27 106 31 88M82 104C111 91 126 72 129 51M45 166C72 169 91 184 99 204" stroke="#8A6B58" strokeWidth="2.5" strokeLinecap="round"/>
+          <g fill="#F5A9C4" stroke="#D9799D" strokeWidth="1.2">
+            <ellipse cx="31" cy="82" rx="10" ry="19" transform="rotate(-38 31 82)"/>
+            <ellipse cx="50" cy="93" rx="10" ry="19" transform="rotate(35 50 93)"/>
+            <ellipse cx="41" cy="70" rx="10" ry="19" transform="rotate(4 41 70)"/>
+            <ellipse cx="129" cy="46" rx="10" ry="19" transform="rotate(8 129 46)"/>
+            <ellipse cx="145" cy="61" rx="10" ry="19" transform="rotate(58 145 61)"/>
+            <ellipse cx="116" cy="65" rx="10" ry="19" transform="rotate(-54 116 65)"/>
+            <ellipse cx="97" cy="196" rx="9" ry="17" transform="rotate(65 97 196)"/>
+            <ellipse cx="82" cy="183" rx="9" ry="17" transform="rotate(-22 82 183)"/>
+          </g>
+          <g fill="#FFF8F4"><circle cx="41" cy="82" r="4"/><circle cx="130" cy="57" r="4"/><circle cx="89" cy="190" r="3.5"/></g>
+        </svg>
+        <svg className="absolute -bottom-5 -right-5 h-48 w-48 opacity-50 sm:bottom-0 sm:right-4 sm:h-60 sm:w-60" viewBox="0 0 220 220" fill="none">
+          <path d="M111 205C120 159 139 112 185 59" stroke="#315C3B" strokeWidth="5" strokeLinecap="round"/>
+          <path d="M147 126C115 123 91 104 81 77C113 73 139 91 147 126Z" fill="#315C3B" stroke="#244A35" strokeWidth="2"/>
+          <path d="M156 105C155 72 174 48 203 39C208 70 192 96 156 105Z" fill="#3F7650" stroke="#244A35" strokeWidth="2"/>
+          <path d="M126 163C95 179 66 171 48 148C74 130 105 137 126 163Z" fill="#3F7650" stroke="#244A35" strokeWidth="2"/>
+          <path d="M147 126L81 77M156 105L203 39M126 163L48 148" stroke="#9DBF9A" strokeWidth="2"/>
+          <g fill="#C13B6B" stroke="#A8305B" strokeWidth="1.5"><circle cx="164" cy="146" r="11"/><circle cx="188" cy="132" r="10"/><circle cx="185" cy="161" r="10"/><circle cx="145" cy="177" r="9"/></g>
+        </svg>
       </div>
       <div className="relative mx-auto max-w-6xl px-5 sm:px-8">
         <header className="mx-auto max-w-4xl text-center">
