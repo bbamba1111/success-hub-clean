@@ -523,7 +523,7 @@ const BARBARA_ROLES = [
 
 export function AboutBarbaraSection() {
   return (
-    <section id="about" className="scroll-mt-20 bg-[#FFF8F4] py-20 sm:py-28">
+    <section id="about" className="scroll-mt-20 bg-[#D74750] py-20 sm:py-28">
       <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 sm:px-8 lg:grid-cols-[0.8fr_1.2fr]">
         <img
           src="/images/barbara-portrait.png"
@@ -532,19 +532,19 @@ export function AboutBarbaraSection() {
           loading="lazy"
         />
         <div className="flex flex-col gap-5">
-          <p className={EYEBROW}>Your guide</p>
-          <h2 className={H2}>Thought Leader Barbara Bamba</h2>
-          <p className={BODY}>
+          <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-white">Your guide</p>
+          <h2 className="font-playfair text-balance text-3xl font-bold leading-tight text-white sm:text-5xl">Thought Leader Barbara Bamba</h2>
+          <p className="font-poppins text-pretty text-[17px] leading-relaxed text-white sm:text-lg">
             Barbara helps founders redefine success beyond constant work, reconnect with their original entrepreneurial
             intentions, and build work-life balance boundaries into the way they start, grow, and operate their
             businesses, whether they&apos;re just beginning or already established.
           </p>
-          <p className={`font-playfair text-lg font-semibold leading-snug ${INK}`}>
+          <p className="font-playfair text-lg font-semibold leading-snug text-white">
             Her Human Sustainability™ work asks: how do we make sure the businesses we&apos;re building, and the
             technologies we&apos;re adopting, create more room for human life rather than simply more work?
           </p>
-          <ul className="grid gap-2 border-t border-[#F2E4E8] pt-5 sm:grid-cols-2">
-            {BARBARA_ROLES.map((r) => <li key={r} className={`${BODY} flex gap-3 text-base`}><Dot />{r}</li>)}
+          <ul className="grid gap-2 border-t border-white/40 pt-5 sm:grid-cols-2">
+            {BARBARA_ROLES.map((r) => <li key={r} className="font-poppins flex gap-3 text-base leading-relaxed text-white"><Dot className="bg-white" />{r}</li>)}
           </ul>
         </div>
       </div>
