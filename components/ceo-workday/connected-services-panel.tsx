@@ -86,7 +86,7 @@ export function ConnectedServicesPanel({
     setSavingId(id)
     setError(null)
     try {
-      const response = await fetch(`/api/connected-tools/${id}/disconnect`, { method: "POST" })
+      const response = await fetch(`/api/connected-tools/disconnect/${id}`, { method: "POST" })
       const data = (await response.json().catch(() => ({}))) as { error?: string }
       if (!response.ok) throw new Error(data.error ?? "Could not disconnect this account.")
       await load()
