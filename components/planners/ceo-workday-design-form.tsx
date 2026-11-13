@@ -13,12 +13,15 @@
  *      expected outcome → Add Work Item (the founder's own work, when needed).
  *   3. TODAY'S CEO WORK — the design engine's proposed chain. Expected Outcome
  *      is always visible and directly editable; Edit means editing the work.
- *   4. YOUR CEO WORKDAY DECLARATION™ is generated from the FINAL approved
- *      work and flags itself stale if the work changes after a manual edit.
- *   5. "Build My CEO Workday™" activates from the real design state (approved
- *      work with outcomes + declaration + weekly context) and persists the
- *      plan (Supabase source of truth), mirrors it into the Today's Work™
- *      queue, and saves the local declaration record for the 1 PM arrival.
+ *   4. "Build My CEO Workday™" activates from the real design state (approved
+ *      work with outcomes + weekly business context) and persists the plan
+ *      (Supabase source of truth), then mirrors those assignments into the
+ *      Today's Work™ queue.
+ *
+ * This business-work design is independent of My 1–3 Priority Focus Areas™.
+ * It does not create or require a weekly identity statement or CEO Workday
+ * Declaration™. Boundary personalization is handled separately by the
+ * Movement, Lunch, Time Freedom, and Power Down spaces.
  *
  * Matches the Movement/Lunch intention forms' visual language exactly.
  */
