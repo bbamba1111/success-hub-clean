@@ -218,6 +218,14 @@ export function CeoWorkdayLivePlan() {
     await updateCeoPlanStatus(plan.id, "adjusted")
   }
 
+  async function commitOutcome(item: CeoPlanItem, expectedEvidence: string) {
+    if (!plan) return
+    const value = expectedEvidence.trim()
+    setPlan((p) => p && { ...p, items: p.items.map((i) => i.id === item.id ? { ...i, expectedEvidence: value, founderDecision: "edit" } : i) })
+    await updateCeoPlanItem(item.id, { expectedEvidence: value, founderDecision: "edit" })
+    await updateCeoPlanStatus(plan.id, "adjusted")
+  }
+
   // Direct per-item controls. Starting work is never gated behind the
   // 1:00–5:00 PM hour-block clock or the "Tell us what you're working on"
   // field — the founder can start any assignment the moment they enter.
@@ -379,11 +387,22 @@ export function CeoWorkdayLivePlan() {
               .join(" · ")}
           </p>
         )}
-        {item.expectedEvidence && (
+        {editTitleId === item.id ? (
+          <label className="mt-2 block font-sans text-sm font-semibold text-[#5A7A45]">
+            Expected outcome
+            <textarea
+              key={item.id}
+              defaultValue={item.expectedEvidence}
+              rows={3}
+              onBlur={(e) => void commitOutcome(item, e.target.value)}
+              className="mt-1 w-full rounded-lg border border-[#E8DFE2] bg-white px-3 py-2 font-sans text-sm font-normal text-[#2E1F27]"
+            />
+          </label>
+        ) : item.expectedEvidence ? (
           <p className="mt-1 font-sans text-[16.5px] leading-relaxed text-[#3A2E33]">
             <span className="font-bold italic text-[#5A7A45]">Expected outcome:</span> {item.expectedEvidence}
           </p>
-        )}
+        ) : null}
         {!gone && (
           <ItemWorkforceRow
             item={item}
