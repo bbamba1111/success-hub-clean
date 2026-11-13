@@ -4,7 +4,7 @@ import { AlreadyMeasuredNotice } from "@/components/assessment-cadence/already-m
 import { createClient } from "@/lib/supabase/server"
 import { getCycleContext } from "@/lib/sunday-cycle/cycle-actions"
 import { deriveAssessmentCadence, type AssessmentType, type AssessmentWindow } from "@/lib/assessment-cadence"
-import { hasCompletedThisWeeksRealityCheckServer } from "@/utils/reality-check-server"
+import { hasCompletedInitialBaselineServer, hasCompletedThisWeeksRealityCheckServer } from "@/utils/reality-check-server"
 
 export const metadata = {
   title: "Work-Life Balance Audit™ | Harmony Lane™",
@@ -21,19 +21,20 @@ export default async function AuditPage() {
   let alreadyMeasuredThisWeek = false
 
   if (user) {
-    const cycleContext = await getCycleContext(user.id)
-    const cadence = deriveAssessmentCadence(
-      cycleContext.mode === "initial_baseline" ? null : "set",
-      cycleContext.cycleWeek,
-    )
-    assessmentWindow = cadence.window
-    assessmentType   = cadence.type
+    // The completed initial 30-day Reality Check is the definitive transition:
+    // before it exists, show the 30-day baseline; after it exists, /audit is
+    // always the recurring 7-day audit. Do not depend on cycle dates being set.
+    const hasInitialBaseline = await hasCompletedInitialBaselineServer(user.id)
 
-    // Monday Weekly Measurement™ rule: once this week's Audit is scored, it
-    // is locked until next Monday — never re-shown mid-week. Only applies to
-    // the recurring weekly cadence, never to a founder's one-time baseline.
-    if (cadence.type === "weekly_7_day") {
+    if (hasInitialBaseline) {
+      assessmentWindow = "7-day"
+      assessmentType = "weekly_7_day"
+      // Monday Weekly Measurement™ rule: once this week's 7-day audit is
+      // scored, show the results notice until the next Monday.
       alreadyMeasuredThisWeek = await hasCompletedThisWeeksRealityCheckServer(user.id)
+    } else {
+      assessmentWindow = "30-day"
+      assessmentType = "baseline_30_day"
     }
   }
 
