@@ -5,7 +5,7 @@
  * Decide & Design™). Mounted at the TOP of FounderGpsWorkspace.
  *
  *   YOUR CEO WORKDAY™ IS READY  (arrival banner)
- *   YOUR CEO WORKDAY DECLARATION™ (read aloud)
+ *   THE DESIGNED ASSIGNMENTS (organized into four protected hours)
  *   YOUR CEO WORKDAY™ → IS THIS STILL WHAT YOU NEED TO WORK ON? (adjust)
  *   TELL US WHAT YOU'RE WORKING ON (per hour)
  *   Hour blocks 1:00–5:00 with a DETERMINISTIC 5-Minute Check-In™ at
