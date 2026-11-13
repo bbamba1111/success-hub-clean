@@ -87,6 +87,7 @@ export function CeoWorkdayLivePlan() {
   useEffect(() => () => { if (highlightTimer.current) clearTimeout(highlightTimer.current) }, [])
   const [adjusting, setAdjusting] = useState(false)
   const [editTitleId, setEditTitleId] = useState<string | null>(null)
+  const [editOutcomeId, setEditOutcomeId] = useState<string | null>(null)
   const [workingOnDraft, setWorkingOnDraft] = useState("")
   const [checkinOpen, setCheckinOpen] = useState<HourBlock | null>(null)
   const [checkinOpenedAt, setCheckinOpenedAt] = useState<string | null>(null)
@@ -221,6 +222,7 @@ export function CeoWorkdayLivePlan() {
   async function commitOutcome(item: CeoPlanItem, expectedEvidence: string) {
     if (!plan) return
     const value = expectedEvidence.trim()
+    setEditOutcomeId(null)
     setPlan((p) => p && { ...p, items: p.items.map((i) => i.id === item.id ? { ...i, expectedEvidence: value, founderDecision: "edit" } : i) })
     await updateCeoPlanItem(item.id, { expectedEvidence: value, founderDecision: "edit" })
     await updateCeoPlanStatus(plan.id, "adjusted")
@@ -387,7 +389,7 @@ export function CeoWorkdayLivePlan() {
               .join(" · ")}
           </p>
         )}
-        {editTitleId === item.id ? (
+        {editOutcomeId === item.id ? (
           <label className="mt-2 block font-sans text-sm font-semibold text-[#5A7A45]">
             Expected outcome
             <textarea
@@ -446,7 +448,7 @@ export function CeoWorkdayLivePlan() {
             {editTitleId !== item.id && (
               <button
                 type="button"
-                onClick={() => setEditTitleId(item.id)}
+                onClick={() => { setEditTitleId(item.id); setEditOutcomeId(item.id) }}
                 className="inline-flex items-center gap-1.5 rounded-full border border-[#E8DFE2] bg-white px-3.5 py-1.5 font-sans text-base font-semibold text-[#6B5860] hover:bg-black/[0.03]"
               >
                 <Pencil className="h-3 w-3" aria-hidden /> Edit
