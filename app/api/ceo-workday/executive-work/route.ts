@@ -86,8 +86,8 @@ export async function POST(req: Request) {
   // A request for the newest messages is a deterministic, metadata-only task.
   // Retrieve it directly from the connected provider; do not ask the language
   // model to infer search results from an instruction string.
-  const recentMailRequest = mode === "work" && useConnectedMail &&
-    /\\b(most recent|latest|newest)\\b.{0,50}\\b(emails?|messages?)\\b|\\b(emails?|messages?)\\b.{0,50}\\b(most recent|latest|newest)\\b/i.test(
+  const recentMailRequest = mode === "work" &&
+    /\\b(connected\\s+(?:gmail|email|mail)|gmail\\s+account|connected\\s+account)\\b.{0,100}\\b(most recent|latest|newest)\\b.{0,30}\\b(emails?|messages?)\\b|\\b(most recent|latest|newest)\\b.{0,30}\\b(emails?|messages?)\\b.{0,100}\\b(connected\\s+(?:gmail|email|mail)|gmail\\s+account|connected\\s+account)\\b/i.test(
       [job.title, clip(job.details, 2000), instruction].filter(Boolean).join(" "),
     )
 
