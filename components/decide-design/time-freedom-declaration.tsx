@@ -11,7 +11,7 @@
  */
 
 import { RefreshCw, Sparkles } from "lucide-react"
-import { useEffect, useMemo } from "react"
+import { useMemo } from "react"
 import { useWeeklyLifePriorities } from "@/lib/weekly-life-priorities/use-weekly-life-priorities"
 import { useTimeFreedomDeclaration } from "@/lib/time-freedom-declaration/use-time-freedom-declaration"
 
@@ -44,18 +44,10 @@ function buildDeclaration(priorityLabels: string[], variant: number): string {
 
 export function TimeFreedomDeclaration() {
   const { priorities } = useWeeklyLifePriorities()
-  const { declaration, hydrated, save } = useTimeFreedomDeclaration()
+  const { declaration, save } = useTimeFreedomDeclaration()
 
   const priorityLabels = useMemo(() => priorities.map((p) => p.label), [priorities])
   const ready = priorityLabels.length > 0
-
-  // The declaration is created from the founder's saved Decide & Design
-  // priorities and appears automatically in the Time Freedom Space.
-  useEffect(() => {
-    if (!hydrated || !ready || declaration.text) return
-    const text = buildDeclaration(priorityLabels, 0)
-    if (text) save({ text, variant: 0, edited: false, builtAt: new Date().toISOString() })
-  }, [hydrated, ready, declaration.text, priorityLabels, save])
 
   function build(variant = declaration.variant) {
     const text = buildDeclaration(priorityLabels, variant)
@@ -82,9 +74,9 @@ export function TimeFreedomDeclaration() {
         <button
           type="button"
           onClick={() => build(0)}
-          className="inline-flex w-fit items-center gap-2 rounded-full bg-[#C0545A] px-5 py-2.5 font-sans text-sm font-bold text-white hover:opacity-90"
+          className="flex min-h-[60px] w-full items-center justify-center gap-3 rounded-xl bg-[#BED0B7] px-6 py-4 font-sans text-lg font-bold text-white transition-colors hover:bg-[#AFC5A6] focus:outline-none focus:ring-2 focus:ring-[#5B835F]/40"
         >
-          <Sparkles className="h-4 w-4" aria-hidden /> Build My Declaration
+          <Sparkles className="h-5 w-5" aria-hidden /> Build My Time Freedom Declaration
         </button>
       ) : (
         <div className="flex flex-col gap-3">
