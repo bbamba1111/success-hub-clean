@@ -63,11 +63,11 @@ export function PriorityFocusAreas() {
               Change My Priority Focus Areas™
             </a>
             <a
-              href="/audit"
+              href="/weekly-audit"
               className="inline-flex w-fit items-center gap-1.5 font-sans text-sm font-semibold text-[#C0545A] underline-offset-4 hover:underline"
             >
               <RotateCcw className="h-3.5 w-3.5" aria-hidden />
-              Retake Monday Audit
+              Retake 7-Day Audit
             </a>
           </div>
         </>
