@@ -24,9 +24,9 @@ import { CeoWorkdayDesignForm } from "@/components/planners/ceo-workday-design-f
 import { MovementIntentionForm } from "@/components/planners/movement-intention-form"
 import { LunchIntentionForm } from "@/components/planners/lunch-intention-form"
 import { PowerDownIntentionForm } from "@/components/planners/power-down-intention-form"
-import { CherryBlossomWorkstation } from "@/components/cherry-blossom-workstation"
 import { PriorityFocusAreas } from "@/components/decide-design/priority-focus-areas"
 import { WeeklyLifePrioritiesCard } from "@/components/decide-design/weekly-priorities-designer"
+import { TimeFreedomDeclaration } from "@/components/decide-design/time-freedom-declaration"
 
 export function DebriefSpace() {
   // Renders identically on Monday (`monday-debrief`) and Tue–Sun
@@ -86,11 +86,7 @@ export function DebriefSpace() {
             {(open) => (
               <div className="space-y-5">
                 <WeeklyLifePrioritiesCard />
-                <p className="rounded-xl border border-[#C9A227]/30 bg-white px-4 py-3 font-sans text-sm leading-relaxed text-[#6B5860]">Your saved life priorities will create your Time Freedom Declaration™ in the Time Freedom Space.</p>
-                <CherryBlossomWorkstation
-                  context="lifestyle-experiences"
-                  active={open}
-                />
+                <TimeFreedomDeclaration />
               </div>
             )}
           </CollapsibleSubSection>
