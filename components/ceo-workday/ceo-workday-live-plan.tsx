@@ -103,18 +103,6 @@ export function CeoWorkdayLivePlan() {
     return () => clearInterval(t)
   }, [])
 
-  useEffect(() => {
-    const onDeclaration = (event: Event) => {
-      const detail = (event as CustomEvent<{ declaration?: string; builtAt?: string }>).detail
-      if (!detail?.declaration) return
-      setDeclarationArrival({ declaration: detail.declaration, builtAt: detail.builtAt ?? new Date().toISOString() })
-      window.setTimeout(() => setDeclarationArrival(null), 8000)
-      void refresh()
-    }
-    window.addEventListener("hl:ceo-workday-declaration:changed", onDeclaration)
-    return () => window.removeEventListener("hl:ceo-workday-declaration:changed", onDeclaration)
-  }, [refresh])
-
   const refresh = useCallback(async () => {
     const p = await getCeoWorkdayPlan(dateKey)
     setPlan(p)
@@ -132,6 +120,18 @@ export function CeoWorkdayLivePlan() {
   useEffect(() => {
     void refresh()
     return () => {}
+  }, [refresh])
+
+  useEffect(() => {
+    const onDeclaration = (event: Event) => {
+      const detail = (event as CustomEvent<{ declaration?: string; builtAt?: string }>).detail
+      if (!detail?.declaration) return
+      setDeclarationArrival({ declaration: detail.declaration, builtAt: detail.builtAt ?? new Date().toISOString() })
+      window.setTimeout(() => setDeclarationArrival(null), 8000)
+      void refresh()
+    }
+    window.addEventListener("hl:ceo-workday-declaration:changed", onDeclaration)
+    return () => window.removeEventListener("hl:ceo-workday-declaration:changed", onDeclaration)
   }, [refresh])
 
   // The live workspace loads only a plan explicitly saved by Decide & Design.
