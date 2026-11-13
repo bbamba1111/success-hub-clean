@@ -2,8 +2,7 @@ import WorkLifeBalanceAudit from "@/components/work-life-balance-audit"
 import { CherryBlossomScene, CherryBlossomSceneCard } from "@/components/cherry-blossom/cherry-blossom-scene"
 import { AlreadyMeasuredNotice } from "@/components/assessment-cadence/already-measured-notice"
 import { createClient } from "@/lib/supabase/server"
-import { getCycleContext } from "@/lib/sunday-cycle/cycle-actions"
-import { deriveAssessmentCadence, type AssessmentType, type AssessmentWindow } from "@/lib/assessment-cadence"
+import type { AssessmentType, AssessmentWindow } from "@/lib/assessment-cadence"
 import { hasCompletedInitialBaselineServer, hasCompletedThisWeeksRealityCheckServer } from "@/utils/reality-check-server"
 
 export const metadata = {
