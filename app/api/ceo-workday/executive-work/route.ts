@@ -133,7 +133,7 @@ Never invent facts about the founder's business (prices, names, results). If you
       instruction ? "The founder's instructions: " + instruction : "",
       "Do the work now. Produce the finished deliverable (for example the full post, email, script or plan), not a description of it.",
       lastDraft ? "Improve your last draft using the founder's instructions." : "",
-      "Keep the deliverable under 3,000 characters.",
+      "Return the result as valid JSON with exactly these keys: whatIDid (array of strings), deliverable (string), and needFromFounder (string). Keep the deliverable under 3,000 characters.",
     ].filter(Boolean).join("\n\n")
     const response = await gateway.chat.completions.create({
       model: GATEWAY_MODEL,
