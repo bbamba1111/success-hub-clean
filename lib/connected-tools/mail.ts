@@ -173,6 +173,7 @@ export async function searchConnectedMail(
   queryInput: string,
   limit = 5,
   recentOnly = false,
+  googleOnly = false,
 ): Promise<{ messages: MailEvidence[]; accountsSearched: number }> {
   const query = clip(queryInput, 300)
   if (!query && !recentOnly) throw new Error("Add a few words to search your connected email.")
@@ -188,9 +189,10 @@ export async function searchConnectedMail(
   if (!accounts.length) throw new Error("Connect Gmail or Outlook in this workday card before using email context.")
 
   const eligible = accounts.filter((a) =>
-    a.provider === "google"
+    (googleOnly ? a.provider === "google" : true) &&
+    (a.provider === "google"
       ? a.granted_scopes?.includes("https://www.googleapis.com/auth/gmail.readonly")
-      : a.granted_scopes?.includes("Mail.Read"),
+      : a.granted_scopes?.includes("Mail.Read")),
   )
   if (!eligible.length) throw new Error("Your connected account does not have read-email permission. Reconnect it to grant that access.")
 
