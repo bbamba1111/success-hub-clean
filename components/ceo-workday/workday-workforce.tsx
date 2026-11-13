@@ -86,7 +86,7 @@ export function FunctionSwitcher({
   )
 }
 
-/* ── Today at a glance: My Work · My AI Team · My Choices ────────────────── */
+/* ── Today at a glance: My Work · AI Executive's Work · Waiting For Your Approval ── */
 
 export function WorkforceSummary({ items, jobsById }: { items: CeoPlanItem[]; jobsById: Map<string, WorkdayJobView> }) {
   const linked = items
@@ -106,12 +106,12 @@ export function WorkforceSummary({ items, jobsById }: { items: CeoPlanItem[]; jo
       <div className="grid gap-3 md:grid-cols-3">
         <Column title="My Work" empty="Nothing for you to do yourself." rows={mine.map(({ item }) => ({ id: item.id, title: item.title, sub: CEO_FUNCTION_LABEL[item.businessFunction] }))} />
         <Column
-          title="My AI Team"
+          title="AI Executive's Work"
           empty="Give work to Cherry Blossom™ or an executive below."
           rows={team.map(({ item, job }) => ({ id: item.id, title: item.title, sub: `${whoName(job)} · ${teamStatus(job)}` }))}
         />
         <Column
-          title="My Choices"
+          title="Waiting For Your Approval"
           empty="Nothing needs your choice right now."
           highlight={choices.length > 0}
           rows={choices.map(({ item, job }) => ({ id: item.id, title: item.title, sub: choiceNeeded(job)! }))}
