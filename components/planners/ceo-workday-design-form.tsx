@@ -120,14 +120,6 @@ function isApproved(i: CeoPlanItem) {
   return i.founderDecision !== "remove" && i.status === "planned"
 }
 
-/** Stable signature of the approved work — used to detect a stale declaration. */
-function approvedSignature(items: CeoPlanItem[]) {
-  return items
-    .filter(isApproved)
-    .map((i) => `${i.id}|${i.title.trim()}|${i.businessFunction}`)
-    .join("\n")
-}
-
 export function CeoWorkdayDesignForm() {
   const [week, setWeek] = useState<WlbbWeekState | null>(null)
   const { focus: weeklyBoundaryFocus } = useWeeklyBoundaryFocus()
@@ -282,9 +274,6 @@ export function CeoWorkdayDesignForm() {
 
   const approved = items.filter(isApproved)
   const planned = sumPlanned(items)
-  const signature = approvedSignature(items)
-  const declStale = declManual && declBasis !== signature && approved.length > 0
-
   // ── founder controls ──────────────────────────────────────────────────────
   /** Content patches on a kept GPS card become a recorded founder edit. */
   function patchItem(id: string, patch: Partial<CeoPlanItem>) {
