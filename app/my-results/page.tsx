@@ -199,49 +199,23 @@ export default function MyResultsPage() {
           </div>
         </div>
 
-        {/* Cherry Blossom Transition Card — the only thing below the breakdown */}
+        {/* Results next step: both baseline and weekly results lead to Priority Focus Areas. */}
         <div className="mb-16">
-          {period === "7 days" ? (
-            <CherryBlossomTransitionCard
-              greeting="Beautiful work showing up for yourself this week."
-              ctaLabel="Choose My Priority Focus Areas™"
-              ctaHref="/focus-areas"
-            >
-              <p>
-                Pausing to honestly reflect on the past 7 days is the kind of awareness most
-                founders never make time for. You just did.
-              </p>
-              <p>
-                Your results show where your life is thriving and where it&apos;s asking for a
-                little more of your attention.
-              </p>
-              <p>
-                Next, choose the one to three Priority Focus Areas&trade; you&apos;ll nurture this
-                week, <span className="font-semibold">{getWeekRange(auditData.timestamp)}</span>.
-                Then you&apos;ll return to Decide &amp; Design&trade; to create your declaration and
-                plan your Work-Life Balance Business Day&trade;.
-              </p>
-            </CherryBlossomTransitionCard>
-          ) : (
           <CherryBlossomTransitionCard
-            greeting="Life Reflection Complete."
-            ctaLabel="Begin Entrepreneur Success Assessment™"
-            ctaHref="/entrepreneur-success"
+            greeting={period === "7 days"
+              ? "Beautiful work showing up for yourself this week."
+              : "Your Work-Life Balance Reflection Is Complete."}
+            ctaLabel="Choose My Priority Focus Areas™"
+            ctaHref="/focus-areas"
           >
             <p>
-              Thank you for taking the time to reflect on your life.
+              Your results show where your life is thriving and where it may need more of your attention.
             </p>
             <p>
-              Your responses have created a clear picture of how your life has been operating
-              over the past {period}.
-            </p>
-            <p>
-              Next, we&apos;ll reflect on how your business has been operating during that same
-              period so we can bring both perspectives together in your Work-Life Balance
-              Reality Check&trade;.
+              Next, choose the one to three Priority Focus Areas™ you want to protect and nurture.
+              These priorities will carry into Decide &amp; Design™ as you plan your Work-Life Balance Business Day™.
             </p>
           </CherryBlossomTransitionCard>
-          )}
         </div>
 
       </div>
