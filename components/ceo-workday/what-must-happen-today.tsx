@@ -40,6 +40,7 @@ export function WhatMustHappenToday({
   const [newTitle, setNewTitle] = useState("")
   const [newOutcome, setNewOutcome] = useState("")
   const [savingTask, setSavingTask] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
 
   async function copyAffirmation(index: HourBlockIndex) {
     const text = hours[index].affirmation
@@ -135,11 +136,17 @@ export function WhatMustHappenToday({
                           event.preventDefault()
                           if (!newTitle.trim() || !newOutcome.trim()) return
                           setSavingTask(true)
-                          await onAddTask(index, newTitle.trim(), newOutcome.trim())
-                          setSavingTask(false)
-                          setNewTitle("")
-                          setNewOutcome("")
-                          setAddingHour(null)
+                          setSaveError(null)
+                          try {
+                            await onAddTask(index, newTitle.trim(), newOutcome.trim())
+                            setNewTitle("")
+                            setNewOutcome("")
+                            setAddingHour(null)
+                          } catch {
+                            setSaveError("We could not save this task. Please try again.")
+                          } finally {
+                            setSavingTask(false)
+                          }
                         }}
                       >
                         <label className="block font-sans text-sm font-semibold text-[#3A2E33]">
@@ -150,6 +157,7 @@ export function WhatMustHappenToday({
                           What will be true when it is done?
                           <textarea value={newOutcome} onChange={(e) => setNewOutcome(e.target.value)} maxLength={1200} required rows={2} className="mt-1 w-full rounded-lg border border-[#E8DFE2] px-3 py-2 font-sans text-base" placeholder="Expected outcome" />
                         </label>
+                        {saveError && <p role="alert" className="font-sans text-sm text-[#B33A52]">{saveError}</p>}
                         <div className="flex gap-2">
                           <button disabled={savingTask || !newTitle.trim() || !newOutcome.trim()} className="rounded-full bg-[#5A7A45] px-4 py-2 font-sans text-sm font-bold text-white disabled:opacity-50" type="submit">{savingTask ? "Saving…" : "Save task to this hour"}</button>
                           <button type="button" onClick={() => { setAddingHour(null); setNewTitle(""); setNewOutcome("") }} className="rounded-full border px-4 py-2 font-sans text-sm">Cancel</button>
