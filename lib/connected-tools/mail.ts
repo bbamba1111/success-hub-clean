@@ -174,6 +174,7 @@ export async function searchConnectedMail(
   limit = 5,
   recentOnly = false,
   googleOnly = false,
+  allowEmpty = false,
 ): Promise<{ messages: MailEvidence[]; accountsSearched: number }> {
   const query = clip(queryInput, 300)
   if (!query && !recentOnly) throw new Error("Add a few words to search your connected email.")
@@ -208,7 +209,7 @@ export async function searchConnectedMail(
   }))
 
   const messages = results.flat().slice(0, limit)
-  if (!messages.length) {
+  if (!messages.length && !allowEmpty) {
     throw new Error(recentOnly
       ? "No recent email messages were returned. Check that the connected account is active and has read-email permission."
       : "No matching email was found, or a connected account needs to be reconnected.")
