@@ -30,7 +30,6 @@ import { CheckCircle2, ChevronRight, Sparkles, Plus, RefreshCw, Pencil, Check, A
 
 import { getWeekKey, loadWeek, WLBB_WEEK_CHANGED_EVENT } from "@/lib/wlbb-week/storage"
 import type { WlbbWeekState } from "@/lib/wlbb-week/types"
-import { useWeeklyBoundaryFocus } from "@/lib/weekly-boundary-focus/use-weekly-boundary-focus"
 import { getEgaEntriesByStatus } from "@/lib/ega/ega-storage"
 import type { EgaEntry } from "@/lib/ega/types"
 import { getInstalledStatusByAssetId } from "@/lib/business-asset-inventory/business-asset-inventory-store"
@@ -81,8 +80,6 @@ import {
   type ReadinessAnswerStatus,
 } from "@/lib/boss/readiness"
 
-const GLASS_REVEAL_MS = 8000
-
 const ROLE_LABEL: Record<CeoPlanItem["role"], string> = {
   primary: "PRIMARY",
   supporting: "SUPPORTING",
@@ -122,7 +119,6 @@ function isApproved(i: CeoPlanItem) {
 
 export function CeoWorkdayDesignForm() {
   const [week, setWeek] = useState<WlbbWeekState | null>(null)
-  const { focus: weeklyBoundaryFocus } = useWeeklyBoundaryFocus()
   const [bottlenecks, setBottlenecks] = useState<EgaEntry[]>([])
   const [bba, setBba] = useState<BbaSignalSummary | null>(null)
   const [prior, setPrior] = useState<Awaited<ReturnType<typeof getCeoWorkdayEvidence>>>(null)
@@ -150,8 +146,6 @@ export function CeoWorkdayDesignForm() {
   const [built, setBuilt] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
-  const [showGlass, setShowGlass] = useState(false)
-  const glassTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const dateKey = getDateKey()
 
@@ -183,7 +177,6 @@ export function CeoWorkdayDesignForm() {
     })
     return () => {
       cancelled = true
-      if (glassTimerRef.current) clearTimeout(glassTimerRef.current)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -423,9 +416,6 @@ export function CeoWorkdayDesignForm() {
 
     setBuilt(true)
     setSaving(false)
-    setShowGlass(true)
-    if (glassTimerRef.current) clearTimeout(glassTimerRef.current)
-    glassTimerRef.current = setTimeout(() => setShowGlass(false), GLASS_REVEAL_MS)
   }
 
   function handleEdit() {
@@ -467,8 +457,7 @@ export function CeoWorkdayDesignForm() {
       <div>
         <h4 className="mb-1 font-sans text-xl font-bold text-[#2E1F27]">Design My 4-Hour CEO Workday™</h4>
         <p className="font-sans text-sm text-[#6B5860]">
-          Shape the work that will move this week&apos;s boundary focus forward inside your protected 4-hour CEO
-          Workday™.
+          Choose the business work you want to complete during your protected 4-hour CEO Workday™.
         </p>
         <p className="mt-2 font-sans text-base leading-relaxed text-[#6B5860]/80">
           Your CEO Workday™ protects 240 minutes for meaningful business work. You do not need to fill every minute.
@@ -498,7 +487,7 @@ export function CeoWorkdayDesignForm() {
             What must happen today?
           </p>
           <p className="mt-1 font-sans text-sm text-[#6B5860]">
-            Choose the work that must move this week&apos;s priority forward.
+            Choose the business work that needs to move forward today.
           </p>
         </div>
 
