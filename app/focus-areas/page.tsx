@@ -8,7 +8,7 @@ import { CheckCircle2, Circle, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { updateRealityCheck } from "@/utils/reality-check-storage"
-import { loadWeeklyAudit, setWeeklyPriorities } from "@/lib/boundary-report/weekly-actions"
+import { loadPriorityFocusEditor, savePriorityFocusSelection } from "@/lib/boundary-report/weekly-actions"
 import { CURRENT_PRIORITY_FOCUS_KEY } from "@/lib/boundary-report/use-current-priority-focus"
 import { MAX_WEEKLY_PRIORITIES } from "@/lib/boundary-report/weekly-types"
 import { formatAuditDate } from "@/components/weekly-audit/weekly-results"
@@ -49,11 +49,10 @@ function getProgressColor(score: number) {
 
 export default function FocusAreasPage() {
   const router = useRouter()
-  const { data, isLoading } = useSWR("focus-areas-weekly-audit", () => loadWeeklyAudit(), {
+  const { data, isLoading } = useSWR("focus-areas-priority-editor", () => loadPriorityFocusEditor(), {
     revalidateOnFocus: false,
   })
-  const latest = data?.latest ?? null
-  const areas = latest?.report.areas ?? []
+  const areas = data?.areas ?? []
 
   const [selected, setSelected] = useState<string[]>([])
   const [initializedFor, setInitializedFor] = useState<string | null>(null)
@@ -62,11 +61,11 @@ export default function FocusAreasPage() {
 
   // Pre-fill with this week's saved choice so members can revise it.
   useEffect(() => {
-    if (latest && initializedFor !== latest.id) {
-      setSelected((latest.report.priorityAreas ?? []).map((a) => a.key))
-      setInitializedFor(latest.id)
+    if (data?.reportId && initializedFor !== data.reportId) {
+      setSelected(data.selected ?? [])
+      setInitializedFor(data.reportId)
     }
-  }, [latest, initializedFor])
+  }, [data, initializedFor])
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -84,10 +83,10 @@ export default function FocusAreasPage() {
   }
 
   const confirm = async () => {
-    if (!latest || selected.length < 1 || selected.length > MAX_WEEKLY_PRIORITIES) return
+    if (!data?.reportId || !data.source || selected.length < 1 || selected.length > MAX_WEEKLY_PRIORITIES) return
     setSaving(true)
     setError(null)
-    const res = await setWeeklyPriorities(latest.id, selected)
+    const res = await savePriorityFocusSelection(data.reportId, data.source, selected)
     if (!res.ok) {
       setSaving(false)
       setError(res.error ?? "We couldn't save your priorities. Please try again.")
@@ -116,10 +115,10 @@ export default function FocusAreasPage() {
           <h1 className="mb-3 font-display text-3xl font-bold tracking-tight text-brand-ink text-balance">
             Choose Your Priority Focus Areas&trade;
           </h1>
-          {latest && (
+          {data?.reportId && data.completedAt && (
             <p className="font-sans text-sm text-gray-600">
-              Scores from your Weekly 7-Day Work-Life Balance Audit&trade;, completed{" "}
-              {formatAuditDate(latest.report.completedAt ?? "")}.
+              Scores from your {data.source === "weekly_7_day" ? "Weekly 7-Day Work-Life Balance Audit" : "30-Day Work-Life Balance Reality Check"}&trade;, completed{" "}
+              {formatAuditDate(data.completedAt)}.
             </p>
           )}
         </div>
@@ -135,13 +134,12 @@ export default function FocusAreasPage() {
               </Link>
             </CardContent>
           </Card>
-        ) : !latest ? (
+        ) : !data?.reportId || !data.source ? (
           <Card className="mb-8 border-2 border-gray-200">
             <CardContent className="p-8 text-center">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Take your 7-day audit first</h2>
               <p className="text-gray-600 mb-6">
-                Your Priority Focus Areas&trade; are chosen from your latest Weekly 7-Day Work-Life Balance Audit&trade;.
-                Complete it on Monday in Decide &amp; Design&trade;, then come back here.
+                Complete your Work-Life Balance Reality Check&trade; first, then return here to choose your one to three priorities.
               </p>
               <Link href="/#weekly-reality-check">
                 <Button className="bg-[#7FB069] hover:bg-[#5B835F] text-white px-8 py-3">Take My 7-Day Audit&trade;</Button>
@@ -229,7 +227,7 @@ export default function FocusAreasPage() {
         )}
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-          {latest && (
+          {data?.reportId && data.source && (
             <Button
               size="lg"
               onClick={confirm}
