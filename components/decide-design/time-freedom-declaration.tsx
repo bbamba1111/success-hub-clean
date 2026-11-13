@@ -11,7 +11,7 @@
  */
 
 import { RefreshCw, Sparkles } from "lucide-react"
-import { useMemo } from "react"
+import { useEffect, useMemo } from "react"
 import { useWeeklyLifePriorities } from "@/lib/weekly-life-priorities/use-weekly-life-priorities"
 import { useTimeFreedomDeclaration } from "@/lib/time-freedom-declaration/use-time-freedom-declaration"
 
@@ -44,10 +44,18 @@ function buildDeclaration(priorityLabels: string[], variant: number): string {
 
 export function TimeFreedomDeclaration() {
   const { priorities } = useWeeklyLifePriorities()
-  const { declaration, save } = useTimeFreedomDeclaration()
+  const { declaration, hydrated, save } = useTimeFreedomDeclaration()
 
   const priorityLabels = useMemo(() => priorities.map((p) => p.label), [priorities])
   const ready = priorityLabels.length > 0
+
+  // The declaration is created from the founder's saved Decide & Design
+  // priorities and appears automatically in the Time Freedom Space.
+  useEffect(() => {
+    if (!hydrated || !ready || declaration.text) return
+    const text = buildDeclaration(priorityLabels, 0)
+    if (text) save({ text, variant: 0, edited: false, builtAt: new Date().toISOString() })
+  }, [hydrated, ready, declaration.text, priorityLabels, save])
 
   function build(variant = declaration.variant) {
     const text = buildDeclaration(priorityLabels, variant)
