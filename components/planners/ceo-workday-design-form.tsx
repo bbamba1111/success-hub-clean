@@ -19,9 +19,8 @@
  *      Today's Work™ queue.
  *
  * This business-work design is independent of My 1–3 Priority Focus Areas™.
- * It does not create or require a weekly identity statement or CEO Workday
- * Declaration™. Boundary personalization is handled separately by the
- * Movement, Lunch, Time Freedom, and Power Down spaces.
+ * Building the saved work plan also creates a CEO Workday Declaration™ that
+ * travels with the plan into the live CEO Workday space.
  *
  * Matches the Movement/Lunch intention forms' visual language exactly.
  */
@@ -361,7 +360,7 @@ export function CeoWorkdayDesignForm() {
   if (approved.length === 0) readiness.push("add at least one piece of work")
   if (missingTitle.length) readiness.push("give every kept piece of work a title")
   if (missingOutcome.length) readiness.push("add an expected outcome to every kept piece of work")
-  const canBuild = !saving && week !== null
+  const canBuild = !saving && week !== null && readiness.length === 0
 
   // ── build ─────────────────────────────────────────────────────────────────
   async function handleBuild() {
