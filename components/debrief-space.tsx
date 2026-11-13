@@ -6,16 +6,14 @@
  * "What are the most important changes I am choosing to make this week so I
  *  can protect my life and contain my work?"
  *
- * The founder chooses EXACTLY THREE weekly priorities — Life, Delegation,
- * Operating Rule — each with a first-person intention, then weaves them into
- * one Weekly Declaration™ (WorkdayDeclaration, persisted on the weekly
- * commitments record and read at the top of the live CEO Workday™ all week).
+ * The founder reviews the 1–3 life priorities carried forward from the Work-Life
+ * Balance Audit™. These priorities are independent of the boundary design below.
+ * The founder then personalizes each protected boundary. Each saved plan appears
+ * in its respective live space when that boundary arrives.
  *
- * Today's work no longer lives here. "What Must Happen Today™" and its four
- * protected hours now belong to the live CEO Workday™ (FounderGpsWorkspace),
- * where the founder brings their real business work into the protected
- * container. Decide & Design is purely the weekly redesign: who I'm being,
- * my three priorities, my declaration, and the protected windows of my day.
+ * The 4-Hour CEO Workday section separately designs business work for execution.
+ * No weekly identity picker or CEO Workday Declaration™ is required to design
+ * the business day or personalize its protected boundaries.
  */
 
 import { Briefcase, CalendarDays, Clock, Footprints, MoonStar, Sun, Utensils } from "lucide-react"
@@ -44,7 +42,7 @@ export function DebriefSpace() {
 
   return (
     <section className="mx-auto w-full max-w-5xl space-y-9">
-      {/* ── Header ─── heading sits ABOVE the identity box ───────────────────── */}
+      {/* ── Decide & Design heading ─────────────────────────────────────────── */}
       <div className="text-center space-y-3 pb-2">
         <p className="font-sans text-xs font-semibold uppercase tracking-[0.25em] text-[#C0545A]">Decide &amp; Design</p>
         <h2 className="font-serif text-3xl font-semibold text-[#2E1F27] text-balance leading-tight">
