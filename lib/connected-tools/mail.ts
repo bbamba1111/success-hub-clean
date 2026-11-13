@@ -99,9 +99,11 @@ async function accessTokenForAccount(supabase: SupabaseClient, account: Account)
   return refreshed.access_token
 }
 
-async function searchGoogle(token: string, account: string, query: string, limit: number): Promise<MailEvidence[]> {
+async function searchGoogle(token: string, account: string, query: string | null, limit: number): Promise<MailEvidence[]> {
   const listUrl = new URL("https://gmail.googleapis.com/gmail/v1/users/me/messages")
-  listUrl.search = new URLSearchParams({ q: query, maxResults: String(limit) }).toString()
+  const listParams = new URLSearchParams({ maxResults: String(limit) })
+  if (query) listParams.set("q", query)
+  listUrl.search = listParams.toString()
   const list = await responseJson<{ messages?: Array<{ id: string }> }>(await fetch(listUrl, {
     headers: { Authorization: "Bearer " + token },
     cache: "no-store",
@@ -113,7 +115,7 @@ async function searchGoogle(token: string, account: string, query: string, limit
     url.searchParams.append("metadataHeaders", "From")
     url.searchParams.append("metadataHeaders", "Subject")
     url.searchParams.append("metadataHeaders", "Date")
-    const message = await responseJson<{ snippet?: string; payload?: { headers?: Array<{ name?: string; value?: string }> } }>(await fetch(url, {
+    const message = await responseJson<{ snippet?: string; internalDate?: string; payload?: { headers?: Array<{ name?: string; value?: string }> } }>(await fetch(url, {
       headers: { Authorization: "Bearer " + token },
       cache: "no-store",
     }))
@@ -124,20 +126,24 @@ async function searchGoogle(token: string, account: string, query: string, limit
       account,
       subject: clip(readHeader("Subject") || "(No subject)", 200),
       from: clip(readHeader("From"), 200),
-      receivedAt: clip(readHeader("Date"), 100) || null,
+      receivedAt: message.internalDate && Number.isFinite(Number(message.internalDate))
+        ? new Date(Number(message.internalDate)).toISOString()
+        : clip(readHeader("Date"), 100) || null,
       snippet: clip(message.snippet, 600),
     }
   }))
   return messages
 }
 
-async function searchMicrosoft(token: string, account: string, query: string, limit: number): Promise<MailEvidence[]> {
+async function searchMicrosoft(token: string, account: string, query: string | null, limit: number): Promise<MailEvidence[]> {
   const url = new URL("https://graph.microsoft.com/v1.0/me/messages")
-  url.search = new URLSearchParams({
-    "$search": `"${query.replace(/["\\]/g, " ").slice(0, 200)}"`,
+  const params = new URLSearchParams({
     "$top": String(limit),
     "$select": "subject,from,receivedDateTime,bodyPreview",
-  }).toString()
+  })
+  if (query) params.set("$search", `"${query.replace(/["\\]/g, " ").slice(0, 200)}"`)
+  else params.set("$orderby", "receivedDateTime desc")
+  url.search = params.toString()
   const data = await responseJson<{ value?: Array<{
     subject?: string
     from?: { emailAddress?: { name?: string; address?: string } }
@@ -166,9 +172,10 @@ export async function searchConnectedMail(
   supabase: SupabaseClient,
   queryInput: string,
   limit = 5,
+  recentOnly = false,
 ): Promise<{ messages: MailEvidence[]; accountsSearched: number }> {
   const query = clip(queryInput, 300)
-  if (!query) throw new Error("Add a few words to search your connected email.")
+  if (!query && !recentOnly) throw new Error("Add a few words to search your connected email.")
 
   const { data, error } = await supabase
     .from("connected_accounts")
@@ -200,7 +207,9 @@ export async function searchConnectedMail(
 
   const messages = results.flat().slice(0, limit)
   if (!messages.length) {
-    throw new Error("No matching email was found, or a connected account needs to be reconnected.")
+    throw new Error(recentOnly
+      ? "No recent email messages were returned. Check that the connected account is active and has read-email permission."
+      : "No matching email was found, or a connected account needs to be reconnected.")
   }
   return { messages, accountsSearched: eligible.length }
 }
