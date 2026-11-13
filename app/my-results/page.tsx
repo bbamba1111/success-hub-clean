@@ -98,8 +98,18 @@ export default function MyResultsPage() {
   const [period, setPeriod] = useState("30 days")
 
   useEffect(() => {
-    setAuditData(getAuditResults())
-    setPeriod(getStoredAssessmentWindow() === "30-day" ? "30 days" : "7 days")
+    const savedResults = getAuditResults()
+    setAuditData(savedResults)
+    // The scored result is authoritative. The separate cadence cache can be
+    // stale (for example, a prior 30-day baseline) when a weekly audit finishes.
+    const resultType = savedResults?.assessmentType
+    if (resultType === "weekly_7_day") {
+      setPeriod("7 days")
+    } else if (resultType === "baseline_30_day") {
+      setPeriod("30 days")
+    } else {
+      setPeriod(getStoredAssessmentWindow() === "30-day" ? "30 days" : "7 days")
+    }
   }, [])
 
   if (!auditData) {
