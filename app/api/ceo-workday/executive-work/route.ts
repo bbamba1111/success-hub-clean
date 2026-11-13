@@ -83,54 +83,68 @@ export async function POST(req: Request) {
     .maybeSingle()
   const lastDraft = clip((pending?.action_payload as { text?: unknown } | null)?.text, 4000) || clip(job.whats_ready, 4000)
 
-  // A request for the newest messages is a deterministic, metadata-only task.
-  // Retrieve it directly from the connected provider; do not ask the language
-  // model to infer search results from an instruction string.
-  const recentMailRequest = mode === "work" &&
-    /\\b(connected\\s+(?:gmail|email|mail)|gmail\\s+account|connected\\s+account)\\b.{0,100}\\b(most recent|latest|newest)\\b.{0,30}\\b(emails?|messages?)\\b|\\b(most recent|latest|newest)\\b.{0,30}\\b(emails?|messages?)\\b.{0,100}\\b(connected\\s+(?:gmail|email|mail)|gmail\\s+account|connected\\s+account)\\b/i.test(
-      [job.title, clip(job.details, 2000), instruction].filter(Boolean).join(" "),
-    )
+  // LinkedIn connection-request searches are deterministic and metadata-only.
+  // The founder explicitly requested today's matching messages; never use the
+  // general language-model fallback to perform or invent email search results.
+  const taskText = [job.title, clip(job.details, 2000), instruction].filter(Boolean).join(" ");
+  const linkedInRequestTask = mode === "work" &&
+    /linkedin/i.test(taskText) &&
+    /(connection\\s+requests?|requests?\\s+to\\s+connect|wants?\\s+to\\s+connect|invitation\\s+to\\s+connect)/i.test(taskText) &&
+    /\\btoday\\b/i.test(taskText);
 
-  if (recentMailRequest) {
+  if (linkedInRequestTask) {
     try {
-      const countMatch = [job.title, clip(job.details, 2000), instruction]
-        .join(" ")
-        .match(/\\b(\\d{1,2})\\s+(?:most recent|latest|newest)\\s+(?:emails?|messages?)\\b|\\b(?:most recent|latest|newest)\\s+(\\d{1,2})\\s+(?:emails?|messages?)\\b/i)
-      const requestedCount = Number(countMatch?.[1] || countMatch?.[2] || 4)
-      const limit = Math.max(1, Math.min(requestedCount, 10))
-      const mail = await searchConnectedMail(supabase, "", limit, true)
-      const deliverable = [
-        `Your ${mail.messages.length} most recent email messages:`,
-        ...mail.messages.map((message, index) => {
-          const parsedDate = message.receivedAt ? new Date(message.receivedAt) : null
-          const received = parsedDate && !Number.isNaN(parsedDate.getTime())
-            ? parsedDate.toISOString()
-            : message.receivedAt || "Date unavailable"
-          return `${index + 1}. From: ${message.from || "Sender unavailable"}\\n   Subject: ${message.subject || "(No subject)"}\\n   Date received: ${received}`
-        }),
-      ].join("\\n\\n")
+      const timeZone = "America/New_York";
+      const parts = new Intl.DateTimeFormat("en-US", {
+        timeZone, year: "numeric", month: "2-digit", day: "2-digit",
+      }).formatToParts(new Date());
+      const part = (type: string) => parts.find((item) => item.type === type)?.value ?? "";
+      const today = `${part("year")}-${part("month")}-${part("day")}`;
+      const [year, month, day] = today.split("-").map(Number);
+      const dayStart = new Date(Date.UTC(year, month - 1, day));
+      const yesterday = new Date(dayStart.getTime() - 86400000).toISOString().slice(0, 10).replace(/-/g, "/");
+      const tomorrow = new Date(dayStart.getTime() + 86400000).toISOString().slice(0, 10).replace(/-/g, "/");
+      const gmailQuery = `after:${yesterday} before:${tomorrow} LinkedIn`;
+      const mail = await searchConnectedMail(supabase, gmailQuery, 50, false, true);
+      const todayMessages = mail.messages.filter((message) => {
+        if (!message.receivedAt) return false;
+        const receivedDay = new Intl.DateTimeFormat("en-CA", { timeZone }).format(new Date(message.receivedAt));
+        const text = `${message.subject} ${message.snippet}`;
+        return receivedDay === today &&
+          /(connection\\s+request|wants?\\s+to\\s+connect|invitation\\s+to\\s+connect|would\\s+like\\s+to\\s+connect|connect\\s+with\\s+you)/i.test(text);
+      });
+      const deliverable = todayMessages.length
+        ? todayMessages.map((message, index) => {
+            const received = new Intl.DateTimeFormat("en-US", {
+              timeZone, dateStyle: "medium", timeStyle: "short",
+            }).format(new Date(message.receivedAt!));
+            const summary = message.snippet || "LinkedIn connection-request email; no message preview was provided.";
+            return `${index + 1}. Sender: ${message.from || "Sender unavailable"}\\n   Subject: ${message.subject || "(No subject)"}\\n   Received: ${received} ET\\n   Summary: ${summary}`;
+          }).join("\\n\\n")
+        : `No LinkedIn connection-request emails were found in the connected email account for today (${today}, Eastern Time).`;
       const proposal = await proposeJobAction(supabase, {
         jobId,
         proposedBy: viaCherry ? "cherry" : "executive",
-        aiCapability: `workday.connected-mail-recent:${executiveId}`,
-        summary: `${who}: Searched the connected mail account in read-only mode and retrieved ${mail.messages.length} recent messages. Sender, subject, and received date are ready for your review.`,
+        aiCapability: `workday.linkedin-connection-requests-today:${executiveId}`,
+        summary: `${who}: Searched connected email in read-only mode for LinkedIn connection requests received today. Found ${todayMessages.length} matching message(s).`,
         actionKind: "job.save_whats_ready",
         payload: { text: deliverable },
-      })
+      });
       if (!proposal.ok) {
-        console.error("[executive-work] recent mail proposal failed:", proposal.error)
-        return Response.json({ error: "The email results were retrieved but could not be saved for review. Please try again." }, { status: 500 })
+        console.error("[executive-work] LinkedIn mail proposal failed:", proposal.error);
+        return Response.json({ error: "The email search completed but the results could not be saved for review. Please try again." }, { status: 500 });
       }
       return Response.json({
         executive: who,
-        whatIDid: ["Searched the connected email account in read-only mode.", `Retrieved ${mail.messages.length} recent messages with sender, subject, and received date.`],
+        whatIDid: ["Searched connected email in read-only mode for LinkedIn connection requests received today.", `Found ${todayMessages.length} matching message(s).`],
         needFromFounder: null,
         proposalId: proposal.proposalId,
         savedWithoutReview: proposal.executed,
-      })
+      });
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Connected email could not be searched."
-      return Response.json({ error: message }, { status: 409 })
+      const message = error instanceof Error ? error.message : "Connected email could not be searched.";
+      console.error("[executive-work] LinkedIn mail search failed:", message);
+      return Response.json({ error: message }, { status: 409 });
     }
   }
 
