@@ -50,6 +50,7 @@ import {
   type CeoWorkdayPlan,
 } from "@/lib/ceo-workday/plan-types"
 import {
+  addCeoPlanItem,
   closeCeoWorkdayPlan,
   getCeoWorkdayCheckins,
   getCeoWorkdayPlan,
@@ -230,6 +231,28 @@ export function CeoWorkdayLivePlan() {
     await updateCeoPlanItem(item.id, { status: "in-progress" })
     if (item.localWorkItemId) updateWorkItemStatus(item.localWorkItemId, "in-progress")
     await updateCeoPlanStatus(plan.id, "in-progress")
+  }
+
+  async function addTaskToHour(hour: HourBlockIndex, title: string, outcome: string) {
+    if (!plan) return
+    const created = await addCeoPlanItem(plan.id, {
+      position: plan.items.length,
+      title,
+      purpose: "Added by you during your CEO Workday.",
+      expectedEvidence: outcome,
+      treatment: "implement-operate",
+      businessFunction: "operations",
+      role: "founder-added",
+      estimatedMinutes: 30,
+      ceoWorkCategory: "SYSTEMIZE",
+      founderDecision: "added",
+      status: "planned",
+    })
+    if (!created) throw new Error("Your task could not be saved. Please try again.")
+    setPlan((p) => p ? { ...p, items: [...p.items, created], plannedMinutes: p.plannedMinutes + created.estimatedMinutes } : p)
+    setHour(created.id, hour)
+    setOpenItemId(created.id)
+    await refreshJobs()
   }
 
   async function completeItem(item: CeoPlanItem) {
@@ -478,6 +501,7 @@ export function CeoWorkdayLivePlan() {
             itemsByHour={itemsByHour}
             renderItem={renderPlanItem}
             plannedMinutes={plan.plannedMinutes}
+            onAddTask={addTaskToHour}
           />
         </div>
       )}
