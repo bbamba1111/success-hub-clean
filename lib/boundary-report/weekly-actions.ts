@@ -358,6 +358,125 @@ export async function setWeeklyPriorities(
   return { ok: true, report }
 }
 
+/** Load the exact score set the founder is currently using to choose priorities. */
+export async function loadPriorityFocusEditor(): Promise<{
+  signedIn: boolean
+  source: "weekly_7_day" | "full_30_day" | null
+  reportId: string | null
+  completedAt: string | null
+  areas: WeeklyAreaScore[]
+  selected: string[]
+}> {
+  const { supabase, user } = await getSessionUser()
+  if (!user) return { signedIn: false, source: null, reportId: null, completedAt: null, areas: [], selected: [] }
+
+  const { data: weeklyRows } = await supabase
+    .from("boundary_reports")
+    .select("id, completed_at, created_at, report")
+    .eq("user_id", user.id)
+    .eq("status", "completed")
+    .eq("assessment_type", WEEKLY_ASSESSMENT)
+    .order("completed_at", { ascending: false })
+    .limit(1)
+  const weekly = weeklyRows?.[0]
+  const weeklyReport = weekly?.report as WeeklyAuditReport | null
+  if (weekly && weeklyReport?.kind === "weekly_7_day") {
+    const areas = weeklyReport.areas ?? []
+    return {
+      signedIn: true,
+      source: "weekly_7_day",
+      reportId: weekly.id,
+      completedAt: weeklyReport.completedAt ?? weekly.completed_at ?? weekly.created_at,
+      areas,
+      selected: (weeklyReport.priorityAreas ?? []).map((area) => area.key),
+    }
+  }
+
+  const { data: fullRow } = await supabase
+    .from("boundary_reports")
+    .select("id, completed_at, created_at, report")
+    .eq("user_id", user.id)
+    .eq("status", "completed")
+    .eq("assessment_type", FULL_ASSESSMENT)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle()
+  const full = fullRow?.report as BoundaryReportData | null
+  const areas = full?.baseline?.areas ?? []
+  return {
+    signedIn: true,
+    source: fullRow && full ? "full_30_day" : null,
+    reportId: fullRow?.id ?? null,
+    completedAt: full?.baseline?.date ?? fullRow?.completed_at ?? fullRow?.created_at ?? null,
+    areas: areas.map((area) => ({ key: area.key, label: area.label, score: area.score })),
+    selected: full?.priorityFocusAreas ?? [],
+  }
+}
+
+/** Save the founder's 1–3 priorities without changing the underlying audit scores. */
+export async function savePriorityFocusSelection(
+  reportId: string,
+  source: "weekly_7_day" | "full_30_day",
+  keys: string[],
+): Promise<{ ok: boolean; error?: string }> {
+  const { supabase, user } = await getSessionUser()
+  if (!user) return { ok: false, error: "Sign in to save your priorities." }
+  const unique = Array.from(new Set(Array.isArray(keys) ? keys : []))
+  if (unique.length < 1 || unique.length > MAX_WEEKLY_PRIORITIES || unique.some((key) => !(key in CATEGORY_LABELS))) {
+    return { ok: false, error: "Choose one to three Priority Focus Areas™." }
+  }
+
+  if (source === "weekly_7_day") {
+    const { data: row } = await supabase
+      .from("boundary_reports")
+      .select("id, report")
+      .eq("id", reportId)
+      .eq("user_id", user.id)
+      .eq("status", "completed")
+      .eq("assessment_type", WEEKLY_ASSESSMENT)
+      .maybeSingle()
+    const current = row?.report as WeeklyAuditReport | null
+    if (!row || current?.kind !== "weekly_7_day") return { ok: false, error: "We couldn't find that weekly audit." }
+    const byKey = new Map(current.areas.map((area) => [area.key, area]))
+    const priorityAreas = unique.map((key) => byKey.get(key) ?? { key, label: CATEGORY_LABELS[key], score: 0 })
+    const report: WeeklyAuditReport = { ...current, priorityAreas }
+    const { error } = await supabase
+      .from("boundary_reports")
+      .update({ priority_focus_areas: unique, report, updated_at: new Date().toISOString() })
+      .eq("id", reportId)
+      .eq("user_id", user.id)
+      .eq("assessment_type", WEEKLY_ASSESSMENT)
+    return error ? { ok: false, error: "We couldn't save your priorities. Please try again." } : { ok: true }
+  }
+
+  const { data: row } = await supabase
+    .from("boundary_reports")
+    .select("id, report")
+    .eq("id", reportId)
+    .eq("user_id", user.id)
+    .eq("status", "completed")
+    .eq("assessment_type", FULL_ASSESSMENT)
+    .maybeSingle()
+  const current = row?.report as BoundaryReportData | null
+  if (!row || !current?.baseline) return { ok: false, error: "We couldn't find your Reality Check results." }
+  const byKey = new Map(current.baseline.areas.map((area) => [area.key, area]))
+  const priorityAreas = unique.map((key) => byKey.get(key)).filter((area): area is NonNullable<typeof area> => !!area)
+    .map((area) => ({ key: area.key, label: area.label, score: area.score }))
+  if (priorityAreas.length !== unique.length) return { ok: false, error: "One or more selected areas were not in your Reality Check results." }
+  const report: BoundaryReportData = { ...current, priorityFocusAreas: unique, priorityAreas }
+  const { error } = await supabase
+    .from("boundary_reports")
+    .update({
+      priority_focus_areas: unique,
+      report,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", reportId)
+    .eq("user_id", user.id)
+    .eq("assessment_type", FULL_ASSESSMENT)
+  return error ? { ok: false, error: "We couldn't save your priorities. Please try again." } : { ok: true }
+}
+
 /** One completed weekly record, for reopening as results. */
 export async function getWeeklyReport(id: string): Promise<{ id: string; report: WeeklyAuditReport } | null> {
   const { supabase, user } = await getSessionUser()
