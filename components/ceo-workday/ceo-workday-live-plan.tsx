@@ -236,7 +236,6 @@ export function CeoWorkdayLivePlan() {
   async function addTaskToHour(hour: HourBlockIndex, title: string, outcome: string) {
     if (!plan) return
     const created = await addCeoPlanItem(plan.id, {
-      position: plan.items.length,
       title,
       purpose: "Added by you during your CEO Workday.",
       expectedEvidence: outcome,
