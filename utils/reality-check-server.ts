@@ -24,14 +24,33 @@ function getWeekKey(date = new Date()): string {
 export async function hasCompletedThisWeeksRealityCheckServer(userId: string): Promise<boolean> {
   try {
     const supabase = await createClient()
-    const { data } = await supabase
+    const weekStart = new Date()
+    const day = weekStart.getDay()
+    weekStart.setDate(weekStart.getDate() - ((day + 6) % 7))
+    weekStart.setHours(0, 0, 0, 0)
+
+    // The current weekly flow persists to boundary_reports. Check that source
+    // first; the legacy reality_checks row remains a fallback for older records.
+    const { data: weeklyReport } = await supabase
+      .from("boundary_reports")
+      .select("id")
+      .eq("user_id", userId)
+      .eq("status", "completed")
+      .eq("assessment_type", "weekly_7_day")
+      .gte("completed_at", weekStart.toISOString())
+      .limit(1)
+      .maybeSingle()
+
+    if (weeklyReport) return true
+
+    const { data: legacySnapshot } = await supabase
       .from("reality_checks")
       .select("scored_at, overall_score")
       .eq("user_id", userId)
       .eq("week_key", getWeekKey())
       .maybeSingle()
 
-    return Boolean(data && (data.scored_at || data.overall_score !== null))
+    return Boolean(legacySnapshot && (legacySnapshot.scored_at || legacySnapshot.overall_score !== null))
   } catch (error) {
     console.log("[v0] hasCompletedThisWeeksRealityCheckServer skipped:", (error as Error)?.message)
     return false
