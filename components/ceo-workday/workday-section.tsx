@@ -3,9 +3,9 @@
 import { useCallback, useEffect, useState, type ReactNode } from "react"
 import { ChevronDown, ChevronUp, ArrowDown, ArrowUp } from "lucide-react"
 
-export type WorkdaySectionId = "monthly" | "declaration" | "work" | "hours" | "experiences"
+export type WorkdaySectionId = "monthly" | "work" | "hours" | "experiences"
 
-const DEFAULT_ORDER: WorkdaySectionId[] = ["monthly", "declaration", "work", "hours", "experiences"]
+const DEFAULT_ORDER: WorkdaySectionId[] = ["monthly", "work", "hours", "experiences"]
 const STORAGE_KEY = "ceo-workday:section-layout"
 
 type Layout = { order: WorkdaySectionId[]; collapsed: WorkdaySectionId[] }
