@@ -111,7 +111,7 @@ export function WorkforceSummary({ items, jobsById }: { items: CeoPlanItem[]; jo
           rows={team.map(({ item, job }) => ({ id: item.id, title: item.title, sub: `${whoName(job)} · ${teamStatus(job)}` }))}
         />
         <Column
-          title="Waiting For Your Approval"
+          title="Waiting For My Approval"
           empty="Nothing needs your choice right now."
           highlight={choices.length > 0}
           rows={choices.map(({ item, job }) => ({ id: item.id, title: item.title, sub: choiceNeeded(job)! }))}
