@@ -29,9 +29,7 @@ import { PowerDownIntentionForm } from "@/components/planners/power-down-intenti
 import { CherryBlossomWorkstation } from "@/components/cherry-blossom-workstation"
 import { PriorityFocusAreas } from "@/components/decide-design/priority-focus-areas"
 import { WeeklyLifePrioritiesCard } from "@/components/decide-design/weekly-priorities-designer"
-import { WorkdayDeclaration } from "@/components/decide-design/workday-declaration"
 import { TimeFreedomDeclaration } from "@/components/decide-design/time-freedom-declaration"
-import { DecideIdentitySpace } from "@/components/daily-identity/decide-identity-space"
 
 export function DebriefSpace() {
   // Renders identically on Monday (`monday-debrief`) and Tue–Sun
@@ -60,16 +58,6 @@ export function DebriefSpace() {
 
       {/* ── My 3 Priority Focus Areas™ — carried over from the Reality Check™ ── */}
       <PriorityFocusAreas />
-
-      {/* Identity box — moved under the heading so the two are reversed. */}
-      <DecideIdentitySpace />
-
-
-      {/* ── My 4-Hour CEO Workday Declaration™ — woven from who you're being,
-           your weekly life priorities, and your boundary focus. */}
-      <div className="rounded-3xl border border-[#E8DFE2] bg-white shadow-sm transition-shadow duration-700 hover:shadow-[0_24px_50px_-12px_rgba(28,22,26,0.35)] px-6 py-6 sm:px-8 sm:py-7">
-        <WorkdayDeclaration mode="build" />
-      </div>
 
       {/* ── Design My Work-Life Balance Business Day™ ────────────────────────── */}
       <div className="rounded-3xl border border-[#7FB069]/30 bg-[#F3F8ED] shadow-sm transition-shadow duration-700 hover:shadow-[0_24px_50px_-12px_rgba(28,22,26,0.35)] px-6 py-6 sm:px-8 sm:py-7 space-y-6">
