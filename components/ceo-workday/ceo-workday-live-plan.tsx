@@ -18,21 +18,15 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Check, Clock, Copy, Pencil, Play, RotateCcw } from "lucide-react"
+import { Clock, Pencil, Play, RotateCcw } from "lucide-react"
 import { FunctionSwitcher, ItemWorkforceRow, WorkforceSummary, useWorkdayJobs } from "./workday-workforce"
 import { Button } from "@/components/ui/button"
 
 import { getDateKey } from "@/lib/daily-plan/storage"
 import { useDayStateSync } from "@/lib/ceo-workday/day-state-sync"
 import { DayStateSaveNotice } from "./day-state-save-notice"
-import {
-  CEO_WORKDAY_DECLARATION_EVENT,
-  loadCeoWorkdayDeclaration,
-  type CeoWorkdayDeclaration,
-} from "@/lib/daily-plan/ceo-workday-declaration"
 import { WhatMustHappenToday } from "@/components/ceo-workday/what-must-happen-today"
 import { WorkdaySection, useWorkdaySectionLayout, type WorkdaySectionId } from "@/components/ceo-workday/workday-section"
-import { useWeeklyCommitments } from "@/lib/weekly-commitments/use-weekly-commitments"
 import {
   HOUR_BLOCKS,
   blockNeedingCheckin,
@@ -80,9 +74,6 @@ type AdjustAction = "change" | "save-for-later" | "delegate" | "remove" | "help"
 export function CeoWorkdayLivePlan() {
   useDayStateSync()
   const dateKey = getDateKey()
-  const [local, setLocal] = useState<CeoWorkdayDeclaration | null>(null)
-  const { commitments: weekly } = useWeeklyCommitments()
-  const weeklyDeclaration = weekly.workdayDeclaration?.trim() || null
   const [plan, setPlan] = useState<CeoWorkdayPlan | null>(null)
   const [loaded, setLoaded] = useState(false)
   const [savedBlocks, setSavedBlocks] = useState<Set<number>>(new Set())
@@ -98,7 +89,6 @@ export function CeoWorkdayLivePlan() {
   const [workingOnDraft, setWorkingOnDraft] = useState("")
   const [checkinOpen, setCheckinOpen] = useState<HourBlock | null>(null)
   const [checkinOpenedAt, setCheckinOpenedAt] = useState<string | null>(null)
-  const [copied, setCopied] = useState(false)
   /** Which plan item's work surface (builder / template picker) is open. */
   const [openItemId, setOpenItemId] = useState<string | null>(null)
   /** Founder adding a piece of work in her own words. */
@@ -111,7 +101,6 @@ export function CeoWorkdayLivePlan() {
   }, [])
 
   const refresh = useCallback(async () => {
-    setLocal(loadCeoWorkdayDeclaration(dateKey))
     const p = await getCeoWorkdayPlan(dateKey)
     setPlan(p)
     if (p) {
@@ -127,32 +116,11 @@ export function CeoWorkdayLivePlan() {
 
   useEffect(() => {
     void refresh()
-    window.addEventListener(CEO_WORKDAY_DECLARATION_EVENT, refresh)
-    return () => window.removeEventListener(CEO_WORKDAY_DECLARATION_EVENT, refresh)
+    return () => {}
   }, [refresh])
 
-  // What Must Happen Today™ is now planned in the workday itself, so there is no
-  // "Save My Day" to pre-create the server plan. Ensure one exists lazily once
-  // the founder has designed her week (Weekly Declaration™ present), so the four
-  // 5-Minute Check-Ins™ have a planId to persist against. The upsert is keyed on
-  // (user_id, plan_date), so this never creates a duplicate.
-  const ensuringPlan = useRef(false)
-  useEffect(() => {
-    if (!loaded || plan || ensuringPlan.current || !weeklyDeclaration) return
-    ensuringPlan.current = true
-    void (async () => {
-      const created = await saveCeoWorkdayPlan({
-        planDate: dateKey,
-        weekKey: weekly.weekKey,
-        bottleneckEgaEntryIds: [],
-        declaration: weeklyDeclaration,
-        identityStatement: null,
-        items: [],
-      })
-      if (created) setPlan(created)
-      ensuringPlan.current = false
-    })()
-  }, [loaded, plan, weeklyDeclaration, dateKey, weekly.weekKey])
+  // The live workspace loads only a plan explicitly saved by Decide & Design.
+  // No declaration or identity statement is required to create or enter it.
 
   const sectionLayout = useWorkdaySectionLayout()
 
@@ -185,14 +153,12 @@ export function CeoWorkdayLivePlan() {
   }, [due, plan, entered, checkinOpen])
 
   if (!loaded) return null
-  if (!plan && !local && !weeklyDeclaration) {
+  if (!plan) {
     // Nothing decided for today yet — say so plainly rather than render nothing.
     return (
       <div className="rounded-3xl border border-dashed border-[#E8DFE2] px-6 py-10 text-center space-y-4">
         <p className="font-sans text-base leading-relaxed text-[#6B5860] max-w-md mx-auto text-pretty">
-          Your CEO Workday™ opens once you&apos;ve designed your week. In Decide &amp; Design, choose who you&apos;re
-          being, your three priorities and your <span className="font-semibold text-[#2E1F27]">Weekly Declaration™</span>
-          {" "}— then your protected 4-hour workday and What Must Happen Today™ appear here.
+          Personalize your Work-Life Balance Business Day™ boundaries and design your CEO work. Your saved work will appear here when it is ready.
         </p>
         <a
           href={new Date().getDay() === 1 ? "/?openSpace=monday-debrief" : "/?openSpace=daily-planning-gps"}
@@ -203,12 +169,6 @@ export function CeoWorkdayLivePlan() {
       </div>
     )
   }
-
-  // Today's Day Declaration™ (built by "Save My Day" from What Must Happen Today™)
-  // reads first; the weekly 4-Hour CEO Workday Declaration™ is the fallback.
-  const dayDeclaration = plan?.declaration?.trim() || local?.declaration?.trim() || null
-  const declaration = dayDeclaration ?? weeklyDeclaration
-  const plannedMinutes = plan?.plannedMinutes ?? local?.plannedMinutes ?? 0
 
   // ── handlers ─────────────────────────────────────────────────────────────
   async function handleEnter() {
@@ -331,17 +291,6 @@ export function CeoWorkdayLivePlan() {
     if (b.index === 4) {
       await closeCeoWorkdayPlan(plan.id, dateKey)
       setPlan((p) => p && { ...p, status: "closed" })
-    }
-  }
-
-  async function handleCopy() {
-    if (!declaration) return
-    try {
-      await navigator.clipboard.writeText(declaration)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 1500)
-    } catch {
-      // ignore
     }
   }
 
@@ -507,40 +456,6 @@ export function CeoWorkdayLivePlan() {
   }
 
   // ── render ──────────��────────────────────────��──────────────────────────��
-  const declarationSection = declaration && (
-        <motion.div
-          key={dayDeclaration ? (plan?.id ?? local?.builtAt) : `weekly-${weekly.workdayDeclarationBuiltAt ?? weekly.weekKey}`}
-          initial={{ opacity: 0, y: -14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-          className="rounded-3xl border-2 border-[#7FB069]/30 bg-white px-6 py-6 sm:px-7 space-y-4"
-        >
-          <div className="flex items-center justify-between gap-3">
-            <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.18em] text-[#5A7A45]">
-              {dayDeclaration ? "My Workday Declaration™" : "My 4-Hour CEO Workday Declaration™"}
-            </p>
-            {plan?.identityStatement && (
-              <span className="rounded-full bg-[#7FB069]/15 px-2.5 py-1 font-montserrat text-[14px] font-semibold text-[#3A6B3E]">
-                {plan.identityStatement}
-              </span>
-            )}
-          </div>
-          <p className="font-serif text-lg italic leading-relaxed text-[#2E1F27] sm:text-xl">{declaration}</p>
-          <p className="font-sans text-sm text-[#6B5860]">Read it aloud. Step into your CEO Workday™ and live from it.</p>
-          <div className="flex flex-wrap items-center gap-3">
-            <Button variant="outline" onClick={handleCopy} className="border-[#7FB069]/40 text-[#3A6B3E] hover:bg-[#7FB069]/10 bg-transparent">
-              {copied ? <Check className="mr-2 h-4 w-4" /> : <Copy className="mr-2 h-4 w-4" />}
-              {copied ? "Copied!" : "Copy to Zoom Chat"}
-            </Button>
-            {!entered && plan && (
-              <Button onClick={handleEnter} className="bg-[#5A7A45] text-white hover:opacity-90">
-                Enter My CEO Workday™
-              </Button>
-            )}
-          </div>
-        </motion.div>
-  )
-
   const workSection = (
     <>
       {/* What Must Happen Today™ + CEO Workday Execution™ — combined. The work the
@@ -665,7 +580,6 @@ export function CeoWorkdayLivePlan() {
 
   const sections: Record<WorkdaySectionId, { title: string; node: ReactNode }> = {
     monthly: { title: "My Monthly Boundary Focus™", node: monthlyBoundaryChosen ? <MonthlyBoundaryFocusPanel /> : null },
-    declaration: { title: dayDeclaration ? "My Workday Declaration™" : "My 4-Hour CEO Workday Declaration™", node: declarationSection },
     work: { title: "What Must Happen Today™", node: plan ? workSection : null },
     hours: { title: "Four hours · four check-ins", node: hoursSection },
     experiences: {
