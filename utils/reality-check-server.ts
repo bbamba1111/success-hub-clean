@@ -37,3 +37,29 @@ export async function hasCompletedThisWeeksRealityCheckServer(userId: string): P
     return false
   }
 }
+
+/**
+ * The first completed 30-day Reality Check is the one-time baseline.
+ * Once it exists, /audit must automatically switch to the recurring 7-day audit,
+ * regardless of whether the founder has installed their personal cycle dates yet.
+ */
+export async function hasCompletedInitialBaselineServer(userId: string): Promise<boolean> {
+  try {
+    const supabase = await createClient()
+    const { data } = await supabase
+      .from("boundary_reports")
+      .select("id")
+      .eq("user_id", userId)
+      .eq("status", "completed")
+      .eq("assessment_type", "full_30_day")
+      .eq("is_initial_baseline", true)
+      .limit(1)
+      .maybeSingle()
+
+    return Boolean(data)
+  } catch (error) {
+    console.error("[v0] hasCompletedInitialBaselineServer failed:", (error as Error)?.message)
+    return false
+  }
+}
+
