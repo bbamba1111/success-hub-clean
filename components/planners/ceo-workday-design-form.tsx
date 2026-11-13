@@ -177,6 +177,7 @@ export function CeoWorkdayDesignForm() {
       setBba(bbaSummary)
       setPrior(evidence && evidence.planDate !== dateKey ? evidence : null)
       setSavedPlan(existingPlan && existingPlan.items.length > 0 ? existingPlan : null)
+      setDeclaration(existingPlan?.declaration ?? "")
       setBuilt(!!(existingPlan && existingPlan.items.length > 0))
       setLoading(false)
     })
