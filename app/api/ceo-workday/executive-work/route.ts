@@ -83,6 +83,57 @@ export async function POST(req: Request) {
     .maybeSingle()
   const lastDraft = clip((pending?.action_payload as { text?: unknown } | null)?.text, 4000) || clip(job.whats_ready, 4000)
 
+  // A request for the newest messages is a deterministic, metadata-only task.
+  // Retrieve it directly from the connected provider; do not ask the language
+  // model to infer search results from an instruction string.
+  const recentMailRequest = mode === "work" && useConnectedMail &&
+    /\\b(most recent|latest|newest)\\b.{0,50}\\b(emails?|messages?)\\b|\\b(emails?|messages?)\\b.{0,50}\\b(most recent|latest|newest)\\b/i.test(
+      [job.title, clip(job.details, 2000), instruction].filter(Boolean).join(" "),
+    )
+
+  if (recentMailRequest) {
+    try {
+      const countMatch = [job.title, clip(job.details, 2000), instruction]
+        .join(" ")
+        .match(/\\b(\\d{1,2})\\s+(?:most recent|latest|newest)\\s+(?:emails?|messages?)\\b|\\b(?:most recent|latest|newest)\\s+(\\d{1,2})\\s+(?:emails?|messages?)\\b/i)
+      const requestedCount = Number(countMatch?.[1] || countMatch?.[2] || 4)
+      const limit = Math.max(1, Math.min(requestedCount, 10))
+      const mail = await searchConnectedMail(supabase, "", limit, true)
+      const deliverable = [
+        `Your ${mail.messages.length} most recent email messages:`,
+        ...mail.messages.map((message, index) => {
+          const parsedDate = message.receivedAt ? new Date(message.receivedAt) : null
+          const received = parsedDate && !Number.isNaN(parsedDate.getTime())
+            ? parsedDate.toISOString()
+            : message.receivedAt || "Date unavailable"
+          return `${index + 1}. From: ${message.from || "Sender unavailable"}\\n   Subject: ${message.subject || "(No subject)"}\\n   Date received: ${received}`
+        }),
+      ].join("\\n\\n")
+      const proposal = await proposeJobAction(supabase, {
+        jobId,
+        proposedBy: viaCherry ? "cherry" : "executive",
+        aiCapability: `workday.connected-mail-recent:${executiveId}`,
+        summary: `${who}: Searched the connected mail account in read-only mode and retrieved ${mail.messages.length} recent messages. Sender, subject, and received date are ready for your review.`,
+        actionKind: "job.save_whats_ready",
+        payload: { text: deliverable },
+      })
+      if (!proposal.ok) {
+        console.error("[executive-work] recent mail proposal failed:", proposal.error)
+        return Response.json({ error: "The email results were retrieved but could not be saved for review. Please try again." }, { status: 500 })
+      }
+      return Response.json({
+        executive: who,
+        whatIDid: ["Searched the connected email account in read-only mode.", `Retrieved ${mail.messages.length} recent messages with sender, subject, and received date.`],
+        needFromFounder: null,
+        proposalId: proposal.proposalId,
+        savedWithoutReview: proposal.executed,
+      })
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Connected email could not be searched."
+      return Response.json({ error: message }, { status: 409 })
+    }
+  }
+
   let connectedMailContext = ""
   if (useConnectedMail) {
     try {
