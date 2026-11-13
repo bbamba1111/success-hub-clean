@@ -56,14 +56,12 @@ export function PriorityFocusAreas() {
             ))}
           </ul>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
-            {focus.source === "weekly_7_day" && (
-              <a
-                href="/focus-areas"
-                className="inline-flex w-fit font-sans text-sm font-semibold text-brand-sage-dark underline-offset-4 hover:underline"
-              >
-                Change My Priority Focus Areas™
-              </a>
-            )}
+            <a
+              href="/focus-areas"
+              className="inline-flex w-fit font-sans text-sm font-semibold text-brand-sage-dark underline-offset-4 hover:underline"
+            >
+              Change My Priority Focus Areas™
+            </a>
             <a
               href="/audit"
               className="inline-flex w-fit items-center gap-1.5 font-sans text-sm font-semibold text-[#C0545A] underline-offset-4 hover:underline"
