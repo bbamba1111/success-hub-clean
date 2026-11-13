@@ -1,5 +1,4 @@
-import { generateObject, generateText, type LanguageModel } from "ai"
-import { openai } from "@ai-sdk/openai"
+import OpenAI from "openai"
 import { z } from "zod"
 import { guardMemberAi } from "@/lib/ai/guard"
 import { createClient } from "@/lib/supabase/server"
@@ -27,8 +26,13 @@ const WorkSchema = z.object({
   needFromFounder: z.string().describe("One short question or thing you need from the founder, or an empty string."),
 })
 
-// Two @ai-sdk/provider versions are pinned in the repo; bridge the nominal type mismatch.
-const model = () => openai("gpt-4o-mini") as unknown as LanguageModel
+const GATEWAY_MODEL = "openai/gpt-4o-mini"
+
+function createGatewayClient() {
+  const apiKey = process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_OIDC_TOKEN
+  if (!apiKey) throw new Error("Vercel AI Gateway authentication is unavailable in this deployment.")
+  return new OpenAI({ apiKey, baseURL: "https://ai-gateway.vercel.sh/v1" })
+}
 
 function clip(value: unknown, max: number) {
   return typeof value === "string" ? value.trim().slice(0, max) : ""
@@ -108,28 +112,40 @@ Never invent facts about the founder's business (prices, names, results). If you
 
   try {
     if (mode === "ask") {
-      const { text } = await generateText({
-        model: model(),
-        system: safeSystem,
-        prompt: `${context}\n\nThe founder asks: ${instruction}\n\nAnswer in 1–4 short sentences.`,
-        maxTokens: 300,
+      const gateway = createGatewayClient()
+      const response = await gateway.chat.completions.create({
+        model: GATEWAY_MODEL,
+        messages: [
+          { role: "system", content: safeSystem },
+          { role: "user", content: `${context}\n\nThe founder asks: ${instruction}\n\nAnswer in 1–4 short sentences.` },
+        ],
+        max_tokens: 300,
       })
-      return Response.json({ answer: text.trim(), executive: who })
+      const answer = response.choices[0]?.message?.content
+      if (typeof answer !== "string" || !answer.trim()) throw new Error("The AI Gateway returned an empty answer.")
+      return Response.json({ answer: answer.trim(), executive: who })
     }
 
-    const { object } = await generateObject({
-      model: model(),
-      schema: WorkSchema,
-      system: safeSystem,
-      prompt: `${context}
-${instruction ? `\nThe founder's instructions: ${instruction}` : ""}
-
-Do the work now. Produce the finished deliverable (for example the full post, email, script or plan), not a description of it.${
-        lastDraft ? " Improve your last draft using the founder's instructions." : ""
-      } Keep the deliverable under 3,000 characters.`,
-      maxTokens: 1400,
+    const gateway = createGatewayClient()
+    const workPrompt = [
+      context,
+      instruction ? "The founder's instructions: " + instruction : "",
+      "Do the work now. Produce the finished deliverable (for example the full post, email, script or plan), not a description of it.",
+      lastDraft ? "Improve your last draft using the founder's instructions." : "",
+      "Keep the deliverable under 3,000 characters.",
+    ].filter(Boolean).join("\n\n")
+    const response = await gateway.chat.completions.create({
+      model: GATEWAY_MODEL,
+      messages: [
+        { role: "system", content: safeSystem },
+        { role: "user", content: workPrompt },
+      ],
+      max_tokens: 1400,
+      response_format: { type: "json_object" },
     })
-
+    const rawResult = response.choices[0]?.message?.content
+    if (typeof rawResult !== "string" || !rawResult.trim()) throw new Error("The AI Gateway returned an empty work result.")
+    const object = WorkSchema.parse(JSON.parse(rawResult))
     const deliverable = object.deliverable.trim().slice(0, 3900)
     const need = object.needFromFounder.trim()
     const summary = [
