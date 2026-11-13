@@ -11,7 +11,8 @@
  */
 
 import { RefreshCw, Sparkles } from "lucide-react"
-import { useMemo } from "react"
+import { useMemo, useRef, useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 import { useWeeklyLifePriorities } from "@/lib/weekly-life-priorities/use-weekly-life-priorities"
 import { useTimeFreedomDeclaration } from "@/lib/time-freedom-declaration/use-time-freedom-declaration"
 
@@ -45,6 +46,8 @@ function buildDeclaration(priorityLabels: string[], variant: number): string {
 export function TimeFreedomDeclaration() {
   const { priorities } = useWeeklyLifePriorities()
   const { declaration, save } = useTimeFreedomDeclaration()
+  const [showArrival, setShowArrival] = useState(false)
+  const arrivalTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const priorityLabels = useMemo(() => priorities.map((p) => p.label), [priorities])
   const ready = priorityLabels.length > 0
@@ -52,10 +55,31 @@ export function TimeFreedomDeclaration() {
   function build(variant = declaration.variant) {
     const text = buildDeclaration(priorityLabels, variant)
     save({ text, variant, edited: false, builtAt: new Date().toISOString() })
+    setShowArrival(true)
+    if (arrivalTimer.current) clearTimeout(arrivalTimer.current)
+    arrivalTimer.current = setTimeout(() => setShowArrival(false), 8000)
   }
 
   return (
-    <div className="rounded-3xl border border-[#C0545A]/20 bg-[#FDF8F5] px-6 py-6 shadow-sm transition-shadow duration-700 hover:shadow-[0_24px_50px_-12px_rgba(28,22,26,0.35)] sm:px-8 sm:py-7">
+    <>
+      <AnimatePresence>
+        {showArrival && (
+          <motion.div
+            key={declaration.builtAt}
+            initial={{ opacity: 0, y: -16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 220 }}
+            transition={{ duration: 1.1, ease: [0.4, 0, 0.2, 1] }}
+            className="pointer-events-none fixed left-1/2 top-24 z-50 w-[min(90vw,520px)] -translate-x-1/2 px-6 py-5 text-center"
+            style={{ background: "rgba(255,255,255,0.28)", backdropFilter: "blur(16px) saturate(1.3)", WebkitBackdropFilter: "blur(16px) saturate(1.3)", borderRadius: "20px", border: "1px solid rgba(255,255,255,0.5)", boxShadow: "0 8px 32px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.6)" }}
+          >
+            <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#3F5A36]">Your Time Freedom Declaration™</p>
+            <p className="mt-2 font-serif text-lg italic leading-snug text-[#1F2A1F]">{declaration.text}</p>
+            <p className="mt-3 font-montserrat text-[10px] font-semibold uppercase tracking-[0.16em] text-[#3F5A36]/80">Arriving in your Time Freedom Space™ …</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <div className="rounded-3xl border border-[#C0545A]/20 bg-[#FDF8F5] px-6 py-6 shadow-sm transition-shadow duration-700 hover:shadow-[0_24px_50px_-12px_rgba(28,22,26,0.35)] sm:px-8 sm:py-7">
       <div className="mb-4">
         <p className="font-montserrat text-base font-bold uppercase tracking-[0.18em] text-[#C0545A]">
           My Time Freedom Declaration™
@@ -110,6 +134,7 @@ export function TimeFreedomDeclaration() {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </>
   )
 }
