@@ -15,7 +15,7 @@
  */
 
 import { useState, type ReactNode } from "react"
-import { Check, Copy } from "lucide-react"
+import { Check, Copy, Plus } from "lucide-react"
 import { CollapsibleSubSection } from "@/components/collapsible-sub-section"
 import { HOUR_BLOCKS, type HourBlockIndex } from "@/lib/ceo-workday/hour-blocks"
 import { useHourlyWork } from "@/lib/ceo-workday/use-hourly-work"
@@ -25,15 +25,21 @@ export function WhatMustHappenToday({
   itemsByHour,
   renderItem,
   plannedMinutes,
+  onAddTask,
 }: {
   /** Designed CEO work grouped into each protected hour. */
   itemsByHour?: Partial<Record<HourBlockIndex, CeoPlanItem[]>>
   /** Renders a single work piece with its execution controls (owned by the live plan). */
   renderItem?: (item: CeoPlanItem) => ReactNode
   plannedMinutes?: number
+  onAddTask?: (hour: HourBlockIndex, title: string, outcome: string) => Promise<void>
 } = {}) {
   const { hours } = useHourlyWork()
   const [copied, setCopied] = useState<HourBlockIndex | null>(null)
+  const [addingHour, setAddingHour] = useState<HourBlockIndex | null>(null)
+  const [newTitle, setNewTitle] = useState("")
+  const [newOutcome, setNewOutcome] = useState("")
+  const [savingTask, setSavingTask] = useState(false)
 
   async function copyAffirmation(index: HourBlockIndex) {
     const text = hours[index].affirmation
@@ -103,7 +109,7 @@ export function WhatMustHappenToday({
                   </div>
                 )}
 
-                {renderItem && hourItems.length > 0 ? (
+                {renderItem && hourItems.length > 0 && (
                   <div className="flex flex-col gap-2">
                     <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.18em] text-[#5B835F]">
                       Your CEO work this hour
@@ -114,11 +120,47 @@ export function WhatMustHappenToday({
                       ))}
                     </ol>
                   </div>
-                ) : (
+                )}
+                {hourItems.length === 0 && (
                   <p className="font-sans text-base leading-relaxed text-[#6B5860]">
-                    No work is planned for this hour. Move an assignment here from another hour, or adjust your plan
-                    in the CEO Workday design.
+                    No work is planned for this hour yet. You can add a task here or move one in from another hour.
                   </p>
+                )}
+                {onAddTask && (
+                  <div className="rounded-xl border border-dashed border-[#7FB069]/60 bg-white p-3">
+                    {addingHour === index ? (
+                      <form
+                        className="space-y-2"
+                        onSubmit={async (event) => {
+                          event.preventDefault()
+                          if (!newTitle.trim() || !newOutcome.trim()) return
+                          setSavingTask(true)
+                          await onAddTask(index, newTitle.trim(), newOutcome.trim())
+                          setSavingTask(false)
+                          setNewTitle("")
+                          setNewOutcome("")
+                          setAddingHour(null)
+                        }}
+                      >
+                        <label className="block font-sans text-sm font-semibold text-[#3A2E33]">
+                          What else would you like to work on?
+                          <input value={newTitle} onChange={(e) => setNewTitle(e.target.value)} maxLength={200} required className="mt-1 w-full rounded-lg border border-[#E8DFE2] px-3 py-2 font-sans text-base" placeholder="Name the task" />
+                        </label>
+                        <label className="block font-sans text-sm font-semibold text-[#3A2E33]">
+                          What will be true when it is done?
+                          <textarea value={newOutcome} onChange={(e) => setNewOutcome(e.target.value)} maxLength={1200} required rows={2} className="mt-1 w-full rounded-lg border border-[#E8DFE2] px-3 py-2 font-sans text-base" placeholder="Expected outcome" />
+                        </label>
+                        <div className="flex gap-2">
+                          <button disabled={savingTask || !newTitle.trim() || !newOutcome.trim()} className="rounded-full bg-[#5A7A45] px-4 py-2 font-sans text-sm font-bold text-white disabled:opacity-50" type="submit">{savingTask ? "Saving…" : "Save task to this hour"}</button>
+                          <button type="button" onClick={() => { setAddingHour(null); setNewTitle(""); setNewOutcome("") }} className="rounded-full border px-4 py-2 font-sans text-sm">Cancel</button>
+                        </div>
+                      </form>
+                    ) : (
+                      <button type="button" onClick={() => setAddingHour(index)} className="inline-flex items-center gap-2 font-sans text-sm font-semibold text-[#5A7A45]">
+                        <Plus className="h-4 w-4" aria-hidden /> Add another task to this hour
+                      </button>
+                    )}
+                  </div>
                 )}
               </div>
             </CollapsibleSubSection>
