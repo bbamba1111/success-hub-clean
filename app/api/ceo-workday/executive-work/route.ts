@@ -1,4 +1,5 @@
 import OpenAI from "openai"
+import { getVercelOidcToken } from "@vercel/oidc"
 import { z } from "zod"
 import { guardMemberAi } from "@/lib/ai/guard"
 import { createClient } from "@/lib/supabase/server"
@@ -28,9 +29,9 @@ const WorkSchema = z.object({
 
 const GATEWAY_MODEL = "openai/gpt-4o-mini"
 
-function createGatewayClient() {
-  const apiKey = process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_OIDC_TOKEN
-  if (!apiKey) throw new Error("Vercel AI Gateway authentication is unavailable in this deployment.")
+async function createGatewayClient() {
+  // Vercel Functions provide OIDC through the request context header.
+  const apiKey = process.env.AI_GATEWAY_API_KEY || await getVercelOidcToken()
   return new OpenAI({ apiKey, baseURL: "https://ai-gateway.vercel.sh/v1" })
 }
 
@@ -112,7 +113,7 @@ Never invent facts about the founder's business (prices, names, results). If you
 
   try {
     if (mode === "ask") {
-      const gateway = createGatewayClient()
+      const gateway = await createGatewayClient()
       const response = await gateway.chat.completions.create({
         model: GATEWAY_MODEL,
         messages: [
@@ -126,7 +127,7 @@ Never invent facts about the founder's business (prices, names, results). If you
       return Response.json({ answer: answer.trim(), executive: who })
     }
 
-    const gateway = createGatewayClient()
+    const gateway = await createGatewayClient()
     const workPrompt = [
       context,
       instruction ? "The founder's instructions: " + instruction : "",
