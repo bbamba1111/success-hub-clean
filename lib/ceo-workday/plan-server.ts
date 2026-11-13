@@ -542,13 +542,15 @@ export async function updateCeoPlanDeclaration(planId: string, declaration: stri
 /** Execution-time adjustment or check-in outcome: SAME item, new state. */
 export async function updateCeoPlanItem(
   itemId: string,
-  patch: Partial<Pick<CeoPlanItem, "title" | "estimatedMinutes" | "status" | "nextAction" | "founderDecision" | "relatedAssetId">>,
+  patch: Partial<Pick<CeoPlanItem, "title" | "purpose" | "expectedEvidence" | "estimatedMinutes" | "status" | "nextAction" | "founderDecision" | "relatedAssetId">>,
 ) {
   try {
     const { supabase, userId } = await requireUser()
     if (!userId) return
     const row: Record<string, unknown> = {}
     if (patch.title !== undefined) row.title = patch.title.trim().slice(0, 200)
+    if (patch.purpose !== undefined) row.purpose = patch.purpose.trim().slice(0, 1200)
+    if (patch.expectedEvidence !== undefined) row.expected_evidence = patch.expectedEvidence.trim().slice(0, 1200)
     if (patch.estimatedMinutes !== undefined) row.estimated_minutes = Math.max(0, Math.round(patch.estimatedMinutes))
     if (patch.status !== undefined) row.status = patch.status
     if (patch.nextAction !== undefined) row.next_action = patch.nextAction
