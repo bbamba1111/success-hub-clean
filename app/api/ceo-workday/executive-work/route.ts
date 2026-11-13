@@ -89,8 +89,8 @@ export async function POST(req: Request) {
   const taskText = [job.title, clip(job.details, 2000), instruction].filter(Boolean).join(" ");
   const linkedInRequestTask = mode === "work" &&
     /linkedin/i.test(taskText) &&
-    /(connection\\s+requests?|requests?\\s+to\\s+connect|wants?\\s+to\\s+connect|invitation\\s+to\\s+connect)/i.test(taskText) &&
-    /\\btoday\\b/i.test(taskText);
+    /(connection\s+requests?|requests?\s+to\s+connect|wants?\s+to\s+connect|invitation\s+to\s+connect)/i.test(taskText) &&
+    /\btoday\b/i.test(taskText);
 
   if (linkedInRequestTask) {
     try {
@@ -105,13 +105,13 @@ export async function POST(req: Request) {
       const yesterday = new Date(dayStart.getTime() - 86400000).toISOString().slice(0, 10).replace(/-/g, "/");
       const tomorrow = new Date(dayStart.getTime() + 86400000).toISOString().slice(0, 10).replace(/-/g, "/");
       const gmailQuery = `after:${yesterday} before:${tomorrow} LinkedIn`;
-      const mail = await searchConnectedMail(supabase, gmailQuery, 50, false, true);
+      const mail = await searchConnectedMail(supabase, gmailQuery, 50, false, true, true);
       const todayMessages = mail.messages.filter((message) => {
         if (!message.receivedAt) return false;
         const receivedDay = new Intl.DateTimeFormat("en-CA", { timeZone }).format(new Date(message.receivedAt));
         const text = `${message.subject} ${message.snippet}`;
         return receivedDay === today &&
-          /(connection\\s+request|wants?\\s+to\\s+connect|invitation\\s+to\\s+connect|would\\s+like\\s+to\\s+connect|connect\\s+with\\s+you)/i.test(text);
+          /(connection\s+request|wants?\s+to\s+connect|invitation\s+to\s+connect|would\s+like\s+to\s+connect|connect\s+with\s+you)/i.test(text);
       });
       const deliverable = todayMessages.length
         ? todayMessages.map((message, index) => {
@@ -119,8 +119,8 @@ export async function POST(req: Request) {
               timeZone, dateStyle: "medium", timeStyle: "short",
             }).format(new Date(message.receivedAt!));
             const summary = message.snippet || "LinkedIn connection-request email; no message preview was provided.";
-            return `${index + 1}. Sender: ${message.from || "Sender unavailable"}\\n   Subject: ${message.subject || "(No subject)"}\\n   Received: ${received} ET\\n   Summary: ${summary}`;
-          }).join("\\n\\n")
+            return `${index + 1}. Sender: ${message.from || "Sender unavailable"}\n   Subject: ${message.subject || "(No subject)"}\n   Received: ${received} ET\n   Summary: ${summary}`;
+          }).join("\n\n")
         : `No LinkedIn connection-request emails were found in the connected email account for today (${today}, Eastern Time).`;
       const proposal = await proposeJobAction(supabase, {
         jobId,
