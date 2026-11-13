@@ -29,7 +29,6 @@ import { PLANNER_CONFIG } from "@/components/operating-planner/planner-config"
 import { FlexTimeGuidedMoments } from "@/components/guided-moments/flex-time-moments"
 import { FlexTimeHistory } from "@/components/guided-moments/flex-time-history"
 import { MorningGivenExperience } from "@/components/guided-moments/morning-given-experience"
-import { WorkdayDeclaration } from "@/components/decide-design/workday-declaration"
 import { LifeIntentionsCard } from "@/components/wlbb-week/life-intentions-card"
 import { useOperatingEngine } from "@/components/operating-engine-provider"
 import dynamic from "next/dynamic"
@@ -971,14 +970,6 @@ function SegmentBody({ blockId, data, config }: SegmentBodyProps) {
         {/* Sleep Planner */}
         {isPowerDown && (
           <SleepPlanner value={plannedSleep} onChange={setPlannedSleep} />
-        )}
-
-        {/* My 4-Hour CEO Workday Declaration™ — ceo-workday, Tue/Wed/Thu. Built on Monday in Decide & Design™
-            from the three Weekly Priorities™; read here before the first hour block. */}
-        {blockId === "ceo-workday" && wlbbMenuDay && (
-          <div className="mb-8">
-            <WorkdayDeclaration mode="read" />
-          </div>
         )}
 
         {/* Business Context Assessment™ accordion — ceo-workday only */}
