@@ -36,14 +36,12 @@ import type { EgaEntry } from "@/lib/ega/types"
 import { getInstalledStatusByAssetId } from "@/lib/business-asset-inventory/business-asset-inventory-store"
 import { BUSINESS_ASSETS } from "@/lib/business-asset-library/business-asset-registry"
 import { getBusinessStage } from "@/lib/business-stage/business-stage-store"
-import { loadDailyIdentity, DAILY_IDENTITY_CHANGED_EVENT } from "@/lib/daily-identity/storage"
 import { getDateKey } from "@/lib/daily-plan/storage"
 import { createClient } from "@/lib/supabase/client"
 import { getBbaSignalSummary, type BbaSignalSummary } from "@/lib/founder-gps/context/bba-context-aggregator"
 
 import {
   designCeoWorkday,
-  buildCeoWorkdayDeclaration,
   plannedMinutes as sumPlanned,
   CEO_WORKDAY_CONTAINER_MINUTES,
   type DesignEngineOutput,
@@ -67,11 +65,6 @@ import { addWorkItem, getTodaysWork, removeWorkItem } from "@/lib/ceo-workday/to
 import { FunctionWorkSelect } from "@/components/ceo-workday/function-work-select"
 import { functionChipClass } from "@/lib/ceo-workday/function-chip-styles"
 import { getWorkflowEntry } from "@/lib/ceo-workday/workflow-registry"
-import {
-  loadCeoWorkdayDeclaration,
-  saveCeoWorkdayDeclaration,
-  type CeoWorkdayDeclaration,
-} from "@/lib/daily-plan/ceo-workday-declaration"
 
 import { BossJourneyPanel } from "@/components/ceo-workday/boss-journey-panel"
 import {
@@ -141,7 +134,6 @@ export function CeoWorkdayDesignForm() {
   const [bottlenecks, setBottlenecks] = useState<EgaEntry[]>([])
   const [bba, setBba] = useState<BbaSignalSummary | null>(null)
   const [prior, setPrior] = useState<Awaited<ReturnType<typeof getCeoWorkdayEvidence>>>(null)
-  const [identity, setIdentity] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [journeyCtx, setJourneyCtx] = useState<BossJourneyContext | null>(null)
   const [initiativeId, setInitiativeId] = useState<string | null>(null)
@@ -162,16 +154,8 @@ export function CeoWorkdayDesignForm() {
   const composerRef = useRef<HTMLDivElement | null>(null)
   const workInputRef = useRef<HTMLTextAreaElement | null>(null)
 
-  // Declaration — generated from the FINAL approved work
-  const [declVariant, setDeclVariant] = useState(0)
-  const [declaration, setDeclaration] = useState("")
-  const [declEditing, setDeclEditing] = useState(false)
-  /** True once the founder has hand-edited the declaration (auto-sync stops). */
-  const [declManual, setDeclManual] = useState(false)
-  /** Approved-work signature the current declaration text describes. */
-  const [declBasis, setDeclBasis] = useState("")
-
-  const [built, setBuilt] = useState<CeoWorkdayDeclaration | null>(null)
+  // Workday design state is independent of any declaration.
+  const [built, setBuilt] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
   const [showGlass, setShowGlass] = useState(false)
@@ -184,8 +168,6 @@ export function CeoWorkdayDesignForm() {
     let cancelled = false
     const w = loadWeek(getWeekKey())
     setWeek(w)
-    setIdentity(loadDailyIdentity(dateKey).identityStatement || null)
-    setBuilt(loadCeoWorkdayDeclaration(dateKey))
 
     Promise.all([
       getEgaEntriesByStatus("open").catch(() => [] as EgaEntry[]),
@@ -204,17 +186,7 @@ export function CeoWorkdayDesignForm() {
       setBba(bbaSummary)
       setPrior(evidence && evidence.planDate !== dateKey ? evidence : null)
       setSavedPlan(existingPlan && existingPlan.items.length > 0 ? existingPlan : null)
-      if (existingPlan && existingPlan.declaration && !loadCeoWorkdayDeclaration(dateKey)) {
-        setBuilt(
-          saveCeoWorkdayDeclaration({
-            planId: existingPlan.id,
-            identityStatement: existingPlan.identityStatement ?? null,
-            declaration: existingPlan.declaration,
-            plannedMinutes: existingPlan.plannedMinutes,
-            itemCount: existingPlan.items.length,
-          }),
-        )
-      }
+      setBuilt(!!(existingPlan && existingPlan.items.length > 0))
       setLoading(false)
     })
     return () => {
@@ -237,13 +209,10 @@ export function CeoWorkdayDesignForm() {
         })
         .catch(() => {})
     }
-    const onIdentity = () => setIdentity(loadDailyIdentity(dateKey).identityStatement || null)
     window.addEventListener(WLBB_WEEK_CHANGED_EVENT, onWeek)
-    window.addEventListener(DAILY_IDENTITY_CHANGED_EVENT, onIdentity)
     return () => {
       cancelled = true
       window.removeEventListener(WLBB_WEEK_CHANGED_EVENT, onWeek)
-      window.removeEventListener(DAILY_IDENTITY_CHANGED_EVENT, onIdentity)
     }
   }, [dateKey])
 
@@ -251,7 +220,7 @@ export function CeoWorkdayDesignForm() {
   const assetNameById = useMemo(() => Object.fromEntries(BUSINESS_ASSETS.map((a) => [a.id, a.name])), [])
 
   useEffect(() => {
-    if (loading || !week || built) return
+    if (loading || !week || savedPlan) return
     const out = designCeoWorkday({
       businessAreaId: week.business.businessAreaId,
       outcomeTexts: week.business.outcomes.map((o) => o.text),
@@ -284,7 +253,7 @@ export function CeoWorkdayDesignForm() {
     // Re-proposing replaces GPS items but keeps anything the founder added.
     setItems((prev) => [...out.items, ...prev.filter((i) => i.role === "founder-added")])
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading, week, bottlenecks, bba, prior, built, savedPlan, journeyCtx, initiativeId])
+  }, [loading, week, bottlenecks, bba, prior, savedPlan, journeyCtx, initiativeId])
 
   async function changeJourney(journey: BossJourney, harmonyTransition: boolean) {
     if (!journeyCtx) return
@@ -315,29 +284,6 @@ export function CeoWorkdayDesignForm() {
   const planned = sumPlanned(items)
   const signature = approvedSignature(items)
   const declStale = declManual && declBasis !== signature && approved.length > 0
-
-  // Auto-sync the declaration from the FINAL approved work until the founder
-  // hand-edits it. After that, changes to the work flag it stale instead.
-  useEffect(() => {
-    if (declEditing || declManual || !design) return
-    setDeclaration(
-      buildCeoWorkdayDeclaration({
-        identityStatement: identity,
-        items,
-        areaName: design.areaName,
-        destination: design.destination,
-        variant: declVariant,
-      }),
-    )
-    setDeclBasis(signature)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [items, identity, design, declVariant, declEditing, declManual])
-
-  function rebuildDeclaration() {
-    setDeclEditing(false)
-    setDeclManual(false)
-    setDeclVariant((v) => v + 1)
-  }
 
   // ── founder controls ──────────────────────────────────────────────────────
   /** Content patches on a kept GPS card become a recorded founder edit. */
@@ -447,10 +393,8 @@ export function CeoWorkdayDesignForm() {
       primaryAssetId: design?.relatedAssetId ?? null,
       constraintSummary: design?.constraintSummary ?? null,
       interventionSummary: design?.interventionSummary ?? null,
-      identityStatement: identity,
-      declaration:
-        declaration.trim() ||
-        "I am a focused CEO. Today I commit to the work that moves this week forward — because I build a business that creates revenue without consuming my life.",
+      identityStatement: null,
+      declaration: null,
       items: items.map(({ id: _id, planId: _p, ...rest }, idx) => ({ ...rest, position: idx })),
     })
     if (!saved) {
@@ -488,14 +432,7 @@ export function CeoWorkdayDesignForm() {
     })
     void linkPlanItemsToLocalQueue(pairs)
 
-    const record = saveCeoWorkdayDeclaration({
-      planId: saved.id,
-      identityStatement: identity,
-      declaration: declaration.trim(),
-      plannedMinutes: saved.plannedMinutes,
-      itemCount: saved.items.filter(isApproved).length,
-    })
-    setBuilt(record)
+    setBuilt(true)
     setSaving(false)
     setShowGlass(true)
     if (glassTimerRef.current) clearTimeout(glassTimerRef.current)
@@ -503,8 +440,7 @@ export function CeoWorkdayDesignForm() {
   }
 
   function handleEdit() {
-    setBuilt(null)
-    setDeclEditing(false)
+    setBuilt(false)
   }
 
   // ── render ────────────────────────────────────────────────────────────────
@@ -547,36 +483,18 @@ export function CeoWorkdayDesignForm() {
         <div className="space-y-4 rounded-2xl border-2 border-[#7FB069]/30 bg-[#7FB069]/5 px-5 py-6 text-center">
           <CheckCircle2 className="mx-auto h-8 w-8 text-[#7FB069]" aria-hidden />
           <div>
-            <p className="font-sans text-base font-bold text-[#2E1F27]">Your CEO Workday Declaration™ is ready</p>
+            <p className="font-sans text-base font-bold text-[#2E1F27]">Your 4-Hour CEO Workday™ is designed</p>
             <p className="mt-1 font-sans text-sm text-[#6B5860]">
-              {built.plannedMinutes} minutes of meaningful CEO work designed · {built.itemCount}{" "}
-              {built.itemCount === 1 ? "piece" : "pieces"} of work
+              {savedPlan?.plannedMinutes ?? planned} minutes of meaningful CEO work · {savedPlan?.items.filter(isApproved).length ?? approved.length}{" "}
+              {(savedPlan?.items.filter(isApproved).length ?? approved.length) === 1 ? "piece" : "pieces"} of work
             </p>
           </div>
-          <p className="mx-auto max-w-sm font-serif text-base italic leading-relaxed text-[#2E1F27]">{built.declaration}</p>
           <p className="mx-auto max-w-sm font-sans text-sm leading-relaxed text-[#6B5860]">
-            It will appear at the top of your{" "}
-            <span className="font-semibold text-[#2E1F27]">4-Hour Focused CEO Workday™</span> when you arrive at 1 PM.
+            Your planned work will populate the 4-Hour Focused CEO Workday™ when you arrive at 1 PM.
           </p>
-          <div className="flex items-center justify-center gap-4">
-            <button
-              type="button"
-              onClick={handleEdit}
-              className="font-sans text-base font-semibold text-[#6B5860] underline underline-offset-2 hover:text-[#2E1F27]"
-            >
-              Edit my CEO Workday™
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                handleEdit()
-                rebuildDeclaration()
-              }}
-              className="font-sans text-base font-semibold text-[#6B5860] underline underline-offset-2 hover:text-[#2E1F27]"
-            >
-              Build a different declaration
-            </button>
-          </div>
+          <button type="button" onClick={handleEdit} className="font-sans text-base font-semibold text-[#6B5860] underline underline-offset-2 hover:text-[#2E1F27]">
+            Edit my CEO Workday™
+          </button>
         </div>
       </>
     )
@@ -819,77 +737,6 @@ export function CeoWorkdayDesignForm() {
           <Plus className="h-3.5 w-3.5" aria-hidden />
           Add Another CEO Work Item
         </button>
-      </div>
-
-      {/* Declaration */}
-      <div
-        className={`space-y-3 rounded-2xl border bg-white p-5 ${
-          declStale ? "border-[#C13B6B]/40" : "border-[#7FB069]/30"
-        }`}
-      >
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.18em] text-[#3A6B3E]">
-            Your CEO Workday Declaration™
-          </p>
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={rebuildDeclaration}
-              className="inline-flex items-center gap-1 font-sans text-base font-semibold text-[#6B5860] hover:text-[#2E1F27]"
-            >
-              <RefreshCw className="h-3 w-3" aria-hidden /> Rebuild
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                if (declEditing) {
-                  // Done — the founder's text now describes the current approved work.
-                  setDeclEditing(false)
-                  setDeclBasis(signature)
-                } else {
-                  setDeclEditing(true)
-                  setDeclManual(true)
-                }
-              }}
-              className="inline-flex items-center gap-1 font-sans text-base font-semibold text-[#6B5860] hover:text-[#2E1F27]"
-            >
-              {declEditing ? (
-                <>
-                  <Check className="h-3 w-3" aria-hidden /> Done
-                </>
-              ) : (
-                <>
-                  <Pencil className="h-3 w-3" aria-hidden /> Edit
-                </>
-              )}
-            </button>
-          </div>
-        </div>
-        {declStale && !declEditing && (
-          <p className="inline-flex items-start gap-1.5 font-sans text-base text-[#C13B6B]">
-            <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
-            Your work changed since this declaration was written. Rebuild it so it describes today&apos;s final design.
-          </p>
-        )}
-        {!identity && (
-          <p className="font-sans text-base text-[#6B5860]">
-            Tip: choose who you&apos;re being today in{" "}
-            <span className="font-semibold">Decide Who You&apos;re Being Today</span> above and your declaration will
-            speak in that voice.
-          </p>
-        )}
-        {declEditing ? (
-          <textarea
-            value={declaration}
-            onChange={(e) => setDeclaration(e.target.value)}
-            rows={3}
-            className="w-full rounded-lg border border-[#E8DFE2] bg-white px-3 py-2 font-serif text-base italic leading-relaxed text-[#2E1F27] focus:outline-none focus:ring-2 focus:ring-[#7FB069]/40"
-          />
-        ) : (
-          <p className="font-serif text-lg italic leading-snug text-[#1F2A1F]">
-            {declaration || "Keep or add at least one piece of work to build your declaration."}
-          </p>
-        )}
       </div>
 
       {saveError && <p className="font-sans text-base text-[#C13B6B]">{saveError}</p>}
