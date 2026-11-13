@@ -451,34 +451,7 @@ export function CeoWorkdayDesignForm() {
   if (built) {
     return (
       <>
-        <AnimatePresence>
-          {showGlass && (
-            <motion.div
-              key={built.builtAt}
-              initial={{ opacity: 0, y: -16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 240 }}
-              transition={{ duration: 1.1, ease: [0.4, 0, 0.2, 1] }}
-              className="pointer-events-none fixed left-1/2 top-24 z-50 w-[min(90vw,420px)] -translate-x-1/2 px-6 py-5 text-center"
-              style={{
-                background: "rgba(255,255,255,0.28)",
-                backdropFilter: "blur(16px) saturate(1.3)",
-                WebkitBackdropFilter: "blur(16px) saturate(1.3)",
-                borderRadius: "20px",
-                border: "1px solid rgba(255,255,255,0.5)",
-                boxShadow: "0 8px 32px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.6)",
-              }}
-            >
-              <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.18em] text-[#3A6B3E]">
-                Your CEO Workday Declaration™
-              </p>
-              <p className="mt-2 font-serif text-lg italic leading-snug text-[#1F2A1F]">{built.declaration}</p>
-              <p className="mt-3 font-montserrat text-[14px] font-semibold uppercase tracking-[0.16em] text-[#3A6B3E]/80">
-                Arriving in your 4-Hour Focused CEO Workday™ …
-              </p>
-            </motion.div>
-          )}
-        </AnimatePresence>
+
 
         <div className="space-y-4 rounded-2xl border-2 border-[#7FB069]/30 bg-[#7FB069]/5 px-5 py-6 text-center">
           <CheckCircle2 className="mx-auto h-8 w-8 text-[#7FB069]" aria-hidden />
