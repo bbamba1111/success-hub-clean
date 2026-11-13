@@ -325,6 +325,23 @@ export function CeoWorkdayLivePlan() {
     const closed = plan?.status === "closed"
     const job = item.jobId ? jobsById.get(item.jobId) : undefined
     const aiOwned = job?.assigneeType === "executive" || job?.assigneeType === "cherry"
+    if (openItemId !== item.id) {
+      return (
+        <div className="flex flex-wrap items-center gap-2 rounded-xl border border-[#E8DFE2] bg-white px-3 py-2">
+          <span className="min-w-0 flex-1 font-sans text-sm font-semibold text-[#2E1F27]">{item.title}</span>
+          <span className="rounded-full bg-[#F4F1EC] px-2 py-0.5 font-sans text-xs font-semibold text-[#6B5860]">{CEO_ITEM_STATUS_LABEL[item.status]}</span>
+          <button type="button" onClick={() => openWork(item)} className="rounded-full border border-[#5A7A45] px-3 py-1 font-sans text-xs font-bold text-[#5A7A45]">
+            {item.status === "completed" ? "Review completed work" : "Open task"}
+          </button>
+          <label className="inline-flex items-center gap-1 font-sans text-xs text-[#6B5860]">
+            Move to
+            <select value={resolveHour(item.id, autoHours, overrides)} onChange={(e) => setHour(item.id, Number(e.target.value) as HourBlockIndex)} className="rounded border border-[#E8DFE2] bg-white px-1 py-1 font-semibold">
+              {[1, 2, 3, 4].map((h) => <option key={h} value={h}>Hour {h}</option>)}
+            </select>
+          </label>
+        </div>
+      )
+    }
     return (
       <div className={`rounded-2xl border border-[#E8DFE2] bg-white px-4 py-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#7FB069]/50 hover:bg-[#F7FBF3] hover:shadow-[0_8px_20px_-8px_rgba(95,143,71,0.35)] ${gone ? "opacity-50" : ""}`}>
         <div className="flex flex-wrap items-center gap-2">
