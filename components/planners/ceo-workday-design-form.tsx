@@ -387,6 +387,14 @@ export function CeoWorkdayDesignForm() {
       return
     }
     setSavedPlan(saved)
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("hl:ceo-workday-tasks:changed", {
+        detail: {
+          tasks: approved.map((item) => item.title),
+          builtAt: new Date().toISOString(),
+        },
+      }))
+    }
 
     // Mirror into the Today's Work™ queue the live workspace already renders
     // (clear previous CEO-plan mirrors for today first so nothing duplicates).
