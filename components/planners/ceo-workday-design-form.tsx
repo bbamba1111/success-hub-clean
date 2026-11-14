@@ -61,7 +61,6 @@ import {
   getCeoWorkdayPlan,
   linkPlanItemsToLocalQueue,
   saveCeoWorkdayPlan,
-  updateCeoPlanDeclaration,
 } from "@/lib/ceo-workday/plan-server"
 import { addWorkItem, getTodaysWork, removeWorkItem } from "@/lib/ceo-workday/todays-work-store"
 import { FunctionWorkSelect } from "@/components/ceo-workday/function-work-select"
@@ -149,7 +148,6 @@ export function CeoWorkdayDesignForm() {
   const [built, setBuilt] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
-  const [declaration, setDeclaration] = useState("")
 
   const dateKey = getDateKey()
 
@@ -176,7 +174,6 @@ export function CeoWorkdayDesignForm() {
       setBba(bbaSummary)
       setPrior(evidence && evidence.planDate !== dateKey ? evidence : null)
       setSavedPlan(existingPlan && existingPlan.items.length > 0 ? existingPlan : null)
-      setDeclaration(existingPlan?.declaration ?? "")
       setBuilt(!!(existingPlan && existingPlan.items.length > 0))
       setLoading(false)
     })
@@ -391,13 +388,6 @@ export function CeoWorkdayDesignForm() {
     }
     setSavedPlan(saved)
 
-    const declarationText = `Today, I commit to using my 4-hour CEO Workday to complete ${approved.map((item) => item.title).join("; ")}. I will focus on the work I designed, one task at a time, and move my business forward with intention.`
-    setDeclaration(declarationText)
-    await updateCeoPlanDeclaration(saved.id, declarationText)
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(new CustomEvent("hl:ceo-workday-declaration:changed", { detail: { declaration: declarationText, builtAt: new Date().toISOString() } }))
-    }
-
     // Mirror into the Today's Work™ queue the live workspace already renders
     // (clear previous CEO-plan mirrors for today first so nothing duplicates).
     getTodaysWork()
@@ -454,12 +444,14 @@ export function CeoWorkdayDesignForm() {
             </p>
           </div>
           <div className="mx-auto max-w-2xl rounded-2xl border border-[#7FB069]/40 bg-white px-5 py-4 text-left">
-            <p className="font-montserrat text-xs font-bold uppercase tracking-[0.16em] text-[#5B835F]">My CEO Workday Declaration™</p>
-            <p className="mt-2 font-serif text-lg italic leading-relaxed text-[#2E1F27]">{declaration || savedPlan?.declaration}</p>
-            <p className="mt-2 font-sans text-xs font-semibold uppercase tracking-[0.14em] text-[#5B835F]">Arriving in your 4-Hour Focused CEO Workday™ …</p>
+            <p className="font-montserrat text-xs font-bold uppercase tracking-[0.16em] text-[#5B835F]">Your CEO Workday Is Designed™</p>
+            <p className="mt-2 font-sans text-base leading-relaxed text-[#2E1F27]">Your work tasks have left Decide &amp; Design and are saved in your 4-Hour CEO Workday, ready for execution.</p>
+            <ul className="mt-3 list-disc space-y-1 pl-5 font-sans text-sm text-[#3A2E33]">
+              {(savedPlan?.items ?? []).filter(isApproved).map((item) => <li key={item.id}>{item.title}</li>)}
+            </ul>
           </div>
           <p className="mx-auto max-w-sm font-sans text-sm leading-relaxed text-[#6B5860]">
-            Your designed work and declaration are saved and waiting for execution.
+            Your designed tasks are waiting in their assigned hourly workspaces.
           </p>
           <button type="button" onClick={handleEdit} className="font-sans text-base font-semibold text-[#6B5860] underline underline-offset-2 hover:text-[#2E1F27]">
             Edit my CEO Workday™
