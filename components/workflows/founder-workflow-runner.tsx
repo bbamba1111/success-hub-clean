@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
+import { loadFounderTaskContext, type FounderTaskContext } from "@/lib/founder-gps/task-context"
 import { ArrowLeft, ArrowRight, CheckCircle2, ChevronRight, RotateCcw, Sparkles } from "lucide-react"
 
 type Choice = { id: string; label: string; description: string; next: string }
@@ -135,6 +136,8 @@ export function FounderWorkflowRunner({ workItemId, taskTitle }: { workItemId: s
   const [path, setPath] = useState<string[]>(["start"])
   const [done, setDone] = useState(false)
   const [ready, setReady] = useState(false)
+  const [taskContext, setTaskContext] = useState<FounderTaskContext | null>(null)
+  const [contextLoading, setContextLoading] = useState(true)
 
   useEffect(() => {
     try {
@@ -147,6 +150,19 @@ export function FounderWorkflowRunner({ workItemId, taskTitle }: { workItemId: s
     } catch { /* Start clean if this browser cannot read saved progress. */ }
     setReady(true)
   }, [storageKey])
+
+  useEffect(() => {
+    let cancelled = false
+    setContextLoading(true)
+    loadFounderTaskContext(taskTitle).then((context) => {
+      if (!cancelled) setTaskContext(context)
+    }).catch(() => {
+      if (!cancelled) setTaskContext(null)
+    }).finally(() => {
+      if (!cancelled) setContextLoading(false)
+    })
+    return () => { cancelled = true }
+  }, [taskTitle])
 
   useEffect(() => {
     if (!ready) return
@@ -200,6 +216,31 @@ export function FounderWorkflowRunner({ workItemId, taskTitle }: { workItemId: s
                 <ArrowRight className="mt-0.5 h-4 w-4 shrink-0 text-[#668B58] transition group-hover:translate-x-0.5" aria-hidden />
               </button>
             ))}
+          </div>
+        )}
+        {current.action && (
+          <div className="rounded-2xl border border-[#E8B8C5]/60 bg-white px-4 py-4">
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#668B58]">Your business context</p>
+              <span className="rounded-full bg-[#F1F5EE] px-2 py-1 text-[11px] font-semibold text-[#557748]">Read-only · Source of Truth</span>
+            </div>
+            {contextLoading ? <p className="mt-2 text-sm text-[#76656D]">Loading your saved business information…</p> : taskContext ? (
+              <>
+                <p className="mt-2 text-sm font-semibold text-[#382B31]">{taskContext.businessName ?? "Business name not found in saved profiles"}</p>
+                <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                  <div><p className="text-xs font-semibold text-[#76656D]">What you offer</p><p className="mt-1 text-sm text-[#382B31]">{taskContext.businessDescription ?? "Not yet available"}</p></div>
+                  <div><p className="text-xs font-semibold text-[#76656D]">Who you serve</p><p className="mt-1 text-sm text-[#382B31]">{taskContext.idealAudience ?? "Not yet available"}</p></div>
+                  <div><p className="text-xs font-semibold text-[#76656D]">Expertise and topics</p><p className="mt-1 text-sm text-[#382B31]">{taskContext.expertise.join(", ") || "Not yet available"}</p></div>
+                  <div><p className="text-xs font-semibold text-[#76656D]">Business stage</p><p className="mt-1 text-sm text-[#382B31]">{taskContext.stage ?? "Not yet available"}</p></div>
+                </div>
+                <div className="mt-4 rounded-xl border border-[#D8E6CF] bg-[#F1F5EE] p-3">
+                  <div className="flex items-center justify-between gap-2"><p className="text-xs font-bold uppercase tracking-[0.12em] text-[#557748]">ERA · Task readiness</p><span className="text-xs font-semibold text-[#557748]">{taskContext.era.status === "ready" ? "Ready for research" : taskContext.era.status === "needs-input" ? "Some details needed" : "Limited business context"}</span></div>
+                  {taskContext.era.available.length > 0 && <p className="mt-2 text-xs text-[#3E4939]">Available: {taskContext.era.available.join(" · ")}</p>}
+                  {taskContext.era.missing.length > 0 && <p className="mt-1 text-xs text-[#8B5364]">Needed: {taskContext.era.missing.join(" · ")}</p>}
+                  <p className="mt-2 text-[11px] text-[#76656D]">This is a task-specific readiness check, not a founder score. Missing details are not invented.</p>
+                </div>
+              </>
+            ) : <p className="mt-2 text-sm text-[#8B5364]">Saved business context could not be loaded. Research should wait until the source records are available.</p>}
           </div>
         )}
         {current.action && (
