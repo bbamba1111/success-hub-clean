@@ -1123,15 +1123,7 @@ function BoundaryReport({
         <h1 className="font-playfair text-4xl font-bold text-brand-ink text-balance">
           My Boundary Report™
         </h1>
-        {onboarding && !saveError && (
-          <Link
-            href="/welcome/cherry-blossom/complete"
-            className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-brand-green px-6 py-3 font-sans text-sm font-bold text-white transition-all hover:brightness-110"
-          >
-            Onboarding complete — Continue to Ready for Monday
-            <ArrowRight className="h-4 w-4" aria-hidden />
-          </Link>
-        )}
+
       </div>
 
       {saveError && (
@@ -1256,7 +1248,23 @@ function BoundaryReport({
         </h2>
       </div>
 
-      {chosenPath === "GO_IT_ALONE" ? (
+      {onboarding ? (
+        <div className="mt-8 rounded-3xl border border-brand-green/30 bg-brand-green/5 px-7 py-8 text-center">
+          <ShieldCheck className="mx-auto mb-3 h-7 w-7 text-brand-green" aria-hidden />
+          <p className="font-playfair text-2xl font-bold text-brand-ink mb-2">Your Reality Check™ is complete.</p>
+          <p className="mx-auto mb-5 max-w-xl font-sans text-sm leading-relaxed text-brand-ink-soft">
+            Your Boundary Report™ has been saved. The next step is to review the Work-Life Balance Business Week™
+            enrollment information. The paid experience and member workspace remain separate from this free assessment.
+          </p>
+          <Link
+            href="/pricing?source=reality-check"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-sage-medium px-6 py-3 font-sans text-sm font-bold text-white shadow-md transition-all hover:brightness-105"
+          >
+            Continue to Work-Life Balance Business Week™
+            <ArrowRight className="h-4 w-4" aria-hidden />
+          </Link>
+        </div>
+      ) : chosenPath === "GO_IT_ALONE" ? (
         <div className="mt-8 rounded-3xl border border-brand-green/30 bg-brand-green/5 px-7 py-8 text-center">
           <ShieldCheck className="mx-auto mb-3 h-7 w-7 text-brand-green" aria-hidden />
           <p className="font-playfair text-2xl font-bold text-brand-ink mb-2">Your Boundary Report™ is saved.</p>
