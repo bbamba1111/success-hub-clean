@@ -118,12 +118,12 @@ export async function updateSession(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname
 
-  // DEVELOPMENT-ONLY: lets the "/dev-preview" fixture routes render without a
-  // real paid account so the live 4-Hour CEO Workday™ UI can be visually
-  // verified with realistic seeded data. The route itself also 404s outside
-  // development (see app/dev-preview/workday/page.tsx) — this is a second,
-  // independent guard so production auth/paywall behavior never changes.
-  if (process.env.NODE_ENV !== "production" && pathname.startsWith("/dev-preview")) {
+  // PREVIEW-ONLY: lets "/dev-preview" fixture routes render without a
+  // real paid account on local development and Vercel Preview deployments.
+  // Vercel Preview builds use NODE_ENV=production, so use VERCEL_ENV here.
+  // The page itself has a separate production-only 404 guard; both checks
+  // keep these fixtures inaccessible on the Production deployment.
+  if (process.env.VERCEL_ENV !== "production" && pathname.startsWith("/dev-preview")) {
     return supabaseResponse
   }
 
