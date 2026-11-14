@@ -93,7 +93,6 @@ export function CeoWorkdayLivePlan() {
   const [checkinOpenedAt, setCheckinOpenedAt] = useState<string | null>(null)
   /** Which plan item's work surface (builder / template picker) is open. */
   const [openItemId, setOpenItemId] = useState<string | null>(null)
-  const [declarationArrival, setDeclarationArrival] = useState<{ declaration: string; builtAt: string } | null>(null)
   /** Founder adding a piece of work in her own words. */
 
   // Platform clock, ticked every 15s — deterministic, no random timers.
@@ -120,18 +119,6 @@ export function CeoWorkdayLivePlan() {
   useEffect(() => {
     void refresh()
     return () => {}
-  }, [refresh])
-
-  useEffect(() => {
-    const onDeclaration = (event: Event) => {
-      const detail = (event as CustomEvent<{ declaration?: string; builtAt?: string }>).detail
-      if (!detail?.declaration) return
-      setDeclarationArrival({ declaration: detail.declaration, builtAt: detail.builtAt ?? new Date().toISOString() })
-      window.setTimeout(() => setDeclarationArrival(null), 8000)
-      void refresh()
-    }
-    window.addEventListener("hl:ceo-workday-declaration:changed", onDeclaration)
-    return () => window.removeEventListener("hl:ceo-workday-declaration:changed", onDeclaration)
   }, [refresh])
 
   // The live workspace loads only a plan explicitly saved by Decide & Design.
@@ -523,13 +510,6 @@ export function CeoWorkdayLivePlan() {
   // ── render ──────────��────────────────────────��──────────────────────────��
   const workSection = (
     <>
-      {plan?.declaration && (
-        <div className="rounded-2xl border border-[#7FB069]/40 bg-white px-5 py-4">
-          <p className="font-montserrat text-xs font-bold uppercase tracking-[0.16em] text-[#5B835F]">My CEO Workday Declaration™</p>
-          <p className="mt-2 font-serif text-lg italic leading-relaxed text-[#2E1F27]">{plan.declaration}</p>
-          <p className="mt-2 font-sans text-xs font-semibold uppercase tracking-[0.14em] text-[#5B835F]">Your designed work is here and waiting for execution.</p>
-        </div>
-      )}
       {/* What Must Happen Today™ + CEO Workday Execution™ — combined. The work the
           founder designed with the Business Function tool populates each of the four
           protected hours (auto-filled by order + time, and reassignable). Opening an
@@ -664,23 +644,6 @@ export function CeoWorkdayLivePlan() {
 
   return (
     <div className="ceo-workspace space-y-5">
-      <AnimatePresence>
-        {declarationArrival && (
-          <motion.div
-            key={declarationArrival.builtAt}
-            initial={{ opacity: 0, y: -16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 220 }}
-            transition={{ duration: 1.1, ease: [0.4, 0, 0.2, 1] }}
-            className="pointer-events-none fixed left-1/2 top-24 z-50 w-[min(90vw,560px)] -translate-x-1/2 px-6 py-5 text-center"
-            style={{ background: "rgba(255,255,255,0.28)", backdropFilter: "blur(16px) saturate(1.3)", WebkitBackdropFilter: "blur(16px) saturate(1.3)", borderRadius: "20px", border: "1px solid rgba(255,255,255,0.5)", boxShadow: "0 8px 32px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.6)" }}
-          >
-            <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#3F5A36]">Your CEO Workday Declaration™</p>
-            <p className="mt-2 font-serif text-lg italic leading-snug text-[#1F2A1F]">{declarationArrival.declaration}</p>
-            <p className="mt-3 font-montserrat text-[10px] font-semibold uppercase tracking-[0.16em] text-[#3F5A36]/80">Arriving in your 4-Hour Focused CEO Workday™ …</p>
-          </motion.div>
-        )}
-      </AnimatePresence>
       <DayStateSaveNotice />
       {visibleOrder.map((id, i) => (
         <WorkdaySection
