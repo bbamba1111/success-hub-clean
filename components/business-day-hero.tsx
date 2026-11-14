@@ -307,11 +307,11 @@ function CurrentBusinessDayScene({
             alt=""
             aria-hidden="true"
             initial={{ opacity: 0, scale: 1.08 }}
-            animate={{ opacity: 0.62, scale: 1.12 }}
+            animate={{ opacity: 0.28, scale: 1.12 }}
             transition={{ opacity: { duration: 1.4 }, scale: { duration: 7, ease: "easeOut" } }}
             className="absolute inset-0 h-full w-full scale-110 object-cover object-center blur-2xl"
           />
-          <div className="absolute inset-0 bg-[#2E2228]/20" />
+          <div className="absolute inset-0 bg-white/75 backdrop-blur-[2px]" />
           {/* Foreground image is contained and slightly reduced so more of its
               original composition remains visible without empty side gutters. */}
           <motion.img
