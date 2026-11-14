@@ -278,43 +278,57 @@ export function BusinessDayHero() {
 
       {/* Imagery — holiday scene rotation, same order as /landing */}
       <CurrentBusinessDayScene
-        src={experience?.businessDay.current.backgroundImage ?? "/images/holiday/winter-stroll.webp"}
-        caption={experience?.businessDay.current.shortTitle ?? "Flex Time™"}
+        src={experience?.businessDay.current.backgroundImage}
+        caption={experience?.businessDay.current.shortTitle}
       />
     </section>
   )
 }
 
-function CurrentBusinessDayScene({ src, caption }: { src: string; caption: string }) {
+function CurrentBusinessDayScene({
+  src,
+  caption,
+}: {
+  src?: string | string[]
+  caption?: string
+}) {
+  // Use the active segment's first configured image when a segment supplies
+  // multiple images. Never rotate into a different segment's scene.
+  const imageSrc = Array.isArray(src) ? src[0] : src
+
   return (
     <div className="relative w-full overflow-hidden bg-[#2E2228]">
-      <div className="absolute inset-0">
-        <motion.img
-          key={src}
-          src={src}
-          alt=""
-          aria-hidden="true"
-          initial={{ opacity: 0, scale: 1.04 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{
-            opacity: { duration: 1.4, ease: "easeInOut" },
-            scale: { duration: 7, ease: "easeOut" },
-          }}
-          className="absolute inset-0 h-full w-full object-cover object-center"
-        />
-        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#2E2228]/60 to-transparent" />
-      </div>
+      {imageSrc && (
+        <div className="absolute inset-0">
+          <motion.img
+            key={imageSrc}
+            src={imageSrc}
+            alt=""
+            aria-hidden="true"
+            initial={{ opacity: 0, scale: 1.04 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{
+              opacity: { duration: 1.4, ease: "easeInOut" },
+              scale: { duration: 7, ease: "easeOut" },
+            }}
+            className="absolute inset-0 h-full w-full object-cover object-center"
+          />
+          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#2E2228]/60 to-transparent" />
+        </div>
+      )}
 
       <div className="min-h-[420px] sm:min-h-[500px]" />
 
-      <div className="absolute inset-x-0 bottom-5 z-10 mx-auto max-w-7xl px-5 sm:px-8">
-        <p
-          className="font-playfair text-sm italic text-[#FFF8F4]/90 sm:text-base"
-          aria-live="polite"
-        >
-          {caption}
-        </p>
-      </div>
+      {caption && (
+        <div className="absolute inset-x-0 bottom-5 z-10 mx-auto max-w-7xl px-5 sm:px-8">
+          <p
+            className="font-playfair text-sm italic text-[#FFF8F4]/90 sm:text-base"
+            aria-live="polite"
+          >
+            {caption}
+          </p>
+        </div>
+      )}
     </div>
   )
 }
