@@ -38,6 +38,7 @@ export default function LandingPage() {
     <main className="min-h-screen bg-[#FFF8F4]">
       <LandingNav
         tone="dark"
+        showLogin={false}
         experiencesHref="#enrollment"
         ctaLabel="Join Us Sunday @ 3:PM ET On ZOOM"
         links={[
