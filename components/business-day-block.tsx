@@ -149,6 +149,9 @@ export function BusinessDayBlock({
 }: BusinessDayBlockProps) {
   const isCurrent = status === "current"
   const isSage = theme === "sage"
+  // These three default-theme cards complete the same panoramic card system
+  // as the six framed operating segments. Give them the matching subtle edge.
+  const needsPanoramicBorder = ["early-access", "morning-given", "digital-detox"].includes(blockId ?? "")
   // For the "default" theme the inner panel is simply the same cream
   // gradient as the outer frame, so no visible seam/frame appears — this
   // keeps every non-sage segment (morning-given, the Monday-only blocks,
@@ -250,6 +253,8 @@ export function BusinessDayBlock({
         transition={{ duration: 0.6, ease: "easeOut" }}
         whileHover={{ boxShadow: "0 24px 50px -12px rgba(28,22,26,0.35)" }}
         className={`relative w-full overflow-hidden rounded-3xl shadow-lg transition-shadow duration-700 ${
+          needsPanoramicBorder ? "border border-[#DCE7D9]" : ""
+        } ${
           isHighlighted
             ? "ring-4 ring-[#C13B6B]/40 ring-offset-2 ring-offset-[#F5F1E8]"
             : isCurrent
