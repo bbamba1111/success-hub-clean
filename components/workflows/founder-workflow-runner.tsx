@@ -138,6 +138,10 @@ export function FounderWorkflowRunner({ workItemId, taskTitle }: { workItemId: s
   const [ready, setReady] = useState(false)
   const [taskContext, setTaskContext] = useState<FounderTaskContext | null>(null)
   const [contextLoading, setContextLoading] = useState(true)
+  const [researchLoading, setResearchLoading] = useState(false)
+  const [researchError, setResearchError] = useState<string | null>(null)
+  const [researchResults, setResearchResults] = useState<Array<{title:string;url:string;summary:string;relevance:number|null}>>([])
+  const [researchQuery, setResearchQuery] = useState("")
 
   useEffect(() => {
     try {
@@ -185,6 +189,25 @@ export function FounderWorkflowRunner({ workItemId, taskTitle }: { workItemId: s
   function restart() {
     setPath(["start"])
     setDone(false)
+    setResearchResults([])
+    setResearchError(null)
+  }
+
+  async function runResearch() {
+    if (!taskContext) return
+    const category = path.includes("visibility") ? "podcasts" : path.includes("partners") ? "partners" : path.includes("groups") ? "groups" : path.includes("referrals") ? "partners" : path.includes("customers") || path.includes("new") ? "customers" : "media"
+    setResearchLoading(true)
+    setResearchError(null)
+    setResearchResults([])
+    try {
+      const response = await fetch("/api/founder-gps/research", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ taskTitle, category, businessName: taskContext.businessName, businessDescription: taskContext.businessDescription, idealAudience: taskContext.idealAudience, expertise: taskContext.expertise }) })
+      const data = await response.json()
+      if (!response.ok) throw new Error(data.error || "Research could not be completed.")
+      setResearchQuery(data.query || "")
+      setResearchResults(Array.isArray(data.results) ? data.results : [])
+    } catch (error) {
+      setResearchError(error instanceof Error ? error.message : "Research could not be completed.")
+    } finally { setResearchLoading(false) }
   }
 
   return (
@@ -244,6 +267,18 @@ export function FounderWorkflowRunner({ workItemId, taskTitle }: { workItemId: s
           </div>
         )}
         {current.action && (
+          <div className="rounded-2xl border border-[#E8B8C5]/60 bg-white px-4 py-4">
+            <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#668B58]">AI-assisted opportunity research</p>
+            <p className="mt-1 text-sm text-[#66545D]">Search the web using your saved business context. Results include source links so you can check fit and current details.</p>
+            <button type="button" onClick={runResearch} disabled={researchLoading || contextLoading || !taskContext} className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#668B58] px-4 py-2 text-sm font-semibold text-white hover:bg-[#557748] disabled:cursor-not-allowed disabled:opacity-50">
+              <Sparkles className="h-4 w-4" aria-hidden /> {researchLoading ? "Researching…" : "Research opportunities"}
+            </button>
+            {researchError && <p role="alert" className="mt-3 rounded-xl bg-[#FFF1F2] p-3 text-sm text-[#9B3F52]">{researchError}</p>}
+            {researchQuery && <p className="mt-3 text-xs text-[#76656D]">Search: {researchQuery}</p>}
+            {researchResults.length > 0 && <div className="mt-3 space-y-3"><p className="text-sm font-semibold text-[#382B31]">{researchResults.length} source results found</p>{researchResults.map((result, index) => <article key={result.url} className="rounded-xl border border-[#E8B8C5]/50 p-3"><a href={result.url} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-[#476D3E] underline underline-offset-2">{index + 1}. {result.title}</a><p className="mt-2 text-xs leading-relaxed text-[#66545D]">{result.summary}</p><p className="mt-2 break-all text-[11px] text-[#8A7880]">{result.url}</p></article>)}<p className="text-xs leading-relaxed text-[#76656D]">Search results are leads, not confirmed invitations. Check deadlines, eligibility, audience fit and contact details at the original source. No outreach has been sent.</p></div>}
+          </div>
+        )}
+        {current.action && (
           <div className="rounded-2xl border border-[#668B58]/25 bg-[#F1F5EE] px-4 py-4">
             <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#668B58]">Your next action</p>
             <p className="mt-2 text-sm leading-relaxed text-[#3E4939]">{current.action}</p>
@@ -261,7 +296,7 @@ export function FounderWorkflowRunner({ workItemId, taskTitle }: { workItemId: s
             <RotateCcw className="h-4 w-4" aria-hidden /> Start again
           </button>
         </div>
-        <p className="text-[11px] leading-relaxed text-[#8A7880]">Progress is saved in this browser on this device. Research, messages and other external actions are not run automatically by this workflow yet.</p>
+        <p className="text-[11px] leading-relaxed text-[#8A7880]">Your path is saved in this browser on this device. Research runs only when you request it. No messages or external actions are sent automatically.</p>
       </div>
     </section>
   )
