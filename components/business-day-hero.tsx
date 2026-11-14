@@ -311,7 +311,7 @@ function CurrentBusinessDayScene({
             transition={{ opacity: { duration: 1.4 }, scale: { duration: 7, ease: "easeOut" } }}
             className="absolute inset-0 h-full w-full scale-110 object-cover object-center blur-2xl"
           />
-          <div className="absolute inset-0 bg-white/25 backdrop-blur-[2px]" />
+          <div className="absolute inset-0 bg-white/10 backdrop-blur-[2px]" />
           {/* Foreground image is contained and slightly reduced so more of its
               original composition remains visible without empty side gutters. */}
           <motion.img
@@ -325,7 +325,7 @@ function CurrentBusinessDayScene({
               opacity: { duration: 1.4, ease: "easeInOut" },
               scale: { duration: 7, ease: "easeOut" },
             }}
-            className="absolute inset-0 h-full w-full object-contain p-1 sm:p-2 md:p-3"
+            className="absolute inset-0 h-full w-full object-contain p-0 sm:p-0 md:p-1"
           />
           <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#2E2228]/55 to-transparent" />
         </div>
