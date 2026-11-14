@@ -446,7 +446,7 @@ export function BusinessDayBlock({
                 transition={{ duration: 0.8, ease: "easeInOut" }}
                 className={`absolute object-cover object-center ${
                   ["early-access", "morning-given", "digital-detox"].includes(blockId ?? "")
-                    ? "inset-0 h-full w-full md:inset-y-2 md:left-0 md:right-2 md:h-[calc(100%-8px)] md:w-[calc(100%-8px)]"
+                    ? "inset-0 h-full w-full rounded-tr-2xl md:inset-y-2 md:left-0 md:right-2 md:h-[calc(100%-8px)] md:w-[calc(100%-8px)] md:rounded-tr-2xl"
                     : "inset-0 h-full w-full"
                 }`}
               />
