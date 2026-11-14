@@ -307,9 +307,9 @@ function CurrentBusinessDayScene({
             alt=""
             aria-hidden="true"
             initial={{ opacity: 0, scale: 1.08 }}
-            animate={{ opacity: 0.62, scale: 1.12 }}
+            animate={{ opacity: 1, scale: 1 }}
             transition={{ opacity: { duration: 1.4 }, scale: { duration: 7, ease: "easeOut" } }}
-            className="absolute inset-0 h-full w-full scale-110 object-cover object-center blur-2xl"
+            className="absolute inset-0 h-full w-full object-cover object-center"
           />
           {/* Foreground image is contained and slightly reduced so more of its
               original composition remains visible without empty side gutters. */}
@@ -324,7 +324,7 @@ function CurrentBusinessDayScene({
               opacity: { duration: 1.4, ease: "easeInOut" },
               scale: { duration: 7, ease: "easeOut" },
             }}
-            className="absolute inset-0 h-full w-full object-contain p-0"
+            className="absolute inset-0 h-full w-full object-cover object-center p-0"
           />
           <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#2E2228]/55 to-transparent" />
         </div>
