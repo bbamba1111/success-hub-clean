@@ -93,6 +93,7 @@ export function CeoWorkdayLivePlan() {
   const [checkinOpenedAt, setCheckinOpenedAt] = useState<string | null>(null)
   /** Which plan item's work surface (builder / template picker) is open. */
   const [openItemId, setOpenItemId] = useState<string | null>(null)
+  const [taskArrival, setTaskArrival] = useState<{ tasks: string[]; builtAt: string } | null>(null)
   /** Founder adding a piece of work in her own words. */
 
   // Platform clock, ticked every 15s — deterministic, no random timers.
@@ -119,6 +120,18 @@ export function CeoWorkdayLivePlan() {
   useEffect(() => {
     void refresh()
     return () => {}
+  }, [refresh])
+
+  useEffect(() => {
+    const onTasksChanged = (event: Event) => {
+      const detail = (event as CustomEvent<{ tasks?: string[]; builtAt?: string }>).detail
+      if (!detail?.tasks?.length) return
+      setTaskArrival({ tasks: detail.tasks, builtAt: detail.builtAt ?? new Date().toISOString() })
+      window.setTimeout(() => setTaskArrival(null), 8000)
+      void refresh()
+    }
+    window.addEventListener("hl:ceo-workday-tasks:changed", onTasksChanged)
+    return () => window.removeEventListener("hl:ceo-workday-tasks:changed", onTasksChanged)
   }, [refresh])
 
   // The live workspace loads only a plan explicitly saved by Decide & Design.
@@ -644,6 +657,25 @@ export function CeoWorkdayLivePlan() {
 
   return (
     <div className="ceo-workspace space-y-5">
+      <AnimatePresence>
+        {taskArrival && (
+          <motion.div
+            key={taskArrival.builtAt}
+            initial={{ opacity: 0, y: -16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 220 }}
+            transition={{ duration: 1.1, ease: [0.4, 0, 0.2, 1] }}
+            className="pointer-events-none fixed left-1/2 top-24 z-50 w-[min(90vw,560px)] -translate-x-1/2 px-6 py-5 text-center"
+            style={{ background: "rgba(255,255,255,0.28)", backdropFilter: "blur(16px) saturate(1.3)", WebkitBackdropFilter: "blur(16px) saturate(1.3)", borderRadius: "20px", border: "1px solid rgba(255,255,255,0.5)", boxShadow: "0 8px 32px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.6)" }}
+          >
+            <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#3F5A36]">Your work tasks have arrived</p>
+            <ul className="mt-2 space-y-1 font-sans text-sm font-semibold text-[#1F2A1F]">
+              {taskArrival.tasks.map((task, index) => <li key={index}>{task}</li>)}
+            </ul>
+            <p className="mt-3 font-montserrat text-[10px] font-semibold uppercase tracking-[0.16em] text-[#3F5A36]/80">Waiting for you in your 4-Hour Focused CEO Workday™ …</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <DayStateSaveNotice />
       {visibleOrder.map((id, i) => (
         <WorkdaySection
