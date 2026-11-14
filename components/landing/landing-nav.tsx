@@ -14,6 +14,7 @@ export function LandingNav({
   links,
   ctaLabel = "Experience the Week",
   tone = "light",
+  showLogin = true,
 }: {
   /** "dark" renders white brand/link/login text for pages with a dark hero. */
   tone?: "light" | "dark"
@@ -22,6 +23,8 @@ export function LandingNav({
   links?: { label: string; href: string }[]
   /** Label for the primary nav CTA button. */
   ctaLabel?: string
+  /** Hide member login on public entry pages that should remain a focused funnel. */
+  showLogin?: boolean
 }) {
   const [scrolled, setScrolled] = useState(false)
 
@@ -77,12 +80,14 @@ export function LandingNav({
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <Link
-            href="/auth/login"
-            className={`font-poppins rounded-full px-4 py-2 text-sm font-medium ${linkText} transition-colors hover:text-[#F6A9C2]`}
-          >
-            Log In
-          </Link>
+          {showLogin && (
+            <Link
+              href="/auth/login"
+              className={`font-poppins rounded-full px-4 py-2 text-sm font-medium ${linkText} transition-colors hover:text-[#F6A9C2]`}
+            >
+              Log In
+            </Link>
+          )}
           <a
             href={experiencesHref}
             className="font-poppins rounded-full bg-[#E26C73] px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-[#E26C73]/25 transition-transform hover:scale-[1.03] hover:bg-[#d65a62]"
