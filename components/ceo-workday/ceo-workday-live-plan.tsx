@@ -69,6 +69,7 @@ import { BoundaryWorkSurface } from "./boundary-work-surface"
 import { boundaryWorkKind } from "@/lib/ceo-workday/boundary-work"
 import { MonthlyBoundaryFocusPanel } from "./monthly-boundary-focus-panel"
 import { ScheduledExperiencesStrip } from "./scheduled-experiences-strip"
+import { FounderWorkflowRunner } from "@/components/workflows/founder-workflow-runner"
 
 type AdjustAction = "change" | "save-for-later" | "delegate" | "remove" | "help" | "other"
 
@@ -748,6 +749,15 @@ function CeoPlanItemWorkSurface({
         onComplete={onManualComplete}
       />
     )
+  }
+
+  const taskName = item.title.toLowerCase()
+  const isPeopleOpportunityTask =
+    item.businessFunction === "client-attraction" &&
+    /(people|opportunit|customer|prospect|lead|audience|partner|podcast|media|speaking)/.test(taskName)
+
+  if (isPeopleOpportunityTask && !asset) {
+    return <FounderWorkflowRunner workItemId={item.id} taskTitle={item.title} />
   }
 
   if (asset) {
