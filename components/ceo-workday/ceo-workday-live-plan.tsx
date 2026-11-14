@@ -754,7 +754,7 @@ function CeoPlanItemWorkSurface({
   const taskName = item.title.toLowerCase()
   const isPeopleOpportunityTask =
     item.businessFunction === "client-attraction" &&
-    /(people|opportunit|customer|prospect|lead|audience|partner|podcast|media|speaking)/.test(taskName)
+    /(people|opportunit|customer|prospect|lead|audience|partner|podcast|media|speaking|proposal|pitch|invitation|outreach|referral)/.test(taskName)
 
   if (isPeopleOpportunityTask && !asset) {
     return <FounderWorkflowRunner workItemId={item.id} taskTitle={item.title} />
