@@ -300,20 +300,34 @@ function CurrentBusinessDayScene({
     <div className="relative w-full overflow-hidden bg-[#2E2228]">
       {imageSrc && (
         <div className="absolute inset-0">
+          {/* Full-bleed image layer preserves the wall-to-wall visual field. */}
+          <motion.img
+            key={`backdrop-${imageSrc}`}
+            src={imageSrc}
+            alt=""
+            aria-hidden="true"
+            initial={{ opacity: 0, scale: 1.08 }}
+            animate={{ opacity: 0.62, scale: 1.12 }}
+            transition={{ opacity: { duration: 1.4 }, scale: { duration: 7, ease: "easeOut" } }}
+            className="absolute inset-0 h-full w-full scale-110 object-cover object-center blur-2xl"
+          />
+          <div className="absolute inset-0 bg-[#2E2228]/20" />
+          {/* Foreground image is contained and slightly reduced so more of its
+              original composition remains visible without empty side gutters. */}
           <motion.img
             key={imageSrc}
             src={imageSrc}
             alt=""
             aria-hidden="true"
-            initial={{ opacity: 0, scale: 1.04 }}
+            initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{
               opacity: { duration: 1.4, ease: "easeInOut" },
               scale: { duration: 7, ease: "easeOut" },
             }}
-            className="absolute inset-0 h-full w-full object-cover object-center"
+            className="absolute inset-0 h-full w-full object-contain p-2 sm:p-3 md:p-5"
           />
-          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#2E2228]/60 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#2E2228]/55 to-transparent" />
         </div>
       )}
 
