@@ -430,7 +430,10 @@ export function BusinessDayBlock({
           </div>
 
           {/* Right image area — dominant photography, fills the rest of the card */}
-          <div className="relative min-h-[200px] flex-1">
+          <div
+            className="relative min-h-[200px] flex-1 bg-white"
+            style={{ background: isEvening ? "#F7F7F4" : "#FFFFFF" }}
+          >
             <AnimatePresence>
               <motion.img
                 key={imageIndex}
@@ -441,7 +444,11 @@ export function BusinessDayBlock({
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.8, ease: "easeInOut" }}
-                className="absolute inset-0 h-full w-full object-cover object-center"
+                className={`absolute object-cover object-center ${
+                  ["early-access", "morning-given", "digital-detox"].includes(blockId ?? "")
+                    ? "inset-0 h-full w-full md:inset-y-2 md:left-0 md:right-2 md:h-[calc(100%-8px)] md:w-[calc(100%-8px)]"
+                    : "inset-0 h-full w-full"
+                }`}
               />
             </AnimatePresence>
             {/* Soft ~48px horizontal fade blending the panel into the photography (desktop only) */}
