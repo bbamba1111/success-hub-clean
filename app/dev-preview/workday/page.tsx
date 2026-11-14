@@ -19,7 +19,7 @@
  *     founder data model.
  *   - Not a mount point for the orphaned `CeoWorkdayWorkspace`.
  *
- * 404s outside development so it can never appear in production.
+ * Available on Vercel Preview deployments for review; 404s on Production.
  */
 
 import { notFound } from "next/navigation"
@@ -40,9 +40,10 @@ function AutoOpenCeoWorkday() {
 }
 
 export default function WorkdayPreviewPage() {
-  // 404 outside development — called during render, before any hooks below,
-  // so this page can never render in production.
-  if (process.env.NODE_ENV === "production") {
+  // Vercel Preview builds also use NODE_ENV=production. Gate on the actual
+  // deployment environment so this review fixture is available on Preview,
+  // while remaining inaccessible on the Production deployment.
+  if (process.env.VERCEL_ENV === "production") {
     notFound()
   }
 
