@@ -18,7 +18,8 @@ export function ConditionalNav() {
     pathname === "/founder-profile" ||
     pathname === "/business-context" ||
     pathname === "/boundary-report" ||
-    pathname === "/pricing"
+    pathname === "/pricing" ||
+    pathname === "/welcome/cherry-blossom/complete"
   ) {
     return null
   }
