@@ -319,7 +319,7 @@ function CurrentBusinessDayScene({
               The foreground image is rendered above these layers and stays sharp. */}
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-y-0 left-0 z-[1] w-[24%]"
+            className="pointer-events-none absolute inset-y-0 left-0 z-[1] w-[12%]"
             style={{
               backdropFilter: "blur(32px)",
               WebkitBackdropFilter: "blur(32px)",
@@ -330,7 +330,7 @@ function CurrentBusinessDayScene({
           />
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-y-0 right-0 z-[1] w-[24%]"
+            className="pointer-events-none absolute inset-y-0 right-0 z-[1] w-[12%]"
             style={{
               backdropFilter: "blur(32px)",
               WebkitBackdropFilter: "blur(32px)",
