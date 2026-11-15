@@ -306,9 +306,13 @@ function CurrentBusinessDayScene({
             src={imageSrc}
             alt=""
             aria-hidden="true"
-            initial={{ opacity: 0, scale: 1.08 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ opacity: { duration: 1.4 }, scale: { duration: 7, ease: "easeOut" } }}
+            initial={{ opacity: 0, scale: 1.08, filter: "blur(0px)" }}
+            animate={{ opacity: 1, scale: 1, filter: "blur(2px)" }}
+            transition={{
+              opacity: { duration: 1.4 },
+              scale: { duration: 7, ease: "easeOut" },
+              filter: { delay: 7.5, duration: 2.5, ease: "easeInOut" },
+            }}
             className="absolute inset-0 h-full w-full object-cover object-center"
           />
           {/* Foreground image is contained and slightly reduced so more of its
@@ -319,14 +323,13 @@ function CurrentBusinessDayScene({
             alt=""
             aria-hidden="true"
             initial={{ opacity: 0, scale: 0.88 }}
-            animate={{ opacity: 1, scale: [0.88, 1, 0.985, 1] }}
+            animate={{ opacity: 1, scale: [0.88, 1.015, 1] }}
             transition={{
-              opacity: { duration: 1.8, ease: "easeOut" },
+              opacity: { duration: 3.2, ease: "easeInOut" },
               scale: {
-                duration: 6,
+                duration: 7.5,
                 ease: "easeInOut",
-                repeat: Infinity,
-                repeatType: "reverse",
+                times: [0, 0.72, 1],
               },
             }}
             className="absolute inset-y-0 left-[1in] right-[1in] h-full w-[calc(100%-2in)] object-cover object-center"
