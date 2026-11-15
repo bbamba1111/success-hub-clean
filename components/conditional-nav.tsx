@@ -19,7 +19,7 @@ export function ConditionalNav() {
     pathname === "/business-context" ||
     pathname === "/boundary-report" ||
     pathname === "/pricing" ||
-    pathname === "/welcome/cherry-blossom/complete"
+    pathname?.startsWith("/welcome/cherry-blossom")
   ) {
     return null
   }
