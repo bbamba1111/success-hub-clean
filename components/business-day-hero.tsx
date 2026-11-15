@@ -323,7 +323,7 @@ function CurrentBusinessDayScene({
             style={{
               backdropFilter: "blur(32px)",
               WebkitBackdropFilter: "blur(32px)",
-              background: "linear-gradient(to right, rgba(253,248,241,0.16) 0%, rgba(253,248,241,0.10) 58%, transparent 100%)",
+              background: "linear-gradient(to right, rgba(253,248,241,0.08) 0%, rgba(253,248,241,0.05) 58%, transparent 100%)",
               maskImage: "linear-gradient(to right, black 0%, black 52%, transparent 100%)",
               WebkitMaskImage: "linear-gradient(to right, black 0%, black 52%, transparent 100%)",
             }}
@@ -334,7 +334,7 @@ function CurrentBusinessDayScene({
             style={{
               backdropFilter: "blur(32px)",
               WebkitBackdropFilter: "blur(32px)",
-              background: "linear-gradient(to left, rgba(253,248,241,0.16) 0%, rgba(253,248,241,0.10) 58%, transparent 100%)",
+              background: "linear-gradient(to left, rgba(253,248,241,0.08) 0%, rgba(253,248,241,0.05) 58%, transparent 100%)",
               maskImage: "linear-gradient(to left, black 0%, black 52%, transparent 100%)",
               WebkitMaskImage: "linear-gradient(to left, black 0%, black 52%, transparent 100%)",
             }}
