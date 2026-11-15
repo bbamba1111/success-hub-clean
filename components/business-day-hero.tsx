@@ -364,7 +364,7 @@ function CurrentBusinessDayScene({
       <div className="min-h-[420px] sm:min-h-[500px]" />
 
       {caption && (
-        <div className="absolute inset-x-0 bottom-5 z-10 mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="absolute inset-x-0 bottom-[calc(1.25rem+0.75in)] z-10 mx-auto max-w-7xl px-5 sm:px-8">
           <p
             className="font-playfair text-sm italic text-[#FFF8F4]/90 sm:text-base"
             aria-live="polite"
