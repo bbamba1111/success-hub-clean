@@ -315,8 +315,31 @@ function CurrentBusinessDayScene({
             }}
             className="absolute inset-0 h-full w-full object-cover object-center"
           />
-          {/* Foreground image is contained and slightly reduced so more of its
-              original composition remains visible without empty side gutters. */}
+          {/* Strong, feathered blur on the two outer ends of the BACKGROUND image.
+              The foreground image is rendered above these layers and stays sharp. */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-y-0 left-0 z-[1] w-[24%]"
+            style={{
+              backdropFilter: "blur(32px)",
+              WebkitBackdropFilter: "blur(32px)",
+              background: "linear-gradient(to right, rgba(253,248,241,0.16) 0%, rgba(253,248,241,0.10) 58%, transparent 100%)",
+              maskImage: "linear-gradient(to right, black 0%, black 52%, transparent 100%)",
+              WebkitMaskImage: "linear-gradient(to right, black 0%, black 52%, transparent 100%)",
+            }}
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-y-0 right-0 z-[1] w-[24%]"
+            style={{
+              backdropFilter: "blur(32px)",
+              WebkitBackdropFilter: "blur(32px)",
+              background: "linear-gradient(to left, rgba(253,248,241,0.16) 0%, rgba(253,248,241,0.10) 58%, transparent 100%)",
+              maskImage: "linear-gradient(to left, black 0%, black 52%, transparent 100%)",
+              WebkitMaskImage: "linear-gradient(to left, black 0%, black 52%, transparent 100%)",
+            }}
+          />
+          {/* Foreground image remains sharp and unchanged. */}
           <motion.img
             key={imageSrc}
             src={imageSrc}
