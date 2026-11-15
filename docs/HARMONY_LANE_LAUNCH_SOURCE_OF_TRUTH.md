@@ -1,5 +1,5 @@
 # Harmony Lane™ Launch Source of Truth
-**Version 1.3 | November 15, 2026**
+**Version 1.4 | November 15, 2026**
 
 ## 1. Purpose and positioning
 
@@ -155,7 +155,7 @@ The landing page must tell this story in this order:
 4. **Daily experience:** Show the Monday entry and the practical daily rhythm, including the founder's actual business priorities and personalized boundaries.
 5. **Harmony Lane explanation:** After the weekly rhythm, explain that the business has dedicated time to move forward while personal priorities have protected space. Then present the four-step framework: Human Values → Human Sustainability Boundaries™ → Business Operating Rules → Practice, Communicate & Delegate.
 
-The transition is the combined AI-era statement and “We Make Time For More We Put Boundaries Into Your Workweek” heading, followed immediately by “What Does a Workweek Look Like When Your Business Makes Room for Your Life?” Monday is the way the founder enters the week differently; it is not a separate detour between the transition and the weekly schedule. The exact sequence is transition → workweek question → schedule → explanatory paragraph → four-step framework. Keep the existing schedule and visual design intact.
+Keep the AI-era transition as its own standalone heading, exactly: “This Is Why We Don't Automate & Accelerate the Hustle with AI.” Follow it with the separate transition heading: “We Make Time For More. We Put Boundaries Into Your Workweek.” Then proceed to “What Does a Workweek Look Like When Your Business Makes Room for Your Life?” Monday is the way the founder enters the week differently; it is not a separate detour between the transition and the weekly schedule. The exact sequence is transition → workweek question → schedule → explanatory paragraph → four-step framework. Keep the existing schedule and visual design intact.
 
 ## 12. Founder-approved landing-page copy and transition
 
