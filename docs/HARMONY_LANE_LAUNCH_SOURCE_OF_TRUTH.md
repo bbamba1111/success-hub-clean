@@ -1,5 +1,5 @@
 # Harmony Lane™ Launch Source of Truth
-**Version 1.0 | November 15, 2026**
+**Version 1.1 | November 15, 2026**
 
 ## 1. Purpose and positioning
 
@@ -144,3 +144,15 @@ Harmony Lane does not simply help founders make more time.
 **We help founders build businesses that respect the human values that make life worth living—and establish the boundaries and business operating rules to support them.**
 
 This document governs Harmony Lane launch strategy and communications unless the founder explicitly approves a revision.
+
+## 11. Approved landing-page narrative and section order
+
+The landing page must tell this story in this order:
+
+1. **AI-era context:** “This Is Why We Don’t Automate & Accelerate the Hustle with AI.” Explain that technology and capacity should not accelerate demands without considering human sustainability.
+2. **Workweek transition:** “We Make Time For More. We Put Your Boundaries Into Your Workweek.” Begin with how founders enter the week differently. Monday is the intentional entry point: reconnect with the life the business is meant to support, establish weekly intentions and priorities, personalize boundaries, and begin operating differently.
+3. **Weekly rhythm:** “What Does a Workweek Look Like When Your Business Makes Room for Your Life?” Introduce the Work-Life Balance Business Week™ and its four-day workweek (Monday–Thursday), four-hour focused CEO workday, five hours of Time Freedom™ after 5:00 PM, and three-day weekend (Friday–Sunday).
+4. **Daily experience:** Show the Monday entry and the practical daily rhythm, including the founder's actual business priorities and personalized boundaries.
+5. **Harmony Lane explanation:** After the weekly rhythm, explain that the business has dedicated time to move forward while personal priorities have protected space. Then present the four-step framework: Human Values → Human Sustainability Boundaries™ → Business Operating Rules → Practice, Communicate & Delegate.
+
+The transition must make Monday the starting point for entering the workweek differently—not a generic productivity planning exercise. Keep the schedule and existing visual design intact while changing only the narrative order and approved copy. The framework explanation follows the weekly schedule; it must not interrupt the transition into the schedule.
