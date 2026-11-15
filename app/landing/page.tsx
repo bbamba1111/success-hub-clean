@@ -7,6 +7,7 @@ import {
   DisclaimerFooter,
   FaqSection,
   FreedomSection,
+  HarmonyLaneApproachSection,
   MondaySection,
   NewYearSection,
   RealityCheckSection,
@@ -50,6 +51,7 @@ export default function LandingPage() {
       <HolidayHero />
       <FreedomSection />
       <WeMakeTimeForMoreSection />
+      <HarmonyLaneApproachSection />
       <MondaySection />
       <NewYearSection />
       <RealityCheckSection />
