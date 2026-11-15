@@ -323,7 +323,7 @@ export function FreedomSection() {
         <div className="mx-auto max-w-5xl">
           <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#5A7F46]">The Harmony Lane Approach</p>
           <h2 className="mx-auto mt-3 max-w-5xl font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">
-            This Is Why We Don&apos;t Automate Hustle &amp; Accelerate Human Work Demands with AI.
+            This Is Why We Don&apos;t Automate &amp; Accelerate the Hustle with AI.
           </h2>
           <p className="mx-auto mt-6 max-w-4xl font-poppins text-lg leading-relaxed text-[#5A4A52]">
             Before adding more technology, tools, or capacity, decide what your business must respect about your life. Harmony Lane helps you connect the human values that matter to the boundaries you establish—and turn those boundaries into Business Operating Rules that guide how your business runs.
