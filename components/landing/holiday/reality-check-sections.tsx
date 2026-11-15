@@ -58,7 +58,7 @@ export function WeMakeTimeForMoreSection() {
             <p className="mt-3 font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#5A7F46] sm:text-base">Redesign Your Entry Into The Workweek</p>
           </header>
           <div className="flex flex-col gap-5">
-            <h3 className="font-playfair text-balance text-2xl font-bold leading-tight text-[#4A3A42] sm:text-3xl">Why Harmony Lane — The Parallel Lane to Hustle Entrepreneurship — Redesigned Monday</h3>
+            <h3 className="font-playfair text-balance text-2xl font-bold leading-tight text-[#4A3A42] sm:text-3xl">Why Harmony Lane Redesigned Monday</h3>
             <p className={BODY}>The traditional workweek often begins before Monday morning.</p>
             <p className={BODY}>Sunday evening arrives, and many people are already thinking about the demands waiting for them: the workload, the meetings, the pressure, the responsibilities, and the lack of control over their time.</p>
             <p className={BODY}>For some, Sunday night is when the decision to leave their job becomes final. They may have been considering it for weeks or months, but the thought of returning to another week of the same conditions becomes the tipping point.</p>
@@ -250,18 +250,15 @@ export function FreedomSection() {
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-8 lg:grid-cols-[2fr_1fr]">
           <div className="flex flex-col gap-5">
             <h2 className="font-playfair text-balance text-2xl font-bold leading-tight text-[#4A3A42] sm:text-4xl">Experience The Freedom You Intended to Create.</h2>
-            <p className={BODY}>You started your business for more freedom.</p>
-            <p className={BODY}>You wanted to build a business that supported the life you wanted.</p>
-            <p className={BODY}>
-              But somewhere along the way, you unintentionally brought the hustle with you. You left a demanding corporate environment only to recreate those same demands inside your own business.
-            </p>
+            <p className={BODY}>You started your business for more freedom, meaningful work, and greater control over your time. You wanted to build a business that supported the life you wanted.</p>
+            <p className={BODY}>If you're building a business now, you have the opportunity to establish boundaries from day one. If your business is already established, you may have unintentionally carried familiar work habits into the business you created for freedom.</p>
+            <p className={BODY}>Over time, the demands of running a business can begin to look like the conditions you originally wanted to leave behind:</p>
             <ul className="flex flex-col gap-3">
               {[
-                "The long hours.",
-                "The constant availability.",
-                "The pressure to do more.",
-                "The feeling that everything depends on you.",
-                "Work expanding into your personal time.",
+                "Long hours and work expanding into personal time.",
+                "Constant availability to clients, colleagues, or business demands.",
+                "Pressure to keep doing more as the business grows.",
+                "The feeling that too much depends on you.",
               ].map((item) => (
                 <li key={item} className={`flex items-start gap-3 ${BODY}`}>
                   <Dot />
@@ -322,10 +319,33 @@ export function FreedomSection() {
 
 
 
-      <section className="bg-white px-5 py-14 text-center sm:px-8 sm:py-16">
-        <h2 className="mx-auto max-w-5xl font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">
-          This Is Why We Don&apos;t Automate Hustle &amp; Accelerate Human Work Demands with AI.
-        </h2>
+      <section className="bg-white px-5 py-16 text-center sm:px-8 sm:py-20">
+        <div className="mx-auto max-w-5xl">
+          <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#5A7F46]">The Harmony Lane Approach</p>
+          <h2 className="mx-auto mt-3 max-w-5xl font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">
+            This Is Why We Don&apos;t Automate Hustle &amp; Accelerate Human Work Demands with AI.
+          </h2>
+          <p className="mx-auto mt-6 max-w-4xl font-poppins text-lg leading-relaxed text-[#5A4A52]">
+            Before adding more technology, tools, or capacity, decide what your business must respect about your life. Harmony Lane helps you connect the human values that matter to the boundaries you establish—and turn those boundaries into Business Operating Rules that guide how your business runs.
+          </p>
+          <div className="mt-10 grid gap-3 text-left sm:grid-cols-4">
+            {[
+              { title: "Human Values", detail: "What matters in your life." },
+              { title: "Human Sustainability Boundaries™", detail: "What your business must respect." },
+              { title: "Business Operating Rules", detail: "How the business will honor those boundaries." },
+              { title: "Practice, Communicate & Delegate", detail: "How the rules become part of everyday operations." },
+            ].map((item, index) => (
+              <article key={item.title} className="rounded-2xl border border-[#EAD5DC] bg-[#FFF8F4] p-5">
+                <p className="font-playfair text-xl font-bold text-[#C13B6B]">{index + 1}</p>
+                <h3 className="mt-2 font-poppins text-base font-semibold text-[#4A3A42]">{item.title}</h3>
+                <p className="mt-2 font-poppins text-sm leading-relaxed text-[#5A4A52]">{item.detail}</p>
+              </article>
+            ))}
+          </div>
+          <p className="mx-auto mt-8 max-w-3xl font-playfair text-xl font-semibold leading-snug text-[#4A3A42] sm:text-2xl">
+            Your Business. Your Human Values. Your Boundaries.
+          </p>
+        </div>
       </section>
 
 
