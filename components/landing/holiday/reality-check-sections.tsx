@@ -319,47 +319,14 @@ export function FreedomSection() {
 
 
 
-      <section className="bg-white px-5 py-16 text-center sm:px-8 sm:py-20">
-        <div className="mx-auto max-w-5xl">
-          <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#5A7F46]">The Harmony Lane Approach</p>
-          <h2 className="mx-auto mt-3 max-w-5xl font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">
-            This Is Why We Don&apos;t Automate &amp; Accelerate the Hustle with AI.
-          </h2>
-          <p className="mx-auto mt-6 max-w-4xl font-poppins text-lg leading-relaxed text-[#5A4A52]">
-            Before adding more technology, tools, or capacity, decide what your business must respect about your life. Harmony Lane helps you connect the human values that matter to the boundaries you establish—and turn those boundaries into Business Operating Rules that guide how your business runs.
-          </p>
-          <div className="mt-10 grid gap-3 text-left sm:grid-cols-4">
-            {[
-              { title: "Human Values", detail: "What matters in your life." },
-              { title: "Human Sustainability Boundaries™", detail: "What your business must respect." },
-              { title: "Business Operating Rules", detail: "How the business will honor those boundaries." },
-              { title: "Practice, Communicate & Delegate", detail: "How the rules become part of everyday operations." },
-            ].map((item, index) => (
-              <article key={item.title} className="rounded-2xl border border-[#EAD5DC] bg-[#FFF8F4] p-5">
-                <p className="font-playfair text-xl font-bold text-[#C13B6B]">{index + 1}</p>
-                <h3 className="mt-2 font-poppins text-base font-semibold text-[#4A3A42]">{item.title}</h3>
-                <p className="mt-2 font-poppins text-sm leading-relaxed text-[#5A4A52]">{item.detail}</p>
-              </article>
-            ))}
-          </div>
-          <p className="mx-auto mt-8 max-w-3xl font-playfair text-xl font-semibold leading-snug text-[#4A3A42] sm:text-2xl">
-            Your Business. Your Human Values. Your Boundaries.
-          </p>
-        </div>
-      </section>
-
       <section className="bg-[#EEF3E8] px-5 py-16 sm:px-8 sm:py-20">
         <div className="mx-auto max-w-4xl text-center">
-          <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#5A7F46]">Putting Your Boundaries Into Your Workweek</p>
-          <h2 className="mx-auto mt-3 max-w-3xl font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-4xl">
-            What Does a Workweek Look Like When Your Business Makes Room for Your Life?
-          </h2>
-          <p className="mx-auto mt-5 max-w-3xl font-poppins text-lg leading-relaxed text-[#5A4A52]">
-            Human Sustainability Boundaries™ become real when they shape the way your business day and workweek are organized. That's why the Work-Life Balance Business Week™ gives you a different rhythm to experience—not just ideas to consider. Your business has dedicated time to move forward, while your personal priorities have protected space too.
-          </p>
-          <p className="mx-auto mt-5 max-w-3xl font-poppins text-lg leading-relaxed text-[#5A4A52]">
-            We call it **We Make Time For More**. Here's the weekly schedule that brings the approach to life:
-          </p>
+          <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#5A7F46]">We Make Time For More</p>
+          <h2 className="mx-auto mt-3 max-w-3xl font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-4xl">We Put Your Boundaries Into Your Workweek.</h2>
+          <p className="mx-auto mt-5 max-w-3xl font-poppins text-lg leading-relaxed text-[#5A4A52]">It starts with how you enter your week. Instead of jumping straight into another week of demands, you begin with intention. You reconnect with what matters, decide what deserves your attention, and establish how you want your business and personal life to work together.</p>
+          <p className="mx-auto mt-5 max-w-3xl font-poppins text-lg leading-relaxed text-[#5A4A52]">Monday is the intentional entry point. You establish your intentions and priorities, bring your business and personal priorities into your Work-Life Balance Business Day™, and begin the week practicing the boundaries you want your business to respect.</p>
+          <h3 className="mx-auto mt-8 max-w-3xl font-playfair text-balance text-2xl font-bold leading-tight text-[#4A3A42] sm:text-3xl">What Does a Workweek Look Like When Your Business Makes Room for Your Life?</h3>
+          <p className="mx-auto mt-5 max-w-3xl font-poppins text-lg leading-relaxed text-[#5A4A52]">The Work-Life Balance Business Week™ gives you a different rhythm to experience—not just ideas to consider. Your business has dedicated time to move forward, while your personal priorities have protected space too.</p>
         </div>
       </section>
 
@@ -463,6 +430,40 @@ const MONDAY_SEQUENCE = [
   { title: "Do your real work", body: "Work on real priorities during The 4-Hour Focused CEO Workday™, practicing the boundaries you set." },
   { title: "Check in and adjust", body: "Use Five-Minute Work-Life Balance Boundary Check-ins™ to capture collisions and recognize patterns." },
 ]
+
+
+export function HarmonyLaneApproachSection() {
+  return (
+      <section className="bg-white px-5 py-16 text-center sm:px-8 sm:py-20">
+        <div className="mx-auto max-w-5xl">
+          <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#5A7F46]">The Harmony Lane Approach</p>
+          <h2 className="mx-auto mt-3 max-w-5xl font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">
+            This Is Why We Don&apos;t Automate &amp; Accelerate the Hustle with AI.
+          </h2>
+          <p className="mx-auto mt-6 max-w-4xl font-poppins text-lg leading-relaxed text-[#5A4A52]">
+            Before adding more technology, tools, or capacity, decide what your business must respect about your life. Harmony Lane helps you connect the human values that matter to the boundaries you establish—and turn those boundaries into Business Operating Rules that guide how your business runs.
+          </p>
+          <div className="mt-10 grid gap-3 text-left sm:grid-cols-4">
+            {[
+              { title: "Human Values", detail: "What matters in your life." },
+              { title: "Human Sustainability Boundaries™", detail: "What your business must respect." },
+              { title: "Business Operating Rules", detail: "How the business will honor those boundaries." },
+              { title: "Practice, Communicate & Delegate", detail: "How the rules become part of everyday operations." },
+            ].map((item, index) => (
+              <article key={item.title} className="rounded-2xl border border-[#EAD5DC] bg-[#FFF8F4] p-5">
+                <p className="font-playfair text-xl font-bold text-[#C13B6B]">{index + 1}</p>
+                <h3 className="mt-2 font-poppins text-base font-semibold text-[#4A3A42]">{item.title}</h3>
+                <p className="mt-2 font-poppins text-sm leading-relaxed text-[#5A4A52]">{item.detail}</p>
+              </article>
+            ))}
+          </div>
+          <p className="mx-auto mt-8 max-w-3xl font-playfair text-xl font-semibold leading-snug text-[#4A3A42] sm:text-2xl">
+            Your Business. Your Human Values. Your Boundaries.
+          </p>
+        </div>
+      </section>
+  )
+}
 
 export function MondaySection() {
   return null
