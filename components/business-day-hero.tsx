@@ -318,13 +318,18 @@ function CurrentBusinessDayScene({
             src={imageSrc}
             alt=""
             aria-hidden="true"
-            initial={{ opacity: 0, scale: 0.97 }}
-            animate={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, scale: 0.88 }}
+            animate={{ opacity: 1, scale: [0.88, 1, 0.985, 1] }}
             transition={{
-              opacity: { duration: 1.4, ease: "easeInOut" },
-              scale: { duration: 7, ease: "easeOut" },
+              opacity: { duration: 1.8, ease: "easeOut" },
+              scale: {
+                duration: 6,
+                ease: "easeInOut",
+                repeat: Infinity,
+                repeatType: "reverse",
+              },
             }}
-            className="absolute inset-0 h-full w-full object-cover object-center p-0"
+            className="absolute inset-y-0 left-[1in] right-[1in] h-full w-[calc(100%-2in)] object-cover object-center"
           />
           <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#2E2228]/55 to-transparent" />
         </div>
