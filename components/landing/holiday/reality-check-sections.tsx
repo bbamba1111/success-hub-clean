@@ -350,15 +350,15 @@ export function FreedomSection() {
 
       <section className="bg-[#EEF3E8] px-5 py-16 sm:px-8 sm:py-20">
         <div className="mx-auto max-w-4xl text-center">
-          <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#5A7F46]">From principle to practice</p>
+          <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#5A7F46]">Putting Your Boundaries Into Your Workweek</p>
           <h2 className="mx-auto mt-3 max-w-3xl font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-4xl">
-            So What Does It Look Like to Run Your Business With Those Boundaries in Place?
+            What Does a Workweek Look Like When Your Business Makes Room for Your Life?
           </h2>
           <p className="mx-auto mt-5 max-w-3xl font-poppins text-lg leading-relaxed text-[#5A4A52]">
-            It means giving your priorities—and the life your business is meant to support—a place in the way your workweek is designed. During the Work-Life Balance Business Week™, you experience that design in practice: focused time for your business, protected time for life, and a clear rhythm for when work begins and ends.
+            Human Sustainability Boundaries™ become real when they shape the way your business day and workweek are organized. That's why the Work-Life Balance Business Week™ gives you a different rhythm to experience—not just ideas to consider. Your business has dedicated time to move forward, while your personal priorities have protected space too.
           </p>
-          <p className="mx-auto mt-5 max-w-3xl font-playfair text-xl font-semibold leading-snug text-[#4A3A42] sm:text-2xl">
-            That is what we mean when we say: We Make Time For More.
+          <p className="mx-auto mt-5 max-w-3xl font-poppins text-lg leading-relaxed text-[#5A4A52]">
+            We call it **We Make Time For More**. Here's the weekly schedule that brings the approach to life:
           </p>
         </div>
       </section>
