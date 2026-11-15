@@ -1,5 +1,5 @@
 # Harmony Lane™ Launch Source of Truth
-**Version 1.1 | November 15, 2026**
+**Version 1.2 | November 15, 2026**
 
 ## 1. Purpose and positioning
 
@@ -156,3 +156,31 @@ The landing page must tell this story in this order:
 5. **Harmony Lane explanation:** After the weekly rhythm, explain that the business has dedicated time to move forward while personal priorities have protected space. Then present the four-step framework: Human Values → Human Sustainability Boundaries™ → Business Operating Rules → Practice, Communicate & Delegate.
 
 The transition must make Monday the starting point for entering the workweek differently—not a generic productivity planning exercise. Keep the schedule and existing visual design intact while changing only the narrative order and approved copy. The framework explanation follows the weekly schedule; it must not interrupt the transition into the schedule.
+
+## 12. Founder-approved landing-page copy and transition
+
+Use the founder's exact approved sequence and wording:
+
+### This Is Why We Don't Automate & Accelerate the Hustle with AI. We Make Time For More We Put Boundaries Into Your Workweek
+
+### What Does a Workweek Look Like When Your Business Makes Room for Your Life?
+
+### The Work-Life Balance Business Week™
+
+- **4 Day — Workweek:** Monday–Thursday
+- **4 Hour — Focused CEO Workday:** Dedicated time for priority business work
+- **5 Hours — Time Freedom:** After 5:00 PM
+- **3 Day — Weekend:** Friday–Sunday
+
+After the schedule, use this exact explanatory paragraph:
+
+“Your business has dedicated time to move forward, while your personal priorities have protected space too. Human Sustainability Boundaries™ become real when they shape the way your business day and workweek are organized. Before adding more technology, tools, or capacity, decide what your business must respect about your life. Harmony Lane helps you connect the human values that matter to the boundaries you establish—and turn those boundaries into Business Operating Rules that guide how your business runs.”
+
+Then present these four steps in this order:
+
+1. **Human Values** — What matters in your life.
+2. **Human Sustainability Boundaries™** — What your business must respect.
+3. **Business Operating Rules** — How the business will honor those boundaries.
+4. **Practice, Communicate & Delegate** — How the rules become part of everyday operations.
+
+The transition into the weekly schedule begins with how the founder enters the week. This is the bridge from the AI-era statement to the workweek: “We Make Time For More. We Put Boundaries Into Your Workweek.” Do not insert a separate explanatory Monday section between this transition and the “What Does a Workweek Look Like” heading. The founder's entry into the week is the transition itself. Preserve the exact sequence above; do not paraphrase or add copy to these approved headings and explanatory paragraph.
