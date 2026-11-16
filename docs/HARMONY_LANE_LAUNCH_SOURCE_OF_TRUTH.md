@@ -1,5 +1,5 @@
 # Harmony Lane™ Launch Source of Truth
-**Version 1.7 | November 16, 2026**
+**Version 1.8 | November 16, 2026**
 
 ## 1. Purpose and positioning
 
@@ -248,3 +248,13 @@ The pale-green “Putting Your Boundaries Into Your Workweek” section must con
 **Final transition line:** “We call it **Make Time For More** and here's the Work-Life Balance Business Week's schedule that brings the approach to life:”
 
 Do not include the former sentence beginning “The Work-Life Balance Business Week™ gives you a different rhythm to experience—not just ideas to consider.” in this transition section. Preserve the existing pale-green visual design and the following Work-Life Balance Business Week™ schedule cards.
+
+
+## 16. Founder-approved heading line break — November 16, 2026
+
+In the pale-green “Putting Your Boundaries Into Your Workweek” section, display the heading on exactly two lines:
+
+“What Does a Workweek Look Like When
+Your Business Makes Room for Your Life?”
+
+Use an explicit line break after “When” so the line layout is preserved. The sentence “The Work-Life Balance Business Week™ gives you a different rhythm to experience—not just ideas to consider.” is not part of this section and must remain absent. Keep the two approved following sentences and the schedule transition unchanged.
