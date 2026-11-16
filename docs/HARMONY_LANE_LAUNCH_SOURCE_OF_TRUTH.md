@@ -1,5 +1,5 @@
 # Harmony Lane™ Launch Source of Truth
-**Version 1.5 | November 16, 2026**
+**Version 1.6 | November 16, 2026**
 
 ## 1. Purpose and positioning
 
@@ -209,3 +209,27 @@ Preserve this exact visual order:
    - Keep the existing schedule section and four cards intact: 4 Day Workweek (Monday–Thursday); 4 Hour Focused CEO Workday (Dedicated time for priority business work); 5 Hours Time Freedom (After 5:00 PM); 3 Day Weekend (Friday–Sunday).
 
 The approved screenshot's visual hierarchy and sequence take precedence over earlier placement instructions. Do not reinsert “We Make Time For More. We Put Boundaries Into Your Workweek.” as an additional heading in this transition. Do not move the Monday explanatory material into the space between the Harmony Lane approach and the weekly schedule.
+
+
+## 14. Founder-approved Harmony Lane Approach copy — November 16, 2026
+
+The Harmony Lane Approach section must use the following copy and order. This section-specific wording supersedes the earlier longer explanatory paragraph wherever it conflicts.
+
+**Eyebrow:** The Harmony Lane Approach
+
+**Heading:** This Is Why We Don't Automate & Accelerate the Hustle with AI.
+
+**Paragraph:**
+
+“Before adding more technology, tools, or capacity, decide what your business must respect about your life. Harmony Lane helps you connect the human values that matter to the boundaries you establish—and turn those boundaries into Business Operating Rules that guide how your business runs.”
+
+Then show these four numbered framework cards:
+
+1. **Human Values** — What matters in your life.
+2. **Human Sustainability Boundaries™** — What your business must respect.
+3. **Business Operating Rules** — How the business will honor those boundaries.
+4. **Practice, Communicate & Delegate** — How the rules become part of everyday operations.
+
+**Closing line:** “Your Business. Your Human Values. Your Boundaries.”
+
+Preserve the existing approved visual treatment and the section's position before the pale-green workweek transition and schedule.
