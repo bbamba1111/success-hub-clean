@@ -51,8 +51,6 @@ export function WeMakeTimeForMoreSection() {
         </div>
       </section>
 
-      <HarmonyLaneApproachSection />
-
       <section id="business-day" className="scroll-mt-20 bg-[#FFF8F4] py-20 sm:py-24">
         <div className="mx-auto flex max-w-5xl flex-col gap-12 px-5 sm:px-8">
           <header className="mx-auto max-w-4xl text-center">
@@ -321,14 +319,14 @@ export function FreedomSection() {
 
 
 
+      <HarmonyLaneApproachSection />
+
       <section className="bg-[#EEF3E8] px-5 py-16 sm:px-8 sm:py-20">
         <div className="mx-auto max-w-4xl text-center">
-          <h2 className="mx-auto mt-3 max-w-5xl font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">This Is Why We Don&apos;t Automate &amp; Accelerate the Hustle with AI.</h2>
-          <h2 className="mx-auto mt-3 max-w-3xl font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-4xl">We Make Time For More. We Put Boundaries Into Your Workweek.</h2>
-          <p className="mx-auto mt-5 max-w-3xl font-poppins text-lg leading-relaxed text-[#5A4A52]">It starts with how you enter your week. Instead of jumping straight into another week of demands, you begin with intention. You reconnect with what matters, decide what deserves your attention, and establish how you want your business and personal life to work together.</p>
-          <p className="mx-auto mt-5 max-w-3xl font-poppins text-lg leading-relaxed text-[#5A4A52]">Monday is the intentional entry point. You establish your intentions and priorities, bring your business and personal priorities into your Work-Life Balance Business Day™, and begin the week practicing the boundaries you want your business to respect.</p>
-          <h2 className="mx-auto mt-8 max-w-5xl font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">What Does a Workweek Look Like When Your Business Makes Room for Your Life?</h2>
+          <p className="font-poppins text-xs font-semibold uppercase tracking-[0.28em] text-[#5A7F46]">Putting Your Boundaries Into Your Workweek</p>
+          <h2 className="mx-auto mt-3 max-w-5xl font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">What Does a Workweek Look Like When Your Business Makes Room for Your Life?</h2>
           <p className="mx-auto mt-5 max-w-3xl font-poppins text-lg leading-relaxed text-[#5A4A52]">The Work-Life Balance Business Week™ gives you a different rhythm to experience—not just ideas to consider. Your business has dedicated time to move forward, while your personal priorities have protected space too.</p>
+          <p className="mx-auto mt-5 max-w-3xl font-poppins text-lg leading-relaxed text-[#5A4A52]">We call it <strong>Make Time For More</strong> and here's the Work-Life Balance Business Week's schedule that brings the approach to life:</p>
         </div>
       </section>
 
@@ -438,6 +436,8 @@ export function HarmonyLaneApproachSection() {
   return (
       <section className="bg-white px-5 py-16 text-center sm:px-8 sm:py-20">
         <div className="mx-auto max-w-5xl">
+          <p className="font-poppins text-xs font-semibold uppercase tracking-[0.28em] text-[#5A7F46]">The Harmony Lane Approach</p>
+          <h2 className="mx-auto mt-3 max-w-4xl font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">This Is Why We Don&apos;t Automate &amp; Accelerate the Hustle with AI.</h2>
           <p className="mx-auto mt-6 max-w-4xl font-poppins text-lg leading-relaxed text-[#5A4A52]">
             Your business has dedicated time to move forward, while your personal priorities have protected space too. Human Sustainability Boundaries™ become real when they shape the way your business day and workweek are organized. Before adding more technology, tools, or capacity, decide what your business must respect about your life. Harmony Lane helps you connect the human values that matter to the boundaries you establish—and turn those boundaries into Business Operating Rules that guide how your business runs.
           </p>
