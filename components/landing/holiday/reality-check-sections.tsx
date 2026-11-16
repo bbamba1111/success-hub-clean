@@ -439,7 +439,7 @@ export function HarmonyLaneApproachSection() {
           <p className="font-poppins text-xs font-semibold uppercase tracking-[0.28em] text-[#5A7F46]">The Harmony Lane Approach</p>
           <h2 className="mx-auto mt-3 max-w-4xl font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">This Is Why We Don&apos;t Automate &amp; Accelerate the Hustle with AI.</h2>
           <p className="mx-auto mt-6 max-w-4xl font-poppins text-lg leading-relaxed text-[#5A4A52]">
-            Your business has dedicated time to move forward, while your personal priorities have protected space too. Human Sustainability Boundaries™ become real when they shape the way your business day and workweek are organized. Before adding more technology, tools, or capacity, decide what your business must respect about your life. Harmony Lane helps you connect the human values that matter to the boundaries you establish—and turn those boundaries into Business Operating Rules that guide how your business runs.
+            Before adding more technology, tools, or capacity, decide what your business must respect about your life. Harmony Lane helps you connect the human values that matter to the boundaries you establish—and turn those boundaries into Business Operating Rules that guide how your business runs.
           </p>
 
           <div className="mt-10 grid gap-3 text-left sm:grid-cols-4">
