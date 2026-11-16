@@ -324,7 +324,7 @@ export function FreedomSection() {
       <section className="bg-[#EEF3E8] px-5 py-16 sm:px-8 sm:py-20">
         <div className="mx-auto max-w-4xl text-center">
           <p className="font-poppins text-xs font-semibold uppercase tracking-[0.28em] text-[#5A7F46]">Putting Your Boundaries Into Your Workweek</p>
-          <h2 className="mx-auto mt-3 max-w-5xl font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">What Does a Workweek Look Like When Your Business Makes Room for Your Life?</h2>
+          <h2 className="mx-auto mt-3 max-w-5xl font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">What Does a Workweek Look Like When<br />Your Business Makes Room for Your Life?</h2>
           <p className="mx-auto mt-5 max-w-3xl font-poppins text-lg leading-relaxed text-[#5A4A52]">Your business has dedicated time to move forward, while your personal priorities have protected space too.</p>
           <p className="mx-auto mt-5 max-w-3xl font-poppins text-lg leading-relaxed text-[#5A4A52]">We call it <strong>Make Time For More</strong> and here's the Work-Life Balance Business Week's schedule that brings the approach to life:</p>
         </div>
