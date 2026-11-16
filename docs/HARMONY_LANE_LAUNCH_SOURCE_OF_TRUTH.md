@@ -1,5 +1,5 @@
 # Harmony Lane™ Launch Source of Truth
-**Version 1.4 | November 15, 2026**
+**Version 1.5 | November 16, 2026**
 
 ## 1. Purpose and positioning
 
@@ -184,3 +184,28 @@ Then present these four steps in this order:
 4. **Practice, Communicate & Delegate** — How the rules become part of everyday operations.
 
 The transition into the weekly schedule begins with how the founder enters the week. This is the bridge from the AI-era statement to the workweek: “We Make Time For More. We Put Boundaries Into Your Workweek.” Do not insert a separate explanatory Monday section between this transition and the “What Does a Workweek Look Like” heading. The founder's entry into the week is the transition itself. Preserve the exact sequence above; do not paraphrase or add copy to these approved headings and explanatory paragraph.
+
+
+## 13. Founder-approved visual sequence update — November 16, 2026
+
+This section supersedes any conflicting layout or transition instructions in Sections 11 and 12. The founder approved the supplied screenshot as the visual reference for the transition into the Work-Life Balance Business Week™ schedule.
+
+Preserve this exact visual order:
+
+1. **White Harmony Lane approach section**
+   - Eyebrow: “The Harmony Lane Approach”
+   - Heading: “This Is Why We Don't Automate & Accelerate the Hustle with AI.”
+   - The explanatory paragraph beginning: “Your business has dedicated time to move forward, while your personal priorities have protected space too.” Use the complete approved paragraph already recorded in Section 12.
+   - Four framework cards, in order: Human Values; Human Sustainability Boundaries™; Business Operating Rules; Practice, Communicate & Delegate.
+   - Closing line: “Your Business. Your Human Values. Your Boundaries.”
+
+2. **Pale green workweek transition section**
+   - Eyebrow: “Putting Your Boundaries Into Your Workweek”
+   - Heading: “What Does a Workweek Look Like When Your Business Makes Room for Your Life?”
+   - Paragraph: “The Work-Life Balance Business Week™ gives you a different rhythm to experience—not just ideas to consider. Your business has dedicated time to move forward, while your personal priorities have protected space too.”
+   - Final transition line, exactly: “We call it **Make Time For More** and here's the Work-Life Balance Business Week's schedule that brings the approach to life:”
+
+3. **The Work-Life Balance Business Week™ schedule**
+   - Keep the existing schedule section and four cards intact: 4 Day Workweek (Monday–Thursday); 4 Hour Focused CEO Workday (Dedicated time for priority business work); 5 Hours Time Freedom (After 5:00 PM); 3 Day Weekend (Friday–Sunday).
+
+The approved screenshot's visual hierarchy and sequence take precedence over earlier placement instructions. Do not reinsert “We Make Time For More. We Put Boundaries Into Your Workweek.” as an additional heading in this transition. Do not move the Monday explanatory material into the space between the Harmony Lane approach and the weekly schedule.
