@@ -1,5 +1,5 @@
 # Harmony Lane™ Launch Source of Truth
-**Version 1.6 | November 16, 2026**
+**Version 1.7 | November 16, 2026**
 
 ## 1. Purpose and positioning
 
@@ -233,3 +233,18 @@ Then show these four numbered framework cards:
 **Closing line:** “Your Business. Your Human Values. Your Boundaries.”
 
 Preserve the existing approved visual treatment and the section's position before the pale-green workweek transition and schedule.
+
+
+## 15. Founder-approved workweek transition copy — November 16, 2026
+
+The pale-green “Putting Your Boundaries Into Your Workweek” section must contain the following exact sequence:
+
+**Eyebrow:** Putting Your Boundaries Into Your Workweek
+
+**Heading:** What Does a Workweek Look Like When Your Business Makes Room for Your Life?
+
+**Paragraph:** “Your business has dedicated time to move forward, while your personal priorities have protected space too.”
+
+**Final transition line:** “We call it **Make Time For More** and here's the Work-Life Balance Business Week's schedule that brings the approach to life:”
+
+Do not include the former sentence beginning “The Work-Life Balance Business Week™ gives you a different rhythm to experience—not just ideas to consider.” in this transition section. Preserve the existing pale-green visual design and the following Work-Life Balance Business Week™ schedule cards.
