@@ -12,7 +12,7 @@ function CtaLink({ label = "Join Us Sunday @ 3:PM ET ON ZOOM" }: { label?: strin
   return (
     <a
       href="#enrollment"
-      className="font-poppins inline-flex w-fit items-center justify-center rounded-full bg-[#C13B6B] px-7 py-4 text-base font-semibold uppercase tracking-[0.12em] text-[#FFF8F4] shadow-lg shadow-[#C13B6B]/25 transition-colors hover:bg-[#A8305B]"
+      className="font-poppins inline-flex w-fit items-center justify-center rounded-2xl bg-[#C13B6B] px-7 py-4 text-base font-semibold uppercase tracking-[0.12em] text-[#FFF8F4] shadow-lg shadow-[#C13B6B]/25 transition-colors hover:bg-[#A8305B]"
     >
       {label}
     </a>
@@ -644,7 +644,6 @@ export function RegisterSection() {
           <h3 className="mb-5 text-center font-playfair text-2xl font-bold text-[#4A3A42]">Reserve Your Free Sunday Seat</h3>
           <RegistrationForm />
         </div>
-        <a href="#enrollment" className="font-poppins inline-flex w-fit items-center justify-center rounded-full bg-[#C13B6B] px-7 py-4 text-base font-semibold uppercase tracking-[0.12em] text-[#FFF8F4] shadow-lg shadow-[#C13B6B]/25 transition-colors hover:bg-[#A8305B]">Join Us Sunday @ 3:PM ET On ZOOM</a>
       </div>
     </section>
   )
