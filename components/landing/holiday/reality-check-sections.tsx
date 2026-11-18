@@ -143,7 +143,36 @@ export function WeMakeTimeForMoreSection() {
               </article>
             ))}
           </div>
-          <p className="mx-auto mt-8 max-w-4xl text-center font-poppins text-base leading-relaxed text-[#5A4A52]">Your boundaries reflect your life, values, responsibilities, and business. This is a guided practice—not a one-size-fits-all rulebook.</p>
+          <div className="mt-10 rounded-3xl border border-[#E8C6D2] bg-[#FFF8F4] p-7 shadow-sm sm:p-10">
+            <header className="mx-auto max-w-4xl text-center">
+              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#5A7F46]">The Rules That Protect Every Boundary</p>
+              <h3 className="mt-3 font-playfair text-balance text-2xl font-bold leading-tight text-[#4A3A42] sm:text-4xl">Your Boundaries Need Business Rules Behind Them.</h3>
+              <p className="mt-4 font-poppins text-base leading-relaxed text-[#5A4A52]">The same protection rules apply throughout your business day and workweek—not just during the four-hour CEO Workday. Whether you are protecting focused work, movement, meals, family time, evenings, rest, or your weekend, your business must respect the boundaries you establish.</p>
+            </header>
+            <div className="mx-auto mt-8 grid max-w-5xl gap-4 sm:grid-cols-2">
+              {[
+                { title: "Protect the time.", description: "Do not schedule competing activities during a boundary you have established." },
+                { title: "Prevent unnecessary interruptions.", description: "Routine business requests must not intrude on protected time." },
+                { title: "No meetings during protected time.", description: "Schedule meetings and appointments around the boundaries you have established." },
+                { title: "Give the activity your attention.", description: "Avoid multitasking and switching to unrelated work during protected time." },
+                { title: "Communicate your availability.", description: "Tell clients, colleagues, team members, family, and others affected when you are and are not available." },
+                { title: "Define genuine emergencies.", description: "Establish what qualifies as an emergency and how one should reach you." },
+                { title: "Delegate or defer non-urgent requests.", description: "Route requests to the right person, process, or task queue instead of interrupting protected time." },
+                { title: "Silence nonessential notifications.", description: "Keep routine alerts, messages, and digital distractions from taking over your attention." },
+                { title: "Do not create automatic overtime.", description: "Unfinished work does not automatically take time from meals, movement, evenings, rest, or weekends." },
+                { title: "Honor the boundary consistently.", description: "Do not routinely make exceptions that undermine the boundary you established." },
+              ].map((item, index) => (
+                <article key={item.title} className="flex items-start gap-3 rounded-2xl bg-white p-5">
+                  <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#EEF3E8] font-poppins text-sm font-bold text-[#2D6348]">{index + 1}</span>
+                  <div>
+                    <h4 className="font-poppins text-sm font-bold text-[#4A3A42]">{item.title}</h4>
+                    <p className="mt-1 font-poppins text-sm leading-relaxed text-[#5A4A52]">{item.description}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+            <p className="mx-auto mt-8 max-w-4xl text-center font-poppins text-base leading-relaxed text-[#5A4A52]">Your specific boundaries reflect your life, values, responsibilities, and business. The rules for protecting them remain consistent. You do not have to arrive with perfect boundaries—you must be willing to establish them, communicate them, and practice honoring them.</p>
+          </div>
         </div>
       </section>
 
