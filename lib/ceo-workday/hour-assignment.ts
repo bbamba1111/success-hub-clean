@@ -14,9 +14,10 @@
  * resolveHour(item) = override ?? auto ?? hour 1.
  */
 
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import type { CeoPlanItem } from "./plan-types"
 import type { HourBlockIndex } from "./hour-blocks"
+import { queueDayStatePush } from "./day-state-sync"
 
 export type HourOverrides = Record<string, HourBlockIndex>
 
