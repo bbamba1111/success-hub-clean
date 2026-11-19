@@ -459,21 +459,7 @@ export function CeoWorkdayLivePlan() {
                 <Pencil className="h-3 w-3" aria-hidden /> Edit
               </button>
             )}
-            <label className="inline-flex items-center gap-1 rounded-full border border-[#E8DFE2] bg-white px-2.5 py-1">
-              <span className="font-sans text-[15px] font-semibold text-[#6B5860]">Move to hour</span>
-              <span className="sr-only">Move this work to another hour</span>
-              <select
-                value={resolveHour(item.id, autoHours, overrides)}
-                onChange={(e) => setHour(item.id, Number(e.target.value) as HourBlockIndex)}
-                className="cursor-pointer bg-transparent font-sans text-[15px] font-bold text-[#2E1F27] focus:outline-none"
-              >
-                {[1, 2, 3, 4].map((h) => (
-                  <option key={h} value={h}>
-                    {h}
-                  </option>
-                ))}
-              </select>
-            </label>
+
           </div>
         )}
 
@@ -521,7 +507,6 @@ export function CeoWorkdayLivePlan() {
           hour reveals that work, editable / deferrable / delegable / removable right
           there, followed by the hour's Work Affirmation™ and Copy. */}
       {plan && activeItems.length > 0 && <WorkforceSummary items={activeItems} jobsById={jobsById} />}
-      {plan && <FunctionSwitcher items={activeItems} value={functionFilter} onChange={setFunctionFilter} />}
       {plan && (
         <div
           ref={whatMustHappenRef}
