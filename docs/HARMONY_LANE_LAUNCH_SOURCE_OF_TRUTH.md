@@ -270,3 +270,22 @@ In the pale-green “Putting Your Boundaries Into Your Workweek” section:
 “Your business has dedicated time to move forward, while your personal priorities have protected space too. We call it **Make Time For More** and here's the Work-Life Balance Business Week's schedule that brings this approach to life:”
 
 Keep the heading, paragraph styling, section background, and following schedule unchanged.
+
+
+## 18. Founder-approved Black Friday special pricing and membership inclusions — November 19, 2026
+
+This is **special promotional pricing**, not the established regular or standard membership price. Do not describe $1,997 as the permanent standard rate.
+
+- **Membership:** Harmony Lane™ Membership.
+- **Black Friday special founding-member rate:** $1,997 per month.
+- **Enrollment deadline:** December 31, 2026.
+- **Billing:** Monthly recurring billing. The founder will update the amount in Stripe; do not change Stripe or state that the amount has already been changed.
+- **Price protection:** Members who enroll by December 31, 2026 retain the $1,997 monthly rate for as long as their membership remains continuously active.
+- **Included:** Four Work-Life Balance Business Weeks™ every month—one guided week each week.
+- **Free entry point:** Work-Life Balance Reality Check™.
+- **Membership inclusions:** the guided Monday Work-Life Balance Business Day™ within each week; Monday–Thursday four-day workweek rhythm; 4-Hour Focused CEO Workday™; structured coworking as one included feature; five-minute boundary check-ins; practice of built-in and personalized Human Sustainability Boundaries™; Friday–Sunday Time Freedom™; and ongoing founder community, participation, and accountability.
+- **Offer simplicity:** No separate paid first-week purchase, no separate weekly fee, and no separate coworking subscription. The Business Week experiences and coworking are included in the monthly membership.
+- **Positioning:** This is a premium guided founder experience and membership—not a conventional coworking subscription. Coworking is a feature, not the product name.
+- **Landing page:** Clearly label $1,997/month as a Black Friday special founding-member rate, state the December 31, 2026 deadline and continuous-membership price protection, and explain what is included. Lead visitors to the free Reality Check. Do not imply automatic paid enrollment after completing it.
+
+This section governs Black Friday offer messaging and supersedes any conflicting pricing references elsewhere in this document.
