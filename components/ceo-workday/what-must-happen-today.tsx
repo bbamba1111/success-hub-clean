@@ -124,7 +124,7 @@ export function WhatMustHappenToday({
                 )}
                 {hourItems.length === 0 && (
                   <p className="font-sans text-base leading-relaxed text-[#6B5860]">
-                    No work is planned for this hour yet. You can add a task here or move one in from another hour.
+                    No task was selected for this hour in Decide & Design.
                   </p>
                 )}
                 {onAddTask && (
