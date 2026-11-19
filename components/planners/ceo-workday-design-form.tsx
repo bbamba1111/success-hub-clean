@@ -10,7 +10,7 @@
  *   1. Source decisions (weekly Business Building Priority, Bottleneck
  *      Priority, related asset) are shown — never re-asked.
  *   2. WHAT MUST HAPPEN TODAY? → business function → what needs to happen →
- *      expected outcome → Add Work Item (the founder's own work, when needed).
+ *      expected outcome → Add Task (the founder's own work, when needed).
  *   3. TODAY'S CEO WORK — the design engine's proposed chain. Expected Outcome
  *      is always visible and directly editable; Edit means editing the work.
  *   4. "Build My CEO Workday™" activates from the real design state (approved
@@ -128,7 +128,6 @@ export function CeoWorkdayDesignForm() {
   const [addFn, setAddFn] = useState<CeoBusinessFunction | null>(null)
   const [addWork, setAddWork] = useState("")
   const [addOutcome, setAddOutcome] = useState("")
-  const [addMinutes, setAddMinutes] = useState(30)
   const composerRef = useRef<HTMLDivElement | null>(null)
   const workInputRef = useRef<HTMLTextAreaElement | null>(null)
 
@@ -276,7 +275,7 @@ export function CeoWorkdayDesignForm() {
     if (!item) return
     if (decision === "keep") {
       if (!isApproved(item) && approved.length >= 4) {
-        setSaveError("Your CEO Workday has four one-hour blocks. Choose no more than four tasks for today.")
+        setSaveError("Your CEO Workday has four one-hour blocks. You can choose up to four tasks for today.")
         return
       }
       setSaveError(null)
@@ -325,7 +324,7 @@ export function CeoWorkdayDesignForm() {
       treatment: "implement-operate" as CeoTreatment,
       businessFunction: addFn,
       role: "founder-added",
-      estimatedMinutes: Math.max(5, addMinutes),
+      estimatedMinutes: 55,
       ceoWorkCategory: CEO_FUNCTION_TO_CATEGORY[addFn],
       gpsOriginal: null,
       founderDecision: "added",
@@ -335,7 +334,6 @@ export function CeoWorkdayDesignForm() {
     setAddFn(null)
     setAddWork("")
     setAddOutcome("")
-    setAddMinutes(30)
   }
   function openComposer() {
     composerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
@@ -347,7 +345,7 @@ export function CeoWorkdayDesignForm() {
   const missingOutcome = approved.filter((i) => !i.expectedEvidence.trim())
   const missingTitle = approved.filter((i) => !i.title.trim())
   const readiness: string[] = []
-  if (approved.length !== 4) readiness.push(`choose exactly four tasks (you have ${approved.length})`)
+  if (approved.length === 0) readiness.push("choose at least one business task")
   if (missingTitle.length) readiness.push("give every kept piece of work a title")
   if (missingOutcome.length) readiness.push("add an expected outcome to every kept piece of work")
   const canBuild = !saving && week !== null && readiness.length === 0
@@ -467,11 +465,14 @@ export function CeoWorkdayDesignForm() {
       <div>
         <h4 className="mb-1 font-sans text-xl font-bold text-[#2E1F27]">Design My 4-Hour CEO Workday™</h4>
         <p className="font-sans text-sm text-[#6B5860]">
-          Choose the business work you want to complete during your protected 4-hour CEO Workday™.
+          Choose up to 4 business tasks you want to move forward today, in the order you want to work on them.
         </p>
-        <p className="mt-2 font-sans text-base leading-relaxed text-[#6B5860]/80">
-          Your CEO Workday™ protects 240 minutes for meaningful business work. You do not need to fill every minute.
-        </p>
+        <div className="mt-3 space-y-2 rounded-xl border border-[#E8DFE2] bg-[#FAF8F5] p-3 font-sans text-sm text-[#3A2E33]">
+          <p><strong>1:00–2:00 PM</strong> — 55 minutes focused work + 5-minute check-in</p>
+          <p><strong>2:00–3:00 PM</strong> — 55 minutes focused work + 5-minute check-in</p>
+          <p><strong>3:00–4:00 PM</strong> — 55 minutes focused work + 5-minute check-in</p>
+          <p><strong>4:00–5:00 PM</strong> — 55 minutes focused work + 5-minute check-in</p>
+        </div>
       </div>
 
         {/* Supporting context from this week's decisions */}
@@ -497,7 +498,7 @@ export function CeoWorkdayDesignForm() {
             What must happen today?
           </p>
           <p className="mt-1 font-sans text-sm text-[#6B5860]">
-            Choose the business work that needs to move forward today.
+            Choose your tasks. We’ll place them into your workday in that order.
           </p>
         </div>
 
@@ -519,7 +520,7 @@ export function CeoWorkdayDesignForm() {
                   What needs to happen?
                 </label>
                 <p className="mb-2 mt-0.5 font-sans text-base text-[#6B5860]">
-                  Write the task you choose to work on during this hour.
+                  Add a business task you want to complete.
                 </p>
 <textarea
                   id="ceo-add-work"
@@ -557,21 +558,6 @@ export function CeoWorkdayDesignForm() {
               </div>
 
               <div className="flex flex-wrap items-center gap-3">
-                <div className="flex items-center gap-2">
-                  <label className="font-sans text-base text-[#6B5860]" htmlFor="ceo-add-minutes">
-                    Estimated time
-                  </label>
-                  <input
-                    id="ceo-add-minutes"
-                    type="number"
-                    min={5}
-                    max={CEO_WORKDAY_CONTAINER_MINUTES}
-                    value={addMinutes}
-                    onChange={(e) => setAddMinutes(Math.max(5, Number(e.target.value) || 0))}
-                    className="w-20 rounded-lg border border-[#E8DFE2] bg-white px-2 py-1.5 font-sans text-sm text-[#2E1F27] focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
-                  />
-                  <span className="font-sans text-base text-[#6B5860]">min</span>
-                </div>
                 <div className="ml-auto flex items-center gap-3">
                   <button
                     type="button"
@@ -610,7 +596,7 @@ export function CeoWorkdayDesignForm() {
               planned > CEO_WORKDAY_CONTAINER_MINUTES ? "text-[#C13B6B]" : "text-[#6B5860]"
             }`}
           >
-            {planned} / {CEO_WORKDAY_CONTAINER_MINUTES} min planned
+            {approved.length} of 4 tasks selected
           </span>
         </div>
 
@@ -635,7 +621,7 @@ export function CeoWorkdayDesignForm() {
           className="inline-flex items-center gap-1.5 rounded-full border border-[#E8DFE2] bg-white px-4 py-2 font-sans text-base text-[#6B5860] hover:bg-black/[0.03]"
         >
           <Plus className="h-3.5 w-3.5" aria-hidden />
-          Add Another CEO Work Item
+          Add a CEO Work Task
         </button>
       </div>
 
