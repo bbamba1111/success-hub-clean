@@ -19,7 +19,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Clock, Pencil, Play, RotateCcw } from "lucide-react"
-import { FunctionSwitcher, ItemWorkforceRow, WorkforceSummary, useWorkdayJobs } from "./workday-workforce"
+import { ItemWorkforceRow, WorkforceSummary, useWorkdayJobs } from "./workday-workforce"
 import { Button } from "@/components/ui/button"
 
 import { getDateKey } from "@/lib/daily-plan/storage"
@@ -38,7 +38,7 @@ import {
   type HourBlock,
   type HourBlockIndex,
 } from "@/lib/ceo-workday/hour-blocks"
-import { autoAssignHours, resolveHour, useHourOverrides } from "@/lib/ceo-workday/hour-assignment"
+import { autoAssignHours } from "@/lib/ceo-workday/hour-assignment"
 import {
   ARTICULATION_FUNCTIONS,
   CEO_FUNCTION_LABEL,
@@ -142,20 +142,16 @@ export function CeoWorkdayLivePlan() {
 
   const activeItems = useMemo(() => plan?.items.filter((i) => i.founderDecision !== "remove") ?? [], [plan])
   const { jobsById, refreshJobs } = useWorkdayJobs(activeItems)
-  const [functionFilter, setFunctionFilter] = useState<CeoBusinessFunction | "all">("all")
-
-  // The designed work populates the four hours: auto-filled by order + time,
-  // and reassignable by the founder (override persisted per plan date).
+  // Four founder-selected tasks populate the four hours in saved order.
   const autoHours = useMemo(() => autoAssignHours(plan?.items ?? []), [plan])
-  const { overrides, setHour } = useHourOverrides(dateKey)
   const itemsByHour = useMemo(() => {
     const groups: Record<HourBlockIndex, CeoPlanItem[]> = { 1: [], 2: [], 3: [], 4: [] }
     for (const item of activeItems) {
-      if (functionFilter !== "all" && item.businessFunction !== functionFilter) continue
-      groups[resolveHour(item.id, autoHours, overrides)].push(item)
+      const hour = autoHours[item.id]
+      if (hour) groups[hour].push(item)
     }
     return groups
-  }, [activeItems, autoHours, overrides, functionFilter])
+  }, [activeItems, autoHours])
 
   const block = currentHourBlock(nowMin)
   const due = blockNeedingCheckin(nowMin, savedBlocks)
