@@ -14,38 +14,22 @@
  * resolveHour(item) = override ?? auto ?? hour 1.
  */
 
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import type { CeoPlanItem } from "./plan-types"
 import type { HourBlockIndex } from "./hour-blocks"
-import { queueDayStatePush } from "./day-state-sync"
-
-const MINUTES_PER_HOUR = 60
-const STORAGE_KEY = (dateKey: string) => `ceo-workday-hour-overrides:${dateKey}`
-const CHANGED_EVENT = "ceo-workday-hour-overrides-changed"
 
 export type HourOverrides = Record<string, HourBlockIndex>
 
-/** Packs active items in plan order into the four hours by estimated minutes. */
+/** Assign one selected task to each hour in founder-selected order. */
 export function autoAssignHours(items: CeoPlanItem[]): Record<string, HourBlockIndex> {
   const map: Record<string, HourBlockIndex> = {}
-  let consumed = 0
-  for (const item of items) {
-    const hour = Math.min(4, Math.floor(consumed / MINUTES_PER_HOUR) + 1) as HourBlockIndex
-    map[item.id] = hour
-    // Removed / eliminated work still gets a home hour, but never consumes time.
-    if (item.founderDecision !== "remove" && item.status !== "eliminated") {
-      consumed += Math.max(15, Math.min(240, Math.round(item.estimatedMinutes || 0) || MINUTES_PER_HOUR))
-    }
-  }
+  const selected = items.filter((item) => item.founderDecision !== "remove" && item.status !== "eliminated").sort((a, b) => a.position - b.position).slice(0, 4)
+  selected.forEach((item, index) => { map[item.id] = (index + 1) as HourBlockIndex })
   return map
 }
 
-export function resolveHour(
-  itemId: string,
-  auto: Record<string, HourBlockIndex>,
-  overrides: HourOverrides,
-): HourBlockIndex {
-  return overrides[itemId] ?? auto[itemId] ?? 1
+export function resolveHour(itemId: string, auto: Record<string, HourBlockIndex>, _overrides?: HourOverrides): HourBlockIndex {
+  return auto[itemId] ?? 1
 }
 
 function read(dateKey: string): HourOverrides {
