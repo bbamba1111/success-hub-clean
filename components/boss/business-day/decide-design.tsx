@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { useBoss } from "@/lib/boss/store"
 import { authorityFor, canProceed } from "@/lib/boss/reducer"
-import { FOUNDER_CAPACITY_MINS, FUNCTIONS, isClosed } from "@/lib/boss/constants"
+import { FOUNDER_CAPACITY_MINS, isClosed } from "@/lib/boss/constants"
 import { formatDuration, formatStamp } from "@/lib/boss/clock"
 import type { DayPhase } from "@/lib/boss/clock"
 import { EmptyState, MoreDetails, Panel, StatusBadge, bigButton } from "../primitives"
@@ -73,7 +73,6 @@ export function DecideDesignView({
   const backlog = state.work.filter((w) => !w.inTodayPlan && !isClosed(w.status) && w.parentId === null)
   const checks = planChecks(state, planAll, total)
   const openPlan = plan.filter((w) => !isClosed(w.status))
-  const byFn = FUNCTIONS.map((f) => ({ ...f, count: openPlan.filter((w) => w.fn === f.id).length }))
   const confirmed = !!state.day.planConfirmedAt
   const allReady = checks.every((c) => c.ok)
 
@@ -107,7 +106,7 @@ export function DecideDesignView({
         title={`Today's tasks (${openPlan.length})`}
         description="Tap Change on a task to move it up or down."
         action={
-          <Button className={bigButton} variant="outline" onClick={() => handlers.onEdit({ mode: "create", inPlan: true })}>
+          <Button className={bigButton} variant="outline" disabled={openPlan.length >= 4} onClick={() => handlers.onEdit({ mode: "create", inPlan: true })}>
             <Plus className="h-5 w-5" aria-hidden />
             Add a task
           </Button>
@@ -124,6 +123,12 @@ export function DecideDesignView({
         )}
       </Panel>
 
+      <WorkdayHourBlocks items={openPlan} />
+      {openPlan.length > 4 && (
+        <p className="rounded-xl border border-brand-coral/40 bg-brand-blush p-4 text-base text-brand-coral-dark">
+          This plan has more than four active tasks. Only the first four in your chosen order fit into today's four one-hour blocks. Move the others out of today's plan before confirming.
+        </p>
+      )}
       <TimeLine total={total} />
 
       <div className="flex flex-wrap gap-3">
@@ -155,7 +160,8 @@ export function DecideDesignView({
                   <StatusBadge status={w.status} />
                   <button
                     onClick={() => dispatch({ type: "PLAN", id: w.id, include: true })}
-                    className="inline-flex h-11 items-center gap-2 rounded-xl border border-brand-green/40 px-4 text-base font-semibold text-brand-green-dark hover:bg-brand-sage-light"
+                    disabled={openPlan.length >= 4}
+                    className="inline-flex h-11 items-center gap-2 rounded-xl border border-brand-green/40 px-4 text-base font-semibold text-brand-green-dark hover:bg-brand-sage-light disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     <Plus className="h-5 w-5" aria-hidden />
                     Add to today
@@ -168,17 +174,6 @@ export function DecideDesignView({
 
         <MoreDetails summary={allReady ? "Check my plan · all good" : "Check my plan · some things need you"}>
           <CheckList checks={checks} />
-          <div className="flex flex-col gap-3">
-            <p className="text-base font-semibold text-brand-ink">Tasks in each part of your business</p>
-            <ul className="flex flex-col gap-2">
-              {byFn.map((f) => (
-                <li key={f.id} className="flex items-center justify-between gap-3 text-base">
-                  <span className="text-brand-ink">{f.label}</span>
-                  <span className="font-semibold tabular-nums">{f.count}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
         </MoreDetails>
       </div>
 
@@ -226,6 +221,29 @@ export function DecideDesignView({
         </DialogContent>
       </Dialog>
     </div>
+  )
+}
+
+export function WorkdayHourBlocks({ items }: { items: { id: string; title: string }[] }) {
+  const slots = ["1:00–2:00 PM", "2:00–3:00 PM", "3:00–4:00 PM", "4:00–5:00 PM"]
+  return (
+    <section className="flex flex-col gap-4" aria-label="Four one-hour work blocks">
+      <div>
+        <h3 className="font-display text-2xl font-semibold text-brand-ink">Your four one-hour work blocks</h3>
+        <p className="text-base text-brand-ink-soft">Your tasks are placed in the blocks in the order you chose.</p>
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2">
+        {slots.map((time, index) => {
+          const item = items[index]
+          return (
+            <div key={time} className="min-h-28 rounded-2xl border border-border bg-card p-5">
+              <p className="text-sm font-semibold uppercase tracking-wide text-brand-green-dark">Hour {index + 1} · {time}</p>
+              <p className="mt-2 text-lg font-semibold text-brand-ink">{item?.title ?? "No task selected yet"}</p>
+            </div>
+          )
+        })}
+      </div>
+    </section>
   )
 }
 
