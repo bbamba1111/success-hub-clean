@@ -24,7 +24,7 @@ export type HourOverrides = Record<string, HourBlockIndex>
 /** Assign one selected task to each hour in founder-selected order. */
 export function autoAssignHours(items: CeoPlanItem[]): Record<string, HourBlockIndex> {
   const map: Record<string, HourBlockIndex> = {}
-  const selected = items.filter((item) => item.founderDecision !== "remove" && item.status !== "eliminated").sort((a, b) => a.position - b.position).slice(0, 4)
+  const selected = items.filter((item) => item.founderDecision !== "remove" && item.status !== "eliminated" && item.status !== "saved-for-later" && item.status !== "delegated").sort((a, b) => a.position - b.position).slice(0, 4)
   selected.forEach((item, index) => { map[item.id] = (index + 1) as HourBlockIndex })
   return map
 }
