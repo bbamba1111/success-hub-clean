@@ -632,12 +632,53 @@ const FAQS = [
   { q: "Is the Sunday Work-Life Balance Reality Check™ free?", a: "Yes. The Sunday Reality Check, assessment results, and priority focus areas are free. You can decide afterward whether you want a deeper personalized Boundary Report™ or a paid Harmony Lane experience." },
   { q: "What does the Reality Check include?", a: "It includes your Founder Profile™, 10-question Business Context™, Business Boundary Collisions™, Personal & Work-From-Home Reality™, 15-question 30-Day Work-Life Balance Audit™, results and priority focus areas, and 3 Work-Life Balance Alignment™ questions." },
   { q: "What is the Work-Life Balance Business Day™?", a: "It is the guided Monday experience within the Work-Life Balance Business Week™. It helps you reconnect with your entrepreneurial intention, review your current reality, personalize boundaries, design your business day, and practice those boundaries while doing real business work. It can also be experienced on its own as a standalone offering." },
-  { q: "What is the Work-Life Balance Business Week™?", a: "It is the complete seven-day guided experience. It includes the Work-Life Balance Business Day™ on Monday, guided boundary practice during the workweek, a Thursday closeout, and intentional Friday–Sunday Time Freedom™." },
-  { q: "Do I need to buy the Business Day separately to join the Business Week?", a: "No. The Work-Life Balance Business Day™ is already included as the Monday experience in the Work-Life Balance Business Week™. A separate purchase is only relevant if you choose the standalone Business Day instead of the full-week experience." },
-  { q: "Do I have to purchase anything after the free Reality Check?", a: "No. You receive your free results and priority focus areas without purchasing a report or either Harmony Lane experience." },
+  { q: "What is the Work-Life Balance Business Week™?", a: "It is the guided weekly experience included in Harmony Lane™ Membership. Members receive four Work-Life Balance Business Weeks™ each month, with the guided Monday Business Day™, structured coworking, boundary practice, focused CEO work time, five-minute check-ins, and Friday–Sunday Time Freedom™." },
+  { q: "Do I need to buy the Business Day separately to join the Business Week?", a: "No. The guided Monday Work-Life Balance Business Day™ is included in each Work-Life Balance Business Week™, and four guided Business Weeks are included in the monthly Harmony Lane™ Membership." },
+  { q: "Do I have to purchase anything after the free Reality Check?", a: "No. Your Reality Check results and priority focus areas are free. You can review the special founding-member Harmony Lane™ Membership offer separately and decide whether to join." },
   { q: "Is this an AI readiness certification?", a: "No. The Reality Check is a work-life balance and business operating diagnostic. It helps you understand your current reality and the boundaries that need attention; it is not an AI certification." },
   { q: "Who is Harmony Lane for?", a: "New and established founders who want to build work-life balance into the way they start, grow, and operate their businesses—including founders who want to avoid recreating hustle culture or automating it with AI." },
 ]
+
+
+export function BlackFridayOfferSection() {
+  return (
+    <section id="black-friday-offer" className="scroll-mt-20 bg-[#123B2A] py-20 sm:py-24">
+      <div className="mx-auto max-w-5xl px-5 sm:px-8">
+        <div className="mx-auto max-w-4xl text-center">
+          <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">Black Friday Special · Founding Member Offer</p>
+          <h2 className="mt-3 font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl">Harmony Lane™ Membership</h2>
+          <p className="mt-5 font-poppins text-lg leading-relaxed text-[#F6D6E1]">Four guided Work-Life Balance Business Weeks™ every month—with structured coworking included as part of the experience.</p>
+          <p className="mt-8 font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C9DDB4]">Special founding-member monthly rate</p>
+          <p className="mt-2 font-playfair text-5xl font-bold text-[#FFF8F4] sm:text-6xl">$1,997<span className="font-poppins text-xl font-medium">/month</span></p>
+          <p className="mt-3 font-poppins text-sm leading-relaxed text-[#F6D6E1]">Enroll by December 31, 2026. Keep this special monthly rate for as long as your membership remains continuously active.</p>
+        </div>
+        <div className="mx-auto mt-10 max-w-4xl rounded-3xl bg-[#FFF8F4] p-7 shadow-xl sm:p-10">
+          <h3 className="font-playfair text-2xl font-bold text-[#4A3A42] sm:text-3xl">Your membership includes</h3>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            {[
+              { title: "Four guided Business Weeks every month", detail: "One Work-Life Balance Business Week™ each week, applying the experience to your actual business." },
+              { title: "A guided Monday Business Day", detail: "Work-Life Balance Business Day™ to reconnect with priorities and design your entry into the workweek." },
+              { title: "A protected workweek rhythm", detail: "Monday–Thursday workweek, the 4-Hour Focused CEO Workday™, and Friday–Sunday Time Freedom™." },
+              { title: "Structured coworking", detail: "Live coworking for shared focus, community, support, and accountability—included, not sold separately." },
+              { title: "Five-minute boundary check-ins", detail: "Notice and record progress, interruptions, and boundary collisions during the workday." },
+              { title: "Human Sustainability Boundaries™", detail: "Practice the boundaries built into the experience and personalize them around your life and business." },
+              { title: "Ongoing founder community", detail: "Participate, connect, reflect, and learn alongside other founders." },
+            ].map((item) => (
+              <article key={item.title} className="rounded-2xl border border-[#EAD5DC] bg-white p-5">
+                <h4 className="font-poppins text-base font-semibold text-[#4A3A42]">{item.title}</h4>
+                <p className="mt-2 font-poppins text-sm leading-relaxed text-[#5A4A52]">{item.detail}</p>
+              </article>
+            ))}
+          </div>
+          <p className="mt-7 font-poppins text-sm leading-relaxed text-[#5A4A52]">Start with the free Work-Life Balance Reality Check™. It is your first step—not a separate paid product or an automatic enrollment in the membership.</p>
+          <div className="mt-7 flex justify-center">
+            <a href="#reality-check" className="font-poppins inline-flex items-center justify-center rounded-2xl bg-[#C13B6B] px-7 py-4 text-base font-semibold uppercase tracking-[0.08em] text-[#FFF8F4] shadow-lg shadow-[#C13B6B]/25 transition-colors hover:bg-[#A8305B]">Take Your FREE Work-Life Balance Reality Check</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
 
 export function FaqSection() {
   return (
@@ -667,7 +708,7 @@ export function RegisterSection() {
       <div className="relative mx-auto flex max-w-4xl flex-col items-center gap-5 px-5 text-center sm:px-8">
         <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">Your next step</p>
         <h2 className="font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl">Start with clarity. Then decide what you want to change.</h2>
-        <p className="font-poppins max-w-2xl text-lg leading-relaxed text-[#F6D6E1]">Join the free Sunday Work-Life Balance Reality Check™. Review your results and priority focus areas, then decide whether the optional $97 personalized Boundary Report™ or either Harmony Lane experience is right for you.</p>
+        <p className="font-poppins max-w-2xl text-lg leading-relaxed text-[#F6D6E1]">Start with the free Sunday Work-Life Balance Reality Check™. Review your results and priority focus areas, then decide whether the Harmony Lane™ Membership and its four guided Business Weeks each month are right for you.</p>
         <p className="font-playfair text-xl italic text-[#FFF8F4]">We Don&apos;t Hustle — We Harmonize.™</p>
         <div className="w-full max-w-xl rounded-3xl border border-white/20 bg-[#FFF8F4] p-6 text-left shadow-2xl sm:p-8">
           <h3 className="mb-5 text-center font-playfair text-2xl font-bold text-[#4A3A42]">Reserve Your Free Sunday Seat</h3>
