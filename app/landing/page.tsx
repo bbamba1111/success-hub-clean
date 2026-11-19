@@ -4,6 +4,7 @@ import { LandingFooter } from "@/components/landing/landing-footer"
 import { HolidayHero } from "@/components/landing/holiday/holiday-hero"
 import {
   AboutBarbaraSection,
+  BlackFridayOfferSection,
   DisclaimerFooter,
   FaqSection,
   FreedomSection,
@@ -54,6 +55,7 @@ export default function LandingPage() {
       <NewYearSection />
       <RealityCheckSection />
       <AboutBarbaraSection />
+      <BlackFridayOfferSection />
       <FaqSection />
       <RegisterSection />
       <DisclaimerFooter />
