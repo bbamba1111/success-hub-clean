@@ -63,8 +63,6 @@ import {
   saveCeoWorkdayPlan,
 } from "@/lib/ceo-workday/plan-server"
 import { addWorkItem, getTodaysWork, removeWorkItem } from "@/lib/ceo-workday/todays-work-store"
-import { FunctionWorkSelect } from "@/components/ceo-workday/function-work-select"
-import { functionChipClass } from "@/lib/ceo-workday/function-chip-styles"
 import { getWorkflowEntry } from "@/lib/ceo-workday/workflow-registry"
 
 import { BossJourneyPanel } from "@/components/ceo-workday/boss-journey-panel"
@@ -99,16 +97,6 @@ const DECISION_LABEL: Record<CeoFounderDecision, string> = {
   remove: "removed",
   added: "added",
 }
-
-const FUNCTION_ORDER: CeoBusinessFunction[] = [
-  "client-attraction",
-  "sales-conversion",
-  "delivery",
-  "operations",
-  "operations-design",
-  "trust-experiences",
-  "thought-leadership",
-]
 
 function newLocalId() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
@@ -287,6 +275,11 @@ export function CeoWorkdayDesignForm() {
     const item = items.find((i) => i.id === id)
     if (!item) return
     if (decision === "keep") {
+      if (!isApproved(item) && approved.length >= 4) {
+        setSaveError("Your CEO Workday has four one-hour blocks. Choose no more than four tasks for today.")
+        return
+      }
+      setSaveError(null)
       const o = item.gpsOriginal
       setItems((prev) =>
         prev.map((i) =>
@@ -322,7 +315,7 @@ export function CeoWorkdayDesignForm() {
 
   const composerReady = !!addFn && addWork.trim().length > 0 && addOutcome.trim().length > 0
   function addFounderWork() {
-    if (!composerReady || !addFn) return
+    if (!composerReady || !addFn || approved.length >= 4) return
     const item: CeoPlanItem = {
       id: `cwp_manual_${newLocalId()}`,
       position: items.length,
@@ -346,7 +339,7 @@ export function CeoWorkdayDesignForm() {
   }
   function openComposer() {
     composerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
-    if (!addFn) setAddFn("build")
+    if (!addFn) setAddFn("own-work")
     setTimeout(() => workInputRef.current?.focus(), 350)
   }
 
@@ -354,14 +347,14 @@ export function CeoWorkdayDesignForm() {
   const missingOutcome = approved.filter((i) => !i.expectedEvidence.trim())
   const missingTitle = approved.filter((i) => !i.title.trim())
   const readiness: string[] = []
-  if (approved.length === 0) readiness.push("add at least one piece of work")
+  if (approved.length !== 4) readiness.push(`choose exactly four tasks (you have ${approved.length})`)
   if (missingTitle.length) readiness.push("give every kept piece of work a title")
   if (missingOutcome.length) readiness.push("add an expected outcome to every kept piece of work")
   const canBuild = !saving && week !== null && readiness.length === 0
 
   // ── build ─────────────────────────────────────────────────────────────────
   async function handleBuild() {
-    if (!canBuild || !week) return
+    if (!canBuild || !week || approved.length !== 4) return
     if (readiness.length > 0) {
       setSaveError(`Almost there — ${readiness.join("; ")}.`)
       if (approved.length === 0) openComposer()
@@ -508,32 +501,6 @@ export function CeoWorkdayDesignForm() {
           </p>
         </div>
 
-        <div>
-          <p className="mb-2 font-montserrat text-[14px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60">
-            Business function
-          </p>
-          <div className="flex flex-wrap gap-1.5" role="group" aria-label="Business function">
-            {FUNCTION_ORDER.map((fn) => (
-              <button
-                key={fn}
-                type="button"
-                aria-pressed={addFn === fn}
-                onClick={() => {
-                  if (addFn !== fn) {
-                    setAddWork("")
-                    setAddOutcome("")
-                  }
-                  setAddFn(fn)
-                  setTimeout(() => workInputRef.current?.focus(), 50)
-                }}
-                className={functionChipClass(fn, addFn === fn)}
-              >
-                {CEO_FUNCTION_LABEL[fn]}
-              </button>
-            ))}
-          </div>
-        </div>
-
         <AnimatePresence initial={false}>
           {addFn && (
             <motion.div
@@ -552,25 +519,9 @@ export function CeoWorkdayDesignForm() {
                   What needs to happen?
                 </label>
                 <p className="mb-2 mt-0.5 font-sans text-base text-[#6B5860]">
-                  Choose common work for {CEO_FUNCTION_LABEL[addFn].toLowerCase()}, or write your own.
+                  Write the task you choose to work on during this hour.
                 </p>
-                <div className="mb-2">
-                  <FunctionWorkSelect
-                    id="ceo-add-work-option"
-                    fn={addFn}
-                    value={addWork}
-                    onSelect={(option) => {
-                      if (!option) {
-                        setAddWork("")
-                        setTimeout(() => workInputRef.current?.focus(), 50)
-                        return
-                      }
-                      setAddWork(option.work)
-                      if (!addOutcome.trim()) setAddOutcome(option.outcome)
-                    }}
-                  />
-                </div>
-                <textarea
+<textarea
                   id="ceo-add-work"
                   ref={workInputRef}
                   value={addWork}
@@ -636,7 +587,7 @@ export function CeoWorkdayDesignForm() {
                   <button
                     type="button"
                     onClick={addFounderWork}
-                    disabled={!composerReady}
+                    disabled={!composerReady || approved.length >= 4}
                     className="inline-flex items-center gap-1.5 rounded-lg border border-[#7FB069]/40 px-4 py-2 font-sans text-sm font-semibold text-[#3A6B3E] hover:bg-[#7FB069]/10 disabled:opacity-40"
                   >
                     <Plus className="h-3.5 w-3.5" aria-hidden /> Add Work Item
@@ -648,26 +599,7 @@ export function CeoWorkdayDesignForm() {
         </AnimatePresence>
       </div>
 
-      {journeyCtx && !built && !savedPlan && (
-  <BossJourneyPanel
-  journey={journeyCtx.journey}
-  suggested={journeyCtx.suggested}
-  harmonyTransition={journeyCtx.harmonyTransition}
-  onJourneyChange={changeJourney}
-  initiatives={initiativesForArea(week?.business.businessAreaId).filter(
-  (i) => i.journey === effectiveJourney(journeyCtx.journey, journeyCtx.harmonyTransition),
-  )}
-  initiativeId={design?.initiative?.id ?? initiativeId}
-  onInitiativeChange={setInitiativeId}
-  objective={design?.initiative?.objective ?? null}
-  questions={design?.readinessQuestions ?? []}
-  answers={journeyCtx.answers}
-  onAnswer={answerReadiness}
-  error={journeyError}
-  />
-  )}
-
-  {/* TODAY'S CEO WORK */}
+      {/* TODAY'S CEO WORK */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <p className="font-montserrat text-[14px] font-bold uppercase tracking-[0.18em] text-[#6B5860]/60">
@@ -784,10 +716,7 @@ function WorkCard({
         >
           {ROLE_LABEL[item.role]}
         </span>
-        <span className="font-montserrat text-[13px] font-bold uppercase tracking-[0.16em] text-[#5B835F]">
-          {CEO_FUNCTION_LABEL[item.businessFunction]}
-        </span>
-        <span className="font-montserrat text-[13px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/60">
+<span className="font-montserrat text-[13px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/60">
           {CEO_TREATMENT_LABEL[item.treatment]}
   </span>
   {item.readiness && item.readiness !== "ready" && (
@@ -818,28 +747,6 @@ function WorkCard({
               onChange={(e) => onPatch({ title: e.target.value })}
               className="mt-1 w-full rounded-lg border border-[#E8DFE2] bg-white px-3 py-2 font-sans text-sm font-semibold text-[#2E1F27] focus:outline-none focus:ring-2 focus:ring-[#8DAE72]/30"
             />
-          </div>
-          <div>
-            <p className="font-montserrat text-[13px] font-bold uppercase tracking-[0.16em] text-[#6B5860]/60">
-              Business function
-            </p>
-            <div className="mt-1 flex flex-wrap gap-1.5" role="group" aria-label="Business function">
-              {FUNCTION_ORDER.map((fn) => (
-                <button
-                  key={fn}
-                  type="button"
-                  aria-pressed={item.businessFunction === fn}
-                  onClick={() => onPatch({ businessFunction: fn, ceoWorkCategory: CEO_FUNCTION_TO_CATEGORY[fn] })}
-                  className={`rounded-full border px-2 py-0.5 font-montserrat text-[11px] font-bold tracking-normal transition-colors ${
-                    item.businessFunction === fn
-                      ? "border-[#3A2E33] bg-[#3A2E33] text-white"
-                      : "border-[#E8DFE2] bg-white text-[#6B5860] hover:bg-black/[0.03]"
-                  }`}
-                >
-                  {CEO_FUNCTION_LABEL[fn]}
-                </button>
-              ))}
-            </div>
           </div>
           <div className="flex items-center gap-2">
             <label className="font-sans text-base text-[#6B5860]" htmlFor={`min-${item.id}`}>
