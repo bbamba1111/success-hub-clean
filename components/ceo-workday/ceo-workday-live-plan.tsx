@@ -353,12 +353,7 @@ export function CeoWorkdayLivePlan() {
           <button type="button" onClick={() => openWork(item)} className="rounded-full border border-[#5A7A45] px-3 py-1 font-sans text-xs font-bold text-[#5A7A45]">
             {item.status === "completed" ? "Review completed work" : "Open task"}
           </button>
-          <label className="inline-flex items-center gap-1 font-sans text-xs text-[#6B5860]">
-            Move to
-            <select value={resolveHour(item.id, autoHours, overrides)} onChange={(e) => setHour(item.id, Number(e.target.value) as HourBlockIndex)} className="rounded border border-[#E8DFE2] bg-white px-1 py-1 font-semibold">
-              {[1, 2, 3, 4].map((h) => <option key={h} value={h}>Hour {h}</option>)}
-            </select>
-          </label>
+
         </div>
       )
     }
@@ -540,7 +535,6 @@ export function CeoWorkdayLivePlan() {
             itemsByHour={itemsByHour}
             renderItem={renderPlanItem}
             plannedMinutes={plan.plannedMinutes}
-            onAddTask={addTaskToHour}
           />
         </div>
       )}
