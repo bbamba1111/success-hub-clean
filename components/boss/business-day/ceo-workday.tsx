@@ -13,7 +13,7 @@ import { EmptyState, MoreDetails, bigButton, fieldClass, labelClass } from "../p
 import { WorkItemCard, type WorkCardHandlers } from "./work-item-card"
 import { OutcomesEditor } from "./outcomes-editor"
 import { ChangeLogPanel, CoordinatorFeed, DecisionsPanel, NoticesPanel, founderDecisionItems } from "./workday-panels"
-import { StepIntro, usePlan } from "./decide-design"
+import { StepIntro, WorkdayHourBlocks, usePlan } from "./decide-design"
 
 type Lane = "active" | "decisions" | "waiting" | "remaining" | "completed"
 
@@ -139,6 +139,8 @@ export function CeoWorkdayView({
       <div className="rounded-2xl bg-card p-6 md:p-8">
         <WorkdayClock clock={clock} />
       </div>
+
+      <WorkdayHourBlocks items={openPlan} />
 
       <NoticesPanel />
       {decisions.size > 0 && <DecisionsPanel />}
