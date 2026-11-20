@@ -17,7 +17,7 @@ export async function POST() {
       )
     }
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://success-hub-clean.vercel.app"
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://free-reality-check.vercel.app"
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       line_items: [{ price: priceId, quantity: 1 }],
