@@ -180,7 +180,7 @@ export async function POST(request: Request) {
 
     try {
       const resend = new Resend(process.env.RESEND_API_KEY)
-      const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://success-hub-clean.vercel.app"
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://free-reality-check.vercel.app"
       const welcomeUrl = `${appUrl}/welcome?email=${encodeURIComponent(email)}&product=${encodeURIComponent(
         planId || "membership",
       )}&token=${onboardingToken}`
