@@ -245,23 +245,32 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Failed to create user" }, { status: 500 })
     }
 
-    const { error: profileError } = await supabase.from("user_profiles").insert({
-      id: authData.user.id,
-      email,
-      name,
-      membership_tier: membershipTier,
-      onboarding_token: onboardingToken,
-      token_expires_at: tokenExpiresAt.toISOString(),
-      password_set: false,
-      joined_date: new Date().toISOString(),
-      cycle_start_date: new Date().toISOString(),
-      current_cycle: 1,
-    })
+    // The on_auth_user_created database trigger has already inserted the
+    // user_profiles row. Update that trigger-created row instead of inserting
+    // a second row with the same primary key.
+    const { data: profile, error: profileError } = await supabase
+      .from("user_profiles")
+      .update({
+        email,
+        name,
+        membership_tier: membershipTier,
+        onboarding_token: onboardingToken,
+        token_expires_at: tokenExpiresAt.toISOString(),
+        password_set: false,
+        joined_date: new Date().toISOString(),
+        cycle_start_date: new Date().toISOString(),
+        current_cycle: 1,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", authData.user.id)
+      .select("id")
+      .maybeSingle()
 
-    if (profileError) {
-      console.error("[stripe-webhook] Profile creation failed:", profileError.message)
-      await supabase.auth.admin.deleteUser(authData.user.id)
-      return NextResponse.json({ error: "Failed to create profile" }, { status: 500 })
+    if (profileError || !profile) {
+      console.error("[stripe-webhook] Trigger-created profile update failed:", profileError?.message ?? "Profile row not found")
+      // Keep the Auth user: its trigger-created profile allows a Stripe retry
+      // to enter the existing-profile path and complete onboarding safely.
+      return NextResponse.json({ error: "Failed to update trigger-created profile" }, { status: 500 })
     }
 
     try {
