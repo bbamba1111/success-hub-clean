@@ -20,7 +20,7 @@ export const dynamic = "force-dynamic"
 export const metadata: Metadata = {
   title: "Harmony Lane™ — Make Time For More This Holiday Season",
   description:
-    "Your premium work-life balance destination. Live within work-life balance boundaries while redesigning your business weeks. Start with the free Sunday Work-Life Balance Reality Check™.",
+    "Bring your business. Build Boundaries In It. Practice a more sustainable way of living, working, and leading in the AI age inside Harmony Lane™, a premium Work-Life Balance Co-Working Destination. Start with the free Sunday Reality Check™.",
   openGraph: {
     title: "Harmony Lane™ — Your Work-Life Balance Destination",
     description:
