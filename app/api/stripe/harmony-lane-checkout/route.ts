@@ -4,7 +4,7 @@ import { stripe } from "@/lib/stripe"
 /**
  * Dedicated recurring checkout for the Harmony Lane™ founding membership.
  * The Stripe Price ID is supplied through STRIPE_PRICE_HARMONY_LANE_MONTHLY.
- * The configured Stripe Price must be $1,997 USD recurring every 30 days.
+ * The configured Stripe Price must be the approved recurring Harmony Lane price.
  */
 export async function POST() {
   try {
@@ -17,7 +17,11 @@ export async function POST() {
       )
     }
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://free-reality-check.vercel.app"
+    // This is branch-scoped in Vercel Preview and points to the branch's
+    // assigned domain. Strip a trailing slash to avoid malformed return URLs.
+    const configuredAppUrl = process.env.NEXT_PUBLIC_APP_URL || "https://free-reality-check.vercel.app"
+    const appUrl = configuredAppUrl.replace(/\\/+$/, "")
+
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       line_items: [{ price: priceId, quantity: 1 }],
