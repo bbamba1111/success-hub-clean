@@ -218,6 +218,7 @@ export function WeMakeTimeForMoreSection() {
             <p className="bg-[#123B2A] px-6 pt-5 font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C9DDB4]">07 · 11:00 PM–7:00 AM ET — Unplug / Closed</p>
             <img src="/images/holiday/digital-detox-sign.webp" alt="Unplug Close card" className="h-auto w-full object-cover" loading="lazy" />
           </div>
+          <p className="mx-auto mt-3 max-w-3xl text-center font-poppins text-base leading-relaxed text-[#4A3A42]">Yes, we do close at night—and we strive to get 8 hours of sleep.</p>
           <div className="mt-5 grid gap-5 md:grid-cols-2">
             <article className="rounded-2xl border border-[#2D6348]/30 bg-[#123B2A] p-6 sm:p-8">
               <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C9DDB4]">08 · Friday–Sunday — Three-day weekend</p>
@@ -225,12 +226,11 @@ export function WeMakeTimeForMoreSection() {
               <p className="mt-3 font-poppins text-base leading-relaxed text-[#FFFFFF]">No scheduled business work. Enjoy relationships, personal priorities, rest, and experiences. The weekend is a boundary, too: practice being away from the business without feeling compelled to return to work.</p>
             </article>
             <article className="rounded-2xl border border-[#2D6348]/30 bg-[#123B2A] p-6 sm:p-8">
-              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C9DDB4]">09 · Week after week — Build familiarity</p>
-              <h3 className="mt-3 font-playfair text-2xl font-bold text-[#FFFFFF]">Repetition Makes the Rhythm More Familiar.</h3>
+              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C9DDB4]">09 · Week after week — Build Work-Life Balance Habits</p>
+              <h3 className="mt-3 font-playfair text-2xl font-bold text-[#FFFFFF]">Build Work-Life Balance Habits Through Repetition.</h3>
               <p className="mt-3 font-poppins text-base leading-relaxed text-[#FFFFFF]">Return to the same daily spaces and practice the built-in boundaries in your actual business. Each week gives you another opportunity to experience the rhythm, personalize your choices, and discover what helps you work and live more sustainably.</p>
             </article>
           </div>
-          <p className="mx-auto mt-4 max-w-3xl text-center font-poppins text-base leading-relaxed text-[#4A3A42]">Yes, we do close at night—and we strive to get 8 hours of sleep.</p>
           <p className="mx-auto mt-10 max-w-4xl text-center font-playfair text-xl font-semibold leading-relaxed text-[#4A3A42] sm:text-2xl">Bring your business. Build Boundaries In It. Repeat the rhythm, practice in real time, and make more room for the life your business was built to support.</p>
         </div>
       </section>
