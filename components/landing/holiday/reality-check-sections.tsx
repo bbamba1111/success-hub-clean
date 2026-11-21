@@ -145,22 +145,16 @@ export function WeMakeTimeForMoreSection() {
           </div>
           <div className="mt-10 rounded-3xl border border-[#E8C6D2] bg-[#FFF8F4] p-7 shadow-sm sm:p-10">
             <header className="mx-auto max-w-4xl text-center">
-              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#5A7F46]">The Rules That Protect Every Boundary</p>
-              <h3 className="mt-3 font-playfair text-balance text-2xl font-bold leading-tight text-[#4A3A42] sm:text-4xl">Your Boundaries Need Business Rules Behind Them.</h3>
-              <p className="mt-4 font-poppins text-base leading-relaxed text-[#5A4A52]">The same protection rules apply throughout your business day and workweek—not just during the four-hour CEO Workday. Whether you are protecting focused work, movement, meals, family time, evenings, rest, or your weekend, your business must respect the boundaries you establish.</p>
+              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.2em] text-[#5A7F46]">A Rhythm You Can Make Your Own</p>
+              <h3 className="mt-3 font-playfair text-balance text-2xl font-bold leading-tight text-[#4A3A42] sm:text-4xl">The Structure Is Shared. Your Priorities Are Personal.</h3>
+              <p className="mt-4 font-poppins text-base leading-relaxed text-[#5A4A52]">Harmony Lane provides the daily time-and-space rhythm. You bring your own business priorities, personal responsibilities, and values, then decide how to use each space in a way that supports your life.</p>
             </header>
             <div className="mx-auto mt-8 grid max-w-5xl gap-4 sm:grid-cols-2">
               {[
-                { title: "Protect the time.", description: "Do not schedule competing activities during a boundary you have established." },
-                { title: "Prevent unnecessary interruptions.", description: "Routine business requests must not intrude on protected time." },
-                { title: "No meetings during protected time.", description: "Schedule meetings and appointments around the boundaries you have established." },
-                { title: "Give the activity your attention.", description: "Avoid multitasking and switching to unrelated work during protected time." },
-                { title: "Communicate your availability.", description: "Tell clients, colleagues, team members, family, and others affected when you are and are not available." },
-                { title: "Define genuine emergencies.", description: "Establish what qualifies as an emergency and how one should reach you." },
-                { title: "Delegate or defer non-urgent requests.", description: "Route requests to the right person, process, or task queue instead of interrupting protected time." },
-                { title: "Silence nonessential notifications.", description: "Keep routine alerts, messages, and digital distractions from taking over your attention." },
-                { title: "Do not create automatic overtime.", description: "Unfinished work does not automatically take time from meals, movement, evenings, rest, or weekends." },
-                { title: "Honor the boundary consistently.", description: "Do not routinely make exceptions that undermine the boundary you established." },
+                { title: "Bring your real priorities.", description: "Work with the business priorities and personal commitments that matter in your life right now." },
+                { title: "Personalize your day.", description: "Use Decide & Design to choose how you will use the shared daily rhythm." },
+                { title: "Practice in real time.", description: "Experience the boundaries while doing your actual business work—not just talking about work-life balance." },
+                { title: "Repeat at a sustainable pace.", description: "Return to the rhythm each week, notice what supports you, and make thoughtful personal adjustments." },
               ].map((item, index) => (
                 <article key={item.title} className="flex items-start gap-3 rounded-2xl bg-white p-5">
                   <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#EEF3E8] font-poppins text-sm font-bold text-[#2D6348]">{index + 1}</span>
@@ -171,7 +165,8 @@ export function WeMakeTimeForMoreSection() {
                 </article>
               ))}
             </div>
-            <p className="mx-auto mt-8 max-w-4xl text-center font-poppins text-base leading-relaxed text-[#5A4A52]">Your specific boundaries reflect your life, values, responsibilities, and business. The rules for protecting them remain consistent. You do not have to arrive with perfect boundaries—you must be willing to establish them, communicate them, and practice honoring them.</p>
+            <p className="mx-auto mt-8 max-w-4xl text-center font-poppins text-base leading-relaxed text-[#5A4A52]">You do not need to arrive with perfect boundaries. The experience gives you a place to practice a more sustainable way of living, working, and leading while your business continues to move forward.</p>
+          </div>
           </div>
         </div>
       </section>
@@ -197,19 +192,19 @@ export function WeMakeTimeForMoreSection() {
               <p className="mt-4 font-poppins text-sm font-semibold text-[#C9DDB4]">Join live Zoom co-working for community, support, and accountability.</p>
             </article>
             <article className="rounded-2xl border border-[#2D6348]/30 bg-[#123B2A] p-6 sm:p-8">
-              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C9DDB4]">03 · At the end of each boundary</p>
-              <h3 className="mt-3 font-playfair text-2xl font-bold text-[#FFFFFF]">Five Minutes to Notice and Record.</h3>
-              <p className="mt-3 font-poppins text-base leading-relaxed text-[#FFFFFF]">Record whether a collision occurred, what interfered, and what you observed. These brief check-ins help reveal patterns across the four business days.</p>
+              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C9DDB4]">03 · Throughout the day — Practice the rhythm</p>
+              <h3 className="mt-3 font-playfair text-2xl font-bold text-[#FFFFFF]">Use Each Space as It Was Designed.</h3>
+              <p className="mt-3 font-poppins text-base leading-relaxed text-[#FFFFFF]">Move through focused work, movement, meals, personal time, and rest with intention. Notice what supports you and make thoughtful adjustments to your own choices as you practice.</p>
             </article>
             <article className="rounded-2xl border border-[#2D6348]/30 bg-[#123B2A] p-6 sm:p-8">
               <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C9DDB4]">04 · 1:00–5:00 PM ET — Focused CEO Workday™</p>
-              <h3 className="mt-3 font-playfair text-2xl font-bold text-[#FFFFFF]">Choose Assignments That Move Your Business Forward.</h3>
-              <p className="mt-3 font-poppins text-base leading-relaxed text-[#FFFFFF]">Choose assignments from your own business priorities or from the business functions—Client Attraction, Sales &amp; Conversion, Service/Product Delivery, Business Operations, and others. Use this time to execute business work or redesign how the business operates.</p>
+              <h3 className="mt-3 font-playfair text-2xl font-bold text-[#FFFFFF]">Four Hours of Focused, Individual Business Work.</h3>
+              <p className="mt-3 font-poppins text-base leading-relaxed text-[#FFFFFF]">Work on the priorities you selected during Decide &amp; Design. You work independently in a shared co-working environment, with protected focus time—not workshops, lessons, presentations, group assignments, or imposed interruptions.</p>
             </article>
             <article className="rounded-2xl border border-[#2D6348]/30 bg-[#123B2A] p-6 sm:p-8">
-              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C9DDB4]">05 · During the four-day rhythm</p>
-              <h3 className="mt-3 font-playfair text-2xl font-bold text-[#FFFFFF]">Turn a Boundary Into a Business Rule.</h3>
-              <p className="mt-3 font-poppins text-base leading-relaxed text-[#FFFFFF]">You’ll be given an assignment to choose a Non-Negotiable Boundary to integrate into your actual business. Work through the guided Boundary Builder and Communicate + Delegate process to begin creating a Business Operating Rule / SOP that helps protect it.</p>
+              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C9DDB4]">05 · Week after week — Build familiarity</p>
+              <h3 className="mt-3 font-playfair text-2xl font-bold text-[#FFFFFF]">Repetition Makes the Rhythm More Familiar.</h3>
+              <p className="mt-3 font-poppins text-base leading-relaxed text-[#FFFFFF]">Return to the same daily spaces and practice the built-in boundaries in your actual business. Each week gives you another opportunity to experience the rhythm, personalize your choices, and discover what helps you work and live more sustainably.</p>
             </article>
             <article className="rounded-2xl border border-[#2D6348]/30 bg-[#123B2A] p-6 sm:p-8">
               <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C9DDB4]">06 · Friday–Sunday — Three-day weekend</p>
@@ -234,7 +229,7 @@ export function WeMakeTimeForMoreSection() {
             <img src="/images/holiday/digital-detox-sign.webp" alt="Unplug Close card" className="h-auto w-full object-cover" loading="lazy" />
           </div>
           <p className="mx-auto mt-4 max-w-3xl text-center font-poppins text-base leading-relaxed text-[#4A3A42]">Yes, we do close at night—and we strive to get 8 hours of sleep.</p>
-          <p className="mx-auto mt-10 max-w-4xl text-center font-playfair text-xl font-semibold leading-relaxed text-[#4A3A42] sm:text-2xl">Repeat the rhythm. Build the habit. Integrate the boundaries you choose—or adopt the full Work-Life Balance Business Model™ through the monthly membership.</p>
+          <p className="mx-auto mt-10 max-w-4xl text-center font-playfair text-xl font-semibold leading-relaxed text-[#4A3A42] sm:text-2xl">Bring your business. Build Boundaries In It. Repeat the rhythm, practice in real time, and make more room for the life your business was built to support.</p>
         </div>
       </section>
 
@@ -365,11 +360,11 @@ export function FreedomSection() {
 export function RealityCheckSection() {
   const steps = [
     { title: "Founder Profile™", detail: "Establish your founder context and reconnect with what you intended to create." },
-    { title: "Business Context™", detail: "Answer 10 questions about your business and how it operates today." },
-    { title: "Business Boundary Collisions™", detail: "Identify where business demands and responsibilities compete with the boundaries you want to maintain." },
-    { title: "Personal & Work-From-Home Reality™", detail: "Describe the conditions, responsibilities, and personal circumstances that shape your working reality." },
-    { title: "30-Day Work-Life Balance Audit™", detail: "Answer 15 questions across 15 Core Life Value Areas™ to establish your 30-Day Work-Life Balance Baseline™." },
-    { title: "Work-Life Balance Alignment™", detail: "Answer 3 questions about your willingness and readiness to make changes. These questions do not determine access to your free results." },
+    { title: "Business Context™", detail: "Answer 15 questions that bring your current business context into one clear picture." },
+    { title: "Business Boundary Collisions™", detail: "Answer 19 questions to identify where business demands and responsibilities compete with the boundaries you want to protect." },
+    { title: "15-Question Work-Life Balance Audit™", detail: "Explore 15 Core Life Value Areas™ and establish your baseline across the areas that matter in your life." },
+    { title: "Work-Life Balance Alignment™", detail: "Answer 3 questions about the changes you want to make and the direction you want to take." },
+    { title: "My Boundary Report", detail: "Receive your results and priority focus areas to help you decide what deserves attention first." },
   ]
   return (
     <section
@@ -415,7 +410,7 @@ export function RealityCheckSection() {
       <div className="relative mx-auto max-w-6xl px-5 sm:px-8">
         <header className="mx-auto max-w-4xl text-center">
           <h2 className="font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">Take Your FREE Work-Life Balance Reality Check</h2>
-          <p className="mx-auto mt-6 max-w-3xl font-poppins text-base leading-relaxed text-[#5A4A52] sm:text-lg">Before you enter the Work-Life Balance Business Week™, begin by looking at your current reality. The Reality Check starts your reservation journey. It helps establish your founder and business context, identify where business demands collide with life, and clarify the areas you want to address during your Work-Life Balance experience.</p>
+          <p className="mx-auto mt-6 max-w-3xl font-poppins text-base leading-relaxed text-[#5A4A52] sm:text-lg">Join the free live Sunday Reality Check™ at 3:00 PM ET on Zoom. It is the first step into the Harmony Lane™ destination: understand your current founder and business context, see where business demands compete with life, and identify the priority areas you want to address. Registration, assessment results, and My Boundary Report are free; there is no purchase obligation.</p>
         </header>
 
         <div className="mt-8 flex justify-center">
@@ -452,11 +447,11 @@ const BOUNDARY_AREAS = [
 ]
 
 const MONDAY_SEQUENCE = [
-  { title: "Review your previous week", body: "Notice what supported your boundaries, what collided with them, and what needs attention." },
-  { title: "Establish your priorities", body: "Decide what matters this week and what your business needs to move forward." },
-  { title: "Decide & design", body: "Plan actual business work around the boundaries and non-negotiables you want to protect." },
-  { title: "Do your real work", body: "Work on real priorities during The 4-Hour Focused CEO Workday™, practicing the boundaries you set." },
-  { title: "Check in and adjust", body: "Use Five-Minute Work-Life Balance Boundary Check-ins™ to capture collisions and recognize patterns." },
+  { title: "Reconnect with your intention", body: "Remember what you are building your business to support and what matters in your life." },
+  { title: "Establish your priorities", body: "Decide what matters this week in your business and personal life." },
+  { title: "Decide & design", body: "Personalize your business day within the shared time-and-space rhythm." },
+  { title: "Do your real work", body: "Work independently on your priorities during the uninterrupted 4-Hour Focused CEO Workday™." },
+  { title: "Reflect and repeat", body: "Notice what supported your day and what you want to approach differently as you return to the rhythm." },
 ]
 
 
@@ -467,15 +462,15 @@ export function HarmonyLaneApproachSection() {
           <p className="font-poppins text-xs font-semibold uppercase tracking-[0.28em] text-[#5A7F46]">The Harmony Lane Approach</p>
           <h2 className="mx-auto mt-3 max-w-4xl font-playfair text-balance text-3xl font-bold leading-tight text-[#4A3A42] sm:text-5xl">This Is Why We Don&apos;t Automate &amp; Accelerate the Hustle with AI.</h2>
           <p className="mx-auto mt-6 max-w-4xl font-poppins text-lg leading-relaxed text-[#5A4A52]">
-            Before adding more technology, tools, or capacity, decide what your business must respect about your life. Harmony Lane helps you connect the human values that matter to the boundaries you establish—and turn those boundaries into Business Operating Rules that guide how your business runs.
+            Before adding more technology, tools, or capacity, decide what you want your business to make possible for your life. Harmony Lane gives founders a shared environment to practice the daily rhythm, bring their real priorities, and build familiarity with boundaries that protect time for both business and life.
           </p>
 
           <div className="mt-10 grid gap-3 text-left sm:grid-cols-4">
             {[
               { title: "Human Values", detail: "What matters in your life." },
-              { title: "Human Sustainability Boundaries™", detail: "What your business must respect." },
-              { title: "Business Operating Rules", detail: "How the business will honor those boundaries." },
-              { title: "Practice, Communicate & Delegate", detail: "How the rules become part of everyday operations." },
+              { title: "Built-In Boundaries", detail: "The shared rhythm that makes room for life." },
+              { title: "Your Priorities", detail: "The business and personal priorities you bring." },
+              { title: "Shared Practice", detail: "How you practice living, working, and leading differently." },
             ].map((item, index) => (
               <article key={item.title} className="rounded-2xl border border-[#EAD5DC] bg-[#FFF8F4] p-5">
                 <p className="font-playfair text-xl font-bold text-[#C13B6B]">{index + 1}</p>
@@ -629,14 +624,14 @@ export function AboutBarbaraSection() {
 }
 
 const FAQS = [
-  { q: "Is the Sunday Work-Life Balance Reality Check™ free?", a: "Yes. The Sunday Reality Check, assessment results, and priority focus areas are free. You can decide afterward whether you want a deeper personalized Boundary Report™ or a paid Harmony Lane experience." },
-  { q: "What does the Reality Check include?", a: "It includes your Founder Profile™, 10-question Business Context™, Business Boundary Collisions™, Personal & Work-From-Home Reality™, 15-question 30-Day Work-Life Balance Audit™, results and priority focus areas, and 3 Work-Life Balance Alignment™ questions." },
-  { q: "What is the Work-Life Balance Business Day™?", a: "It is the guided Monday experience within the Work-Life Balance Business Week™. It helps you reconnect with your entrepreneurial intention, review your current reality, personalize boundaries, design your business day, and practice those boundaries while doing real business work. It can also be experienced on its own as a standalone offering." },
-  { q: "What is the Work-Life Balance Business Week™?", a: "It is the guided weekly experience included in Harmony Lane™ Membership. Members receive four Work-Life Balance Business Weeks™ each month, with the guided Monday Business Day™, structured coworking, boundary practice, focused CEO work time, five-minute check-ins, and Friday–Sunday Time Freedom™." },
-  { q: "Do I need to buy the Business Day separately to join the Business Week?", a: "No. The guided Monday Work-Life Balance Business Day™ is included in each Work-Life Balance Business Week™, and four guided Business Weeks are included in the monthly Harmony Lane™ Membership." },
-  { q: "Do I have to purchase anything after the free Reality Check?", a: "No. Your Reality Check results and priority focus areas are free. You can review the special founding-member Harmony Lane™ Membership offer separately and decide whether to join." },
-  { q: "Is this an AI readiness certification?", a: "No. The Reality Check is a work-life balance and business operating diagnostic. It helps you understand your current reality and the boundaries that need attention; it is not an AI certification." },
-  { q: "Who is Harmony Lane for?", a: "New and established founders who want to build work-life balance into the way they start, grow, and operate their businesses—including founders who want to avoid recreating hustle culture or automating it with AI." },
+  { q: "Is the Sunday Work-Life Balance Reality Check™ free?", a: "Yes. The live Sunday Reality Check, registration, assessment results, priority focus areas, and My Boundary Report are free. There is no credit card requirement, purchase obligation, or automatic enrollment in Harmony Lane™." },
+  { q: "What does the Reality Check include?", a: "It includes your Founder Profile™, 15-question Business Context™, 19-question Business Boundary Collisions™, 15-question Work-Life Balance Audit™ across 15 Core Life Value Areas™, 3 Work-Life Balance Alignment™ questions, and My Boundary Report with your results and priority focus areas." },
+  { q: "What is the Work-Life Balance Business Day™?", a: "It is the guided Monday entry into the Work-Life Balance Business Week™. Founders reconnect with their intentions, decide what matters in business and life, and personalize their day within the shared rhythm before moving into the week together." },
+  { q: "What is the Work-Life Balance Business Week™?", a: "It is the weekly destination experience at the heart of Harmony Lane™. Founders bring their actual businesses, join the shared daily rhythm, practice the built-in boundaries, and work independently alongside other founders in the 4-Hour Focused CEO Workday™." },
+  { q: "What does Harmony Lane™ Membership include?", a: "The ongoing membership includes four guided Work-Life Balance Business Weeks™ each month, the Monday Decide & Design experience, shared daily co-working spaces, the protected Monday–Thursday rhythm, the uninterrupted 4-Hour Focused CEO Workday™, and an ongoing founder community." },
+  { q: "Is the 4-Hour Focused CEO Workday a workshop or group assignment?", a: "No. It is protected time for each founder to work independently on their own business priorities in a shared co-working environment. There are no workshops, lessons, presentations, or imposed group assignments during that time." },
+  { q: "Do I have to purchase anything after the free Reality Check?", a: "No. The Reality Check is free and does not automatically enroll you in a paid experience or membership. You decide whether Harmony Lane™ is right for you." },
+  { q: "Who is Harmony Lane for?", a: "New and established founders and independent professionals—including coaches, consultants, service providers, experts, speakers, authors, and thought leaders—who want to build and operate a business without sacrificing the life they built it for." },
 ]
 
 
@@ -645,9 +640,9 @@ export function BlackFridayOfferSection() {
     <section id="black-friday-offer" className="scroll-mt-20 bg-[#123B2A] py-20 sm:py-24">
       <div className="mx-auto max-w-5xl px-5 sm:px-8">
         <div className="mx-auto max-w-4xl text-center">
-          <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">Black Friday Special · Founding Member Offer</p>
-          <h2 className="mt-3 font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl">Harmony Lane™ Membership</h2>
-          <p className="mt-5 font-poppins text-lg leading-relaxed text-[#F6D6E1]">Four guided Work-Life Balance Business Weeks™ every month—with structured coworking included as part of the experience.</p>
+          <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">Holiday Founding Member Offer</p>
+          <h2 className="mt-3 font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl">Harmony Lane™ Basic Membership</h2>
+          <p className="mt-5 font-poppins text-lg leading-relaxed text-[#F6D6E1]">An ongoing premium Work-Life Balance Co-Working Destination. Bring your business, build boundaries in it, and practice a more sustainable way of living, working, and leading in the AI age.</p>
           <p className="mt-8 font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C9DDB4]">Special founding-member monthly rate</p>
           <p className="mt-2 font-playfair text-5xl font-bold text-[#FFF8F4] sm:text-6xl">$1,997<span className="font-poppins text-xl font-medium">/month</span></p>
           <p className="mt-3 font-poppins text-sm leading-relaxed text-[#F6D6E1]">Enroll by December 31, 2026. Keep this special monthly rate for as long as your membership remains continuously active.</p>
@@ -660,7 +655,7 @@ export function BlackFridayOfferSection() {
               { title: "A guided Monday Business Day", detail: "Work-Life Balance Business Day™ to reconnect with priorities and design your entry into the workweek." },
               { title: "A protected workweek rhythm", detail: "Monday–Thursday workweek, the 4-Hour Focused CEO Workday™, and Friday–Sunday Time Freedom™." },
               { title: "Structured coworking", detail: "Live coworking for shared focus, community, support, and accountability—included, not sold separately." },
-              { title: "Five-minute boundary check-ins", detail: "Notice and record progress, interruptions, and boundary collisions during the workday." },
+              { title: "A shared daily rhythm", detail: "Practice the built-in boundaries together and personalize your own priorities and choices as you move through the day." },
               { title: "Human Sustainability Boundaries™", detail: "Practice the boundaries built into the experience and personalize them around your life and business." },
               { title: "Ongoing founder community", detail: "Participate, connect, reflect, and learn alongside other founders." },
             ].map((item) => (
@@ -708,7 +703,7 @@ export function RegisterSection() {
       <div className="relative mx-auto flex max-w-4xl flex-col items-center gap-5 px-5 text-center sm:px-8">
         <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">Your next step</p>
         <h2 className="font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl">Start with clarity. Then decide what you want to change.</h2>
-        <p className="font-poppins max-w-2xl text-lg leading-relaxed text-[#F6D6E1]">Start with the free Sunday Work-Life Balance Reality Check™. Review your results and priority focus areas, then decide whether the Harmony Lane™ Membership and its four guided Business Weeks each month are right for you.</p>
+        <p className="font-poppins max-w-2xl text-lg leading-relaxed text-[#F6D6E1]">Start with the free live Sunday Work-Life Balance Reality Check™ at 3:00 PM ET on Zoom. Review your results and My Boundary Report, then decide whether the ongoing Harmony Lane™ Basic Membership and its four guided Business Weeks each month are right for you. The Reality Check does not enroll you in the membership.</p>
         <p className="font-playfair text-xl italic text-[#FFF8F4]">We Don&apos;t Hustle — We Harmonize.™</p>
         <div className="w-full max-w-xl rounded-3xl border border-white/20 bg-[#FFF8F4] p-6 text-left shadow-2xl sm:p-8">
           <h3 className="mb-5 text-center font-playfair text-2xl font-bold text-[#4A3A42]">Reserve Your Free Sunday Seat</h3>
