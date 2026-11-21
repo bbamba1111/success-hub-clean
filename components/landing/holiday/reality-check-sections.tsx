@@ -639,38 +639,20 @@ const FAQS = [
 
 export function BlackFridayOfferSection() {
   return (
-    <section id="black-friday-offer" className="scroll-mt-20 bg-[#123B2A] py-20 sm:py-24">
+    <section id="membership-preview" className="scroll-mt-20 bg-[#123B2A] py-16 sm:py-20">
       <div className="mx-auto max-w-5xl px-5 sm:px-8">
         <div className="mx-auto max-w-4xl text-center">
           <p className="font-poppins text-sm font-semibold uppercase tracking-[0.24em] text-[#C9DDB4]">Holiday Founding Member Offer</p>
           <h2 className="mt-3 font-playfair text-balance text-3xl font-bold leading-tight text-[#FFF8F4] sm:text-5xl">Harmony Lane™ Basic Membership</h2>
-          <p className="mt-5 font-poppins text-lg leading-relaxed text-[#F6D6E1]">An ongoing premium Work-Life Balance Co-Working Destination. Bring your business, build boundaries in it, and practice a more sustainable way of living, working, and leading in the AI age.</p>
-          <p className="mt-8 font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C9DDB4]">Special founding-member monthly rate</p>
+          <p className="mt-5 font-poppins text-lg leading-relaxed text-[#F6D6E1]">Your ongoing premium Work-Life Balance Co-Working Destination. Bring your business, build boundaries in it, and practice a more sustainable way of living, working, and leading in the AI age.</p>
+          <p className="mt-7 font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C9DDB4]">Special founding-member monthly rate</p>
           <p className="mt-2 font-playfair text-5xl font-bold text-[#FFF8F4] sm:text-6xl">$1,997<span className="font-poppins text-xl font-medium">/month</span></p>
           <p className="mt-3 font-poppins text-sm leading-relaxed text-[#F6D6E1]">Enroll by December 31, 2026. Keep this special monthly rate for as long as your membership remains continuously active.</p>
         </div>
-        <div className="mx-auto mt-10 max-w-4xl rounded-3xl bg-[#FFF8F4] p-7 shadow-xl sm:p-10">
-          <h3 className="font-playfair text-2xl font-bold text-[#4A3A42] sm:text-3xl">Your membership includes</h3>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            {[
-              { title: "Four guided Business Weeks every month", detail: "One Work-Life Balance Business Week™ each week, applying the experience to your actual business." },
-              { title: "A guided Monday Business Day", detail: "Work-Life Balance Business Day™ to reconnect with priorities and design your entry into the workweek." },
-              { title: "A protected workweek rhythm", detail: "Monday–Thursday workweek, the 4-Hour Focused CEO Workday™, and Friday–Sunday Time Freedom™." },
-              { title: "Structured coworking", detail: "Live coworking for shared focus, community, support, and accountability—included, not sold separately." },
-              { title: "A shared daily rhythm", detail: "Practice the built-in boundaries together and personalize your own priorities and choices as you move through the day." },
-              { title: "Human Sustainability Boundaries™", detail: "Practice the boundaries built into the experience and personalize them around your life and business." },
-              { title: "Ongoing founder community", detail: "Participate, connect, reflect, and learn alongside other founders." },
-            ].map((item) => (
-              <article key={item.title} className="rounded-2xl border border-[#EAD5DC] bg-white p-5">
-                <h4 className="font-poppins text-base font-semibold text-[#4A3A42]">{item.title}</h4>
-                <p className="mt-2 font-poppins text-sm leading-relaxed text-[#5A4A52]">{item.detail}</p>
-              </article>
-            ))}
-          </div>
-          <p className="mt-7 font-poppins text-sm leading-relaxed text-[#5A4A52]">Start with the free Work-Life Balance Reality Check™. It is your first step—not a separate paid product or an automatic enrollment in the membership.</p>
-          <div className="mt-7 flex justify-center">
-            <a href="#reality-check" className="font-poppins inline-flex items-center justify-center rounded-2xl bg-[#C13B6B] px-7 py-4 text-base font-semibold uppercase tracking-[0.08em] text-[#FFF8F4] shadow-lg shadow-[#C13B6B]/25 transition-colors hover:bg-[#A8305B]">Take Your FREE Work-Life Balance Reality Check</a>
-          </div>
+        <div className="mx-auto mt-8 max-w-3xl rounded-3xl bg-[#FFF8F4] p-7 text-center shadow-xl sm:p-9">
+          <p className="font-poppins text-base leading-relaxed text-[#5A4A52]">Four guided Business Weeks every month, a guided Monday Business Day, a protected workweek rhythm, structured coworking, shared daily practice, Human Sustainability Boundaries™, and an ongoing founder community.</p>
+          <a href="/pricing" className="mt-6 inline-flex items-center justify-center rounded-2xl bg-[#C13B6B] px-7 py-4 font-poppins text-sm font-semibold uppercase tracking-[0.08em] text-[#FFF8F4] shadow-lg shadow-[#C13B6B]/25 transition-colors hover:bg-[#A8305B]">Explore Membership &amp; Founding Member Pricing</a>
+          <p className="mt-5 font-poppins text-sm leading-relaxed text-[#5A4A52]">Start with the free Work-Life Balance Reality Check™. It is your first step—not a separate paid product or an automatic enrollment in the membership.</p>
         </div>
       </div>
     </section>
