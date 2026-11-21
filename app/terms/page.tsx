@@ -8,7 +8,7 @@ export const metadata = {
 const sections = [
   {
     title: "1. Agreement and eligibility",
-    body: "These Terms of Service ("Terms") govern your access to and use of the Harmony Lane™ website, the Work-Life Balance Reality Check™, related assessments and reports, and membership services offered by Startup & Thrive, LLC ("we," "us," or "our"). By accessing or using the services, you agree to these Terms. The services are intended for adults aged 18 or older.",
+    body: "These Terms of Service govern your access to and use of the Harmony Lane™ website, the Work-Life Balance Reality Check™, related assessments and reports, and membership services offered by Startup & Thrive, LLC (referred to in these Terms as we, us, or our). By accessing or using the services, you agree to these Terms. The services are intended for adults aged 18 or older.",
   },
   {
     title: "2. The free Reality Check",
@@ -48,7 +48,7 @@ const sections = [
   },
   {
     title: "11. Disclaimers and limitation of liability",
-    body: "To the maximum extent permitted by applicable law, the services are provided on an "as is" and "as available" basis, without warranties of any kind, whether express or implied. To the maximum extent permitted by law, Startup & Thrive, LLC will not be liable for indirect, incidental, special, consequential, exemplary, or punitive damages, or for loss of profits, revenue, data, goodwill, or business opportunity arising from or related to your use of the services. To the maximum extent permitted by law, our total liability for claims relating to the services will not exceed the amount you paid us for the service giving rise to the claim during the three months before the event giving rise to the claim. These limitations do not apply where prohibited by law.",
+    body: "To the maximum extent permitted by applicable law, the services are provided on an as-is and as-available basis, without warranties of any kind, whether express or implied. To the maximum extent permitted by law, Startup & Thrive, LLC will not be liable for indirect, incidental, special, consequential, exemplary, or punitive damages, or for loss of profits, revenue, data, goodwill, or business opportunity arising from or related to your use of the services. To the maximum extent permitted by law, our total liability for claims relating to the services will not exceed the amount you paid us for the service giving rise to the claim during the three months before the event giving rise to the claim. These limitations do not apply where prohibited by law.",
   },
   {
     title: "12. Indemnification",
