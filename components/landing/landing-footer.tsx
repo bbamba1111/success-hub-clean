@@ -16,9 +16,15 @@ export function LandingFooter() {
             <span className="font-playfair text-lg font-bold text-[#4A3A42]">Harmony Lane™</span>
           </Link>
 
+          <nav aria-label="Legal" className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-poppins text-sm text-[#5A7F46]">
+            <Link href="/privacy" className="underline underline-offset-4 hover:text-[#355B35]">Privacy Policy</Link>
+            <Link href="/terms" className="underline underline-offset-4 hover:text-[#355B35]">Terms of Service</Link>
+          </nav>
+
           <p className="font-poppins mt-2 text-xs text-[#8A7A82]">
             © {new Date().getFullYear()} Harmony Lane™. All rights reserved.
           </p>
+          <p className="font-poppins text-xs text-[#8A7A82]">Offered by Startup &amp; Thrive, LLC</p>
         </div>
       </div>
     </footer>
