@@ -200,32 +200,35 @@ export function WeMakeTimeForMoreSection() {
               <h3 className="mt-3 font-playfair text-2xl font-bold text-[#FFFFFF]">Four Hours of Focused, Individual Business Work.</h3>
               <p className="mt-3 font-poppins text-base leading-relaxed text-[#FFFFFF]">Work on the priorities you selected during Decide &amp; Design. You work independently in a shared co-working environment, with protected focus time—not workshops, lessons, presentations, group assignments, or imposed interruptions.</p>
             </article>
-            <article className="rounded-2xl border border-[#2D6348]/30 bg-[#123B2A] p-6 sm:p-8">
-              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C9DDB4]">05 · Week after week — Build familiarity</p>
-              <h3 className="mt-3 font-playfair text-2xl font-bold text-[#FFFFFF]">Repetition Makes the Rhythm More Familiar.</h3>
-              <p className="mt-3 font-poppins text-base leading-relaxed text-[#FFFFFF]">Return to the same daily spaces and practice the built-in boundaries in your actual business. Each week gives you another opportunity to experience the rhythm, personalize your choices, and discover what helps you work and live more sustainably.</p>
-            </article>
-            <article className="rounded-2xl border border-[#2D6348]/30 bg-[#123B2A] p-6 sm:p-8">
-              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C9DDB4]">06 · Friday–Sunday — Three-day weekend</p>
-              <h3 className="mt-3 font-playfair text-2xl font-bold text-[#FFFFFF]">Practice Being Present in Your Life.</h3>
-              <p className="mt-3 font-poppins text-base leading-relaxed text-[#FFFFFF]">No scheduled business work. Enjoy relationships, personal priorities, rest, and experiences. The weekend is a boundary, too: practice being away from the business without feeling compelled to return to work.</p>
-            </article>
           </div>
 
           <div className="mt-8 grid gap-5 md:grid-cols-2">
             <article className="rounded-2xl border border-[#2D6348]/30 bg-[#123B2A] p-6 sm:p-8">
-              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C9DDB4]">5:00–10:00 PM ET</p>
+              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C9DDB4]">05 · 5:00–10:00 PM ET</p>
               <h3 className="mt-2 font-playfair text-2xl font-bold text-[#FFFFFF]">Time Freedom™</h3>
               <p className="mt-3 font-poppins text-base leading-relaxed text-[#FFFFFF]">The business day is finished at 5:00 PM. These five hours belong to life—not business catch-up. Make room for relationships, dinner, interests, and whatever you choose to enjoy.</p>
             </article>
             <article className="rounded-2xl border border-[#2D6348]/30 bg-[#123B2A] p-6 sm:p-8">
-              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C9DDB4]">10:00–11:00 PM ET · Live Zoom</p>
+              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C9DDB4]">06 · 10:00–11:00 PM ET · Live Zoom</p>
               <h3 className="mt-2 font-playfair text-2xl font-bold text-[#FFFFFF]">Power Down™</h3>
               <p className="mt-3 font-poppins text-base leading-relaxed text-[#FFFFFF]">Join the community to release a day that is already complete, acknowledge accomplishments, and co-work on your bedtime routine. The goal: pajamas on, in bed, ready to unplug when the community closes at 11:00 PM.</p>
             </article>
           </div>
-          <div className="mt-5 overflow-hidden rounded-2xl shadow-lg">
+          <div className="mt-8 overflow-hidden rounded-2xl shadow-lg">
+            <p className="bg-[#123B2A] px-6 pt-5 font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C9DDB4]">07 · 11:00 PM–7:00 AM ET — Unplug / Closed</p>
             <img src="/images/holiday/digital-detox-sign.webp" alt="Unplug Close card" className="h-auto w-full object-cover" loading="lazy" />
+          </div>
+          <div className="mt-5 grid gap-5 md:grid-cols-2">
+            <article className="rounded-2xl border border-[#2D6348]/30 bg-[#123B2A] p-6 sm:p-8">
+              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C9DDB4]">08 · Friday–Sunday — Three-day weekend</p>
+              <h3 className="mt-3 font-playfair text-2xl font-bold text-[#FFFFFF]">Practice Being Present in Your Life.</h3>
+              <p className="mt-3 font-poppins text-base leading-relaxed text-[#FFFFFF]">No scheduled business work. Enjoy relationships, personal priorities, rest, and experiences. The weekend is a boundary, too: practice being away from the business without feeling compelled to return to work.</p>
+            </article>
+            <article className="rounded-2xl border border-[#2D6348]/30 bg-[#123B2A] p-6 sm:p-8">
+              <p className="font-poppins text-sm font-semibold uppercase tracking-[0.18em] text-[#C9DDB4]">09 · Week after week — Build familiarity</p>
+              <h3 className="mt-3 font-playfair text-2xl font-bold text-[#FFFFFF]">Repetition Makes the Rhythm More Familiar.</h3>
+              <p className="mt-3 font-poppins text-base leading-relaxed text-[#FFFFFF]">Return to the same daily spaces and practice the built-in boundaries in your actual business. Each week gives you another opportunity to experience the rhythm, personalize your choices, and discover what helps you work and live more sustainably.</p>
+            </article>
           </div>
           <p className="mx-auto mt-4 max-w-3xl text-center font-poppins text-base leading-relaxed text-[#4A3A42]">Yes, we do close at night—and we strive to get 8 hours of sleep.</p>
           <p className="mx-auto mt-10 max-w-4xl text-center font-playfair text-xl font-semibold leading-relaxed text-[#4A3A42] sm:text-2xl">Bring your business. Build Boundaries In It. Repeat the rhythm, practice in real time, and make more room for the life your business was built to support.</p>
