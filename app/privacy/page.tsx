@@ -8,7 +8,7 @@ export const metadata = {
 const sections = [
   {
     title: "1. Who we are",
-    body: "Harmony Lane™ and the Work-Life Balance Reality Check™ are offered by Startup & Thrive, LLC ("we," "us," or "our"). This policy explains how we collect, use, disclose, and protect personal information when you visit our website, register for the Reality Check, use related assessments, or become a member.",
+    body: "Harmony Lane™ and the Work-Life Balance Reality Check™ are offered by Startup & Thrive, LLC (referred to in this policy as we, us, or our). This policy explains how we collect, use, disclose, and protect personal information when you visit our website, register for the Reality Check, use related assessments, or become a member.",
   },
   {
     title: "2. Information we collect",
