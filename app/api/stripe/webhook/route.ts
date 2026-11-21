@@ -61,7 +61,7 @@ async function sendOnboardingEmail({
   if (!apiKey) throw new Error("RESEND_API_KEY is not configured")
 
   const configuredAppUrl = process.env.NEXT_PUBLIC_APP_URL || "https://free-reality-check.vercel.app"
-  const appUrl = configuredAppUrl.replace(/\\/+$/, "")
+  const appUrl = configuredAppUrl.endsWith("/") ? configuredAppUrl.slice(0, -1) : configuredAppUrl
   const welcomeUrl = `${appUrl}/welcome?email=${encodeURIComponent(email)}&product=${encodeURIComponent(
     planId || "membership",
   )}&token=${token}`
