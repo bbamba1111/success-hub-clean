@@ -6,9 +6,8 @@ import { TopNavigation } from "@/components/top-navigation"
 export function ConditionalNav() {
   const pathname = usePathname()
 
-  // The public marketing site, free Reality Check onboarding, and checkout
-  // confirmation are standalone journeys. Do not expose member navigation
-  // before the participant enters the member workspace.
+  // Keep member navigation out of public checkout and first-time account setup.
+  // The member workspace becomes available after the password is created.
   if (
     pathname?.startsWith("/sunday-shift") ||
     pathname?.startsWith("/landing") ||
@@ -16,6 +15,7 @@ export function ConditionalNav() {
     pathname?.startsWith("/installation") ||
     pathname?.startsWith("/boss") ||
     pathname?.startsWith("/checkout/success") ||
+    pathname === "/welcome" ||
     pathname === "/founder-profile" ||
     pathname === "/business-context" ||
     pathname === "/boundary-report" ||
