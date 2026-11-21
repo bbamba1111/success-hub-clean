@@ -148,13 +148,13 @@ export function HolidayHero({ sessionLabel }: { sessionLabel?: string } = {}) {
           </div>
           <div className="flex max-w-2xl flex-col items-center gap-2 text-balance">
             <p className="font-poppins text-[14.33px] font-medium leading-[1.25] text-[#FFF8F4] sm:text-[20.33px]">
-              Give Yourself &amp; Your People the Gift of Work-Life Balance, Time Freedom &amp; Sustainable Success.
+              Bring your business. Build Boundaries In It. Practice a more sustainable way of living, working, and leading in the AI age.
             </p>
             <p className="font-poppins text-[14.33px] font-semibold leading-[1.2] text-[#FFF8F4] sm:text-[23px]">
               Don&apos;t Let AI Automate Your Hustle.
             </p>
             <p className="font-poppins text-[14.33px] font-bold leading-[1.25] text-[#F6A9C2] sm:text-[20.33px]">
-              Set Non-Negotiable Human Sustainability Boundaries—Before You Deploy.
+              Live. Work. Lead. Operate. Inside a premium Work-Life Balance Co-Working Destination.
             </p>
           </div>
           <div className="flex w-full flex-col items-center gap-3 pt-2">
@@ -165,6 +165,9 @@ export function HolidayHero({ sessionLabel }: { sessionLabel?: string } = {}) {
               Take Your FREE Work-Life Balance Reality Check
             </a>
           </div>
+          <p className="font-poppins pt-1 text-center text-xs font-semibold uppercase tracking-[0.12em] text-[#FFF8F4] sm:text-sm">
+            Free live Sunday Reality Check™ · 3:00 PM ET on Zoom · No purchase required
+          </p>
           <div className="w-full max-w-[28rem] self-center pt-1">
             <SundayCountdown />
           </div>
