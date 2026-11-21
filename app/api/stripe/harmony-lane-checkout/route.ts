@@ -20,7 +20,7 @@ export async function POST() {
     // This is branch-scoped in Vercel Preview and points to the branch's
     // assigned domain. Strip a trailing slash to avoid malformed return URLs.
     const configuredAppUrl = process.env.NEXT_PUBLIC_APP_URL || "https://free-reality-check.vercel.app"
-    const appUrl = configuredAppUrl.replace(/\\/+$/, "")
+    const appUrl = configuredAppUrl.endsWith("/") ? configuredAppUrl.slice(0, -1) : configuredAppUrl
 
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
