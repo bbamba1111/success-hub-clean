@@ -29,7 +29,7 @@ export function WeMakeTimeForMoreSection() {
     { value: "4 Hour", title: "Focused CEO Workday", detail: "Dedicated time for priority business work" },
     { value: "5 Hours", title: "Time Freedom", detail: "After 5:00 PM" },
     { value: "3 Day", title: "Weekend", detail: "Friday–Sunday" },
-  ]
+  ];
 
   return (
     <>
@@ -166,7 +166,6 @@ export function WeMakeTimeForMoreSection() {
               ))}
             </div>
             <p className="mx-auto mt-8 max-w-4xl text-center font-poppins text-base leading-relaxed text-[#5A4A52]">You do not need to arrive with perfect boundaries. The experience gives you a place to practice a more sustainable way of living, working, and leading while your business continues to move forward.</p>
-          </div>
           </div>
         </div>
       </section>
